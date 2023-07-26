@@ -1,391 +1,255 @@
-## [6.2.2] (2022-06-10)
-
-#### Changes
-
-* Sale order email template: added unit in sale order line details.
-* Webapp: add `data.export.locale` property in application.properties file.
+## [7.1.1] (2023-07-20)
 
 #### Fixed
 
-* Fixed first time record loading being slow on grid after server start due to bpm engine initialization.
-* Stock location: Allow to print location financial data only for stock locations configured as valued stock location.
-* Accounting batch: display fields related to debt recovery only when debt recovery action is selected.
-* Contract batch: invoicing a batch of contracts does not take into account closed contract anymore.
-* Studio: Fix UI and other changes for studio editor.
-* Studio: Fix label translation for editor.
-* Studio: Auto convert field name and model name to camelcase for custom fields and custom models.
-* Sale order/Invoice printings: fix "Dr." civility that was displayed as "Mlle.".
-* Base, HR: add missing french translations.
-* Move: fix partner not being filtered according to payment mode compatible types.
-* Weighted average price in product company is now correctly computed in company currency instead of purchase currency.
-* Expense line: Analytic distribution date is now set to expense line's expense date if it is setted. If not, it is still by default today date.
-* MRP: fixed an issue where quantity conversion for mrp lines from manuf orders was not applied.
-* Accounting move line: fix the date's validity check, when the date was equal to the period's starting date or the endind date, it was considered being outside of this period.
-* Journal: added valid account types to demo data.
-* Supplier: allow to create an accounting situation with a company that does not have PFP feature activated.
-* Invoice: fixed an issue where printing an invoice from the form view would give an error.
-* Cost sheet: fix wrong total when computing cost from bill of materials or manufacturing orders.
-* Accounting move: fix account selection when generating automatically the counterpart of a move line.
+* App builder: updated axelor-studio dependency from 1.2.0 to 1.2.1.
+* Account/Move/Invoice: fixed analytic check when required on move line, invoice line.
+* Manufacturing order: fixed JNPE error when merging manufacturing orders missing units.
+* Cost sheet: fixed wrong bill of materials used for cost calculation.
+* Move: set description required on move line when it is enabled in company account configuration.
+* Stock move line: fixed display issues with the button used to generate tracking numbers in stock move lines.
+* Custom accounting report: added a tab listing anomalies that are preventing generation.
+* Operation order: correctly filter work center field on work center group (when the feature is activated).
+* Payment condition: improved warning message when modifying an existing payment condition.
+* Stock move: fixed issue preventing the display of invoicing button.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves.
+* Invoice: fixed unwanted financial discount on advance payment invoice.
+* Bank payment printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Accounting report: fixed error on N4DS export when the partner address has no city filled.
+* Payment session/Bank order: fix of compensation in payment session process with bank order.
+* Sale order: fixed missing actions on loading sale order form views.
+* Fixed asset: improved the error message shown when an exception occurs during a mass validation.
+* Analytic distribution template: fixed error when creating a new analytic distribution template.
+* Product: fixed wrong filter on analytic on product accounting panel.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves without sale order.
+* Faker API: update documentation in help message.
+* Interco: fixed generated sale order/purchase order missing a fiscal position.
 
-Improve error messages when the account cannot be determined when generating the counterpart of a move line, also use the default company bank details to select the right account.
+## [7.1.0] (2023-07-12)
 
-* Purchase order: fix wrong total W.T. computation when generated from purchase request.
-* Supplier: fixed an issue where realizing a reversed stock move would update supplier quality rating.
-* Bank details: fix missing fields when created from company.
-* Stock rules: fix user and team fields not displayed with alert activated.
-* Expense line / Move line: Analytic distribution template is now correctly copied in move line when it is created from expense.
-* Stock move : fix wrong calculation on supplier quality rating
+### Features/Changes
 
-When realizing a stock move, stock move lines with the conformity not filled were counting as non-compliant
-and decreasing the supplier's quality rating.
+#### Base
 
-* Invoice: fixed an issue where changing the product in a line with existing analytic would display an error.
+* Faker API Field: 
+- Add the possibility to use the api faker method parameters
+- Add data type to filter API fields in the anonymizer lines
 
-## [6.2.1] (2022-05-27)
+* Base Batch: New batch to force users password change
+* BirtTemplate: It is now possible to choose the .rptdesign file used to generate the attached file when sending a generated email. Parameters sent to the BIRT engine can also now be computed using groovy scripting.
 
-#### Fixed
+#### Accounting
 
-* Move: fix total currency computation in move form view.
-* Inventory: Fix error popup on creating a new inventory line with a new company.
-* Move: fix error on clicking the counterpart generation button when there is nothing to generate.
-* Sale order line: fixed an issue where analytic distribution validation failed because of a title line generated by the pack feature.
-* Product: now correctly hide the config allowing to define shipping cost per supplier in product form if we disabled the supplier catalog.
-* Invoice: fix AxelorException error when emptying the operation type on the invoice form view.
-* Geoname: fix geoname import on empty databases (without demodata).
-* Journal: reset the list of valid accounts on company change.
-* Move: fix NPE error when trying to access the grid view with no active company configured on the user.
-* Invoice: fixed an issue where a validated or ventilated invoice without trading name could not be saved.
-* MRP: grid view from MRP menu will not also display MPS anymore.
-* Bank reconciliation: fix error during reconciliation when a query is not configured in bank statement rule.
-* Manufacturing: outsourcing management
+* Move: 
+    - New mass entry feature
+    - Add management of currency amount negative value for credit
+    - Add PFP process like on Invoices
+    - Extend automatic cut off dates process to move confirmation
+    - On move creation or generation, originDate is filled with onChange of moveDate.
+    - Add an allowed tax gap on company account config and check consistency of tax values on daybooking, simulating or accounting.
+    - Add new technical origin for move generated from mass entry process
+
+* Move, Move line: 
 
-Production process lines can now be managed without outsourcing even if the parent prod process is configured as outsourced.
-When created, operation orders now are correctly configured as outsourced depending on their related production process lines.
+Cut off dates are no longer required for functional origin: closure, opening, cut off
 
-* Payment move line distribution: Use reconciliation date instead of due date as the operation date when generating payment move line distribution.
-* Invoice: fix invoice grid view to have only the customer or supplier lines according to the present filter.
-* Product: fix typos in fr translations and fr help.
-* Invoice: fixed an issue preventing people from ventilating completed sale order.
-* ND4S export: fix error during export when existing city is missing zip code.
-* Accounting: hide the menu Analytic if analytic accounting management is disabled.
-* Invoice payment: correctly disable the application of financial discount on the payment if the payment date is after the financial discount limit date.
-* Employee: When creating an employee, the step 'user creation' is now hidden if employee is already associated with a user.
-* Accounting Report: fix demo data for accounting report types.
-* Expense: move date will now be updated if we only fill kilometric expense lines.
-* Move template wizard form: fixed data input wizard popup form view.
-* Maintenance: fixed a bug where creating a BoM from maintenance would make it appear in manufacturing but not in maintenance.
-* Notification: correctly manage refunds in payment notification process.
-* Sale order line: fixed NPE error popup that occured when changing quantity without having selected a product.
-* Move line: fix tax panel not displaying in the form view when tax line is empty.
-* Payment voucher: fix print button display and fix truncated report.
-* Translation: fix translation of "import" in French.
-* Accounting Batch: fix error message during move line export when accounting report type is missing.
-* Sale order: Duplicating a quotation will not copy the opportunity anymore.
+* Cut off batches: Add three new columns displaying the number of days considered in the calculation for Cut-Off processing of Advance Accrued Expenses (CCA) and Advance Accrued Revenues (PCA), allowing users to verify the consistency of the days used in the calculation.
+* Move, Move Template: Set partner as required when journal is sale or expense
+* Reconcile: Add an effective date to the reconcile which will be used instead of reconciliation date for generated payment and moves. This effective date is computed from information in reconciled moves.
+* Reconcile: reconciliation of different accounts and payment differences management
+    - Added new fields in account config, one account for debit difference, one account for credit difference.
+    - When you pay an invoice term and the remaining amount is less than the threshold distance, a new payment will be made of the remaining amount.
+    - Reconciliation of different accounts are now managed, using a new payment move which reconciles both invoice terms.
 
-## [6.2.0] (2022-05-11)
+* Custom accounting report: 
+    - Fetch parent account when higher level analytic accounts are detailed
+    - Add previous start balance
+    - Can now filter result with accounts and analytic accounts from the report
+    - Allow to display debit or credit values instead of only the difference between them
 
-#### Features
+* Debt recovery: improve debt recovery and debt recovery history attachments management
 
-* Account: Add financial discount feature.
+* Deposit slip: handle bank details and deposit date in deposit slip.
 
-The objective of this feature is to be able to manage financial discount. Financial discount has an impact on accounting (contrary to already existing commercial discount).
-A financial discount can be created in Accounting/Configuration/Financial Discount and then set on the partner. On the invoice, the financial discount is selected and applied during the payment.
+* Payment session: 
+    - Show buttons to select all / unselect all.
+    - add compensation field on partner to compensate customer invoices on supplier payment or supplier invoices on customer payment.
+    - add partner set field to filter partners linked to these invoice terms.
 
-* Account: Add fiscal Position on purchase orders, sale orders and invoices.
+* Analytic distribution template: trading name now has an analytic distribution template field:
 
-* Account: Improve company tax number management.
+In Account configuration, if the Analytic distribution type is 'Per trading name', 
+Analytic distribution template will be retrieved from the trading name when creating Purchase order, Sale order and invoice lines.
 
-Tax numbers can be configured for a company with a fiscal position. The correct tax number will be selected for sale and purchase orders according to fiscal position, and can be used for exports.
+#### Budget
 
-* Account: Add new status 'simulated' for move.
+* Budget: integrate new budget module
 
-This is a new option that can be activated in accounting config. Simulated move will not be accounted, but can be used in accounting reports.
+#### Stock
 
-* Accounting: FEC import, fix the existing and add import FEC Type.
+* Stock location: Stock location can be now configured from the stock move line
+* Stock Move: Canceling a stock move will now set the wap price to its former value if nothing happened since the realization.
+* Stock moves: Change origin architecture from refSelect to M2O
 
-Fec import types can be configured form a csv file to choose separator, special fields and check moves.
-Can now set a move description, company in fec import and a option to validate a move on import.
-Also two panels have been added to see the generated move and generated anomalies.
+#### Supply Chain
+* Sale order: Sale orders and sale order lines can now be filtered with invoicing state.
 
-* Analytic Accounting: Revamping analytic accounting for higher flexibility.
 
-New panel to specify a default configuration that can be used in the movelines and billing lines. 
-In the analytical axis, you can now select up to 10 groupings, and configure the values of the groupings for a more precise accounting management.
+#### Production
 
-* Bank statement: automatic accounting of statements and automatic generation of moves related to these statements.
+* Manufacturing order: 
 
-Moves based on the statement rules and query can be generated automatically. This feature must be activated from the bank payment application. 
+When planning a manufacturing order, operation orders dates now take into account available dates of the machine. 
 
-* Bank statement line: Add ODS and xlsx export options for bank statement line.
+* Operation order: 
 
-New export option on bank statement line. ODS and xlsx export are available for bank statement line export.
+New fields to distinguish human and machine planned times on operations.
+In the calendar view, the operation orders will now be updated (if needed) on change of another operation order.
 
-* Purchase Order: Add advance payment feature.
+* Work Center & Prod process Line : 
 
-The objective of this feature is to be able to manage advance payment. As it has already been done for sale order, it is now possible to make an advance payment for a purchase order. An advance payment can be invoiced on a purchase order.
+Moved starting, setup and ending duration from Machine to Work Center.
+Human resources panel refactoring
 
-* Sale Quotation: Selected lines in a sale quotation can be split into a new quotation.
+* Machine : 
 
-* Complementary Product: Add generation type for partner complementary products.
+Machine form view refactoring
 
-Now complementary products can be configured on partner. Then it will be generated for every sales orders or sale order lines.
+#### CRM
 
-* Pricing: new engine on Sale.
+* CRM: Redesign of the CRM menus architecture and multiple menus domains.
+* CRM Search: Added a powerful searching tool in multiple object type (opportunities, leads, event, etc …). Using keywords and configurable mapping. 
+* Opportunities: 
+Added a control on opportunities winning process that displays on-going opportunities for selected clients. With multiple closing functions. 
+Add controls on decimal and integer values in opportunities for process maintainability.
+* Partner, Leads, Opportunities: 
+Refactor on last event and next event on partner, leads, opportunities (to make it work properly). 
+Added back a drag and drop function on lead/opportunities/prospect status grid view.
+* Lead conversion: Added a new conversion process for leads.
+* Lead, Prospect: Added a Kanban view.
+* Improve emails display in all CRM views.
+* Added an automatic conversion function for similar leads (name, email, etc…) when converting one. 
+* Added a catalog email sending function in catalog grid view. 
+* Opportunity: added a panel in opportunity view displaying events related to the opportunity.
+* Partner: added partner status to the app. This feature permits the user to follow a prospect using a custom process. It follows the leads process before converting the prospect to customer. 
+* Partner: added related contacts in contact view (contacts with the same email address domain).
 
-Pricing is a new tool that allows you to define sales order lines' fields according to classification rules and result rules defined by groovy formulas.
 
-* Project and Task: Main new features and changes in the project module.
+#### Project
 
-The project module has been modified to provide more flexibility in the configuration of projects and tasks. It is now possible to customize the characteristics of a project and its tasks to display only what is necessary.
-Project phases have been replaced by sub-projects.
-An activity feed has also been added to track all the activities of a project.
-A new "Current project" menu has been added to display only the data and activities of the user's current projects.
+* Project: Allowed deletion of planned times from the dashlet in Project.
+* Project: Added Time follow-up and Financial follow-up on Tasks, aggregated on Project level.
+* ProjectTask: Changed planning UX and constraints to fit with the new flow of project management.
+* Project: Added a batch to compute project and task’s time and financial reporting. Action can also be triggered from Project’s Tools menu. Invoicing Project Batches were renamed to Business Project Batches
+* Project: Removed obsolete time fields on Project and Tasks.
+* Project: Added demo data for Business Project (Task by line & Task by line using subtasks models) to allow demonstration of the new reporting.
+* Project: Added a batch to historize project reporting, as well as visual indicators to compare current values to last historized values.
+* Business Project: Improved App configuration UX
+* Project: Manage project time units (Hours, Days) and conversions to allow to manage a project in Hours or in Days, as well as to manage individual tasks in both units. Planning has also been changed to reflect these features.
+* Contract: invoicing pro rata per line
+* Contract: reevaluating contract yearly prices based on index values
+* Contract: added discount on contract lines.
 
-* Email Template: New button to test template.
+#### Sales
 
-* Partner: Add automatic blocking on customers.
+* Sale Order: Improve UX and help for project generation.
+* Sale Order: Generating task with subtask models has been fixed and improved
 
-Partners with late payments can now be blocked automatically by a batch.
-In the configuration by company of the accounting application, in the tab "Receivables recovery", it is now possible to activate the blocking of customers with late payments.
-It is possible to configure the number of days before the blocking. A respite can be configured on the debt recovery. 
-When a partner is up to date on this payment, it is automatically unblocked. 
-It the user is manually block, it will not be unblocked by the script.
+#### Helpdesk
 
-* Processes that take too long now run in the background.
+* Helpdesk: 
 
-A process that exceeds the timeout configured in the base application continues in background. The user is notified when the process goes into background and when it is finished.
-Implemented for MRP, closing period process, and all batches.
+Added a new field fullName to the ticket which will be used as namecolumn
+Add API to update ticket status
 
-#### Changes
+#### GDPR
 
-* Invoicing Project: update project invoicing batch with automatic invoicing.
+* Processing register: option to not archive
 
-Timesheet lines and tasks can be selected automatically to invoice following the configuration in app business project. For example, only tasks with configured status will be invoiced.
+In GDPR Processing Register, add a boolean to enable/disable archiving data during the data processing.
 
-* Production: Timing of implementation on Work center.
+* App GDPR: New config to exclude fields from the access request.
+* Erasure Request: Add the possibility to break links in an anonymised object.
 
-Implementation time can be determined in absolute value or by script for the work center, in prod process line and prod process line configurators.
+#### HR
 
-* Configurator: Add studio customs fields support.
+* New employee and manager dashboard with custom views
+* Reorganize HR menu items and add new HR menu with a new dashboard
+* Files :
 
-* Configurator: Add workshop.
+Panel review
+Linked to skills
 
-A workshop can be assigned to the elements (routing and BOM) generated by the configurator. The workshop can be defined by a script.
+* Lunch voucher: Process improvement (links with expenses, refacto, form review)
+* Employee: 
 
-* Configurator: Manage consumed products on phase.
+New titles
+Dependent children
 
-Add a new configurator "Configurator Prod Product" to manage consumed products on phases.
-Configurators Prod Product can be added to Configurators Prod Process Line if Configurator Prod Process manage consumed products on phases.
+* Recruitment: Application form review
+* Expense:
 
-* Configurator: Add access to parent sale order in configurator formula.
+Multi-currency expenses
+Analytic distribution template on employee form
+Add justication to expense line grid view
 
-In a configurator script to fill a product (or sale order line) field, the variable `parentSaleOrderLine` can now be used to get the id of the sale order being updated.
+#### Cash management
 
-* Configurator:
-    - Prod Process Line: Add work center group
-    - Prod Process Line: Add a use condition field
-    - Prod Process Line: Allow to manage outsourcing depending on App Production config
-    - Prod Process Line: Allow to define name, priority, stock location, description and work center with a formula
-    - Prod Process: Allow to define name with a formula
+* Forecast generator: add fortnightly and weekly periodicity in forecast generator.
 
-* Sale Order Line and Manufacturing Order: New comment for the manufacturing order on the sale order line.
+#### Mobile
 
-New comment can be added on the command line to be displayed when the manufacturing order is planned or started.
+* Mobile Settings: add Helpdesk config for the mobile app
 
-* Stock location: Add barcode.
+### Fixed
 
-Add barcode generation process to stock location:
-Add related settings field for barcode generation on App Stock. Rename tracking number barcode fields in order to have a clear difference.
+#### Sale/Purchase
 
-* Tracking number: Add barcode.
+* Sale and Purchase order: Change default view for historic menu, from card view to grid view
 
-Barcodes are available for tracking numbers. Barcodes can be activated on tracking numbers from the Stock application.
-It is possible to specify a barcode type for all tracking numbers or per tracking number.
+#### Stock
 
-* Manufacturing order: Add barcode.
+* Stock move: the field “filter on available products” is now stored in database.
 
-Barcode is displayed in manufacturing order's reports.
+#### Project
 
-* Purchase order: Reports.
+* Project and Task: Split ProjectStatus between ProjectStatus for project and TaskStatus for task.
 
-Reports generated from a purchase order now display specific notes based on the purchase's lines' tax equivalences. The tax equivalences are determined from the fiscal position of the order. This behaviour was already present on sale orders and invoices and is now also available for purchase orders.
+#### Base/HR
 
-* Production: Add stock location on S&OP (PIC in french).
+* User, Employee: Improved behavior to avoid links errors and inconsistencies and for more coherence.
+* Partner: change companyStr length
+* Company: Add all java timezone in timezone selection in Company.
+* Training skill: graduation date and end of validity date are not required anymore.
 
-* Account: Employees can now be selected as compatible partner in the journal configuration.
+#### Helpdesk
 
-* Traceback: Add printing option on traceback.
+* Ticket: Renamed the customer field into customerPartner
 
-* MRP: Take in account subcategories.
+#### Accounting
 
-MRP can be configured to take into account subcategories.
+* Accounting report analytic config line : Rule level maximum value is now the highest existing analytic level.
+* Custom accounting report: fixed comparison period order.
+* Move: origin date is now always filled in automatic creation.
+* Invoice term: rework partial pfp validation in invoice terms to be more user friendly and fix financial discount in second invoice term generation.
+* Journal type: field technicalTypeSelect is now compulsory.
 
-* DataBackup: Allow to create backup file even if no record exists.
+### Removed
 
-Data backup can create a backup file even if no record exists by selecting "Generate csv file for empty tables".
+* App base configuration: remove OSM Routing API selection
 
-* APP mobile - Stock: Add 'Inventory status select'.
+Now, when computing distance for Kilometric Allowances, if using the Open Street Map mapping service provider, 
+it will use the OSRM API by default.
 
-Inventory status can be selected to filter which inventories must take into account in the stock mobile app.
+* Leave management: remove unused 'user' column in data model.
+* Alarms: removed everything related to alarms.
+* CRM : Leads : Remove 'Import Leads' feature.
+* [EXPENSE] Remove multi user expense.
+* Object data config: removed unused domain object data config.
+* WAP History: removed WAP history  (replaced by a new table “StockLocationLineHistory” with more information.
+* Skills : experienceSkillSet and skillSet are now removed from employee form.
+* Simplified moves: removed in favor of mass entry.
 
-* Inventory: Add option to include sub stock location.
 
-* Product: Check expiration date on stock move realization.
-
-* Mass update: Enable mass update on some fields of MetaMenu,MetaView and MetaAction.
-
-* Sale order: Add new field to mark order as a one-off sale.
-
-One-off sales can be excluded from MRP computation.
-
-* Move: add a control to check if the currency is filled on the accounting move.
-
-* Sale Order: add last reminder date and comments to sale order.
-
-* Accounting Report: Manage subsidiary account by type for export journal entry.
-
-* Declaration Of Exchanges: Adjustment to follow the changes in legislation (2022).
-
-Add country origin code in the outgoing move filled with the country alpha2 code from adress linked to the original stock location of the stock move in the stock move lines.
-
-* Invoice: Add payment delay reason.
-
-Add payment delay reason in the accounting panel of the Invoice. This payment delay reason can be configured in Accounting > Debt recovery > Configuration > Payment delay reason.
-
-* Printing Setting: The position of the address can be changed in the printing (right or left).
-
-* Manufacturing Order: New tree view for multi-level planning.
-
-* Bank Details: Add color indication on grid view.
-
-If the balance updated date has a delai of 3 to 7 days, the field is in orange. If it's more than 7, it's in red.
-If the balance is equal to 0, the field is in orange. If it's lower than 0, it's in red.
-
-* Employee: Add Training Skill.
-
-Training skills can be add to an employee to manage his skills.
-
-* Move: New date of reversion entry for reverse move.
-
-The reversion date can now be set for the next day during generating a reverse move.
-
-* Studio: Add canSearch and height attribute to dashlet builder.
-
-* Tracking Number Configuration: add a dashlet to show the concerned products.
-
-* Project task: new editor.
-
-* Purchase Order Line: Add tracking on desired and estimated delivery date.
-
-* Purchase Order: Add tracking on delivery date.
-
-* Partner: Add tags of Customer, Supplier, Subcontractor and others on card view.
-
-* Account: Manage Partners DAS2 Activity and Accounts Service Types.
-
-* Account: Add two new reports which help for DAS2 Fees declaration.
-
-* User Preference: Display the today date in recipe mode.
-
-* Partner: Add Tracking for some fields.
-
-Tack partner category, industry sector, registration code, siren number, main activity, partner address list, fixed phone, email address, in payment mode, out payment mode, payment condition, financial discount, das2 activity, currency, umr activation.
-
-* BankDetails: Add Tracking for some fields.
-
-Tack partner, owner name, label, currency, bank account, journal, iban, bank, bank address, active.
-
-Invoice : Add Tracking for some fields.
-
-Tack pfp validator, pfp validate status, reason of refusal to pay, reason of refusal to pay (str).
-
-* Stock Location: Valued.
-
-The valuation of the stock location is displayed if the stock location is configured as valued instead of depending on the stock location type.
-
-* Indicator generator: Query will now return result as a list of text instead of number.
-
-* Move: fill the origin date from the invoice.
-
-* User: Add update date of password in user-form.
-
-* Stock detail by product: Allow to see stock history when no stock location is selected.
-
-* Stock: New batch to update stock history.
-
-* Stock detail by product : Allow to export result as a csv file.
-
-* App base: Use open street map as the default map API.
-
-* Invoice Printing: Display delivery dates on customer invoices/refunds reports.
-
-* Product: Allow the configuration of a BOM by default per company.
-
-* Product: Add column available quantity on variants panel on product form view.
-
-* ManufOrder: Allowed user to select and discard multi-level planning orders.
-
-* Partner: Add the create and the update date in blocking editor.
-
-* Wap history: Add a new field to show the origin of a wap variation in a stock location line form view.
-
-* Global tracking log line : Add new button that displays the record reference.
-
-* Invoice: interco invoice is now generated after ventilation. Before this change, it was generated after validation.
-
-* Manufacturing order: add buttons to use the reservation feature for consumed products.
-
-* Payment delay reason: New demo data.
-
-* User: change visibility condition of the Passed For Payment panel in user form view.
-
-The panel is now displayed if at least one company in the set of companies is activated for the "Past due for payment" function, instead of using the active company.
-
-* MRP: Add a configuration to choose whether to run the process only on given stock location or on every sub stock locations as well.
-
-* Accounting report: Add order by in general balance with comparative periods report.
-
-* Move line: Avoiding saving or validating a move line if account not allowed
-
-When saving a move line, added a control on accounting account that checks if the account is allowed in the move's journal.
-
-* Accounting Batch: merge existing batches annual accounting into one.
-
-The batch to open annual accounts of the next year and the batch to close annual accounts of the last year are now replaced by a single batch that will do both.
-
-* Invoice: fill more fields on supplier invoice generated from interco feature
-
-When generating a supplier invoice from a customer invoice with interco feature, we now automatically fill origin date and supplier invoice number, and we copy the customer invoice printed PDF into supplier invoice files.
-
-* Account: Improve error message when adding a payment mode that already exists.
-
-* Fiscal position: Handle fiscal position and tax number when merging quotations
-
-* Currency conversion line: Error handling if rates or currency cannot be retrieved.
-
-* Payment voucher: Allow to choose the imputation order
-
-Add sequence in pay voucher due element in order to choose the imputation order when loading lines. 
-User can now change imputation order by changing sequence before loading lines.
-Sequence can be change by moving line or by editing it.
-
-* Forecast Recap: Display manual forecast reason on recap lines.
-
-Forecast reason was replaced by Forecast recap line type: The name of the
-forecast line type is now the reason. This way, the type displayed in recap
-will be equal to the reason for manual forecasts.
-
-#### Fixed
-
-* HR: Day Planning - Rename weeklyPlann to weeklyPlanning.
-
-`WRN :` Script need to be launch to upgrade version.
-
-#### Removed
-
-* Territory: Remove object
-
-
-[6.2.2]: https://github.com/axelor/axelor-open-suite/compare/v6.2.1...v6.2.2
-[6.2.1]: https://github.com/axelor/axelor-open-suite/compare/v6.2.0...v6.2.1
-[6.2.0]: https://github.com/axelor/axelor-open-suite/compare/v6.1.11...v6.2.0
+[7.1.1]: https://github.com/axelor/axelor-open-suite/compare/v7.1.0...v7.1.1
+[7.1.0]: https://github.com/axelor/axelor-open-suite/compare/v7.0.5...v7.1.0

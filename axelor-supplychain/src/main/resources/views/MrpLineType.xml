@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="mrp-line-type-grid" model="com.axelor.apps.supplychain.db.MrpLineType"
     title="MRP Types" orderBy="sequence">
-    <hilite if="[5,8,9].indexOf(elementSelect) != -1" strong="true" color="info"/>
+    <hilite if="[5,8,9,11].indexOf(elementSelect) != -1" strong="true" color="info"/>
     <field name="name"/>
     <field name="elementSelect"/>
     <field name="typeSelect"/>
@@ -29,10 +29,20 @@
       <field name="statusSelect" widget="MultiSelect"
         selection="production.manuf.order.status.select" showIf="elementSelect == 6"
         if-module="axelor-production" if="__config__.app.isApp('production')"/>
+      <field name="metaField" hidden="true" showIf="elementSelect == 10"
+        requiredIf="elementSelect == 10"
+        domain="self.metaModel.fullName = 'com.axelor.apps.stock.db.StockHistoryLine' AND self.typeName = 'BigDecimal'"/>
+      <field name="growthCoef" hidden="true" showIf="elementSelect == 10"
+        requiredIf="elementSelect == 10"/>
+      <field name="isProjectedForNextMonths" hidden="true" showIf="elementSelect == 10"/>
+      <field name="nbrOfMonthProjection" hidden="true" showIf="isProjectedForNextMonths"/>
+      <field name="offsetInMonths" hidden="true" showIf="elementSelect == 10"
+        requiredIf="elementSelect == 10"/>
       <field name="applicationFieldSelect" widget="MultiSelect"/>
       <field name="includeElementWithoutDate" showIf="$contains([2,3,6,7], elementSelect)"/>
       <field name="ignoreEndDate" showIf="$contains([2, 6], elementSelect)"/>
       <field name="includeOneOffSalesSelect" showIf="elementSelect == 3"/>
+      <field name="lateSalesSelect" showIf="elementSelect == 3"/>
     </panel>
   </form>
 

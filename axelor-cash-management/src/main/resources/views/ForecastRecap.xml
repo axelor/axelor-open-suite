@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="forecast-recap-grid" title="Forecast Recaps"
     model="com.axelor.apps.cash.management.db.ForecastRecap">
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="bankDetails" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="bankDetailsSet" if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
   </grid>
@@ -28,17 +28,18 @@
         colSpan="4"/>
       <field name="fromDate" onChange="action-forecast-recap-validate-dates" colSpan="4"/>
       <field name="toDate" onChange="action-forecast-recap-validate-dates" colSpan="4"/>
-      <field name="bankDetails.balance"
-        if="__config__.app.getApp('base').getManageMultiBanks()" showIf="bankDetails" colSpan="4"/>
-      <field name="bankDetails" onChange="action-forecast-recap-method-starting-balance"
-        onSelect="action-accounting-batch-attrs-bank-details-domain"
-        if="__config__.app.getApp('base').getManageMultiBanks()" colSpan="4"/>
-      <field name="bankDetails.balanceUpdatedDate" title="Balance updated date"
-        if="__config__.app.getApp('base').getManageMultiBanks()" showIf="bankDetails" colSpan="4"/>
+      <field if="__config__.app.getApp('base')?.getManageMultiBanks()" name="bankDetailsSet"
+        colSpan="4" widget="TagSelect" canNew="false"
+        onChange="action-forecast-recap-method-starting-balance"
+        onSelect="action-forecast-recap-attrs-bank-details-domain"/>
+      <field name="isReport"/>
       <field name="opportunitiesTypeSelect" colSpan="4"/>
       <field name="startingBalance" colSpan="4"/>
+      <field name="company.defaultBankDetails.balance"
+        showIf="company.defaultBankDetails.balanceUpdatedDate &amp;&amp;!bankDetails" colSpan="3"/>
       <field type="date" name="company.defaultBankDetails.balanceUpdatedDate"
         showIf="$get('company.defaultBankDetails.balanceUpdatedDate')" colSpan="3"/>
+      <field name="userRecap"/>
       <button name="populateRecapBtn" title="Populate"
         onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
       <panel-dashlet name="forecastRecapLineListPanel" canSearch="true" showIf="id"
@@ -46,11 +47,10 @@
       <field name="endingBalance" readonly="true" colSpan="4"/>
       <field name="currency" readonly="true" colSpan="4"/>
       <field name="calculationDate" colSpan="4"/>
-      <field name="isReport" hidden="true"/>
     </panel>
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Reports"
+  <form model="com.axelor.utils.db.Wizard" title="Reports"
     name="forecast-recap-print-wizard-form">
     <panel name="mainPanel">
       <field name="$reportTypeSelect" title="Format"
@@ -63,20 +63,21 @@
   <grid name="forecast-report-grid" title="Forecast Reports"
     model="com.axelor.apps.cash.management.db.ForecastRecap">
     <field name="company"/>
-    <field name="bankDetails" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+    <field name="bankDetailsSet" if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
   </grid>
 
   <form name="forecast-report-form" title="Forecast Report"
     model="com.axelor.apps.cash.management.db.ForecastRecap"
-    onNew="action-forecast-report-record-default-on-new">
+    onNew="action-forecast-report-record-default-on-new" width="large">
     <panel name="mainPanel">
       <field name="company" canEdit="false"
         onChange="action-forecast-record-bank, action-forecast-recap-record-currency" colSpan="4"
         required="true"/>
-      <field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"
-        if="__config__.app.getApp('base').getManageMultiBanks()" colSpan="4"/>
+      <field name="bankDetailsSet" onChange="action-forecast-recap-method-starting-balance"
+        onSelect="action-forecast-recap-attrs-bank-details-domain" widget="tagSelect"
+        if="__config__.app.getApp('base')?.getManageMultiBanks()" colSpan="4" canNew="false"/>
       <field name="salesMan" canNew="false" canEdit="false" canView="false" colSpan="4"/>
       <field name="fromDate" onChange="action-forecast-recap-validate-dates" required="true"/>
       <field name="toDate" onChange="action-forecast-recap-validate-dates" required="true"/>
@@ -200,12 +201,21 @@
     <call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="print"/>
   </action-method>
 
+  <action-attrs name="action-forecast-recap-attrs-bank-details-domain">
+    <attribute if="!company.bankDetailsList.isEmpty()" name="domain"
+      expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;"
+      for="bankDetailsSet"/>
+    <attribute if="company.bankDetailsList.isEmpty()" name="domain"
+      expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;"
+      for="bankDetailsSet"/>
+  </action-attrs>
+
   <search-filters name="forecast-recap-filters"
     model="com.axelor.apps.cash.management.db.ForecastRecap" title="Forecast recap filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="bankDetails" hidden="true"
-      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="bankDetailsSet" hidden="true"
+      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
   </search-filters>
 
 </object-views>

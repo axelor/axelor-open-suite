@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payment-voucher-grid" title="Payment vouchers"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
@@ -22,17 +22,17 @@
     onNew="action-account-payment-voucher-onnew-group"
     onLoad="action-account-payment-voucher-onload-group"
     onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum">
-
-    <panel name="mainPanel" readonlyIf="statusSelect == 3" itemSpan="12">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
       <field name="ref" readonly="true" colSpan="4"/>
       <field name="operationTypeSelect" colSpan="4"
         onChange="action-payment-voucher-hidden-fields-if-purchase"/>
       <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"
         canNew="false" canEdit="false" canView="false"/>
-      <field name="paymentDate" colSpan="4" required="true"/>
+      <field name="paymentDate" colSpan="4" required="true"
+        onChange="action-group-payment-voucher-reset-imputation,save"/>
       <field name="company" canEdit="false" widget="SuggestBox" colSpan="4"
         form-view="company-form" grid-view="company-grid"
-        onChange="action-payment-voucher-method-fill-bank-details"/>
+        onChange="action-payment-voucher-method-fill-bank-details,action-payment-voucher-record-value-for-collection-account"/>
       <field name="tradingName" colSpan="4" form-view="trading-name-form"
         grid-view="trading-name-grid" onSelect="action-payment-voucher-set-trading-name-domain"
         onChange="action-group-payment-voucher-reset-imputation"/>
@@ -41,50 +41,76 @@
 
     <panel sidebar="true" name="actionsPanel" title="Actions" stacked="true">
       <button name="confirmPaymentVoucherBtn" title="Confirm payment" hidden="true"
-        onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
+        onClick="action-group-account-payment-voucher-confirm-click"
+        showIf="statusSelect == 1 || !id"
+        readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
         icon="fa-print"
         onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
     </panel>
 
-    <panel sidebar="true" name="infoPanel" title="Info" itemSpan="6" readonly="true">
+    <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
       <field name="statusSelect"/>
-      <field name="generatedMove" showIf="statusSelect == 3" form-view="move-form"
-        grid-view="move-grid"/>
-      <field name="receiptNo" showIf="statusSelect == 3"/>
+      <panel hidden="true" showIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
+        <field name="valueForCollectionMove" form-view="move-form" grid-view="move-grid"
+          hidden="true"
+          showIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+        <field name="generatedMove" form-view="move-form" grid-view="move-grid"/>
+        <field name="receiptNo"/>
+      </panel>
     </panel>
 
-    <panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect >= 2">
+    <panel name="payerPanel" title="Payer" itemSpan="12" readonlyIf="statusSelect > 1">
       <field name="partner" form-view="partner-form" grid-view="partner-grid" colSpan="4"
         domain=":company member of self.companySet"
-        onChange="action-group-payment-voucher-reset-imputation,action-pv-record-default-partner-inf"
+        onChange="action-group-payment-voucher-reset-imputation,action-payment-voucher-reset-due-element-list,action-pv-record-default-partner-inf,action-payment-voucher-method-fill-bank-details,action-payment-voucher-record-value-for-collection-account,action-payment-voucher-record-cheque-owner,action-payment-voucher-record-cheque-due-date"
         onSelect="action-payment-voucher-set-partner-domain"/>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
         colSpan="4" widget="SuggestBox"
         onChange="action-group-account-payment-voucher-paymentmode-onchange"
         onSelect="action-set-payment-mode-domain"/>
-      <field name="companyBankDetails" hidden="true" form-view="bank-details-form"
+      <field name="companyBankDetails" form-view="bank-details-form"
         grid-view="bank-details-grid" colSpan="4"
+        onChange="action-payment-voucher-record-value-for-collection-account"
         onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"/>
 
       <field name="paymentMode.typeSelect" colSpan="12" hidden="true"/>
-      <panel name="chequePanel" colSpan="12" title="Cheque"
+      <field name="paymentMode.inOutSelect" colSpan="12" hidden="true"/>
+      <field name="paymentMode.accountingTriggerSelect" colSpan="12" hidden="true"/>
+      <panel name="chequePanel" colSpan="12" title="Cheque" hidden="true"
         showIf="paymentMode.typeSelect == 7">
-        <field name="chequeNumber"/>
-        <field name="chequeBank"/>
-        <field name="chequeOwner"/>
-        <field name="chequeDate"/>
+        <panel colSpan="12" hidden="true"
+          showIf="paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5">
+          <field name="bankEntryGenWithoutValEntryCollectionOk" widget="boolean-switch"/>
+          <field name="valueForCollectionAccount" title="Value for collection" hidden="true"
+            hideIf="bankEntryGenWithoutValEntryCollectionOk"/>
+          <field name="depositBankDetails"
+            requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
+            hideIf="bankEntryGenWithoutValEntryCollectionOk"
+            domain="self.active = true AND self.company = :company"/>
+        </panel>
+        <panel colSpan="12">
+          <field name="chequeNumber"
+            requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+          <field name="chequeBank"
+            requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+          <field name="chequeOwner"
+            requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+          <field name="chequeDueDate" title="Due date"
+            validIf="paymentMode.typeSelect != 7 || paymentMode.inOutSelect != 1 || chequeDueDate >= paymentDate"
+            hidden="true" showIf="paymentMode.inOutSelect == 1"/>
+        </panel>
       </panel>
-
       <field name="depositSlip" showIf="depositSlip" colSpan="12"/>
     </panel>
 
-    <panel name="loadMoveLinesInfoPanel" colSpan="12" showIf="statusSelect == 1">
-      <button name="loadMoveLinesBtn" title="Search elements to pay"
-        onClick="com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines" colSpan="6"/>
+    <panel name="loadInvoiceTermsInfoPanel" colSpan="12" showIf="statusSelect == 1">
+      <button name="loadInvoiceTermsBtn" title="Search elements to pay"
+        onClick="action-payment-voucher-group-search-elements-to-pay,save" colSpan="6"/>
     </panel>
 
-    <panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">
+    <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2 || statusSelect == 3"
+      colSpan="12">
       <field name="paidAmount" colSpan="4"
         onChange="action-group-payment-voucher-reset-imputation,save"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"
@@ -97,16 +123,20 @@
         grid-view="move-line-grid"/>
     </panel>
 
-    <panel-stack name="otherDetailsPanel" readonlyIf="statusSelect >= 2">
+    <panel-stack name="otherDetailsPanel" readonlyIf="statusSelect > 1">
       <panel-related name="payVoucherDueElementListPanel" colSpan="12"
         field="payVoucherDueElementList" form-view="pay-voucher-due-element-form"
-        grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1" orderBy="sequence"
-        canMove="true" canNew="false"/>
+        grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1"
+        orderBy="invoiceTerm.dueDate" canMove="true" readonly="true"/>
       <panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1">
         <button name="loadSelectedLinesBtn" title="Load selected lines"
-          onClick="action-method-payment-voucher-load-selected-lines,save" colSpan="6"/>
+          onClick="action-method-payment-voucher-load-selected-lines,save"
+          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherDueElementList.length == 0"
+          colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation" colSpan="6"/>
+          onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation"
+          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"
+          colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
         field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form"
@@ -131,10 +161,14 @@
     <action name="action-payment-voucher-method-set-receipt-display"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
-    <action name="action-attrs-payment-voucher-hidden-bank-details"/>
+    <action name="action-attrs-payment-voucher-manage-bank-details"/>
     <action name="action-pv-attrs-auto-imputation"/>
     <action name="action-payment-voucher-from-invoice" if="_invoice"/>
     <action name="action-attrs-payment-voucher-hide-trading-name"/>
+    <action name="action-payment-voucher-record-value-for-collection-account"/>
+    <action name="action-payment-voucher-record-cheque-owner"/>
+    <action name="action-payment-voucher-record-cheque-due-date"/>
+    <action name="save" if="_invoice"/>
   </action-group>
 
   <action-group name="action-account-payment-voucher-onload-group">
@@ -142,7 +176,7 @@
     <action name="action-payment-voucher-method-set-receipt-display"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
-    <action name="action-attrs-payment-voucher-hidden-bank-details"/>
+    <action name="action-attrs-payment-voucher-manage-bank-details"/>
     <action name="action-attrs-payment-voucher-hide-trading-name"/>
   </action-group>
 
@@ -158,6 +192,10 @@
     <action name="action-payment-voucher-method-set-receipt-display"/>
     <action name="action-attrs-payment-voucher-readonly-status"/>
     <action name="action-payment-voucher-method-fill-bank-details"/>
+    <action name="action-payment-voucher-record-value-for-collection-account"
+      if="paymentMode?.typeSelect == 7"/>
+    <action name="action-payment-voucher-record-cheque-owner"/>
+    <action name="action-payment-voucher-record-cheque-due-date"/>
   </action-group>
 
 
@@ -194,7 +232,7 @@
 
   <action-attrs name="action-attrs-payment-voucher-readonly-status">
     <attribute name="readonly" for="paidGroup"
-      expr="eval: statusSelect >= __repo__(PaymentVoucher).STATUS_WAITING_FOR_DEPOSIT_SLIP"/>
+      expr="eval: statusSelect > com.axelor.apps.account.db.repo.PaymentVoucherRepository.STATUS_DRAFT"/>
   </action-attrs>
 
   <action-attrs name="action-pv-attrs-hidden-bankCardTransactionNumber">
@@ -207,9 +245,11 @@
       expr="eval: &quot;self.account.useForPartnerBalance = 't' and self.partner.id = ${partner?.id?: 0} and (self.move.statusSelect = 2 or self.move.statusSelect = 3) and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
   </action-attrs>
 
-  <action-attrs name="action-attrs-payment-voucher-hidden-bank-details">
+  <action-attrs name="action-attrs-payment-voucher-manage-bank-details">
     <attribute name="hidden"
-      expr="eval: !__config__.app.getApp('base').getManageMultiBanks()" for="companyBankDetails"/>
+      expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()" for="companyBankDetails"/>
+    <attribute name="required"
+      expr="eval: __config__.app.getApp('base')?.getManageMultiBanks()" for="companyBankDetails"/>
   </action-attrs>
 
   <action-record name="action-record-payment-voucher-default-record"
@@ -225,11 +265,33 @@
     <field name="currency" expr="eval:__repo__(Company).all().fetchOne()?.currency"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="tradingName" expr="eval: _invoice.tradingName" if="_invoice"/>
+    <field name="statusSelect" expr="eval: 1"/>
   </action-record>
 
   <action-record name="action-payment-voucher-getDate"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <field name="paymentDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="paymentDate" expr="eval: __config__.date"/>
+  </action-record>
+
+  <action-record name="action-payment-voucher-record-cheque-due-date"
+    model="com.axelor.apps.account.db.PaymentVoucher">
+    <field name="chequeDueDate"
+      expr="eval: paymentMode?.typeSelect == 7 &amp;&amp; paymentMode?.inOutSelect == 1? paymentDate : null"/>
+  </action-record>
+
+  <action-record name="action-payment-voucher-record-cheque-owner"
+    model="com.axelor.apps.account.db.PaymentVoucher">
+    <field name="chequeOwner"
+      expr="eval: paymentMode?.typeSelect == 7 &amp;&amp; paymentMode?.inOutSelect == 1? partner?.fullName : null"/>
+  </action-record>
+
+  <action-record name="action-payment-voucher-record-value-for-collection-account"
+    model="com.axelor.apps.account.db.PaymentVoucher">
+    <field name="valueForCollectionAccount"
+      expr="eval: __repo__(AccountManagement).find(paymentMode,companyBankDetails,company).globalAccountingCashAccount"
+      if="paymentMode &amp;&amp; companyBankDetails &amp;&amp; company"/>
+    <field name="valueForCollectionAccount" expr="eval: null"
+      if="!paymentMode || !companyBankDetails || !company"/>
   </action-record>
 
   <action-attrs name="action-payment-voucher-hidden-fields-if-purchase">
@@ -246,7 +308,7 @@
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 1</domain>
     </filter>
     <filter title="Customer payments waiting for deposit slip"
-      if="__config__.app.getApp('account').paymentVouchersOnInvoice">
+      if="__config__.app.getApp('account').paymentVouchersOnCustomerInvoice">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
     </filter>
     <filter title="Confirmed Customer payments">
@@ -314,6 +376,11 @@
     <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
   </action-method>
 
+  <action-record name="action-payment-voucher-reset-due-element-list"
+    model="com.axelor.apps.account.db.PaymentVoucher">
+    <field name="payVoucherDueElementList" expr="eval: null"/>
+  </action-record>
+
   <action-method name="action-payment-voucher-reload-element-to-pay-list"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <call class="com.axelor.apps.account.web.PaymentVoucherController"
@@ -335,10 +402,24 @@
       method="setReceiptDisplay"/>
   </action-method>
 
+  <action-method name="action-payment-voucher-method-reset-imputation">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
+  </action-method>
+
+  <action-method name="action-payment-voucher-method-load-lines">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="loadInvoiceTerms"/>
+  </action-method>
+
+  <action-group name="action-payment-voucher-group-search-elements-to-pay">
+    <action name="action-payment-voucher-method-load-lines"/>
+    <action name="action-payment-voucher-method-reset-imputation"/>
+  </action-group>
+
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <attribute name="hidden" for="tradingName"
-      expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+      expr="eval: !__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </action-attrs>
 
 </object-views>

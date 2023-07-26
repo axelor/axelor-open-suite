@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="gdpr-processing-register-rule-grid" title="Processing register rules"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule">
+    <field name="metaModel"/>
+    <field name="rule"/>
+  </grid>
+
+  <form name="gdpr-processing-register-rule-form" title="Processing register rule"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule"
+    onNew="action-gdpr-processing-rune-default-rule">
+    <panel name="mainPanel">
+      <field name="metaModel"/>
+      <field name="rule" height="1"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-gdpr-processing-rune-default-rule">
+    <attribute for="rule" name="value" expr="eval: &quot;createdOn&quot;"/>
+  </action-attrs>
+</object-views>

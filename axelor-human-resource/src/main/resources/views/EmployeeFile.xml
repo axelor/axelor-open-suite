@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="employee-file-grid" title="Files" model="com.axelor.apps.hr.db.EmployeeFile">
     <field name="fileType"/>
     <field name="metaFile"/>
+    <field name="recordDate"/>
     <field name="expirationDate"/>
+    <field name="fileDescription"/>
   </grid>
 
   <form name="employee-file-form" title="File" model="com.axelor.apps.hr.db.EmployeeFile">
@@ -17,6 +19,7 @@
       <field name="recordDate" colSpan="3" readonly="true"/>
       <field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>
       <field name="fileType.hasExpirationDate" hidden="true"/>
+      <field name="fileDescription" colSpan="12" widget="html"/>
     </panel>
   </form>
 

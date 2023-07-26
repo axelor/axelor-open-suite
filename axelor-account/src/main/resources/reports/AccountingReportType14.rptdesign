@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,8 +19,9 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
-    <property name="layoutPreference">auto layout</property>
+    <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <property name="locale">fr_FR</property>
@@ -44,7 +45,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -58,9 +59,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -100,8 +98,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -341,7 +338,9 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName", MoveLine.description as "Description", MoveLine.debit as "Debit", MoveLine.credit as "Credit",
 MoveLine.date_val as "MoveLineDate", MoveLine.partner_full_name as "PartnerFullName", MoveLine.partner as "PartnerId",
-MoveLine.partner_seq as "PartnerSeq", MoveLine.account_code as "AccountCode", MoveLine.account_name as "AccountName"
+MoveLine.partner_seq as "PartnerSeq", MoveLine.account_code as "AccountCode", MoveLine.account_name as "AccountName",
+MoveLine.currency_amount,
+Move.currency_code
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -355,7 +354,7 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
 where 
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND Move.company = AccountingReport.company AND
@@ -417,6 +416,11 @@ AND (AccountingReport.display_opening_accounting_moves is true
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">ref</property>
+                    <text-property name="displayName">ref</text-property>
+                    <text-property name="heading">ref</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -466,6 +470,11 @@ AND (AccountingReport.display_opening_accounting_moves is true
                     <structure>
                         <property name="position">7</property>
                         <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -521,11 +530,19 @@ AND (AccountingReport.display_opening_accounting_moves is true
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as "CompanyName", Period.name as "PeriodName", AccountingReport.date_from as "DateFrom", 
 AccountingReport.date_val as "ReportDate", AccountingReport.date_to as "DateTo", 
 AccountingReport.publication_date_time as "ReportDateEdition",
-Currency.code as currency
+Currency.code as currency,
+AccountingReport.ref
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)  
 left outer join public.base_period as Period on (AccountingReport.period = Period.id)
@@ -642,15 +659,34 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
             </page-header>
             <page-footer>
                 <grid id="3098">
-                    <property name="width">11.033333333333333in</property>
+                    <property name="width">11.03125in</property>
                     <column id="3099">
-                        <property name="width">10.022222222222222in</property>
+                        <property name="width">6.03125in</property>
+                    </column>
+                    <column id="3253">
+                        <property name="width">3.5in</property>
                     </column>
                     <column id="3100">
-                        <property name="width">1.011111111111111in</property>
+                        <property name="width">1.4895833333333333in</property>
                     </column>
                     <row id="3101">
                         <cell id="3102">
+                            <data id="3250">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">accountingReport.ref</property>
+                                        <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
+                        </cell>
+                        <cell id="3252">
                             <label id="3115">
                                 <property name="fontSize">9pt</property>
                                 <property name="textAlign">right</property>
@@ -915,7 +951,7 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
         </grid>
         <label id="487"/>
         <table id="2484">
-            <property name="width">11.1in</property>
+            <property name="width">11.125in</property>
             <property name="dataSet">MoveLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1078,28 +1114,66 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">currencyDebit</property>
+                    <expression name="expression" type="javascript">if (dataSetRow["Debit"] >= 0.01 || dataSetRow["Debit"] &lt;= -0.01) {
+dataSetRow["currency_amount"]
+}
+else {
+0
+}</expression>
+                    <property name="dataType">float</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">currencyCredit</property>
+                    <expression name="expression" type="javascript">if (dataSetRow["Credit"] >= 0.01 || dataSetRow["Credit"] &lt;= -0.01) {
+Math.abs(dataSetRow["currency_amount"])
+}
+else {
+0
+}</expression>
+                    <property name="dataType">float</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">currencyCode</property>
+                    <expression name="expression" type="javascript">dataSetRow["currency_code"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
+            <structure name="toc"/>
             <property name="pageBreakInterval">0</property>
             <column id="2594">
-                <property name="width">0.8in</property>
+                <property name="width">1.0833333333333333in</property>
             </column>
             <column id="2596">
-                <property name="width">1.8in</property>
+                <property name="width">1.1354166666666667in</property>
             </column>
             <column id="2597">
-                <property name="width">1.1in</property>
+                <property name="width">0.8645833333333334in</property>
             </column>
             <column id="2598">
-                <property name="width">1.9in</property>
+                <property name="width">1.2083333333333333in</property>
             </column>
             <column id="2599">
-                <property name="width">3.2in</property>
+                <property name="width">0.875in</property>
             </column>
             <column id="2601">
-                <property name="width">1.1in</property>
+                <property name="width">1.0625in</property>
             </column>
             <column id="2602">
-                <property name="width">1.1in</property>
+                <property name="width">1.1875in</property>
+            </column>
+            <column id="3219">
+                <property name="width">0.8229166666666666in</property>
+            </column>
+            <column id="3239">
+                <property name="width">0.96875in</property>
+            </column>
+            <column id="3229">
+                <property name="width">0.8958333333333334in</property>
             </column>
             <header>
                 <row id="2485">
@@ -1221,8 +1295,30 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <label id="2506">
+                            <structure name="toc"/>
                             <text-property name="text">Crédit</text-property>
                         </label>
+                    </cell>
+                    <cell id="3210">
+                        <property name="colSpan">3</property>
+                        <property name="rowSpan">1</property>
+                        <property name="backgroundColor">#E6E6FA</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#000000</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="3240">
+                            <property name="contentType">auto</property>
+                            <text-property name="content"><![CDATA[Devise]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="2491">
@@ -1265,6 +1361,61 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                             <text-property name="text">Nom Prénom</text-property>
                         </label>
                     </cell>
+                    <cell id="3211">
+                        <property name="backgroundColor">#E6E6FA</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#000000</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="3241">
+                            <text-property name="text">Débit</text-property>
+                        </label>
+                    </cell>
+                    <cell id="3231">
+                        <property name="backgroundColor">#E6E6FA</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#000000</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <label id="3242">
+                            <text-property name="text">Crédit</text-property>
+                        </label>
+                    </cell>
+                    <cell id="3221">
+                        <property name="backgroundColor">#E6E6FA</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#000000</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="3243">
+                            <property name="contentType">auto</property>
+                            <text-property name="content"><![CDATA[Code]]></text-property>
+                        </text>
+                    </cell>
                 </row>
             </header>
             <group id="2507">
@@ -1283,7 +1434,7 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                 </list-property>
                 <header>
                     <row id="2508">
-                        <property name="height">0.19791666666666666in</property>
+                        <property name="height">0.2708333333333333in</property>
                         <cell id="2509">
                             <property name="borderBottomColor">#9C9C9C</property>
                             <property name="borderBottomStyle">solid</property>
@@ -1317,11 +1468,44 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                                 <property name="resultSetColumn">AccountName</property>
                             </data>
                         </cell>
+                        <cell id="3212">
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="3232">
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="3222">
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
                     </row>
                 </header>
                 <footer>
                     <row id="2518">
-                        <property name="height">0.13541666666666666in</property>
+                        <property name="height">0.271in</property>
                         <cell id="2519">
                             <property name="borderLeftColor">#9C9C9C</property>
                             <property name="borderLeftStyle">solid</property>
@@ -1429,9 +1613,54 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                                 <property name="resultSetColumn">SumCreditPerAccount</property>
                             </data>
                         </cell>
+                        <cell id="3214">
+                            <property name="backgroundColor">#E5E5E5</property>
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#9C9C9C</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="3234">
+                            <property name="backgroundColor">#E5E5E5</property>
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#9C9C9C</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="3224">
+                            <property name="backgroundColor">#E5E5E5</property>
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#9C9C9C</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
                     </row>
                     <row id="2531">
-                        <property name="height">0.15625in</property>
+                        <property name="height">0.271in</property>
                         <cell id="2532">
                             <property name="borderBottomColor">#9C9C9C</property>
                             <property name="borderBottomStyle">solid</property>
@@ -1549,11 +1778,57 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                                 <property name="resultSetColumn">SumDifCr-Db</property>
                             </data>
                         </cell>
+                        <cell id="3215">
+                            <property name="backgroundColor">#E5E5E5</property>
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">#9C9C9C</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="3235">
+                            <property name="backgroundColor">#E5E5E5</property>
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">#9C9C9C</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="3225">
+                            <property name="backgroundColor">#E5E5E5</property>
+                            <property name="borderBottomColor">#9C9C9C</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">#9C9C9C</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#9C9C9C</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#9C9C9C</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
                     </row>
                 </footer>
             </group>
             <detail>
                 <row id="3187">
+                    <property name="height">0.271in</property>
                     <cell id="3188">
                         <property name="borderLeftColor">#9C9C9C</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1647,12 +1922,58 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                             <property name="resultSetColumn">Credit</property>
                         </data>
                     </cell>
+                    <cell id="3213">
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="3244">
+                            <property name="fontSize">10pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">###,##0.00</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">currencyDebit</property>
+                        </data>
+                    </cell>
+                    <cell id="3233">
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="3245">
+                            <property name="fontSize">10pt</property>
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">###,##0.00</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">currencyCredit</property>
+                        </data>
+                    </cell>
+                    <cell id="3223">
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="3246">
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">currencyCode</property>
+                        </data>
+                    </cell>
                 </row>
             </detail>
             <footer>
                 <row id="2560">
                     <property name="backgroundColor">#EFEFEF</property>
-                    <property name="height">0.25in</property>
+                    <property name="height">0.271in</property>
                     <cell id="2561">
                         <property name="borderBottomColor">#9C9C9C</property>
                         <property name="borderBottomStyle">solid</property>
@@ -1732,10 +2053,52 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">medium</property>
                     </cell>
+                    <cell id="3216">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">medium</property>
+                    </cell>
+                    <cell id="3236">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">medium</property>
+                    </cell>
+                    <cell id="3226">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">medium</property>
+                    </cell>
                 </row>
                 <row id="2570">
                     <property name="backgroundColor">#EFEFEF</property>
-                    <property name="height">0.19791666666666666in</property>
+                    <property name="height">0.271in</property>
                     <cell id="2571">
                         <property name="borderBottomColor">#9C9C9C</property>
                         <property name="borderBottomStyle">solid</property>
@@ -1833,10 +2196,52 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                             <property name="resultSetColumn">TotalCredit</property>
                         </data>
                     </cell>
+                    <cell id="3217">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="3237">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="3227">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
                 </row>
                 <row id="2582">
                     <property name="backgroundColor">#EFEFEF</property>
-                    <property name="height">0.40625in</property>
+                    <property name="height">0.271in</property>
                     <cell id="2583">
                         <property name="borderBottomColor">#9C9C9C</property>
                         <property name="borderBottomStyle">solid</property>
@@ -1935,6 +2340,48 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">DiffCredit</property>
                         </data>
+                    </cell>
+                    <cell id="3218">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="3238">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="3228">
+                        <property name="borderBottomColor">#9C9C9C</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#9C9C9C</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#9C9C9C</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#9C9C9C</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                     </cell>
                 </row>
             </footer>

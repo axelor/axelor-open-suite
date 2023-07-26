@@ -1,3 +1,0 @@
----
-title: "StockConfig: When the parameter displayLineDetailsOnPrinting is turned off, quantities are now correctly aggregated per product"
-type: fix

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,34 +14,37 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.web;
 
-import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TraceBack;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.StockMoveCheckWapService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.TraceBack;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -81,9 +85,7 @@ public class StockMoveController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {
@@ -127,15 +129,15 @@ public class StockMoveController {
 
       if (newSeq != null) {
         if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-          response.setFlash(
+          response.setInfo(
               String.format(
-                  I18n.get(IExceptionMessage.STOCK_MOVE_INCOMING_PARTIAL_GENERATED), newSeq));
+                  I18n.get(StockExceptionMessage.STOCK_MOVE_INCOMING_PARTIAL_GENERATED), newSeq));
         } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-          response.setFlash(
+          response.setInfo(
               String.format(
-                  I18n.get(IExceptionMessage.STOCK_MOVE_OUTGOING_PARTIAL_GENERATED), newSeq));
+                  I18n.get(StockExceptionMessage.STOCK_MOVE_OUTGOING_PARTIAL_GENERATED), newSeq));
         } else {
-          response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_9), newSeq));
+          response.setInfo(String.format(I18n.get(StockExceptionMessage.STOCK_MOVE_9), newSeq));
         }
       }
       if (traceBackService.countMessageTraceBack(stockMove) > tracebackCount) {
@@ -145,9 +147,7 @@ public class StockMoveController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
       Optional<TraceBack> lastTracebackAfterOptional =
@@ -156,7 +156,7 @@ public class StockMoveController {
         TraceBack lastTracebackAfter = lastTracebackAfterOptional.get();
         if (!lastTracebackBeforeOptional.isPresent()
             || !lastTracebackAfter.equals(lastTracebackBeforeOptional.get())) {
-          response.setFlash(lastTracebackAfter.getMessage());
+          response.setInfo(lastTracebackAfter.getMessage());
         }
       }
     } catch (Exception e) {
@@ -224,7 +224,7 @@ public class StockMoveController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_PRINT));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -270,7 +270,7 @@ public class StockMoveController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_PRINT));
       }
       response.setReload(true);
       response.setView(ActionView.define(title).add("html", fileLink).map());
@@ -317,7 +317,7 @@ public class StockMoveController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.STOCK_MOVE_PRINT));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_PRINT));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -336,7 +336,7 @@ public class StockMoveController {
       mapView.put("viewType", "html");
       response.setView(mapView);
     } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
+      response.setInfo(e.getLocalizedMessage());
     }
   }
 
@@ -348,7 +348,7 @@ public class StockMoveController {
           (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
       if (stockMoveLineContextList == null) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
+        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_14));
         return;
       }
       List<StockMoveLine> stockMoveLineList = new ArrayList<>();
@@ -366,7 +366,7 @@ public class StockMoveController {
               .splitStockMoveLines(stockMove, stockMoveLineList, BigDecimal.ONE);
 
       if (!selected) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
+        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_15));
       }
       response.setReload(true);
     } catch (Exception e) {
@@ -382,7 +382,7 @@ public class StockMoveController {
       Map<String, Object> stockMoveMap =
           (Map<String, Object>) request.getContext().get("stockMove");
       if (selectedStockMoveLineMapList == null) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_14));
+        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_14));
         return;
       }
 
@@ -396,7 +396,7 @@ public class StockMoveController {
       }
 
       if (stockMoveLineList.isEmpty()) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_15));
+        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_15));
         return;
       }
 
@@ -405,7 +405,7 @@ public class StockMoveController {
         splitQty = new BigDecimal(request.getContext().get("splitQty").toString());
       }
       if (splitQty == null || splitQty.compareTo(BigDecimal.ZERO) < 1) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_16));
+        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_16));
         return;
       }
 
@@ -448,7 +448,7 @@ public class StockMoveController {
                 .context("_showRecord", String.valueOf(reversion.get().getId()))
                 .map());
       } else {
-        response.setFlash(I18n.get("No reversion generated"));
+        response.setInfo(I18n.get("No reversion generated"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -464,12 +464,12 @@ public class StockMoveController {
           Beans.get(StockMoveService.class).splitInto2(stockMove, modifiedStockMoveLineList);
 
       if (newStockMove == null) {
-        response.setFlash(I18n.get(IExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
+        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_SPLIT_NOT_GENERATED));
       } else {
         response.setCanClose(true);
 
         response.setView(
-            ActionView.define("Stock move")
+            ActionView.define(I18n.get("Stock move"))
                 .model(StockMove.class.getName())
                 .add("grid", "stock-move-grid")
                 .add("form", "stock-move-form")
@@ -566,32 +566,6 @@ public class StockMoveController {
   }
 
   /**
-   * Called on printing settings select. Set the the domain for {@link StockMove#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-
-      List<PrintingSettings> printingSettingsList =
-          Beans.get(TradingNameService.class)
-              .getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
-      String domain =
-          String.format(
-              "self.id IN (%s)",
-              !printingSettingsList.isEmpty()
-                  ? StringTool.getIdListString(printingSettingsList)
-                  : "0");
-
-      response.setAttr("printingSettings", "domain", domain);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
    * Called on trading name change. Set the default value for {@link StockMove#printingSettings}
    *
    * @param request
@@ -659,5 +633,75 @@ public class StockMoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getFromStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    try {
+      StockLocation fromStockLocation =
+          Beans.get(StockMoveService.class).getFromStockLocation(stockMove);
+      response.setValue("fromStockLocation", fromStockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getToStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    try {
+      StockLocation toStockLocation =
+          Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+      response.setValue("toStockLocation", toStockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkWap(ActionRequest request, ActionResponse response) {
+
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      String productsWithErrorStr = Beans.get(StockMoveCheckWapService.class).checkWap(stockMove);
+      if (StringUtils.isEmpty(productsWithErrorStr)) {
+        response.setValue("isValidWAP", true);
+        return;
+      }
+
+      Integer percentToleranceForWapChange =
+          Beans.get(StockConfigService.class)
+              .getStockConfig(stockMove.getCompany())
+              .getPercentToleranceForWapChange();
+      response.setView(
+          ActionView.define(I18n.get("Stock move"))
+              .model(StockMove.class.getName())
+              .add("form", "popup-stock-move-check-wap-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "false")
+              .context("_showRecord", stockMove.getId())
+              .context("_percentToleranceForWapChange", percentToleranceForWapChange)
+              .context("_productsWithErrorStr", productsWithErrorStr)
+              .map());
+
+      response.setValue("isValidWAP", false);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void changeLinesFromStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockLocation fromStockLocation = stockMove.getFromStockLocation();
+    Beans.get(StockMoveService.class).changeLinesFromStockLocation(stockMove, fromStockLocation);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  }
+
+  public void changeLinesToStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockLocation toStockLocation = stockMove.getToStockLocation();
+    Beans.get(StockMoveService.class).changeLinesToStockLocation(stockMove, toStockLocation);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
   }
 }

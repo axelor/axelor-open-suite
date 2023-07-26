@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppAccount" lang="java">
+  <entity name="AppAccount" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <!-- Comptabilité -->
     <many-to-one name="transferAndDirectDebitInterbankCode"
@@ -21,25 +21,34 @@
     <boolean name="manageCustomerCredit" title="Manage customerCredit"/>
     <boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
     <boolean name="manageFactors"/>
+    <boolean name="manageCutOffPeriod" title="Manage Cut off period"/>
 
     <integer name="partnerBalConfigSelect" title="Partner balance viewer configuration"
       selection="account.partner.bal.config.select" default="1"/>
 
     <boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice"
       default="true"/>
-    <boolean name="paymentVouchersOnInvoice"/>
+    <boolean name="paymentVouchersOnSupplierInvoice"/>
+    <boolean name="paymentVouchersOnCustomerInvoice"/>
 
     <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
     <boolean name="manageFinancialDiscount" title="Manage financial discount"
       help="Field allowing to activate the financial discounts"/>
+    <boolean name="allowMultiInvoiceTerms" title="Allow multi invoice terms"/>
 
     <!-- DAS2 - N4DS -->
     <many-to-one name="defaultServiceTypeTypology"
       ref="com.axelor.apps.account.db.ServiceType" title="Default service type"/>
     <string name="dasActiveNorm" title="Current version of N4DS standard"/>
 
-    <extra-code><![CDATA[
+    <boolean name="activateFixedAssetBarCodeGeneration"
+      title="Activate bar code generation for fixed asset" default="false"/>
+    <boolean name="editFixedAssetBarcodeType"
+      title="Specify the barcode type by fixed asset" default="false"/>
+    <many-to-one name="fixedAssetBarcodeTypeConfig" title="Fixed asset barcode type"
+      ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 
+    <extra-code><![CDATA[
 
 		public static final int DISTRIBUTION_TYPE_FREE = 1;
 		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
@@ -51,16 +60,21 @@
     <track>
       <field name="transferAndDirectDebitInterbankCode" on="UPDATE"/>
       <field name="chequeInterbankCode" on="UPDATE"/>
-
       <field name="manageCustomerCredit" on="UPDATE"/>
-
       <field name="manageAnalyticAccounting" on="UPDATE"/>
-
       <field name="manageFactors" on="UPDATE"/>
+      <field name="manageCutOffPeriod" on="UPDATE"/>
       <field name="partnerBalConfigSelect" on="UPDATE"/>
       <field name="manageAdvancePaymentInvoice" on="UPDATE"/>
-      <field name="paymentVouchersOnInvoice" on="UPDATE"/>
+      <field name="paymentVouchersOnSupplierInvoice" on="UPDATE"/>
+      <field name="paymentVouchersOnCustomerInvoice" on="UPDATE"/>
+      <field name="activatePassedForPayment" on="UPDATE"/>
       <field name="manageFinancialDiscount" on="UPDATE"/>
+      <field name="defaultServiceTypeTypology" on="UPDATE"/>
+      <field name="dasActiveNorm" on="UPDATE"/>
+      <field name="activateFixedAssetBarCodeGeneration" on="UPDATE"/>
+      <field name="editFixedAssetBarcodeType" on="UPDATE"/>
+      <field name="fixedAssetBarcodeTypeConfig" on="UPDATE"/>
     </track>
   </entity>
 

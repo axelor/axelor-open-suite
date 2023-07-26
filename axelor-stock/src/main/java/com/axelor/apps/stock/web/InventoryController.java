@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,25 +14,24 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryProductService;
 import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -121,8 +121,8 @@ public class InventoryController {
               .find(request.getContext().asType(Inventory.class).getId());
 
       Path filePath = Beans.get(InventoryService.class).importFile(inventory);
-      response.setFlash(
-          String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
+      response.setInfo(
+          String.format(I18n.get(StockExceptionMessage.INVENTORY_8), filePath.toString()));
 
       response.setReload(true);
     } catch (Exception e) {
@@ -203,12 +203,12 @@ public class InventoryController {
         Inventory inventory = Beans.get(InventoryRepository.class).find(inventoryId);
         Boolean succeed = Beans.get(InventoryService.class).fillInventoryLineList(inventory);
         if (succeed == null) {
-          response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
+          response.setInfo(I18n.get(StockExceptionMessage.INVENTORY_9));
         } else {
           if (succeed) {
-            response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
+            response.setNotify(I18n.get(StockExceptionMessage.INVENTORY_10));
           } else {
-            response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
+            response.setNotify(I18n.get(StockExceptionMessage.INVENTORY_11));
           }
         }
       }
@@ -248,14 +248,11 @@ public class InventoryController {
               .add("form", "stock-move-form")
               .param("search-filters", "internal-stock-move-filters");
       if (stockMoveList.isEmpty()) {
-        response.setFlash(I18n.get("No stock moves found for this inventory."));
+        response.setInfo(I18n.get("No stock moves found for this inventory."));
       } else {
         builder
             .context("_showSingle", true)
-            .domain(
-                String.format(
-                    "self.originTypeSelect = '%s' AND self.originId = %s",
-                    StockMoveRepository.ORIGIN_INVENTORY, inventory.getId()));
+            .domain(String.format("self.inventory.id = %s", inventory.getId()));
         response.setView(builder.map());
       }
     } catch (Exception e) {

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
@@ -146,7 +147,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     return false;
   }
 
-  private ProductVariant getProductVariant(
+  protected ProductVariant getProductVariant(
       ProductVariantAttr productVariantAttr1,
       ProductVariantAttr productVariantAttr2,
       ProductVariantAttr productVariantAttr3,
@@ -241,10 +242,11 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     return productModel;
   }
 
-  private Product getProductVariant(ProductVariant parentProductVariant, Product productSearched) {
+  protected Product getProductVariant(
+      ProductVariant parentProductVariant, Product productSearched) {
 
     LOG.debug(
-        "Recherche d'un variant du produit {} ayant des attributs communs avec {}",
+        "Variant research of the product {} which has shared attributes as {}",
         productSearched.getCode(),
         parentProductVariant.getName());
 
@@ -257,7 +259,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     if (productVariantValue1 != null) {
 
       LOG.debug(
-          "Recherche d'un variant de produit ayant au moins comme attributs {} : {}",
+          "Searching for a variant product which has at least attributes {} : {}",
           productVariantValue1.getProductVariantAttr().getCode(),
           productVariantValue1.getCode());
 
@@ -300,7 +302,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
               && this.containsProductVariantValue(product, productVariantValue5)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (5) en commun",
+                "Variant product found directly : {} with the set of shared attributes (5)",
                 product.getCode());
             return product;
           }
@@ -528,7 +530,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
               && this.containsProductVariantValue(product, productVariantValue4)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (4) en commun",
+                "Variant product found directly : {} with the set of shared attributes (4)",
                 product.getCode());
             return product;
           }
@@ -642,7 +644,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
               && this.containsProductVariantValue(product, productVariantValue3)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (3) en commun",
+                "Variant product found directly : {} with the set of shared attributes (3)",
                 product.getCode());
             return product;
           }
@@ -696,7 +698,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
               && this.containsProductVariantValue(product, productVariantValue2)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (2) en commun",
+                "Variant product found directly : {} with the set of shared attributes (2)",
                 product.getCode());
             return product;
           }
@@ -721,7 +723,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
           if (this.containsProductVariantValue(product, productVariantValue1)) {
 
             LOG.debug(
-                "Variant de produit trouvé directement : {} avec l'ensemble des attributs (1) en commun",
+                "Variant product found directly : {} with the set of shared attributes (1)",
                 product.getCode());
             return product;
           }
@@ -730,9 +732,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
       if (productFind != null) {
         LOG.debug(
-            "Variant de produit trouvé : {} avec {} attributs en commun",
-            productFind.getCode(),
-            nbAttr);
+            "Variant product found : {} with {} shared attribute", productFind.getCode(), nbAttr);
         return productFind;
       }
     }
@@ -740,7 +740,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     return productSearched;
   }
 
-  private boolean containsProductVariantValue(
+  protected boolean containsProductVariantValue(
       Product product, ProductVariantValue productVariantValue) {
 
     ProductVariant productVariantFind = product.getProductVariant();

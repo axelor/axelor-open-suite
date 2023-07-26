@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="production-batch-grid" title="Production batches"
     model="com.axelor.apps.production.db.ProductionBatch">
     <field name="actionSelect"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
     <field name="createdOn"/>
@@ -18,10 +18,6 @@
   <form name="production-batch-form" title="Production Batch"
     model="com.axelor.apps.production.db.ProductionBatch"
     onNew="action-production-batch-record-on-new" width="large">
-    <toolbar>
-      <button name="printBtn" title="Work in progress valuation" hideIf="!batchList"
-        onClick="save,action-production-batch-method-show-valuation"/>
-    </toolbar>
     <panel name="mainPanel">
       <field name="actionSelect"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
@@ -31,23 +27,28 @@
       <field name="workshopStockLocation"
         onSelect="action-production-batch-attrs-domain-stock-location"
         onChange="action-production-batch-record-set-company" form-view="stock-location-form"
-        grid-view="stock-location-grid" if="__config__.app.getApp('production').getManageWorkshop()"/>
-    </panel>
-    <panel name="creationDetailsPanel">
-      <field name="createdOn" title="Created on"/>
-      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-      <field name="valuationDate"/>
-      <spacer name="valuationDateSpacer" colSpan="6"/>
-      <button name="computeValuationBatchBtn" title="Compute work in progress valuation"
-        onClick="save,action-production-batch-method-run-batch"/>
+        grid-view="stock-location-grid"
+        if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     </panel>
     <panel-tabs>
-      <panel name="descriptionPanel" title="Description">
-        <field name="description" showTitle="false" colSpan="12"/>
+      <panel name="valuationBatchPanel" title="Valuation Batch" showIf="actionSelect == 1">
+        <field name="valuationDate"/>
       </panel>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+      <panel name="informationPanel" title="Information">
+        <field name="createdOn" title="Created on"/>
+        <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+        <field name="description" showTitle="false" colSpan="12"/>
+        <panel-related name="batchListPanel" field="batchList" colSpan="12"
+          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+      </panel>
     </panel-tabs>
+    <panel name="actionsPanel" sidebar="true" title="Actions" itemSpan="12">
+      <button name="computeValuationBatchBtn" title="Compute work in progress valuation"
+        onClick="save,action-production-batch-method-run-batch" showIf="actionSelect == 1"/>
+      <button name="printBtn" title="Work in progress valuation"
+        showIf="actionSelect == 1 &amp;&amp; batchList &amp;&amp; batchList.length &gt; 0"
+        onClick="save,action-production-batch-method-show-valuation"/>
+    </panel>
   </form>
 
   <action-record name="action-production-batch-record-on-new"
@@ -81,8 +82,8 @@
   <search-filters name="production-batch-filters"
     model="com.axelor.apps.production.db.ProductionBatch" title="Production batch filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation" hidden="true"
-      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+      if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
   </search-filters>
 </object-views>

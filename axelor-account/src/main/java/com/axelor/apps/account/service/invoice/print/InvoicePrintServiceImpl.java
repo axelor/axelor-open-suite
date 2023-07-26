@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice.print;
 
@@ -21,22 +22,22 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.ModelTool;
-import com.axelor.apps.tool.ThrowConsumer;
-import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.ModelTool;
+import com.axelor.utils.ThrowConsumer;
+import com.axelor.utils.file.PdfTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -110,7 +111,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           && reportType != null
           && reportType != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS) {
 
-        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
+        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFilePath());
         return path.toFile();
       } else {
 
@@ -151,7 +152,9 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_PRINTING_IO_ERROR) + " " + e.getLocalizedMessage());
+          I18n.get(AccountExceptionMessage.INVOICE_PRINTING_IO_ERROR)
+              + " "
+              + e.getLocalizedMessage());
     }
   }
 
@@ -163,14 +166,14 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     if (invalidPrintSettingsInvoiceIds.size() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
+          I18n.get(AccountExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
           invalidPrintSettingsInvoiceIds.toString());
     }
 
     ModelTool.apply(
         Invoice.class,
         ids,
-        new ThrowConsumer<Invoice>() {
+        new ThrowConsumer<Invoice, Exception>() {
           @Override
           public void accept(Invoice invoice) throws Exception {
             printedInvoices.add(
@@ -211,7 +214,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
+              I18n.get(AccountExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
               invoice.getInvoiceId()),
           invoice);
     }

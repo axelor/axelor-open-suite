@@ -1,0 +1,4 @@
+"importId";"name";"rules";"company";"typeSelect"
+101;"P&L";;1;3000
+200;"Customer / Supplier generated invoices which are due";;1;23
+201;"Customer / Supplier generated invoices which encountered a payment delay";;1;24

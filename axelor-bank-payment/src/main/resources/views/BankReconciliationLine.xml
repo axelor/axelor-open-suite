@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false"
     canNew="false">
-    <button onClick="action-bank-reconciliation-line-method-set-selected" name="select"
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
-    <button onClick="action-bank-reconciliation-line-method-set-selected" name="select"
-      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected"
+      name="unselect" title="Select / Unselect" icon="fa-minus-circle"
+      showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
     <field name="confidenceIndex" readonly="true">
       <hilite if="confidenceIndex == 1" color="green"/>
@@ -44,7 +45,7 @@
   </grid>
 
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"
-    model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large">
+    model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large" canNew="false">
     <panel name="bankStatementPanel" title="Bank statement details">
       <field name="bankStatementLine" canEdit="false"
         onChange="action-bank-reconciliation-line-record-fill-bank-statement-details"/>

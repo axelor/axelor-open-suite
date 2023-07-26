@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -25,16 +26,16 @@ import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.tool.file.FileTool;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.utils.file.FileTool;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -43,7 +44,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,11 +88,11 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
   @Override
   public void createAccountingReportMoveLines(
-      List<BigInteger> paymentMoveLineDistributioneIds, AccountingReport accountingReport) {
+      List<Long> paymentMoveLineDistributioneIds, AccountingReport accountingReport) {
 
-    for (BigInteger id : paymentMoveLineDistributioneIds) {
+    for (Long id : paymentMoveLineDistributioneIds) {
       PaymentMoveLineDistribution paymentMoveLineDistribution =
-          paymentMoveLineDistributionRepo.find(id.longValue());
+          paymentMoveLineDistributionRepo.find(id);
       if (paymentMoveLineDistribution != null) {
         createAccountingReportMoveLine(
             paymentMoveLineDistribution, accountingReportRepo.find(accountingReport.getId()));
@@ -155,7 +155,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
         .all()
         .filter(
             "self.accountingExport = ?1 AND self.excludeFromDas2Report != true "
-                + "AND self.exported != true AND self.paymentMoveLineDistribution.moveLine.serviceType.n4dsCode is not null",
+                + "AND self.exported != true AND self.paymentMoveLineDistribution.moveLine.account.serviceType.isDas2Declarable != true AND self.paymentMoveLineDistribution.moveLine.account.serviceType.n4dsCode is null",
             accountingExport)
         .fetch();
   }
@@ -280,9 +280,6 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             "S10.G01.01.006",
             ObjectUtils.firstNonNull(
                 dasContactPartner.getFixedPhone(), dasContactPartner.getMobilePhone())));
-    if (!Strings.isNullOrEmpty(dasContactPartner.getFax())) {
-      lines.add(setN4DSLine("S10.G01.01.007", dasContactPartner.getFax()));
-    }
 
     // S10.G01.05
     lines.add(setN4DSLine("S10.G01.05.013.001", siren));
@@ -465,35 +462,37 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     String queryStr =
         "SELECT "
-            + "MOVELINE.DAS2ACTIVITY_NAME AS ACTIVITY,  "
-            + "PARTNER.PARTNER_TYPE_SELECT AS TYPE,  "
-            + "PARTNER.NAME AS NAME,  "
-            + "PARTNER.FIRST_NAME AS FIRST_NAME,  "
-            + "PARTNER.REGISTRATION_CODE as REGISTRATION_CODE,  "
-            + "TRIM(CONCAT(ADDRESS.ADDRESSL2,' ',ADDRESS.ADDRESSL3)) AS ADDRESS_CONSTRUCTION,  "
-            + "ADDRESS.ADDRESSL4 AS ADDRESSL4,  "
-            + "CITY.ZIP AS ZIP,  "
-            + "CITY.NAME AS CITY,  "
-            + "COUNTRY.ALPHA2CODE AS COUNTRY,  "
-            + "SERVICETYPE.N4DS_CODE AS SERVICE_TYPE,  "
-            + "SUM(PMVLD.IN_TAX_PRORATED_AMOUNT) AS AMOUNT  "
-            + "FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY "
-            + "JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID  "
-            + "LEFT OUTER JOIN ACCOUNT_MOVE_LINE MOVELINE ON (PMVLD.MOVE_LINE = MOVELINE.ID)  "
-            + "LEFT OUTER JOIN BASE_PARTNER PARTNER ON (PMVLD.PARTNER = PARTNER.ID)  "
-            + "LEFT OUTER JOIN BASE_ADDRESS AS ADDRESS ON (PARTNER.MAIN_ADDRESS = ADDRESS.ID)  "
-            + "LEFT OUTER JOIN BASE_COUNTRY AS COUNTRY ON (ADDRESS.ADDRESSL7COUNTRY = COUNTRY.ID)  "
-            + "LEFT OUTER JOIN BASE_CITY AS CITY ON (ADDRESS.CITY = CITY.ID)  "
-            + "LEFT OUTER JOIN ACCOUNT_SERVICE_TYPE AS SERVICETYPE ON (MOVELINE.SERVICE_TYPE = SERVICETYPE.ID)  "
-            + "WHERE HISTORY.ACCOUNTING_EXPORT =  "
-            + accountingExport.getId()
-            + " AND HISTORY.EXCLUDE_FROM_DAS2REPORT != true  "
-            + "AND SERVICETYPE.IS_DAS2DECLARABLE = true  "
-            + "AND SERVICETYPE.N4DS_CODE IS NOT NULL "
-            + "GROUP BY PARTNER_TYPE_SELECT,DAS2ACTIVITY_NAME,PARTNER.NAME,PARTNER.FIRST_NAME,PARTNER.REGISTRATION_CODE,  "
-            + "ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,CITY.ZIP,CITY.NAME,COUNTRY.ALPHA2CODE,SERVICETYPE.N4DS_CODE";
+            + "partner.das2Activity.name AS ACTIVITY, "
+            + "partner.partnerTypeSelect AS TYPE, "
+            + "partner.name AS NAME, "
+            + "partner.firstName AS FIRST_NAME, "
+            + "partner.registrationCode as REGISTRATION_CODE, "
+            + "TRIM(CONCAT(address.addressL2,' ',address.addressL3)) AS ADDRESS_CONSTRUCTION, "
+            + "address.addressL4 AS ADDRESSL4, "
+            + "city.zip AS ZIP, "
+            + "city.name AS CITY, "
+            + "country.alpha2Code AS COUNTRY, "
+            + "serviceType.n4dsCode AS SERVICE_TYPE, "
+            + "SUM(pmvld.inTaxProratedAmount) AS AMOUNT  "
+            + "FROM AccountingReportMoveLine history "
+            + "JOIN history.paymentMoveLineDistribution pmvld "
+            + "LEFT OUTER JOIN pmvld.moveLine moveLine "
+            + "LEFT OUTER JOIN pmvld.partner partner "
+            + "LEFT OUTER JOIN partner.mainAddress address "
+            + "LEFT OUTER JOIN address.addressL7Country country "
+            + "LEFT OUTER JOIN address.city city "
+            + "LEFT OUTER JOIN moveLine.account account "
+            + "LEFT OUTER JOIN account.serviceType serviceType "
+            + "WHERE history.accountingExport =  :accountingExport "
+            + "AND history.excludeFromDas2Report != true  "
+            + "AND serviceType.isDas2Declarable = true  "
+            + "AND serviceType.n4dsCode IS NOT NULL "
+            + "GROUP BY partner.partnerTypeSelect,partner.das2Activity.name,"
+            + "partner.name,partner.firstName,partner.registrationCode, "
+            + "address.addressL2,address.addressL3,address.addressL4,"
+            + "city.zip,city.name,country.alpha2Code,serviceType.n4dsCode";
 
-    Query query = JPA.em().createNativeQuery(queryStr);
+    Query query = JPA.em().createQuery(queryStr).setParameter("accountingExport", accountingExport);
     return query.getResultList();
   }
 

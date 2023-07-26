@@ -1,0 +1,39 @@
+"importId";"name";"partner.importId";"currency.code";"expectedCloseDate";"amount";"opportunityType";"bestCase";"worstCase";"opportunityStatus.importId";"probability";"nextStep";"description";"source.id";"company.id";"userImportId";"team.id";"orderByState"
+1;"Annual Maintenance - 1 ANNEE + Pack Classic - 12 U";;"EUR";"TODAY[-6M]";24140;"New";28200;20800;2;39;;;3;1;9;1;2
+2;"Pack Classic - 10 U";;"EUR";"TODAY[-5M]";9225;"New";10900;7800;2;42;;;6;1;11;2;2
+3;"Pack Performance - 6 U";;"EUR";"TODAY[-5M]";28900;"New";36700;23700;1;27;;;7;1;11;2;1
+4;"Classic server - 6 U";;"EUR";"TODAY[-4M]";10500;"New";13200;8900;3;81;;;10;1;11;2;3
+5;"High Performance Server - 5 U";;"EUR";"TODAY[-4M]";12500;"New";15100;9400;6;93;;;11;1;9;1;6
+6;"InkJet Printer - 4 U";;"EUR";"TODAY[-3M]";1974;"New";2500;1800;2;24;;;3;1;12;2;2
+7;"Laser Printer - 5 U + InkJet Printer - 8 U";;"EUR";"TODAY[-3M]";8696;"New";11000;7200;2;79;;;6;1;12;2;2
+8;"Project - 1 U";;"EUR";"TODAY[-3M]";8000;"New";9000;6100;2;48;;;7;1;12;2;2
+9;"Project Manager - 10 JR(S) + Consultant - 9 JR(S)";;"EUR";"TODAY[-3M]";12000;"New";13600;10300;1;66;;;10;1;11;2;1
+10;"Project - 1 U";;"EUR";"TODAY[-2M]";10000;"New";11600;7700;2;74;;;11;1;8;3;2
+11;"InkJet Printer - 4 U";;"EUR";"TODAY[-2M]";2961;"New";3800;2200;3;90;;;3;1;10;1;3
+12;"Pack Classic - 7 U";;"EUR";"TODAY[-2M]";16605;"New";20800;14600;1;48;;;6;1;8;3;1
+13;"Classic server - 4 U";;"EUR";"TODAY[-1M]";15000;"New";17900;12600;1;25;;;7;1;12;2;1
+14;"Laser Printer - 9 U";;"EUR";"TODAY[-1M]";4290;"New";5500;3500;1;66;;;3;1;11;2;1
+15;"LED Screen HD 22 inch - 6 U + LED Screen HD 24 inch - 13 U";;"EUR";"TODAY[-21d]";3150;"New";3700;2300;2;33;;;6;1;11;2;2
+16;"Project - 1 U";;"EUR";"TODAY[-21d]";13000;"New";16000;10700;2;22;;;3;1;11;2;2
+17;"Pack Performance - 6 U";;"EUR";"TODAY[-21d]";20230;"New";22500;17000;2;34;;;6;1;11;2;2
+18;"Classic server - 5 U + High Performance Server - 6 U";;"EUR";"TODAY[-21d]";41000;"New";49200;32000;2;45;;;6;1;11;2;2
+19;"InkJet Printer - 6 U + Laser Printer - 10 U";;"EUR";"TODAY[-21d]";11112;"New";12400;9400;1;69;;;7;1;8;3;1
+20;"Project Manager - 10 JR(S)";;"EUR";"TODAY[-21d]";5000;"New";5900;4200;3;23;;;10;1;9;1;3
+21;"Consultant - 9 JR(S)";;"EUR";"TODAY[-14d]";4800;"New";5500;3700;2;94;;;11;1;13;3;2
+22;"Annual Maintenance - 1 ANNEE";;"EUR";"TODAY[-14d]";2000;"New";2600;1700;6;58;;;11;1;12;2;6
+23;"Project Manager - 4 JR(S) + Consultant - 20 JR(S)";;"EUR";"TODAY[-14d]";21000;"New";25800;16600;3;79;;;7;1;11;2;3
+24;"Pack Performance - 5 U";;"EUR";"TODAY[-14d]";20230;"New";23500;17000;3;62;;;6;1;9;1;3
+25;"Pack Classic - 10 U";;"EUR";"TODAY[-14d]";18450;"New";23600;14400;1;78;;;7;1;;2;1
+26;"LED Screen HD 24 inch - 7 U";;"EUR";"TODAY[-14d]";1000;"New";1300;800;1;74;;;11;1;;3;1
+27;"LED Screen HD 22 inch - 7 U + Laser Printer - 13 U";;"EUR";"TODAY[-14d]";7864;"New";9000;5500;2;58;;;3;1;;1;2
+28;"Project - 1 U";;"EUR";"TODAY[-7d]";8000;"New";9900;7000;2;78;;;3;1;;1;2
+29;"Project Manager - 9 JR(S)";;"EUR";"TODAY[-7d]";8000;"New";10000;6600;1;61;;;6;1;;3;1
+30;"InkJet Printer - 6 U + LED Screen HD 22 inch - 8 U";;"EUR";"TODAY[-7d]";2316;"New";2800;1800;3;57;;;6;1;;3;3
+31;"Pack Classic - 18 U + InkJet Printer - 2 U";20;"EUR";"TODAY[-4M-7d]";33868;"New";37300;29500;5;84;;;12;1;11;2;5
+32;"InkJet Printer - 14 U + Classic server - 1 U";44;"EUR";"TODAY[-3M-7d]";6106;"Existing";7900;5300;5;74;;;12;1;12;2;5
+33;"Laser Printer - 8 U + High Performance Server - 5 U";70;"EUR";"TODAY[-2M-7d]";15932;"Existing";20100;13700;5;90;;;12;1;11;2;5
+34;"Pack Performance - 10 U";77;"EUR";"TODAY[-1M-7d]";110000;"Existing";125400;77000;4;100;;;12;1;12;2;4
+35;"Consultant - 11 JR(S)";88;"EUR";"TODAY[-28d]";8800;"Existing";10400;7000;5;47;;;12;1;9;1;5
+36;"Project Manager - 10 JR(S) + Annual Maintenance - 1 ANNEE";132;"EUR";"TODAY[-21d]";12000;"Existing";15200;10000;4;99;;;12;1;8;3;4
+37;"Project - 1 U + Project Manager - 2 JR(S)";136;"EUR";"TODAY[-14d]";10000;"New";12200;8300;4;54;;;12;1;8;3;4
+38;"Laser Printer - 6 U + LED Screen HD 24 inch - 10 U";148;"EUR";"TODAY[-7d]";5861;"New";7400;5200;6;59;;;12;1;13;3;6

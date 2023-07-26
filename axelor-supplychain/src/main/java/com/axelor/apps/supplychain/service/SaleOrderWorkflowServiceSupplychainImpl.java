@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,15 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -33,31 +36,23 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowServiceImpl {
 
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   protected SaleOrderStockService saleOrderStockService;
   protected SaleOrderPurchaseService saleOrderPurchaseService;
-  protected AppSupplychain appSupplychain;
+  protected AppSupplychainService appSupplychainService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
-
   protected SaleConfigService saleConfigService;
-
   protected SaleOrderCheckAnalyticService saleOrderCheckAnalyticService;
 
   @Inject
@@ -66,6 +61,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
+      AppCrmService appCrmService,
       UserService userService,
       SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
@@ -75,18 +71,17 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
       SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
-
     super(
         sequenceService,
         partnerRepo,
         saleOrderRepo,
         appSaleService,
+        appCrmService,
         userService,
         saleOrderLineService);
-
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
-    this.appSupplychain = appSupplychainService.getAppSupplychain();
+    this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.saleConfigService = saleConfigService;
@@ -97,7 +92,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.confirmSaleOrder(saleOrder);
       return;
     }
@@ -111,10 +106,12 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+          I18n.get(SupplychainExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
     }
 
     super.confirmSaleOrder(saleOrder);
+
+    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
 
     if (appSupplychain.getPurchaseOrderGenerationAuto()) {
       saleOrderPurchaseService.createPurchaseOrders(saleOrder);
@@ -136,7 +133,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       throws AxelorException {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
     try {
@@ -152,14 +149,15 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.finalizeQuotation(saleOrder);
       return;
     }
 
     accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
     super.finalizeQuotation(saleOrder);
-    int intercoSaleCreatingStatus = appSupplychain.getIntercoSaleCreatingStatusSelect();
+    int intercoSaleCreatingStatus =
+        appSupplychainService.getAppSupplychain().getIntercoSaleCreatingStatusSelect();
     if (saleOrder.getInterco()
         && intercoSaleCreatingStatus == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
       Beans.get(IntercoService.class).generateIntercoPurchaseFromSale(saleOrder);
@@ -190,7 +188,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.completeSaleOrder(saleOrder);
       return;
     }
@@ -198,10 +196,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     List<StockMove> stockMoves =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter(
-                "self.originId = ? AND self.originTypeSelect = ?",
-                saleOrder.getId(),
-                "com.axelor.apps.sale.db.SaleOrder")
+            .filter("self.saleOrder.id = ?", saleOrder.getId())
             .fetch();
     if (!stockMoves.isEmpty()) {
       for (StockMove stockMove : stockMoves) {
@@ -210,7 +205,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
             || statusSelect == StockMoveRepository.STATUS_PLANNED) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
+              I18n.get(SupplychainExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
         }
       }
     }

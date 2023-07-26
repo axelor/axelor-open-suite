@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="prod-process-grid" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess">
     <field name="name"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop()"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="stockLocation" grid-view="stock-location-grid"
       form-view="stock-location-form"/>
@@ -25,7 +25,7 @@
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-production-process-print"/>
       <button name="newVersionBtn" title="Generate new version"
-        if="__config__.app.getApp('production').manageProdProcessVersion"
+        if="__config__.app.getApp('production')?.manageProdProcessVersion"
         onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
     </toolbar>
 
@@ -55,7 +55,7 @@
         grid-view="company-grid"/>
       <field name="workshopStockLocation" canEdit="false"
         domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
-        if="__config__.app.getApp('production').getManageWorkshop()"/>
+        if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     </panel>
 
     <panel-tabs>
@@ -79,17 +79,17 @@
           readonlyIf="isEnabledForAllProducts"/>
         <field name="outsourcing" colSpan="3"
           onChange="action-prod-process-method-change-prodprocesslist-outsourcing"
-          if="__config__.app.getApp('production').getManageOutsourcing()"/>
+          if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
         <field name="generatePurchaseOrderOnMoPlanning" colSpan="3"
-          if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"/>
+          if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"/>
         <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
         <spacer colSpan="2"/>
-        <field name="subcontractors" domain="self.isSubcontractor = true" colSpan="3"
-          onChange="action-production-record-subcontractors-on-change"
-          if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"
+        <field name="subcontractor" domain="self.isSubcontractor = true" colSpan="3"
+          onChange="action-production-record-subcontractor-on-change"
+          if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"
           requiredIf="outsourcing" form-view="partner-form"/>
         <field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true"
-          colSpan="3" if="__config__.app.getApp('production').getManageOutsourcing()"
+          colSpan="3" if="__config__.app.getApp('production')?.getManageOutsourcing()"
           showIf="outsourcing"/>
       </panel>
 
@@ -116,11 +116,11 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
-  <action-record name="action-production-record-subcontractors-on-change"
+  <action-record name="action-production-record-subcontractor-on-change"
     model="com.axelor.apps.production.db.ProdProcess">
-    <field name="outsourcingStockLocation" if="subcontractors != null"
-      expr="eval: subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
-	                                                                                  subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true}?.defaultStockLocation :
+    <field name="outsourcingStockLocation" if="subcontractor != null"
+      expr="eval: subcontractor?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
+	                                                                                  subcontractor?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true}?.defaultStockLocation :
 	                                                                                  company?.stockConfig?.virtualOutsourcingStockLocation"/>
   </action-record>
 
@@ -189,13 +189,13 @@
     model="com.axelor.apps.production.db.ProdProcess">
     <field name="company" expr="eval: __user__.getActiveCompany()"/>
     <field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
   </action-record>
 
   <action-record name="action-prod-process-record-set-realize-order-select"
     model="com.axelor.apps.production.db.ProdProcess">
     <field name="stockMoveRealizeOrderSelect"
-      expr="__config__.app.getApp('production').getStockMoveRealizeOrderSelect()"/>
+      expr="__config__.app.getApp('production')?.getStockMoveRealizeOrderSelect()"/>
   </action-record>
 
   <action-record name="action-prod-process-record-count-number-of-phases"
@@ -214,8 +214,8 @@
   <search-filters name="prod-process-filters"
     model="com.axelor.apps.production.db.ProdProcess" title="Prod process filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation" hidden="true"
-      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+      if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
   </search-filters>
 </object-views>

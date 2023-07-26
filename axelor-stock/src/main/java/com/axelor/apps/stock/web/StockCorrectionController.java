@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockCorrection;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockCorrectionService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -76,7 +77,7 @@ public class StockCorrectionController {
       if (success) {
         response.setReload(true);
       } else {
-        response.setError(I18n.get(IExceptionMessage.STOCK_CORRECTION_2));
+        response.setError(I18n.get(StockExceptionMessage.STOCK_CORRECTION_2));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -89,10 +90,7 @@ public class StockCorrectionController {
       StockMove stockMove =
           Beans.get(StockMoveRepository.class)
               .all()
-              .filter(
-                  "self.originTypeSelect = ? AND self.originId = ?",
-                  StockMoveRepository.ORIGIN_STOCK_CORRECTION,
-                  stockCorrectionId)
+              .filter("self.stockCorrection.id = ?", stockCorrectionId)
               .fetchOne();
       if (stockMove != null) {
         response.setView(
@@ -104,7 +102,7 @@ public class StockCorrectionController {
                 .context("_showRecord", stockMove.getId().toString())
                 .map());
       } else {
-        response.setFlash(I18n.get("No record found"));
+        response.setInfo(I18n.get("No record found"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AnalyticMoveLineQuery">
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="AnalyticMoveLineQuery.tradingName"/>
+    <date name="fromDate" title="From Date" required="true"
+      help="First day included of the period in which analytic moveLines will be retrieved."/>
+    <date name="toDate" title="AnalyticMoveLineQuery.toDate" required="true"
+      help="Last day included of the period in which analytic moveLines will be retrieved."/>
+    <one-to-many name="searchAnalyticMoveLineQueryParameterList"
+      ref="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter"
+      title="Move line search criterias" mappedBy="analyticMoveLineSearch"/>
+    <one-to-many name="reverseAnalyticMoveLineQueryParameterList"
+      ref="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter"
+      title="Move line reverse values"/>
+    <integer name="specificOriginSelect" title="Analytics move lines origin" required="true"
+      selection="account.analytic.move.line.query.origin.select" default="1"/>
+    <integer name="searchOperatorSelect" title="Search Operator" required="true"
+      selection="account.analytic.move.line.query.search.operator.select" default="0"/>
+
+    <extra-code><![CDATA[
+
+      	// SPECIFIC ORIGIN
+      	public static final int SPECIFIC_ORIGIN_ACCOUNTED_MOVES = 1;
+      	public static final int SPECIFIC_ORIGIN_INVOICE_ACCOUNTED_MOVES = 2;
+      	public static final int SPECIFIC_ORIGIN_INVOICE_AND_ACCOUNTED_MOVES = 3;
+      	public static final int SPECIFIC_ORIGIN_DAYBOOK_MOVES = 4;
+      	public static final int SPECIFIC_ORIGIN_DAYBOOK_INVOICE_MOVES = 5;
+      	public static final int SPECIFIC_ORIGIN_DAYBOOK_MOVES_AND_INVOICE_MOVES = 6;
+      	public static final int SPECIFIC_ORIGIN_SIMULATED_MOVES = 7;
+
+      	// SEARCH OPERATOR
+      	public static final int SEARCH_OPERATOR_OR = 0;
+      	public static final int SEARCH_OPERATOR_AND = 1;
+
+    ]]></extra-code>
+  </entity>
+
+</domain-models>

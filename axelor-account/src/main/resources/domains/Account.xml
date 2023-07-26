@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Account" lang="java" cacheable="true">
+  <entity name="Account" cacheable="true">
 
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true" hashKey="true"/>
+    <string name="code" title="Code" required="true" equalsInclude="true"/>
     <many-to-one name="parentAccount" ref="Account" title="Parent Account"
       massUpdate="true"/>
     <many-to-one name="accountType" ref="AccountType" massUpdate="true"
@@ -42,6 +42,9 @@
       massUpdate="true"/>
     <boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line"
       massUpdate="true"/>
+    <boolean name="manageCutOffPeriod" title="Manage Cut off period" massUpdate="true"/>
+    <boolean name="hasAutomaticApplicationAccountingDate"
+      title="Automatic application of accounting date"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"
       massUpdate="true"
@@ -49,17 +52,35 @@
     <many-to-one name="analyticDistributionTemplate" ref="AnalyticDistributionTemplate"
       title="Analytic Distribution Template" massUpdate="true"
       help="This analytical distribution will be used by default when entering invoice lines or entries as soon as this accounting account is selected."/>
+    <integer name="statusSelect" title="Status" selection="iaccount.status.select.selection"
+      default="0"/>
+    <boolean name="isRegulatoryAccount" title="Regulatory account" readonly="true"
+      copy="false"/>
+    <boolean name="isRetrievedOnPaymentSession" title="Include on payment sessions ?"/>
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.vat.system.select" default="0"/>
+
     <unique-constraint columns="code,company"/>
 
-    <extra-code>
-      	<![CDATA[
+    <finder-method name="findByAccountType" using="accountType" all="true"/>
 
-      		// COMMON POSITION
-      		public static final int COMMON_POSITION_NONE = 0;
-      		public static final int COMMON_POSITION_CREDIT = 1;
-      		public static final int COMMON_POSITION_DEBIT = 2;
-      	]]>
-    </extra-code>
+    <extra-code><![CDATA[
+
+      	// COMMON POSITION
+      	public static final int COMMON_POSITION_NONE = 0;
+      	public static final int COMMON_POSITION_CREDIT = 1;
+      	public static final int COMMON_POSITION_DEBIT = 2;
+
+      	// STATUS SELECT
+      	public static final int STATUS_INACTIVE = 0;
+      	public static final int STATUS_ACTIVE = 1;
+
+      	// VAT SYSTEM
+      	public static final int VAT_SYSTEM_DEFAULT = 0;
+      	public static final int VAT_SYSTEM_GOODS = 1;
+      	public static final int VAT_SYSTEM_SERVICE = 2;
+
+    ]]></extra-code>
 
     <track>
       <field name="name"/>
@@ -76,8 +97,11 @@
       <field name="isTaxRequiredOnMoveLine"/>
       <field name="commonPosition"/>
       <field name="defaultTax"/>
+      <field name="statusSelect"/>
+      <field name="serviceType"/>
+      <field name="vatSystemSelect"/>
     </track>
 
-
   </entity>
+
 </domain-models>

@@ -1,29 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
   <grid name="pay-voucher-due-element-grid" title="Invoices to pay"
-    model="com.axelor.apps.account.db.PayVoucherDueElement" orderBy="moveLine.dueDate">
-    <field name="moveLine.dueDate"/>
+    model="com.axelor.apps.account.db.PayVoucherDueElement" orderBy="invoiceTerm.dueDate">
+    <field name="invoiceTerm.dueDate"/>
     <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid"/>
-    <field name="moveLine.move.invoice" width="120"/>
+    <field name="moveLine.origin" width="120"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="applyFinancialDiscount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="dueAmount" aggregate="sum"/>
-    <field name="paidAmount" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
   </grid>
+
   <form name="pay-voucher-due-element-form" title="Invoices to pay"
     model="com.axelor.apps.account.db.PayVoucherDueElement">
     <panel name="mainPanel">
       <field name="sequence"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-      <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
-      <field name="moveLine.dueDate"/>
+      <field name="moveLine.origin"/>
+      <field name="invoiceTerm" form-view="invoice-term-form"
+        grid-view="invoice-term-move-line-invoice-grid"/>
+      <field name="invoiceTerm.dueDate"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="dueAmount"/>
-      <field name="paidAmount"/>
       <field name="amountRemaining"/>
     </panel>
+    <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
+      name="discountPanel" title="Financial discount">
+      <field name="applyFinancialDiscount"
+        onChange="action-method-pay-voucher-due-update-amounts"/>
+      <panel readonly="true" showIf="applyFinancialDiscount" colSpan="12">
+        <field name="financialDiscount"/>
+        <field name="financialDiscountDeadlineDate"/>
+        <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
+        <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
+        <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
+      </panel>
+    </panel>
   </form>
+
+  <action-method name="action-method-pay-voucher-due-update-amounts">
+    <call class="com.axelor.apps.account.web.PayVoucherDueElementController"
+      method="updateAmounts"/>
+  </action-method>
+
 </object-views>

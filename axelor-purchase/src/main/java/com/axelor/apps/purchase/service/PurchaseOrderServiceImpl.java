@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -30,6 +32,7 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -43,15 +46,13 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -129,18 +130,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
    * @throws AxelorException
    */
   @Override
-  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLineList == null) {
+      return;
+    }
 
     logger.debug(
-        "Peupler une facture => lignes de devis: {} ",
-        new Object[] {purchaseOrder.getPurchaseOrderLineList().size()});
+        "Populate an invoice => purchase order lines: {} ",
+        new Object[] {purchaseOrderLineList.size()});
 
     // create Tva lines
     purchaseOrder
         .getPurchaseOrderLineTaxList()
         .addAll(
             purchaseOrderLineVatService.createsPurchaseOrderLineTax(
-                purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
+                purchaseOrder, purchaseOrderLineList));
   }
 
   /**
@@ -157,26 +162,33 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setTaxTotal(BigDecimal.ZERO);
     purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      purchaseOrder.setExTaxTotal(
-          purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    List<PurchaseOrderLineTax> purchaseOrderLineTaxList =
+        purchaseOrder.getPurchaseOrderLineTaxList();
+    if (purchaseOrderLineList != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        purchaseOrder.setExTaxTotal(
+            purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
 
-      // In the company accounting currency
-      purchaseOrder.setCompanyExTaxTotal(
-          purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+        // In the company accounting currency
+        purchaseOrder.setCompanyExTaxTotal(
+            purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+      }
     }
 
-    for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
+    if (purchaseOrderLineTaxList != null) {
+      for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrderLineTaxList) {
 
-      // In the purchase order currency
-      purchaseOrder.setTaxTotal(
-          purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+        // In the purchase order currency
+        purchaseOrder.setTaxTotal(
+            purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+      }
     }
 
     purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add(purchaseOrder.getTaxTotal()));
 
     logger.debug(
-        "Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
+        "Invoice's total: W.T.T. = {},  W.T. = {}, VAT = {}, A.T.I. = {}",
         new Object[] {
           purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal()
         });
@@ -213,7 +225,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       throws AxelorException {
 
     logger.debug(
-        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+        "Creation of a purchase order: Company = {},  External reference = {}, Supplier partner = {}",
         new Object[] {company.getName(), externalReference, supplierPartner.getFullName()});
 
     PurchaseOrder purchaseOrder = new PurchaseOrder();
@@ -221,7 +233,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setCompany(company);
     purchaseOrder.setContactPartner(contactPartner);
     purchaseOrder.setCurrency(currency);
-    purchaseOrder.setDeliveryDate(deliveryDate);
+    purchaseOrder.setEstimatedReceiptDate(deliveryDate);
     purchaseOrder.setInternalReference(internalReference);
     purchaseOrder.setExternalReference(externalReference);
     purchaseOrder.setOrderDate(orderDate);
@@ -235,6 +247,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setDisplayPriceOnQuotationRequest(
         purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());
     return purchaseOrder;
@@ -242,12 +255,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Override
   public String getSequence(Company company) throws AxelorException {
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_ORDER, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PURCHASE_ORDER, company, PurchaseOrder.class, "purchaseOrderSeq");
     if (seq == null) {
       throw new AxelorException(
           company,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_1),
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_1),
           company.getName());
     }
     return seq;
@@ -269,7 +284,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
+              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
               purchaseOrder.getPurchaseOrderSeq()));
     }
 
@@ -305,7 +320,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_REQUEST_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_REQUEST_WRONG_STATUS));
     }
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
@@ -320,7 +335,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
           blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
+          I18n.get(PurchaseExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
           partner);
     }
     if (purchaseOrder.getVersionNumber() == 1

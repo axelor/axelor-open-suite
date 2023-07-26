@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -33,11 +36,10 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import com.axelor.utils.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -78,13 +80,13 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   public TimesheetLine createTimesheetLine(
       Project project,
       Product product,
-      User user,
+      Employee employee,
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
       String comments) {
     TimesheetLine timesheetLine =
-        super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
+        super.createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
 
     if (Beans.get(AppBusinessProjectService.class).isApp("business-project")
         && project != null
@@ -133,31 +135,22 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     return timesheetLineRepo.save(timesheetLine);
   }
 
-  @Transactional
-  public TimesheetLine setTimesheet(TimesheetLine timesheetLine) {
-    Timesheet timesheet =
-        timesheetRepo
-            .all()
-            .filter(
-                "self.user = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
-                timesheetLine.getUser(),
-                timesheetLine.getProject().getCompany(),
-                timesheetLine.getDate())
-            .order("id")
-            .fetchOne();
+  @Transactional(rollbackOn = {Exception.class})
+  public TimesheetLine setTimesheet(TimesheetLine timesheetLine) throws AxelorException {
+    Timesheet timesheet = getTimesheetQuery(timesheetLine).order("id").fetchOne();
     if (timesheet == null) {
       Timesheet lastTimesheet =
           timesheetRepo
               .all()
               .filter(
-                  "self.user = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
-                  timesheetLine.getUser(),
+                  "self.employee = ?1 AND self.statusSelect != ?2 AND self.toDate is not null",
+                  timesheetLine.getEmployee(),
                   TimesheetRepository.STATUS_CANCELED)
               .order("-toDate")
               .fetchOne();
       timesheet =
           timesheetService.createTimesheet(
-              timesheetLine.getUser(),
+              timesheetLine.getEmployee(),
               lastTimesheet != null && lastTimesheet.getToDate() != null
                   ? lastTimesheet.getToDate().plusDays(1)
                   : timesheetLine.getDate(),
@@ -209,5 +202,16 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       }
       JPA.clear();
     }
+  }
+
+  @Override
+  public Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine) {
+    return timesheetRepo
+        .all()
+        .filter(
+            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
+            timesheetLine.getEmployee(),
+            timesheetLine.getProject().getCompany(),
+            timesheetLine.getDate());
   }
 }

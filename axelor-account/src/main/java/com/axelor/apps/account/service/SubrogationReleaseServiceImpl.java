@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -28,26 +29,26 @@ import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.utils.file.CsvTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -100,6 +101,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             .all()
             .filter(
                 "self.company = :company AND self.partner.factorizedCustomer = TRUE "
+                    + "AND self.operationTypeSelect in (:clientRefund, :clientSale) "
                     + "AND self.statusSelect = :invoiceStatusVentilated "
                     + "AND self.id not in ("
                     + "		select Invoices.id "
@@ -116,6 +118,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             .order("dueDate")
             .order("invoiceId");
     query.bind("company", company);
+    query.bind("clientRefund", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+    query.bind("clientSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
     query.bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED);
     query.bind(
         "subrogationReleaseStatusTransmitted", SubrogationReleaseRepository.STATUS_TRANSMITTED);
@@ -130,12 +134,16 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   public void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String sequenceNumber =
-        sequenceService.getSequenceNumber("subrogationRelease", subrogationRelease.getCompany());
+        sequenceService.getSequenceNumber(
+            "subrogationRelease",
+            subrogationRelease.getCompany(),
+            SubrogationRelease.class,
+            "sequenceNumber");
     if (Strings.isNullOrEmpty(sequenceNumber)) {
       throw new AxelorException(
           Sequence.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_MISSING_SEQUENCE),
+          I18n.get(AccountExceptionMessage.SUBROGATION_RELEASE_MISSING_SEQUENCE),
           subrogationRelease.getCompany().getName());
     }
     this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);
@@ -168,7 +176,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       throw new AxelorException(
           SubrogationRelease.class,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES),
+          I18n.get(
+              AccountExceptionMessage.SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES),
           invoicesIDList);
     }
   }
@@ -219,7 +228,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       items[2] = invoice.getInvoiceDate().toString();
       items[3] = invoice.getDueDate().toString();
       items[4] = inTaxTotal.toString();
-      items[5] = invoice.getCurrency().getCode();
+      items[5] = invoice.getCurrency().getCodeISO();
       allMoveLineData.add(items);
     }
 
@@ -282,7 +291,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               origin,
-              description);
+              description,
+              invoice.getCompanyBankDetails());
       MoveLine creditMoveLine, debitMoveLine;
 
       debitMoveLine =
@@ -315,7 +325,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       move.addMoveLineListItem(creditMoveLine);
 
       move = moveRepository.save(move);
-      moveValidateService.validate(move);
+      moveValidateService.accounting(move);
 
       invoice.setSubrogationRelease(subrogationRelease);
       invoice.setSubrogationReleaseMove(move);

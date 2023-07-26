@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="supply-chain-config-grid" title="Supply chain configurations"
     model="com.axelor.apps.supplychain.db.SupplyChainConfig">
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="supply-chain-config-form" title="Supply chain configuration"
@@ -22,19 +22,19 @@
       <field name="hasInSmForStorableProduct"/>
       <field name="hasInSmForNonStorableProduct"/>
       <field name="autoAllocateOnReceipt" widget="boolean-switch"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="6"/>
       <field name="autoAllocateOnAllocation" widget="boolean-switch"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="6"/>
       <field name="autoRequestReservedQty" widget="boolean-switch"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="6"/>
       <field name="autoRequestReservedQtyOnManufOrder" widget="boolean-switch"
-        if="__config__.app.getApp('supplychain').getManageStockReservation() &amp;&amp; __config__.app.isApp('production')"
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation() &amp;&amp; __config__.app.isApp('production')"
         colSpan="6"/>
       <field name="autoAllocateOnAvailabilityRequest" widget="boolean-switch"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="6"/>
       <spacer colSpan="6"/>
       <field name="saleOrderReservationDateSelect"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="12"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" colSpan="12"/>
       <field name="activateIncStockMovePartialInvoicing" widget="boolean-switch" colSpan="6"/>
       <field name="activateOutStockMovePartialInvoicing" widget="boolean-switch" colSpan="6"/>
     </panel>

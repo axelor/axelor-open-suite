@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payment-schedule-line-reject-grid" title="Payment schedule line rejection"
     model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id"
@@ -43,7 +43,7 @@
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
   </grid>
 
-  <form name="payment-schedule-line-reject-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="payment-schedule-line-reject-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Payment schedule lines to reject" onNew="payment-schedule-line-reject-wizard-new"
     width="large">
     <panel-dashlet name="paymentScheduleLineSelectedPanel"
@@ -66,7 +66,7 @@
   </action-view>
 
   <action-record name="payment-schedule-line-reject-wizard-new"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="$represent" expr="eval: true"/>
     <field name="$interbankCodeLine"
       expr="call:com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService:getDefaultRejectionReason()"/>

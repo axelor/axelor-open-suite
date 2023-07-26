@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,20 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -90,7 +92,7 @@ public class BatchAccountCustomer extends BatchStrategy {
         TraceBackService.trace(
             new Exception(
                 String.format(
-                    I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),
+                    I18n.get(AccountExceptionMessage.BATCH_ACCOUNT_1),
                     accountingSituationRepo.find(accountingSituation.getId()).getName()),
                 e),
             ExceptionOriginRepository.CUSTOMER_ACCOUNT,
@@ -118,13 +120,12 @@ public class BatchAccountCustomer extends BatchStrategy {
   @Override
   protected void stop() {
     String comment = "";
-    comment = I18n.get(IExceptionMessage.BATCH_ACCOUNT_2) + "\n";
-    comment +=
-        String.format("\t" + I18n.get(IExceptionMessage.BATCH_ACCOUNT_3) + "\n", batch.getDone());
+    comment = I18n.get(AccountExceptionMessage.BATCH_ACCOUNT_2) + "\n";
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(AccountExceptionMessage.BATCH_ACCOUNT_3) + "\n", batch.getDone());
+    comment +=
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     super.stop();
     addComment(comment);
@@ -165,7 +166,7 @@ public class BatchAccountCustomer extends BatchStrategy {
         TraceBackService.trace(
             new Exception(
                 String.format(
-                    I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),
+                    I18n.get(AccountExceptionMessage.BATCH_ACCOUNT_1),
                     accountingSituationRepo.find(accountingSituation.getId()).getName()),
                 e),
             ExceptionOriginRepository.CUSTOMER_ACCOUNT,
@@ -186,9 +187,9 @@ public class BatchAccountCustomer extends BatchStrategy {
     }
 
     if (anomaly != 0) {
-      return String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_4), anomaly);
+      return String.format(I18n.get(AccountExceptionMessage.BATCH_ACCOUNT_4), anomaly);
     } else {
-      return String.format(I18n.get(IExceptionMessage.BATCH_ACCOUNT_5), i);
+      return String.format(I18n.get(AccountExceptionMessage.BATCH_ACCOUNT_5), i);
     }
   }
 }

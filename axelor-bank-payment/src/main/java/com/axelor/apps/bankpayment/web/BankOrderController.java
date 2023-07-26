@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.web;
 
@@ -22,14 +23,14 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -69,7 +70,7 @@ public class BankOrderController {
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
     try {
       ActionViewBuilder confirmView =
-          ActionView.define("Sign bank order")
+          ActionView.define(I18n.get("Sign bank order"))
               .model(BankOrder.class.getName())
               .add("form", "bank-order-sign-wizard-form")
               .param("popup", "reload")
@@ -98,20 +99,20 @@ public class BankOrderController {
       EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
 
       if (ebicsUser == null) {
-        response.setError(I18n.get(IExceptionMessage.EBICS_MISSING_NAME));
+        response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_NAME));
       } else {
         if (ebicsUser.getEbicsPartner().getEbicsTypeSelect()
             == EbicsPartnerRepository.EBICS_TYPE_TS) {
           bankOrderService.validate(bankOrder);
         } else {
           if (context.get("password") == null) {
-            response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+            response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_WRONG_PASSWORD));
           }
           if (context.get("password") != null) {
             String password = (String) context.get("password");
             if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
               response.setValue("password", "");
-              response.setError(I18n.get(IExceptionMessage.EBICS_WRONG_PASSWORD));
+              response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_WRONG_PASSWORD));
             } else {
               bankOrderService.validate(bankOrder);
             }

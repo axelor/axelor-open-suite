@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner" lang="java">
+  <entity name="Partner">
 
     <decimal name="payerQuality" title="Payer quality" readonly="true"/>
 
@@ -40,6 +40,8 @@
     <string name="specificTaxNote" title="Specific tax note" large="true"/>
 
     <boolean name="isFactor" title="Factor"/>
+    <boolean name="isCompensation" title="Compensation"/>
+
     <boolean name="factorizedCustomer"/>
     <string name="sellerCode"/>
     <many-to-one name="das2Activity" ref="com.axelor.apps.account.db.Das2Activity"
@@ -52,6 +54,15 @@
     <many-to-one ref="com.axelor.apps.account.db.FinancialDiscount"
       name="financialDiscount" title="Financial discount"
       help="Field allowing to make this partner profit a discount and define its parameters"/>
+    <integer name="payNoticeSendingMethodSelect" title="Sending method of payment notices"
+      selection="partner.payment.notice.sending.method.select" default="1"/>
+
+    <extra-code>
+      <![CDATA[
+		  public static final int PAYMENT_NOTICE_NONE = 0;
+		  public static final int PAYMENT_NOTICE_EMAIL = 1;
+	   ]]>
+    </extra-code>
 
     <track>
       <field name="inPaymentMode" on="UPDATE"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <dashboard name="project-my-projects" title="My projects">
     <dashlet action="action-project-db-my-tasks-to-do"/>
@@ -18,8 +18,8 @@
   </dashboard>
 
   <form name="project-dashboard-form" title="Project dashboard"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-project-dashboard-method-on-new"
-    width="large" canNew="false" canEdit="false" canDelete="false">
+    model="com.axelor.utils.db.Wizard" onNew="action-project-dashboard-method-on-new" width="large"
+    canNew="false" canEdit="false" canDelete="false">
     <panel name="overviewPanel" title="Overview" readonly="true">
       <field name="$description" showTitle="false">
         <viewer>
@@ -115,7 +115,7 @@
 
 
   <form name="project-activity-dashboard-form" title="Project Activity"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-project-activity-dashboard-method-on-new"
+    model="com.axelor.utils.db.Wizard" onNew="action-project-activity-dashboard-method-on-new"
     width="large" canNew="false" canEdit="false" canDelete="false">
     <panel name="activityPanel" title="Activity">
       <field name="$dates" showTitle="false" colSpan="12" readonly="true">
@@ -197,14 +197,17 @@
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date = :__datetime__ AND self.user = :__user__</domain>
+    <domain>self.date = :__date__ AND self.employee.id = :_empId</domain>
+    <context name="_empId" expr="eval: __user__.employee?.id"/>
   </action-view>
 
   <action-view name="action-project-db-my-upcomming-planning"
     title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
+    <domain>self.date &gt; :__date__ AND self.employee.id = :_empId</domain>
+    <context name="_empId" expr="eval: __user__.employee?.id"/>
+
   </action-view>
 
   <action-view name="action-project-dashboard-view-open-gantt" title="Gantt"

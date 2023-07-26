@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form name="app-production-config-form" title="App production"
-    model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large"
+  <form name="app-production-config-form" title="App manufacturing"
+    model="com.axelor.studio.db.AppProduction" canDelete="false" canNew="false" width="large"
     onSave="action-app-production-method-check-outsourcing-disabled-onsave">
     <panel name="productionConfigurationPanel" colSpan="12">
       <panel name="saleOrderPanel" title="Sale order">
@@ -98,18 +98,18 @@
 
   <action-record
     name="action-app-production-record-manage-business-production-onchange"
-    model="com.axelor.apps.base.db.AppProduction">
+    model="com.axelor.studio.db.AppProduction">
     <field name="enableTimesheetOnManufOrder" expr="eval: false"/>
   </action-record>
 
   <action-method name="action-app-production-method-check-outsourcing-disabled-onsave"
-    model="com.axelor.apps.base.db.AppProduction">
+    model="com.axelor.studio.db.AppProduction">
     <call class="com.axelor.apps.production.web.AppProductionController"
       method="checkIfOutsourcingDisabled"/>
   </action-method>
 
   <action-validate name="action-app-production-validate-manage-outsourcing-onchange"
-    model="com.axelor.apps.base.db.AppProduction">
+    model="com.axelor.studio.db.AppProduction">
     <alert
       if="__config__.app.getApp('production')?.getManageOutsourcing() &amp;&amp; !this.manageOutsourcing"
       message="It will remove subcontractor tag from all partners. This change is irreversible"/>

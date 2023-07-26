@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,22 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
 
 public class SupplychainBatchService extends AbstractBatchService {
 
@@ -42,9 +45,6 @@ public class SupplychainBatchService extends AbstractBatchService {
     SupplychainBatch supplychainBatch = (SupplychainBatch) batchModel;
 
     switch (supplychainBatch.getActionSelect()) {
-      case SupplychainBatchRepository.ACTION_ACCOUNTING_CUT_OFF:
-        batch = accountingCutOff(supplychainBatch);
-        break;
       case SupplychainBatchRepository.ACTION_INVOICE_OUTGOING_STOCK_MOVES:
         batch = invoiceOutgoingStockMoves(supplychainBatch);
         break;
@@ -57,16 +57,12 @@ public class SupplychainBatchService extends AbstractBatchService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             supplychainBatch.getActionSelect(),
             supplychainBatch.getCode());
     }
 
     return batch;
-  }
-
-  public Batch accountingCutOff(SupplychainBatch supplychainBatch) {
-    return Beans.get(BatchAccountingCutOff.class).run(supplychainBatch);
   }
 
   public Batch invoiceOutgoingStockMoves(SupplychainBatch supplychainBatch) {
@@ -88,5 +84,17 @@ public class SupplychainBatchService extends AbstractBatchService {
 
   public Batch updateStockHistory(SupplychainBatch supplychainBatch) {
     return Beans.get(BatchUpdateStockHistory.class).run(supplychainBatch);
+  }
+
+  @Transactional
+  public SupplychainBatch createNewSupplychainBatch(int action, Company company) {
+    if (company != null) {
+      SupplychainBatch supplychainBatch = new SupplychainBatch();
+      supplychainBatch.setActionSelect(action);
+      supplychainBatch.setCompany(company);
+      Beans.get(SupplychainBatchRepository.class).save(supplychainBatch);
+      return supplychainBatch;
+    }
+    return null;
   }
 }

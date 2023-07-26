@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,30 +14,27 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.persistence.Query;
 
 public class JournalService {
-  protected final PartnerService partnerService;
+  protected JournalRepository journalRepository;
 
   @Inject
-  public JournalService(PartnerService partnerService) {
-    this.partnerService = partnerService;
+  public JournalService(JournalRepository journalRepository) {
+    this.journalRepository = journalRepository;
   }
 
   /**
@@ -57,8 +55,8 @@ public class JournalService {
     Query resultQuery = JPA.em().createQuery(query);
 
     resultQuery.setParameter("journal", journal.getId());
-    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_ACCOUNTED);
-    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_VALIDATED);
+    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED);
 
     Object[] resultArr = (Object[]) resultQuery.getResultList().get(0);
 
@@ -71,25 +69,25 @@ public class JournalService {
     return resultMap;
   }
 
-  public String filterJournalPartnerCompatibleType(Move move) {
-    Journal journal = move.getJournal();
-    if (journal.getCompatiblePartnerTypeSelect() != null) {
-      StringBuilder compatiblePartnerDomain = new StringBuilder("self.id IN (");
-      String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
-      Set<Long> compatiblePartnerIds = new HashSet<>();
-      for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
-        compatiblePartnerIds.addAll(partnerService.getPartnerIdsByType(compatiblePartnerType));
-      }
-      if (compatiblePartnerIds.size() > 0) {
-        compatiblePartnerDomain.append(
-            compatiblePartnerIds.stream().map(Object::toString).collect(Collectors.joining(",")));
-        compatiblePartnerDomain.deleteCharAt(compatiblePartnerDomain.length() - 1);
-        compatiblePartnerDomain.append(")");
-        return compatiblePartnerDomain.toString();
+  @Transactional
+  public void toggleStatusSelect(Journal journal) {
+    if (journal != null) {
+      if (journal.getStatusSelect() == JournalRepository.STATUS_INACTIVE) {
+        journal = activate(journal);
       } else {
-        return null;
+        journal = desactivate(journal);
       }
+      journalRepository.save(journal);
     }
-    return null;
+  }
+
+  protected Journal activate(Journal journal) {
+    journal.setStatusSelect(JournalRepository.STATUS_ACTIVE);
+    return journal;
+  }
+
+  protected Journal desactivate(Journal journal) {
+    journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
+    return journal;
   }
 }

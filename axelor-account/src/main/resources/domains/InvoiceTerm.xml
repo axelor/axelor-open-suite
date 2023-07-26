@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="InvoiceTerm">
+
+    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
+    <integer name="sequence" title="Sequence"/>
+    <date name="dueDate" title="Due date"/>
+    <date name="estimatedPaymentDate" title="Estimated payment date"/>
+    <date name="originDate" title="Origin date"/>
+    <decimal name="amount" title="Amount"/>
+    <decimal name="companyAmount" title="Amount (company currency)"/>
+    <decimal name="amountRemaining" title="Amount remaining"/>
+    <decimal name="companyAmountRemaining" title="Amount remaining (company currency)"/>
+    <decimal name="remainingPfpAmount" title="Remaining amount" scale="2" precision="20"
+      help="This amount corresponds, in the event of a partial pass for payment, to the remaining amount which didn't get the consent to be paid. This amount corresponds to the amount of the invoice term which has been newly generated during the partial pass for payment process and which is linked to this term."/>
+    <decimal name="initialPfpAmount" title="Initial amount" scale="2" precision="20"
+      help="This amount corresponds, in the event of a partial pass for payment, to the initial amount of the term."/>
+    <boolean name="isPaid" title="Paid" default="false"/>
+    <boolean name="isHoldBack" title="Holdback" default="false"/>
+    <string name="origin" title="Origin"/>
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
+      title="Payment mode"/>
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <many-to-one name="pfpPartialReason"
+      ref="com.axelor.apps.account.db.PfpPartialReason" title="PFP Partial Reason"/>
+    <many-to-one name="originInvoiceTerm" title="Origin invoice term"
+      ref="com.axelor.apps.account.db.InvoiceTerm"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"/>
+    <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining total amount after Fin. discount"/>
+    <decimal name="amountRemainingAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
+    <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
+    <!-- <integer name="discountBaseSelect" title="Discount base" selection="account.financial.discount.discount.base.select"/> -->
+    <!-- <decimal name="discountRate" title="Discount rate" /> -->
+    <!-- <date name="finDiscountDeadlineDate" title="Financial discount deadline date"/> -->
+    <decimal name="percentage" title="Percentage"/>
+    <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
+      title="Move line" readonly="true"/>
+    <many-to-one name="paymentConditionLine"
+      ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line"/>
+    <boolean name="isCustomized" title="Is customized" default="false"/>
+    <many-to-one ref="com.axelor.apps.base.db.BankDetails" name="bankDetails"/>
+
+    <datetime name="decisionPfpTakenDateTime" readonly="true" title="PFP decision date"/>
+    <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
+      title="PFP Validator"/>
+    <integer name="pfpValidateStatusSelect" title="PFP Status"
+      selection="invoiceterm.pfp.validate.status.select" readonly="true" default="0"/>
+    <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
+      ref="com.axelor.apps.base.db.CancelReason"/>
+    <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+    <many-to-one name="paymentSession" title="Payment session" readonly="true"
+      ref="com.axelor.apps.account.db.PaymentSession"/>
+    <boolean name="isSelectedOnPaymentSession" title="Selected on Session"/>
+    <decimal name="paymentAmount" title="Signed payment amount"/>
+
+    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"/>
+    <boolean name="applyFinancialDiscountOnPaymentSession"
+      title="Apply Fin. Discount (session) ?"/>
+    <decimal name="amountPaid" title="Amount paid" readonly="true"/>
+    <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
+    <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
+      title="Name">
+            <![CDATA[
+            if( invoice != null ){
+               if (dueDate != null) {
+            	 return invoice.getInvoiceId() + "_" + dueDate + "_" + amount;
+               }
+               else {
+                 return invoice.getInvoiceId() + "_" + amount;
+               }
+            } else if (moveLine != null) {
+               if (dueDate != null) {
+            	 return moveLine.getName() + "_" + dueDate + "_" + amount;
+               }
+               else {
+                 return moveLine.getName() + "_" + amount;
+               }
+            }
+
+            return "";
+	    ]]>
+    </string>
+
+    <integer name="paymentDelay" title="Payment delay (days)" formula="true">
+      <![CDATA[
+	      SELECT CASE WHEN
+	      ((DATE(NOW())::DATE - inv_term.due_date::DATE) > 0 AND inv_term.amount_remaining != 0) THEN
+	      (DATE(NOW())::DATE - inv_term.due_date::DATE) ELSE 0 END from account_invoice_term inv_term WHERE inv_term.id =
+	      id]]>
+    </integer>
+
+    <boolean name="pfpfPartialValidationOk"/>
+    <decimal name="pfpPartialValidationAmount"/>
+
+    <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
+
+    <extra-code><![CDATA[
+
+	    // PFP VALIDATE STATUS SELECT
+	    public static final int PFP_STATUS_NO_PFP = 0;
+	    public static final int PFP_STATUS_AWAITING = 1;
+	    public static final int PFP_STATUS_VALIDATED = 2;
+	    public static final int PFP_STATUS_LITIGATION = 3;
+	    public static final int PFP_STATUS_PARTIALLY_VALIDATED = 4;
+
+	]]></extra-code>
+
+    <track>
+      <field name="paymentMode"/>
+      <field name="dueDate"/>
+      <field name="estimatedPaymentDate"/>
+      <field name="percentage"/>
+      <field name="amount"/>
+      <field name="amountRemaining"/>
+      <field name="isPaid"/>
+      <field name="isHoldBack"/>
+      <field name="isCustomized"/>
+      <field name="bankDetails"/>
+      <field name="financialDiscount"/>
+      <field name="invoice"/>
+      <field name="moveLine"/>
+      <field name="decisionPfpTakenDateTime"/>
+      <field name="paymentSession"/>
+      <field name="pfpValidateStatusSelect"/>
+      <field name="pfpValidatorUser"/>
+      <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
+    </track>
+
+    <entity-listener class="com.axelor.apps.account.db.repo.InvoiceTermListener"/>
+
+  </entity>
+
+</domain-models>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
     orderBy="-startDateTime">
@@ -13,7 +13,7 @@
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
     <field name="partner"/>
-    <field name="lead"/>
+    <field name="eventLead"/>
     <field name="typeSelect"/>
     <field name="subject"/>
     <field name="statusSelect"/>
@@ -100,16 +100,10 @@
     onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew"
     onSave="action-event-group-on-save">
     <toolbar>
-      <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
-        onClick="save,action-method-crm-event-assign-tome" showIf="typeSelect == 1"/>
+      <button name="grabEventBtn" icon="fa-suitcase" help="Assign to me"
+        onClick="save,action-method-crm-event-assign-tome"/>
       <button name="viewOnMapBtn" icon="fa-map-marker"
         onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
-      <button name="startBtn" readonlyIf="statusSelect == 12 || statusSelect == 14"
-        icon="fa-play" showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
-      <button name="pauseBtn" readonlyIf="statusSelect == 14 || statusSelect == 13"
-        icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
-      <button name="acceptBtn" readonlyIf="statusSelect == 14" icon="fa-power-off"
-        showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
     </toolbar>
     <menubar>
       <menu name="eventToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -120,34 +114,42 @@
       </menu>
     </menubar>
     <panel colSpan="12" name="meetingGeneralPanel">
-      <field name="typeSelect" domain="self.value IN ('0','1','2','3')" showTitle="false"
+      <panel name="namePanel" colSpan="12">
+        <field name="$fullName" showTitle="false" readonly="true" colSpan="12">
+          <viewer>
+						<![CDATA[
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventLead == null">{{record.contactPartner.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.contactPartner == null &amp;&amp; record.eventLead == null">{{record.partner.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventLead != null">{{record.eventLead.fullName}}</span>
+						]]>
+          </viewer>
+        </field>
+      </panel>
+      <field name="typeSelect" domain="self.value IN ('1','2','3','5')" showTitle="false"
         colSpan="3" onChange="action-event-type-select-onchange-group">
         <viewer depends="typeSelect"><![CDATA[
-	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 0" x-translate>Event</span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Call</span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Task</span>
+	          		<span class="label label-warning" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Call</span>
+	          		<span class="label label-default" style="background-color: #58427C; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
+	          		<span class="label label-default" style="background-color: #DA3287; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Task</span>
+	          		<span class="label label-default" style="background-color: #FF7E00; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 5" x-translate>Note</span>
+	       		 ]]>
+        </viewer>
+      </field>
+
+      <field name="callTypeSelect" showIf="typeSelect == 1" colSpan="3" showTitle="false">
+        <viewer depends="statusSelect"><![CDATA[
+	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.callTypeSelect == 1" x-translate>Inbound</span>
+	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.callTypeSelect == 2" x-translate>Outbound</span>
 	       		 ]]>
         </viewer>
       </field>
       <field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]"
-        showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 0">
+        showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 3">
         <viewer depends="statusSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
-	          		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
+	          		<span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
+	          		<span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
 	       		 ]]>
-        </viewer>
-      </field>
-      <field name="statusSelect" showTitle="false" colSpan="3"
-        selection-in="[11, 12, 13, 14, 15]" showIf="typeSelect == 3">
-        <viewer depends="statusSelect"><![CDATA[
-					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 11" x-translate>Not started</span>
-					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 12" x-translate>On going</span>
-					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 13" x-translate>Pending</span>
-					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 14" x-translate>Finished</span>
-					<span class="label label-default" style="background-color: #D9534F; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
-				]]>
         </viewer>
       </field>
       <field name="subject" showTitle="false" colSpan="12">
@@ -159,14 +161,26 @@
 				]]>
         </viewer>
         <editor>
-          <field name="subject" showTitle="true" colSpan="12"/>
+          <field name="subject" showTitle="true" colSpan="12" height="2px"/>
         </editor>
       </field>
+      <field name="partner" hideIf="eventLead != null" canEdit="false"
+        onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange"
+        form-view="partner-form" grid-view="partner-grid"/>
+      <field name="contactPartner" canEdit="false"
+        hideIf="partner.partnerTypeSelect == 2 || eventLead != null"
+        onChange="action-group-crm-meeting-contactpartner-onchange"
+        onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true"
+        form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="eventLead" hideIf="partner != null || contactPartner != null"
+        canEdit="false" onChange="action-meeting-set-location-lead, action-event-method-add-guest"
+        form-view="lead-form" grid-view="lead-grid"/>
+      <spacer/>
       <field name="startDateTime" colSpan="3"
         onChange="action-event-method-compute-from-start-date-time,action-event-attrs-show-past-event-text"/>
-      <field name="endDateTime" colSpan="3"
+      <field name="endDateTime" hideIf="typeSelect == 5" colSpan="3"
         onChange="action-event-method-compute-from-end-date-time"/>
-      <field name="allDay" colSpan="2"/>
+      <field name="allDay" colSpan="2" hideIf="typeSelect == 5"/>
       <field name="duration" widget="duration" colSpan="2"
         onChange="action-event-method-compute-from-duration" x-big="true" hidden="true"/>
       <static name="pastEventText" hidden="true" colSpan="12">
@@ -177,21 +191,23 @@
       <panel name="descriptionPanel" title="Description">
         <field name="description" showTitle="false" widget="html" colSpan="12"/>
       </panel>
-      <panel name="organizationPanel" title="Organization">
-        <field name="location" css="highlight"/>
-        <field name="geo" colSpan="5"/>
-        <button name="viewOnMapBtn" colSpan="1" icon="fa-map-marker"
-          onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
-        <field name="organizer"/>
+      <panel name="organizationPanel" title="Organization" hideIf="typeSelect == 5">
+        <field name="location" css="highlight" height="5px"/>
+        <panel name="mapPanel">
+          <field name="geo" colSpan="10"/>
+          <button name="viewOnMapBtn" colSpan="2" icon="fa-map-marker"
+            onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
+          <field name="organizer" colSpan="12"/>
+        </panel>
+
       </panel>
-      <panel name="informationPanel" title="Information">
+      <panel name="informationPanel" title="Information" hideIf="typeSelect == 5">
         <field name="visibilitySelect" readonlyIf="calendar != null"/>
         <field name="disponibilitySelect" readonlyIf="calendar != null"/>
-        <field name="status"/>
         <field name="subjectTeam" hidden="true"/>
         <field name="computedAttendeeList" hidden="true"/>
       </panel>
-      <panel name="eventRemindersPanel" title="Reminders">
+      <panel name="eventRemindersPanel" title="Reminders" hideIf="typeSelect == 5">
         <button name="addReminderButton" title="Create a new reminder"
           onClick="save,action-crm-event-reminder-view-create-reminder" colSpan="4" colOffset="4"/>
         <panel-dashlet name="eventReminderListPanel"
@@ -199,10 +215,15 @@
       </panel>
     </panel-tabs>
 
-    <panel title="Guests" name="addGuestsPanel" sidebar="true" canCollapse="true">
+    <panel title="Guests" name="addGuestsPanel" sidebar="true" canCollapse="true"
+      hideIf="typeSelect == 5">
       <field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one"
-        target="com.axelor.apps.message.db.EmailAddress" canNew="true"
-        onChange="action-event-method-add-email-guest"/>
+        target="com.axelor.message.db.EmailAddress" canNew="true"
+        onChange="action-event-method-add-email-guest">
+        <editor x-show-titles="false" x-viewer="true">
+          <field name="address" widget="email" colSpan="12" placeholder="whatever@example.com"/>
+        </editor>
+      </field>
       <field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
         <editor layout="table" x-show-titles="false">
           <field name="name" readonly="true"/>
@@ -216,34 +237,22 @@
         grid-view="user-grid" colSpan="6"/>
       <field name="calendar" widget="SuggestBox"
         onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator"
-        colSpan="6"/>
+        colSpan="6" hideIf="typeSelect == 5"/>
       <field name="team" canEdit="false" onSelect="action-event-attrs-team-domain"
         form-view="team-form" grid-view="team-grid"
-        if="__config__.app.getApp('base').getTeamManagement()"/>
+        if="__config__.app.getApp('base')?.getTeamManagement()"/>
     </panel>
 
     <panel sidebar="true" title="Characteristics" name="meetingAttributesPanel"
-      canCollapse="true">
+      canCollapse="true" hideIf="typeSelect == 5">
       <field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"
         onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
       <field name="eventCategory" canEdit="false" domain="self.typeSelect = :typeSelect"
         colSpan="6"/>
-      <field name="callTypeSelect" showIf="typeSelect == 1" colSpan="6"/>
       <field name="prioritySelect" showIf="typeSelect == 3" colSpan="6"/>
     </panel>
 
     <panel sidebar="true" title="References" name="meetingLinkedPanel" canCollapse="true">
-      <field name="partner" canEdit="false" colSpan="6"
-        onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange"
-        form-view="partner-form" grid-view="partner-grid"/>
-      <field name="contactPartner" canEdit="false" colSpan="6"
-        hideIf="partner.partnerTypeSelect == 2"
-        onChange="action-group-crm-meeting-contactpartner-onchange"
-        onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true"
-        form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-      <field name="lead" canEdit="false" colSpan="6"
-        onChange="action-meeting-set-location-lead, action-event-method-add-guest"
-        form-view="lead-form" grid-view="lead-grid"/>
       <field name="campaign" canEdit="false" colSpan="6" form-view="campaign-form"
         grid-view="campaign-grid"/>
       <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
@@ -261,6 +270,46 @@
     </panel-mail>
   </form>
 
+  <cards name="event-cards" title="Events" css="rect-image" width="100%"
+    model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
+    <field name="subject"/>
+    <field name="typeSelect"/>
+    <field name="eventTypeSelect"/>
+    <field name="statusSelect"/>
+    <field name="description"/>
+    <field name="startDateTime"/>
+    <template><![CDATA[
+		<div>
+		  <div class="span12">
+			  <div>
+                  <div style="float: left; margin-right:100px;">
+                    <span class="label label-default" style="background-color: #58427C;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
+                    <span class="label label-default" style="background-color: #DA3287;" ng-show="record.typeSelect == 3" x-translate>Task</span>
+                    <span class="label label-default" style="background-color: #FF7E00;" ng-show="record.typeSelect == 5" x-translate>Note</span>
+
+                    <span class="label label-warning" ng-show="record.typeSelect == 1" x-translate>Call</span>
+
+                    <span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1 &amp;&amp; record.typeSelect != 5" x-translate>Planned</span>
+                    <span class="label label-success" ng-show="record.statusSelect == 2" x-translate>Realized</span>
+                    <span class="label label-important" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
+                </div>
+                  <div style="float: left;">
+                    <strong>{{subject}}</strong><br/>
+                    {{$fmt('startDateTime')}}
+                </div>
+                <div style="float: right;margin-right:20px;">
+                    <button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent" x-translate>Done</button>
+                    <button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent" x-translate>Cancel</button>
+                </div>
+	        </div>
+			<br/></br/>
+			<div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
+			<div ng-show="!description" ng-bind-html="description"></div>
+	      </div>
+	  <div>
+	 ]]></template>
+  </cards>
+
   <action-group name="action-group-crm-event-onnew">
     <action name="action-icalendar-event-default-record"/>
     <action name="action-event-new-record"/>
@@ -271,6 +320,7 @@
     <action name="action-partner-method-check-rights" if="calendar != null"/>
     <action name="action-event-hide-private" if="typeSelect == 2"/>
     <action name="action-event-attrs-show-past-event-text"/>
+    <action name="action-event-attrs-title-start-date-time"/>
   </action-group>
 
   <action-record name="action-event-record-current-user"
@@ -333,30 +383,16 @@
       expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
   </action-attrs>
 
-  <action-group name="action-group-crm-task-start-click">
-    <action name="action-set-task-status-select-2"/>
-  </action-group>
-
-  <action-group name="action-group-crm-task-pause-click">
-    <action name="action-set-task-status-select-3"/>
-  </action-group>
-
-  <action-group name="action-group-crm-task-accept-click">
-    <action name="action-set-task-status-select-4"/>
-  </action-group>
-
   <action-group name="action-event-group-on-save">
     <action name="action-event-record-compute-attendee-list"/>
     <action name="action-event-record-subjectTeam"/>
     <action name="action-event-view-modifications-recurrence"
       if="recurrenceConfiguration &amp;&amp; id > 0"/>
-    <action name="save"/>
-    <action name="action-event-method-manage-followers"/>
     <action name="action-event-attrs-show-past-event-text"/>
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
-    title="Apply modifications" model="com.axelor.apps.base.db.Wizard">
+    title="Apply modifications" model="com.axelor.utils.db.Wizard">
     <view type="form" name="modifications-assistant-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>
@@ -371,7 +407,6 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="form" name="opportunity-form"/>
     <context name="_customer" expr="eval: partner"/>
-    <context name="_leadName" expr="eval: lead"/>
   </action-view>
 
   <action-view name="action-event-view-create-event" title="Create event"
@@ -379,14 +414,14 @@
     <view type="form" name="event-form"/>
     <context name="_partner" expr="eval: partner"/>
     <context name="_contactPartner" expr="eval: contactPartner"/>
-    <context name="_eventLead" expr="eval: lead"/>
+    <context name="_eventLead" expr="eval: eventLead"/>
     <context name="_relatedToSelect" expr="eval: relatedToSelect"/>
     <context name="_calendar" expr="eval: calendar"/>
     <context name="_typeSelect" expr="eval: typeSelect"/>
     <context name="_relatedToSelectId" expr="eval: relatedToSelectId"/>
   </action-view>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Apply modifications"
+  <form model="com.axelor.utils.db.Wizard" title="Apply modifications"
     name="modifications-assistant-form">
     <panel name="wizardPanel">
       <button name="applyToThisBtn" title="Apply changes to this event only" onClick="close"
@@ -409,8 +444,8 @@
     <action name="action-event-method-compute-from-duration" if="endDateTime == null"/>
     <action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
     <action name="action-event-default-record-user"
-      if="_lead == null &amp;&amp; _partner == null"/>
-    <action name="action-event-record-event-from-lead" if="_lead != null"/>
+      if="_eventLead == null &amp;&amp; _partner == null"/>
+    <action name="action-event-record-event-from-lead" if="_eventLead != null"/>
     <action name="action-event-record-event-from-partner" if="_partner != null"/>
     <action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     <action name="action-event-record-event-from-sale-order" if="_saleOrder != null"/>
@@ -419,8 +454,8 @@
   </action-group>
 
   <action-group name="action-event-type-select-onchange-group">
-    <action name="action-event-record-reset-status-select"/>
     <action name="action-event-record-reset-category"/>
+    <action name="action-event-attrs-title-start-date-time"/>
   </action-group>
 
 
@@ -449,31 +484,38 @@
   <action-attrs name="action-attrs-client-partner">
     <attribute name="value" for="partner" expr="eval: contactPartner?.mainPartner"/>
   </action-attrs>
+
+  <action-attrs name="action-event-attrs-title-start-date-time">
+    <attribute name="title" for="startDateTime"
+      expr="eval: com.axelor.i18n.I18n.get('Date')" if="typeSelect == 5"/>
+    <attribute name="title" for="startDateTime"
+      expr="eval: com.axelor.i18n.I18n.get('Start date')" if="typeSelect != 5"/>
+  </action-attrs>
+
   <!-- ACTION RECORD -->
 
   <action-record name="action-event-default-record"
     model="com.axelor.apps.crm.db.Event">
     <field name="statusSelect" expr="1"/>
     <field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
-    <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
-    <field name="typeSelect" expr="0" if="_typeSelect == null"/>
-    <field name="callTypeSelect" expr="2" if="_typeSelect == '1'"/>
+    <field name="typeSelect"
+      expr="eval: _typeSelect != null ? _typeSelect : ICalendarEventRepository.TYPE_MEETING"/>
     <field name="relatedToSelectId" expr="eval:_relatedToSelectId"/>
     <field name="relatedToSelect" expr="eval:_relatedToSelect"/>
     <field name="partner" expr="eval: _partner"/>
     <field name="partner" expr="eval: _contactMainPartner" if="_contactMainPartner"/>
     <field name="contactPartner" expr="eval: _contactPartner"/>
-    <field name="lead" expr="eval: __parent__"
+    <field name="eventLead" expr="eval: __parent__"
       if="__parent__?._model == 'com.axelor.apps.crm.db.Lead' "/>
-    <field name="lead" expr="eval: _eventLead" if="_eventLead != null"/>
+    <field name="eventLead" expr="eval: _eventLead" if="_eventLead != null"/>
     <field name="relatedToSelect" expr="eval: _relatedToSelect"/>
-    <field name="typeSelect" expr="eval: _typeSelect"/>
+    <field name="callTypeSelect" expr="eval:EventRepository.CALL_TYPE_OUTBOUND"
+      if="_typeSelect == '1'"/>
     <field name="relatedToSelectId" expr="eval: _relatedToSelectId"/>
   </action-record>
 
   <action-record name="action-event-record-task-status-select"
     model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="11"/>
     <field name="progressSelect" expr="0"/>
     <field name="prioritySelect" expr="2"/>
   </action-record>
@@ -481,7 +523,7 @@
   <action-record name="action-event-record-default-duration"
     model="com.axelor.apps.crm.db.Event">
     <field name="duration"
-      expr="eval: com.axelor.apps.tool.date.DurationTool.computeDuration(startDateTime, endDateTime)"
+      expr="eval: com.axelor.utils.date.DurationTool.computeDuration(startDateTime, endDateTime)"
       if="startDateTime &amp;&amp; endDateTime"/>
   </action-record>
 
@@ -495,19 +537,25 @@
 
   <action-record name="action-event-record-event-from-lead"
     model="com.axelor.apps.crm.db.Event">
-    <field name="lead" expr="eval: _lead"/>
-    <field name="user" expr="eval: _lead.user"/>
-    <field name="team" expr="eval: _lead.team"/>
-    <field name="partner" expr="eval: _lead.partner"/>
+    <field name="eventLead" expr="eval: _eventLead"/>
+    <field name="user" expr="eval: _eventLead.user"/>
+    <field name="team" expr="eval: _eventLead.team"/>
+    <field name="partner" expr="eval: _eventLead.partner"/>
+    <field name="typeSelect" expr="eval: 1" if="_call"/>
+    <field name="typeSelect" expr="eval: 2" if="_meeting"/>
+    <field name="typeSelect" expr="eval: 3" if="_task"/>
+    <field name="typeSelect" expr="eval: 5" if="_note"/>
   </action-record>
 
   <action-record name="action-event-record-event-from-opportunity"
     model="com.axelor.apps.crm.db.Event">
-    <field name="lead" expr="eval: _opportunity.lead"/>
+    <field name="opportunity" expr="eval: _opportunity"/>
+    <field name="team" expr="eval: _opportunity.team"/>
     <field name="partner" expr="eval: _opportunity.partner"/>
-    <field if="_opportunity.id != null" name="relatedToSelect"
-      expr="eval:'com.axelor.apps.crm.db.Opportunity'"/>
-    <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_EVENT" if="_call"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_MEETING" if="_meeting"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_TASK" if="_task"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_NOTE" if="_note"/>
   </action-record>
 
 
@@ -535,6 +583,10 @@
     <field name="user" expr="eval: __repo__(User).find(_partner.user.id)"
       if="_partner.user != null"/>
     <field name="team" expr="eval: _partner.team"/>
+    <field name="typeSelect" expr="eval: 1" if="_call"/>
+    <field name="typeSelect" expr="eval: 2" if="_meeting"/>
+    <field name="typeSelect" expr="eval: 3" if="_task"/>
+    <field name="typeSelect" expr="eval: 5" if="_note"/>
   </action-record>
 
   <action-record name="action-meeting-set-location-partner"
@@ -551,28 +603,13 @@
   <action-record name="action-meeting-set-location-lead"
     model="com.axelor.apps.crm.db.Event">
     <field name="location"
-      expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
+      expr="eval:(eventLead?.primaryAddress != null ? eventLead.primaryAddress+', ' : '')+(eventLead?.primaryPostalCode != null ? eventLead.primaryPostalCode+' ' : '')+(eventLead?.primaryCity != null ? eventLead.primaryCity: '')"/>
   </action-record>
 
   <action-record name="action-event-record-compute-attendee-list"
     model="com.axelor.apps.crm.db.Event">
     <field if="attendees" name="computedAttendeeList"
       expr="eval:attendees.collect{it?.name}.join(', ')"/>
-  </action-record>
-
-  <!-- ACTIONS TO SET SELECTS -->
-
-  <action-record name="action-set-task-status-select-2"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="eval:12"/>
-  </action-record>
-  <action-record name="action-set-task-status-select-3"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="eval:13"/>
-  </action-record>
-  <action-record name="action-set-task-status-select-4"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="eval:14"/>
   </action-record>
 
   <action-record name="action-event-new-leave" model="com.axelor.apps.crm.db.Event">
@@ -588,14 +625,6 @@
       if="visibilitySelect == 2 &amp;&amp; disponibilitySelect == 1"/>
     <field name="subjectTeam" expr="eval: com.axelor.i18n.I18n.get('Available')"
       if="visibilitySelect == 2 &amp;&amp; disponibilitySelect == 2"/>
-  </action-record>
-
-  <action-record name="action-event-record-reset-status-select"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="eval: 1"
-      if="typeSelect != 3 &amp;&amp; statusSelect &gt; 9"/>
-    <field name="statusSelect" expr="eval: 11"
-      if="typeSelect == 3 &amp;&amp; statusSelect &lt;= 9"/>
   </action-record>
 
   <action-record name="action-event-record-reset-category"
@@ -631,17 +660,15 @@
 
   <action-attrs name="action-event-attrs-show-past-event-text">
     <attribute name="hidden" for="pastEventText"
-      expr="eval: startDateTime &gt;= __time__ || __this__.startDateTime == __self__.startDateTime"
-      if="id != null &amp;&amp; startDateTime !=null"/>
-    <attribute name="hidden" for="pastEventText" expr="eval: startDateTime &gt;= __time__"
-      if="!id"/>
+      expr="eval: startDateTime &gt;= __time__ || __this__?.startDateTime == __self__?.startDateTime"
+      if="startDateTime != null"/>
   </action-attrs>
 
   <!-- FILTERS -->
 
   <search-filters name="crm-tasks-filters" model="com.axelor.apps.crm.db.Event"
     title="Tasks filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My Tasks">
       <domain>self.user = :__user__</domain>
     </filter>
@@ -650,7 +677,8 @@
     </filter>
     <filter title="My Upcoming Tasks">
       <domain>self.user = :__user__ and self.startDateTime &lt; :_newDate and (self.statusSelect =
-        11 or self.statusSelect = 12)</domain>
+        1
+        or self.statusSelect = 2)</domain>
     </filter>
     <filter title="My Project Tasks">
       <domain>self.team = :_myActiveTeam</domain>
@@ -659,7 +687,7 @@
 
   <search-filters name="meeting-filters" model="com.axelor.apps.crm.db.Event"
     title="Meeting filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My Meetings">
       <domain>self.user = :__user__</domain>
     </filter>
@@ -673,7 +701,7 @@
 
   <search-filters name="call-filters" model="com.axelor.apps.crm.db.Event"
     title="Call filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My Calls">
       <domain>self.user = :__user__</domain>
     </filter>
@@ -687,7 +715,7 @@
 
   <search-filters name="event-filters" model="com.axelor.apps.crm.db.Event"
     title="Event filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <filter title="My upcoming events">
       <domain>self.user = :__user__ AND self.startDateTime &gt;= :_currentDate</domain>
     </filter>

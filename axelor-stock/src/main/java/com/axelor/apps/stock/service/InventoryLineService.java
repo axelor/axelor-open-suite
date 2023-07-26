@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,32 +14,57 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class InventoryLineService {
 
   protected StockConfigService stockConfigService;
+  protected InventoryLineRepository inventoryLineRepository;
+  protected StockLocationLineService stockLocationLineService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
-  public InventoryLineService(StockConfigService stockConfigService) {
+  public InventoryLineService(
+      StockConfigService stockConfigService,
+      InventoryLineRepository inventoryLineRepository,
+      StockLocationLineService stockLocationLineService,
+      ProductCompanyService productCompanyService) {
     this.stockConfigService = stockConfigService;
+    this.inventoryLineRepository = inventoryLineRepository;
+    this.stockLocationLineService = stockLocationLineService;
+    this.productCompanyService = productCompanyService;
+  }
+
+  public InventoryLine createInventoryLine(
+      Inventory inventory,
+      Product product,
+      BigDecimal currentQty,
+      String rack,
+      TrackingNumber trackingNumber)
+      throws AxelorException {
+
+    return createInventoryLine(
+        inventory, product, currentQty, rack, trackingNumber, null, null, null, null);
   }
 
   public InventoryLine createInventoryLine(
@@ -47,16 +73,19 @@ public class InventoryLineService {
       BigDecimal currentQty,
       String rack,
       TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      String description,
       StockLocation stockLocation,
       StockLocation detailsStockLocation)
       throws AxelorException {
-
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
     inventoryLine.setProduct(product);
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
+    inventoryLine.setRealQty(realQty);
+    inventoryLine.setDescription(description);
     inventoryLine.setStockLocation(stockLocation);
     if (stockLocation == null) {
       inventoryLine.setStockLocation(detailsStockLocation);
@@ -73,8 +102,7 @@ public class InventoryLineService {
 
     if (product != null) {
       StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class)
-              .getOrCreateStockLocationLine(stockLocation, product);
+          stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 
       if (stockLocationLine != null) {
         inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
@@ -106,6 +134,8 @@ public class InventoryLineService {
 
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getStockLocationLine(stockLocation, product);
 
     if (product != null) {
       inventoryLine.setUnit(product.getUnit());
@@ -113,8 +143,8 @@ public class InventoryLineService {
       BigDecimal gap =
           inventoryLine.getRealQty() != null
               ? inventoryLine
-                  .getCurrentQty()
-                  .subtract(inventoryLine.getRealQty())
+                  .getRealQty()
+                  .subtract(inventoryLine.getCurrentQty())
                   .setScale(2, RoundingMode.HALF_UP)
               : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
@@ -125,15 +155,33 @@ public class InventoryLineService {
               .getStockConfig(stockLocation.getCompany())
               .getInventoryValuationTypeSelect();
 
+      BigDecimal productAvgPrice =
+          (BigDecimal)
+              productCompanyService.get(
+                  product, "avgPrice", inventory.getStockLocation().getCompany());
+
       switch (inventoryValuationTypeSelect) {
+        case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
+          price = productAvgPrice;
+          break;
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
           price = product.getCostPrice();
           break;
         case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
           price = product.getSalePrice();
           break;
+        case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
+          price = product.getPurchasePrice();
+          break;
+        case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
+          if (stockLocationLine != null) {
+            price = stockLocationLine.getAvgPrice();
+          } else {
+            price = productAvgPrice;
+          }
+          break;
         default:
-          price = product.getAvgPrice();
+          price = productAvgPrice;
           break;
       }
 
@@ -152,11 +200,45 @@ public class InventoryLineService {
 
     if (stockLocation != null && product != null) {
       StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
+          stockLocationLineService.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null) {
         currentQty = stockLocationLine.getCurrentQty();
       }
     }
     return currentQty;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateInventoryLine(
+      InventoryLine inventoryLine, BigDecimal realQty, String description) throws AxelorException {
+    inventoryLine.setRealQty(realQty);
+    if (description != null) {
+      inventoryLine.setDescription(description);
+    }
+    this.compute(inventoryLine, inventoryLine.getInventory());
+    inventoryLineRepository.save(inventoryLine);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public InventoryLine addLine(
+      Inventory inventory,
+      Product product,
+      TrackingNumber trackingNumber,
+      String rack,
+      BigDecimal realQty)
+      throws AxelorException {
+    InventoryLine inventoryLine =
+        createInventoryLine(
+            inventory,
+            product,
+            getCurrentQty(inventory.getStockLocation(), product),
+            rack,
+            trackingNumber,
+            null,
+            null,
+            inventory.getStockLocation(),
+            null);
+    updateInventoryLine(inventoryLine, realQty, null);
+    return inventoryLine;
   }
 }

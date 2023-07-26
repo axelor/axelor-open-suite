@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,26 +14,24 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.advanced.imports;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.tool.reader.DataReaderFactory;
-import com.axelor.apps.tool.reader.DataReaderService;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.Inflector;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -40,6 +39,8 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.JsonContext;
+import com.axelor.utils.reader.DataReaderFactory;
+import com.axelor.utils.reader.DataReaderService;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -93,7 +94,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     if (advancedImport.getImportFile() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_IMPORT_FILE));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_IMPORT_FILE));
     }
 
     String extension = Files.getFileExtension(advancedImport.getImportFile().getFileName());
@@ -108,7 +109,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return this.process(reader, advancedImport);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public boolean process(DataReaderService reader, AdvancedImport advancedImport)
       throws AxelorException, ClassNotFoundException {
 
@@ -183,7 +184,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return isValid;
   }
 
-  private boolean applyObject(
+  protected boolean applyObject(
       String[] row, FileTab fileTab, boolean isConfig, int linesToIgnore, boolean isTabConfig)
       throws AxelorException {
     int rowIndex = isConfig ? (isTabConfig ? 1 : 0) : 0;
@@ -201,19 +202,19 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         && !isConfig) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_3));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_3));
 
     } else if (isConfig
         && (!StringUtils.containsIgnoreCase(row[0], "Object")
             && (row.length > 1 && !StringUtils.contains(row[1], "Object")))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_4));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_4));
 
     } else if (isConfig) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_OBJECT),
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_OBJECT),
           fileTab.getName());
     }
 
@@ -226,7 +227,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return true;
   }
 
-  private void applyWithConfig(
+  protected void applyWithConfig(
       String[] row,
       int line,
       List<FileField> fileFieldList,
@@ -294,7 +295,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void applyWithoutConfig(
       String[] row, int line, List<FileField> fileFieldList, FileTab fileTab, boolean isHeader)
       throws AxelorException {
@@ -341,7 +342,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  private void setSampleLines(int line, String value, FileField fileField) {
+  protected void setSampleLines(int line, String value, FileField fileField) {
     if (!StringUtils.isBlank(fileField.getTargetType())
         && fileField.getTargetType().equals("String")
         && !StringUtils.isBlank(value)
@@ -364,7 +365,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void readFields(
       String value,
       int index,
@@ -413,7 +414,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     fileTab.addFileFieldListItem(fileField);
   }
 
-  private boolean checkFields(Mapper mapper, String importField, String subImportField)
+  protected boolean checkFields(Mapper mapper, String importField, String subImportField)
       throws AxelorException, ClassNotFoundException {
 
     if (importField != null) {
@@ -423,7 +424,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(IExceptionMessage.ADVANCED_IMPORT_1),
+                I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_1),
                 importField,
                 mapper.getBeanClass().getSimpleName()));
       }
@@ -441,7 +442,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(IExceptionMessage.ADVANCED_IMPORT_5),
+                I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_5),
                 importField,
                 mapper.getBeanClass().getSimpleName()));
       }
@@ -449,7 +450,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return true;
   }
 
-  private boolean checkSubFields(String[] subFields, int index, Property parentProp, String model)
+  protected boolean checkSubFields(String[] subFields, int index, Property parentProp, String model)
       throws AxelorException, ClassNotFoundException {
     boolean isValid = true;
 
@@ -462,7 +463,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(
-                  I18n.get(IExceptionMessage.ADVANCED_IMPORT_2),
+                  I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_2),
                   subFields[index],
                   parentProp.getName(),
                   model));
@@ -478,7 +479,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 String.format(
-                    I18n.get(IExceptionMessage.ADVANCED_IMPORT_5), subFields[index], model));
+                    I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_5), subFields[index], model));
           }
         }
       }
@@ -486,7 +487,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return isValid;
   }
 
-  private void setImportFields(
+  protected void setImportFields(
       Mapper mapper, FileField fileField, String importField, String subImportField) {
 
     Property prop = mapper.getProperty(importField);
@@ -513,7 +514,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  private int getImportType(String value, String importType) {
+  protected int getImportType(String value, String importType) {
 
     if (Strings.isNullOrEmpty(importType)) {
       if (value.contains(".")) {
@@ -543,7 +544,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  private int getForStatusSelect(String importType) {
+  protected int getForStatusSelect(String importType) {
 
     switch (importType.toLowerCase()) {
       case forSelectUseTitles:
@@ -583,7 +584,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
             && !tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.ADVANCED_IMPORT_6),
+              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6),
               fileTab.getName());
         }
         if (tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
@@ -714,8 +715,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return isResetValue;
   }
 
-  @Transactional
-  private void resetPropertyValue(Class<? extends Model> klass, List<Object> recordList)
+  @Transactional(rollbackOn = {Exception.class})
+  protected void resetPropertyValue(Class<? extends Model> klass, List<Object> recordList)
       throws ClassNotFoundException {
 
     JpaRepository<? extends Model> modelRepo = JpaRepository.of(klass);
@@ -737,7 +738,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  private void resetSubPropertyValue(Class<? extends Model> klass, JsonContext jsonContext)
+  protected void resetSubPropertyValue(Class<? extends Model> klass, JsonContext jsonContext)
       throws ClassNotFoundException {
 
     for (Property prop : Mapper.of(klass).getProperties()) {
@@ -784,7 +785,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeRecord(
       FileTab fileTab,
       Class<? extends Model> modelKlass,
@@ -833,7 +834,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeSubRecords(Class<? extends Model> klass, JsonContext jsonContext)
       throws ClassNotFoundException {
 

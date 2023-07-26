@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppBankPayment" lang="java">
+  <entity name="AppBankPayment" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <boolean name="manageDirectDebitPayment" title="Manage direct debit payment"
       default="false"/>
@@ -16,12 +16,14 @@
     <boolean name="manageBankToBankTransferPayment"
       title="Manage bank to bank transfer payment" default="true"/>
     <boolean name="enableEbicsModule" title="Enable EBICS module" default="false"/>
+    <boolean name="manageBillOfExchange" title="Manage bill of exchange" default="true"/>
 
     <track>
       <field name="manageDirectDebitPayment" on="UPDATE"/>
       <field name="manageCreditTransferPayment" on="UPDATE"/>
       <field name="manageBankToBankTransferPayment" on="UPDATE"/>
       <field name="enableEbicsModule" on="UPDATE"/>
+      <field name="manageBillOfExchange" on="UPDATE"/>
     </track>
   </entity>
 

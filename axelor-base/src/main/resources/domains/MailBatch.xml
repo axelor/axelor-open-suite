@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="MailBatch" lang="java">
+  <entity name="MailBatch">
 
     <!-- HEADER -->
     <string name="code" title="Code" namecolumn="true" unique="true"/>
@@ -13,8 +13,7 @@
       selection="base.batch.action.select" default="1"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
-    <many-to-one name="template" ref="com.axelor.apps.message.db.Template"
-      title="Template"/>
+    <many-to-one name="template" ref="com.axelor.message.db.Template" title="Template"/>
 
     <!-- OTHERS INFORMATION -->
     <string name="description" title="Description" large="true"/>

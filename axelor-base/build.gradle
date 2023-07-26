@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -7,18 +9,21 @@ apply {
 	version = openSuiteVersion
 }
 
+
+license {
+  exclude "**/swagger/**"
+}
+
 axelor {
 	title "Axelor Base"
 	description "Axelor Base Module"
 }
 
 dependencies {
-    api project(":modules:axelor-admin")
-	api project(":modules:axelor-message")
-
 	implementation libs.commons_lang3
 	implementation libs.commons_math3
 	implementation libs.commons_validator
+	implementation libs.commons_httpclient
 
 	implementation libs.ical4j
 	implementation libs.ical4j_extensions
@@ -30,10 +35,28 @@ dependencies {
 	implementation libs.html2pdf
 	implementation libs.jackrabbit_webdav
 	implementation libs.zxing_core
+		// JSch
+	implementation libs.jsch
 
 	implementation libs.google_oauth_client_jetty
 	implementation libs.google_api_services_people
 
 	implementation libs.pac4j_core
 	testImplementation libs.mockito
+
+	api libs.tika
+
+	if (file("../../axelor-studio").exists()) {
+		api project(":modules:axelor-studio")
+	}
+	else {
+		api libs.axelor_studio
+	}
+	implementation libs.faker
+	api libs.commons_csv
+	api libs.wslite
+
+	implementation libs.logback
+
+	implementation libs.swagger_jaxrs;
 }

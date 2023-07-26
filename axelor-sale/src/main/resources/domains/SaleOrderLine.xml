@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" lang="java">
+  <entity name="SaleOrderLine">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
@@ -30,11 +30,12 @@
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
     <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
     <boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
-    <string name="productName" title="Displayed Product name" required="true"
-      translatable="true"/>
+    <string name="productName" title="Displayed Product name" required="true"/>
     <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
     <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
     <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <string name="pricingScaleLogs" title="Price calculation details" large="true"
+      readonly="true"/>
 
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
@@ -51,8 +52,9 @@
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
 
-    <date name="estimatedDelivDate" title="Estimated shipping date"/>
-    <date name="desiredDelivDate" title="Desired delivery date"/>
+    <date name="estimatedShippingDate" title="Estimated shipping date"/>
+    <date name="desiredDeliveryDate" title="Desired delivery date"/>
+    <date name="estimatedDeliveryDate" title="Estimated delivery date"/>
     <decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
 
     <!-- Complementary Products -->

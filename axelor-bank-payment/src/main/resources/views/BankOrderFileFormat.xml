@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-order-file-format-grid" orderBy="orderFileFormatSelect"
     title="Bank Orders file formats" model="com.axelor.apps.bankpayment.db.BankOrderFileFormat"
@@ -23,7 +23,8 @@
     </panel>
     <panel name="globalAttributesPanel" title="Global attributes">
       <field name="orderTypeSelect"
-        onChange="action-bank-order-file-format-record-order-type-select-onchange" required="true"/>
+        onChange="action-bank-order-file-format-record-order-type-select-onchange" required="true"
+        selection-in="[1, 2, 3, 4, 5, 6, 8]"/>
       <field name="fileGenerationSupported"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
@@ -32,6 +33,11 @@
         showIf="bankDetailsTypeSelect == '1' &amp;&amp; (orderTypeSelect == '1' || orderTypeSelect == '2')"/>
       <field name="allowOrderCurrDiffFromBankDetails"
         showIf="orderTypeSelect != 1 &amp;&amp; orderTypeSelect != 2" colSpan="12"/>
+      <panel name="exchangePanel" hidden="true" showIf="orderTypeSelect == 8" colSpan="12">
+        <field name="entryCodeSelect" requiredIf="orderTypeSelect == 8"/>
+        <field name="dailyCodeSelect" requiredIf="orderTypeSelect == 8"/>
+        <field name="acceptPerLineCodeSelect" requiredIf="orderTypeSelect == 8"/>
+      </panel>
       <panel name="qualifyingAmountSelectPanel"
         showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'">
         <field name="qualifyingOfAmountSelect" hidden="true"
@@ -80,6 +86,7 @@
           field="bankOrderFileFormatCountryList" grid-view="bank-order-file-format-country-grid"
           form-view="bank-order-file-format-country-form"/>
       </panel>
+
       <field name="displayFurtherInformations"
         showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'"/>
     </panel>

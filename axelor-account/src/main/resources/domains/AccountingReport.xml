@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingReport" lang="java">
+  <entity name="AccountingReport">
 
     <string name="ref" title="Ref." namecolumn="true"/>
     <date name="dateFrom" title="From"/>
     <date name="dateTo" title="To"/>
+    <date name="otherDateFrom" title="From"/>
+    <date name="otherDateTo" title="To"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
-    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"
+      title="Origin currency"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
     <many-to-one name="journal" ref="Journal" title="Journal"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
@@ -94,6 +97,26 @@
     <boolean name="exported" title="Exported" default="false"/>
     <boolean name="complementaryExport" title="Complementary export" default="false"/>
 
+    <!-- Report 17 -->
+    <integer name="fixedAssetLineTypeSelect" title="Type"
+      selection="account.fixed.asset.line.type.select" default="1"/>
+
+    <!-- Report 3000 -->
+    <boolean name="displayDeltaYear" title="Display the delta between years"/>
+    <boolean name="displayDeltaYearPercentage"
+      title="Display the percentage delta between years"/>
+    <boolean name="displayAnalyticAccountsDetails" title="Display analytic accounts details"/>
+    <boolean name="displayDetails" title="Display detailed lines"/>
+    <one-to-many ref="com.axelor.apps.account.db.AccountingReportAnalyticConfigLine"
+      name="accountingReportAnalyticConfigLineList" title="Analytic rules"
+      mappedBy="accountingReport"/>
+
+    <boolean name="excludeViewAccount" default="false"/>
+    <boolean name="excludeCommitmentSpecialAccount" default="false"/>
+
+    <!-- Transient -->
+    <boolean name="traceAnomalies" transient="true"/>
+
     <unique-constraint columns="ref,company"/>
 
     <extra-code><![CDATA[
@@ -118,15 +141,13 @@
 		public static final int REPORT_GROSS_VALUES_AND_DEPRECIATION = 17;
 		public static final int REPORT_FEES_DECLARATION_PREPARATORY_PROCESS = 19;
 		public static final int REPORT_FEES_DECLARATION_SUPPORT = 20;
+		public static final int REPORT_UNPAID_DUE_INVOICE = 23;
+		public static final int REPORT_INVOICE_WITH_PAYMENT_DELAY = 24;
 		public static final int REPORT_CUSTOM_STATE = 3000;
 
 		// EXPORT TYPE SELECT
         public static final int EXPORT_ADMINISTRATION = 1000;
 		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1001;
-		public static final int EXPORT_SALES = 1006;
-		public static final int EXPORT_REFUNDS = 1007;
-		public static final int EXPORT_TREASURY = 1008;
-		public static final int EXPORT_PURCHASES = 1009;
 		public static final int EXPORT_GENERAL_BALANCE = 1010;
 		public static final int EXPORT_N4DS = 1011;
 

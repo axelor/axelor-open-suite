@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch"
+    id="account-batch-grid" extension="true" orderBy="-id" canEdit="false" canDelete="false"
+    canNew="false" canSave="false">
+    <extend target="//field[@name='anomaly']">
+      <insert position="after">
+        <field name="moveDate" hidden="true" showIf="moveDate"/>
+        <field name="accountingCutOffTypeSelect" hidden="true"
+          showIf="accountingCutOffTypeSelect"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form name="batch-form" id="account-batch-form" title="Batch"
+    model="com.axelor.apps.base.db.Batch" onNew="action-batch-attrs" onLoad="action-batch-attrs"
+    canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false" width="large"
+    extension="true">
+    <extend target="//button[@name='showTraceBackBtn']">
+      <attribute name="onClick" value="action-batch-traceback-btn-group"/>
+    </extend>
+
+    <extend target="//button[@name='showAccountMoveBtn']">
+      <attribute name="onClick" value="action-batch-account-move-btn-group"/>
+    </extend>
+
+    <extend target="//field[@name='anomaly']">
+      <insert position="after">
+        <field name="moveDate"/>
+        <field name="accountingCutOffTypeSelect"/>
+      </insert>
+    </extend>
+
+  </form>
+
+  <action-group name="action-batch-traceback-btn-group">
+    <action name="action-batch-show-trace-back"
+      if="!(__config__.app.isApp('account') &amp;&amp; accountingBatch?.actionSelect == 25)"/>
+    <action name="action-batch-show-trace-back-account-consistency"
+      if="__config__.app.isApp('account') &amp;&amp; accountingBatch?.actionSelect == 25"/>
+    <action name="close"/>
+  </action-group>
+
+  <action-group name="action-batch-account-move-btn-group">
+    <action name="action-batch-group-show-move"
+      if="!(__config__.app.isApp('account') &amp;&amp; accountingBatch?.actionSelect == 25)"/>
+    <action name="action-batch-group-move-method-consistency"
+      if="__config__.app.isApp('account') &amp;&amp; accountingBatch?.actionSelect == 25"/>
+  </action-group>
+
+  <action-group name="action-batch-group-show-move">
+    <action name="action-batch-show-move"/>
+    <action name="close"/>
+  </action-group>
+
+  <action-group name="action-batch-group-move-method-consistency">
+    <action name="action-batch-validate-move-method-consistency"/>
+    <action name="action-batch-show-move-method-consistency" if="anomaly > 0"/>
+    <action name="close" if="anomaly > 0"/>
+  </action-group>
+
+  <action-view name="action-batch-show-trace-back-account-consistency" title="Anomalies"
+    model="com.axelor.apps.base.db.TraceBack">
+    <view type="grid" name="trace-back-account-consistency-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.batchId = :id</domain>
+    <context name="id" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-batch-show-move-method-consistency">
+    <call class="com.axelor.apps.account.web.BatchAccountController" method="showMoveError"/>
+  </action-method>
+
+  <action-validate name="action-batch-validate-move-method-consistency">
+    <info message="There are no moves to be displayed" if="anomaly == 0"/>
+  </action-validate>
+</object-views>

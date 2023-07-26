@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,20 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.MessageService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -39,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class MessageController extends com.axelor.apps.message.web.MessageController {
+public class MessageController extends com.axelor.message.web.MessageController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -52,7 +53,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
    * @throws BirtException
    * @throws IOException
    */
-  public void printMessage(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void printMessage(ActionRequest request, ActionResponse response) throws Exception {
 
     Message message = request.getContext().asType(Message.class);
     message = Beans.get(MessageRepository.class).find(message.getId());
@@ -61,9 +62,11 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
     if (pdfPath != null) {
 
       response.setView(
-          ActionView.define("Message " + message.getSubject()).add("html", pdfPath).map());
+          ActionView.define(I18n.get("Message ") + message.getSubject())
+              .add("html", pdfPath)
+              .map());
 
-    } else response.setFlash(I18n.get(IExceptionMessage.MESSAGE_1));
+    } else response.setInfo(I18n.get(BaseExceptionMessage.MESSAGE_1));
   }
 
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -108,7 +111,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
       response.setView(ActionView.define(title).add("html", fileLink).map());
 
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.MESSAGE_2));
+      response.setInfo(I18n.get(BaseExceptionMessage.MESSAGE_2));
     }
   }
 }

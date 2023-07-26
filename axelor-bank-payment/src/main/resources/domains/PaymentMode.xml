@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentMode" lang="java" cacheable="true">
+  <entity name="PaymentMode" cacheable="true">
 
     <boolean name="generateBankOrder" title="Generate Bank order"/>
     <boolean name="autoConfirmBankOrder" title="Confirm auto. the bank orders"/>
@@ -15,8 +15,6 @@
     <string name="bankOrderExportFolderPath"/>
     <many-to-one name="bankOrderFileFormat"
       ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format"/>
-    <boolean name="generateMoveAutoFromBankOrder"
-      title="Generate account move from the bank order"/>
     <boolean name="consoBankOrderLinePerPartner"
       title="Consolidate bank order lines per partner"/>
 
@@ -27,6 +25,10 @@
         public static final int ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT = 4;
         public static final int ORDER_TYPE_NATIONAL_TREASURY_TRANSFER = 5;
         public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER = 6;
+
+        public static final int ACCOUNTING_TRIGGER_CONFIRMATION = 2;
+        public static final int ACCOUNTING_TRIGGER_VALIDATION = 3;
+        public static final int ACCOUNTING_TRIGGER_REALIZATION = 4;
     ]]></extra-code>
 
   </entity>

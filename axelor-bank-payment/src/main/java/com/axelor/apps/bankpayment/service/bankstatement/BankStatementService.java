@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankstatement;
 
@@ -27,15 +28,17 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementLineAFB120Service;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -44,6 +47,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankStatementService {
 
@@ -51,16 +55,22 @@ public class BankStatementService {
   protected BankPaymentBankStatementLineAFB120Repository
       bankPaymentBankStatementLineAFB120Repository;
   protected BankStatementLineRepository bankStatementLineRepository;
+  protected BankStatementLineAFB120Service bankStatementLineAFB120Service;
+  protected BankDetailsRepository bankDetailsRepository;
 
   @Inject
   public BankStatementService(
       BankStatementRepository bankStatementRepository,
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
-      BankStatementLineRepository bankStatementLineRepository) {
+      BankStatementLineRepository bankStatementLineRepository,
+      BankStatementLineAFB120Service bankStatementLineAFB120Service,
+      BankDetailsRepository bankDetailsRepository) {
     this.bankStatementRepository = bankStatementRepository;
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
     this.bankStatementLineRepository = bankStatementLineRepository;
+    this.bankStatementLineAFB120Service = bankStatementLineAFB120Service;
+    this.bankDetailsRepository = bankDetailsRepository;
   }
 
   public void runImport(BankStatement bankStatement, boolean alertIfFormatNotSupported)
@@ -71,13 +81,13 @@ public class BankStatementService {
     if (bankStatement.getBankStatementFile() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_MISSING_FILE));
     }
 
     if (bankStatement.getBankStatementFileFormat() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_MISSING_FILE_FORMAT));
     }
 
     BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
@@ -86,6 +96,7 @@ public class BankStatementService {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
         Beans.get(BankStatementFileAFB120Service.class).process(bankStatement);
+        this.checkImport(bankStatement);
         updateStatus(bankStatement);
         break;
 
@@ -93,7 +104,7 @@ public class BankStatementService {
         if (alertIfFormatNotSupported) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
+              I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
         }
     }
   }
@@ -101,6 +112,26 @@ public class BankStatementService {
   @Transactional
   public void updateStatus(BankStatement bankStatement) {
     bankStatement = find(bankStatement);
+    List<BankDetails> bankDetailsList = fetchBankDetailsList(bankStatement);
+    if (!ObjectUtils.isEmpty(bankDetailsList)) {
+      for (BankDetails bankDetails : bankDetailsList) {
+        BankStatementLineAFB120 finalBankStatementLineAFB120 =
+            bankPaymentBankStatementLineAFB120Repository
+                .findByBankStatementBankDetailsAndLineType(
+                    bankStatement,
+                    bankDetails,
+                    BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+                .order("-operationDate")
+                .order("-sequence")
+                .fetchOne();
+        bankDetails.setBalance(
+            (finalBankStatementLineAFB120
+                .getCredit()
+                .subtract(finalBankStatementLineAFB120.getDebit())));
+        bankDetails.setBalanceUpdatedDate(finalBankStatementLineAFB120.getOperationDate());
+      }
+    }
+
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
     bankStatementRepository.save(bankStatement);
   }
@@ -123,7 +154,7 @@ public class BankStatementService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
     }
 
     return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")
@@ -136,7 +167,7 @@ public class BankStatementService {
         .getFileLink();
   }
 
-  private String getTimezone(BankStatement bankStatement) {
+  protected String getTimezone(BankStatement bankStatement) {
     if (bankStatement.getEbicsPartner() == null
         || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser() == null
         || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser().getAssociatedUser()
@@ -244,32 +275,34 @@ public class BankStatementService {
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(
                   bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+              .order("operationDate")
               .order("sequence")
               .fetchOne();
       BankStatementLineAFB120 finalBankStatementLineAFB120 =
           bankPaymentBankStatementLineAFB120Repository
               .findByBankDetailsLineTypeExcludeBankStatement(
                   bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+              .order("-operationDate")
               .order("-sequence")
               .fetchOne();
       if (ObjectUtils.notEmpty(finalBankStatementLineAFB120)
-          && !(initialBankStatementLineAFB120
-                  .getCredit()
-                  .equals(finalBankStatementLineAFB120.getCredit())
-              && initialBankStatementLineAFB120
-                  .getDebit()
-                  .equals(finalBankStatementLineAFB120.getDebit()))) {
+          && (initialBankStatementLineAFB120
+                      .getDebit()
+                      .compareTo(finalBankStatementLineAFB120.getDebit())
+                  != 0
+              || initialBankStatementLineAFB120
+                      .getCredit()
+                      .compareTo(finalBankStatementLineAFB120.getCredit())
+                  != 0)) {
         deleteLines = true;
       }
     }
     // delete imported
     if (deleteLines) {
-
-      deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
       throw new AxelorException(
           bankStatement,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_NOT_MATCHING));
     }
   }
 
@@ -320,47 +353,86 @@ public class BankStatementService {
     }
     // delete imported
     if (deleteLines) {
-      deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
       throw new AxelorException(
           bankStatement,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_INCOHERENT_BALANCE));
+          I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_INCOHERENT_BALANCE));
     }
   }
 
   public void checkImport(BankStatement bankStatement) throws AxelorException {
-    boolean alreadyImported = false;
-    List<BankStatementLineAFB120> initialLines;
-    List<BankStatementLineAFB120> finalLines;
-    List<BankDetails> bankDetails = fetchBankDetailsList(bankStatement);
-    // Load lines
-    for (BankDetails bd : bankDetails) {
-      initialLines =
-          bankPaymentBankStatementLineAFB120Repository
-              .findByBankStatementBankDetailsAndLineType(
-                  bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
-              .fetch();
+    try {
+      boolean alreadyImported = false;
 
-      finalLines =
-          bankPaymentBankStatementLineAFB120Repository
-              .findByBankStatementBankDetailsAndLineType(
-                  bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-              .fetch();
+      List<BankStatementLineAFB120> initialLines;
+      List<BankStatementLineAFB120> finalLines;
+      List<BankDetails> bankDetails = fetchBankDetailsList(bankStatement);
+      // Load lines
+      for (BankDetails bd : bankDetails) {
+        initialLines =
+            bankPaymentBankStatementLineAFB120Repository
+                .findByBankStatementBankDetailsAndLineType(
+                    bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+                .fetch();
 
-      alreadyImported =
-          bankStatementLineAlreadyExists(initialLines)
-              || bankStatementLineAlreadyExists(finalLines)
-              || alreadyImported;
-    }
-    if (!alreadyImported) {
-      checkAmountWithPreviousBankStatement(bankStatement, bankDetails);
-      checkAmountWithinBankStatement(bankStatement, bankDetails);
-    } else {
+        finalLines =
+            bankPaymentBankStatementLineAFB120Repository
+                .findByBankStatementBankDetailsAndLineType(
+                    bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+                .fetch();
+
+        alreadyImported =
+            bankStatementLineAlreadyExists(initialLines)
+                || bankStatementLineAlreadyExists(finalLines)
+                || alreadyImported;
+      }
+      if (!alreadyImported) {
+        checkAmountWithPreviousBankStatement(bankStatement, bankDetails);
+        checkAmountWithinBankStatement(bankStatement, bankDetails);
+      } else {
+        throw new AxelorException(
+            bankStatement,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
+      }
+
+    } catch (Exception e) {
       deleteBankStatementLines(bankStatementRepository.find(bankStatement.getId()));
-      throw new AxelorException(
-          bankStatement,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
+      throw e;
     }
+  }
+
+  @Transactional
+  public void updateBankDetailsBalanceAndDate(List<BankDetails> bankDetails) {
+    if (CollectionUtils.isEmpty(bankDetails)) {
+      return;
+    }
+    BankStatementLineAFB120 lastLine;
+    for (BankDetails bankDetail : bankDetails) {
+      lastLine =
+          bankStatementLineAFB120Service.getLastBankStatementLineAFB120FromBankDetails(bankDetail);
+      if (lastLine != null) {
+        bankDetail.setBalance(
+            lastLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+                ? lastLine.getDebit()
+                : lastLine.getCredit());
+        bankDetail.setBalanceUpdatedDate(lastLine.getOperationDate());
+      } else {
+        bankDetail.setBalance(BigDecimal.ZERO);
+        bankDetail.setBalanceUpdatedDate(null);
+      }
+      bankDetailsRepository.save(bankDetail);
+    }
+  }
+
+  public List<BankStatementLineAFB120> getBankStatementLines(BankStatement bankStatement) {
+    List<BankStatementLineAFB120> bankStatementLines;
+    bankStatementLines =
+        bankPaymentBankStatementLineAFB120Repository
+            .all()
+            .filter("self.bankStatement = :bankStatement")
+            .bind("bankStatement", bankStatement)
+            .fetch();
+    return bankStatementLines;
   }
 }

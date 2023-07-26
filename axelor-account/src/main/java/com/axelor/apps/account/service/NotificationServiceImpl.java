@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -34,9 +35,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -122,13 +123,14 @@ public class NotificationServiceImpl implements NotificationService {
     return accountConfigService.getAutoMiscOpeJournal(accountConfig);
   }
 
-  protected Account getAccount(AccountConfig accountConfig, NotificationItem notificationItem) {
-    Account account = accountConfig.getFactorCreditAccount();
+  protected Account getAccount(AccountConfig accountConfig, NotificationItem notificationItem)
+      throws AxelorException {
     if (notificationItem.getTypeSelect()
         == NotificationRepository.TYPE_PAYMENT_TO_THE_FACTORE_AFTER_FACTORE_RETURN) {
-      account = accountConfig.getFactorDebitAccount();
+      return accountConfigService.getFactorDebitAccount(accountConfig);
+    } else {
+      return accountConfigService.getFactorCreditAccount(accountConfig);
     }
-    return account;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -165,7 +167,8 @@ public class NotificationServiceImpl implements NotificationService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            invoice.getInvoiceId());
+            invoice.getInvoiceId(),
+            invoice.getCompanyBankDetails());
     MoveLine partnerMoveLine, notificationMoveLine;
 
     Account account = getAccount(accountConfig, notificationItem);
@@ -200,7 +203,7 @@ public class NotificationServiceImpl implements NotificationService {
     paymentMove.addMoveLineListItem(partnerMoveLine);
     paymentMove = moveRepository.save(paymentMove);
 
-    moveValidateService.validate(paymentMove);
+    moveValidateService.accounting(paymentMove);
 
     MoveLine invoiceMoveLine = findInvoiceAccountMoveLine(invoice);
     MoveLine subrogationReleaseMoveLine =
@@ -281,5 +284,19 @@ public class NotificationServiceImpl implements NotificationService {
       }
     }
     return null;
+  }
+
+  @Override
+  public List<Long> getMoveLines(Notification notification) {
+    List<Long> moveLineIdList = new ArrayList<Long>();
+    for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+      if (notificationItem.getMove() == null) {
+        continue;
+      }
+      for (MoveLine moveLine : notificationItem.getMove().getMoveLineList()) {
+        moveLineIdList.add(moveLine.getId());
+      }
+    }
+    return moveLineIdList;
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.bankpayment.db.BankStatementQuery"
     title="Bank statement queries" name="bank-statement-query-grid">
@@ -17,6 +17,9 @@
       <field name="sequence" requiredIf="ruleTypeSelect == 1" showIf="ruleTypeSelect == 1"/>
       <field name="confidenceIndex" requiredIf="ruleTypeSelect == 1"
         showIf="ruleTypeSelect == 1"/>
+      <label
+        title="To use the generated move in the formula, you can use the variable 'generatedMove'"
+        css="text-info label-bold" colSpan="12" showIf="ruleTypeSelect == 3"/>
       <field name="query" widget="code-editor" x-code-syntax="groovy" x-code-theme="groovy"
         colSpan="12"/>
     </panel>

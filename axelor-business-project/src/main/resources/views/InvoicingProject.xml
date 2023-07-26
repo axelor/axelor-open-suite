@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="invoicing-project-grid" title="Invoicing business projects"
     model="com.axelor.apps.businessproject.db.InvoicingProject">
@@ -77,7 +77,7 @@
           canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production"
           grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form"
           showIf="manufOrderSet &amp;&amp; manufOrderSet.length &gt; 0" readonlyIf="invoice"
-          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction()"
           name="manufOrderSetPanel"/>
 
         <panel-related field="projectTaskSet" colSpan="12" canNew="false"
@@ -117,8 +117,8 @@
 
   <action-attrs name="action-invoicing-project-attrs-title-project">
     <attribute name="title" for="project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
   <action-record name="action-invoicing-project-record-default"
@@ -146,6 +146,6 @@
   <search-filters name="invoicing-project-filters"
     model="com.axelor.apps.businessproject.db.InvoicingProject" title="Invoicing project filters">
     <field name="manufOrderSet" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())"/>
+      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
   </search-filters>
 </object-views>

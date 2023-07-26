@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="pricing-line-grid" title="Pricing lines"
-    model="com.axelor.apps.base.db.PricingLine">
+    model="com.axelor.apps.base.db.PricingLine" onNew="action-pricing-line-group-attrs-onnew-onload"
+    editable="true">
     <field name="classificationIntParam1"/>
     <field name="classificationIntParam2"/>
     <field name="classificationIntParam3"/>
@@ -143,6 +144,31 @@
   <action-group name="action-pricing-line-group-attrs-onnew-onload">
     <action name="action-pricing-line-attrs-hide-fields"/>
     <action name="action-pricing-lines-attrs-change-titles"/>
+    <action name="action-pricing-line-attrs-set-scale"/>
   </action-group>
+
+  <action-attrs name="action-pricing-line-attrs-set-scale">
+    <attribute name="scale" for="classificationDecParam1"
+      expr="eval: __parent__.class1PricingRule?.scale"
+      if="__parent__.class1PricingRule?.fieldTypeSelect == 1"/>
+    <attribute name="scale" for="classificationDecParam2"
+      expr="eval: __parent__.class2PricingRule?.scale"
+      if="__parent__.class2PricingRule?.fieldTypeSelect == 1"/>
+    <attribute name="scale" for="classificationDecParam3"
+      expr="eval: __parent__.class3PricingRule?.scale"
+      if="__parent__.class3PricingRule?.fieldTypeSelect == 1"/>
+    <attribute name="scale" for="classificationDecParam4"
+      expr="eval: __parent__.class4PricingRule?.scale"
+      if="__parent__.class4PricingRule?.fieldTypeSelect == 1"/>
+
+    <attribute name="scale" for="resultParam1"
+      expr="eval: __parent__.result1PricingRule?.scale"/>
+    <attribute name="scale" for="resultParam2"
+      expr="eval: __parent__.result2PricingRule?.scale"/>
+    <attribute name="scale" for="resultParam3"
+      expr="eval: __parent__.result3PricingRule?.scale"/>
+    <attribute name="scale" for="resultParam4"
+      expr="eval: __parent__.result4PricingRule?.scale"/>
+  </action-attrs>
 
 </object-views>

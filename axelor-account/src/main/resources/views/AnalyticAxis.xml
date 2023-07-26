@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="analytic-axis-grid" title="analyticAxis.plurial"
     model="com.axelor.apps.account.db.AnalyticAxis">
@@ -12,44 +12,46 @@
 
   <form name="analytic-axis-form" title="Analytic Axis"
     model="com.axelor.apps.account.db.AnalyticAxis"
-    onLoad="action-attrs-analytic-axis-hide-grouping">
+    onLoad="action-attrs-analytic-axis-hide-grouping,action-method-account-analytic-axis-readonly-if-in-analytic-move-line"
+    onSave="action-method-account-analytic-axis-control-unicity,action-method-axis-check-company-on-analytic-account">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
       <field name="nbrOfAnalyticGrouping" readonlyIf="!id"
         onChange="action-attrs-analytic-axis-set-grouping,action-attrs-analytic-axis-hide-grouping"/>
       <field name="manageParentAccount"/>
-      <field name="company" colSpan="12" onChange="action-method-axis-change-company"/>
-      <field name="analyticGrouping1" onChange="action-validate-analytic-axis-check-1"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="1 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping2" onChange="action-validate-analytic-axis-check-2"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="2 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping3" onChange="action-validate-analytic-axis-check-3"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="3 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping4" onChange="action-validate-analytic-axis-check-4"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="4 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping5" onChange="action-validate-analytic-axis-check-5"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="5 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping6" onChange="action-validate-analytic-axis-check-6"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="6 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping7" onChange="action-validate-analytic-axis-check-7"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="7 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping8" onChange="action-validate-analytic-axis-check-8"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="8 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping9" onChange="action-validate-analytic-axis-check-9"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="9 &lt;= nbrOfAnalyticGrouping"/>
-      <field name="analyticGrouping10" onChange="action-validate-analytic-axis-check-10"
-        onSelect="action-method-analytic-axis-set-grouping-domain" hidden="true"
-        requiredIf="10 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="company" colSpan="12"
+        onChange="action-method-axis-change-company,action-method-axis-check-company-on-analytic-account"/>
+      <field name="analyticGrouping1"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="1 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping2"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="2 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping3"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="3 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping4"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="4 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping5"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="5 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping6"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="6 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping7"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="7 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping8"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="8 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping9"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="9 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping10"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="10 &lt;= nbrOfAnalyticGrouping"/>
     </panel>
 
   </form>
@@ -118,133 +120,28 @@
     <field name="analyticGrouping10" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 10"/>
   </action-record>
 
-  <action-validate name="action-validate-analytic-axis-check-1">
-    <alert
-      if="analyticGrouping1 &amp;&amp; (analyticGrouping1 == analyticGrouping2 || analyticGrouping1 == analyticGrouping3 || analyticGrouping1 == analyticGrouping4 || analyticGrouping1 == analyticGrouping5 || analyticGrouping1 == analyticGrouping6 || analyticGrouping1 == analyticGrouping7 || analyticGrouping1 == analyticGrouping8 || analyticGrouping1 == analyticGrouping9 || analyticGrouping1 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-1"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-1"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping1" expr="eval: null"
-      if="analyticGrouping1 &amp;&amp; (analyticGrouping1 == analyticGrouping2 || analyticGrouping1 == analyticGrouping3 || analyticGrouping1 == analyticGrouping4 || analyticGrouping1 == analyticGrouping5 || analyticGrouping1 == analyticGrouping6 || analyticGrouping1 == analyticGrouping7 || analyticGrouping1 == analyticGrouping8 || analyticGrouping1 == analyticGrouping9 || analyticGrouping1 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-2">
-    <alert
-      if="analyticGrouping2 &amp;&amp; (analyticGrouping2 == analyticGrouping1 || analyticGrouping2 == analyticGrouping3 || analyticGrouping2 == analyticGrouping4 || analyticGrouping2 == analyticGrouping5 || analyticGrouping2 == analyticGrouping6 || analyticGrouping2 == analyticGrouping7 || analyticGrouping2 == analyticGrouping8 || analyticGrouping2 == analyticGrouping9 || analyticGrouping2 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-2"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-2"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping2" expr="eval: null"
-      if="analyticGrouping2 &amp;&amp; (analyticGrouping2 == analyticGrouping1 || analyticGrouping1 == analyticGrouping3 || analyticGrouping1 == analyticGrouping4 || analyticGrouping1 == analyticGrouping5 || analyticGrouping1 == analyticGrouping6 || analyticGrouping1 == analyticGrouping7 || analyticGrouping1 == analyticGrouping8 || analyticGrouping1 == analyticGrouping9 || analyticGrouping1 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-3">
-    <alert
-      if="analyticGrouping3 &amp;&amp; (analyticGrouping3 == analyticGrouping1 || analyticGrouping3 == analyticGrouping2 || analyticGrouping3 == analyticGrouping4 || analyticGrouping3 == analyticGrouping5 || analyticGrouping3 == analyticGrouping6 || analyticGrouping3 == analyticGrouping7 || analyticGrouping3 == analyticGrouping8 || analyticGrouping3 == analyticGrouping9 || analyticGrouping3 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-3"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-3"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping3" expr="eval: null"
-      if="analyticGrouping3 &amp;&amp; (analyticGrouping3 == analyticGrouping1 || analyticGrouping3 == analyticGrouping2 || analyticGrouping3 == analyticGrouping4 || analyticGrouping3 == analyticGrouping5 || analyticGrouping3 == analyticGrouping6 || analyticGrouping3 == analyticGrouping7 || analyticGrouping3 == analyticGrouping8 || analyticGrouping3 == analyticGrouping9 || analyticGrouping3 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-4">
-    <alert
-      if="analyticGrouping4 &amp;&amp; (analyticGrouping4 == analyticGrouping1 || analyticGrouping4 == analyticGrouping2 || analyticGrouping4 == analyticGrouping3 || analyticGrouping4 == analyticGrouping5 || analyticGrouping4 == analyticGrouping6 || analyticGrouping4 == analyticGrouping7 || analyticGrouping4 == analyticGrouping8 || analyticGrouping4 == analyticGrouping9 || analyticGrouping4 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-4"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-4"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping4" expr="eval: null"
-      if="analyticGrouping4 &amp;&amp; (analyticGrouping4 == analyticGrouping1 || analyticGrouping4 == analyticGrouping2 || analyticGrouping4 == analyticGrouping3 || analyticGrouping4 == analyticGrouping5 || analyticGrouping4 == analyticGrouping6 || analyticGrouping4 == analyticGrouping7 || analyticGrouping4 == analyticGrouping8 || analyticGrouping4 == analyticGrouping9 || analyticGrouping4 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-5">
-    <alert
-      if="analyticGrouping5 &amp;&amp; (analyticGrouping5 == analyticGrouping1 || analyticGrouping5 == analyticGrouping2 || analyticGrouping5 == analyticGrouping3 || analyticGrouping5 == analyticGrouping4 || analyticGrouping5 == analyticGrouping6 || analyticGrouping5 == analyticGrouping7 || analyticGrouping5 == analyticGrouping8 || analyticGrouping5 == analyticGrouping9 || analyticGrouping5 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-5"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-5"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping5" expr="eval: null"
-      if="analyticGrouping5 &amp;&amp; (analyticGrouping5 == analyticGrouping1 || analyticGrouping5 == analyticGrouping2 || analyticGrouping5 == analyticGrouping3 || analyticGrouping5 == analyticGrouping4 || analyticGrouping5 == analyticGrouping6 || analyticGrouping5 == analyticGrouping7 || analyticGrouping5 == analyticGrouping8 || analyticGrouping5 == analyticGrouping9 || analyticGrouping5 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-6">
-    <alert
-      if="analyticGrouping6 &amp;&amp; (analyticGrouping6 == analyticGrouping1 || analyticGrouping6 == analyticGrouping2 || analyticGrouping6 == analyticGrouping3 || analyticGrouping6 == analyticGrouping4 || analyticGrouping6 == analyticGrouping5 || analyticGrouping6 == analyticGrouping7 || analyticGrouping6 == analyticGrouping8 || analyticGrouping6 == analyticGrouping9 || analyticGrouping6 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-6"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-6"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping6" expr="eval: null"
-      if="analyticGrouping6 &amp;&amp; (analyticGrouping6 == analyticGrouping1 || analyticGrouping6 == analyticGrouping2 || analyticGrouping6 == analyticGrouping3 || analyticGrouping6 == analyticGrouping4 || analyticGrouping6 == analyticGrouping5 || analyticGrouping6 == analyticGrouping7 || analyticGrouping6 == analyticGrouping8 || analyticGrouping6 == analyticGrouping9 || analyticGrouping6 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-7">
-    <alert
-      if="analyticGrouping7 &amp;&amp; (analyticGrouping7 == analyticGrouping1 || analyticGrouping7 == analyticGrouping2 || analyticGrouping7 == analyticGrouping3 || analyticGrouping7 == analyticGrouping4 || analyticGrouping7 == analyticGrouping5 || analyticGrouping7 == analyticGrouping6 || analyticGrouping7 == analyticGrouping8 || analyticGrouping7 == analyticGrouping9 || analyticGrouping7 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-7"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-7"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping7" expr="eval: null"
-      if="analyticGrouping7 &amp;&amp; (analyticGrouping7 == analyticGrouping1 || analyticGrouping7 == analyticGrouping2 || analyticGrouping7 == analyticGrouping3 || analyticGrouping7 == analyticGrouping4 || analyticGrouping7 == analyticGrouping5 || analyticGrouping7 == analyticGrouping6 || analyticGrouping7 == analyticGrouping8 || analyticGrouping7 == analyticGrouping9 || analyticGrouping7 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-8">
-    <alert
-      if="analyticGrouping8 &amp;&amp; (analyticGrouping8 == analyticGrouping1 || analyticGrouping8 == analyticGrouping2 || analyticGrouping8 == analyticGrouping3 || analyticGrouping8 == analyticGrouping4 || analyticGrouping8 == analyticGrouping5 || analyticGrouping8 == analyticGrouping6 || analyticGrouping8 == analyticGrouping7 || analyticGrouping8 == analyticGrouping9 || analyticGrouping8 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-8"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-8"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping8" expr="eval: null"
-      if="analyticGrouping8 &amp;&amp; (analyticGrouping8 == analyticGrouping1 || analyticGrouping8 == analyticGrouping2 || analyticGrouping8 == analyticGrouping3 || analyticGrouping8 == analyticGrouping4 || analyticGrouping8 == analyticGrouping5 || analyticGrouping8 == analyticGrouping6 || analyticGrouping8 == analyticGrouping7 || analyticGrouping8 == analyticGrouping9 || analyticGrouping8 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-9">
-    <alert
-      if="analyticGrouping9 &amp;&amp; (analyticGrouping9 == analyticGrouping1 || analyticGrouping9 == analyticGrouping2 || analyticGrouping9 == analyticGrouping3 || analyticGrouping9 == analyticGrouping4 || analyticGrouping9 == analyticGrouping5 || analyticGrouping9 == analyticGrouping6 || analyticGrouping9 == analyticGrouping7 || analyticGrouping9 == analyticGrouping8 || analyticGrouping9 == analyticGrouping10)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-9"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-9"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping9" expr="eval: null"
-      if="analyticGrouping9 &amp;&amp; (analyticGrouping9 == analyticGrouping1 || analyticGrouping9 == analyticGrouping2 || analyticGrouping9 == analyticGrouping3 || analyticGrouping9 == analyticGrouping4 || analyticGrouping9 == analyticGrouping5 || analyticGrouping9 == analyticGrouping6 || analyticGrouping9 == analyticGrouping7 || analyticGrouping9 == analyticGrouping8 || analyticGrouping9 == analyticGrouping10)"/>
-  </action-record>
-
-  <action-validate name="action-validate-analytic-axis-check-10">
-    <alert
-      if="analyticGrouping10 &amp;&amp; (analyticGrouping10 == analyticGrouping1 || analyticGrouping10 == analyticGrouping2 || analyticGrouping10 == analyticGrouping3 || analyticGrouping10 == analyticGrouping4 || analyticGrouping10 == analyticGrouping5 || analyticGrouping10 == analyticGrouping6 || analyticGrouping10 == analyticGrouping7 || analyticGrouping10 == analyticGrouping8 || analyticGrouping10 == analyticGrouping9)"
-      message="This value is already selected in another field, please select another value"
-      action="action-record-axis-delete-grouping-10"/>
-  </action-validate>
-  <action-record name="action-record-axis-delete-grouping-10"
-    model="com.axelor.apps.account.db.AnalyticAxis">
-    <field name="analyticGrouping10" expr="eval: null"
-      if="analyticGrouping10 &amp;&amp; (analyticGrouping10 == analyticGrouping1 || analyticGrouping10 == analyticGrouping2 || analyticGrouping10 == analyticGrouping3 || analyticGrouping10 == analyticGrouping4 || analyticGrouping10 == analyticGrouping5 || analyticGrouping10 == analyticGrouping6 || analyticGrouping10 == analyticGrouping7 || analyticGrouping10 == analyticGrouping8 || analyticGrouping10 == analyticGrouping9)"/>
-  </action-record>
-
   <action-method name="action-method-axis-change-company">
     <call class="com.axelor.apps.account.web.AnalyticAxisController"
       method="checkCompanyOnMoveLine"/>
   </action-method>
 
-  <action-method name="action-method-analytic-axis-set-grouping-domain">
-    <call class="com.axelor.apps.account.web.AnalyticAxisController" method="setGroupingDomain"/>
+  <action-method name="action-method-account-analytic-axis-control-unicity">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController" method="controlUnicity"/>
+  </action-method>
+
+  <action-method
+    name="action-method-account-analytic-axis-readonly-if-in-analytic-move-line">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController" method="setReadOnly"/>
+  </action-method>
+
+  <action-method name="action-method-axis-check-company-on-analytic-account">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController"
+      method="checkAnalyticAccountCompany"/>
+  </action-method>
+
+  <action-method name="action-method-analytic-axis-remove-same-analytic-grouping">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController"
+      method="removeSameAnalyticGrouping"/>
   </action-method>
 
 </object-views>

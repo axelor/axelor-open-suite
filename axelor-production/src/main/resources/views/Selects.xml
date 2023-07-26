@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -65,6 +65,7 @@
     <option value="7">Need / Manufacturing order</option>
     <option value="8">Manufacturing proposal</option>
     <option value="9">Need / Manufacturing proposal</option>
+    <option value="12">Need / MPS</option>
   </selection>
 
   <selection name="supplychain.mrp.line.related.to.select"
@@ -152,6 +153,10 @@
     <option value="3">Started</option>
     <option value="4">Canceled</option>
     <option value="5">Completed</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="production.batch.batch.type.select">
+    <option value="700">Production batch</option>
   </selection>
 
 </object-views>

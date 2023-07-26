@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="production-trading-name-form" model="com.axelor.apps.base.db.TradingName"
+    title="Trading name" name="trading-name-form" extension="true">
+    <extend target="//field[@name='qualityControlDefaultStockLocation']">
+      <insert position="after">
+        <field name="componentDefaultStockLocation"
+          onSelect="action-stock-attrs-production-stock-locations-domain"
+          form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="finishedProductsDefaultStockLocation"
+          onSelect="action-stock-attrs-production-stock-locations-domain"
+          form-view="stock-location-form" grid-view="stock-location-grid"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-stock-attrs-production-stock-locations-domain">
+    <attribute name="domain"
+      expr="eval: companySet?.isEmpty() ? &quot; self = null &quot; : &quot; self.usableOnProduction = true AND self.typeSelect != 3 AND self.company.id IN (${companySet?.collect{it.id}.join(',')}) &quot;"
+      for="componentDefaultStockLocation,finishedProductsDefaultStockLocation"/>
+  </action-attrs>
+
+
+</object-views>

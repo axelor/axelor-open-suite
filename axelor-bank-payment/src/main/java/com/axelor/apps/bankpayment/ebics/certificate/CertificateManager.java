@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,9 +14,28 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.ebics.certificate;
+
+/*
+ * Copyright (c) 1990-2012 kopiLeft Development SARL, Bizerte, Tunisia
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License version 2.1 as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ * $Id$
+ */
 
 import com.axelor.apps.bankpayment.db.EbicsBank;
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
@@ -25,6 +45,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,8 +77,9 @@ public class CertificateManager {
    *
    * @throws GeneralSecurityException
    * @throws IOException
+   * @throws AxelorException
    */
-  public void create() throws GeneralSecurityException, IOException {
+  public void create() throws GeneralSecurityException, IOException, AxelorException {
 
     Calendar calendar;
 
@@ -85,8 +107,10 @@ public class CertificateManager {
    *
    * @throws IOException
    * @throws CertificateEncodingException
+   * @throws AxelorException
    */
-  private void setUserCertificates() throws IOException, CertificateEncodingException {
+  private void setUserCertificates()
+      throws IOException, CertificateEncodingException, AxelorException {
 
     EbicsPartner ebicsPartner = user.getEbicsPartner();
 
@@ -118,7 +142,7 @@ public class CertificateManager {
 
   private EbicsCertificate updateCertificate(
       X509Certificate certificate, EbicsCertificate cert, byte[] privateKey, String type)
-      throws CertificateEncodingException, IOException {
+      throws CertificateEncodingException, IOException, AxelorException {
 
     if (cert == null) {
       cert = new EbicsCertificate();
@@ -232,8 +256,9 @@ public class CertificateManager {
    * @param pwdCallBack the password call back
    * @throws GeneralSecurityException
    * @throws IOException
+   * @throws AxelorException
    */
-  public void load(String path) throws GeneralSecurityException, IOException {
+  public void load(String path) throws GeneralSecurityException, IOException, AxelorException {
     KeyStoreManager loader;
 
     loader = new KeyStoreManager();

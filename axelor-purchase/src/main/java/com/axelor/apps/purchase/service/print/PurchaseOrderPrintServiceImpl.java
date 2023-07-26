@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,28 +14,28 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.purchase.service.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.ModelTool;
-import com.axelor.apps.tool.ThrowConsumer;
-import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppBase;
+import com.axelor.utils.ModelTool;
+import com.axelor.utils.ThrowConsumer;
+import com.axelor.utils.file.PdfTool;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     ModelTool.apply(
         PurchaseOrder.class,
         ids,
-        new ThrowConsumer<PurchaseOrder>() {
+        new ThrowConsumer<PurchaseOrder, Exception>() {
 
           @Override
           public void accept(PurchaseOrder purchaseOrder) throws Exception {
@@ -92,7 +93,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
+              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
               purchaseOrder.getPurchaseOrderSeq()),
           purchaseOrder);
     }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Move" lang="java">
+  <entity sequential="true" name="Move">
 
     <many-to-one name="journal" ref="Journal" title="Journal" required="true"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"
@@ -13,19 +13,24 @@
     <date name="date" column="date_val" title="Date"/> <!-- Only used for Manual Misc. Operations -->
     <string name="reference" title="Reference" namecolumn="true" readonly="true"/>
     <one-to-many name="moveLineList" ref="MoveLine" title="Move lines" mappedBy="move"/>
+    <one-to-many name="moveLineMassEntryList" ref="MoveLineMassEntry"
+      title="Move lines mass entry" mappedBy="moveMassEntry"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment Mode"/>
+    <many-to-one name="paymentCondition" title="Payment condition"
+      ref="com.axelor.apps.account.db.PaymentCondition"/>
+    <many-to-one name="partnerBankDetails" title="Bank details"
+      ref="com.axelor.apps.base.db.BankDetails"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="iaccount.move.status.select"/>
     <boolean name="rejectOk" title="Rejection" default="false"/>
-    <boolean name="getInfoFromFirstMoveLineOk" title="Get information from 1st Move line"
-      default="true"/>
     <string name="exportNumber" title="Accounting Export N°"/>
     <date name="exportDate" title="Export Date"/>
+    <date name="dueDate" title="Due date"/>
     <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>
@@ -33,43 +38,64 @@
       title="Fiscal position"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher"
       title="Payment voucher"/>
+    <many-to-one name="paymentSession" title="Payment session"
+      ref="com.axelor.apps.account.db.PaymentSession"/>
     <many-to-one name="companyCurrency" ref="com.axelor.apps.base.db.Currency"
       title="Company currency"/>
     <string name="companyCurrencyCode" title="Company currency code"/>
+    <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Company bank"
+      help="The reference to the bankDetails for moves is mainly destinated to be able to establish treasury forecasts and doesn't replace the move lines of payment on the treasury journals who are usually associated to treasury accounts which are linked to a real bank account. On purchase or sales accounting moves, those are purely indicative."/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <string name="currencyCode" title="Currency code"/>
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
     <boolean name="ignoreInDebtRecoveryOk" title="Ignore in debt recovery process"
       default="false"/>
-    <date name="validationDate" title="Validation date"/>
+    <date name="accountingDate" title="Accounting date"/>
     <integer name="technicalOriginSelect" title="Technical origin" required="true"
       readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
     <boolean name="autoYearClosureMove" title="Year closure move"/>
+    <boolean name="cutOffMoveGenerated" title="Cut off move generated"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-    <integer name="functionalOriginSelect" title="Functional origin" readonly="true"
+    <integer name="functionalOriginSelect" title="Functional origin"
       selection="iaccount.move.functional.origin.select"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Trading name"/>
     <date name="originDate" title="Origin date"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
-    <string name="origin" title="Origin"
+    <string name="origin" title="move.origin"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
     <string name="description" title="Description"
       help="This field will be copied in the field with the same name in every move line during manual input of a move"/>
+    <many-to-one name="cutOffOriginMove" title="Cut off origin move"
+      ref="com.axelor.apps.account.db.Move"/>
+
+    <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
+      title="PFP Validator"/>
+    <integer name="pfpValidateStatusSelect" title="Status"
+      selection="invoice.pfp.validate.status.select" readonly="true" default="0"/>
+    <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
+      ref="com.axelor.apps.base.db.CancelReason"/>
+    <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
 
     <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
       title="FEC Import"/>
+    <integer name="massEntryStatusSelect" title="Status" default="0"
+      selection="iaccount.move.mass.entry.status.select"/>
+    <string name="massEntryErrors" title="Error list"/>
+    <boolean name="massEntryManageCutOff" title="Manage Cut off period"/>
     <unique-constraint columns="reference,company"/>
 
     <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>
+    <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 
     <extra-code><![CDATA[
 
 	   	// STATUS SELECT
 		public static final int STATUS_NEW = 1;
-		public static final int STATUS_ACCOUNTED = 2;
-		public static final int STATUS_VALIDATED = 3;
+		public static final int STATUS_DAYBOOK = 2;
+		public static final int STATUS_ACCOUNTED = 3;
 		public static final int STATUS_CANCELED = 4;
 		public static final int STATUS_SIMULATED = 5;
 
@@ -78,6 +104,7 @@
 		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
 		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
 		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
+		public static final int TECHNICAL_ORIGIN_MASS_ENTRY = 5;
 
 		// REVERSE DATE OF REVERSION
 		public static final int DATE_OF_REVERSION_TODAY = 1;
@@ -93,27 +120,45 @@
 		public static final int FUNCTIONAL_ORIGIN_PAYMENT = 5;
 		public static final int FUNCTIONAL_ORIGIN_CUT_OFF = 6;
 		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
+		public static final int FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER = 8;
+		public static final int FUNCTIONAL_ORIGIN_IRRECOVERABLE = 9;
+
+		// PFP VALIDATE STATUS SELECT
+	    public static final int PFP_NONE = 0;
+	    public static final int PFP_STATUS_AWAITING = 1;
+	    public static final int PFP_STATUS_VALIDATED = 2;
+	    public static final int PFP_STATUS_LITIGATION = 3;
+
+		// MASS ENTRY STATUS
+		public static final int MASS_ENTRY_STATUS_NULL = 0;
+		public static final int MASS_ENTRY_STATUS_ON_GOING = 1;
+		public static final int MASS_ENTRY_STATUS_VALIDATED = 2;
 	]]></extra-code>
 
     <track>
-      <field name="statusSelect"/>
-      <field name="journal"/>
+      <field name="statusSelect" on="UPDATE"/>
+      <field name="journal" on="UPDATE"/>
       <field name="reference"/>
-      <field name="period"/>
-      <field name="partner"/>
+      <field name="period" on="UPDATE"/>
+      <field name="partner" on="UPDATE"/>
       <field name="fiscalPosition" on="UPDATE"/>
-      <field name="currency"/>
-      <field name="companyCurrency"/>
-      <field name="ignoreInAccountingOk"/>
-      <field name="ignoreInDebtRecoveryOk"/>
-      <field name="originDate"/>
-      <field name="origin"/>
-      <field name="description"/>
+      <field name="currency" on="UPDATE"/>
+      <field name="companyCurrency" on="UPDATE"/>
+      <field name="ignoreInAccountingOk" on="UPDATE"/>
+      <field name="ignoreInDebtRecoveryOk" on="UPDATE"/>
+      <field name="originDate" on="UPDATE"/>
+      <field name="origin" on="UPDATE"/>
+      <field name="description" on="UPDATE"/>
+      <field name="pfpValidatorUser" on="UPDATE"/>
+      <field name="pfpValidateStatusSelect" on="UPDATE"/>
+      <field name="reasonOfRefusalToPay" on="UPDATE"/>
+      <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
-      <message if="statusSelect == 2" tag="info">Accounted move</message>
-      <message if="statusSelect == 3" tag="success">Move validated</message>
+      <message if="statusSelect == 2" tag="info">Daybook move</message>
+      <message if="statusSelect == 3" tag="success">Accounted move</message>
       <message if="statusSelect == 4" tag="warning">Move canceled</message>
+      <message if="statusSelect == 5" tag="info">Simulated move</message>
     </track>
 
   </entity>

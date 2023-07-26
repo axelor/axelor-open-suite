@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,21 +14,26 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface StockMoveLineServiceSupplychain {
+
+  List<InvoiceLine> getInvoiceLines(StockMoveLine stockMoveLine);
 
   /**
    * Compared to the method in module stock, it adds the requested reserved qty. Allows to create
@@ -66,7 +72,9 @@ public interface StockMoveLineServiceSupplychain {
       boolean taxed,
       BigDecimal taxRate,
       SaleOrderLine saleOrderLine,
-      PurchaseOrderLine purchaseOrderLine)
+      PurchaseOrderLine purchaseOrderLine,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException;
 
   /**
@@ -79,9 +87,24 @@ public interface StockMoveLineServiceSupplychain {
   StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
 
-  boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine);
+  boolean isAvailableProduct(StockMoveLine stockMoveLine);
 
   void setInvoiceStatus(StockMoveLine stockMoveLine);
 
   public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine);
+
+  BigDecimal getAmountNotInvoiced(
+      StockMoveLine stockMoveLine, boolean isPurchase, boolean ati, boolean recoveredTax)
+      throws AxelorException;
+
+  BigDecimal getAmountNotInvoiced(
+      StockMoveLine stockMoveLine,
+      PurchaseOrderLine purchaseOrderLine,
+      SaleOrderLine saleOrderLine,
+      boolean isPurchase,
+      boolean ati,
+      boolean recoveredTax)
+      throws AxelorException;
+
+  Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) throws AxelorException;
 }

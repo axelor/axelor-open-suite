@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,63 +14,69 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected MoveRepository moveRepository;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected AccountingSituationService accountingSituationService;
   protected AccountConfigService accountConfigService;
-  protected AccountManagementService accountManagementService;
   protected PaymentModeService paymentModeService;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public MoveCounterPartServiceImpl(
       MoveRepository moveRepository,
       MoveLineToolService moveLineToolService,
       MoveLineCreateService moveLineCreateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
       AccountingSituationService accountingSituationService,
       AccountConfigService accountConfigService,
-      AccountManagementService accountManagementService,
+      AccountManagementAccountService accountManagementAccountService,
       PaymentModeService paymentModeService) {
     this.moveRepository = moveRepository;
     this.moveLineToolService = moveLineToolService;
     this.moveLineCreateService = moveLineCreateService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.accountingSituationService = accountingSituationService;
     this.accountConfigService = accountConfigService;
-    this.accountManagementService = accountManagementService;
+    this.accountManagementAccountService = accountManagementAccountService;
     this.paymentModeService = paymentModeService;
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void generateCounterpartMoveLine(Move move) throws AxelorException {
+  public void generateCounterpartMoveLine(Move move, LocalDate singleTermDueDate)
+      throws AxelorException {
     MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
     if (counterPartMoveLine == null) {
       return;
     }
     move.addMoveLineListItem(counterPartMoveLine);
-    moveRepository.save(move);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(
+        counterPartMoveLine.getMove(), counterPartMoveLine, singleTermDueDate, true);
   }
 
   @Override
@@ -96,7 +103,8 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             move.getMoveLineList().size() + 1,
             move.getOrigin(),
             move.getDescription());
-    moveLine.setIsOtherCurrency(move.getCurrency().equals(move.getCompanyCurrency()));
+
+    moveLine.setDueDate(move.getOriginDate());
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
     moveLine.setDescription(move.getDescription());
     return moveLine;
@@ -121,8 +129,16 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       accountingAccount =
           accountingSituationService.getCustomerAccount(move.getPartner(), move.getCompany());
     } else if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
-        && move.getPaymentMode() != null) {
-      accountingAccount = paymentModeService.getPaymentModeAccount(move);
+        && move.getPaymentMode() != null
+        && move.getCompany() != null) {
+      AccountManagement accountManagement =
+          accountManagementAccountService.getAccountManagement(
+              move.getPaymentMode().getAccountManagementList(), move.getCompany());
+      if (ObjectUtils.notEmpty(accountManagement)) {
+        accountingAccount =
+            accountManagementAccountService.getCashAccount(
+                accountManagement, move.getPaymentMode());
+      }
     }
     return accountingAccount;
   }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="TaxPaymentMoveLine" lang="java" cacheable="true">
+  <entity name="TaxPaymentMoveLine" cacheable="true">
 
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Move line" readonly="true" initParam="true"/>
@@ -15,12 +15,26 @@
       title="Reconcile" readonly="true" initParam="true"/>
     <many-to-one name="fiscalPosition" title="Fiscal position"
       ref="com.axelor.apps.account.db.FiscalPosition"/>
-    <decimal name="taxRate" title="Rate" scale="3" precision="20" initParam="true"/>
+    <integer name="functionalOriginSelect" title="Functional origin" readonly="true"
+      selection="iaccount.move.functional.origin.select"/>
+    <decimal name="taxRate" title="Rate" scale="10" precision="20" initParam="true"/>
     <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
     <decimal name="detailPaymentAmount" scale="2" precision="20" readonly="true"
       initParam="true"/>
     <date name="date" column="date_val" title="Date" readonly="true" initParam="true"/>
     <boolean name="isAlreadyReverse" default="false" readonly="true" hidden="true"/>
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.tax.payment.move.vat.system.select"/>
+
+    <extra-code><![CDATA[
+
+	    static final int NONE = 0;
+
+	    // VAT SYSTEM SELECT
+	    public static final int VAT_SYSTEM_DELIVERY = 1;
+	    public static final int VAT_SYSTEM_PAYMENT = 2;
+
+    ]]></extra-code>
 
   </entity>
 

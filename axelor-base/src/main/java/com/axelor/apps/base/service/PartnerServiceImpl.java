@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,13 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -30,20 +32,20 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.utils.ComputeNameTool;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -60,6 +62,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,11 +155,13 @@ public class PartnerServiceImpl implements PartnerService {
 
     if (partner.getPartnerSeq() == null
         && appBaseService.getAppBase().getGeneratePartnerSequence()) {
-      String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
+      String seq =
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PARTNER_1));
+            I18n.get(BaseExceptionMessage.PARTNER_1));
       }
       partner.setPartnerSeq(seq);
     }
@@ -174,7 +179,7 @@ public class PartnerServiceImpl implements PartnerService {
       if (existEmailCount > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
-            I18n.get(IExceptionMessage.PARTNER_EMAIL_EXIST));
+            I18n.get(BaseExceptionMessage.PARTNER_EMAIL_EXIST));
       }
     }
 
@@ -247,7 +252,8 @@ public class PartnerServiceImpl implements PartnerService {
         if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
           if (defaultInvoicingAddress != null) {
             throw new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_8));
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(BaseExceptionMessage.ADDRESS_8));
           }
           defaultInvoicingAddress = partnerAddress.getAddress();
         }
@@ -255,7 +261,8 @@ public class PartnerServiceImpl implements PartnerService {
         if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
           if (defaultDeliveryAddress != null) {
             throw new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_9));
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(BaseExceptionMessage.ADDRESS_9));
           }
           defaultDeliveryAddress = partnerAddress.getAddress();
         }
@@ -273,8 +280,8 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeFullName(Partner partner) {
     return ComputeNameTool.computeFullName(
-        partner.getName(),
         partner.getFirstName(),
+        partner.getName(),
         partner.getPartnerSeq(),
         String.valueOf(partner.getId()));
   }
@@ -282,7 +289,7 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeSimpleFullName(Partner partner) {
     return ComputeNameTool.computeSimpleFullName(
-        partner.getName(), partner.getFirstName(), String.valueOf(partner.getId()));
+        partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
   }
 
   @Override
@@ -299,19 +306,9 @@ public class PartnerServiceImpl implements PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
+        "<a class='fa fa-google' href='https://www.google.com/search?q="
             + name
-            + "' target='_blank' />");
-    urlMap.put(
-        "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
-            + name
-            + "&init=public"
-            + "' target='_blank'/>");
-    urlMap.put(
-        "twitter",
-        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
-            + name
+            + "&gws_rd=cr"
             + "' target='_blank' />");
     urlMap.put(
         "linkedin",
@@ -325,42 +322,33 @@ public class PartnerServiceImpl implements PartnerService {
               + name.replace("+", "/")
               + "' target='_blank' />");
     }
-    urlMap.put(
-        "youtube",
-        "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-            + name
-            + "' target='_blank' />");
 
     return urlMap;
   }
 
+  @Deprecated
   @Override
-  public List<Long> findPartnerMails(Partner partner) {
+  public List<Long> findPartnerMails(Partner partner, int emailType) {
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
+    idList.addAll(this.findMailsFromPartner(partner, emailType));
+
+    if (partner.getIsContact()) {
+      return idList;
+    }
 
     Set<Partner> contactSet = partner.getContactPartnerSet();
     if (contactSet != null && !contactSet.isEmpty()) {
       for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact));
+        idList.addAll(this.findMailsFromPartner(contact, emailType));
       }
     }
     return idList;
   }
 
-  @Override
-  public List<Long> findContactMails(Partner partner) {
-    List<Long> idList = new ArrayList<Long>();
-
-    idList.addAll(this.findMailsFromPartner(partner));
-
-    return idList;
-  }
-
   @SuppressWarnings("unchecked")
   @Override
-  public List<Long> findMailsFromPartner(Partner partner) {
+  public List<Long> findMailsFromPartner(Partner partner, int emailType) {
 
     String query =
         String.format(
@@ -368,14 +356,27 @@ public class PartnerServiceImpl implements PartnerService {
                 + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
             partner.getId());
 
-    if (partner.getEmailAddress() != null) {
-      query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
+    String emailAddress =
+        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
+    if (emailAddress != null) {
+      query +=
+          " OR (:emailAddress IN ("
+              + ((emailType == MessageRepository.TYPE_RECEIVED)
+                  ? "email.fromEmailAddress.address"
+                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
+              + "))";
+    } else {
+      query += " AND email.typeSelect = " + emailType;
+    }
+    javax.persistence.Query q = JPA.em().createQuery(query);
+    if (emailAddress != null) {
+      q.setParameter("emailAddress", emailAddress);
     }
 
-    return JPA.em().createQuery(query).getResultList();
+    return q.getResultList();
   }
 
-  private PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
+  protected PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
 
     PartnerAddress partnerAddress = new PartnerAddress();
     partnerAddress.setAddress(address);
@@ -507,14 +508,10 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
-
-    for (BankDetails bankDetails : partner.getBankDetailsList()) {
-      if (bankDetails.getIsDefault()) {
-        return bankDetails;
-      }
-    }
-
-    return null;
+    return partner.getBankDetailsList().stream()
+        .filter(BankDetails::getIsDefault)
+        .findFirst()
+        .orElse(null);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -524,16 +521,16 @@ public class PartnerServiceImpl implements PartnerService {
     if (partner == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PARTNER_2),
-          I18n.get(IExceptionMessage.EXCEPTION),
+          I18n.get(BaseExceptionMessage.PARTNER_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           "");
     }
     if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
       throw new AxelorException(
           partner,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PARTNER_2),
-          I18n.get(IExceptionMessage.EXCEPTION),
+          I18n.get(BaseExceptionMessage.PARTNER_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName());
     } else {
       String registrationCode = partner.getRegistrationCode();
@@ -674,29 +671,6 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public String getPartnerDomain(Partner partner) {
-    String domain = "";
-
-    if (partner != null) {
-      if (partner.getCurrency() != null) {
-        domain += String.format(" AND self.currency.id = %d", partner.getCurrency().getId());
-      }
-      if (partner.getSalePartnerPriceList() != null) {
-        domain +=
-            String.format(
-                " AND self.salePartnerPriceList.id = %s",
-                partner.getSalePartnerPriceList().getId());
-      }
-      if (partner.getFiscalPosition() != null) {
-        domain +=
-            String.format(" AND self.fiscalPosition.id = %s", partner.getFiscalPosition().getId());
-      }
-    }
-
-    return domain;
-  }
-
-  @Override
   public String getTaxNbrFromRegistrationCode(Partner partner) {
     String taxNbr = "";
 
@@ -724,7 +698,7 @@ public class PartnerServiceImpl implements PartnerService {
     int siren = Integer.parseInt(sirenStr);
     int taxKey = Math.floorMod(siren, 97);
     taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return Integer.toString(taxKey);
+    return String.format("%02d", taxKey);
   }
 
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
@@ -794,15 +768,54 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public List<Long> getPartnerIdsByType(String type) {
-    StringBuilder query = new StringBuilder();
-    query.append("self.");
-    query.append(type);
-    query.append("=true");
-    return (!StringUtils.isEmpty(type))
-        ? partnerRepo.all().filter(query.toString()).select("id").fetch(0, 0).stream()
-            .map(m -> (long) m.get("id"))
-            .collect(Collectors.toList())
-        : new ArrayList<>();
+  public boolean isRegistrationCodeValid(Partner partner) {
+    List<PartnerAddress> addresses = partner.getPartnerAddressList();
+    String registrationCode = partner.getRegistrationCode();
+    if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
+        || Strings.isNullOrEmpty(registrationCode)
+        || CollectionUtils.isEmpty(addresses)
+        || addresses.stream()
+                .filter(
+                    address ->
+                        address.getAddress() != null
+                            && address.getAddress().getAddressL7Country() != null
+                            && "FR"
+                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
+                .collect(Collectors.toList())
+                .size()
+            == 0) {
+      return true;
+    }
+
+    return computeRegistrationCodeValidity(registrationCode);
+  }
+
+  protected boolean computeRegistrationCodeValidity(String registrationCode) {
+    int sum = 0;
+    boolean isOddNumber = true;
+    registrationCode = registrationCode.replace(" ", "");
+    if (registrationCode.length() != 14) {
+      return false;
+    }
+    int i = registrationCode.length() - 1;
+    while (i > -1) {
+      int number = Character.getNumericValue(registrationCode.charAt(i));
+      if (number < 0) {
+        i--;
+        continue;
+      }
+      if (!isOddNumber) {
+        number *= 2;
+      }
+      if (number < 10) {
+        sum += number;
+      } else {
+        number -= 10;
+        sum += number + 1;
+      }
+      i--;
+      isOddNumber = !isOddNumber;
+    }
+    return sum % 10 == 0;
   }
 }

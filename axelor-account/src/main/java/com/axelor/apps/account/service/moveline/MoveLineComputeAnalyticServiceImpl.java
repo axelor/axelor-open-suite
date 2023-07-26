@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,27 +14,29 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.tool.service.ListToolService;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.db.TradingName;
+import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,21 +47,25 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountConfigService accountConfigService;
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected ListToolService listToolService;
+  protected AnalyticToolService analyticToolService;
+  protected AppAccountService appAccountService;
+  private final int RETURN_SCALE = 2;
 
   @Inject
   public MoveLineComputeAnalyticServiceImpl(
       AnalyticMoveLineService analyticMoveLineService,
       AccountConfigService accountConfigService,
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
-      ListToolService listToolService) {
+      ListToolService listToolService,
+      AnalyticToolService analyticToolService,
+      AppAccountService appAccountService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.listToolService = listToolService;
+    this.analyticToolService = analyticToolService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -78,6 +85,13 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     updateAccountTypeOnAnalytic(moveLine, analyticMoveLineList);
 
     return moveLine;
+  }
+
+  @Override
+  public void computeAnalyticDistribution(MoveLine moveLine, Move move) throws AxelorException {
+    if (move != null && this.checkManageAnalytic(move.getCompany())) {
+      this.computeAnalyticDistribution(moveLine);
+    }
   }
 
   @Override
@@ -131,19 +145,21 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   }
 
   @Override
-  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException {
-    if (moveLine != null && moveLine.getAccount() != null) {
-      if (moveLine.getAccount().getAnalyticDistributionAuthorized()
-          && moveLine.getAccount().getAnalyticDistributionTemplate() != null
-          && accountConfigService
-                  .getAccountConfig(moveLine.getAccount().getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-        moveLine.setAnalyticDistributionTemplate(
-            moveLine.getAccount().getAnalyticDistributionTemplate());
-      }
-    } else {
-      moveLine.setAnalyticDistributionTemplate(null);
+  public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine, Move move)
+      throws AxelorException {
+    if (this.checkManageAnalytic(move.getCompany())) {
+      this.createAnalyticDistributionWithTemplate(moveLine);
+    }
+
+    return moveLine;
+  }
+
+  @Override
+  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine, Move move)
+      throws AxelorException {
+    if (moveLine != null) {
+      moveLine.setAnalyticDistributionTemplate(
+          getDistributionTemplate(moveLine.getAccount(), move.getTradingName()));
     }
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
@@ -155,52 +171,29 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     return moveLine;
   }
 
-  @Override
-  public boolean compareNbrOfAnalyticAxisSelect(int position, Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && position
-            <= accountConfigService
-                .getAccountConfig(move.getCompany())
-                .getNbrOfAnalyticAxisSelect();
-  }
-
-  @Override
-  public List<Long> setAxisDomains(MoveLine moveLine, Move move, int position)
-      throws AxelorException {
-    List<Long> analyticAccountListByAxis = new ArrayList<Long>();
-    List<Long> analyticAccountListByRules = new ArrayList<Long>();
-
-    AnalyticAxis analyticAxis = new AnalyticAxis();
-
-    if (compareNbrOfAnalyticAxisSelect(position, move)) {
-
-      for (AnalyticAxisByCompany axis :
-          accountConfigService.getAccountConfig(move.getCompany()).getAnalyticAxisByCompanyList()) {
-        if (axis.getOrderSelect() == position) {
-          analyticAxis = axis.getAnalyticAxis();
-        }
-      }
-
-      for (AnalyticAccount analyticAccount :
-          analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
-        analyticAccountListByAxis.add(analyticAccount.getId());
-      }
-      if (moveLine.getAccount() != null) {
-        List<AnalyticAccount> analyticAccountList =
-            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(moveLine.getAccount());
-        if (!analyticAccountList.isEmpty()) {
-          for (AnalyticAccount analyticAccount : analyticAccountList) {
-            analyticAccountListByRules.add(analyticAccount.getId());
-          }
-          if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
-            analyticAccountListByAxis =
-                listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
-          }
-        }
-      }
+  protected AnalyticDistributionTemplate getDistributionTemplate(
+      Account account, TradingName tradingName) throws AxelorException {
+    AnalyticDistributionTemplate analyticDistributionTemplate = null;
+    if (account == null || !account.getAnalyticDistributionAuthorized()) {
+      return null;
     }
-    return analyticAccountListByAxis;
+
+    if (account.getAnalyticDistributionTemplate() != null
+        && accountConfigService
+                .getAccountConfig(account.getCompany())
+                .getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+      analyticDistributionTemplate = account.getAnalyticDistributionTemplate();
+    } else if (tradingName != null
+        && tradingName.getAnalyticDistributionTemplate() != null
+        && accountConfigService
+                .getAccountConfig(account.getCompany())
+                .getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME) {
+      analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
+    }
+
+    return analyticDistributionTemplate;
   }
 
   @Override
@@ -247,5 +240,63 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       }
     }
     return moveLine;
+  }
+
+  @Override
+  public MoveLine clearAnalyticAccounting(MoveLine moveLine) {
+    moveLine.setAxis1AnalyticAccount(null);
+    moveLine.setAxis2AnalyticAccount(null);
+    moveLine.setAxis3AnalyticAccount(null);
+    moveLine.setAxis4AnalyticAccount(null);
+    moveLine.setAxis5AnalyticAccount(null);
+
+    this.clearAnalyticMoveLineList(moveLine);
+
+    return moveLine;
+  }
+
+  @Override
+  public MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine) {
+    if (moveLine.getAxis1AnalyticAccount() == null
+        && moveLine.getAxis2AnalyticAccount() == null
+        && moveLine.getAxis3AnalyticAccount() == null
+        && moveLine.getAxis4AnalyticAccount() == null
+        && moveLine.getAxis5AnalyticAccount() == null) {
+      this.clearAnalyticMoveLineList(moveLine);
+    }
+
+    return moveLine;
+  }
+
+  protected void clearAnalyticMoveLineList(MoveLine moveLine) {
+    if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine
+          .getAnalyticMoveLineList()
+          .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
+      moveLine.getAnalyticMoveLineList().clear();
+    }
+  }
+
+  @Override
+  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
+    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(moveLine.getCredit())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+      return analyticMoveLine
+          .getPercentage()
+          .multiply(moveLine.getDebit())
+          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  @Override
+  public boolean checkManageAnalytic(Company company) throws AxelorException {
+    return company != null
+        && appAccountService.getAppAccount().getManageAnalyticAccounting()
+        && accountConfigService.getAccountConfig(company).getManageAnalyticAccounting();
   }
 }

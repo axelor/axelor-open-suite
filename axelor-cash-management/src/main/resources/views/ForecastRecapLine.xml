@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="forecast-recap-line-grid" sortable="false" title="Lines"
     model="com.axelor.apps.cash.management.db.ForecastRecapLine"
@@ -18,6 +18,24 @@
     <field name="forecastRecapLineType.sequence" hidden="true"/>
   </grid>
 
+  <grid name="forecast-recap-line-dashboard-grid" title="Lines"
+    model="com.axelor.apps.cash.management.db.ForecastRecapLine"
+    orderBy="estimatedDate,forecastRecapLineType.sequence" groupBy="forecastRecap.company"
+    edit-icon="true">
+    <hilite background="success" if="typeSelect==1"/>
+    <hilite background="warning" if="typeSelect==2"/>
+    <field name="estimatedDate"/>
+    <field name="typeSelect" hidden="true"/>
+    <field name="relatedToSelect"/>
+    <field name="forecastRecapLineType.name" title="Forecast Recap Line Type"/>
+    <field name="relatedToSelectName"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="balance"/>
+    <field name="forecastRecap.company"/>
+    <field name="$ibans" title="IBAN / BBAN" width="250"/>
+    <field name="forecastRecapLineType.sequence" hidden="true"/>
+  </grid>
+
   <form name="forecast-recap-line-form" title="Line"
     model="com.axelor.apps.cash.management.db.ForecastRecapLine">
     <panel name="mainPanel">
@@ -30,5 +48,34 @@
       <field name="balance"/>
     </panel>
   </form>
+
+  <action-view name="dashlet.all.forecast.lines"
+    model="com.axelor.apps.cash.management.db.ForecastRecapLine" title="Lines">
+    <view name="forecast-recap-line-dashboard-grid" type="grid"/>
+    <view name="forecast-recap-line-form" type="form"/>
+    <view-param name="limit" value="100"/>
+    <domain>self.forecastRecap.isReport = true AND (:bankDetails is null OR :bankDetails MEMBER OF
+      self.forecastRecap.bankDetailsSet)</domain>
+    <context name="_fromForecastDashboard" expr="eval: true"/>
+  </action-view>
+
+
+
+  <action-view name="dashlet.forecast.in.out.total"
+    model="com.axelor.apps.cash.management.db.ForecastRecapLine" title="Forecasts in out total">
+    <view name="chart.forecast.in.out.total" type="chart"/>
+  </action-view>
+
+  <action-view name="dashlet.cash.balance.over.time"
+    model="com.axelor.apps.cash.management.db.ForecastRecapLine" title="Cash balance over time">
+    <view name="chart.cash.balance.over.time" type="chart"/>
+    <context name="_getAllUserData" expr="eval: true"/>
+  </action-view>
+
+  <chart name="chart.cash.balance.over.time" title="Cash balance over time">
+    <dataset type="rpc"><![CDATA[com.axelor.apps.cash.management.web.ChartController:getCashBalanceData]]></dataset>
+    <category key="week" type="text" title="Week"/>
+    <series key="balance" type="line" title="Balance"/>
+  </chart>
 
 </object-views>

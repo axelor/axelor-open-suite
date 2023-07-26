@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.costsheet;
 
-import com.axelor.apps.base.db.AppProduction;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -28,7 +30,6 @@ import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
@@ -39,16 +40,15 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.tool.date.DurationTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppProduction;
+import com.axelor.utils.date.DurationTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -367,7 +367,13 @@ public class CostSheetServiceImpl implements CostSheetService {
               || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
             this._computeHumanResourceCost(
-                workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine);
+                workCenter,
+                producedQty,
+                prodProcessLine.getHumanDuration(),
+                pieceUnit,
+                prodProcessLine.getPriority(),
+                bomLevel,
+                parentCostSheetLine);
           }
           if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
               || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
@@ -381,56 +387,40 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   protected void _computeHumanResourceCost(
-      WorkCenter workCenter, int priority, int bomLevel, CostSheetLine parentCostSheetLine)
-      throws AxelorException {
-
-    if (workCenter.getProdHumanResourceList() != null) {
-
-      for (ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList()) {
-
-        this._computeHumanResourceCost(prodHumanResource, priority, bomLevel, parentCostSheetLine);
-      }
-    }
-  }
-
-  protected void _computeHumanResourceCost(
-      ProdHumanResource prodHumanResource,
+      WorkCenter workCenter,
+      BigDecimal producedQty,
+      Long humanDuration,
+      Unit pieceUnit,
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine)
       throws AxelorException {
 
-    BigDecimal costPerHour = BigDecimal.ZERO;
+    int hrCostType = workCenter.getHrCostTypeSelect();
 
-    if (prodHumanResource.getProduct() != null) {
+    if (hrCostType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
+      BigDecimal costPerHour = workCenter.getHrCostAmount();
 
-      Product product = prodHumanResource.getProduct();
+      BigDecimal durationHours =
+          BigDecimal.valueOf(humanDuration)
+              .divide(
+                  BigDecimal.valueOf(3600),
+                  appProductionService.getNbDecimalDigitForUnitPrice(),
+                  RoundingMode.HALF_UP);
 
-      costPerHour =
-          unitConversionService.convert(
-              hourUnit,
-              product.getUnit(),
-              product.getCostPrice(),
-              appProductionService.getNbDecimalDigitForUnitPrice(),
-              product);
+      costSheetLineService.createWorkCenterHRCostSheetLine(
+          workCenter,
+          priority,
+          bomLevel,
+          parentCostSheetLine,
+          durationHours,
+          costPerHour.multiply(durationHours),
+          hourUnit);
+    } else if (hrCostType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
+      BigDecimal costPrice = workCenter.getHrCostAmount().multiply(producedQty);
+      costSheetLineService.createWorkCenterHRCostSheetLine(
+          workCenter, priority, bomLevel, parentCostSheetLine, producedQty, costPrice, pieceUnit);
     }
-
-    BigDecimal durationHours =
-        BigDecimal.valueOf(prodHumanResource.getDuration())
-            .divide(
-                BigDecimal.valueOf(3600),
-                appProductionService.getNbDecimalDigitForUnitPrice(),
-                RoundingMode.HALF_UP);
-
-    costSheetLineService.createWorkCenterHRCostSheetLine(
-        prodHumanResource.getWorkCenter(),
-        prodHumanResource,
-        priority,
-        bomLevel,
-        parentCostSheetLine,
-        durationHours,
-        costPerHour.multiply(durationHours),
-        hourUnit);
   }
 
   protected void _computeMachineCost(
@@ -445,7 +435,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
           prodProcessLine.getProdProcess() != null
               ? prodProcessLine.getProdProcess().getCode()
               : "null",
@@ -786,52 +776,48 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       LocalDate previousCostSheetDate)
       throws AxelorException {
-    if (operationOrder.getProdHumanResourceList() != null) {
-      Long duration = 0L;
-      if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-              == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
-          || parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-              == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION) {
-        Period period =
-            previousCostSheetDate != null
-                ? Period.between(
-                    parentCostSheetLine.getCostSheet().getCalculationDate(), previousCostSheetDate)
-                : null;
-        duration =
-            period != null ? Long.valueOf(period.getDays() * 24) : operationOrder.getRealDuration();
-      } else if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-          == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
+    BigDecimal duration = BigDecimal.ZERO;
 
-        BigDecimal ratio = costSheet.getManufOrderProducedRatio();
+    if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
+            == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
+        || parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
+            == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION) {
+      Period period =
+          previousCostSheetDate != null
+              ? Period.between(
+                  parentCostSheetLine.getCostSheet().getCalculationDate(), previousCostSheetDate)
+              : null;
+      duration =
+          period != null
+              ? new BigDecimal(period.getDays() * 24)
+              : new BigDecimal(operationOrder.getRealDuration());
+    } else if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
+        == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
 
-        Long plannedDuration =
-            DurationTool.getSecondsDuration(
-                    Duration.between(
-                        operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()))
-                * ratio.longValue();
-        Long totalPlannedDuration = 0L;
-        for (OperationOrder manufOperationOrder :
-            operationOrder.getManufOrder().getOperationOrderList()) {
-          if (manufOperationOrder.equals(operationOrder)) {
-            totalPlannedDuration += manufOperationOrder.getPlannedDuration();
-          }
+      BigDecimal ratio = costSheet.getManufOrderProducedRatio();
+
+      BigDecimal plannedDuration =
+          new BigDecimal(
+                  DurationTool.getSecondsDuration(
+                      Duration.between(
+                          operationOrder.getPlannedStartDateT(),
+                          operationOrder.getPlannedEndDateT())))
+              .multiply(ratio);
+
+      Long totalPlannedDuration = 0L;
+      for (OperationOrder manufOperationOrder :
+          operationOrder.getManufOrder().getOperationOrderList()) {
+        if (manufOperationOrder.equals(operationOrder)) {
+          totalPlannedDuration += manufOperationOrder.getPlannedDuration();
         }
-        duration = Math.abs(totalPlannedDuration - plannedDuration);
       }
-      for (ProdHumanResource prodHumanResource : operationOrder.getProdHumanResourceList()) {
-        this.computeRealHumanResourceCost(
-            prodHumanResource,
-            operationOrder.getWorkCenter(),
-            priority,
-            bomLevel,
-            parentCostSheetLine,
-            duration);
-      }
+      duration = (new BigDecimal(totalPlannedDuration).subtract(plannedDuration)).abs();
     }
+    this.computeRealHumanResourceCost(
+        operationOrder.getWorkCenter(), priority, bomLevel, parentCostSheetLine, duration);
   }
 
   protected void computeRealHumanResourceCost(
-      ProdHumanResource prodHumanResource,
       WorkCenter workCenter,
       int priority,
       int bomLevel,
@@ -848,7 +834,6 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheetLineService.createWorkCenterHRCostSheetLine(
         workCenter,
-        prodHumanResource,
         priority,
         bomLevel,
         parentCostSheetLine,
@@ -914,6 +899,10 @@ public class CostSheetServiceImpl implements CostSheetService {
           qty = durationPerCycle;
         }
       }
+      qty =
+          qty.multiply(
+              costSheet
+                  .getManufOrderProducedRatio()); // Using produced ratio for prorata calculation
       BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
@@ -960,5 +949,32 @@ public class CostSheetServiceImpl implements CostSheetService {
     }
 
     return totalProducedQty;
+  }
+
+  /*
+   * Changing the type of realDuration from Long to BigDecimal to use it with manufOrderProducedRatio
+   */
+  protected void computeRealHumanResourceCost(
+      WorkCenter workCenter,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal realDuration)
+      throws AxelorException {
+    BigDecimal costPerHour = workCenter.getCostAmount();
+    BigDecimal durationHours =
+        realDuration.divide(
+            new BigDecimal(3600),
+            appProductionService.getNbDecimalDigitForUnitPrice(),
+            BigDecimal.ROUND_HALF_UP);
+
+    costSheetLineService.createWorkCenterHRCostSheetLine(
+        workCenter,
+        priority,
+        bomLevel,
+        parentCostSheetLine,
+        durationHours,
+        costPerHour.multiply(durationHours),
+        hourUnit);
   }
 }

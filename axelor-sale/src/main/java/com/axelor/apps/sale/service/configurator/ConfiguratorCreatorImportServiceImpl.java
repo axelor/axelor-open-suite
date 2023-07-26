@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.common.StringUtils;
@@ -24,8 +27,6 @@ import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaJsonField;
 import com.google.common.io.Files;
@@ -41,6 +42,8 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
@@ -138,6 +141,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
   protected void completeAfterImport(ConfiguratorCreator creator) throws AxelorException {
     fixAttributesName(creator);
     configuratorCreatorService.updateAttributes(creator);
+    configuratorCreatorService.removeTemporalAttributesAndIndicators(creator);
     configuratorCreatorService.updateIndicators(creator);
   }
 
@@ -149,8 +153,11 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     }
     for (MetaJsonField attribute : attributes) {
       String name = attribute.getName();
-      if (name != null && name.contains("_")) {
-        attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
+      if (name != null) {
+        name = name.replace("$AXELORTMP", "");
+        if (name.contains("_")) {
+          attribute.setName(name.substring(0, name.lastIndexOf('_')) + '_' + creator.getId());
+        }
       }
       updateOtherFieldsInAttribute(creator, attribute);
       updateAttributeNameInFormulas(creator, name, attribute.getName());
@@ -174,16 +181,31 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
         Mapper mapper = Mapper.of(attribute.getClass());
         Method getter = mapper.getGetter(field.getName());
         String fieldString = (String) getter.invoke(attribute);
+
         if (fieldString != null && fieldString.contains("_")) {
+          String updatedFieldString = updateFieldIds(fieldString, creator.getId());
           Method setter = mapper.getSetter(field.getName());
-          String updatedFieldString =
-              fieldString.substring(0, fieldString.lastIndexOf('_')) + '_' + creator.getId();
           setter.invoke(attribute, updatedFieldString);
         }
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
+  }
+
+  protected String updateFieldIds(String fieldString, Long id) {
+
+    Pattern attributePattern = Pattern.compile("\\w+_\\d+");
+    Matcher matcher = attributePattern.matcher(fieldString);
+    StringBuffer result = new StringBuffer();
+
+    while (matcher.find()) {
+      matcher.appendReplacement(result, matcher.group().replaceAll("_\\d+", "_" + id));
+    }
+
+    matcher.appendTail(result);
+
+    return result.toString();
   }
 
   /**

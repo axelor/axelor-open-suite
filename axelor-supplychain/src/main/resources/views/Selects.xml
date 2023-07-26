@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-  <selection name="supplychain.batch.action.select">
-    <option value="1">Accounting cut-off</option>
-    <option value="3">Invoice orders</option>
-    <option value="4">Update stock history</option>
-  </selection>
-
   <selection name="supplychain.batch.invoice.stock.moves.action.select">
-    <option value="1">Accounting cut-off</option>
     <option value="2">Invoice outgoing stock moves</option>
     <option value="3">Invoice orders</option>
     <option value="4">Update stock history</option>
@@ -31,6 +24,8 @@
     <option value="3">Sale order</option>
     <option value="4">Sales forecast</option>
     <option value="5">Purchase proposal</option>
+    <option value="10">Stock history</option>
+    <option value="11">Purchase proposal / Estimated delivery</option>
   </selection>
 
   <selection name="supplychain.mrp.line.type.select">
@@ -56,6 +51,7 @@
 
   <selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
     <option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
+    <option value="com.axelor.apps.supplychain.job.MrpJob">com.axelor.apps.supplychain.job.MrpJob</option>
   </selection>
 
   <selection name="meta.schedule.batch.service.select"
@@ -94,7 +90,8 @@
     <option value="6">Subscription</option>
   </selection>
 
-  <selection name="supplychain.supplychain.batch.accounting.cut.off.type.select">
+  <selection name="accounting.batch.accounting.cut.off.type.select"
+    id="supplychain.accounting.batch.accounting.cut.off.type.select">
     <option value="1">Forecasted supplier invoices</option>
     <option value="2">Forecasted customer invoices</option>
   </selection>
@@ -164,6 +161,27 @@
     <option value="0">One-off sales included</option>
     <option value="1">One-off sales excluded</option>
     <option value="2">One-off sales only</option>
+  </selection>
+
+  <selection name="supplychain.mrp.line.type.late.sales.select">
+    <option value="0">Include late sales</option>
+    <option value="1">Exclude late sales</option>
+    <option value="2">Consider only late sales</option>
+  </selection>
+
+  <selection id="supplychain.account.closure.assistant.line.action.select"
+    name="account.closure.assistant.line.action.select">
+    <option value="1">Cut off generation</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="supplychain.batch.batch.type.select">
+    <option value="900">Supplychain batch</option>
+  </selection>
+
+  <selection name="supplychain.sale.order.invoicing.state.select">
+    <option value="1">Not invoiced</option>
+    <option value="2">Partially invoiced</option>
+    <option value="3">Invoiced</option>
   </selection>
 
 </object-views>

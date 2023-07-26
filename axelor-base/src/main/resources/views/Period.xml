@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="period-grid" title="Period" model="com.axelor.apps.base.db.Period"
     orderBy="-fromDate">
@@ -16,7 +16,7 @@
 
   <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period"
     onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet">
-    <panel name="mainPanel" readonlyIf="statusSelect == 2">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 5">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
       <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"
@@ -34,21 +34,25 @@
     <panel name="actionsPanel" sidebar="true">
       <field name="statusSelect" colSpan="6"/>
       <field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
-      <button name="closeBtn" title="Close period" onClick="action-period-group-close"
-        hideIf="statusSelect == 2 || $popup()"
+      <field name="temporarilyCloseDateTime" colSpan="6" showIf="statusSelect == 4"
+        readonly="true"/>
+      <button name="closeBtn" title="Permanently close period"
+        onClick="action-period-group-close" hidden="true"
         prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
+      <button name="temporarilyCloseBtn" title="Temporarily close period"
+        onClick="action-period-group-close-temp" hidden="true"
+        prompt="The temporary closure of an accounting period will restrict operations on the journal of accounting entries. Do you want to continue ?"/>
       <button name="adjustBtn" title="Adjust period"
-        onClick="action-validate-period-is-adjusting-year,action-method-period-adjust"
-        showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 2 &amp;&amp; !$popup()"/>
+        onClick="action-validate-period-is-adjusting-year,action-method-period-adjust" hidden="true"/>
       <button name="openBtn" title="Open period"
-        onClick="save,action-period-record-status-open,save"
-        showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 1 &amp;&amp; !$popup()"/>
+        onClick="save,action-method-period-status-open" hidden="true"/>
     </panel>
   </form>
 
   <form name="period-year-form" title="Period" model="com.axelor.apps.base.db.Period"
-    onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet">
-    <panel name="mainPanel" readonlyIf="statusSelect == 2">
+    onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet"
+    onNew="action-period-record-set-value-onNew">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 5">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
       <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"
@@ -69,28 +73,47 @@
       <field name="statusSelect" colSpan="6"/>
       <field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
       <button name="closeBtn" title="Close period" onClick="action-period-group-close"
-        hideIf="statusSelect == 2 || $popup()"
+        hideIf="statusSelect == 2 || statusSelect == 5 || $popup()"
         prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
       <button name="adjustBtn" title="Adjust period"
         onClick="action-validate-period-is-adjusting-year,action-method-period-adjust"
         showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 2 &amp;&amp; !$popup()"/>
       <button name="openBtn" title="Open period"
-        onClick="save,action-period-record-status-open,save"
+        onClick="save,action-method-period-status-open"
         showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 1 &amp;&amp; !$popup()"/>
     </panel>
   </form>
 
   <action-group name="action-period-group-close">
     <action name="save"/>
+    <action name="action-method-validate-close-period"/>
     <action name="action-method-period-close"/>
+  </action-group>
+
+  <action-group name="action-period-group-close-temp">
+    <action name="save"/>
+    <action name="action-method-validate-close-temp-period"/>
+    <action name="action-method-period-close-temp"/>
   </action-group>
 
   <action-method name="action-method-period-close">
     <call class="com.axelor.apps.base.web.PeriodController" method="close"/>
   </action-method>
 
+  <action-method name="action-method-period-close-temp">
+    <call class="com.axelor.apps.base.web.PeriodController" method="closeTemporarily"/>
+  </action-method>
+
   <action-method name="action-method-period-adjust">
     <call class="com.axelor.apps.base.web.PeriodController" method="adjust"/>
+  </action-method>
+
+  <action-method name="action-method-validate-close-temp-period">
+    <call class="com.axelor.apps.base.web.PeriodController" method="validateTempClosure"/>
+  </action-method>
+
+  <action-method name="action-method-validate-close-period">
+    <call class="com.axelor.apps.base.web.PeriodController" method="validateClosure"/>
   </action-method>
 
   <action-view name="action-view-period-linked-adjusting-moves-dashlet"
@@ -133,9 +156,14 @@
     <attribute for="toDate" name="value" expr="eval: null"/>
   </action-attrs>
 
-  <action-record name="action-period-record-status-open"
+  <action-method name="action-method-period-status-open">
+    <call class="com.axelor.apps.base.web.PeriodController" method="open"/>
+  </action-method>
+
+  <action-record name="action-period-record-set-value-onNew"
     model="com.axelor.apps.base.db.Period">
-    <field name="statusSelect" expr="eval: __repo__(Period).STATUS_OPENED"/>
+    <field name="year" expr="eval:__parent__"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Year' &amp;&amp; __parent__.typeSelect == 1"/>
   </action-record>
 
 </object-views>

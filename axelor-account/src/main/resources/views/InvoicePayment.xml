@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="invoice-payment-grid" title="Payments"
     model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
@@ -21,11 +21,22 @@
 
   <form name="invoice-payment-form" title="Payment"
     model="com.axelor.apps.account.db.InvoicePayment" onNew="action-invoice-payment-group-new">
+    <panel name="invoiceTermToPay" hidden="true"
+      showIf="invoice.invoiceTermList.length &gt; 1 &amp;&amp; id == null &amp;&amp; invoice.operationTypeSelect != 4 &amp;&amp; invoice.operationTypeSelect != 2">
+      <field name="$invoiceTerms" title="Unpaid invoice terms" type="one-to-many"
+        target="com.axelor.apps.account.db.InvoiceTerm"
+        grid-view="invoice-term-invoice-payment-grid" form-view="invoice-term-form" readonly="true"
+        colSpan="12"/>
+    </panel>
+    <panel-related name="invoiceTermPaymentPanel" field="invoiceTermPaymentList"
+      grid-view="invoice-term-payment-grid" form-view="invoice-term-payment-form" colSpan="12"
+      readonly="true" showIf="invoice.invoiceTermList.length &gt; 1"/>
     <panel name="mainPanel" readonlyIf="statusSelect != 0">
       <field name="typeSelect" showIf="id" colSpan="12"/>
-      <field name="amount" onChange="action-invoice-payment-method-change-amount"/>
-      <field name="currency" canEdit="false" form-view="currency-form"
-        grid-view="currency-grid"/>
+      <field name="amount" onChange="action-invoice-payment-group-change-amounts"/>
+      <field name="currency" canEdit="false" readonlyIf="$isMultiCurrency"
+        form-view="currency-form" grid-view="currency-grid"
+        onChange="action-invoice-payment-group-change-amounts"/>
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
@@ -44,18 +55,24 @@
       <field name="description" colSpan="12"/>
       <field name="paymentMode.typeSelect" hidden="true"/>
       <field name="invoice.tradingName"
-        if="__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
       <field name="invoice" hidden="true"/>
+      <field name="$isMultiCurrency" type="boolean" hidden="true"/>
     </panel>
-    <panel name="discountPanel" title="Financial Discount" showIf="applyFinancialDiscount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()">
+    <panel name="discountPanel" title="Financial discount" showIf="applyFinancialDiscount"
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
       <field name="applyFinancialDiscount" readonly="true"/>
-      <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"/>
-      <field name="financialDiscountDeadlineDate" showIf="applyFinancialDiscount"
+      <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
+        showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
         readonly="true"/>
-      <field name="financialDiscountAmount" showIf="applyFinancialDiscount" readonly="true"/>
-      <field name="financialDiscountTaxAmount"
-        showIf="applyFinancialDiscount &amp;&amp; financialDiscountTaxAmount &gt; 0" readonly="true"/>
+      <panel name="financialDiscountAmountPanel"
+        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonly="true" colSpan="12">
+        <field name="financialDiscount"/>
+        <field name="financialDiscountDeadlineDate"/>
+        <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
+        <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
+        <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
+      </panel>
     </panel>
     <panel name="otherDetailsPanel" showIf="id">
       <field name="move" form-view="move-form" grid-view="move-grid"/>
@@ -70,7 +87,6 @@
         readonlyIf="statusSelect == 2 || move.statusSelect == 3" hideIf="move.statusSelect == 3"
         icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
       <field name="move.statusSelect" hidden="true" readonly="true"/>
-
     </panel>
     <panel name="newInvoicePaymentPanel" hideIf="id">
       <button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"
@@ -80,7 +96,7 @@
 
   <form name="invoice-payment-mass-form" title="Mass payment"
     model="com.axelor.apps.account.db.InvoicePayment"
-    onNew="action-invoice-payment-record-mass-payment-new">
+    onNew="action-invoice-payment-group-mass-payment-new">
     <panel name="mainPanel">
       <field name="amount" readonly="true" title="Total amount"/>
       <field name="currency" canEdit="false" form-view="currency-form"
@@ -88,10 +104,11 @@
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
-      <field name="companyBankDetails" canEdit="false"
+      <field name="companyBankDetails" canEdit="false" required="true"
         onSelect="action-invoice-payment-method-bank-details-domain" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
-      <field name="paymentDate"/>
+      <field name="paymentDate"
+        onChange="action-invoice-payment-method-mass-payment-set-amount" required="true"/>
 
       <field name="invoicePaymentRef" showIf="paymentMode.typeSelect == 6"/>
       <field name="bankDepositDate"
@@ -100,25 +117,49 @@
         showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
       <field name="description" colSpan="12"/>
       <panel name="discountPanel" title="Financial Discount"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()">
+        if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
         <field name="applyFinancialDiscount" readonlyIf="!financialDiscount"/>
         <field name="financialDiscount" hidden="true"/>
       </panel>
       <field name="paymentMode.typeSelect" hidden="true"/>
       <field name="invoicesSelected" hidden="true"/>
       <button name="validateBtn" title="Validate"
-        onClick="action-invoice-payment-method-validate-mass-payment,close"/>
+        showIf="paymentMode != null &amp;&amp; paymentDate != null"
+        onClick="action-invoice-payment-group-validate-mass-payment"/>
     </panel>
   </form>
 
-
+  <action-group name="action-invoice-payment-group-validate-mass-payment">
+    <action name="action-invoice-payment-validate-mass-payment"/>
+    <action name="action-invoice-payment-method-validate-mass-payment"/>
+    <action name="close"/>
+  </action-group>
 
   <action-group name="action-invoice-payment-group-new">
     <action name="action-invoice-payment-record-new"/>
     <action name="action-invoice-payment-attrs-new"/>
-    <action name="action-invoice-payment-method-new"/>
+    <action name="action-invoice-payment-method-set-is-multi-currency"/>
+    <action name="action-invoice-payment-method-filter-payment-mode"/>
+    <action name="action-invoice-payment-method-load-invoice-terms"/>
+    <action name="action-invoice-payment-method-change-amount"/>
     <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
+
+  <action-group name="action-invoice-payment-group-change-amounts">
+    <action name="action-invoice-payment-record-manual-change"/>
+    <action name="action-invoice-payment-method-change-amount"/>
+    <action name="action-invoice-payment-method-new-discount"/>
+  </action-group>
+
+  <action-group name="action-invoice-payment-group-mass-payment-new">
+    <action name="action-invoice-payment-record-mass-payment-new"/>
+    <action name="action-invoice-payment-method-mass-payment-set-amount"/>
+  </action-group>
+
+  <action-validate name="action-invoice-payment-validate-mass-payment">
+    <error message="Please fill in the company bank details." if="companyBankDetails == null"/>
+    <error message="Please fill in the date." if="paymentDate == null"/>
+  </action-validate>
 
   <action-record name="action-invoice-payment-record-new"
     model="com.axelor.apps.account.db.InvoicePayment">
@@ -159,7 +200,7 @@
       expr="eval: _invoice?.operationSubTypeSelect == 2"/>
   </action-attrs>
 
-  <action-method name="action-invoice-payment-method-new">
+  <action-method name="action-invoice-payment-method-filter-payment-mode">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="filterPaymentMode"/>
   </action-method>
@@ -202,11 +243,31 @@
       method="checkConditionBeforeSave"/>
   </action-method>
 
+  <action-method name="action-invoice-payment-method-load-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="loadInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-mass-payment-set-amount">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="setMassPaymentAmount"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-set-is-multi-currency">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="setIsMultiCurrency"/>
+  </action-method>
+
   <action-record name="action-record-on-change-invoice-payment-financial-discount"
     model="com.axelor.apps.account.db.InvoicePayment">
     <field name="amount"
       expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount,amount)"
       if="invoice"/>
+  </action-record>
+
+  <action-record name="action-invoice-payment-record-manual-change"
+    model="com.axelor.apps.account.db.InvoicePayment">
+    <field name="manualChange" expr="eval: true"/>
   </action-record>
 
 </object-views>

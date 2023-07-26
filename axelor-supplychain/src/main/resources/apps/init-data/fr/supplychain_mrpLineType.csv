@@ -1,0 +1,7 @@
+"importId";"name";"typeSelect";"label";"code";"elementSelect";"archived";"sequence";"statusSelect";"applicationFieldSelect"
+1;"STO - Stock disponible";1;"Stock disponible";"STO";1;;"0";;1
+2;"PRA - Proposition d'achat";1;"Proposition d'achat";"PRA";5;;"1";;1
+4;"ACC - Achat ferme";1;"Achat ferme";"ACC";2;;"3";3;1
+7;"VEP - Besoin / vente prévisionnelle";2;"Besoin / vente prévisionnelle";"VEP";4;;"6";;1
+8;"VEN - Besoin / vente ferme";2;"Besoin / vente ferme";"VEN";3;;"7";3;1
+9;"LPA - Livraison estimée / Proposition d'achat";1;"Livraison estimée / Proposition d'achat";"LPA";11;;"3";;1

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- GRIDS -->
 
@@ -59,7 +59,7 @@
           domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
       </panel>
       <field name="outsourcing"
-        if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+        if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
       <panel name="descriptionPanel" title="Description">
         <field name="defDescriptionAsFormula" colSpan="6"/>
         <field name="description" colSpan="12" showIf="!defDescriptionAsFormula"/>
@@ -73,7 +73,7 @@
           x-code-syntax="groovy" showTitle="false" showIf="defStockLocationAsFormula"/>
       </panel>
     </panel>
-    <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12" hidden="true">
+    <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
       <panel name="minCapacityPanel">
         <field name="defMinCapacityFormula" colSpan="12"/>
         <field name="minCapacityPerCycle" showIf="!defMinCapacityFormula" colSpan="6"/>
@@ -91,6 +91,13 @@
         <field name="durationPerCycle" colSpan="6" widget="duration" x-big="true"
           x-seconds="true" showIf="!defDurationFormula"/>
         <field name="durationPerCycleFormula" widget="CodeEditor" showIf="defDurationFormula"
+          x-code-syntax="groovy" height="100" colSpan="12"/>
+      </panel>
+      <panel name="hrDurationPanel">
+        <field name="defHrDurationFormula" colSpan="12"/>
+        <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
+          x-seconds="true" showIf="!defHrDurationFormula"/>
+        <field name="humanDurationFormula" widget="CodeEditor" showIf="defHrDurationFormula"
           x-code-syntax="groovy" height="100" colSpan="12"/>
       </panel>
       <panel name="timingOfImplementationPanel">
@@ -124,14 +131,12 @@
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-configurator-prod-process-line-attrs-default">
-    <attribute name="hidden" for="capacitySettingsPanel"
-      expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
     <attribute name="hidden" for="workCenterPanel"
-      expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
+      expr="eval: __config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="required" for="workCenter"
-      expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup() &amp;&amp; !defWorkCenterAsFormula"/>
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; !defWorkCenterAsFormula"/>
     <attribute name="hidden" for="workCenterGroupPanel"
-      expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup()"/>
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="hidden" for="configuratorProdProductListPanel"
       expr="eval: !(__parent__?._model == 'com.axelor.apps.production.db.ConfiguratorProdProcess' &amp;&amp; (__parent__.defIsConsProOnOperationAsFormula || __parent__.isConsProOnOperation))"/>
   </action-attrs>

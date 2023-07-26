@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="FileSourceConnector">
+
+    <string name="name" title="name" required="true"/>
+    <integer name="connectionType"
+      selection="base.file.source.connector.connection.type.select" title="Connection type"
+      required="true"/>
+    <string name="host" title="Host" required="true"/>
+    <integer name="port" title="Port"/>
+    <string name="username" title="Login"/>
+    <string name="password" title="Password" password="true" encrypted="true"/>
+
+    <many-to-one ref="com.axelor.meta.db.MetaFile" name="keyFile" title="Key file"/>
+    <string name="keyFilePassphrase" title="Key file passphrase" password="true"
+      encrypted="true"/>
+
+
+    <extra-code><![CDATA[
+
+	   	// STATUS SELECT
+		public static final int CONNECTION_TYPE_FTP = 1;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

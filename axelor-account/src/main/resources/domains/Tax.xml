@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Tax" lang="java" cacheable="true">
+  <entity name="Tax" cacheable="true">
 
     <one-to-many name="accountManagementList"
       ref="com.axelor.apps.account.db.AccountManagement" mappedBy="tax"/>
-    <integer name="typeSelect" title="Tax type" selection="account.tax.type.select"
-      default="2"/>
-
-    <extra-code><![CDATA[
-	 	//TAX TYPE
-		public static final int TAX_TYPE_COLLECTION = 1;
-		public static final int TAX_TYPE_DEBIT = 2;
-      ]]></extra-code>
 
   </entity>
 

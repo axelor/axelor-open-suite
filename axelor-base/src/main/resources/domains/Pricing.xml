@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Pricing" lang="java">
+  <entity name="Pricing">
 
     <string name="name" title="Name"/>
     <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="concernedModel" ref="com.axelor.meta.db.MetaModel"
       title="Concerned model"/>
@@ -36,7 +37,9 @@
       title="Previous pricing"/>
     <one-to-many name="pricingLineList" ref="com.axelor.apps.base.db.PricingLine"
       mappedBy="pricing" title="Pricing lines"/>
-
+    <many-to-one name="currentPricing" ref="com.axelor.apps.base.db.Pricing"
+      title="Current pricing"/>
+    <many-to-one name="historizedBy" ref="com.axelor.auth.db.User" title="Historized by"/>
   </entity>
 
 </domain-models>

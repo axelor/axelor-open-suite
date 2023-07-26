@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankorder.file.directdebit;
 
 import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ActiveOrHistoricCurrencyAndAmount;
@@ -49,10 +50,10 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PersonIdentification
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.RemittanceInformation5;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.SequenceType1Code;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ServiceLevel8Choice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -315,7 +316,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE));
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE));
     }
     paymentTypeInformation20.setLclInstrm(localInstrument2Choice);
 
@@ -466,7 +467,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       if (receiverUmr == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
       }
 
       /*

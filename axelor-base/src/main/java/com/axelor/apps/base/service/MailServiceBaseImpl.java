@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
@@ -23,11 +24,7 @@ import com.axelor.apps.base.db.MailTemplateAssociation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.MailServiceMessageImpl;
-import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
@@ -35,7 +32,6 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -45,7 +41,12 @@ import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.mail.db.repo.MailMessageRepository;
-import com.axelor.mail.service.MailService;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailServiceMessageImpl;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.rpc.filter.Filter;
@@ -84,19 +85,23 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private ExecutorService executor = Executors.newCachedThreadPool();
 
-  private String userName = null;
-
   protected Template messageTemplate = null;
-  protected boolean isDefaultTemplate = false;
   protected Map<String, Object> templatesContext;
   protected Templates templates;
   protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
-  @Inject AppBaseService appBaseService;
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public MailServiceBaseImpl(MailAccountService mailAccountService, AppBaseService appBaseService) {
+    super(mailAccountService);
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public Model resolve(String email) {
@@ -135,25 +140,33 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       where.add(userPermissionFilter.getQuery());
     }
 
-    where.add(
-        "((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
+    String partnerEmailCondition =
+        "self.partner is not null AND self.partner.emailAddress is not null";
+
+    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
+      partnerEmailCondition =
+          String.format(
+              "%s AND self.partner.emailAddress.address not in (:selected)", partnerEmailCondition);
+      params.put("selected", selectedWithoutNull);
+    }
+
+    String mainEmailCondition =
+        String.format("((%s) OR (self.email is not null))", partnerEmailCondition);
+
+    where.add(mainEmailCondition);
 
     if (!isBlank(matching)) {
       where.add(
           "(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email) OR LOWER(self.email) like LOWER(:email) OR LOWER(self.name) like LOWER(:email))");
       params.put("email", "%" + matching + "%");
     }
-    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
-      where.add("self.partner.emailAddress.address not in (:selected)");
-      params.put("selected", selectedWithoutNull);
-    }
 
     final String filter = Joiner.on(" AND ").join(where);
     final Query<User> query = Query.of(User.class);
 
     if (!isBlank(filter)) {
-      if (userPermissionFilter != null) {
-        query.filter(filter, userPermissionFilter.getParams());
+      if (userPermissionFilter != null && userPermissionFilter.getParams() != null) {
+        query.filter(filter, userPermissionFilter.getParams().toArray());
       } else {
         query.filter(filter);
       }
@@ -210,8 +223,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<Partner> query2 = Query.of(Partner.class);
 
     if (!isBlank(filter2)) {
-      if (partnerPermissionFilter != null) {
-        query2.filter(filter2, partnerPermissionFilter.getParams());
+      if (partnerPermissionFilter != null && partnerPermissionFilter.getParams() != null) {
+        query2.filter(filter2, partnerPermissionFilter.getParams().toArray());
       } else {
         query2.filter(filter2);
       }
@@ -298,80 +311,54 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (recipients.isEmpty()) {
       return;
     }
+    this.updateTemplateAndContext(message, related);
 
     final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
-    for (String recipient : recipients) {
-      MailBuilder builder = sender.compose().subject(getSubject(message, related));
-      this.setRecipients(builder, recipient, related);
+    MailBuilder builder = sender.compose();
 
-      Model obj = Beans.get(MailService.class).resolve(recipient);
-      userName = null;
-      if (obj != null) {
-        Class<Model> klass = EntityHelper.getEntityClass(obj);
-        if (klass.equals(User.class)) {
-          User user = (User) obj;
-          userName = user.getName();
-        } else if (klass.equals(Partner.class)) {
-          Partner partner = (Partner) obj;
-          userName = partner.getSimpleFullName();
-        }
-      }
+    this.updateRecipientsTemplatesContext(recipients);
+    this.setRecipientsFromTemplate(builder, recipients);
 
-      for (MetaAttachment attachment : messages.findAttachments(message)) {
-        final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
-        final File file = filePath.toFile();
-        builder.attach(file.getName(), file.toString());
-      }
-
-      MimeMessage email;
-      try {
-        builder.html(template(message, related));
-        email = builder.build(message.getMessageId());
-        final Set<String> references = new LinkedHashSet<>();
-        if (message.getParent() != null) {
-          references.add(message.getParent().getMessageId());
-        }
-        if (message.getRoot() != null) {
-          references.add(message.getRoot().getMessageId());
-        }
-        if (!references.isEmpty()) {
-          email.setHeader("References", Joiner.on(" ").skipNulls().join(references));
-        }
-      } catch (MessagingException | IOException e) {
-        throw new MailException(e);
-      }
-
-      // send email using a separate process to void thread blocking
-      executor.submit(
-          new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-              send(sender, email);
-              return true;
-            }
-          });
+    for (MetaAttachment attachment : messages.findAttachments(message)) {
+      final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
+      final File file = filePath.toFile();
+      builder.attach(file.getName(), file.toString());
     }
+
+    MimeMessage email;
+    try {
+      builder.subject(getSubject(message, related));
+      builder.html(template(message, related));
+      email = builder.build(message.getMessageId());
+      final Set<String> references = new LinkedHashSet<>();
+      if (message.getParent() != null) {
+        references.add(message.getParent().getMessageId());
+      }
+      if (message.getRoot() != null) {
+        references.add(message.getRoot().getMessageId());
+      }
+      if (!references.isEmpty()) {
+        email.setHeader("References", Joiner.on(" ").skipNulls().join(references));
+      }
+    } catch (MessagingException | IOException e) {
+      throw new MailException(e);
+    }
+
+    // send email using a separate process to void thread blocking
+    executor.submit(
+        new Callable<Boolean>() {
+          @Override
+          public Boolean call() throws Exception {
+            send(sender, email);
+            return true;
+          }
+        });
   }
 
   @Override
   protected String template(MailMessage message, Model entity) throws IOException {
     if (messageTemplate == null) {
       return super.template(message, entity);
-    }
-
-    final String text = message.getBody().trim();
-    templatesContext.put("username", userName);
-
-    if (MESSAGE_TYPE_NOTIFICATION.equals(message.getType())) {
-      final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
-      final Map<String, Object> details = messages.details(message);
-      final String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
-      final ObjectMapper mapper = Beans.get(ObjectMapper.class);
-      Map<String, Object> data =
-          mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
-      templatesContext.putAll(data);
-    } else {
-      templatesContext.put("comment", text);
     }
 
     return templates.fromText(messageTemplate.getContent()).make(templatesContext).render();
@@ -382,24 +369,48 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (message == null) {
       return null;
     }
+
+    if (messageTemplate == null) {
+      return super.getSubject(message, entity);
+    }
+
+    String subject =
+        message.getSubject() != null ? message.getSubject() : messageTemplate.getSubject();
+    return templates.fromText(subject).make(templatesContext).render();
+  }
+
+  void updateTemplateAndContext(MailMessage message, Model entity) {
+    boolean isDefaultTemplate = false;
     messageTemplate = this.getTemplateByModel(entity);
+
     if (messageTemplate == null) {
       messageTemplate = appBaseService.getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
     }
     if (messageTemplate == null) {
-      return super.getSubject(message, entity);
+      return;
     }
+
     templatesContext = Maps.newHashMap();
     Class<?> klass = EntityHelper.getEntityClass(entity);
 
-    if (isDefaultTemplate) {
-      templatesContext.put("entity", entity);
-    } else {
-      templatesContext.put(klass.getSimpleName(), entity);
-    }
-
     try {
+
+      final String text = message.getBody().trim();
+      templatesContext.put("commentCreator", message.getAuthor());
+
+      if (MESSAGE_TYPE_NOTIFICATION.equals(message.getType())) {
+        final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
+        final Map<String, Object> details = messages.details(message);
+        final String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
+        final ObjectMapper mapper = Beans.get(ObjectMapper.class);
+        Map<String, Object> data =
+            mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+        templatesContext.putAll(data);
+      } else {
+        templatesContext.put("comment", text);
+      }
+
       Beans.get(TemplateMessageService.class)
           .computeTemplateContexts(
               messageTemplate.getTemplateContextList(),
@@ -407,11 +418,15 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
               klass.getCanonicalName(),
               messageTemplate.getIsJson(),
               templatesContext);
-    } catch (ClassNotFoundException e) {
+    } catch (ClassNotFoundException | IOException e) {
       TraceBackService.trace(e);
     }
+    if (isDefaultTemplate) {
+      templatesContext.put("entity", entity);
+    } else {
+      templatesContext.put(klass.getSimpleName(), entity);
+    }
     templates = createTemplates(messageTemplate);
-    return templates.fromText(messageTemplate.getSubject()).make(templatesContext).render();
   }
 
   protected Templates createTemplates(Template template) {
@@ -437,16 +452,37 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     return null;
   }
 
-  protected void setRecipients(MailBuilder builder, String recipient, Model entity) {
-    builder.to(recipient);
+  protected void setRecipientsFromTemplate(MailBuilder builder, Set<String> recipients) {
 
     if (messageTemplate == null) {
       return;
     }
 
-    builder.cc(getRecipients(messageTemplate.getCcRecipients()));
+    String[] ccRcp = getRecipients(messageTemplate.getCcRecipients());
+    String[] toRcp = getRecipients(messageTemplate.getToRecipients());
+
+    if (ccRcp.length == 0) {
+      ccRcp = recipients.toArray(new String[0]);
+    }
+
+    if (toRcp.length == 0) {
+      toRcp = recipients.toArray(new String[0]);
+    }
+
+    builder.to(toRcp);
+    builder.cc(ccRcp);
     builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
-    builder.to(getRecipients(messageTemplate.getToRecipients()));
+  }
+
+  void updateRecipientsTemplatesContext(Set<String> recipients) {
+    String contRecipients = String.join(", ", recipients);
+
+    if (templatesContext == null) {
+      templatesContext = Maps.newHashMap();
+    }
+    // Creating 2 same keys as it could be useful for a future update
+    templatesContext.put("toRecipients", contRecipients);
+    templatesContext.put("ccRecipients", contRecipients);
   }
 
   protected String[] getRecipients(String recipients) {

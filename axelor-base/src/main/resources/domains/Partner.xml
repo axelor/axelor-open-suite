@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner" lang="java">
+  <entity name="Partner">
 
     <!-- En-tête -->
     <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory"
@@ -46,9 +46,8 @@
       index="false" massUpdate="true"/>
 
     <!-- From contact -->
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress"
+    <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email"/>
-    <string name="fax" title="Fax"/>
     <string name="fixedPhone" title="Fixed phone"/>
     <string name="mobilePhone" title="Mobile phone"/>
     <string name="webSite" title="Website"/>
@@ -92,7 +91,6 @@
     <string name="description" title="Description" large="true"/>
     <many-to-one name="industrySector" title="Industry sector"
       ref="com.axelor.apps.base.db.IndustrySector" index="false" massUpdate="true"/>
-    <integer name="nbrEmployees" title="Employees (Nbr)" min="0"/>
     <integer name="saleTurnover" title="Turnover"/>
     <string name="registrationCode" title="Registration code"/>
     <many-to-one name="mainActivity" title="Main Activity"
@@ -112,8 +110,7 @@
     <many-to-one name="mainAddress" ref="com.axelor.apps.base.db.Address"
       title="Address"/>
 
-    <string name="timeSlot" title="Time slot" large="true"/>
-    <string name="companyStr" title="Companies"/>
+    <string name="companyStr" title="Companies" large="true"/>
 
     <string name="headOfficeAddress" title="Head office address"/>
 
@@ -159,6 +156,11 @@
       <field name="fixedPhone" on="UPDATE"/>
       <field name="emailAddress" on="UPDATE"/>
       <field name="currency" on="UPDATE"/>
+      <field name="isCustomer"/>
+      <field name="isProspect"/>
+      <field name="isSupplier"/>
+      <field name="isEmployee"/>
+      <field name="isInternal"/>
     </track>
 
   </entity>

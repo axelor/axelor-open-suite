@@ -1,0 +1,13 @@
+---
+name: GDPR
+code: gdpr
+typeSelect: standard
+installOrder: 2330
+description: |
+  GDPR configuration
+image: RGPDLogo.png
+modules:
+  axelor-gdpr
+dependsOn:
+  - base
+sequence: 55

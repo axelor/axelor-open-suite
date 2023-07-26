@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.cash.management.web;
 
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.cash.management.db.ForecastRecap;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
-import com.axelor.apps.cash.management.exception.IExceptionMessage;
+import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.cash.management.translation.ITranslation;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -34,8 +34,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +47,7 @@ public class ForecastRecapController {
       if (forecastRecap.getCompany() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.FORECAST_COMPANY));
+            I18n.get(CashManagementExceptionMessage.FORECAST_COMPANY));
       }
       Beans.get(ForecastRecapService.class)
           .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
@@ -62,28 +60,14 @@ public class ForecastRecapController {
   public void fillStartingBalance(ActionRequest request, ActionResponse response) {
     ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
     try {
-      if (forecastRecap.getBankDetails() != null) {
-        BigDecimal amount =
-            Beans.get(CurrencyService.class)
-                .getAmountCurrencyConvertedAtDate(
-                    forecastRecap.getBankDetails().getCurrency(),
-                    forecastRecap.getCompany().getCurrency(),
-                    forecastRecap.getBankDetails().getBalance(),
-                    Beans.get(AppBaseService.class).getTodayDate(forecastRecap.getCompany()))
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        forecastRecap.setStartingBalance(amount);
-      } else {
-        BigDecimal amount =
-            Beans.get(CurrencyService.class)
-                .getAmountCurrencyConvertedAtDate(
-                    forecastRecap.getCompany().getDefaultBankDetails().getCurrency(),
-                    forecastRecap.getCompany().getCurrency(),
-                    forecastRecap.getCompany().getDefaultBankDetails().getBalance(),
-                    Beans.get(AppBaseService.class).getTodayDate(forecastRecap.getCompany()))
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        forecastRecap.setStartingBalance(amount);
+
+      Company company = forecastRecap.getCompany();
+      if (company != null && company.getCurrency() != null) {
+        response.setValues(
+            Beans.get(ForecastRecapService.class)
+                .computeStartingBalanceForReporting(forecastRecap));
       }
-      response.setValues(forecastRecap);
+
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

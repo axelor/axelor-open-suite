@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="invoice-batch-grid" title="Invoice batches"
     model="com.axelor.apps.account.db.InvoiceBatch">
     <field name="actionSelect"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="createdOn" title="Created on"/>
     <field name="createdBy" title="Created by"/>
   </grid>
@@ -62,11 +62,10 @@
   <!-- ACTION RECORD -->
   <action-record name="action-invoice-batch-record-on-new"
     model="com.axelor.apps.account.db.InvoiceBatch">
-    <field name="createdOn" expr="eval: __config__.app.getTodayDate(null)"/>
-    <field name="createdOn" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"
-      if="__user__.activeCompany != null"/>
     <field name="createdOn"
-      expr="eval: __config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"/>
+    <field name="createdOn"
+      expr="eval: __config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="eval:__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
@@ -92,14 +91,11 @@
       for="invoiceBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 2, 3, 4]"
       for="statusBatchBtn"/>
-    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 3, 4]"
-      for="alarmBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 4]"
       for="memoryBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 3]"
       for="confirmMemoryBatch"/>
     <attribute name="hidden" expr="eval: actionSelect != 1" for="toStatusSelect"/>
-    <attribute name="hidden" expr="eval: actionSelect != 2" for="clearAlarmsOk"/>
     <attribute name="hidden" expr="eval: actionSelect != 2" for="fromStatusSelect"/>
   </action-attrs>
 

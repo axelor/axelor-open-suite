@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
     <hilite if="statusSelect == 1" strong="true" color="warning"/>
     <hilite if="statusSelect == 2" strong="true" color="success"/>
+    <field name="name"/>
     <field name="mrpSeq"/>
     <field name="createdOn"/>
     <field name="createdBy"/>
@@ -23,9 +24,8 @@
         <item name="runCalculationItem" title="Run calculation" showIf="statusSelect != 1"
           action="save,action-method-mrp-run-calculation"
           prompt="Are you sure you want to run the calculation ? Calculation can take a long time."/>
-        <item name="generateAllProposalsItem" title="Generate all proposals"
-          showIf="statusSelect == 2" action="save,action-mrp-view-generate-proposal-wizard"
-          prompt="Are you sure you want generate all proposals ?"/>
+        <item name="generateProposalsItem" title="Generate proposals"
+          showIf="statusSelect == 2" action="save,action-mrp-view-generate-proposal-wizard"/>
         <item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes"
           name="undoManualChangesItem"/>
       </menu>
@@ -55,10 +55,11 @@
     <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
       <field name="id"/>
       <spacer/>
-      <field name="createdOn" colSpan="4"/>
-      <field name="startDateTime" colSpan="4" readonly="true"/>
-      <field name="endDateTime" colSpan="4" readonly="true"/>
-      <field name="createdBy"/>
+      <field name="name"/>
+      <field name="createdOn" colSpan="3"/>
+      <field name="createdBy" colSpan="3"/>
+      <field name="startDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
+      <field name="endDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
       <field name="endDate" colSpan="6" hideIf="mrpTypeSelect == 2"/>
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" colSpan="6"
@@ -80,7 +81,8 @@
         canNew="false" colSpan="12"/>
       <panel-related name="saleOrderLineSetPanel" field="saleOrderLineSet"
         canEdit="false" form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid"
-        canNew="false" colSpan="12" onSelect="action-mrp-attrs-sale-order-domain"/>
+        canNew="false" colSpan="12" onSelect="action-mrp-method-sale-order-domain"
+        help="A list of sale order lines that will be processed. The lines that can be selected are the ones conforming to the following conditions :\nProduct is storable\nProduct is managed in stock\nProduct is not excluded from mrp\nSale order/quotation has the same stockLocation or a subLocation\nIf MPS, product must be a finished product\nDelivered quantity of the line must be lower than total quantity\nThe line must conform to one or several of the mrp move types"/>
       <panel-related name="mrpForecastSetPanel" field="mrpForecastSet"
         form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12"
         domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true AND (:mrpTypeSelect = 1 OR self.product.productSubTypeSelect = 1)"/>
@@ -99,8 +101,13 @@
     title="MPS">
     <panel name="wizardPanel">
       <field name="$consolidateProposalsPerSupplier"
-        title="Consolidate the proposals per supplier" type="boolean" widget="boolean-switch"/>
-      <button name="generateProposalsBtn" title="Generate all proposals"
+        title="Consolidate the proposals per supplier" type="boolean" widget="boolean-switch"
+        colSpan="6"/>
+      <spacer name="consolidateSpacer" colSpan="6"/>
+      <button name="generateSelectedProposalBtn"
+        title="Generate proposals for selected lines"
+        onClick="action-method-mrp-generate-selected-proposal,close"/>
+      <button name="generateAllProposalsBtn" title="Generate all possible proposals"
         onClick="action-method-mrp-generate-all-proposal,close"/>
     </panel>
   </form>
@@ -111,6 +118,11 @@
 
   <action-method name="action-method-mrp-generate-all-proposal">
     <call class="com.axelor.apps.supplychain.web.MrpController" method="generateAllProposals"/>
+  </action-method>
+
+  <action-method name="action-method-mrp-generate-selected-proposal">
+    <call class="com.axelor.apps.supplychain.web.MrpController"
+      method="generateSelectedProposals"/>
   </action-method>
 
   <action-method name="action-method-mrp-print-weeks">
@@ -162,10 +174,10 @@
       if="id"/>
   </action-attrs>
 
-  <action-attrs name="action-mrp-attrs-sale-order-domain">
-    <attribute name="domain" for="saleOrderLineSet"
-      expr="eval: &quot;self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.product.stockManaged = true AND self.deliveryState != 3 AND self.saleOrder.company.id = ${stockLocation?.company?.id} AND self.saleOrder.stockLocation is not null AND (${mrpTypeSelect} = 1 OR self.product.productSubTypeSelect = 1) AND self.saleOrder.statusSelect = 3 AND self.deliveredQty &lt; self.qty AND (self.saleOrder.archived = false OR self.saleOrder.archived is null) &quot;"/>
-  </action-attrs>
+  <action-method name="action-mrp-method-sale-order-domain">
+    <call class="com.axelor.apps.supplychain.web.MrpController"
+      method="setSaleOrderLineSetDomain"/>
+  </action-method>
 
   <action-record name="action-mrp-record-onnew"
     model="com.axelor.apps.supplychain.db.Mrp">

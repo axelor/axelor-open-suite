@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.mobile;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeVehicle;
 import com.axelor.apps.hr.db.Expense;
@@ -41,10 +45,12 @@ import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseComputationService;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
@@ -52,9 +58,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -102,10 +105,19 @@ public class HumanResourceMobileController {
       throws AxelorException {
     User user = AuthUtils.getUser();
     if (user != null) {
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
-      Expense expense = expenseService.getOrCreateExpense(user);
+      Employee employee = user.getEmployee();
+      if (employee == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+            user.getName());
+      }
+
+      ExpenseToolService expenseToolService = Beans.get(ExpenseToolService.class);
+      Expense expense = expenseToolService.getOrCreateExpense(employee);
 
       ExpenseLine expenseLine = new ExpenseLine();
+      expenseLine.setEmployee(employee);
       expenseLine.setDistance(new BigDecimal(request.getData().get("kmNumber").toString()));
       expenseLine.setFromCity(request.getData().get("locationFrom").toString());
       expenseLine.setToCity(request.getData().get("locationTo").toString());
@@ -122,7 +134,6 @@ public class HumanResourceMobileController {
       Product expenseProduct = hrConfigService.getKilometricExpenseProduct(hrConfig);
       expenseLine.setExpenseProduct(expenseProduct);
 
-      Employee employee = user.getEmployee();
       if (employee != null && !EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         KilometricAllowParamRepository kilometricAllowParamRepo =
             Beans.get(KilometricAllowParamRepository.class);
@@ -171,9 +182,9 @@ public class HumanResourceMobileController {
           Beans.get(ExpenseRepository.class)
               .all()
               .filter(
-                  "self.statusSelect = ?1 AND self.user.id = ?2",
+                  "self.statusSelect = ?1 AND self.employee.id = ?2",
                   ExpenseRepository.STATUS_DRAFT,
-                  user.getId())
+                  user.getEmployee().getId())
               .order("-id")
               .fetchOne();
 
@@ -182,7 +193,7 @@ public class HumanResourceMobileController {
       }
 
       List<ExpenseLine> expenseLineList =
-          Beans.get(ExpenseService.class).getExpenseLineList(expense);
+          Beans.get(ExpenseLineService.class).getExpenseLineList(expense);
       if (expenseLineList != null && !expenseLineList.isEmpty()) {
         Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
         while (expenseLineIter.hasNext()) {
@@ -241,8 +252,18 @@ public class HumanResourceMobileController {
           Beans.get(ProductRepository.class)
               .find(Long.valueOf(requestData.get("expenseType").toString()));
       if (user != null) {
-        ExpenseService expenseService = Beans.get(ExpenseService.class);
-        Expense expense = expenseService.getOrCreateExpense(user);
+        Employee employee = user.getEmployee();
+        if (employee == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+              user.getName());
+        }
+
+        ExpenseToolService expenseToolService = Beans.get(ExpenseToolService.class);
+        ExpenseComputationService expenseComputationService =
+            Beans.get(ExpenseComputationService.class);
+        Expense expense = expenseToolService.getOrCreateExpense(employee);
 
         ExpenseLine expenseLine;
         Object idO = requestData.get("id");
@@ -256,7 +277,7 @@ public class HumanResourceMobileController {
         expenseLine.setComments(requestData.get("comments").toString());
         expenseLine.setExpenseProduct(product);
         expenseLine.setProject(project);
-        expenseLine.setUser(user);
+        expenseLine.setEmployee(employee);
         expenseLine.setTotalAmount(new BigDecimal(requestData.get("unTaxTotal").toString()));
         expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
         expenseLine.setUntaxedAmount(
@@ -296,7 +317,7 @@ public class HumanResourceMobileController {
           }
         }
         expense.addGeneralExpenseLineListItem(expenseLine);
-        expense = expenseService.compute(expense);
+        expense = expenseComputationService.compute(expense);
 
         Beans.get(ExpenseRepository.class).save(expense);
         HashMap<String, Object> data = new HashMap<>();
@@ -390,14 +411,15 @@ public class HumanResourceMobileController {
       TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
 
       if (user != null) {
+        Employee employee = user.getEmployee();
         Timesheet timesheet =
             timesheetRepository
                 .all()
-                .filter("self.statusSelect = 1 AND self.user.id = ?1", user.getId())
+                .filter("self.statusSelect = 1 AND self.employee.id = ?1", employee.getId())
                 .order("-id")
                 .fetchOne();
         if (timesheet == null) {
-          timesheet = timesheetService.createTimesheet(user, date, date);
+          timesheet = timesheetService.createTimesheet(employee, date, date);
         }
         BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
 
@@ -409,7 +431,7 @@ public class HumanResourceMobileController {
                   Beans.get(TimesheetLineRepository.class).find(Long.valueOf(idO.toString())),
                   project,
                   product,
-                  user,
+                  timesheet.getEmployee(),
                   date,
                   timesheet,
                   hours,
@@ -419,7 +441,7 @@ public class HumanResourceMobileController {
               timesheetLineService.createTimesheetLine(
                   project,
                   product,
-                  user,
+                  timesheet.getEmployee(),
                   date,
                   timesheet,
                   hours,
@@ -478,12 +500,12 @@ public class HumanResourceMobileController {
     if (employee == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
           user.getName());
     }
     if (leaveReason != null) {
       LeaveRequest leave = new LeaveRequest();
-      leave.setUser(user);
+      leave.setEmployee(user.getEmployee());
       Company company = null;
       if (employee.getMainEmploymentContract() != null) {
         company = employee.getMainEmploymentContract().getPayCompany();
@@ -492,12 +514,13 @@ public class HumanResourceMobileController {
       LeaveLine leaveLine =
           Beans.get(LeaveLineRepository.class)
               .all()
-              .filter("self.employee = ?1 AND self.leaveReason = ?2", employee, leaveReason)
+              .filter(
+                  "self.employee.id = ?1 AND self.leaveReason = ?2", employee.getId(), leaveReason)
               .fetchOne();
       if (leaveLine == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_LINE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
             employee.getName(),
             leaveReason.getName());
       }
@@ -566,7 +589,7 @@ public class HumanResourceMobileController {
         List<LeaveLine> leaveLineList =
             Beans.get(LeaveLineRepository.class)
                 .all()
-                .filter("self.employee = ?1", user.getEmployee())
+                .filter("self.employee.id = ?1", user.getEmployee().getId())
                 .order("name")
                 .fetch();
 
@@ -656,7 +679,7 @@ public class HumanResourceMobileController {
       List<EmployeeVehicle> employeeVehicleList =
           Beans.get(EmployeeVehicleRepository.class)
               .all()
-              .filter("self.employee = ?1", user.getEmployee())
+              .filter("self.employee.id = ?1", user.getEmployee().getId())
               .fetch();
 
       // Not sorted by default ?

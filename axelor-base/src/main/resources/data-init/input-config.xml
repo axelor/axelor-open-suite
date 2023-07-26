@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
   <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group"
     search="self.code = :code"/>
@@ -21,19 +21,16 @@
   <input file="base_birtTemplateParameter.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+  <input file="base_templateContext.csv" separator=";"
+    type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
+
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
       search="self.importId in :birtTemplateSet_importId"
       eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
-  </input>
-
-  <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.App"
-    search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp"/>
-
-  <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
+    <bind to="templateContextList" search="self.name = :templateContext"
+      if="templateContext != null &amp;&amp; !templateContext.empty"/>
   </input>
 
   <input file="base_barcodeTypeConfig.csv" separator=";"
@@ -49,20 +46,6 @@
 
   <input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language"
     search="self.code = :code"/>
-
-  <input file="base_objectDataConfig.csv" separator=";"
-    type="com.axelor.apps.base.db.DataConfigLine">
-    <bind to="objectDataConfig" search="self.modelSelect = :modelSelect">
-      <bind to="title" column="title"/>
-      <bind to="modelSelect" column="modelSelect"/>
-    </bind>
-    <bind to="path" column="path"/>
-    <bind to="metaFieldPath" column="metaFieldPath" search="self.name = :metaFieldPath"/>
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
-    <bind to="toExportMetaFieldSet" column="fields"
-      search="self.name in :fields and self.metaModel.name = :metaModel"
-      eval="fields.split(',') as List"/>
-  </input>
 
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'en'"/>
@@ -90,5 +73,8 @@
     search="self.code = :code"/>
 
   <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
+
+  <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"
+    search="self.name = :name"/>
 
 </csv-inputs>

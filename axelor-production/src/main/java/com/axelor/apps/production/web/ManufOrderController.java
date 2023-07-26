@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,22 +14,24 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ProdProductProductionRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -41,15 +44,14 @@ import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
@@ -95,7 +97,7 @@ public class ManufOrderController {
             I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
                 .concat(message);
-        response.setFlash(message);
+        response.setInfo(message);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -142,7 +144,7 @@ public class ManufOrderController {
       long tracebackCount = traceBackService.countMessageTraceBack(manufOrder);
 
       if (!Beans.get(ManufOrderWorkflowService.class).finish(manufOrder)) {
-        response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+        response.setNotify(I18n.get(ProductionExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
       } else if (traceBackService.countMessageTraceBack(manufOrder) > tracebackCount) {
         traceBackService
             .findLastMessageTraceBack(manufOrder)
@@ -150,9 +152,7 @@ public class ManufOrderController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
 
@@ -172,7 +172,7 @@ public class ManufOrderController {
       long tracebackCount = traceBackService.countMessageTraceBack(manufOrder);
 
       if (!Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder)) {
-        response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+        response.setNotify(I18n.get(ProductionExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
       } else if (traceBackService.countMessageTraceBack(manufOrder) > tracebackCount) {
         traceBackService
             .findLastMessageTraceBack(manufOrder)
@@ -180,9 +180,7 @@ public class ManufOrderController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.apps.message.exception.IExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
       response.setReload(true);
@@ -202,7 +200,7 @@ public class ManufOrderController {
               Beans.get(ManufOrderRepository.class).find(manufOrder.getId()),
               manufOrder.getCancelReason(),
               manufOrder.getCancelReasonStr());
-      response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL));
+      response.setInfo(I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -256,7 +254,7 @@ public class ManufOrderController {
             I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
                 .concat(message);
-        response.setFlash(message);
+        response.setInfo(message);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -316,7 +314,7 @@ public class ManufOrderController {
         LOG.debug("Printing {}", name);
         response.setView(ActionView.define(name).add("html", fileLink).map());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
+        response.setInfo(I18n.get(ProductionExceptionMessage.MANUF_ORDER_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -547,28 +545,29 @@ public class ManufOrderController {
   public void checkMergeValues(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().get("id") != null) {
-        response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
+        response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
       } else {
         Object _ids = request.getContext().get("_ids");
         if (!ObjectUtils.isEmpty(_ids)) {
           List<Long> ids = (List<Long>) _ids;
           if (ids.size() < 2) {
-            response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
+            response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
           } else {
             boolean canMerge = Beans.get(ManufOrderService.class).canMerge(ids);
             if (canMerge) {
-              response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
+              response.setAlert(I18n.get(ProductionExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
             } else {
               if (Beans.get(AppProductionService.class).getAppProduction().getManageWorkshop()) {
-                response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR));
+                response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_MERGE_ERROR));
               } else {
                 response.setError(
-                    I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE));
+                    I18n.get(
+                        ProductionExceptionMessage.MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE));
               }
             }
           }
         } else {
-          response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_ONE_SELECTED));
+          response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_NO_ONE_SELECTED));
         }
       }
 
@@ -646,7 +645,7 @@ public class ManufOrderController {
       if (prodProductList.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.NO_PRODUCT_SELECTED));
+            I18n.get(ProductionExceptionMessage.NO_PRODUCT_SELECTED));
       }
 
       List<Product> selectedProductList = new ArrayList<>();
@@ -655,7 +654,7 @@ public class ManufOrderController {
         if (selectedProductList.contains(prod.getProduct())) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.DUPLICATE_PRODUCT_SELECTED));
+              I18n.get(ProductionExceptionMessage.DUPLICATE_PRODUCT_SELECTED));
         }
         selectedProductList.add(prod.getProduct());
       }
@@ -773,6 +772,17 @@ public class ManufOrderController {
               .map());
 
     } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeProducibleQty(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      BigDecimal producibleQty =
+          Beans.get(ManufOrderService.class).computeProducibleQty(manufOrder);
+      response.setValue("$producibleQty", producibleQty);
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }

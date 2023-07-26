@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="import-batch-grid" title="Import batches"
+    model="com.axelor.apps.base.db.ImportBatch">
+    <field name="actionSelect"/>
+    <field name="code"/>
+    <field name="company"/>
+    <field name="createdOn"/>
+    <field name="createdBy"/>
+  </grid>
+
+  <form name="import-batch-form" title="Import batch"
+    model="com.axelor.apps.base.db.ImportBatch" width="large"
+    onNew="action-import-batch-record-on-new">
+    <panel name="mainPanel">
+      <field name="actionSelect"/>
+      <field name="code"/>
+      <field name="company"/>
+      <spacer colSpan="6"/>
+      <field name="archived"/>
+    </panel>
+    <panel-tabs name="panelTabs">
+      <panel name="importConfigPanel" title="Import Configuration">
+        <panel name="importConfigPanel" colSpan="12" showIf="actionSelect == 0">
+          <field name="importConfig" form-view="import-configuration-form"
+            grid-view="import-configuration-grid" requiredIf="actionSelect == 0"/>
+          <field name="importFromConnector"/>
+          <field name="dataFileName" hidden="true" showIf="importFromConnector"/>
+        </panel>
+        <panel name="advanceImportPanel" showIf="actionSelect == 1" colSpan="12">
+          <field name="advancedImport" form-view="advanced-import-form"
+            grid-view="advanced-import-grid" requiredIf="actionSelect == 1"/>
+        </panel>
+        <field name="fileSourceConnectorParameters"
+          form-view="file-source-connector-parameters-form"
+          grid-view="file-source-connector-parameters-grid" requiredIf="importFromConnector"
+          showIf="importFromConnector"/>
+      </panel>
+      <panel name="batchInfoPanel" title="Informations">
+        <field name="createdOn"/>
+        <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+        <field name="description"/>
+        <field name="batchList" form-view="batch-form" grid-view="batch-grid" colSpan="12"/>
+      </panel>
+    </panel-tabs>
+    <panel name="actionsPanel" sidebar="true">
+      <button name="importBtn" title="Import"
+        onClick="save,action-base-method-batch-import-data" showIf="actionSelect == 0"/>
+      <button name="advancedImportBtn" title="Import"
+        onClick="save,action-base-method-batch-advanced-import-data" showIf="actionSelect == 1"/>
+    </panel>
+  </form>
+
+  <action-method name="action-base-method-batch-import-data">
+    <call class="com.axelor.apps.base.web.ImportBatchController" method="importData"/>
+  </action-method>
+
+  <action-method name="action-base-method-batch-advanced-import-data">
+    <call class="com.axelor.apps.base.web.ImportBatchController" method="advancedImportData"/>
+  </action-method>
+
+  <action-record name="action-import-batch-record-on-new"
+    model="com.axelor.apps.base.db.ImportBatch">
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+</object-views>

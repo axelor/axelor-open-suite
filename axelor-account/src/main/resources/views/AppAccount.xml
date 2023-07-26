@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="app-account-config-form" title="App account"
-    model="com.axelor.apps.base.db.AppAccount" canDelete="false" canNew="false" width="large">
+    model="com.axelor.studio.db.AppAccount" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="manageAnalyticAccounting" widget="boolean-switch"/>
       <field name="manageCustomerCredit" widget="boolean-switch"/>
       <field name="manageFactors" widget="Boolean-switch"/>
       <field name="manageAdvancePaymentInvoice" widget="boolean-switch"/>
-      <field name="paymentVouchersOnInvoice" widget="boolean-switch"/>
+      <field name="paymentVouchersOnSupplierInvoice" widget="boolean-switch"/>
+      <field name="paymentVouchersOnCustomerInvoice" widget="boolean-switch"/>
       <field name="activatePassedForPayment" widget="boolean-switch"/>
       <field name="manageFinancialDiscount" widget="boolean-switch"/>
+      <field name="manageCutOffPeriod" widget="boolean-switch"/>
+      <field name="allowMultiInvoiceTerms" widget="boolean-switch"/>
+      <field name="partnerBalConfigSelect"/>
       <panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list"
         colSpan="12">
         <field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid"
@@ -20,10 +24,18 @@
         <field name="chequeInterbankCode" grid-view="interbank-code-grid"
           form-view="interbank-code-form"/>
       </panel>
+      <panel name="trackingNumberBarCodePanel" title="Fixed Asset Tracking number"
+        colSpan="12">
+        <field name="activateFixedAssetBarCodeGeneration" widget="Boolean-switch"/>
+        <field name="editFixedAssetBarcodeType"
+          showIf="activateFixedAssetBarCodeGeneration == true" widget="boolean-switch"/>
+        <field name="fixedAssetBarcodeTypeConfig"
+          showIf="activateFixedAssetBarCodeGeneration == true"
+          requiredIf="activateFixedAssetBarCodeGeneration &amp;&amp; !editFixedAssetBarcodeType"/>
+      </panel>
       <panel name="accountingExportPanel" title="Accounting exports">
         <field name="dasActiveNorm"/>
       </panel>
-      <field name="partnerBalConfigSelect"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="accountConfigurationsPanel" title="Account configurations">

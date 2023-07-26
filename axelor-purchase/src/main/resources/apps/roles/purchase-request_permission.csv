@@ -1,0 +1,7 @@
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.purchase.PurchaseRequest.r";"com.axelor.apps.purchase.db.PurchaseRequest";"x";;;;;"self.company.id in (?)";"__user__.companySet.id.plus(0)";"Purchase Request Read"
+"perm.purchase.PurchaseRequest.rwc";"com.axelor.apps.purchase.db.PurchaseRequest";"x";"x";"x";;;"self.company.id in (?)";"__user__.companySet.id.plus(0)";"Purchase Request User"
+"perm.purchase.PurchaseRequest.rwcde";"com.axelor.apps.purchase.db.PurchaseRequest";"x";"x";"x";"x";"x";"self.company.id in (?)";"__user__.companySet.id.plus(0)";"Purchase Request Manager"
+"perm.purchase.PurchaseRequestLine.r";"com.axelor.apps.purchase.db.PurchaseRequestLine";"x";;;;;;;"Purchase Request Read"
+"perm.purchase.PurchaseRequestLine.rwc";"com.axelor.apps.purchase.db.PurchaseRequestLine";"x";"x";"x";;;;;"Purchase Request User"
+"perm.purchase.PurchaseRequestLine.rwcde";"com.axelor.apps.purchase.db.PurchaseRequestLine";"x";"x";"x";"x";"x";;;"Purchase Request Manager"

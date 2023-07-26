@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -26,23 +27,24 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -101,7 +103,7 @@ public class ReimbursementExportService {
       Reimbursement reimbursement, List<MoveLine> moveLineList, BigDecimal total) {
 
     log.debug("In fillMoveLineSet");
-    log.debug("Nombre de trop-perçus trouvés : {}", moveLineList.size());
+    log.debug("Number of overpayment(s) found: {}", moveLineList.size());
 
     for (MoveLine moveLine : moveLineList) {
       // On passe les lignes d'écriture (trop perçu) à l'état 'en cours de remboursement'
@@ -202,7 +204,8 @@ public class ReimbursementExportService {
                     MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                     MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                     reimbursement.getRef(),
-                    reimbursement.getDescription());
+                    reimbursement.getDescription(),
+                    moveLine.getMove().getCompanyBankDetails());
             first = false;
           }
           // Création d'une ligne au débit
@@ -228,7 +231,7 @@ public class ReimbursementExportService {
           Reconcile reconcile =
               reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining, false);
           if (reconcile != null) {
-            reconcileService.confirmReconcile(reconcile, true);
+            reconcileService.confirmReconcile(reconcile, true, true);
           }
         }
       }
@@ -249,7 +252,7 @@ public class ReimbursementExportService {
       if (reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty()) {
         newCreditMoveLine.setDescription(reimbursement.getDescription());
       }
-      moveValidateService.validate(newMove);
+      moveValidateService.accounting(newMove);
       moveRepo.save(newMove);
     }
   }
@@ -272,8 +275,8 @@ public class ReimbursementExportService {
     if (!sequenceService.hasSequence(SequenceRepository.REIMBOURSEMENT, company)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.REIMBURSEMENT_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.REIMBURSEMENT_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
   }
@@ -305,7 +308,8 @@ public class ReimbursementExportService {
     reimbursement.setBankDetails(bankDetails);
 
     reimbursement.setRef(
-        sequenceService.getSequenceNumber(SequenceRepository.REIMBOURSEMENT, company));
+        sequenceService.getSequenceNumber(
+            SequenceRepository.REIMBOURSEMENT, company, Reimbursement.class, "ref"));
 
     return reimbursement;
   }
@@ -356,7 +360,7 @@ public class ReimbursementExportService {
   	String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
 
   	if (exportFolderPath == null) {
-  		throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.REIMBURSEMENT_2), company.getName());
+  		throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(AccountExceptionMessage.REIMBURSEMENT_2), company.getName());
   	}
 
 
@@ -558,8 +562,8 @@ public class ReimbursementExportService {
             .filter(
                 "self.account.useForPartnerBalance = 'true' "
                     + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
-                MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_ACCOUNTED,
+                MoveRepository.STATUS_DAYBOOK,
                 partner,
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
             .fetch();

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
@@ -21,6 +22,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.FixedAssetType;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.Assert;
@@ -44,14 +46,16 @@ public class FixedAssetTestTool {
 
   public static FixedAssetLine createFixedAssetLine(
       LocalDate depreciationDate,
+      BigDecimal depreciationBase,
       BigDecimal depreciation,
       BigDecimal cumulativeDepreciation,
-      BigDecimal residualValue) {
+      BigDecimal accountingValue) {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    fixedAssetLine.setDepreciationBase(depreciationBase);
     fixedAssetLine.setDepreciationDate(depreciationDate);
     fixedAssetLine.setDepreciation(depreciation);
     fixedAssetLine.setCumulativeDepreciation(cumulativeDepreciation);
-    fixedAssetLine.setResidualValue(residualValue);
+    fixedAssetLine.setAccountingValue(accountingValue);
     return fixedAssetLine;
   }
 
@@ -89,11 +93,14 @@ public class FixedAssetTestTool {
     fixedAsset.setDegressiveCoef(degressiveCoef);
     fixedAsset.setFirstDepreciationDate(firstDepreciationDate);
     fixedAsset.setAcquisitionDate(acquisitionDate);
+    fixedAsset.setFirstServiceDate(acquisitionDate);
     fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
     fixedAsset.setPeriodicityInMonth(periodicityInMonth);
     fixedAsset.setDurationInMonth(numberOfDepreciation * periodicityInMonth);
     fixedAsset.setFixedAssetCategory(fixedAssetCategory);
     fixedAsset.setGrossValue(grossValue);
+    fixedAsset.setResidualValue(BigDecimal.ZERO);
+    fixedAsset.setDepreciationPlanSelect(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC);
 
     return fixedAsset;
   }
@@ -111,8 +118,8 @@ public class FixedAssetTestTool {
       Assert.assertEquals(
           expectedLine.getCumulativeDepreciation(), actualLine.getCumulativeDepreciation());
     }
-    if (expectedLine.getResidualValue() != null) {
-      Assert.assertEquals(expectedLine.getResidualValue(), actualLine.getResidualValue());
+    if (expectedLine.getAccountingValue() != null) {
+      Assert.assertEquals(expectedLine.getAccountingValue(), actualLine.getAccountingValue());
     }
   }
 }

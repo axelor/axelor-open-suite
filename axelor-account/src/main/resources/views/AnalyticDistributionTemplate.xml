@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="analytic-distribution-template-grid" title="Analytic distribution templates"
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate">
     <field name="name"/>
     <field name="company" massUpdate="true"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="isSpecific"/>
   </grid>
 
   <form name="analytic-distribution-template-form" title="Analytic distribution template"
@@ -17,10 +18,56 @@
       <field name="name"/>
       <field name="company" required="true"
         onChange="action-method-analytic-distribution-template-check-company"/>
+      <field name="isSpecific" hidden="true"/>
     </panel>
-    <panel-related name="analyticDistributionLineListPanel"
+    <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
-      form-view="analytic-distribution-line-form"/>
+      form-view="analytic-distribution-line-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"
+      canNew="name &amp;&amp; company"/>
+    <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
+      form-view="analytic-distribution-line-personalized-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"
+      canNew="name &amp;&amp; company"/>
+  </form>
+
+  <form name="analytic-distribution-template-fixed-asset-form"
+    title="Analytic distribution template"
+    model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
+    onSave="action-method-analytic-distribution-template-check-analytic-axis,action-analytic-distribution-template-on-save,action-method-parent-fixed-asset-calculate-analytic">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="company" required="true" onChange="save"/>
+      <field name="isSpecific" hidden="true"/>
+    </panel>
+    <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
+      form-view="analytic-distribution-line-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+    <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
+      form-view="analytic-distribution-line-personalized-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
+  </form>
+
+  <form name="analytic-distribution-template-account-form"
+    title="Analytic distribution template"
+    model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
+    onSave="action-method-analytic-distribution-template-check-analytic-axis,action-analytic-distribution-template-on-save">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="company" required="true" onChange="save"/>
+      <field name="isSpecific" hidden="true"/>
+    </panel>
+    <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
+      form-view="analytic-distribution-line-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+    <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
+      field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
+      form-view="analytic-distribution-line-personalized-form"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
   </form>
 
   <action-method name="action-analytic-dist-template-method-validate-tot-percentage">
@@ -48,7 +95,18 @@
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
     title="Analytic distribution template filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-method name="action-method-parent-fixed-asset-calculate-analytic">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionTemplateController"
+      method="calculateAnalyticFixedAsset"/>
+  </action-method>
+
+  <action-method
+    name="action-method-analytic-distribution-template-check-analytic-axis">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionTemplateController"
+      method="checkAnalyticAccounts"/>
+  </action-method>
 
 </object-views>

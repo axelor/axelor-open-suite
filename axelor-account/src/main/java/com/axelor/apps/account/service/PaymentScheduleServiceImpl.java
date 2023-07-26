@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -24,16 +25,17 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -174,12 +176,17 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    */
   @Override
   public String getPaymentScheduleSequence(Company company) throws AxelorException {
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PAYMENT_SCHEDULE, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PAYMENT_SCHEDULE,
+            company,
+            PaymentSchedule.class,
+            "paymentScheduleSeq");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "%s :\n" + I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          "%s :\n" + I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
     return seq;
@@ -203,7 +210,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
         if (paymentScheduleLine.getInTaxAmount() != null) {
 
           log.debug(
-              "Somme TTC des lignes de l'échéancier {} : total = {}, ajout = {}",
+              "A.T.I. amount of the lines of the payment schedule {} : total = {}, tax amount : {}",
               new Object[] {
                 paymentSchedule.getPaymentScheduleSeq(),
                 totalAmount,
@@ -216,7 +223,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
     }
 
     log.debug(
-        "Obtention de la somme TTC des lignes de l'échéancier {} : {}",
+        "Get A.T.I. amount of lines of payment schedule {} : {}",
         new Object[] {paymentSchedule.getPaymentScheduleSeq(), totalAmount});
 
     return totalAmount;
@@ -233,7 +240,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   public void updatePaymentSchedule(PaymentSchedule paymentSchedule, BigDecimal inTaxTotal) {
 
     log.debug(
-        "Mise à jour de l'échéancier {} : {}",
+        "Payment schedule update {} : {}",
         new Object[] {paymentSchedule.getPaymentScheduleSeq(), inTaxTotal});
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
@@ -241,7 +248,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       if (paymentScheduleLine.getStatusSelect() == PaymentScheduleLineRepository.STATUS_IN_PROGRESS
           && !paymentScheduleLine.getRejectedOk()) {
 
-        log.debug("Mise à jour de la ligne {} ", paymentScheduleLine.getName());
+        log.debug("Update of the line : {} ", paymentScheduleLine.getName());
 
         paymentScheduleLine.setInTaxAmount(inTaxTotal);
       }
@@ -329,7 +336,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       throw new AxelorException(
           paymentSchedule,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH),
+          I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH),
           total,
           paymentSchedule.getInTaxAmount());
     }
@@ -345,15 +352,15 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   @Transactional(rollbackOn = {Exception.class})
   public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
-    log.debug("Validation de l'échéancier {}", paymentSchedule.getPaymentScheduleSeq());
+    log.debug("Validation of the payment schedule {}", paymentSchedule.getPaymentScheduleSeq());
 
     if (paymentSchedule.getPaymentScheduleLineList() == null
         || paymentSchedule.getPaymentScheduleLineList().isEmpty()) {
       throw new AxelorException(
           paymentSchedule,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           paymentSchedule.getPaymentScheduleSeq());
     }
 
@@ -441,7 +448,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
                   PaymentScheduleLineRepository.STATUS_IN_PROGRESS)
               .fetchOne()
           == null) {
-        log.debug("Dernière échéance");
+        log.debug("Last payment schedule");
         return true;
       } else {
         return false;
@@ -461,7 +468,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   @Override
   public void closePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
-    log.debug("Cloture de l'échéancier");
+    log.debug("Closing of the payment schedule");
 
     // On récupère un statut cloturé, afin de pouvoir changer l'état des lignes d'échéanciers
 
@@ -589,7 +596,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
     throw new AxelorException(
         partner,
         TraceBackRepository.CATEGORY_MISSING_FIELD,
-        I18n.get(IExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
+        I18n.get(AccountExceptionMessage.PARTNER_BANK_DETAILS_MISSING),
         partner.getName());
   }
 

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,25 +14,27 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
@@ -40,6 +43,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -55,12 +59,13 @@ import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
+import com.axelor.apps.supplychain.service.MrpLineTypeService;
+import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.service.MailMessageService;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -68,6 +73,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +89,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   protected AppProductionService appProductionService;
 
+  protected ProdProcessLineService prodProcessLineService;
+
   @Inject
   public MrpServiceProductionImpl(
       MrpRepository mrpRepository,
@@ -96,17 +104,21 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockRulesService stockRulesService,
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
+      ProductCategoryService productCategoryService,
       StockLocationService stockLocationService,
       MailMessageService mailMessageService,
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
       AppSaleService appSaleService,
       AppPurchaseService appPurchaseService,
+      StockHistoryLineRepository stockHistoryLineRepository,
+      MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService,
+      MrpLineTypeService mrpLineTypeService,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
-      ProductCategoryService productCategoryService,
       BillOfMaterialService billOfMaterialService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      ProdProcessLineService prodProcessLineService) {
     super(
         mrpRepository,
         stockLocationRepository,
@@ -125,11 +137,15 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         unitConversionService,
         appBaseService,
         appSaleService,
-        appPurchaseService);
+        appPurchaseService,
+        stockHistoryLineRepository,
+        mrpSaleOrderCheckLateSaleService,
+        mrpLineTypeService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialService = billOfMaterialService;
     this.appProductionService = appProductionService;
+    this.prodProcessLineService = prodProcessLineService;
   }
 
   @Override
@@ -147,14 +163,16 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected void createManufOrderMrpLines() throws AxelorException {
 
     MrpLineType manufOrderMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER);
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER, mrp.getMrpTypeSelect());
 
     if (manufOrderMrpLineType == null) {
       return;
     }
 
     MrpLineType manufOrderNeedMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED);
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED, mrp.getMrpTypeSelect());
 
     String statusSelect = manufOrderMrpLineType.getStatusSelect();
     List<Integer> statusList = StringTool.getIntegerList(statusSelect);
@@ -167,7 +185,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         manufOrderRepository
             .all()
             .filter(
-                "self.product.id in (?1) AND self.prodProcess.stockLocation in (?2) "
+                "self.product.id in (?1) AND (self.prodProcess.stockLocation in (?2) OR "
+                    + "self.prodProcess.producedProductStockLocation in (?2)) "
                     + "AND self.statusSelect IN (?3)",
                 this.productMap.keySet(),
                 this.stockLocationList,
@@ -199,7 +218,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     if (manufOrder.getPlannedEndDateT() != null) {
       maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-    } else {
+    } else if (manufOrder.getPlannedStartDateT() != null) {
       maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
     }
 
@@ -211,9 +230,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
       if ((this.isBeforeEndDate(maturityDate) || manufOrderMrpLineType.getIgnoreEndDate())
           && this.isMrpProduct(product)) {
-        Unit unit = product.getUnit();
-        BigDecimal qty = prodProduct.getQty();
-        if (!unit.equals(prodProduct.getUnit())) {
+        Unit unit = prodProduct.getUnit();
+        BigDecimal qty = computeQtyLeftToProduce(manufOrder, prodProduct);
+        if (!unit.equals(product.getUnit())) {
           qty =
               unitConversionService.convert(prodProduct.getUnit(), unit, qty, qty.scale(), product);
         }
@@ -245,11 +264,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
           if (this.isMrpProduct(product)) {
 
-            maturityDate = null;
-
             if (operationOrder.getPlannedEndDateT() != null) {
               maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
-            } else {
+            } else if (operationOrder.getPlannedStartDateT() != null) {
               maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
             }
 
@@ -323,19 +340,23 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   }
 
   protected BigDecimal computeQtyLeftToConsume(ManufOrder manufOrder, ProdProduct prodProduct) {
-    return computeQtyLeftToConsume(manufOrder.getConsumedStockMoveLineList(), prodProduct);
+    return computeQtyLeftToProcess(manufOrder.getConsumedStockMoveLineList(), prodProduct);
   }
 
   protected BigDecimal computeQtyLeftToConsume(
       OperationOrder operationOrder, ProdProduct prodProduct) {
-    return computeQtyLeftToConsume(operationOrder.getConsumedStockMoveLineList(), prodProduct);
+    return computeQtyLeftToProcess(operationOrder.getConsumedStockMoveLineList(), prodProduct);
   }
 
-  protected BigDecimal computeQtyLeftToConsume(
-      List<StockMoveLine> consumedStockMoveLineList, ProdProduct prodProduct) {
-    BigDecimal qtyToConsume = prodProduct.getQty();
-    BigDecimal consumedQty =
-        consumedStockMoveLineList.stream()
+  protected BigDecimal computeQtyLeftToProduce(ManufOrder manufOrder, ProdProduct prodProduct) {
+    return computeQtyLeftToProcess(manufOrder.getProducedStockMoveLineList(), prodProduct);
+  }
+
+  protected BigDecimal computeQtyLeftToProcess(
+      List<StockMoveLine> stockMoveLineList, ProdProduct prodProduct) {
+    BigDecimal qtyToProcess = prodProduct.getQty();
+    BigDecimal processedQty =
+        stockMoveLineList.stream()
             .filter(
                 stockMoveLine ->
                     stockMoveLine.getStockMove().getStatusSelect()
@@ -344,13 +365,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .map(StockMoveLine::getQty)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
-    return qtyToConsume.subtract(consumedQty);
+    return qtyToProcess.subtract(processedQty);
   }
 
   protected void createMPSLines() throws AxelorException {
 
     MrpLineType mpsNeedMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MASTER_PRODUCTION_SCHEDULING);
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_MASTER_PRODUCTION_SCHEDULING, mrp.getMrpTypeSelect());
 
     if (mpsNeedMrpLineType == null || mrp.getMrpTypeSelect() != MrpRepository.MRP_TYPE_MRP) {
       return;
@@ -418,6 +440,15 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       String relatedToSelectName)
       throws AxelorException {
 
+    Company company = mrp.getStockLocation().getCompany();
+    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+
+    if (appProductionService.isApp("production")
+        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
+        && defaultBillOfMaterial != null) {
+      maturityDate = updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty);
+    }
+
     super.createProposalMrpLine(
         mrp,
         product,
@@ -431,14 +462,13 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     if (!appProductionService.isApp("production")) {
       return;
     }
-    Company company = mrp.getStockLocation().getCompany();
-    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
 
       MrpLineType manufProposalNeedMrpLineType =
-          this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED);
+          mrpLineTypeService.getMrpLineType(
+              MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL_NEED, mrp.getMrpTypeSelect());
 
       if (manufProposalNeedMrpLineType == null) {
         return;
@@ -449,7 +479,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         Product subProduct = billOfMaterial.getProduct();
 
         if (this.isMrpProduct(subProduct)) {
-          // TODO take the time to do the Manuf order (use machine planning)
           super.createProposalMrpLine(
               mrp,
               subProduct,
@@ -464,6 +493,36 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     }
+  }
+
+  /**
+   * Update maturiy date because current currenty date do not take into account the duration of the
+   * entrire process of manuf order
+   *
+   * @param maturityDate
+   * @param defaultBillOfMaterial
+   * @param reorderQty
+   * @return
+   * @throws AxelorException
+   */
+  protected LocalDate updateMaturityDate(
+      LocalDate maturityDate, BillOfMaterial defaultBillOfMaterial, BigDecimal reorderQty)
+      throws AxelorException {
+
+    long totalDuration = 0;
+    if (defaultBillOfMaterial.getProdProcess() != null) {
+      for (ProdProcessLine prodProcessLine :
+          defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
+        totalDuration +=
+            prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty);
+      }
+    }
+    // If days should be rounded to a upper value
+    if (totalDuration != 0 && totalDuration % TimeUnit.DAYS.toSeconds(1) != 0) {
+      return maturityDate.minusDays(TimeUnit.SECONDS.toDays(totalDuration) + 1);
+    }
+
+    return maturityDate.minusDays(TimeUnit.SECONDS.toDays(totalDuration));
   }
 
   /**
@@ -482,21 +541,26 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
 
     if (mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MPS) {
-      return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MASTER_PRODUCTION_SCHEDULING);
+      return mrpLineTypeService.getMrpLineType(
+          MrpLineTypeRepository.ELEMENT_MASTER_PRODUCTION_SCHEDULING, mrp.getMrpTypeSelect());
     } else {
       if (stockRules != null) {
         if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
-          return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
+          return mrpLineTypeService.getMrpLineType(
+              MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL, mrp.getMrpTypeSelect());
         } else {
-          return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
+          return mrpLineTypeService.getMrpLineType(
+              MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL, mrp.getMrpTypeSelect());
         }
       }
 
       if (ProductRepository.PROCUREMENT_METHOD_BUY.equals(
           ((String) productCompanyService.get(product, "procurementMethodSelect", company)))) {
-        return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
+        return mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL, mrp.getMrpTypeSelect());
       } else {
-        return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
+        return mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL, mrp.getMrpTypeSelect());
       }
     }
   }
@@ -563,11 +627,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       if (billOfMaterial == null || billOfMaterial.getProduct() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH));
+            I18n.get(ProductionExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH));
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH_PRODUCT),
+            I18n.get(ProductionExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH_PRODUCT),
             billOfMaterial.getProduct().getFullName());
       }
     }
@@ -593,6 +657,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           if (defaultBOM != null) {
             this.assignProductLevel(defaultBOM, level);
           }
+          List<BillOfMaterial> alternativesBOM =
+              billOfMaterialService.getAlternativesBOM(subProduct, company);
+          for (BillOfMaterial alternativeBom : alternativesBOM) {
+            this.assignProductLevel(alternativeBom, level);
+          }
         }
       }
     }
@@ -617,7 +686,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       throws AxelorException {
 
     MrpLineType availableStockMrpLineType =
-        this.getMrpLineType(MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK);
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK, mrp.getMrpTypeSelect());
 
     if (availableStockMrpLineType == null) {
       return;

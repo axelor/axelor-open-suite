@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="PaymentSession">
+    <string name="sequence" title="Sequence" readonly="true"/>
+    <string name="name" title="Session name" namecolumn="true"/>
+    <many-to-one name="company" title="Company" required="true"
+      ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="journal" title="Journal" ref="com.axelor.apps.account.db.Journal"
+      required="true"/>
+    <many-to-one name="bankDetails" title="Bank details" required="true"
+      ref="com.axelor.apps.base.db.BankDetails"/>
+    <many-to-one name="paymentMode" title="Payment mode" required="true"
+      ref="com.axelor.apps.account.db.PaymentMode"/>
+    <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"
+      required="true"/>
+    <many-to-one name="assignedToUser" title="Assigned to" required="true"
+      ref="com.axelor.auth.db.User"/>
+    <date name="paymentDate" title="Payment date" required="true"/>
+    <date name="nextSessionDate" title="Next session date"/>
+    <decimal name="sessionTotalAmount" title="Session total amount"/>
+    <integer name="statusSelect" title="Status" readonly="true" default="1"
+      selection="iaccount.payment.session.select"/>
+    <boolean name="isActive" title="Active ?"/>
+    <string name="description" title="Description"/>
+    <boolean name="hasEmailsSent" title="Email sent"/>
+    <boolean name="hasMovesGenerated" title="Moves generated"/>
+    <integer name="accountingMethodSelect" title="Accounting method for payment move"
+      required="true" selection="paymentMode.accounting.method.select" default="1"/>
+    <integer name="accountingTriggerSelect" title="Accounting move trigger select"
+      required="true" selection="payment.mode.accounting.trigger.select" default="1"/>
+    <integer name="moveAccountingDateSelect" title="Payment(s) move(s) Accounting Date"
+      selection="payment.mode.move.accounting.date.select" default="1"/>
+    <integer name="daysMarginOnPaySession" title="Days margin on pay session"
+      required="true"/>
+    <integer name="partnerTypeSelect" title="Recipient type"
+      selection="iaccount.payment.session.partner.type.select" default="1"/>
+    <many-to-one ref="com.axelor.auth.db.User" name="validatedByUser"
+      title="Validated by"/>
+    <datetime name="validatedDate" title="Validated Date"/>
+    <many-to-one name="partnerForEmail" ref="com.axelor.apps.base.db.Partner"/>
+
+    <decimal name="sessionTotalAmountFormula" title="Session total amount" formula="true">
+      <![CDATA[
+        SELECT SUM(self.amount_paid) FROM account_invoice_term as self WHERE self.payment_session = id AND self.is_selected_on_payment_session
+      ]]>
+    </decimal>
+
+    <many-to-many ref="com.axelor.apps.base.db.Partner" name="partnerSet"
+      title="Partners"/>
+
+    <extra-code><![CDATA[
+
+        // STATUS SELECT
+        public static final int STATUS_ONGOING = 1;
+        public static final int STATUS_AWAITING_PAYMENT = 2;
+        public static final int STATUS_CLOSED = 3;
+        public static final int STATUS_CANCELLED = 4;
+
+        // ACCOUNTING METHOD SELECT
+        public static final int ACCOUNTING_METHOD_BY_INVOICE_TERM = 1;
+        public static final int ACCOUNTING_METHOD_BY_PARTNER = 2;
+        public static final int ACCOUNTING_METHOD_GLOBAL = 3;
+
+        // ACCOUNTING TRIGGER SELECT
+        public static final int ACCOUNTING_TRIGGER_IMMEDIATE = 1;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_CONFIRMATION = 2;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_VALIDATION = 3;
+        public static final int ACCOUNTING_TRIGGER_BANK_ORDER_REALIZATION = 4;
+
+		// PARTNER TYPE SELECT
+		public static final int PARTNER_TYPE_SUPPLIER = 1;
+		public static final int PARTNER_TYPE_EMPLOYEE = 2;
+		public static final int PARTNER_TYPE_CUSTOMER = 3;
+		public static final int PARTNER_TYPE_COMPANY = 4;
+		public static final int PARTNER_TYPE_OTHER = 5;
+
+		  // MOVE ACCOUNTING DATE SELECT
+		  public static final int MOVE_ACCOUNTING_DATE_PAYMENT = 1;
+		  public static final int MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT = 2;
+		  public static final int MOVE_ACCOUNTING_DATE_ACCOUNTING_TRIGGER = 3;
+
+    ]]></extra-code>
+  </entity>
+
+</domain-models>

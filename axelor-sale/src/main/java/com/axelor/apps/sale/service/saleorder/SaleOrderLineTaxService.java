@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.saleorder;
 
@@ -67,7 +68,7 @@ public class SaleOrderLineTaxService {
 
     if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de commande client.");
+      LOG.debug("Creation of VAT lines for sale order lines.");
 
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
@@ -112,14 +113,15 @@ public class SaleOrderLineTaxService {
       BigDecimal taxTotal = BigDecimal.ZERO;
       if (saleOrderLineTax.getTaxLine() != null) {
         taxTotal =
-            saleOrderToolService.computeAmount(exTaxBase, saleOrderLineTax.getTaxLine().getValue());
+            saleOrderToolService.computeAmount(
+                exTaxBase, saleOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
         saleOrderLineTax.setTaxTotal(taxTotal);
       }
       saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
       saleOrderLineTaxList.add(saleOrderLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "VAT line : VAT total => {}, W.T. total => {}",
           new Object[] {saleOrderLineTax.getTaxTotal(), saleOrderLineTax.getInTaxTotal()});
     }
 
