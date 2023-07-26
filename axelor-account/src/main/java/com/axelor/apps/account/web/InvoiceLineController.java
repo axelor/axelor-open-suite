@@ -49,6 +49,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
@@ -267,6 +268,7 @@ public class InvoiceLineController {
     }
   }
 
+  @ErrorException
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -282,19 +284,14 @@ public class InvoiceLineController {
       return;
     }
 
-    try {
-      BigDecimal price = invoiceLine.getPrice();
-      BigDecimal inTaxPrice =
-          invoiceLine.getTaxLine() != null && invoiceLine.getTaxLine().getValue() != null
-              ? price.add(
-                  price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))))
-              : price;
+    BigDecimal price = invoiceLine.getPrice();
+    BigDecimal inTaxPrice =
+        invoiceLine.getTaxLine() != null && invoiceLine.getTaxLine().getValue() != null
+            ? price.add(
+                price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))))
+            : price;
 
-      response.setValue("inTaxPrice", inTaxPrice);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setValue("inTaxPrice", inTaxPrice);
   }
 
   public void emptyLine(ActionRequest request, ActionResponse response) {
