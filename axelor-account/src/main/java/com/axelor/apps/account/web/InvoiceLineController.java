@@ -285,13 +285,15 @@ public class InvoiceLineController {
     try {
       BigDecimal price = invoiceLine.getPrice();
       BigDecimal inTaxPrice =
-          price.add(
-              price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))));
+          invoiceLine.getTaxLine() != null && invoiceLine.getTaxLine().getValue() != null
+              ? price.add(
+                  price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))))
+              : price;
 
       response.setValue("inTaxPrice", inTaxPrice);
 
     } catch (Exception e) {
-      response.setInfo(e.getMessage());
+      TraceBackService.trace(response, e);
     }
   }
 
