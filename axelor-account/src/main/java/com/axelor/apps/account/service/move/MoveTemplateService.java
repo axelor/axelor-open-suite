@@ -205,7 +205,7 @@ public class MoveTemplateService {
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 origin,
-                null,
+                moveTemplate.getDescription(),
                 companyBankDetails);
 
         int counter = 1;
