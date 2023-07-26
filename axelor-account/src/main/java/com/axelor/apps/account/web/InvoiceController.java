@@ -1235,7 +1235,7 @@ public class InvoiceController {
       response.setValue(
           "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
       response.setValue(
-          "financialDiscountDeadLineDate", invoice.getFinancialDiscountDeadlineDate());
+          "financialDiscountDeadlineDate", invoice.getFinancialDiscountDeadlineDate());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
