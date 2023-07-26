@@ -66,7 +66,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -77,6 +76,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -550,7 +550,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
 
     if (stockMoveIdList.isEmpty()) {
-      return List.of(0L);
+      return Arrays.asList(0L);
     }
 
     List<Long> stockMoveLineIdList = new ArrayList<>();
