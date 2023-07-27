@@ -220,6 +220,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
   }
 
+  @Override
   public void maxStockRules(
       Product product,
       BigDecimal qty,
