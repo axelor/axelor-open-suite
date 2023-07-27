@@ -605,7 +605,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     Unit startUnit =
         Beans.get(UnitRepository.class)
             .all()
-            .filter("self.name = 'Hour' AND self.unitTypeSelect = 3")
+            .filter("self.name = 'Hour' AND self.unitTypeSelect = :unitType")
+            .bind("unitType", UnitRepository.UNIT_TYPE_TIME)
             .fetchOne();
 
     WorkCenter workCenter = operationOrder.getWorkCenter();
