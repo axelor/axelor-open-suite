@@ -266,11 +266,12 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
   @Override
   public void fillSubtask(ProjectTask projectTask) {
-    projectTask.setParentTask(projectTaskRepo.find(projectTask.getParentTask().getId()));
-    projectTask.setProjectTaskCategory(projectTask.getParentTask().getProjectTaskCategory());
-    projectTask.setProjectTaskSection(projectTask.getParentTask().getProjectTaskSection());
-    projectTask.setPriority(projectTask.getParentTask().getPriority());
-    projectTask.setProjectTaskTagSet(projectTask.getParentTask().getProjectTaskTagSet());
-    projectTask.setAssignedTo(projectTask.getParentTask().getAssignedTo());
+    ProjectTask parentTask = projectTaskRepo.find(projectTask.getParentTask().getId());
+    projectTask.setParentTask(parentTask);
+    projectTask.setProjectTaskCategory(parentTask.getProjectTaskCategory());
+    projectTask.setProjectTaskSection(parentTask.getProjectTaskSection());
+    projectTask.setPriority(parentTask.getPriority());
+    projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
+    projectTask.setAssignedTo(parentTask.getAssignedTo());
   }
 }
