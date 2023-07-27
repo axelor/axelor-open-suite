@@ -204,6 +204,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
       manufOrder = manufOrderWorkflowService.plan(manufOrder);
+      if (Boolean.TRUE.equals(manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning())) {
+        manufOrderWorkflowService.createPurchaseOrder(manufOrder);
+      }
     }
 
     return manufOrderRepo.save(manufOrder);
