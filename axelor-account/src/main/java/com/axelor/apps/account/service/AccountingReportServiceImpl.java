@@ -62,7 +62,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
@@ -178,14 +177,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         paramStr = ((Model) param).getId().toString();
       } else if (param instanceof Set) {
         Set<Object> paramSet = (Set<Object>) param;
-        StringBuilder paramBuilder = new StringBuilder();
         for (Object object : paramSet) {
-          if (paramBuilder.length() != 0) {
-            paramBuilder.append(",");
+          if (!paramStr.isEmpty()) {
+            paramStr += ",";
           }
-          paramBuilder.append(((Model) object).getId().toString());
+          paramStr += ((Model) object).getId().toString();
         }
-        paramStr += paramBuilder.toString();
       } else if (param instanceof LocalDate) {
         paramStr = "'" + param.toString() + "'";
       } else {
@@ -555,10 +552,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
 
-    return Objects.requireNonNullElse(result, BigDecimal.ZERO);
+    if (result != null) {
+      return result;
+    } else {
+      return BigDecimal.ZERO;
+    }
   }
 
-  /** @return result */
+  /** @return */
   public BigDecimal getCreditBalance() {
 
     Query q =
@@ -575,7 +576,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
 
-    return Objects.requireNonNullElse(result, BigDecimal.ZERO);
+    if (result != null) {
+      return result;
+    } else {
+      return BigDecimal.ZERO;
+    }
   }
 
   public BigDecimal getDebitBalanceType4() {
@@ -595,7 +600,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
 
-    return Objects.requireNonNullElse(result, BigDecimal.ZERO);
+    if (result != null) {
+      return result;
+    } else {
+      return BigDecimal.ZERO;
+    }
   }
 
   public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter) {
@@ -632,7 +641,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         return false;
       }
       Integer typeSelect = accountingReport.getReportType().getTypeSelect();
-      long count;
+      long count = 0;
       if (typeSelect > 0 && typeSelect <= AccountingReportRepository.REPORT_GENERAL_LEDGER2) {
         count =
             Beans.get(MoveLineRepository.class)
@@ -945,7 +954,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         modelAccountingReportCopy.setBalance(null);
         modelAccountingReportCopy.setDate(accountingReport.getDate());
         modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
-        return Mapper.toMap(modelAccountingReportCopy);
+        Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
+        return modelAccountingReportCopyMap;
       }
     }
     return null;
