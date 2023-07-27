@@ -27,7 +27,7 @@
     <decimal name="totalCost" title="Total cost"/>
     <decimal name="activationCost" title="Activation Cost"/>
     <many-to-one name="vehicle" ref="Vehicle"/>
-    <date name="invoiceDate" title="Invoice Date"/>
+    <date name="invoiceDate" title="Invoice date"/>
   </entity>
 
 </domain-models>
