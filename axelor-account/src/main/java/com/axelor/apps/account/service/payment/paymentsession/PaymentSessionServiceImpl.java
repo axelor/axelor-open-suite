@@ -406,6 +406,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   protected boolean isLcrBlocking(Invoice invoice, LocalDate dueDate) {
     return invoice.getBillOfExchangeBlockingOk()
+        && invoice.getBillOfExchangeBlockingToDate() != null
         && !invoice.getBillOfExchangeBlockingToDate().isBefore(dueDate)
         && invoice.getLcrAccounted();
   }

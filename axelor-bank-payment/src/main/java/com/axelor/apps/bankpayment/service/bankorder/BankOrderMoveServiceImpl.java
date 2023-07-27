@@ -243,15 +243,17 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     Account bankAccount = senderBankAccount;
     Account partnerAccount = null;
 
-    if (bankOrderLine != null
-        && bankOrderLine.getBankOrder() != null
-        && bankOrderLine.getBankOrder().getPaymentMode() != null
-        && bankOrderLine.getBankOrder().getPaymentMode().getTypeSelect()
-            == PaymentModeRepository.TYPE_EXCHANGES) {
+    PaymentMode bankOrderLinePaymentMode =
+        Optional.ofNullable(bankOrderLine)
+            .map(BankOrderLine::getBankOrder)
+            .map(BankOrder::getPaymentMode)
+            .orElse(null);
+    if (bankOrderLinePaymentMode != null
+        && bankOrderLinePaymentMode.getTypeSelect() == PaymentModeRepository.TYPE_EXCHANGES) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(senderCompany);
       bankAccount =
           paymentModeService.getPaymentModeAccount(
-              bankOrderLine.getBankOrder().getPaymentMode(),
+              bankOrderLinePaymentMode,
               senderCompany,
               bankOrderLine.getBankOrder().getSenderBankDetails(),
               false);

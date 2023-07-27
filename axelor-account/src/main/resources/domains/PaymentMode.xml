@@ -30,7 +30,6 @@
         public static final int MOVE_ACCOUNTING_DATE_PAYMENT = 1;
         public static final int MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT = 2;
         public static final int MOVE_ACCOUNTING_DATE_ACCOUNTING_TRIGGER = 3;
-
     ]]></extra-code>
 
   </entity>

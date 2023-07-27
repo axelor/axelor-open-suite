@@ -385,7 +385,6 @@ public class BankOrderServiceImpl implements BankOrderService {
       if (paymentSession != null) {
         boolean isLcr =
             paymentSession.getPaymentMode() != null
-                && paymentSession.getPaymentMode().getTypeSelect() != null
                 && paymentSession.getPaymentMode().getTypeSelect()
                     == PaymentModeRepository.TYPE_EXCHANGES;
 

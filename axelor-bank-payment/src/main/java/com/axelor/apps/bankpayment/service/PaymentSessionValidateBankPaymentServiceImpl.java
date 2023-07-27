@@ -496,7 +496,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   @Override
-  public void processInvoiceTermLcr(
+  protected void processInvoiceTermLcr(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,

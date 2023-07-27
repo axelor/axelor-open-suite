@@ -82,6 +82,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AccountManagementAccountService accountManagementAccountService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected DateService dateService;
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -96,7 +97,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
       InvoicePaymentToolService invoicePaymentToolService,
-      DateService dateService) {
+      DateService dateService,
+      AccountingSituationService accountingSituationService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -110,6 +112,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.accountManagementAccountService = accountManagementAccountService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.dateService = dateService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   /**
@@ -166,7 +169,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         .getGenerateMoveForInvoicePayment()) {
       this.createMoveForInvoicePayment(invoicePayment);
     } else {
-      Beans.get(AccountingSituationService.class).updateCustomerCredit(invoice.getPartner());
+      accountingSituationService.updateCustomerCredit(invoice.getPartner());
       invoicePaymentRepository.save(invoicePayment);
     }
   }

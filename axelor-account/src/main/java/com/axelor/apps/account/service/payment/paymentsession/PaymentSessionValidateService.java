@@ -69,25 +69,4 @@ public interface PaymentSessionValidateService {
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession);
 
   public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);
-
-  void processInvoiceTermLcr(
-      PaymentSession paymentSession,
-      InvoiceTerm invoiceTerm,
-      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
-      Map<Move, BigDecimal> paymentAmountMap,
-      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
-      throws AxelorException;
-
-  void processLcrPlacement(
-      PaymentSession paymentSession,
-      InvoiceTerm invoiceTerm,
-      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
-      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
-      throws AxelorException;
-
-  void processLcrPayment(
-      PaymentSession paymentSession,
-      InvoiceTerm invoiceTerm,
-      Map<Move, BigDecimal> paymentAmountMap)
-      throws AxelorException;
 }

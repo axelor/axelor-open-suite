@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
@@ -55,7 +54,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -92,6 +90,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
       DateService dateService,
+      AccountingSituationService accountingSituationService,
       PaymentSessionRepository paymentSessionRepo,
       InvoiceTermRepository invoiceTermRepo) {
     super(
@@ -106,7 +105,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         appAccountService,
         accountManagementAccountService,
         invoicePaymentToolService,
-        dateService);
+        dateService,
+        accountingSituationService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
     this.invoiceTermService = invoiceTermService;
@@ -149,8 +149,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
                 == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE)) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
-      Beans.get(AccountingSituationService.class)
-          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      accountingSituationService.updateCustomerCredit(invoicePayment.getInvoice().getPartner());
       invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
     if (paymentMode.getGenerateBankOrder()
@@ -177,8 +176,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
               I18n.get(BankPaymentExceptionMessage.VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL));
         }
       } else {
-        Beans.get(AccountingSituationService.class)
-            .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+        accountingSituationService.updateCustomerCredit(invoicePayment.getInvoice().getPartner());
         invoicePayment = invoicePaymentRepository.save(invoicePayment);
       }
     }
@@ -207,7 +205,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public boolean processLcrPaymentWithBankOrder(InvoicePayment invoicePayment)
+  protected boolean processLcrPaymentWithBankOrder(InvoicePayment invoicePayment)
       throws AxelorException {
     boolean isAlreadyPaid = false;
     if (invoicePayment == null
@@ -218,12 +216,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       return isAlreadyPaid;
     }
     PaymentSession paymentSession =
-        paymentSessionRepo
-            .all()
-            .filter("self.bankOrder = ?", invoicePayment.getBankOrder())
-            .fetchOne();
-    if (paymentSession == null
-        || ObjectUtils.isEmpty(invoicePayment.getBankOrder().getBankOrderLineList())) {
+        paymentSessionRepo.findByBankOrder(invoicePayment.getBankOrder());
+    if (paymentSession == null) {
       return isAlreadyPaid;
     }
     for (BankOrderLine bankOrderLine : invoicePayment.getBankOrder().getBankOrderLineList()) {
@@ -236,19 +230,17 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         List<InvoiceTerm> invoiceTermList =
             invoicePayment.getInvoiceTermPaymentList().stream()
                 .map(InvoiceTermPayment::getInvoiceTerm)
+                .filter(it -> it.getPlacementMoveLine() != null)
                 .collect(Collectors.toList());
         if (!ObjectUtils.isEmpty(invoiceTermList)) {
           for (InvoiceTerm invoiceTerm : invoiceTermList) {
-            if (invoiceTerm != null
-                && invoiceTerm.getPlacementMoveLine() != null
-                && cashMoveLine.isPresent()) {
-              Reconcile reconcile =
-                  reconcileService.reconcile(
-                      invoiceTerm.getPlacementMoveLine(),
-                      cashMoveLine.get(),
-                      invoicePayment,
-                      false,
-                      false);
+            if (invoiceTerm != null && cashMoveLine.isPresent()) {
+              reconcileService.reconcile(
+                  invoiceTerm.getPlacementMoveLine(),
+                  cashMoveLine.get(),
+                  invoicePayment,
+                  false,
+                  false);
               isAlreadyPaid = true;
             }
           }

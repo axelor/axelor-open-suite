@@ -33,14 +33,14 @@
           </panel>
           <panel name="paymentProcessesSettingsPanel" title="Payment processes settings">
             <field name="canSelectInPaymentSession"
-              readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10"/>
+              readonlyIf="![2,9,10].includes(typeSelect)"/>
             <panel name="paymentSessionPanel" colSpan="12" showIf="canSelectInPaymentSession">
               <field name="daysMarginOnPaySession" requiredIf="canSelectInPaymentSession"
                 min="0"/>
               <field name="accountingMethodSelect" requiredIf="canSelectInPaymentSession"
                 onChange="action-attrs-payment-mode-move-accounting-date-domain"/>
               <field name="moveAccountingDateSelect" requiredIf="canSelectInPaymentSession"
-                onChange="action-payment-mode-validate-check-bank-order-file-format,action-attrs-payment-mode-accounting-method-domain"/>
+                onChange="action-group-payment-mode-move-accounting-date-onchange"/>
             </panel>
           </panel>
         </panel-tabs>
@@ -57,6 +57,11 @@
   <action-group name="action-payment-mode-group-type-onchange">
     <action name="action-payment-mode-group-empty"/>
     <action name="action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+    <action name="action-attrs-payment-mode-accounting-method-domain"/>
+  </action-group>
+
+  <action-group name="action-group-payment-mode-move-accounting-date-onchange">
+    <action name="action-payment-mode-validate-check-bank-order-file-format"/>
     <action name="action-attrs-payment-mode-accounting-method-domain"/>
   </action-group>
 
