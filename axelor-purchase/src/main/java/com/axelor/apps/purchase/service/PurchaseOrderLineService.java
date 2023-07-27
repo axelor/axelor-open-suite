@@ -20,6 +20,8 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -95,7 +97,12 @@ public interface PurchaseOrderLineService {
 
   public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
 
-  public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response);
+  public void checkMultipleQty(
+      Company company,
+      Partner supplierPartner,
+      PurchaseOrderLine purchaseOrderLine,
+      ActionResponse response)
+      throws AxelorException;
 
   public String[] getProductSupplierInfos(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
