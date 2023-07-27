@@ -798,10 +798,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">columnNotCompute</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previousYear</property>
+                    <property name="columnName">otherYear</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">previousYear</text-property>
-                    <text-property name="heading">previousYear</text-property>
+                    <text-property name="displayName">otherYear</text-property>
+                    <text-property name="heading">otherYear</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">lineName</property>
@@ -941,7 +941,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">previousYear</property>
+                        <property name="name">otherYear</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -1084,8 +1084,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">previousYear</property>
-                    <property name="nativeName">previousYear</property>
+                    <property name="name">otherYear</property>
+                    <property name="nativeName">otherYear</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -1173,7 +1173,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ConfigColumn.rule_type_select AS "columnRuleType",
 	(ConfigColumn.hidden OR ConfigGroupColumn.hidden) AS "columnHidden",
 	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
-	ConfigColumn.compute_previous_year AS "previousYear",
+	ConfigColumn.compute_previous_year AS "otherYear",
 	ReportValue.line_title AS "lineName",
 	ReportValue.line_number AS "lineNb",
 	ConfigLine.hidden AS "lineHidden",
@@ -1291,7 +1291,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
 		WHEN ReportValue.analytic_account IS NULL THEN 0
 		ELSE AnalyticAccount.id
 	END ) AS "id",
-	AnalyticAccount.name AS "accountName",
+	SUBSTRING(REGEXP_REPLACE(AnalyticAccount.name, '[?:*[\]\\\/]|^''|''$', '', 'g'), 0, 31) AS "accountName",
 	ReportValue.analytic_order AS "analyticOrder"
 
 FROM account_accounting_report_value AS ReportValue
@@ -1453,8 +1453,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                             <expression name="measureExpression" type="javascript">dataSetRow["lineRuleType"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
-                        <tabular-measure name="previousYear" id="5975">
-                            <expression name="measureExpression" type="javascript">dataSetRow["previousYear"]</expression>
+                        <tabular-measure name="otherYear" id="5975">
+                            <expression name="measureExpression" type="javascript">dataSetRow["otherYear"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
                         <tabular-measure name="style" id="6055">
@@ -2447,6 +2447,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[this.name = row["accountName"]]]></method>
+                        <method name="onPageBreak"><![CDATA[this.name = row["accountName"]]]></method>
                         <property name="pageBreakInterval">1</property>
                         <list-property name="sort">
                             <structure>
@@ -3042,8 +3044,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 <property name="dataType">integer</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">previousYear</property>
-                                                <expression name="expression" type="javascript">measure["previousYear"]</expression>
+                                                <property name="name">otherYear</property>
+                                                <expression name="expression" type="javascript">measure["otherYear"]</expression>
                                                 <property name="dataType">boolean</property>
                                             </structure>
                                             <structure>

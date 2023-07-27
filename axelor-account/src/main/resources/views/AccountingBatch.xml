@@ -193,10 +193,10 @@
             onChange="action-record-accounting-batch-journal-onchange,action-attrs-accounting-batch-cutoff-move-status-domain"
             requiredIf="actionSelect == 26"
             domain="self.company = :company AND self.statusSelect = 1"/>
-          <panel-related field="journalSet" colSpan="6"
-            hideIf="accountingCutOffTypeSelect &lt;= 2"
+          <field name="journalSet" colSpan="6" form-view="journal-form"
+            grid-view="journal-grid" hideIf="accountingCutOffTypeSelect &lt;= 2"
             onSelect="action-attrs-accounting-batch-set-journal-domain" canNew="false"
-            canEdit="false"/>
+            canEdit="false" widget="TagSelect"/>
           <field name="cutOffMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"/>
           <spacer colSpan="6"/>
           <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>

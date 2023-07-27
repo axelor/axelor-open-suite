@@ -1198,7 +1198,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
     }
 
-    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm, paymentSession, isRefund);
+    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm, isRefund);
 
     return invoiceTerm;
   }
@@ -1226,21 +1226,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 < 0;
       }
     }
+
+    if (invoiceTerm.getPaymentSession() != null
+        && invoiceTerm.getMoveLine() != null
+        && invoiceTerm.getMoveLine().getMove() != null
+        && ((invoiceTerm.getPaymentSession().getPartnerTypeSelect()
+                    == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+                && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                    == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
+            || (invoiceTerm.getPaymentSession().getPartnerTypeSelect()
+                    == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER
+                && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                    == MoveRepository.FUNCTIONAL_ORIGIN_SALE))) {
+      isSignedNegative = !isSignedNegative;
+    }
     return isSignedNegative;
   }
 
   protected InvoiceTerm updateInvoiceTermsAmountsSessiontPart(
-      InvoiceTerm invoiceTerm, PaymentSession paymentSession, boolean isRefund) {
+      InvoiceTerm invoiceTerm, boolean isRefund) {
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
-
-    if ((paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
-            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
-                == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
-        || (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER
-            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
-                == MoveRepository.FUNCTIONAL_ORIGIN_SALE)) {
-      isSignedNegative = !isSignedNegative;
-    }
 
     BigDecimal paymentAmount = invoiceTerm.getPaymentAmount();
 

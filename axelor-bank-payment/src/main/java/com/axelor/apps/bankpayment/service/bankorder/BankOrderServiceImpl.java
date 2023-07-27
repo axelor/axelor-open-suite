@@ -104,7 +104,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected PaymentSessionRepository paymentSessionRepo;
   protected MoveCancelBankPaymentService moveCancelBankPaymentService;
   protected MoveRepository moveRepo;
-  protected PaymentSessionValidateService paymentSessionValidateService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -121,8 +120,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       PaymentSessionCancelService paymentSessionCancelService,
       PaymentSessionRepository paymentSessionRepo,
       MoveCancelBankPaymentService moveCancelBankPaymentService,
-      MoveRepository moveRepo,
-      PaymentSessionValidateService paymentSessionValidateService) {
+      MoveRepository moveRepo) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -138,7 +136,6 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.paymentSessionRepo = paymentSessionRepo;
     this.moveCancelBankPaymentService = moveCancelBankPaymentService;
     this.moveRepo = moveRepo;
-    this.paymentSessionValidateService = paymentSessionValidateService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -387,6 +384,9 @@ public class BankOrderServiceImpl implements BankOrderService {
             paymentSession.getPaymentMode() != null
                 && paymentSession.getPaymentMode().getTypeSelect()
                     == PaymentModeRepository.TYPE_EXCHANGES;
+
+        PaymentSessionValidateService paymentSessionValidateService =
+            Beans.get(PaymentSessionValidateService.class);
 
         List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund =
             new ArrayList<>();
