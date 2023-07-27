@@ -37,7 +37,8 @@
           action="action-partner-view-show-customer-debt-recovery"
           if="__config__.app.isApp('account')"/>
         <item title="Create sale quotation" name="createSaleQuotationItem"
-          action="save,action-partner-view-create-order" if="__config__.app.isApp('sale')"/>
+          action="save,action-partner-view-create-order" if="__config__.app.isApp('sale')"
+          showIf="isCustomer"/>
         <item title="Create purchase quotation" name="createPurchaseQuotationItem"
           action="save,action-partner-view-create-purchase-quotation"
           if="__config__.app.isApp('purchase')" showIf="isSupplier"/>

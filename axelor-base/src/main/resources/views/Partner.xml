@@ -550,7 +550,7 @@
           if-module="axelor-sale">
           <button name="createSaleOrderBtn" title="Create sale quotation" colSpan="4"
             onClick="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1"
-            showIf="isProspect || isCustomer"/>
+            showIf="isCustomer"/>
           <panel-include view="incl-sales-partner-form"/>
         </panel>
       </panel>
