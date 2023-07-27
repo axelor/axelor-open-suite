@@ -162,6 +162,8 @@ public class ManufOrderWorkflowService {
         }
         manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
       }
+      manufOrder.setRealStartDateT(null);
+      manufOrder.setRealEndDateT(null);
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
