@@ -82,7 +82,7 @@ public class SopServiceImpl implements SopService {
         periodRepo
             .all()
             .filter("self.year = :year AND self.statusSelect = :status")
-            .bind("year", sop.getYear())
+            .bind("year", sop.getPeriodYear())
             .bind("status", PeriodRepository.STATUS_OPENED)
             .fetch();
     List<SopLine> sopLineList = new ArrayList<SopLine>();
@@ -129,7 +129,7 @@ public class SopServiceImpl implements SopService {
     sopLine = sopLineRepo.find(sopLine.getId());
     LocalDate fromDate = sopLine.getPeriod().getFromDate();
     LocalDate toDate = sopLine.getPeriod().getToDate();
-    Year year = sopLine.getSop().getYearbasedHistoric();
+    Year year = sopLine.getSop().getHistoricPeriodYear();
     if (year != null) {
       fromDate = fromDate.withYear(year.getFromDate().getYear());
       toDate = toDate.withYear(year.getToDate().getYear());
