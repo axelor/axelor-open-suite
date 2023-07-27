@@ -63,6 +63,14 @@ public interface StockLocationLineService {
       boolean future)
       throws AxelorException;
 
+  public void maxStockRules(
+      Product product,
+      BigDecimal qty,
+      StockLocationLine stockLocationLine,
+      boolean current,
+      boolean future)
+      throws AxelorException;
+
   public void updateDetailLocation(
       StockLocation stockLocation,
       Product product,
