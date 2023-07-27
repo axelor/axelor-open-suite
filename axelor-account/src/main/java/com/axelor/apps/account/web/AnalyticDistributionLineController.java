@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
@@ -110,22 +111,22 @@ public class AnalyticDistributionLineController {
     AnalyticDistributionLine analyticDistributionLine =
         request.getContext().asType(AnalyticDistributionLine.class);
     Company company = null;
-    InvoiceLine invoiceLine =
-        ContextTool.getContextParent(request.getContext(), InvoiceLine.class, 1);
-    MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
-
-    if (analyticDistributionLine.getAnalyticJournal() != null
-        && analyticDistributionLine.getAnalyticJournal().getCompany() != null) {
-      company = analyticDistributionLine.getAnalyticJournal().getCompany();
-    } else if (invoiceLine != null
-        && invoiceLine.getInvoice() != null
-        && invoiceLine.getInvoice().getCompany() != null) {
-      company = invoiceLine.getInvoice().getCompany();
-    } else if (moveLine != null
-        && moveLine.getMove() != null
-        && moveLine.getMove().getCompany() != null) {
-      company = moveLine.getMove().getCompany();
+    Context parent = request.getContext().getParent();
+    if (parent != null
+        && AnalyticDistributionTemplate.class.isAssignableFrom(parent.getContextClass())) {
+      company = parent.asType(AnalyticDistributionTemplate.class).getCompany();
     }
+    if (company == null) {
+      InvoiceLine invoiceLine =
+          ContextTool.getContextParent(request.getContext(), InvoiceLine.class, 1);
+      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+      company =
+          Beans.get(AnalyticToolService.class)
+              .getParentCompany(
+                  analyticDistributionLine.getAnalyticJournal(), invoiceLine, moveLine);
+    }
+
     response.setAttr(
         "analyticAxis",
         "domain",

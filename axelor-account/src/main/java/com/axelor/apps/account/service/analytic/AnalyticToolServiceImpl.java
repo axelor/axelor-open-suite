@@ -19,7 +19,10 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
@@ -75,5 +78,22 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
       AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList) {
     return analyticAccount != null
         && !isAxisAccountSumValidated(analyticMoveLineList, analyticAccount.getAnalyticAxis());
+  }
+
+  @Override
+  public Company getParentCompany(
+      AnalyticJournal analyticJournal, InvoiceLine invoiceLine, MoveLine moveLine) {
+    if (analyticJournal != null && analyticJournal.getCompany() != null) {
+      return analyticJournal.getCompany();
+    } else if (invoiceLine != null
+        && invoiceLine.getInvoice() != null
+        && invoiceLine.getInvoice().getCompany() != null) {
+      return invoiceLine.getInvoice().getCompany();
+    } else if (moveLine != null
+        && moveLine.getMove() != null
+        && moveLine.getMove().getCompany() != null) {
+      return moveLine.getMove().getCompany();
+    }
+    return null;
   }
 }

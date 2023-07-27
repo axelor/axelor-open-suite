@@ -19,7 +19,10 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import java.util.List;
@@ -35,4 +38,7 @@ public interface AnalyticToolService {
 
   boolean isAnalyticAxisFilled(
       AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList);
+
+  Company getParentCompany(
+      AnalyticJournal analyticJournal, InvoiceLine invoiceLine, MoveLine moveLine);
 }
