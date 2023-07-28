@@ -143,7 +143,8 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     return invoiceTermList.stream()
             .map(InvoiceTerm::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .compareTo(total)
+            .compareTo(
+                total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP))
         != 0;
   }
 
