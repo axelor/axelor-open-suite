@@ -190,7 +190,8 @@ public class SaleOrderController {
           purchaseOrderFromSaleOrderLinesService.generatePurchaseOrdersFromSOLines(
               saleOrder, saleOrderLines, supplierPartner, saleOrderLinesIdStr));
 
-      if (supplierPartner != null && !purchaseOrderFromSaleOrderLinesService.isDirectOrderLocation(saleOrder)) {
+      if (supplierPartner != null
+          && !purchaseOrderFromSaleOrderLinesService.isDirectOrderLocation(saleOrder)) {
         response.setCanClose(true);
       }
     } catch (Exception e) {

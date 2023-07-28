@@ -312,6 +312,7 @@ public class SupplychainModule extends AxelorModule {
     bind(MrpProposalService.class).to(MrpProposalServiceImpl.class);
     bind(SaleInvoicingStateService.class).to(SaleInvoicingStateServiceImpl.class);
     bind(BaseConvertLeadWizardService.class).to(SupplyChainConvertLeadWizardServiceImpl.class);
-    bind(PurchaseOrderFromSaleOrderLinesService.class).to(PurchaseOrderFromSaleOrderLinesServiceImpl.class);
+    bind(PurchaseOrderFromSaleOrderLinesService.class)
+        .to(PurchaseOrderFromSaleOrderLinesServiceImpl.class);
   }
 }

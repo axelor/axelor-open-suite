@@ -119,7 +119,11 @@ public class PurchaseOrderFromSaleOrderLinesServiceImpl
         .param("forceEdit", "true")
         .context("_showRecord", String.valueOf(saleOrder.getId()))
         .context("supplierPartnerId", ((supplierPartner != null) ? supplierPartner.getId() : 0L))
-        .context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLines.stream().map(SaleOrderLine::getId).collect(Collectors.toList())))
+        .context(
+            "saleOrderLineIdSelected",
+            Joiner.on(",")
+                .join(
+                    saleOrderLines.stream().map(SaleOrderLine::getId).collect(Collectors.toList())))
         .map();
   }
 
