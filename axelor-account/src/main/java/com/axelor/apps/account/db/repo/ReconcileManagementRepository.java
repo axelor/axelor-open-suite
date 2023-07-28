@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.db.repo;
 
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileSequenceService;
@@ -26,6 +27,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class ReconcileManagementRepository extends ReconcileRepository {
@@ -52,7 +54,23 @@ public class ReconcileManagementRepository extends ReconcileRepository {
     copy.setMustBeZeroBalanceOk(false);
     copy.setReconcileSeq(null);
     copy.setStatusSelect(ReconcileRepository.STATUS_DRAFT);
+    copy.setPaymentMoveLineDistributionList(null);
 
+    MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+    MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+
+    BigDecimal debitAmountRemaining =
+        debitMoveLine == null ? BigDecimal.ZERO : debitMoveLine.getAmountRemaining();
+    BigDecimal creditAmountRemaining =
+        creditMoveLine == null ? BigDecimal.ZERO : creditMoveLine.getAmountRemaining();
+
+    if (debitAmountRemaining.compareTo(BigDecimal.ZERO) == 0) {
+      copy.setDebitMoveLine(null);
+    }
+    if (creditAmountRemaining.compareTo(BigDecimal.ZERO) == 0) {
+      copy.setCreditMoveLine(null);
+    }
+    copy.setAmount(debitAmountRemaining.min(creditAmountRemaining));
     return copy;
   }
 
