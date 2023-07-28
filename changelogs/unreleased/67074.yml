@@ -1,3 +1,3 @@
 ---
-title: "InvoiceLine : fix npe when changing taxLine to empty"
+title: "InvoiceLine : fix error when changing the tax to empty"
 type: fix
