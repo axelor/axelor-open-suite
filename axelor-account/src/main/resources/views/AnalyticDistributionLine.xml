@@ -48,7 +48,7 @@
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true" onSelect="action-method-domain-account-distribution-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onSelect="action-attrs-domain-axis-distribution-line"
+        onSelect="action-method-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
@@ -66,7 +66,7 @@
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true" onSelect="action-method-domain-account-distribution-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onSelect="action-attrs-domain-axis-distribution-line"
+        onSelect="action-method-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true" readonly="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
@@ -89,13 +89,10 @@
     <action name="action-record-set-journal-by-default-distribution-line"/>
   </action-group>
 
-  <action-attrs name="action-attrs-domain-axis-distribution-line">
-    <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot; self.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
-      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList"/>
-    <attribute name="domain" for="analyticAxis" expr="eval: null"
-      if="!(__parent__ &amp;&amp; __parent__.company)"/>
-  </action-attrs>
+  <action-method name="action-method-domain-axis-distribution-line">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="setAnalyticAxisDomain"/>
+  </action-method>
 
   <action-method name="action-method-domain-account-distribution-line">
     <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"

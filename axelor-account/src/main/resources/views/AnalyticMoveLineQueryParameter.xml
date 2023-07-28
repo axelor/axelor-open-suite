@@ -8,7 +8,7 @@
     model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter" editable="true"
     onNew="action-analytic-move-line-query-parameter-record-search-on-new" x-selector="checkbox">
     <field name="analyticAxis" grid-view="analytic-axis-grid" form-view="analytic-axis-form"
-      onSelect="action-attrs-domain-axis-distribution-line"/>
+      onSelect="action-method-domain-axis-distribution-line"/>
     <field name="analyticAccountSet" grid-view="analytic-account-grid"
       form-view="analytic-account-info-form"
       onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
@@ -19,7 +19,7 @@
     model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter" editable="true"
     x-selector="checkbox" onNew="action-analytic-move-line-query-parameter-record-query-on-new">
     <field name="analyticAxis" grid-view="analytic-axis-grid" form-view="analytic-axis-form"
-      onSelect="action-attrs-domain-axis-distribution-line"/>
+      onSelect="action-method-domain-axis-distribution-line"/>
     <field name="analyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-info-form"
       onSelect="action-method-domain-account-distribution-line"/>
@@ -34,7 +34,7 @@
         form-view="analytic-move-line-query-form"/>
       <field name="typeSelect"/>
       <field name="analyticAxis" grid-view="analytic-axis-grid" form-view="analytic-axis-form"
-        onSelect="action-attrs-domain-axis-distribution-line"/>
+        onSelect="action-method-domain-axis-distribution-line"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-info-form"
         onSelect="action-method-domain-account-distribution-line"/>
