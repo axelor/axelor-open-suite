@@ -68,7 +68,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   protected MoveLineRepository moveLineRepo;
   protected Set<AnalyticAccount> groupColumnAnalyticAccountSet;
   protected Set<AnalyticAccount> columnAnalyticAccountSet;
-  protected Set<AnalyticAccount> lineAnalyticAccountSet;
+  protected Set<AnalyticAccount> analyticAccountSetForLine;
 
   @Inject
   public AccountingReportValueMoveLineServiceImpl(
@@ -757,7 +757,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         StringUtils.notEmpty(columnAnalyticAccountCode)
             ? this.fetchAnalyticAccountsFromCode(columnAnalyticAccountCode)
             : new HashSet<>();
-    lineAnalyticAccountSet =
+    analyticAccountSetForLine =
         StringUtils.notEmpty(lineAnalyticAccountCode)
             ? this.fetchAnalyticAccountsFromCode(lineAnalyticAccountCode)
             : new HashSet<>();
@@ -869,6 +869,6 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             && analyticAccountSet.contains(analyticAccount))
         || groupColumnAnalyticAccountSet.contains(analyticAccount)
         || columnAnalyticAccountSet.contains(analyticAccount)
-        || lineAnalyticAccountSet.contains(analyticAccount);
+        || analyticAccountSetForLine.contains(analyticAccount);
   }
 }
