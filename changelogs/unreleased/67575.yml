@@ -1,0 +1,3 @@
+---
+title: "Invoice term : Fix wrong percentage sum check blocking move save"
+type: fix
