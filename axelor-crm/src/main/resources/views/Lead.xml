@@ -26,7 +26,7 @@
           <div class="card-body">
               <dl>
                   <dt ng-show="record.enterpriseName" x-translate>Enterprise Name</dt><dd ng-show="record.enterpriseName">{{record.enterpriseName}}</dd>
-                  <dt ng-show="record.nextScheduledEventDateT"><i class='fa fa-clock-o'></i> <span>{{nextScheduledEventDateT|date:'yyyy-MM-dd HH:mm:ss'}}</span></dt>
+                  <dt ng-show="record.nextScheduledEventDateT"><i class='fa fa-clock-o'></i> <span>{{nextScheduledEventDateT|date:'YYYY-MM-dd HH:mm:ss'}}</span></dt>
                   <dt x-translate>Lead Scoring</dt> <dd ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
                   <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
                   <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
