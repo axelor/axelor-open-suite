@@ -1314,6 +1314,7 @@
 "Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.",,,
 "November",,,
 "Number of days since last update",,,
+"Number of decimals",,,
 "Number of records to fetch from database on one query run. It will fetch upto 'Maximum export limit'.",,,
 "Number of tasks generated at most at once",,,
 "Numeric code (ISO)",,,
