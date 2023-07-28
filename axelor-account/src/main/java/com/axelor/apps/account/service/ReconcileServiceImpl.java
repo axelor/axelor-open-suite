@@ -294,8 +294,8 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
-    this.updatePaymentTax(reconcile);
     this.setEffectiveDate(reconcile);
+    this.updatePaymentTax(reconcile);
     this.updatePaymentMoveLineDistribution(reconcile);
 
     return reconcile;
