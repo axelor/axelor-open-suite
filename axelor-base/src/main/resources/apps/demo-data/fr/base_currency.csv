@@ -1,167 +1,167 @@
-"code";"name";"country";"symbol";"codeISO"
-"AED";"United Arab Emirates dirham";"United Arab Emirates";"د.إ";"AED"
-"AFN";"Afghani";"Afghanistan";"؋";"AFN"
-"ALL";"Lek";"Albania";"Lek";"ALL"
-"AMD";"Armenian Dram";"Armenia";;"AMD"
-"ANG";"Netherlands Antillian Guilder";"Netherlands Antilles";"ƒ";"ANG"
-"AOA";"Kwanza";"Angola";"Kz";"AOA"
-"ARS";"Argentine Peso";"Argentina";"$";"ARS"
-"AUD";"Australian Dollar";"Australian, Antarctic Territory, Christmas Island, Cocos (Keeling) Islands, Heard and McDonald Islands, Kiribati, Nauru, Norfolk Island, Tuvalu";"$";"AUD"
-"AWG";"Aruban Guilder";"Aruba";"ƒ";"AWG"
-"AZN";"Azerbaijanian Manat";"Azerbaijan";"ман";"AZN"
-"BAM";"Convertible Marks";"Bosnia and Herzegovina";"KM";"BAM"
-"BBD";"Barbados Dollar";"Barbados";"$";"BBD"
-"BDT";"Bangladeshi Taka";"Bangladesh";;"BDT"
-"BGN";"Bulgarian Lev";"Bulgaria";"лв";"BGN"
-"BHD";"Bahraini Dinar";"Bahrain";;"BHD"
-"BIF";"Burundian Franc";"Burundi";;"BIF"
-"BMD";"Bermudian Dollar (customarily known as Bermuda Dollar)";"Bermuda";"$";"BMD"
-"BND";"Brunei Dollar";"Brunei";"$";"BND"
-"BOB";"Boliviano Mvdol";"Bolivia";"$b";"BOB"
-"BRL";"Brazilian Real";"Brazil";"R$";"BRL"
-"BSD";"Bahamian Dollar";"Bahamas";"$";"BSD"
-"BTN";"Ngultrum";"Bhutan";;"BTN"
-"BWP";"Pula";"Botswana";"P";"BWP"
-"BYR";"Belarussian Ruble";"Belarus";"p.";"BYR"
-"BZD";"Belize Dollar";"Belize";"BZ$";"BZD"
-"CAD";"Canadian Dollar";"Canada";"$";"CAD"
-"CDF";"Franc Congolais";"Democratic Republic of Congo";;"CDF"
-"CHF";"Swiss Franc";"Switzerland";;"CHF"
-"CLP";"Chilean Peso";"Chile";"$";"CLP"
-"CNY";"Yuan Renminbi";"Mainland China";"¥";"CNY"
-"COP";"Colombian Peso";"Colombia";"$";"COP"
-"COU";"Unidad de Valor Real";"Colombia";;"COU"
-"CRC";"Costa Rican Colon";"Costa Rica";"₡";"CRC"
-"CUP";"Cuban Peso";"Cuba";"₱";"CUP"
-"CVE";"Cape Verde Escudo";"Cape Verde";;"CVE"
-"CYP";"Cyprus Pound";"Cyprus";;"CYP"
-"CZK";"Czech Koruna";"Czech Republic";"Kč";"CZK"
-"DJF";"Djibouti Franc";"Djibouti";;"DJF"
-"DKK";"Danish Krone";"Denmark";;"DKK"
-"DOP";"Dominican Peso";"Dominican Republic";"RD$";"DOP"
-"DZD";"Algerian Dinar";"Algeria";;"DZD"
-"EEK";"Kroon";"Estonia";;"EEK"
-"EGP";"Egyptian Pound";"Egypt";"£";"EGP"
-"ERN";"Nakfa";"Eritrea";;"ERN"
-"ETB";"Ethiopian Birr";"Ethiopia";;"ETB"
-"EUR";"Euro";"European Union";"€";"EUR"
-"FJD";"Fiji Dollar";"Fiji";"$";"FJD"
-"FKP";"Falkland Islands Pound";"Falkland Islands";"£";"FKP"
-"GBP";"Pound Sterling";"United Kingdom";"£";"GBP"
-"GEL";"Lari";"Georgia";;"GEL"
-"GHS";"Cedi";"Ghana";;"GHS"
-"GIP";"Gibraltar pound";"Gibraltar";"£";"GIP"
-"GMD";"Dalasi";"Gambia";;"GMD"
-"GNF";"Guinea Franc";"Guinea";;"GNF"
-"GTQ";"Quetzal";"Guatemala";"Q";"GTQ"
-"GYD";"Guyana Dollar";"Guyana";"$";"GYD"
-"HKD";"Hong Kong Dollar";"Hong Kong Special Administrative Region";"$";"HKD"
-"HNL";"Lempira";"Honduras";"L";"HNL"
-"HRK";"Croatian Kuna";"Croatia";"kn";"HRK"
-"HTG";"Haiti Gourde";"Haiti";;"HTG"
-"HUF";"Forint";"Hungary";"Ft";"HUF"
-"IDR";"Rupiah";"Indonesia";"Rp";"IDR"
-"ILS";"New Israeli Shekel";"Israel";"₪";"ILS"
-"INR";"Indian Rupee";"Bhutan";;"INR"
-"IQD";"Iraqi Dinar";"Iraq";;"IQD"
-"IRR";"Iranian Rial";"Iran";"﷼";"IRR"
-"ISK";"Iceland Krona";"Iceland";"kr";"ISK"
-"JMD";"Jamaican Dollar";"Jamaica";"J$";"JMD"
-"JOD";"Jordanian Dinar";"Jordan";;"JOD"
-"JPY";"Japanese yen";"Japan";"¥";"JPY"
-"KES";"Kenyan Shilling";"Kenya";;"KES"
-"KGS";"Som";"Kyrgyzstan";"лв";"KGS"
-"KHR";"Riel";"Cambodia";"៛";"KHR"
-"KMF";"Comoro Franc";"Comoros";;"KMF"
-"KPW";"North Korean Won";"North Korea";"₩";"KPW"
-"KRW";"South Korean Won";"South Korea";"₩";"KRW"
-"KWD";"Kuwaiti Dinar";"Kuwait";;"KWD"
-"KYD";"Cayman Islands Dollar";"Cayman Islands";"$";"KYD"
-"KZT";"Tenge";"Kazakhstan";"лв";"KZT"
-"LAK";"Kip";"Laos";"₭";"LAK"
-"LBP";"Lebanese Pound";"Lebanon";"£";"LBP"
-"LKR";"Sri Lanka Rupee";"Sri Lanka";"₨";"LKR"
-"LRD";"Liberian Dollar";"Liberia";"$";"LRD"
-"LSL";"Loti";"Lesotho";;"LSL"
-"LTL";"Lithuanian Litas";"Lithuania";"Lt";"LTL"
-"LVL";"Latvian Lats";"Latvia";"Ls";"LVL"
-"LYD";"Libyan Dinar";"Libya";;"LYD"
-"MAD";"Moroccan Dirham";"Morocco";;"MAD"
-"MDL";"Moldovan Leu";"Moldova";;"MDL"
-"MGA";"Malagasy Ariary";"Madagascar";;"MGA"
-"MKD";"Denar";"Former Yugoslav Republic of Macedonia";"ден";"MKD"
-"MMK";"Kyat";"Myanmar";;"MMK"
-"MNT";"Tugrik";"Mongolia";"₮";"MNT"
-"MOP";"Pataca";"Macau Special Administrative Region";;"MOP"
-"MRO";"Ouguiya";"Mauritania";;"MRO"
-"MTL";"Maltese Lira";"Malta";;"MTL"
-"MUR";"Mauritius Rupee";"Mauritius";"₨";"MUR"
-"MVR";"Rufiyaa";"Maldives";;"MVR"
-"MWK";"Kwacha";"Malawi";;"MWK"
-"MXN";"Mexican Peso";"Mexico";"$";"MXN"
-"MXV";"Mexican Unidad de Inversion (UDI) (Funds code)";"Mexico";;"MXV"
-"MYR";"Malaysian Ringgit";"Malaysia";"RM";"MYR"
-"MZN";"Metical";"Mozambique";"MT";"MZN"
-"NAD";"Namibian Dollar";"Namibia";;"NAD"
-"NGN";"Naira";"Nigeria";"₦";"NGN"
-"NIO";"Cordoba Oro";"Nicaragua";"C$";"NIO"
-"NOK";"Norwegian Krone";"Norway";"kr";"NOK"
-"NPR";"Nepalese Rupee";"Nepal";"₨";"NPR"
-"NZD";"New Zealand Dollar";"Cook Islands, New Zealand, Niue, Pitcairn, Tokelau";"$";"NZD"
-"OMR";"Rial Omani";"Oman";"﷼";"OMR"
-"PAB";"Balboa";"Panama";"B/.";"PAB"
-"PEN";"Nuevo Sol";"Peru";"S/.";"PEN"
-"PGK";"Kina";"Papua New Guinea";;"PGK"
-"PHP";"Philippine Peso";"Philippines";"Php";"PHP"
-"PKR";"Pakistan Rupee";"Pakistan";"₨";"PKR"
-"PLN";"Zloty";"Poland";"zł";"PLN"
-"PYG";"Guarani";"Paraguay";"Gs";"PYG"
-"QAR";"Qatari Rial";"Qatar";"﷼";"QAR"
-"RON";"Romanian New Leu";"Romania";"lei";"RON"
-"RSD";"Serbian Dinar";"Serbia";"Дин.";"RSD"
-"RUB";"Russian Ruble";"Russia, Abkhazia, South Ossetia";"руб";"RUB"
-"RWF";"Rwanda Franc";"Rwanda";;"RWF"
-"SAR";"Saudi Riyal";"Saudi Arabia";"﷼";"SAR"
-"SBD";"Solomon Islands Dollar";"Solomon Islands";"$";"SBD"
-"SCR";"Seychelles Rupee";"Seychelles";"₨";"SCR"
-"SDG";"Sudanese Pound";"Sudan";;"SDG"
-"SEK";"Swedish Krona";"Sweden";"kr";"SEK"
-"SGD";"Singapore Dollar";"Singapore";"$";"SGD"
-"SHP";"Saint Helena Pound";"Saint Helena";"£";"SHP"
-"SKK";"Slovak Koruna";"Slovakia";;"SKK"
-"SLL";"Leone";"Sierra Leone";;"SLL"
-"SOS";"Somali Shilling";"Somalia";"S";"SOS"
-"SRD";"Surinam Dollar";"Suriname";"$";"SRD"
-"STD";"Dobra";"São Tomé and Príncipe";;"STD"
-"SYP";"Syrian Pound";"Syria";"£";"SYP"
-"SZL";"Lilangeni";"Swaziland";;"SZL"
-"THB";"Baht";"Thailand";;"THB"
-"TJS";"Somoni";"Tajikistan";;"TJS"
-"TMM";"Manat";"Turkmenistan";;"TMM"
-"TND";"Tunisian Dinar";"Tunisia";;"TND"
-"TOP";"Pa'anga";"Tonga";;"TOP"
-"TRY";"New Turkish Lira";"Turkey";"TL";"TRY"
-"TTD";"Trinidad and Tobago Dollar";"Trinidad and Tobago";"TT$";"TTD"
-"TWD";"New Taiwan Dollar";"Taiwan and other islands that are under the effective control of the Republic of China (ROC)";"NT$";"TWD"
-"TZS";"Tanzanian Shilling";"Tanzania";;"TZS"
-"UAH";"Hryvnia";"Ukraine";"₴";"UAH"
-"UGX";"Uganda Shilling";"Uganda";;"UGX"
-"USD";"US Dollar";"American Samoa, British Indian Ocean Territory, Ecuador, El Salvador, Guam, Haiti, Marshall Islands, Micronesia, Northern Mariana Islands, Palau, Panama, Puerto Rico, East Timor, Turks and Caicos Islands, United States, Virgin Islands";"$";"USD"
-"USN";"USN";"United States";;"USN"
-"USS";"USS";"United States";;"USS"
-"UYU";"Peso Uruguayo";"Uruguay";"$U";"UYU"
-"UZS";"Uzbekistan Som";"Uzbekistan";"лв";"UZS"
-"VEB";"Venezuelan bolívar";"Venezuela";"Bs";"VEB"
-"VND";"Vietnamese đồng";"Vietnam";"₫";"VND"
-"VUV";"Vatu";"Vanuatu";;"VUV"
-"WST";"Samoan Tala";"Samoa";;"WST"
-"XAF";"CFA Franc BEAC";"Cameroon, Central African Republic, Congo, Chad, Equatorial Guinea, Gabon";"CFA";"XAF"
-"XCD";"East Caribbean Dollar";"Anguilla, Antigua and Barbuda, Dominica, Grenada, Montserrat, Saint Kitts and Nevis, Saint Lucia, Saint Vincent and the Grenadines";;"XCD"
-"XOF";"CFA Franc BCEAO";"Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo";;"XOF"
-"XPF";"CFP franc";"French Polynesia, New Caledonia, Wallis and Futuna";;"XPF"
-"XTS";"Code reserved for testing purposes";;;"XTS"
-"XXX";"No currency";;;"XXX"
-"YER";"Yemeni Rial";"Yemen";"﷼";"YER"
-"ZAR";"South African Rand";"South Africa";;"ZAR"
-"ZMK";"Kwacha";"Zambia";;"ZMK"
-"ZWD";"Zimbabwe Dollar";"Zimbabwe";;"ZWD"
+"code";"name";"country";"symbol";"codeISO";"numberOfDecimals"
+"AED";"United Arab Emirates dirham";"United Arab Emirates";"د.إ";"AED";2
+"AFN";"Afghani";"Afghanistan";"؋";"AFN";2
+"ALL";"Lek";"Albania";"Lek";"ALL";2
+"AMD";"Armenian Dram";"Armenia";;"AMD";2
+"ANG";"Netherlands Antillian Guilder";"Netherlands Antilles";"ƒ";"ANG";2
+"AOA";"Kwanza";"Angola";"Kz";"AOA";2
+"ARS";"Argentine Peso";"Argentina";"$";"ARS";2
+"AUD";"Australian Dollar";"Australian, Antarctic Territory, Christmas Island, Cocos (Keeling) Islands, Heard and McDonald Islands, Kiribati, Nauru, Norfolk Island, Tuvalu";"$";"AUD";2
+"AWG";"Aruban Guilder";"Aruba";"ƒ";"AWG";2
+"AZN";"Azerbaijanian Manat";"Azerbaijan";"ман";"AZN";2
+"BAM";"Convertible Marks";"Bosnia and Herzegovina";"KM";"BAM";2
+"BBD";"Barbados Dollar";"Barbados";"$";"BBD";2
+"BDT";"Bangladeshi Taka";"Bangladesh";;"BDT";2
+"BGN";"Bulgarian Lev";"Bulgaria";"лв";"BGN";2
+"BHD";"Bahraini Dinar";"Bahrain";;"BHD";2
+"BIF";"Burundian Franc";"Burundi";;"BIF";2
+"BMD";"Bermudian Dollar (customarily known as Bermuda Dollar)";"Bermuda";"$";"BMD";2
+"BND";"Brunei Dollar";"Brunei";"$";"BND";2
+"BOB";"Boliviano Mvdol";"Bolivia";"$b";"BOB";2
+"BRL";"Brazilian Real";"Brazil";"R$";"BRL";2
+"BSD";"Bahamian Dollar";"Bahamas";"$";"BSD";2
+"BTN";"Ngultrum";"Bhutan";;"BTN";2
+"BWP";"Pula";"Botswana";"P";"BWP";2
+"BYR";"Belarussian Ruble";"Belarus";"p.";"BYR";2
+"BZD";"Belize Dollar";"Belize";"BZ$";"BZD";2
+"CAD";"Canadian Dollar";"Canada";"$";"CAD";2
+"CDF";"Franc Congolais";"Democratic Republic of Congo";;"CDF";2
+"CHF";"Swiss Franc";"Switzerland";;"CHF";2
+"CLP";"Chilean Peso";"Chile";"$";"CLP";2
+"CNY";"Yuan Renminbi";"Mainland China";"¥";"CNY";1
+"COP";"Colombian Peso";"Colombia";"$";"COP";2
+"COU";"Unidad de Valor Real";"Colombia";;"COU";2
+"CRC";"Costa Rican Colon";"Costa Rica";"₡";"CRC";2
+"CUP";"Cuban Peso";"Cuba";"₱";"CUP";2
+"CVE";"Cape Verde Escudo";"Cape Verde";;"CVE";2
+"CYP";"Cyprus Pound";"Cyprus";;"CYP";2
+"CZK";"Czech Koruna";"Czech Republic";"Kč";"CZK";2
+"DJF";"Djibouti Franc";"Djibouti";;"DJF";2
+"DKK";"Danish Krone";"Denmark";;"DKK";2
+"DOP";"Dominican Peso";"Dominican Republic";"RD$";"DOP";2
+"DZD";"Algerian Dinar";"Algeria";;"DZD";2
+"EEK";"Kroon";"Estonia";;"EEK";2
+"EGP";"Egyptian Pound";"Egypt";"£";"EGP";2
+"ERN";"Nakfa";"Eritrea";;"ERN";2
+"ETB";"Ethiopian Birr";"Ethiopia";;"ETB";2
+"EUR";"Euro";"European Union";"€";"EUR";2
+"FJD";"Fiji Dollar";"Fiji";"$";"FJD";2
+"FKP";"Falkland Islands Pound";"Falkland Islands";"£";"FKP";2
+"GBP";"Pound Sterling";"United Kingdom";"£";"GBP";2
+"GEL";"Lari";"Georgia";;"GEL";2
+"GHS";"Cedi";"Ghana";;"GHS";2
+"GIP";"Gibraltar pound";"Gibraltar";"£";"GIP";2
+"GMD";"Dalasi";"Gambia";;"GMD";2
+"GNF";"Guinea Franc";"Guinea";;"GNF";2
+"GTQ";"Quetzal";"Guatemala";"Q";"GTQ";2
+"GYD";"Guyana Dollar";"Guyana";"$";"GYD";2
+"HKD";"Hong Kong Dollar";"Hong Kong Special Administrative Region";"$";"HKD";2
+"HNL";"Lempira";"Honduras";"L";"HNL";2
+"HRK";"Croatian Kuna";"Croatia";"kn";"HRK";2
+"HTG";"Haiti Gourde";"Haiti";;"HTG";2
+"HUF";"Forint";"Hungary";"Ft";"HUF";2
+"IDR";"Rupiah";"Indonesia";"Rp";"IDR";2
+"ILS";"New Israeli Shekel";"Israel";"₪";"ILS";2
+"INR";"Indian Rupee";"Bhutan";;"INR";2
+"IQD";"Iraqi Dinar";"Iraq";;"IQD";2
+"IRR";"Iranian Rial";"Iran";"﷼";"IRR";2
+"ISK";"Iceland Krona";"Iceland";"kr";"ISK";2
+"JMD";"Jamaican Dollar";"Jamaica";"J$";"JMD";2
+"JOD";"Jordanian Dinar";"Jordan";;"JOD";2
+"JPY";"Japanese yen";"Japan";"¥";"JPY";0
+"KES";"Kenyan Shilling";"Kenya";;"KES";2
+"KGS";"Som";"Kyrgyzstan";"лв";"KGS";2
+"KHR";"Riel";"Cambodia";"៛";"KHR";0
+"KMF";"Comoro Franc";"Comoros";;"KMF";2
+"KPW";"North Korean Won";"North Korea";"₩";"KPW";2
+"KRW";"South Korean Won";"South Korea";"₩";"KRW";0
+"KWD";"Kuwaiti Dinar";"Kuwait";;"KWD";3
+"KYD";"Cayman Islands Dollar";"Cayman Islands";"$";"KYD";2
+"KZT";"Tenge";"Kazakhstan";"лв";"KZT";2
+"LAK";"Kip";"Laos";"₭";"LAK";2
+"LBP";"Lebanese Pound";"Lebanon";"£";"LBP";2
+"LKR";"Sri Lanka Rupee";"Sri Lanka";"₨";"LKR";2
+"LRD";"Liberian Dollar";"Liberia";"$";"LRD";2
+"LSL";"Loti";"Lesotho";;"LSL";2
+"LTL";"Lithuanian Litas";"Lithuania";"Lt";"LTL";2
+"LVL";"Latvian Lats";"Latvia";"Ls";"LVL";2
+"LYD";"Libyan Dinar";"Libya";;"LYD";2
+"MAD";"Moroccan Dirham";"Morocco";;"MAD";2
+"MDL";"Moldovan Leu";"Moldova";;"MDL";2
+"MGA";"Malagasy Ariary";"Madagascar";;"MGA";2
+"MKD";"Denar";"Former Yugoslav Republic of Macedonia";"ден";"MKD";2
+"MMK";"Kyat";"Myanmar";;"MMK";2
+"MNT";"Tugrik";"Mongolia";"₮";"MNT";2
+"MOP";"Pataca";"Macau Special Administrative Region";;"MOP";2
+"MRO";"Ouguiya";"Mauritania";;"MRO";2
+"MTL";"Maltese Lira";"Malta";;"MTL";2
+"MUR";"Mauritius Rupee";"Mauritius";"₨";"MUR";2
+"MVR";"Rufiyaa";"Maldives";;"MVR";2
+"MWK";"Kwacha";"Malawi";;"MWK";2
+"MXN";"Mexican Peso";"Mexico";"$";"MXN";2
+"MXV";"Mexican Unidad de Inversion (UDI) (Funds code)";"Mexico";;"MXV";2
+"MYR";"Malaysian Ringgit";"Malaysia";"RM";"MYR";2
+"MZN";"Metical";"Mozambique";"MT";"MZN";2
+"NAD";"Namibian Dollar";"Namibia";;"NAD";2
+"NGN";"Naira";"Nigeria";"₦";"NGN";2
+"NIO";"Cordoba Oro";"Nicaragua";"C$";"NIO";2
+"NOK";"Norwegian Krone";"Norway";"kr";"NOK";2
+"NPR";"Nepalese Rupee";"Nepal";"₨";"NPR";2
+"NZD";"New Zealand Dollar";"Cook Islands, New Zealand, Niue, Pitcairn, Tokelau";"$";"NZD";2
+"OMR";"Rial Omani";"Oman";"﷼";"OMR";2
+"PAB";"Balboa";"Panama";"B/.";"PAB";2
+"PEN";"Nuevo Sol";"Peru";"S/.";"PEN";2
+"PGK";"Kina";"Papua New Guinea";;"PGK";2
+"PHP";"Philippine Peso";"Philippines";"Php";"PHP";2
+"PKR";"Pakistan Rupee";"Pakistan";"₨";"PKR";2
+"PLN";"Zloty";"Poland";"zł";"PLN";2
+"PYG";"Guarani";"Paraguay";"Gs";"PYG";2
+"QAR";"Qatari Rial";"Qatar";"﷼";"QAR";2
+"RON";"Romanian New Leu";"Romania";"lei";"RON";2
+"RSD";"Serbian Dinar";"Serbia";"Дин.";"RSD";2
+"RUB";"Russian Ruble";"Russia, Abkhazia, South Ossetia";"руб";"RUB";2
+"RWF";"Rwanda Franc";"Rwanda";;"RWF";2
+"SAR";"Saudi Riyal";"Saudi Arabia";"﷼";"SAR";2
+"SBD";"Solomon Islands Dollar";"Solomon Islands";"$";"SBD";2
+"SCR";"Seychelles Rupee";"Seychelles";"₨";"SCR";2
+"SDG";"Sudanese Pound";"Sudan";;"SDG";2
+"SEK";"Swedish Krona";"Sweden";"kr";"SEK";2
+"SGD";"Singapore Dollar";"Singapore";"$";"SGD";2
+"SHP";"Saint Helena Pound";"Saint Helena";"£";"SHP";2
+"SKK";"Slovak Koruna";"Slovakia";;"SKK";2
+"SLL";"Leone";"Sierra Leone";;"SLL";2
+"SOS";"Somali Shilling";"Somalia";"S";"SOS";2
+"SRD";"Surinam Dollar";"Suriname";"$";"SRD";2
+"STD";"Dobra";"São Tomé and Príncipe";;"STD";2
+"SYP";"Syrian Pound";"Syria";"£";"SYP";2
+"SZL";"Lilangeni";"Swaziland";;"SZL";2
+"THB";"Baht";"Thailand";;"THB";2
+"TJS";"Somoni";"Tajikistan";;"TJS";2
+"TMM";"Manat";"Turkmenistan";;"TMM";2
+"TND";"Tunisian Dinar";"Tunisia";;"TND";3
+"TOP";"Pa'anga";"Tonga";;"TOP";2
+"TRY";"New Turkish Lira";"Turkey";"TL";"TRY";2
+"TTD";"Trinidad and Tobago Dollar";"Trinidad and Tobago";"TT$";"TTD";2
+"TWD";"New Taiwan Dollar";"Taiwan and other islands that are under the effective control of the Republic of China (ROC)";"NT$";"TWD";2
+"TZS";"Tanzanian Shilling";"Tanzania";;"TZS";2
+"UAH";"Hryvnia";"Ukraine";"₴";"UAH";2
+"UGX";"Uganda Shilling";"Uganda";;"UGX";2
+"USD";"US Dollar";"American Samoa, British Indian Ocean Territory, Ecuador, El Salvador, Guam, Haiti, Marshall Islands, Micronesia, Northern Mariana Islands, Palau, Panama, Puerto Rico, East Timor, Turks and Caicos Islands, United States, Virgin Islands";"$";"USD";2
+"USN";"USN";"United States";;"USN";2
+"USS";"USS";"United States";;"USS";2
+"UYU";"Peso Uruguayo";"Uruguay";"$U";"UYU";2
+"UZS";"Uzbekistan Som";"Uzbekistan";"лв";"UZS";2
+"VEB";"Venezuelan bolívar";"Venezuela";"Bs";"VEB";2
+"VND";"Vietnamese đồng";"Vietnam";"₫";"VND";2
+"VUV";"Vatu";"Vanuatu";;"VUV";2
+"WST";"Samoan Tala";"Samoa";;"WST";2
+"XAF";"CFA Franc BEAC";"Cameroon, Central African Republic, Congo, Chad, Equatorial Guinea, Gabon";"CFA";"XAF";2
+"XCD";"East Caribbean Dollar";"Anguilla, Antigua and Barbuda, Dominica, Grenada, Montserrat, Saint Kitts and Nevis, Saint Lucia, Saint Vincent and the Grenadines";;"XCD";2
+"XOF";"CFA Franc BCEAO";"Benin, Burkina Faso, Côte d'Ivoire, Guinea-Bissau, Mali, Niger, Senegal, Togo";;"XOF";0
+"XPF";"CFP franc";"French Polynesia, New Caledonia, Wallis and Futuna";;"XPF";0
+"XTS";"Code reserved for testing purposes";;;"XTS";2
+"XXX";"No currency";;;"XXX";2
+"YER";"Yemeni Rial";"Yemen";"﷼";"YER";2
+"ZAR";"South African Rand";"South Africa";;"ZAR";2
+"ZMK";"Kwacha";"Zambia";;"ZMK";2
+"ZWD";"Zimbabwe Dollar";"Zimbabwe";;"ZWD";2
