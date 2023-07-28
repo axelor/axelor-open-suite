@@ -24,9 +24,12 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="move.company" form-view="company-form" grid-view="company-grid" width="120"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="debit" aggregate="sum" width="100"/>
-    <field name="credit" aggregate="sum" width="100"/>
-    <field name="amountRemaining" aggregate="sum" width="100"/>
+    <field name="debit" aggregate="sum" width="100"
+      x-scale="move.company.currency.numberOfDecimals"/>
+    <field name="credit" aggregate="sum" width="100"
+      x-scale="move.company.currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="100"
+      x-scale="move.company.currency.numberOfDecimals"/>
     <field name="taxLine" domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
     <field name="analyticDistributionTemplate"
@@ -43,6 +46,8 @@
     <field name="analyticMoveLineList" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
+    <field name="move.company.currency.numberOfDecimals" hidden="true"/>
+    <field name="move.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-account-grid" title="Move lines"
@@ -147,15 +152,18 @@
       readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
-      width="90"/>
+      width="90" x-scale="$numberOfDecimals || move.currency.numberOfDecimals"/>
     <field name="currencyRate"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
       width="90"/>
     <field name="debit" onChange="action-move-line-method-debit-onchange" width="90"
-      readonlyIf="amountPaid &gt; 0"/>
+      readonlyIf="amountPaid &gt; 0"
+      x-scale="$companyCurrencyNumberOfDecimals || move.company.currency.numberOfDecimals"/>
     <field name="credit" onChange="action-move-line-method-credit-onchange" width="90"
-      readonlyIf="amountPaid &gt; 0"/>
-    <field name="amountRemaining" hidden="true" width="80"/>
+      readonlyIf="amountPaid &gt; 0"
+      x-scale="$companyCurrencyNumberOfDecimals || move.company.currency.numberOfDecimals"/>
+    <field name="amountRemaining" hidden="true" width="80"
+      x-scale="$companyCurrencyNumberOfDecimals || move.company.currency.numberOfDecimals"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
@@ -216,6 +224,10 @@
     <field name="move.company.accountConfig" hidden="true"/>
     <field name="move.company" hidden="true"/>
     <field name="account.company.accountConfig.analyticDistributionTypeSelect"/>
+    <field name="$numberOfDecimals" hidden="true"/>
+    <field name="move.currency.numberOfDecimals" hidden="true"/>
+    <field name="$companyCurrencyNumberOfDecimals" hidden="true"/>
+    <field name="move.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"

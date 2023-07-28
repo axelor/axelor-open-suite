@@ -20,8 +20,8 @@
     <date name="cutOffEndDate" title="To date"/>
     <boolean name="isCutOffGenerated" default="false"/>
     <integer name="counter" title="Line Nbr." initParam="true"/>
-    <decimal name="debit" title="Debit" initParam="true"/>
-    <decimal name="credit" title="Credit" initParam="true"/>
+    <decimal name="debit" title="Debit" initParam="true" scale="3" precision="20"/>
+    <decimal name="credit" title="Credit" initParam="true" scale="3" precision="20"/>
     <string name="description" title="Description" initParam="true"/>
     <string name="origin" title="moveLine.origin" initParam="true"/>
     <string name="externalOrigin" title="External origin"/>
@@ -31,7 +31,7 @@
     <one-to-many name="creditReconcileList" orphanRemoval="false" ref="Reconcile"
       title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
     <decimal name="amountPaid" title="MoveLine.amountReconciled" default="0.0"
-      readonly="true"/>
+      readonly="true" scale="3" precision="20"/>
 
     <many-to-one name="invoiceReject" ref="com.axelor.apps.account.db.Invoice"
       title="Invoice rejected"/>
@@ -54,7 +54,8 @@
 
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
       initParam="true"/>
-    <decimal name="currencyAmount" title="Amount in move currency" initParam="true"/>
+    <decimal name="currencyAmount" title="Amount in move currency" initParam="true"
+      scale="3" precision="20"/>
 
     <string name="postedNbr" title="Posted number"/>
     <!-- Fixed asset fields -->
@@ -62,12 +63,14 @@
       ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"
       help="If this field is filled, once the move will change from Draft to Accounted, a new fixed asset record will be generated based on this moveLine data and the selected category data"/>
     <!-- Field not displayed, used during the payment voucher input -->
-    <decimal name="maxAmountToReconcile" title="Max Amount to reconcile"/>
+    <decimal name="maxAmountToReconcile" title="Max Amount to reconcile" scale="3"
+      precision="20"/>
     <many-to-one name="paymentScheduleLine"
       ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment Schedule line"/>
 
     <!-- Field not displayed, used for direct debit only -->
-    <decimal name="amountExportedInDirectDebit" title="Amount exported for direct debit"/>
+    <decimal name="amountExportedInDirectDebit" title="Amount exported for direct debit"
+      scale="3" precision="20"/>
 
     <!-- Field not displayed, used for account clearance -->
     <many-to-one name="accountClearance"
@@ -100,7 +103,7 @@
 
     <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
 
-    <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
+    <decimal name="taxAmount" scale="3" precision="20" title="Tax amount" readonly="true"/>
     <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine"
       ref="com.axelor.apps.account.db.TaxPaymentMoveLine"/>
 
@@ -124,7 +127,7 @@
 		 }
 	    ]]>
     </string>
-    <decimal name="amountRemaining" title="To pay / To use">
+    <decimal name="amountRemaining" title="To pay / To use" scale="3" precision="20">
     	<![CDATA[
         if (account != null && account.getReconcileOk()) {
           if (credit.signum() > 0) return credit.subtract(amountPaid);
@@ -133,7 +136,7 @@
         return BigDecimal.ZERO;
 	   ]]>
     </decimal>
-    <decimal name="lineAmount" transient="true">
+    <decimal name="lineAmount" transient="true" scale="3" precision="20">
     	<![CDATA[
 			if (this.credit != null && this.credit.signum() > 0) {
 				return this.credit;
@@ -163,9 +166,10 @@
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <decimal name="financialDiscountRate" title="Financial discount rate"/>
-    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"
+      scale="3" precision="20"/>
     <decimal name="remainingAmountAfterFinDiscount"
-      title="Remaining amount after Fin. discount"/>
+      title="Remaining amount after Fin. discount" scale="3" precision="20"/>
 
     <!-- Fixed information -->
     <string name="companyCode"/>
@@ -181,8 +185,8 @@
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
     <!-- CUTOFF -->
-    <decimal name="cutOffProrataAmount" title="Prorata amount" scale="2" precision="20"/>
-    <decimal name="amountBeforeCutOffProrata" title="Original amount" scale="2"
+    <decimal name="cutOffProrataAmount" title="Prorata amount" scale="3" precision="20"/>
+    <decimal name="amountBeforeCutOffProrata" title="Original amount" scale="3"
       precision="20"/>
     <string name="durationCutOffProrata" title="Prorata duration"/>
 

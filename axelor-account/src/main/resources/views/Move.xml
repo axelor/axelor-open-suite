@@ -296,25 +296,26 @@
         ]]></viewer>
         </field>
         <field name="$totalCurrency" title="Total Currency" readonly="true"
-          showIf="currency.id != companyCurrency.id" colSpan="3" type="integer">
+          showIf="currency.id != companyCurrency.id" colSpan="3" type="decimal"
+          x-scale="currency.numberOfDecimals">
           <viewer><![CDATA[
           <h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
         ]]></viewer>
         </field>
         <field name="$totalDebit" title="Total debit" readonly="true" colSpan="3"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer><![CDATA[
                                 <h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
         ]]></viewer>
         </field>
         <field name="$totalCredit" title="Total credit" readonly="true" colSpan="3"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer><![CDATA[
                                 <h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
         ]]></viewer>
         </field>
         <field name="$difference" title="Difference" readonly="true" colSpan="2"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer><![CDATA[
                                 <h3>
                                         <span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
@@ -364,6 +365,8 @@
           <field name="ignoreInDebtRecoveryOk"/>
           <field name="rejectOk" readonly="true" showIf="rejectOk"/>
           <field name="companyCurrency" hidden="true"/>
+          <field name="companyCurrency.numberOfDecimals" hidden="true"/>
+          <field name="currency.numberOfDecimals" hidden="true"/>
           <field name="$periodClosed" hidden="true"/>
           <field name="$simulatedPeriodClosed" hidden="true"/>
           <field name="period.statusSelect" hidden="true"/>
