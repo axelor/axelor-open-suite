@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -25,6 +28,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -33,14 +37,11 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.EmailAccountRepository;
-import com.axelor.apps.message.exception.AxelorMessageException;
-import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProductionConfig;
+import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -58,11 +59,12 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.EmailAccountRepository;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -114,13 +116,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<ManufOrder> plan(List<ManufOrder> manufOrderList) throws AxelorException {
     return plan(manufOrderList, true);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean quickSolve)
       throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
@@ -168,6 +170,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
         manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
       }
+      manufOrder.setRealStartDateT(null);
+      manufOrder.setRealEndDateT(null);
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -261,8 +265,20 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
+    finishManufOrder(manufOrder);
+    ProductionConfig productionConfig =
+        manufOrder.getCompany() != null
+            ? productionConfigRepo.findByCompany(manufOrder.getCompany())
+            : null;
+    if (productionConfig != null && productionConfig.getFinishMoAutomaticEmail()) {
+      return this.sendMail(manufOrder, productionConfig.getFinishMoMessageTemplate());
+    }
+    return true;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
@@ -327,14 +343,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
-    ProductionConfig productionConfig =
-        manufOrder.getCompany() != null
-            ? productionConfigRepo.findByCompany(manufOrder.getCompany())
-            : null;
-    if (productionConfig != null && productionConfig.getFinishMoAutomaticEmail()) {
-      return this.sendMail(manufOrder, productionConfig.getFinishMoMessageTemplate());
-    }
-    return true;
   }
 
   /** Return the cost price for one unit in a manufacturing order. */
@@ -526,6 +534,22 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updatePlannedDates(ManufOrder manufOrder) {
+
+    manufOrder.setPlannedStartDateT(computePlannedStartDateT(manufOrder));
+    ;
+    manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+  }
+
+  /**
    * Get a list of operation orders sorted by priority and id from the specified manufacturing
    * order.
    *
@@ -581,12 +605,15 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     Unit startUnit =
         Beans.get(UnitRepository.class)
             .all()
-            .filter("self.name = 'Hour' AND self.unitTypeSelect = 3")
+            .filter("self.name = 'Hour' AND self.unitTypeSelect = :unitType")
+            .bind("unitType", UnitRepository.UNIT_TYPE_TIME)
             .fetchOne();
 
-    for (ProdHumanResource humanResource : operationOrder.getProdHumanResourceList()) {
+    WorkCenter workCenter = operationOrder.getWorkCenter();
 
-      Product product = humanResource.getProduct();
+    if (ObjectUtils.notEmpty(workCenter) && ObjectUtils.notEmpty(workCenter.getHrProduct())) {
+
+      Product product = workCenter.getHrProduct();
       Unit purchaseUnit = product.getPurchasesUnit();
 
       if (purchaseUnit != null) {
@@ -594,9 +621,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             unitConversionService.convert(
                 startUnit,
                 purchaseUnit,
-                new BigDecimal(humanResource.getDuration() / 3600),
+                new BigDecimal(workCenter.getHrDurationPerCycle() / 3600),
                 0,
-                humanResource.getProduct());
+                product);
       }
 
       purchaseOrderLine =
@@ -664,7 +691,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException {
 
     PurchaseOrder purchaseOrder =

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrder" lang="java"
-    implements="com.axelor.apps.base.interfaces.PricedOrder">
+  <entity name="SaleOrder" implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
-    <string name="fullName" namecolumn="true"/>
+    <string name="fullName" namecolumn="true" title="Full name"/>
     <string name="saleOrderSeq" title="Internal Number" readonly="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       massUpdate="true"/>
@@ -91,10 +90,6 @@
     <date name="orderDate" title="Order Date"/>
     <string name="orderNumber" title="Order Number"/>
 
-    <!-- Onglet scheduler -->
-    <date name="invoicedFirstDate" title="Invoiced first date"/>
-    <date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
-
     <many-to-one name="confirmedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Confirmed by"/>
 
@@ -109,6 +104,7 @@
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
 
     <date name="estimatedShippingDate" title="Estimated shipping date"/>
+    <date name="estimatedDeliveryDate" title="Estimated delivery date"/>
     <string name="deliveryCondition" title="Delivery conditions" large="true"
       multiline="true"/>
     <string name="specificPackage" title="Specific package" large="true" multiline="true"/>
@@ -124,13 +120,15 @@
     <!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
 
-    <boolean name="orderBeingEdited"/>
+    <boolean name="orderBeingEdited" title="Order being edited"/>
 
     <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"
-      copy="false"/>
+      copy="false" title="Opportunity"/>
 
-    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
-    <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="Trading name"/>
+    <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"
+      title="Printing settings"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"
       default="false"/>
 

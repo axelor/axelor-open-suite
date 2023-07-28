@@ -1,0 +1,6 @@
+"metaModel";"metaField";"anonymizer_importId";"useFakeData";"fakerApiField.name"
+"StockMove";"toAddressStr";"7";"true";"address.streetAddress"
+"StockMove";"name";"7";"true";"lorem.word"
+"StockMove";"fromAddressStr";"7";"true";"address.streetAddress"
+"StockMove";"note";"7";"true";"lorem.sentence"
+"StockMove";"origin";"7";"true";"lorem.word"

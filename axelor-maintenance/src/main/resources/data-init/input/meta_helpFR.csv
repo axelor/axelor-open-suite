@@ -1,0 +1,5 @@
+"module";"object";"view";"field";"help"
+"axelor-maintenance";"Machine";"maintenance-machine-form";"startingDuration";"Temps que met la machine à démarrer avant de pouvoir être utilisée."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"setupDuration";"Temps inter-opérations. Il s'agit du temps qu'il faut attendre après la fin d'une opération afin de pouvoir en commencer une nouvelle."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"endingDuration";"Temps de clôture de la machine."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"weeklyPlanning";"Permet de sélectionner un planning général de disponibilité de la machine (mi-temps ou pleins-temps) ."

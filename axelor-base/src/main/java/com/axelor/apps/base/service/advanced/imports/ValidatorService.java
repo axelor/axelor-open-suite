@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,32 +14,32 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.advanced.imports;
 
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.MANY_TO_MANY;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.db.repo.FileTabRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.tool.reader.DataReaderFactory;
-import com.axelor.apps.tool.reader.DataReaderService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.utils.reader.DataReaderFactory;
+import com.axelor.utils.reader.DataReaderService;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -127,7 +128,7 @@ public class ValidatorService {
     return validate(reader, advancedImport);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public boolean validate(DataReaderService reader, AdvancedImport advancedImport)
       throws IOException, ClassNotFoundException, AxelorException {
 
@@ -193,7 +194,8 @@ public class ValidatorService {
     return isLog;
   }
 
-  private void validateTab(String[] sheets, AdvancedImport advancedImport) throws AxelorException {
+  protected void validateTab(String[] sheets, AdvancedImport advancedImport)
+      throws AxelorException {
     if (sheets == null) {
       return;
     }
@@ -210,7 +212,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateModel(FileTab fileTab) throws IOException, AxelorException {
+  protected void validateModel(FileTab fileTab) throws IOException, AxelorException {
     if (fileTab.getMetaModel() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -219,7 +221,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
+  protected void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
       throws IOException, AxelorException {
 
     int rowIndex = isTabConfig ? 1 : 0;
@@ -243,7 +245,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateObjectRequiredFields(FileTab fileTab)
+  protected void validateObjectRequiredFields(FileTab fileTab)
       throws ClassNotFoundException, IOException, AxelorException {
 
     if (CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
@@ -289,7 +291,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateFieldAndData(
+  protected void validateFieldAndData(
       DataReaderService reader,
       String sheet,
       FileTab fileTab,
@@ -343,7 +345,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateFields(int line, boolean isConfig, FileTab fileTab)
+  protected void validateFields(int line, boolean isConfig, FileTab fileTab)
       throws IOException, ClassNotFoundException {
 
     List<String> relationalFieldList =
@@ -390,7 +392,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateDateField(int line, FileField fileField) throws IOException {
+  protected void validateDateField(int line, FileField fileField) throws IOException {
 
     String type = fileField.getTargetType();
     Integer rowNum = fileField.getIsMatchWithFile() ? line : null;
@@ -410,7 +412,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateImportRequiredField(
+  protected void validateImportRequiredField(
       int line,
       Class<?> model,
       String fieldName,
@@ -447,7 +449,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateData(String[] dataRow, int line, boolean isConfig, FileTab fileTab)
+  protected void validateData(String[] dataRow, int line, boolean isConfig, FileTab fileTab)
       throws IOException, ClassNotFoundException {
 
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
@@ -532,7 +534,7 @@ public class ValidatorService {
     }
   }
 
-  private boolean validateDataRequiredField(
+  protected boolean validateDataRequiredField(
       String row[], int cell, int line, Class<?> model, String fieldName, FileField fileField)
       throws IOException, ClassNotFoundException {
 
@@ -557,7 +559,7 @@ public class ValidatorService {
     return flag;
   }
 
-  private Property getAndValidateSubField(
+  protected Property getAndValidateSubField(
       int line, Property parentProp, FileField fileField, boolean isLog)
       throws IOException, ClassNotFoundException {
 
@@ -605,8 +607,8 @@ public class ValidatorService {
     return subProperty;
   }
 
-  private void validateDataType(String[] row, int cell, int line, String type, FileField fileField)
-      throws IOException {
+  protected void validateDataType(
+      String[] row, int cell, int line, String type, FileField fileField) throws IOException {
 
     if (Strings.isNullOrEmpty(row[cell])) {
       return;
@@ -651,7 +653,8 @@ public class ValidatorService {
     }
   }
 
-  private void checkNumeric(String value, int line, String field, String type) throws IOException {
+  protected void checkNumeric(String value, int line, String field, String type)
+      throws IOException {
 
     switch (type) {
       case INTEGER:
@@ -683,7 +686,7 @@ public class ValidatorService {
     }
   }
 
-  private void checkDateTime(String value, int line, String type, FileField fileField)
+  protected void checkDateTime(String value, int line, String type, FileField fileField)
       throws IOException {
 
     if (!Strings.isNullOrEmpty(fileField.getDateFormat())
@@ -719,7 +722,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateActions(FileTab fileTab) {
+  protected void validateActions(FileTab fileTab) {
     String actions = fileTab.getActions();
     if (StringUtils.isBlank(actions)) {
       return;
@@ -732,7 +735,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateSearchCall(FileTab fileTab) {
+  protected void validateSearchCall(FileTab fileTab) {
     String searchCall = fileTab.getSearchCall();
     if (!searchCallService.validate(searchCall)) {
       logService.addLog(
@@ -764,7 +767,7 @@ public class ValidatorService {
     writer.newLine();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void createCustomObjectSet(String modelName, String targetModelName, int sequence) {
 
     String simpleModelName = StringUtils.substringAfterLast(targetModelName, ".");
@@ -799,7 +802,7 @@ public class ValidatorService {
     metaJsonFieldRepo.save(jsonField);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void createCustomButton(String modelName, String targetModelName, int sequence) {
 
     String simpleModelName = StringUtils.substringAfterLast(targetModelName, ".");
@@ -832,7 +835,7 @@ public class ValidatorService {
     metaJsonFieldRepo.save(jsonField);
   }
 
-  private void validateSearch(FileTab fileTab) throws AxelorException {
+  protected void validateSearch(FileTab fileTab) throws AxelorException {
     if (fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_NEW) {
       if (CollectionUtils.isEmpty(fileTab.getSearchFieldSet())
           && StringUtils.isBlank(fileTab.getSearchCall())) {

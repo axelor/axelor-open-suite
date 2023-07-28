@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+
+  <input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice"
+    call="com.axelor.csv.script.ImportInvoice:importInvoice">
+    <bind to="invoiceDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)" column="invoiceDate"/>
+    <bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)"
+      column="dueDate"/>
+    <bind to="companyBankDetails" eval="__repo__(Company).all().fetchOne()?.defaultBankDetails"/>
+  </input>
+
+  <input file="account_invoiceLine.csv" separator=";"
+    type="com.axelor.apps.account.db.InvoiceLine"/>
+
+  <input file="account_paymentVoucher.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentVoucher">
+    <bind to="paymentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(paymentDate)" column="paymentDate"/>
+  </input>
+
+  <input file="base_template_context.csv" separator=";"
+    type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
+
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
+    search="self.name = :name">
+    <bind to="language" search="self.code = :languageCode"/>
+    <bind to="templateContextList" search="self.name = :templateContext"
+      if="templateContext != null &amp;&amp; !templateContext.empty"/>
+    <bind column="birtTemplateSet_importId" to="birtTemplateSet"
+      search="self.importId in :birtTemplateSet_importId"
+      eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+  </input>
+
+</csv-inputs>

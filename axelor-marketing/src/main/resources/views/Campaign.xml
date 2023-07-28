@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
     <field name="name"/>
@@ -35,7 +35,12 @@
       </field>
       <spacer name="nameSpacer"/>
       <panel name="informationPanel" title="Information" colSpan="12">
-        <field name="campaignType" canEdit="false" colSpan="4"/>
+        <field name="campaignType" canEdit="false" colSpan="4" showIf="!$readonly()"/>
+        <field name="campaignType" showTitle="false" colSpan="4" showIf="$readonly()">
+          <viewer depends="name"><![CDATA[
+						<span class="label label-default" style="background-color: #8806CE;">{{record.name}}</span>
+					]]></viewer>
+        </field>
         <field name="eventStartDateT" colSpan="4"
           validIf="eventStartDateT == null || eventEndDateT == null || eventStartDateT &lt; eventEndDateT"/>
         <field name="eventEndDateT" colSpan="4"
@@ -46,6 +51,9 @@
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
+      <panel name="descriptionPanel" title="Description">
+        <field name="description" colSpan="12" widget="html" height="200"/>
+      </panel>
       <panel title="Target List" name="targetListPanel">
         <field name="isAllowEditingOfTargets" colSpan="3" widget="boolean-switch"
           onChange="action-campaign-attrs-is-allow-editing-of-targets-on-change"/>
@@ -186,6 +194,38 @@
 	]]></template>
   </kanban>
 
+  <cards name="campaign-cards" model="com.axelor.apps.marketing.db.Campaign" title="Campaign"
+    css="rect-image" width="100%" orderBy="-eventStartDateT">
+    <field name="name"/>
+    <field name="campaignType"/>
+    <field name="stageSelect"/>
+    <field name="eventStartDateT"/>
+    <field name="description"/>
+    <template><![CDATA[
+	  		<div>
+			  <div class="span12">
+			  	<div class="span4">
+					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.stageSelect == 0" x-translate>Draft</span>
+	         		<span class="label label-warning" ng-show="record.stageSelect == 1" x-translate>Planned</span>
+	         		<span class="label label-info" ng-show="record.stageSelect == 2" x-translate>Started</span>
+					<span class="label label-important" ng-show="record.stageSelect == 3" x-translate>Suspended</span>
+					<span class="label label-success" ng-show="record.stageSelect == 4" x-translate>Ended</span>
+
+					<span class="label label-default" style="background-color: #8806CE;" x-translate>{{record.campaignType.name}}</span>
+				</div>
+				<br/><br/>
+			  	<span>
+					<strong>{{name}}</strong><br/>
+					{{$fmt('eventStartDateT')}}
+		        </span>
+				<br/></br/>
+				<strong><span x-translate>Description </span> :</strong><br/>
+				<div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
+				<div ng-show="!description" ng-bind-html="description"></div>
+	      	</div>
+	  	]]></template>
+  </cards>
+
   <action-attrs name="action-campaign-attrs-on-new-on-load">
     <attribute name="hidden" expr="eval: stageSelect &lt; 2"
       for="invitedLeadSet.leadPresentAtEventBtn,leads.leadPresentAtEventBtn,notParticipatingLeadSet.leadPresentAtEventBtn,
@@ -224,7 +264,7 @@
   <action-record name="action-campaign-record-set-duration"
     model="com.axelor.apps.marketing.db.Campaign">
     <field name="duration"
-      expr="eval: com.axelor.apps.tool.date.DurationTool.getSecondsDuration( com.axelor.apps.tool.date.DurationTool.computeDuration(eventStartDateTime, eventEndDateTime))"
+      expr="eval: com.axelor.utils.date.DurationTool.getSecondsDuration( com.axelor.utils.date.DurationTool.computeDuration(eventStartDateTime, eventEndDateTime))"
       if="eventStartDateTime != null &amp;&amp; eventEndDateTime != null"/>
   </action-record>
 
@@ -274,6 +314,7 @@
 
   <action-view name="action-lead-view-marketing-campaigns" title="Marketing Campaigns"
     model="com.axelor.apps.marketing.db.Campaign">
+    <view type="cards" name="campaign-cards"/>
     <view type="grid" name="campaign-grid"/>
     <view type="form" name="campaign-form"/>
     <domain>self.leadSet.id IN (:id)</domain>
@@ -281,6 +322,7 @@
 
   <action-view name="action-partner-view-marketing-campaigns"
     title="Marketing Campaigns" model="com.axelor.apps.marketing.db.Campaign">
+    <view type="cards" name="campaign-cards"/>
     <view type="grid" name="campaign-grid"/>
     <view type="form" name="campaign-form"/>
     <domain>self.partnerSet.id IN (:id)</domain>
@@ -310,7 +352,7 @@
   </action-view>
 
   <action-view name="dashlet.generated.emails" title="Generated emails"
-    model="com.axelor.apps.message.db.Message">
+    model="com.axelor.message.db.Message">
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
     <domain>self.id IN (SELECT related.message.id FROM MultiRelated as related WHERE

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceLine" lang="java"
-    implements="com.axelor.apps.account.db.repo.AnalyticLine">
+  <entity name="InvoiceLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
@@ -59,12 +58,6 @@
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
     <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
-
-    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
-    <one-to-many name="budgetDistributionList"
-      ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution"
-      mappedBy="invoiceLine"/>
-    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
 
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account"
       title="Accounting.Account"/>

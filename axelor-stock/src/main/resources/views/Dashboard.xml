@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <action-view title="Customer deliveries by country"
@@ -109,7 +109,8 @@
     title="Upcoming customer deliveries" model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.toStockLocation.typeSelect = 3 AND (self.estimatedDate between CURRENT_DATE and
+    <domain>self.stockMoveLineList.toStockLocation.typeSelect = 3 AND (self.estimatedDate between
+      CURRENT_DATE and
       CURRENT_DATE + 5) AND self.statusSelect = 2</domain>
   </action-view>
 
@@ -117,7 +118,8 @@
     model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.late.cust.late.deliveries">
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.toStockLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND
+    <domain>self.stockMoveLineList.toStockLocation.typeSelect = 3 AND self.estimatedDate &lt;
+      CURRENT_DATE AND
       self.statusSelect= 2 AND self.company=:active_company</domain>
     <context name="active_company"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
@@ -127,7 +129,8 @@
     model="com.axelor.apps.stock.db.StockMove" name="dashlet.stock.move.upcoming.suppl.arrivals">
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.fromStockLocation.typeSelect = 3 AND (self.estimatedDate between CURRENT_DATE and
+    <domain>self.stockMoveLineList.fromStockLocation.typeSelect = 3 AND (self.estimatedDate between
+      CURRENT_DATE and
       CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
     <context name="active_company"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
@@ -137,7 +140,8 @@
     name="dashlet.stock.move.late.suppl.arrivals">
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.fromStockLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND
+    <domain>self.stockMoveLineList.fromStockLocation.typeSelect = 3 AND self.estimatedDate &lt;
+      CURRENT_DATE AND
       self.statusSelect = 2 AND self.company=:active_company</domain>
     <context name="active_company" expr="eval:__user__.activeCompany"/>
   </action-view>
@@ -207,7 +211,7 @@
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.product.id = :_id and self.stockMove.statusSelect = 2 and
-      self.stockMove.toStockLocation.typeSelect = 3</domain>
+      self.toStockLocation.typeSelect = 3</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
@@ -215,7 +219,7 @@
     title="Stock Moves consumption historical" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
-    <domain>self.product.id = :_id and self.stockMove.toStockLocation.typeSelect = 3</domain>
+    <domain>self.product.id = :_id and self.toStockLocation.typeSelect = 3</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 

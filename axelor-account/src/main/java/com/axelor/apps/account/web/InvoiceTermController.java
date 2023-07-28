@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
@@ -29,19 +30,18 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
-import com.axelor.apps.tool.ContextTool;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ContextTool;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -123,12 +123,15 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      Move move = null;
 
       this.setParentContextFields(invoiceTerm, request, response);
 
       Invoice invoice = invoiceTerm.getInvoice();
       MoveLine moveLine = invoiceTerm.getMoveLine();
-      Move move = moveLine.getMove();
+      if (moveLine != null && moveLine.getMove() != null) {
+        move = moveLine.getMove();
+      }
 
       if (invoice == null && request.getContext().containsKey("_invoiceId")) {
         invoice =
@@ -143,7 +146,7 @@ public class InvoiceTermController {
         invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
       }
 
-      invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
+      invoiceTermService.setParentFields(invoiceTerm, move, moveLine, invoice);
       response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -180,7 +183,7 @@ public class InvoiceTermController {
                     invoiceTermIds,
                     invoiceTerm.getReasonOfRefusalToPay(),
                     invoiceTerm.getReasonOfRefusalToPayStr());
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL),
                 recordsRefused,
@@ -227,11 +230,9 @@ public class InvoiceTermController {
 
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
-      InvoiceTerm invoiceterm =
-          Beans.get(InvoiceTermRepository.class)
-              .find(request.getContext().asType(InvoiceTerm.class).getId());
+      InvoiceTerm invoiceterm = request.getContext().asType(InvoiceTerm.class);
       Beans.get(InvoiceTermPfpService.class).validatePfp(invoiceterm, AuthUtils.getUser());
-      response.setReload(true);
+      response.setValues(invoiceterm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -249,7 +250,7 @@ public class InvoiceTermController {
       Integer recordsSelected = invoiceTermIds.size();
       Integer recordsUpdated =
           Beans.get(InvoiceTermPfpService.class).massValidatePfp(invoiceTermIds);
-      response.setFlash(
+      response.setInfo(
           String.format(
               I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL),
               recordsUpdated,
@@ -281,7 +282,7 @@ public class InvoiceTermController {
       BigDecimal invoiceAmount = originalInvoiceTerm.getAmount();
       if (grantedAmount.compareTo(invoiceAmount) >= 0) {
         response.setValue("$grantedAmount", originalInvoiceTerm.getAmountRemaining());
-        response.setFlash(
+        response.setInfo(
             I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
         return;
       }
@@ -295,8 +296,10 @@ public class InvoiceTermController {
       }
 
       Beans.get(InvoiceTermPfpService.class)
-          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, grantedAmount, partialReason);
+          .initPftPartialValidation(originalInvoiceTerm, grantedAmount, partialReason);
+
       response.setCanClose(true);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -307,7 +310,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
       Beans.get(InvoiceTermService.class).toggle(invoiceTerm, true);
-      response.setReload(true);
+      response.setValues(invoiceTerm);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -343,7 +346,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
       Beans.get(InvoiceTermService.class).toggle(invoiceTerm, false);
-      response.setReload(true);
+      response.setValues(invoiceTerm);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -374,17 +377,6 @@ public class InvoiceTermController {
     }
   }
 
-  public void computeTotalPaymentSession(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      Beans.get(PaymentSessionService.class)
-          .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
@@ -392,14 +384,15 @@ public class InvoiceTermController {
       this.setParentContextFields(invoiceTerm, request, response);
 
       MoveLine moveLine = invoiceTerm.getMoveLine();
-
-      Beans.get(InvoiceTermService.class)
-          .computeFinancialDiscount(
-              invoiceTerm,
-              moveLine.getCredit().max(moveLine.getDebit()),
-              moveLine.getFinancialDiscount(),
-              moveLine.getFinancialDiscountTotalAmount(),
-              moveLine.getRemainingAmountAfterFinDiscount());
+      if (moveLine != null && moveLine.getFinancialDiscount() != null) {
+        Beans.get(InvoiceTermService.class)
+            .computeFinancialDiscount(
+                invoiceTerm,
+                moveLine.getCredit().max(moveLine.getDebit()),
+                moveLine.getFinancialDiscount(),
+                moveLine.getFinancialDiscountTotalAmount(),
+                moveLine.getRemainingAmountAfterFinDiscount());
+      }
 
       response.setValues(invoiceTerm);
     } catch (Exception e) {
@@ -419,7 +412,7 @@ public class InvoiceTermController {
                 .find(Long.valueOf((Integer) request.getContext().get("_moveLineId"))));
       }
 
-      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm);
+      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm, null);
       response.setValue("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -439,10 +432,12 @@ public class InvoiceTermController {
       Invoice invoice = invoiceTerm.getInvoice();
       if (invoice != null
               && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
-          || invoice == null
+          || (invoice == null
+              && moveLine != null
+              && moveLine.getMove() != null
               && !Objects.equals(
                   moveLine.getMove().getCurrency(),
-                  moveLine.getMove().getCompany().getCurrency())) {
+                  moveLine.getMove().getCompany().getCurrency()))) {
         response.setAttr("amount", "title", I18n.get("Amount in currency"));
         response.setAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"));
       }

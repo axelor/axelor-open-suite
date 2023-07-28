@@ -1,6 +1,0 @@
----
-title: "Sale Order : Option to take into account sale order line with cost price or sale price at 0 to compute margin information"
-type: feature
-description: |
-  Create a configuration the user can enable or not to take into account 
-  sale order line with cost price or sale price at 0 to compute margin information.

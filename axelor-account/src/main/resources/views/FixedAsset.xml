@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="fixed-asset-grid" title="Fixed assets"
     model="com.axelor.apps.account.db.FixedAsset" orderBy="company.code,-fixedAssetSeq,-reference">
@@ -38,7 +38,8 @@
       <panel name="mainPanel" colSpan="12">
         <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
         <field name="company" readonlyIf="statusSelect > 1" colSpan="3" canEdit="false"
-          form-view="company-form" grid-view="company-grid"/>
+          form-view="company-form" grid-view="company-grid"
+          onChange="action-record-account-fixed-asset-reset-company-related-fields"/>
         <field name="company.currency" title="Currency" colSpan="3" form-view="currency-form"
           grid-view="currency-grid"/>
         <field name="fixedAssetCategory" domain="self.company = :company"
@@ -65,8 +66,8 @@
     </panel>
     <panel name="otherDetailsPanel">
       <field name="partner" readonlyIf="statusSelect > 1" canEdit="false"
-        domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form"
-        grid-view="partner-supplier-grid"/>
+        domain="self.isContact = false AND self.isSupplier = true AND (:company member of self.companySet)"
+        form-view="partner-form" grid-view="partner-supplier-grid"/>
       <field name="invoiceLine" colSpan="3"
         domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)"
         form-view="invoice-line-form" grid-view="invoice-line-grid"/>
@@ -240,15 +241,15 @@
       <button name="disposalBtn" title="Disposal"
         showIf="statusSelect > 1 &amp;&amp; statusSelect != 4"
         onClick="save,action-fixed-asset-group-disposal-click" hidden="true"/>
-      <button name="updateDepreciationSettingsBtn" title="Update depreciation settings"
-        showIf="statusSelect == 2 &amp;&amp; fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0 &amp;&amp; !$canUpdateDepreciation &amp;&amp; accountingValue != null &amp;&amp; accountingValue != 0 &amp;&amp; !isEqualToFiscalDepreciation"
-        onClick="action-attrs-account-fixed-asset-set-can-update-depreciation" hidden="true"/>
-      <button name="updateDepreciationBtn" title="Update depreciation"
-        showIf="statusSelect == 2  &amp;&amp; $canUpdateDepreciation"
-        onClick="save, action-method-account-fixed-asset-update-depreciation,  action-attrs-account-fixed-asset-set-false-can-update-depreciation, save"
-        hidden="true"/>
       <button name="splitBtn" title="Split" hideIf="statusSelect == 4 || qty == 0"
         onClick="save,action-fixed-asset-view-show-split-wizard" hidden="true"/>
+      <button name="updateDepreciationSettingsBtn" title="Update depreciation settings"
+        showIf="statusSelect == 2 &amp;&amp; fixedAssetLineList &amp;&amp; fixedAssetLineList.length > 0 &amp;&amp; !$canUpdateDepreciation &amp;&amp; accountingValue != null &amp;&amp; accountingValue != 0 &amp;&amp; !isEqualToFiscalDepreciation  &amp;&amp; !$readonly()"
+        onClick="action-attrs-account-fixed-asset-set-can-update-depreciation" hidden="true"/>
+      <button name="updateDepreciationBtn" title="Confirm changes"
+        showIf="statusSelect == 2  &amp;&amp; $canUpdateDepreciation &amp;&amp; !$readonly()"
+        onClick="save, action-method-account-fixed-asset-update-depreciation,  action-attrs-account-fixed-asset-set-false-can-update-depreciation, save"
+        hidden="true" css="btn-success"/>
       <field name="$canUpdateDepreciation" type="boolean" hidden="true"/>
     </panel>
     <panel name="datesPanel" readonlyIf="statusSelect > 1" sidebar="true">
@@ -303,7 +304,7 @@
 
 
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Disposal"
+  <form model="com.axelor.utils.db.Wizard" title="Disposal"
     name="fixed-asset-disposal-wizard-form"
     onNew="action-fixed-asset-disposal-wizard-record-onnew, action-attrs-account-fixed-asset-wizard-form-disposal-amount, action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     <panel name="mainPanel">
@@ -324,7 +325,8 @@
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" hidden="true"/>
       <button name="disposalBtn" title="confirm.disposal" colSpan="4"
-        onClick="action-fixed-asset-group-disposal-asset"/>
+        onClick="action-fixed-asset-group-disposal-asset"
+        readonlyIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0 &amp;&amp; $generateSaleMove &amp;&amp; !saleTaxLine"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0" hidden="true"/>
       <field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line"
@@ -336,7 +338,7 @@
     </panel>
   </form>
 
-  <form name="fixed-asset-split-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="fixed-asset-split-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Split fixed asset" onNew="action-fixed-asset-method-wizard-init-values">
     <panel name="mainPanel">
       <field name="splitTypeSelect" title="Split type" type="integer"
@@ -417,7 +419,7 @@
   </action-attrs>
 
   <action-record name="action-fixed-asset-disposal-wizard-record-onnew"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="disposalDate" expr="eval: __config__.date"/>
     <field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
     <field name="qty" expr="eval:_fixedAsset?.qty"/>
@@ -963,6 +965,14 @@
     <field name="barcodeTypeConfig"
       expr="eval: __config__?.app?.getApp('account')?.getFixedAssetBarcodeTypeConfig()"
       if="__config__.app.getApp('account')?.getActivateFixedAssetBarCodeGeneration()"/>
+  </action-record>
+
+  <action-record name="action-record-account-fixed-asset-reset-company-related-fields"
+    model="com.axelor.apps.account.db.FixedAsset">
+    <field
+      name="fixedAssetCategory,invoiceLine,purchaseAccountMove,journal,purchaseAccount,analyticDistributionTemplate,associatedFixedAssetsSet"
+      expr="eval: null"/>
+    <field name="partner" expr="eval: null" if="!(partner?.companySet?.contains(company))"/>
   </action-record>
 
   <action-method name="action-fixed-asset-method-check-depreciation-plans">

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PrintingSettings" lang="java" cacheable="true">
+  <entity name="PrintingSettings" cacheable="true">
     <string name="name" required="true"/>
     <string name="pdfHeader" large="true" title="Company Header"/>
     <string name="pdfFooter" large="true" title="Company Footer"/>
@@ -18,6 +18,8 @@
     <decimal name="pdfFooterHeight" title="Company Footer Height(in cm)"/>
     <integer name="addressPositionSelect" title="Address position"
       selection="printing.setting.address.position"/>
+    <decimal name="tableFontSize" title="Table font size" min="1" default="8"
+      help="Used on sale order, purchase order and invoice."/>
   </entity>
 
 </domain-models>

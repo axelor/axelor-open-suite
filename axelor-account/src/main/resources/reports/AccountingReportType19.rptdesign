@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -27,7 +28,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -41,9 +42,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -114,8 +112,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -683,7 +680,7 @@ SERVICETYPE.NAME AS SERVICE_NAME,
 TRIM(CONCAT(ADDRESS.ADDRESSL2,' ',ADDRESS.ADDRESSL3,' ',ADDRESS.ADDRESSL4,' ',ADDRESS.ADDRESSL5)) as address,
 ADDRESS.ADDRESSL6 AS code_postal,
 PARTNER.REGISTRATION_CODE as registration_code ,
-MOVELINE.PARTNER_FULL_NAME as partner,
+PARTNER.FULL_NAME as partner,
 SUM(PMVLD.IN_TAX_PRORATED_AMOUNT) AS amount
 FROM ACCOUNT_ACCOUNTING_REPORT_MOVE_LINE HISTORY
 JOIN ACCOUNT_PAYMENT_MOVE_LINE_DISTRIBUTION PMVLD ON HISTORY.PAYMENT_MOVE_LINE_DISTRIBUTION = PMVLD.ID
@@ -696,7 +693,7 @@ LEFT OUTER JOIN BASE_ADDRESS AS ADDRESS ON (PARTNER.MAIN_ADDRESS = ADDRESS.ID)
 WHERE ACCOUNTING_REPORT = ?
 AND HISTORY.EXCLUDE_FROM_DAS2REPORT != true
 AND SERVICETYPE.IS_DAS2DECLARABLE
-GROUP BY MOVELINE.PARTNER_FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICETYPE.NAME,ADDRESS.ADDRESSL6,ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,ADDRESS.ADDRESSL5,PARTNER.REGISTRATION_CODE]]></xml-property>
+GROUP BY PARTNER.FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICETYPE.NAME,ADDRESS.ADDRESSL6,ADDRESS.ADDRESSL2,ADDRESS.ADDRESSL3,ADDRESS.ADDRESSL4,ADDRESS.ADDRESSL5,PARTNER.REGISTRATION_CODE]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1046,23 +1043,18 @@ GROUP BY MOVELINE.PARTNER_FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICET
                                     <property name="height">36px</property>
                                     <cell id="4157">
                                         <property name="verticalAlign">top</property>
-                                        <text id="4245">
-                                            <property name="fontSize">8pt</property>
+                                        <image id="4400">
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                                        </text>
+                                            <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                            <property name="source">file</property>
+                                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                                        </image>
                                     </cell>
                                     <cell id="4397">
                                         <property name="verticalAlign">middle</property>

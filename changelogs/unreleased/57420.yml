@@ -1,5 +1,0 @@
----
-title: "MOVE TEMPLATE : allow to create moves even if we can't account them "
-type: feature
-description: |
-   all moves from move templates will now be created all the time. If they can't be accounted, we'll display the reason(s) at the end of the process

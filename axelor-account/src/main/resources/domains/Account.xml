@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Account" lang="java" cacheable="true">
+  <entity name="Account" cacheable="true">
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true" equalsInclude="true"/>
@@ -43,7 +43,8 @@
     <boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line"
       massUpdate="true"/>
     <boolean name="manageCutOffPeriod" title="Manage Cut off period" massUpdate="true"/>
-    <boolean name="hasInvoiceTerm" title="Activate invoice term"/>
+    <boolean name="hasAutomaticApplicationAccountingDate"
+      title="Automatic application of accounting date"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"
       massUpdate="true"
@@ -60,6 +61,8 @@
       selection="iaccount.vat.system.select" default="0"/>
 
     <unique-constraint columns="code,company"/>
+
+    <finder-method name="findByAccountType" using="accountType" all="true"/>
 
     <extra-code><![CDATA[
 
@@ -98,8 +101,6 @@
       <field name="serviceType"/>
       <field name="vatSystemSelect"/>
     </track>
-
-    <finder-method name="findByAccountType" using="accountType" all="true"/>
 
   </entity>
 

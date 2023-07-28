@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.report;
 
@@ -64,6 +65,8 @@ public interface ITranslation {
   public static final String INVOICE_OF = /*$$(*/ "Invoice.of"; /*)*/
   public static final String INVOICE_IMPUTED_ON = /*$$(*/ "Invoice.imputedOn"; /*)*/
   public static final String INVOICE_TOTAL_TO_PAY = /*$$(*/ "Invoice.totalToPay"; /*)*/
+  public static final String INVOICE_TOTAL_TO_BE_CREDITED = /*$$(*/
+      "Invoice.totalToBeCredited"; /*)*/
   public static final String INVOICE_CANCEL_INVOICE_NO = /*$$(*/ "Invoice.cancelInvoiceNo"; /*)*/
 
   public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
@@ -118,6 +121,8 @@ public interface ITranslation {
       "Invoice.invoiceTermHoldBackTrue"; /*)*/
   public static final String INVOICE_INVOICE_TERMS_HOLD_BACK_FALSE = /*$$(*/
       "Invoice.invoiceTermHoldBackFalse"; /*)*/
+  public static final String INVOICE_REFUND_PART_1 = /*$$(*/ "Invoice.refundInvoicePart1"; /*)*/
+  public static final String INVOICE_REFUND_PART_2 = /*$$(*/ "Invoice.refundInvoicePart2"; /*)*/
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/
@@ -1024,18 +1029,47 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType.comparison"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_NO_OF_PERIODS =
       /*$$(*/ "AccountingReportType.noOfPeriods"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_COLUMN_LIST =
+      /*$$(*/ "AccountingReportType.accountingReportConfigLineColumnList"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_LIST =
       /*$$(*/ "AccountingReportType.accountingReportConfigLineList"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_GROUP =
+      /*$$(*/ "AccountingReportTypeConfigLine.group"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_COLUMN =
+      /*$$(*/ "AccountingReportTypeConfigLine.column"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_HIDDEN =
       /*$$(*/ "AccountingReportTypeConfigLine.hidden"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RESULT_SELECT =
       /*$$(*/ "AccountingReportTypeConfigLine.resultSelect"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_PREVIOUS_YEAR =
+      /*$$(*/ "AccountingReportTypeConfigLine.previousYear"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_OTHER_PERIOD =
+      /*$$(*/ "AccountingReportTypeConfigLine.otherPeriod"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_ACCOUNT =
       /*$$(*/ "AccountingReportTypeConfigLine.account"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_ACCOUNT_TYPE =
       /*$$(*/ "AccountingReportTypeConfigLine.accountType"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_ANALYTIC_ACCOUNT =
+      /*$$(*/ "AccountingReportTypeConfigLine.analyticAccount"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE =
       /*$$(*/ "AccountingReportTypeConfigLine.rule"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE_STYLE_SELECT =
+      /*$$(*/ "AccountingReportTypeConfigLine.styleSelect"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE_PERCENTAGE_TOTAL_LINE =
+      /*$$(*/ "AccountingReportTypeConfigLine.percentageTotalLine"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE_PERCENTAGE_BASE_COLUMN =
+      /*$$(*/ "AccountingReportTypeConfigLine.percentageBaseColumn"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE_GROUPS_WITHOUT_COLUMN =
+      /*$$(*/ "AccountingReportTypeConfigLine.groupsWithoutColumn"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_DATE =
       /*$$(*/ "AccountingReportType.date"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_USER =

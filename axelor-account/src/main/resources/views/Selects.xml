@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -50,9 +50,10 @@
   </selection>
 
   <selection name='account.reconcile.group.status.select'>
-    <option value='1'>Temporary</option>
-    <option value='2'>Final</option>
-    <option value="3">Unlettered</option>
+    <option order="1" value="4">Proposal</option>
+    <option order="2" value='1'>Partial</option>
+    <option order="3" value='2'>Balanced</option>
+    <option order="4" value="3">Unlettered</option>
   </selection>
 
   <selection name='account.journal.status.select'>
@@ -143,25 +144,27 @@
 
   <selection name='accounting.report.config.line.sum.of.account.select'>
     <option value="1">Debit - Credit</option>
-    <option value="2">Credit - Debit</option>
-    <option value="3">Same as column</option>
-    <option value="4">Same as line</option>
-    <option value="5">Same as group</option>
+    <option value="2">Debit</option>
+    <option value="6" order="3">Credit</option>
+    <option value="3" order="4">Same as column</option>
+    <option value="4" order="5">Same as line</option>
+    <option value="5" order="6">Same as group</option>
   </selection>
 
   <selection name='iaccount.move.status.select'>
-    <option value='1' order="10">Move.New</option>
-    <option value='2' order="30">DayBook</option>
-    <option value='3' order="40">Move.Accounted</option>
-    <option value='4' order="50">Move.Canceled</option>
-    <option value='5' order="20">Simulated</option>
+    <option value='1' order="10" color="lightblue">Move.New</option>
+    <option value='2' order="30" color="deeporange">DayBook</option>
+    <option value='3' order="40" color="green">Move.Accounted</option>
+    <option value='4' order="50" color="red">Move.Canceled</option>
+    <option value='5' order="20" color="blue">Simulated</option>
   </selection>
 
   <selection name='iaccount.move.technical.origin.select'>
-    <option value='1'>Entry</option>
-    <option value='2'>Automatic</option>
-    <option value='3'>Template</option>
-    <option value='4'>Import</option>
+    <option value='1' color="blue">Entry</option>
+    <option value='2' color="blue">Automatic</option>
+    <option value='3' color="blue">Template</option>
+    <option value='4' color="blue">Import</option>
+    <option value='5' color="blue">Mass entry</option>
   </selection>
 
   <selection name='payer.quality.config.line.incident.type.select'>
@@ -209,7 +212,6 @@
   <selection name="iinvoice.batch.action.select">
     <option value="0">Invoicing</option>
     <option value="1">Status</option>
-    <option value="2">Alarm</option>
   </selection>
 
   <selection name="iaccounting.batch.action.select">
@@ -225,6 +227,7 @@
     <option value="24">Exchanges</option>
     <option value="25">Moves consistency control</option>
     <option value="26">Accounting cut-off</option>
+    <option value="27">Auto move lettering</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -236,6 +239,22 @@
   <selection name="iaccount.account.batch.transfer.customer.reimbursement.type.select">
     <option value="1">Customer refund</option>
     <option value="2">Partner credit balance reimbursement</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.auto.move.lettering.order.by.select">
+    <option value="0">Accounting date</option>
+    <option value="1">Origin</option>
+    <option value="2">Due date</option>
+    <option value="3">Payment mode</option>
+    <option value="4">Line label</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.auto.move.lettering.reconcile.method.select">
+    <option value="0">Reconcile by amount</option>
+    <option value="1">Reconcile by origin</option>
+    <option value="2">Reconcile by balanced move</option>
+    <option value="3">Reconcile by balanced account</option>
+    <option value="4">Reconcile by external identifier</option>
   </selection>
 
   <selection name="ireimbursement.batch.type.select">
@@ -316,6 +335,7 @@
     <option value='1'>Free</option>
     <option value='2'>Per partner</option>
     <option value='3'>Per product/family/account</option>
+    <option value="4">Per trading name</option>
   </selection>
 
   <selection name="invoice.payment.type.select">
@@ -488,12 +508,6 @@
     <option value="4" order="2">Partially validated</option>
   </selection>
 
-  <selection name="account.budget.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-  </selection>
-
-
   <selection name='move.line.reimbursement.status.select'>
     <option value='0'></option>
     <option value='1'>Reimbursement ongoing</option>
@@ -533,6 +547,24 @@
     <option value='7'>Fixed asset</option>
     <option value='8'>Doubtful customer</option>
     <option value='9'>Irrecoverable</option>
+  </selection>
+
+  <selection name='iaccount.move.line.mass.entry.input.action.select'>
+    <option value='1'>Line</option>
+    <option value='2'>Counterpart</option>
+    <option value='3'>Move</option>
+  </selection>
+
+  <selection name='iaccount.move.line.mass.entry.edited.field.select'>
+    <option value='0'/>
+    <option value='1'>Except VAT System</option>
+    <option value='2'>All</option>
+  </selection>
+
+  <selection name='iaccount.move.mass.entry.status.select'>
+    <option value='0'/>
+    <option value='1'>Ongoing</option>
+    <option value='2'>Closed</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
@@ -824,8 +856,13 @@
   </selection>
 
   <selection name="accounting.report.analytic.config.line.type.select">
-    <option value="1">Code</option>
-    <option value="2">Range</option>
-    <option value="3">Account</option>
+    <option value="1" order="3">Account code filter</option>
+    <option value="2" order="2">Multiple accounts</option>
+    <option value="3" order="1">Single account</option>
+  </selection>
+
+  <selection name="payment.session.dashlet.status.select">
+    <option value="1" color="red">Error</option>
+    <option value="2" color="green">Ready</option>
   </selection>
 </object-views>

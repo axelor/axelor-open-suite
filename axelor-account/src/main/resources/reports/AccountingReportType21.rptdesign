@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -547,7 +548,32 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </list-property>
                 </structure>
             </list-property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">fixed_asset_type</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">fixed_asset_type</text-property>
+                    <text-property name="heading">fixed_asset_type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">value_a</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">value_a</text-property>
+                    <text-property name="heading">value_a</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">value_b</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">value_b</text-property>
+                    <text-property name="heading">value_b</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">value_c</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">value_c</text-property>
+                    <text-property name="heading">value_c</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -617,24 +643,28 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">fixed_asset_type</property>
                     <property name="nativeName">fixed_asset_type</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">value_a</property>
                     <property name="nativeName">value_a</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">value_b</property>
                     <property name="nativeName">value_b</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">value_c</property>
                     <property name="nativeName">value_c</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -642,6 +672,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	SUM(CASE
 		WHEN 
 			FixedAsset.first_service_date < AccountingReport.date_from
+			and((FixedAsset.status_select = 2 OR FixedAsset.status_select = 3)
+			or(FixedAsset.status_select = 4 and FixedAsset.disposal_date > AccountingReport.date_from))
 		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_a,
@@ -649,7 +681,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 		WHEN 
 			FixedAsset.first_service_date >= AccountingReport.date_from
 			AND FixedAsset.first_service_date <= AccountingReport.date_to
-			AND (FixedAsset.status_select = 2 OR FixedAsset.status_select = 3)
+			AND ((FixedAsset.status_select = 2 OR FixedAsset.status_select = 3)
+			or(FixedAsset.status_select = 4 and (FixedAsset.disposal_date > AccountingReport.date_to OR (
+                SELECT COUNT(*)
+                FROM account_fixed_asset_line  AS FixedAssetLine
+                WHERE
+                FixedAssetLine.type_select = 1
+                AND FixedAssetLine.fixed_asset = FixedAsset.id
+			) = 1)))
 		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_b,
@@ -658,7 +697,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 			FixedAsset.disposal_date >= AccountingReport.date_from
 			AND FixedAsset.disposal_date <= AccountingReport.date_to
 			AND FixedAsset.status_select = 4
-		THEN FixedAsset.disposal_value
+		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_c
 	
@@ -682,26 +721,6 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -1012,23 +1031,18 @@ GROUP BY FixedAssetType.technical_type_select]]></xml-property>
                                     <property name="height">36px</property>
                                     <cell id="4157">
                                         <property name="verticalAlign">top</property>
-                                        <text id="4245">
-                                            <property name="fontSize">8pt</property>
+                                        <image id="4588">
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                                        </text>
+                                            <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                            <property name="source">file</property>
+                                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                                        </image>
                                     </cell>
                                     <cell id="4586">
                                         <property name="verticalAlign">middle</property>

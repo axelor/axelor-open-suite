@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,31 +14,33 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.configurator;
 
-import static com.axelor.apps.tool.MetaJsonFieldType.BOOLEAN;
-import static com.axelor.apps.tool.MetaJsonFieldType.BUTTON;
-import static com.axelor.apps.tool.MetaJsonFieldType.DATE;
-import static com.axelor.apps.tool.MetaJsonFieldType.DATETIME;
-import static com.axelor.apps.tool.MetaJsonFieldType.DECIMAL;
-import static com.axelor.apps.tool.MetaJsonFieldType.ENUM;
-import static com.axelor.apps.tool.MetaJsonFieldType.INTEGER;
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_ONE;
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_ONE_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
-import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.PANEL;
-import static com.axelor.apps.tool.MetaJsonFieldType.SEPARATOR;
-import static com.axelor.apps.tool.MetaJsonFieldType.STRING;
-import static com.axelor.apps.tool.MetaJsonFieldType.TIME;
+import static com.axelor.utils.MetaJsonFieldType.BOOLEAN;
+import static com.axelor.utils.MetaJsonFieldType.BUTTON;
+import static com.axelor.utils.MetaJsonFieldType.DATE;
+import static com.axelor.utils.MetaJsonFieldType.DATETIME;
+import static com.axelor.utils.MetaJsonFieldType.DECIMAL;
+import static com.axelor.utils.MetaJsonFieldType.ENUM;
+import static com.axelor.utils.MetaJsonFieldType.INTEGER;
+import static com.axelor.utils.MetaJsonFieldType.JSON_MANY_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.JSON_MANY_TO_ONE;
+import static com.axelor.utils.MetaJsonFieldType.JSON_ONE_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.MANY_TO_ONE;
+import static com.axelor.utils.MetaJsonFieldType.ONE_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.PANEL;
+import static com.axelor.utils.MetaJsonFieldType.SEPARATOR;
+import static com.axelor.utils.MetaJsonFieldType.STRING;
+import static com.axelor.utils.MetaJsonFieldType.TIME;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
@@ -47,8 +50,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.tool.MetaTool;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
@@ -58,8 +59,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.annotations.Widget;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
@@ -67,6 +66,8 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.ScriptBindings;
+import com.axelor.utils.MetaTool;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -159,8 +160,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         // This is needed as there is a constraint issue
         indicatorToRemove.setName(indicatorToRemove.getName() + AXELORTMP + creator.getId());
       }
-      indicatorToRemove.setHidden(
-          true); // Adding this line to fix field still showing even when removed indictor
       creator.removeIndicator(indicatorToRemove);
     }
 

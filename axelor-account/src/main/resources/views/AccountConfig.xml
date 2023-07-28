@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="account-config-grid" title="Account configurations"
     model="com.axelor.apps.account.db.AccountConfig">
@@ -10,10 +10,8 @@
   </grid>
 
   <form name="account-config-form" title="Account configuration"
-    model="com.axelor.apps.account.db.AccountConfig"
-    onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new,action-account-config-attrs-set-required-fields"
-    onSave="action-account-config-group-on-save"
-    onLoad="action-attrs-account-config-set-is-can-new,action-account-config-attrs-set-required-fields"
+    model="com.axelor.apps.account.db.AccountConfig" onNew="action-account-config-group-onnew"
+    onSave="action-account-config-group-on-save" onLoad="action-account-config-group-onload"
     width="large">
 
     <panel name="mainPanel">
@@ -26,15 +24,15 @@
       <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
         readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
-        readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
+        readonlyIf="hasChartImported || company == null || accountChart == null || (hasAccountCodeFixedNbrChar &amp;&amp; (accountCodeNbrCharSelect == 0 || accountCodeNbrCharSelect == null))"
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="generateMoveForAdvancePayment" colSpan="3"/>
+      <field name="generateMoveForAdvancePayment" colSpan="3"
+        if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
       <field name="isActivateSimulatedMove" colSpan="3"/>
       <field name="accountingDaybook" colSpan="3"
         onChange="action-account-config-attrs-accounting-daybook-onchange"/>
-      <field name="accountAtPayment" colSpan="3" showIf="accountingDaybook"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -147,11 +145,15 @@
           <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
           <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
         </panel>
-        <panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
+        <panel name="reconcileDifferencesPanel" title="Reconcile differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
-          <field name="cashPositionVariationAccount"
+          <spacer colSpan="6"/>
+          <field name="cashPositionVariationDebitAccount"
             domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-            form-view="account-form"/>
+            form-view="account-form" requiredIf="thresholdDistanceFromRegulation != 0"/>
+          <field name="cashPositionVariationCreditAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form" requiredIf="thresholdDistanceFromRegulation != 0"/>
         </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
           colSpan="12">
@@ -190,8 +192,11 @@
           <field name="defPaymentCondition" grid-view="payment-condition-grid"
             form-view="payment-condition-form"/>
         </panel>
-        <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook">
+        <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook"
+          colSpan="12">
           <field name="retrieveDaybookMovesInPaymentSession" showIf="accountingDaybook"/>
+          <field name="accountAtPayment"
+            showIf="accountingDaybook &amp;&amp; retrieveDaybookMovesInPaymentSession"/>
         </panel>
         <panel name="expensePanel" title="Expense" colSpan="12">
           <field name="expenseTaxAccount"
@@ -205,10 +210,12 @@
         <panel name="moveLinesPanel" title="Move lines" colSpan="12">
           <field name="isDescriptionRequired" widget="boolean-switch"/>
         </panel>
+        <panel name="taxPanel" title="Tax" colSpan="12">
+          <field name="allowedTaxGap"/>
+        </panel>
       </panel>
 
       <panel title="Invoicing" name="invoicingPanel">
-        <field name="allowCancelVentilatedInvoice" widget="boolean-switch"/>
         <field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
         <field name="invoiceInAtiSelect"/>
         <field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
@@ -265,6 +272,18 @@
             if="__config__.app.isApp('supplychain')"/>
           <field name="displayPartnerSirenOnInvoicePrinting" widget="boolean-switch"
             colSpan="12"/>
+          <field name="displayItemsCategoriesOnPrinting" widget="boolean-switch"/>
+          <panel name="statementsPanel" title="Invoice product statements" colSpan="12"
+            hideIf="!displayItemsCategoriesOnPrinting">
+            <field name="statementsForItemsCategoriesList" colSpan="12"
+              title="Statements present in the invoice according to product types"
+              help="You can define a statement for a specific combination of product types.">
+              <editor>
+                <field name="typeList" widget="MultiSelect" colSpan="4"/>
+                <field name="statement" colSpan="8" height="1"/>
+              </editor>
+            </field>
+          </panel>
           <field name="invoiceWatermark" widget="Image"/>
           <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
           <field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
@@ -485,6 +504,17 @@
     <action name="action-method-check-account-config-changes-in-analytic" if="id != null"/>
   </action-group>
 
+  <action-group name="action-account-config-group-onnew">
+    <action name="action-account-config-record-default"/>
+    <action name="action-attrs-account-config-set-is-can-new"/>
+    <action name="action-account-config-attrs-analytic-distribution-type-select"/>
+  </action-group>
+
+  <action-group name="action-account-config-group-onload">
+    <action name="action-attrs-account-config-set-is-can-new"/>
+    <action name="action-account-config-attrs-analytic-distribution-type-select"/>
+  </action-group>
+
   <action-validate name="action-account-config-validate-is-activate-simulated-move"
     model="com.axelor.apps.account.db.AccountConfig">
     <alert
@@ -514,9 +544,9 @@
       method="checkChangesInAnalytic"/>
   </action-method>
 
-  <action-attrs name="action-account-config-attrs-set-required-fields">
-    <attribute name="required"
-      for="purchFinancialDiscountAccount,saleFinancialDiscountAccount,purchFinancialDiscountTax,saleFinancialDiscountTax"
-      expr="eval: __config__.app.getApp('account')?.manageFinancialDiscount"/>
+  <action-attrs name="action-account-config-attrs-analytic-distribution-type-select">
+    <attribute for="analyticDistributionTypeSelect" name="selection-in"
+      expr="eval: !__config__.app.getApp('base')?.getEnableTradingNamesManagement() ? [1,2,3] : [1,2,3,4]"/>
   </action-attrs>
+
 </object-views>

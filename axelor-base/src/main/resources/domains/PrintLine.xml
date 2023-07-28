@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -10,7 +10,7 @@
     <string name="title" title="Title" namecolumn="true" large="true"/>
     <string name="content" title="Content" large="true"/>
     <many-to-one name="print" title="Print" ref="com.axelor.apps.base.db.Print"/>
-    <integer name="rank" title="Rank"/>
+    <integer name="printLineRank" title="Rank"/>
     <integer name="sequence" title="Seq."/>
     <boolean name="isEditable" title="Editable"/>
     <many-to-one name="parent" title="Parent" ref="com.axelor.apps.base.db.PrintLine"/>

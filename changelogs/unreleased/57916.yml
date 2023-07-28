@@ -1,6 +1,0 @@
----
-title: "Invoice : new configuration to display siren number of partner on invoice report"
-type: feature
-description: |
-  This new configuration is available in accounting configuration.
-  It can be found in printing settings of a company.

@@ -1,7 +1,0 @@
----
-title: "Account : Add notification when check analytic and tax settings, adding notification when we check reconcile option"
-type: feature
-description: |
-  Addition of a notification when we activate required taxes on move lines
-  Addition of a notification when we activate analytic distribution on move line
-  Adding the possibility to reconcile move lines for a specific date on activation of reconcile option 

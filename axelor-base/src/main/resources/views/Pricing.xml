@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-grid"
     groupBy="concernedModel" orderBy="company,product,productCategory,startDate,name">
@@ -31,8 +31,7 @@
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="overviewPanel" colSpan="12">
         <field name="name"/>
-        <field name="startDate" required="true"
-          onChange="action-pricing-validate-start-date,action-pricing-method-check-dates"/>
+        <field name="startDate" required="true" onChange="action-pricing-method-check-dates"/>
         <field name="company" onChange="action-pricing-attrs-company-onchange" required="true"/>
         <field name="endDate" onChange="action-pricing-method-check-dates"/>
         <field name="concernedModel" onChange="action-pricing-attrs-concerned-model-onchange"
@@ -249,13 +248,6 @@
   <action-method name="action-pricing-method-check-dates">
     <call class="com.axelor.apps.base.web.PricingController" method="checkDates"/>
   </action-method>
-
-  <action-validate name="action-pricing-validate-start-date">
-    <error
-      message="The start date cannot be less than the end date of a historicized pricing."
-      if="__repo__(Pricing).all().filter('self.currentPricing = ? AND self.endDate > ?',id,startDate).count() > 0"
-      action="action-pricing-attrs-null-start-date"/>
-  </action-validate>
 
   <action-attrs name="action-pricing-attrs-null-start-date">
     <attribute name="value" for="startDate" expr="eval: null"/>
