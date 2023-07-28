@@ -73,6 +73,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -115,7 +116,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     task.setProduct(saleOrderLine.getProduct());
     task.setInvoicingUnit(saleOrderLine.getUnit());
-    task.setTimeUnit(saleOrderLine.getUnit());
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    if (Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
+        || Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
+      task.setTimeUnit(saleOrderLine.getUnit());
+    }
     task.setCurrency(project.getClientPartner().getCurrency());
     if (project.getPriceList() != null) {
       PriceListLine line =

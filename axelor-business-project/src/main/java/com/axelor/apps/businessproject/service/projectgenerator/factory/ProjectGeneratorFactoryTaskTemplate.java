@@ -41,7 +41,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.studio.db.AppBusinessProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -104,7 +103,6 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     }
 
     for (SaleOrderLine orderLine : saleOrderLineList) {
-      checkSaleOrderLineUnit(orderLine);
       Product product = orderLine.getProduct();
       String rootName =
           saleOrder.getSaleOrderSeq() + " - " + orderLine.getSequence() + " - " + product.getName();
@@ -225,17 +223,5 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       }
     }
     return saleOrderLineList;
-  }
-
-  protected void checkSaleOrderLineUnit(SaleOrderLine saleOrderLine) throws AxelorException {
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-    if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-        && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR),
-          saleOrderLine.getFullName(),
-          saleOrderLine.getUnit().getName());
-    }
   }
 }
