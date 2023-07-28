@@ -473,11 +473,12 @@
     onLoad="action-move-method-wizard-default" model="com.axelor.apps.account.db.Move">
     <panel name="mainPanel">
       <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"
-        readonlyIf="statusSelect != 2 &amp;&amp; statusSelect != 3"/>
+        readonlyIf="(statusSelect != 2 &amp;&amp; statusSelect != 3) || !isAutomaticAccounting"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
         selection="account.move.date.of.reversion.type.select"
         onChange="action-move-method-date-of-reversion-select-onchange"/>
-      <field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
+      <field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"
+        onChange="action-account-move-record-is-automatic-accouting-onchange"/>
       <field name="dateOfReversion" type="date" showTitle="false"
         requiredIf="dateOfReversionSelect == 4" readonlyIf="dateOfReversionSelect != 4"/>
       <field name="isUnreconcileOriginalMove" title="Unreconcile original move" type="boolean"/>
@@ -492,13 +493,14 @@
   </form>
 
   <form name="move-wizard-mass-reverse-form" title="Mass Generate Reverse Move"
-    onNew="action-move-method-wizard-default" model="com.axelor.utils.db.Wizard">
+    onNew="action-move-method-mass-wizard-default" model="com.axelor.utils.db.Wizard">
     <panel name="mainPanel">
-      <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
+      <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"
+        readonlyIf="!isAutomaticAccounting"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
         selection="account.move.date.of.reversion.type.select"/>
       <field name="isAutomaticAccounting" title="Automatic accounting of reversions"
-        type="boolean"/>
+        type="boolean" onChange="action-account-wizard-record-is-automatic-accouting-onchange"/>
       <field name="dateOfReversion" type="date" showTitle="false"
         showIf="dateOfReversionSelect == 4" requiredIf="dateOfReversionSelect == 4"/>
       <field name="isUnreconcileOriginalMove" title="Unreconcile original moves"
@@ -717,6 +719,10 @@
     <call class="com.axelor.apps.account.web.MoveController" method="wizardDefault"/>
   </action-method>
 
+  <action-method name="action-move-method-mass-wizard-default">
+    <call class="com.axelor.apps.account.web.MoveController" method="wizardMassDefault"/>
+  </action-method>
+
   <action-method name="action-move-method-partner-bank-details-onselect">
     <call class="com.axelor.apps.account.web.MoveController"
       method="onSelectPartnerBankDetails"/>
@@ -846,6 +852,18 @@
     <check error="A cancel reason must be selected" field="reasonOfRefusalToPay"
       if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
   </action-condition>
+
+  <!-- ACTION RECORD -->
+
+  <action-record name="action-account-move-record-is-automatic-accouting-onchange"
+    model="com.axelor.apps.account.db.Move">
+    <field name="isAutomaticReconcile" expr="eval: false"/>
+  </action-record>
+
+  <action-record name="action-account-wizard-record-is-automatic-accouting-onchange"
+    model="com.axelor.utils.db.Wizard">
+    <field name="isAutomaticReconcile" expr="eval: false"/>
+  </action-record>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">

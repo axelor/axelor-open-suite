@@ -241,11 +241,12 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   @Override
   public void addWizardDefault(
       LocalDate moveDate, Map<String, Map<String, Object>> attrsMap, Move move) {
-    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
-        || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
-      this.addAttr("isAutomaticReconcile", "value", true, attrsMap);
-    } else {
+    if (move != null
+        && move.getStatusSelect() != MoveRepository.STATUS_DAYBOOK
+        && move.getStatusSelect() != MoveRepository.STATUS_ACCOUNTED) {
       this.addAttr("isAutomaticReconcile", "value", false, attrsMap);
+    } else {
+      this.addAttr("isAutomaticReconcile", "value", true, attrsMap);
     }
 
     this.addAttr("isAutomaticAccounting", "value", true, attrsMap);
