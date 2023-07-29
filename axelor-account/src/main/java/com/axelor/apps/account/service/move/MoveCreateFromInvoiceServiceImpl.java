@@ -144,9 +144,12 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             company.getName());
       }
 
-      log.debug(
-          "Creation of a move specific to the invoice {} (Company : {}, Journal : {})",
-          new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
+      if (journal != null) {
+        log.debug(
+                "Creation of a move specific to the invoice {} (Company : {}, Journal : {})",
+                new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
+      }
+
 
       int functionalOrigin = InvoiceToolService.getFunctionalOrigin(invoice);
       boolean isPurchase = InvoiceToolService.isPurchase(invoice);
