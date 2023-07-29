@@ -1046,11 +1046,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (moveLine.getPartner() != null) {
         invoiceTerm.setPartner(moveLine.getPartner());
       } else {
-        invoiceTerm.setPartner(move.getPartner());
+        if (move != null)
+          invoiceTerm.setPartner(move.getPartner());
       }
     }
 
-    if (moveLine != null && invoiceTerm.getOriginDate() == null) {
+    if (move != null && invoiceTerm != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
     }
   }
