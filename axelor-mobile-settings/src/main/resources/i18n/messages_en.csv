@@ -15,6 +15,7 @@
 "Config Helpdesk",,,
 "Config Production",,,
 "Config Stock",,,
+"Custom field",,,
 "Customize menus",,,
 "Customize translations",,,
 "Enable addition of new lines in customer delivery.",,,
@@ -70,3 +71,4 @@
 "Use qrCode for user connection",,,
 "User",,,
 "View tracebacks",,,
+"Visible in mobile application",,,
