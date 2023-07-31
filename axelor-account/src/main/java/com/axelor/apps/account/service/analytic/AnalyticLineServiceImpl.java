@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
@@ -270,49 +269,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       default:
         break;
     }
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getAnalyticAxisAttrsMap(
-      Company company, int startAxisPosition, int endAxisPosition) throws AxelorException {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    if (moveLineComputeAnalyticService.checkManageAnalytic(company)) {
-      AnalyticAxis analyticAxis = null;
-
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        for (AnalyticAxisByCompany analyticAxisByCompany :
-            accountConfig.getAnalyticAxisByCompanyList()) {
-          if (analyticAxisByCompany.getSequence() + 1 == i) {
-            analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-          }
-        }
-
-        if (analyticAxis != null) {
-          this.addAttr(
-              String.format("axis%dAnalyticAccount", i), "title", analyticAxis.getName(), attrsMap);
-
-          analyticAxis = null;
-        }
-
-        this.addAttr(
-            String.format("axis%dAnalyticAccount", i),
-            "hidden",
-            !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
-            attrsMap);
-      }
-    } else {
-      this.addAttr("analyticDistributionTemplate", "hidden", true, attrsMap);
-      this.addAttr("analyticMoveLineList", "hidden", true, attrsMap);
-
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        this.addAttr(String.format("axis%dAnalyticAccount", i), "hidden", true, attrsMap);
-      }
-    }
-
-    return attrsMap;
   }
 
   protected void addAttr(
