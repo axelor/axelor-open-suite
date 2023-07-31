@@ -1559,7 +1559,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
           bankStatementRule.getAccountManagement().getCashAccount().getCode());
     }
   }
-  
+
   @Override
   @Transactional
   public void mergeSplitedReconciliationLines(BankReconciliation bankReconciliation) {

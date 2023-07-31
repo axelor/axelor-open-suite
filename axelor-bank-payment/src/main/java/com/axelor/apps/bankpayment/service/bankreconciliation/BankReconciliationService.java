@@ -100,7 +100,7 @@ public interface BankReconciliationService {
 
   BigDecimal getSelectedMoveLineTotal(
       BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet);
-  
+
   void mergeSplitedReconciliationLines(BankReconciliation bankReconciliation);
 
   boolean getIsCorrectButtonHidden(BankReconciliation bankReconciliation) throws AxelorException;
