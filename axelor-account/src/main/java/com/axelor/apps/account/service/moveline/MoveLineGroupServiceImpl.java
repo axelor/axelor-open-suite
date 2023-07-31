@@ -145,6 +145,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+      moveLineAttrsService.addNumberOfDecimals(move, attrsMap);
+      moveLineAttrsService.addCompanyCurrencyNumberOfDecimals(move, attrsMap);
     }
 
     return attrsMap;
@@ -167,6 +169,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addValidatePeriod(move, attrsMap);
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
+      moveLineAttrsService.addNumberOfDecimals(move, attrsMap);
+      moveLineAttrsService.addCompanyCurrencyNumberOfDecimals(move, attrsMap);
     }
 
     return attrsMap;
