@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -87,7 +88,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Inject protected PurchaseConfigService purchaseConfigService;
 
-  @Inject protected ProductService productService;
+  @Inject protected ProductConversionService productConversionService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -498,7 +499,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             productCompanyService.set(
                 product,
                 "costPrice",
-                productService.convertFromPurchaseToStockUnitPrice(product, lastPurchasePrice),
+                productConversionService.convertFromPurchaseToStockUnitPrice(
+                    product, lastPurchasePrice),
                 purchaseOrder.getCompany());
             if ((Boolean)
                 productCompanyService.get(

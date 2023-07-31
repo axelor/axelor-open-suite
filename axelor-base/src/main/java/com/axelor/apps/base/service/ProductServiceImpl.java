@@ -24,13 +24,11 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
@@ -50,7 +48,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -62,7 +59,6 @@ public class ProductServiceImpl implements ProductService {
   protected ProductRepository productRepo;
   protected ProductCompanyService productCompanyService;
   protected CompanyRepository companyRepo;
-  protected UnitConversionService unitConversionService;
 
   @Inject
   public ProductServiceImpl(
@@ -71,15 +67,13 @@ public class ProductServiceImpl implements ProductService {
       SequenceService sequenceService,
       AppBaseService appBaseService,
       ProductRepository productRepo,
-      ProductCompanyService productCompanyService,
-      UnitConversionService unitConversionService) {
+      ProductCompanyService productCompanyService) {
     this.productVariantService = productVariantService;
     this.productVariantRepo = productVariantRepo;
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
-    this.unitConversionService = unitConversionService;
   }
 
   @Inject private MetaFiles metaFiles;
@@ -569,86 +563,5 @@ public class ProductServiceImpl implements ProductService {
     copy.setProductCompanyList(null);
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
-  }
-
-  @Override
-  public void updateCostPriceFromView(Product product) throws AxelorException {
-
-    BigDecimal costPrice = BigDecimal.ZERO;
-
-    switch (product.getCostTypeSelect()) {
-      case ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE:
-        costPrice = computeWithLastPurchasePrice(product);
-        break;
-      case ProductRepository.COST_TYPE_AVERAGE_PRICE:
-        costPrice = getBigDecimalFieldValue(product, "avgPrice");
-        break;
-      case ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE:
-        costPrice = getBigDecimalFieldValue(product, "lastProductionPrice");
-        break;
-    }
-
-    productCompanyService.set(product, "costPrice", costPrice, null);
-
-    // Products company share the same cost price
-    if (!productCompanyService.isCompanySpecificProductFields("costTypeSelect")) {
-      for (ProductCompany productCompany : product.getProductCompanyList()) {
-        productCompany.setCostPrice(costPrice);
-      }
-    }
-  }
-
-  protected BigDecimal getBigDecimalFieldValue(Product product, String fieldName)
-      throws AxelorException {
-    return Optional.ofNullable(productCompanyService.get(product, fieldName, null))
-        .map(o -> (BigDecimal) o)
-        .orElse(null);
-  }
-
-  protected BigDecimal computeWithLastPurchasePrice(Product product) throws AxelorException {
-
-    BigDecimal fieldShippingCoef = getBigDecimalFieldValue(product, "shippingCoef");
-
-    BigDecimal shippingCoef =
-        fieldShippingCoef != null && fieldShippingCoef.signum() > 0
-            ? fieldShippingCoef
-            : BigDecimal.ONE;
-
-    BigDecimal lastPurchasePrice = getBigDecimalFieldValue(product, "lastPurchasePrice");
-
-    if (lastPurchasePrice == null || lastPurchasePrice.compareTo(BigDecimal.ZERO) <= 0) {
-      lastPurchasePrice =
-          Optional.ofNullable(getBigDecimalFieldValue(product, "purchasePrice"))
-              .orElse(BigDecimal.ZERO);
-    }
-
-    lastPurchasePrice = convertFromPurchaseToStockUnitPrice(product, lastPurchasePrice);
-
-    return lastPurchasePrice.multiply(shippingCoef);
-  }
-
-  @Override
-  public BigDecimal convertFromPurchaseToStockUnitPrice(
-      Product product, BigDecimal lastPurchasePrice) throws AxelorException {
-
-    Unit purchaseUnit =
-        Optional.ofNullable(productCompanyService.get(product, "purchasesUnit", null))
-            .map(o -> (Unit) o)
-            .orElse(null);
-    Unit stockUnit =
-        Optional.ofNullable(productCompanyService.get(product, "unit", null))
-            .map(o -> (Unit) o)
-            .orElse(null);
-
-    if (purchaseUnit == null || stockUnit == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(
-              String.format(
-                  BaseExceptionMessage.PRODUCT_MISSING_UNITS_TO_CONVERT, product.getName())));
-    }
-
-    return unitConversionService.convert(
-        stockUnit, purchaseUnit, lastPurchasePrice, lastPurchasePrice.scale(), null);
   }
 }
