@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -61,6 +62,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -151,6 +153,9 @@ public class MoveLineController {
     try {
       if (idList != null && !idList.isEmpty()) {
         MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
+        Company company = null;
+        boolean differentCompanies = false;
+
         for (Integer id : idList) {
           if (id != null) {
             MoveLine moveLine = moveLineRepository.find(id.longValue());
@@ -161,6 +166,13 @@ public class MoveLineController {
                   || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
                 totalCredit = totalCredit.add(moveLine.getCredit());
                 totalDebit = totalDebit.add(moveLine.getDebit());
+              }
+
+              if (company == null && moveLine.getMove().getCompany() != null) {
+                company = moveLine.getMove().getCompany();
+              } else if (moveLine.getMove().getCompany() != null
+                  && company != moveLine.getMove().getCompany()) {
+                differentCompanies = true;
               }
             } else {
               throw new AxelorException(
@@ -174,6 +186,13 @@ public class MoveLineController {
           }
         }
         finalBalance = totalDebit.subtract(totalCredit);
+
+        if (!differentCompanies && company != null && company.getCurrency() != null) {
+          int numberOfDecimals = company.getCurrency().getNumberOfDecimals();
+          totalCredit = totalCredit.setScale(numberOfDecimals, RoundingMode.HALF_UP);
+          totalDebit = totalDebit.setScale(numberOfDecimals, RoundingMode.HALF_UP);
+          finalBalance = finalBalance.setScale(numberOfDecimals, RoundingMode.HALF_UP);
+        }
 
         response.setView(
             ActionView.define(I18n.get("Calculation"))
