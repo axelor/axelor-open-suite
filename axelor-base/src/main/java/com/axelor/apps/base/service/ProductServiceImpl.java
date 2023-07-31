@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
@@ -588,6 +589,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     productCompanyService.set(product, "costPrice", costPrice, null);
+
+    // Products company share the same cost price
+    if (!productCompanyService.isCompanySpecificProductFields("costTypeSelect")) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        productCompany.setCostPrice(costPrice);
+      }
+    }
   }
 
   protected BigDecimal getBigDecimalFieldValue(Product product, String fieldName)

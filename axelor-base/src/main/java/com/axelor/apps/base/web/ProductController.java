@@ -204,6 +204,7 @@ public class ProductController {
       if (product.getId() != null) {
         Beans.get(ProductService.class).updateCostPriceFromView(product);
         response.setValue("costPrice", product.getCostPrice());
+        response.setValue("productCompanyList", product.getProductCompanyList());
       }
 
     } catch (Exception e) {
