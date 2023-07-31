@@ -118,6 +118,9 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     }
 
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
+    operationOrder.setRealStartDateT(null);
+    operationOrder.setRealEndDateT(null);
+    operationOrder.setRealDuration(null);
 
     return operationOrderRepo.save(operationOrder);
   }

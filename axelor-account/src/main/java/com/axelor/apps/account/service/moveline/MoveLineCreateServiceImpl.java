@@ -826,7 +826,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           this.getTaxAccount(
               taxLineRC, company, accountType, move.getJournal(), partner, moveLine, move);
       if (newAccountRC != null) {
-        newSourceTaxLineRCKey = newAccountRC.getCode() + taxLineRC.getId();
+        newSourceTaxLineRCKey = newAccountRC.getCode() + taxLineRC.getId() + " " + vatSystem;
       }
     }
     MoveLine newOrUpdatedMoveLine = new MoveLine();
@@ -875,7 +875,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
-    newOrUpdatedMoveLine.setDebit(newOrUpdatedMoveLine.getDebit().add(newMoveLineDebit));
     BigDecimal newMoveLineCredit =
         credit
             .multiply(taxLineValue)
@@ -883,7 +882,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
-    newOrUpdatedMoveLine.setCredit(newOrUpdatedMoveLine.getCredit().add(newMoveLineCredit));
+    this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
@@ -895,10 +894,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     if (newOrUpdatedMoveLine.getDebit().signum() != 0
         || newOrUpdatedMoveLine.getCredit().signum() != 0) {
       newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+    } else if (newOrUpdatedMoveLine
+            .getDebit()
+            .add(newOrUpdatedMoveLine.getCredit())
+            .compareTo(BigDecimal.ZERO)
+        == 0) {
+      newMap.remove(newSourceTaxLineKey, newOrUpdatedMoveLine);
     }
+
     if (newOrUpdatedMoveLineRC != null) {
       newOrUpdatedMoveLineRC.setMove(move);
-      newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
       newOrUpdatedMoveLineRC.setVatSystemSelect(vatSystem);
       newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
       newOrUpdatedMoveLineRC.setDescription(
@@ -908,6 +913,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
       newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
       newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
+      newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
 
       newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
 
@@ -921,6 +927,28 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
     return newOrUpdatedMoveLine;
+  }
+
+  protected void setTaxLineAmount(BigDecimal debit, BigDecimal credit, MoveLine moveLine) {
+    if ((debit.compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)
+        || (credit.compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)) {
+      BigDecimal creditTaxLineDiff = moveLine.getCredit().subtract(credit).abs();
+      BigDecimal debitTaxLineDiff = moveLine.getDebit().subtract(debit).abs();
+      BigDecimal taxLineAMount = debitTaxLineDiff.subtract(creditTaxLineDiff);
+
+      if (taxLineAMount.compareTo(BigDecimal.ZERO) > 0) {
+        moveLine.setDebit(taxLineAMount);
+        moveLine.setCredit(BigDecimal.ZERO);
+      } else {
+        moveLine.setDebit(BigDecimal.ZERO);
+        moveLine.setCredit(taxLineAMount.abs());
+      }
+    } else {
+      moveLine.setDebit(moveLine.getDebit().add(debit));
+      moveLine.setCredit(moveLine.getCredit().add(credit));
+    }
   }
 
   protected BigDecimal sumMoveLinesByAccountType(List<MoveLine> moveLines, String accountType) {
