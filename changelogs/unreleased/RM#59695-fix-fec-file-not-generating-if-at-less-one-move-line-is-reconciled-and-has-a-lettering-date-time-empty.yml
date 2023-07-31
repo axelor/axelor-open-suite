@@ -1,0 +1,2 @@
+title: " MOVE LINE EXPORT: corrected move line export file not generating if at less one move line is reconciled and has a lettering date time empty."
+type: fix
