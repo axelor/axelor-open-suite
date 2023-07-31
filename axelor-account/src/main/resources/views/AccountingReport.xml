@@ -47,10 +47,7 @@
       <field name="reportType"
         onChange="action-group-account-accounting-report-reporttype-onchange"
         domain="self.reportExportTypeSelect = 1 AND self.company = :company"/>
-      <field name="reportType.typeSelect" hidden="true"/>
       <field name="exportTypeSelect" selection-in="['pdf','xlsx','ods']"/>
-
-      <field name="reportType.comparison" hidden="true"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info">
@@ -110,7 +107,7 @@
         <panel name="accountingPanel" title="Accounting" colSpan="12" canCollapse="true">
           <field name="currency"/>
           <field name="minAmountExcl"
-            showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
+            showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
           <field name="journal"
             hideIf="[0,1,2,3,5,10,12,13,14,15,16,17,18,19,20,21,22,23,24,3000].indexOf(reportType.typeSelect) != -1"
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
@@ -181,72 +178,70 @@
             grid-view="accounting-report-analytic-config-line-grid"
             showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
         </panel>
-        <panel name="printingInformationsPanel" title="Printing information" colSpan="12"
-          hideIf="[15,16,17,18,19,20,21,22,2000].indexOf(reportType.typeSelect) != -1">
-          <panel name="amountsPanel" title="Amounts" colSpan="12" canCollapse="true"
-            stacked="true"
-            hideIf="[2,5,6,10,11,12,15,16,21,22,2000].indexOf(reportType.typeSelect) != -1">
-
-            <field name="globalByDate"
-              hideIf="[1,2,3,4,5,6,10,11,12,13,14,15,16,17,21,23,24,22,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
-              onChange="action-accounting-report-record-global-by-date"/>
-            <field name="globalByPartner"
-              showIf="[3,7,13,23,24].indexOf(reportType.typeSelect) != -1"
-              onChange="action-accounting-report-record-global-by-partner"/>
-            <field name="displayCumulativeBalance"
-              showIf="reportType.typeSelect == 1 || reportType.typeSelect == 7 || reportType.typeSelect == 2001"/>
-            <field name="detailed" hideIf="[4,23,24].indexOf(reportType.typeSelect) != -1"
-              onChange="action-accounting-report-record-detailed"/>
-            <field name="global"
-              hideIf="[0,1,2,3,4,5,6,7,10,11,12,13,15,16,17,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
-              onChange="action-accounting-report-record-global"/>
-            <field name="subtotalByAnalyticDistribution" showIf="reportType.typeSelect == 17"
-              widget="inline-checkbox"/>
-            <field name="displayDeltaYear"
-              showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"/>
-            <field name="displayDeltaYearPercentage"
-              showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"/>
-            <field name="displaySimulatedMove"
-              showIf="company.accountConfig.isActivateSimulatedMove &amp;&amp; (journal == null || journal.authorizeSimulatedMove)"/>
-          </panel>
-          <panel name="accountingMovesPanel" title="Moves" colSpan="12" canCollapse="true"
-            hideIf="[17,23,24].indexOf(reportType.typeSelect) != -1">
-            <separator title="Balance sheet entries" colSpan="12"
-              hideIf="[5,10,16,17,21,22,23,24].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
-            <field name="displayClosingAccountingMoves"
-              hideIf="[5,10,12,15,16,17,21,22,23,24,1001,1010,2000].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
-            <field name="displayOpeningAccountingMoves"
-              hideIf="[5,10,12,15,16,17,21,22,23,24,2000].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
-            <separator title="Display options" colSpan="12"
-              showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
-            <field name="displayOnlyNotCompletelyLetteredMoveLines"
-              hideIf="reportType.typeSelect != 7 &amp;&amp; reportType.typeSelect != 1"/>
-            <field name="displayCodeAccountColumnOnPrinting"
-              showIf="reportType.typeSelect == 7"/>
-            <field name="displayNameAccountColumnOnPrinting"
-              showIf="reportType.typeSelect == 7"/>
-            <field name="displayMoveLineSequenceOnPrinting"
-              showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
-            <field name="displayDetails" widget="inline-checkbox"
-              showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
-          </panel>
-          <panel name="accountingAccountsPanel" title="Accounts"
-            showIf="reportType.typeSelect==7 || (reportType.typeSelect==3000 &amp;&amp; !reportType.useLegacyCustomReports)"
-            colSpan="12" canCollapse="true">
-            <field name="displayCodeAccountColumnOnPrinting" widget="inline-checkbox"
-              showIf="reportType.typeSelect==7"/>
-            <field name="displayNameAccountColumnOnPrinting" widget="inline-checkbox"
-              showIf="reportType.typeSelect==7"/>
-            <field name="displayAnalyticAccountsDetails" widget="inline-checkbox"
-              showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
-          </panel>
-          <field name="reportType.useLegacyCustomReports" hidden="true"/>
-          <field name="reportType.typeSelect" hidden="true"/>
-          <field name="reportType.comparison" hidden="true"/>
+      </panel>
+      <panel name="printingInformationsPanel" title="Printing information" colSpan="12"
+        hideIf="[18,19,20,21,22,2000].indexOf(reportType.typeSelect) != -1">
+        <panel name="amountsPanel" title="Amounts" colSpan="12" canCollapse="true"
+          stacked="true"
+          hideIf="[2,5,6,10,11,12,16,21,22,2000].indexOf(reportType.typeSelect) != -1">
+          <field name="globalByDate"
+            hideIf="[1,2,3,4,5,6,10,11,12,13,14,15,16,17,21,23,24,22,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
+            onChange="action-accounting-report-record-global-by-date"/>
+          <field name="globalByPartner"
+            showIf="[3,7,13,23,24].indexOf(reportType.typeSelect) != -1"
+            onChange="action-accounting-report-record-global-by-partner"/>
+          <field name="displayCumulativeBalance"
+            showIf="reportType.typeSelect == 1 || reportType.typeSelect == 7 || reportType.typeSelect == 2001"/>
+          <field name="detailed" showIf="[4,23,24].indexOf(reportType.typeSelect) != -1"
+            onChange="action-accounting-report-record-detailed"/>
+          <field name="global"
+            hideIf="[0,1,2,3,4,5,6,7,10,11,12,13,15,16,17,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
+            onChange="action-accounting-report-record-global"/>
+          <field name="subtotalByAnalyticDistribution" showIf="reportType.typeSelect == 17"
+            widget="inline-checkbox"/>
+          <field name="displayDeltaYear"
+            showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"/>
+          <field name="displayDeltaYearPercentage"
+            showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"/>
         </panel>
-
+        <panel name="accountingMovesPanel" title="Moves" colSpan="12" canCollapse="true"
+          hideIf="[17,23,24].indexOf(reportType.typeSelect) != -1">
+          <separator title="Balance sheet entries" colSpan="12"
+            hideIf="[5,10,16,17,21,22,23,24].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
+          <field name="displayClosingAccountingMoves"
+            hideIf="[5,10,12,15,16,17,21,22,23,24,1001,1010,2000].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
+          <field name="displayOpeningAccountingMoves"
+            hideIf="[5,10,12,15,16,17,21,22,23,24,2000].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
+          <separator title="Display options" colSpan="12"
+            showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
+          <field name="displayOnlyNotCompletelyLetteredMoveLines"
+            hideIf="reportType.typeSelect != 7 &amp;&amp; reportType.typeSelect != 1"/>
+          <field name="displayCodeAccountColumnOnPrinting" showIf="reportType.typeSelect == 7"/>
+          <field name="displayNameAccountColumnOnPrinting" showIf="reportType.typeSelect == 7"/>
+          <field name="displayMoveLineSequenceOnPrinting"
+            showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
+          <field name="displayDetails" widget="inline-checkbox"
+            showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
+          <field name="displaySimulatedMove"
+            showIf="company.accountConfig.isActivateSimulatedMove &amp;&amp; (journal == null || journal.authorizeSimulatedMove)"/>
+        </panel>
+        <panel name="accountingAccountsPanel" title="Accounts"
+          showIf="reportType.typeSelect==7 || (reportType.typeSelect==3000 &amp;&amp; !reportType.useLegacyCustomReports)"
+          colSpan="12" canCollapse="true">
+          <field name="displayCodeAccountColumnOnPrinting" widget="inline-checkbox"
+            showIf="reportType.typeSelect==7"/>
+          <field name="displayNameAccountColumnOnPrinting" widget="inline-checkbox"
+            showIf="reportType.typeSelect==7"/>
+          <field name="displayAnalyticAccountsDetails" widget="inline-checkbox"
+            showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
+        </panel>
+      </panel>
+      <panel name="otherPanel" readonly="true" title="Other">
+        <field name="reportType.typeSelect"/>
+        <field name="reportType.useLegacyCustomReports" widget="inline-checkbox"/>
+        <field name="reportType.comparison"/>
+        <field name="company.accountConfig.isActivateSimulatedMove" widget="inline-checkbox"/>
         <field name="company.accountConfig" hidden="true"/>
-        <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
       </panel>
       <panel-dashlet name="tracebackPanel" title="Anomalies" hidden="true"
         action="action-accounting-report-view-traceback"/>
