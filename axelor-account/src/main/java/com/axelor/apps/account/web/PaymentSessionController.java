@@ -67,17 +67,6 @@ public class PaymentSessionController {
     }
   }
 
-  public void computeTotal(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void cancelPaymentSession(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
@@ -370,11 +359,24 @@ public class PaymentSessionController {
     }
   }
 
-  public void showInvoiceTermDashlet(ActionRequest request, ActionResponse response) {
+  public void removeNegativeLines(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
 
+      Beans.get(PaymentSessionService.class).removeNegativeLines(paymentSession);
+
+      response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NEGATIVE_LINES_REMOVED));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showInvoiceTermDashlet(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       List<InvoiceTerm> invoiceTermList =
           Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
       int partnerCount =

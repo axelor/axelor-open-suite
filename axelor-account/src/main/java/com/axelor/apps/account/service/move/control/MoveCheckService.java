@@ -41,7 +41,7 @@ public interface MoveCheckService {
 
   boolean isPartnerCompatible(Move move);
 
-  String getDuplicatedMoveOriginAlert(Move move) throws AxelorException;
+  String getDuplicatedMoveOriginAlert(Move move);
 
   String getOriginAlert(Move move);
 
@@ -52,4 +52,6 @@ public interface MoveCheckService {
   String getAccountingAlert(Move move);
 
   void checkManageCutOffDates(Move move) throws AxelorException;
+
+  void checkCurrencyAmountSum(Move move) throws AxelorException;
 }

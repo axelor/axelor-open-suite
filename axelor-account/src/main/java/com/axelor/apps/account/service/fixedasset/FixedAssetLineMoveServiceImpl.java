@@ -666,20 +666,22 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           && (cumulativeDepreciationAmount == null || cumulativeDepreciationAmount.signum() > 0)) {
         cumulativeDepreciationAmount = fixedAsset.getGrossValue();
       }
-      MoveLine deprecationAccountDebitMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              partner,
-              depreciationAccount,
-              cumulativeDepreciationAmount,
-              true,
-              disposalDate,
-              ++moveLineSequenceCounter,
-              origin,
-              fixedAsset.getName());
-      moveLines.add(deprecationAccountDebitMoveLine);
-      this.addAnalyticToMoveLine(
-          fixedAsset.getAnalyticDistributionTemplate(), deprecationAccountDebitMoveLine);
+      if (cumulativeDepreciationAmount != null && cumulativeDepreciationAmount.signum() > 0) {
+        MoveLine deprecationAccountDebitMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                depreciationAccount,
+                cumulativeDepreciationAmount,
+                true,
+                disposalDate,
+                ++moveLineSequenceCounter,
+                origin,
+                fixedAsset.getName());
+        moveLines.add(deprecationAccountDebitMoveLine);
+        this.addAnalyticToMoveLine(
+            fixedAsset.getAnalyticDistributionTemplate(), deprecationAccountDebitMoveLine);
+      }
 
       MoveLine creditMoveLine =
           moveLineCreateService.createMoveLine(

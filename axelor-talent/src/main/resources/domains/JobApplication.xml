@@ -34,7 +34,6 @@
     <string name="proposedSalary" title="Proposed salary"/>
     <date name="availabilityFrom" title="Availability from"/>
     <string name="description" title="Description" large="true"/>
-    <integer name="statusSelect" title="Status" selection="job.application.status.select"/>
     <many-to-one name="hiringStage" ref="com.axelor.apps.talent.db.HiringStage"
       title="Hiring stage"/>
     <string name="reasonNotHired" title="Reason not hired" large="true"/>

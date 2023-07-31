@@ -29,4 +29,6 @@ public interface MoveControlService {
    * @param move
    */
   void checkSameCompany(Move move) throws AxelorException;
+
+  void checkDuplicateOrigin(Move move) throws AxelorException;
 }

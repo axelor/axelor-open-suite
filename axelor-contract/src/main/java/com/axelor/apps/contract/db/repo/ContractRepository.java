@@ -24,21 +24,39 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.contract.service.ContractVersionServiceImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractRepository extends AbstractContractRepository {
   @Override
   public Contract save(Contract contract) {
     try {
+      ContractLineService contractLineService = Beans.get(ContractLineService.class);
       if (contract.getContractId() == null) {
         contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetTypeSelect()));
       }
 
       ContractVersion currentContractVersion = contract.getCurrentContractVersion();
-      currentContractVersion.setIsConsumptionManagement(contract.getIsConsumptionManagement());
+
+      if (currentContractVersion != null) {
+        currentContractVersion.setIsConsumptionManagement(contract.getIsConsumptionManagement());
+
+        if (CollectionUtils.isNotEmpty(
+            contract.getCurrentContractVersion().getContractLineList())) {
+          for (ContractLine contractLine :
+              contract.getCurrentContractVersion().getContractLineList()) {
+            contractLineService.computeTotal(contractLine);
+          }
+        }
+        Beans.get(ContractVersionServiceImpl.class)
+            .computeTotals(contract.getCurrentContractVersion());
+      }
 
       return super.save(contract);
     } catch (Exception e) {
@@ -73,6 +91,8 @@ public class ContractRepository extends AbstractContractRepository {
   public Contract copy(Contract entity, boolean deep) {
     Contract contract = super.copy(entity, deep);
     ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
+    contract.setNextRevaluationDate(null);
+    contract.setLastRevaluationDate(null);
     contract.setCurrentContractVersion(version);
     return contract;
   }

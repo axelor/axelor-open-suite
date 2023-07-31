@@ -39,7 +39,6 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.report.IReport;
@@ -66,7 +65,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       ValidateFactory validateFactory,
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
-      AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
@@ -86,7 +84,6 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         validateFactory,
         ventilateFactory,
         cancelFactory,
-        alarmEngineService,
         invoiceRepo,
         appAccountService,
         partnerService,

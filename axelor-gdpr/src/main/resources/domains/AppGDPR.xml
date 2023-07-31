@@ -18,12 +18,18 @@
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin"
       name="requestOriginList" mappedBy="appGdpr" title="Requests origins"
       help="Configure request origins"/>
+    <one-to-many name="dataToExcludeConfig" mappedBy="appGdpr"
+      ref="com.axelor.apps.gdpr.db.GDPRDataToExcludeConfig"
+      title="Elements to be excluded from the access request"/>
     <many-to-one name="accessResponseTemplate" ref="com.axelor.message.db.Template"
       title="Email template for access request response"
       help="Email template to send when responding to an access request."/>
     <many-to-one name="erasureResponseTemplate" ref="com.axelor.message.db.Template"
       title="Email template for erasure request response"
       help="Email template to send when responding to an erasure request."/>
+    <one-to-many name="relationsShipAnonymizer"
+      ref="com.axelor.apps.gdpr.db.RelationshipAnonymizer" mappedBy="appGdpr"
+      title="Relationship anonymizer"/>
 
     <track>
       <field name="maxRespondingDays" on="UPDATE"/>

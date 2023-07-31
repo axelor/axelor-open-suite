@@ -19,12 +19,13 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -36,8 +37,9 @@ public class OpportunitySaleOrderSupplychainServiceImpl extends OpportunitySaleO
   public OpportunitySaleOrderSupplychainServiceImpl(
       SaleOrderCreateService saleOrderCreateService,
       SaleOrderRepository saleOrderRepo,
-      AppBaseService appBaseService) {
-    super(saleOrderCreateService, saleOrderRepo, appBaseService);
+      SaleOrderWorkflowService saleOrderWorkflowService,
+      AppCrmService appCrmService) {
+    super(saleOrderCreateService, saleOrderRepo, saleOrderWorkflowService, appCrmService);
   }
 
   @Override

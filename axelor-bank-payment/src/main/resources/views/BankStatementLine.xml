@@ -77,7 +77,7 @@
         x-target="com.axelor.apps.base.db.BankDetails" x-target-name="fullName" required="true"
         domain="self.company IS NOT null"/>
       <field name="$exportTypeSelect" title="Export type select" type="string"
-        selection="iadministration.export.type.select"/>
+        selection="iadministration.export.type.select" selection-in="['pdf','xlsx','ods']"/>
       <button name="printLinesBtn" title="Print"
         onClick="action-bank-payment-bank-statement-line-method-print-lines,close"
         readonlyIf="$bankDetails==null || $fromDate==null || $toDate==null"/>

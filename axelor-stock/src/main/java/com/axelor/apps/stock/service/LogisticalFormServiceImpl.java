@@ -520,7 +520,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
-      domainList.add("self.fromStockLocation = :stockLocation");
+      domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");
     }
     List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
 

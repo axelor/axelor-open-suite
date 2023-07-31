@@ -20,18 +20,19 @@ package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.auth.db.User;
 import java.time.LocalDate;
 import java.util.Map;
 
 public interface MoveGroupService {
 
-  Map<String, Object> getOnNewValuesMap(Move move) throws AxelorException;
+  Map<String, Object> getOnNewValuesMap(Move move, boolean isMassEntry) throws AxelorException;
 
-  Map<String, Map<String, Object>> getOnNewAttrsMap(Move move) throws AxelorException;
+  Map<String, Map<String, Object>> getOnNewAttrsMap(Move move, User user) throws AxelorException;
 
   Map<String, Object> getOnLoadValuesMap(Move move) throws AxelorException;
 
-  Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move) throws AxelorException;
+  Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move, User user) throws AxelorException;
 
   void checkBeforeSave(Move move) throws AxelorException;
 
@@ -46,7 +47,7 @@ public interface MoveGroupService {
 
   Map<String, Object> getJournalOnChangeValuesMap(Move move) throws AxelorException;
 
-  Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move);
+  Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move) throws AxelorException;
 
   Map<String, Object> getPartnerOnChangeValuesMap(
       Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException;
@@ -71,7 +72,8 @@ public interface MoveGroupService {
   Map<String, Object> getPaymentConditionOnChangeValuesMap(
       Move move, boolean dateChange, boolean headerChange) throws AxelorException;
 
-  Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move);
+  Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move)
+      throws AxelorException;
 
   Map<String, Object> getDescriptionOnChangeValuesMap(Move move);
 
@@ -82,16 +84,16 @@ public interface MoveGroupService {
 
   Map<String, Object> getPaymentModeOnChangeValuesMap(Move move) throws AxelorException;
 
-  Map<String, Map<String, Object>> getPaymentModeOnChangeAttrsMap();
+  Map<String, Map<String, Object>> getHeaderChangeAttrsMap();
 
   Map<String, Object> getCurrencyOnChangeValuesMap(Move move);
 
   Map<String, Object> getFiscalPositionOnChangeValuesMap(Move move) throws AxelorException;
 
+  Map<String, Map<String, Object>> getCurrencyOnChangeAttrsMap(Move move);
+
   Map<String, Object> getDateOfReversionSelectOnChangeValuesMap(
       LocalDate moveDate, int dateOfReversionSelect);
-
-  Map<String, Map<String, Object>> getPartnerBankDetailsOnChangeAttrsMap();
 
   Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
       throws AxelorException;

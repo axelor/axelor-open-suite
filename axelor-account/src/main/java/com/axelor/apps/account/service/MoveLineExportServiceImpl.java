@@ -468,7 +468,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
     if (reconcileGroup != null
-        && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
+        && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_BALANCED) {
       items[13] = reconcileGroup.getCode();
       items[14] =
           reconcileGroup
@@ -485,10 +485,6 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     }
 
     items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
-    if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0
-        && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      items[16] = "-" + items[16];
-    }
 
     if (move.getCurrency() != null) {
       items[17] = move.getCurrency().getCodeISO();

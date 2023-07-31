@@ -131,7 +131,7 @@
   <action-attrs name="action-attrs-project-template-set-wizard-hidden">
     <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
     <attribute name="hidden"
-      expr="eval:__config__.app.getApp('business-project')?.generateProjectSequence" for="code"/>
+      expr="eval:__config__.app.getApp('project')?.generateProjectSequence" for="code"/>
     <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
     <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
   </action-attrs>

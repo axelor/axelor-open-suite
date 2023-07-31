@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+
+  <grid name="research-parameter-grid" title="Search configuration parameters"
+    model="com.axelor.apps.base.db.ResearchParameter">
+    <field name="researchPrimaryKey"/>
+    <field name="mapping"/>
+    <field name="binding"/>
+    <field name="query"/>
+  </grid>
+
+  <form name="research-parameter-form" title="Search configuration parameter"
+    model="com.axelor.apps.base.db.ResearchParameter">
+    <panel name="mainPanel">
+      <field name="researchPrimaryKey" required="true"/>
+      <field name="mapping" onChange="ation-base-research-parameter-method-set-query"
+        readonlyIf="researchPrimaryKey == null"
+        onSelect="action-research-parameter-method-mapping-domain"/>
+      <field name="binding" onChange="ation-base-research-parameter-method-set-query"
+        required="true"/>
+      <field name="query" required="true"/>
+    </panel>
+  </form>
+
+
+  <action-method name="ation-base-research-parameter-method-set-query"
+    model="com.axelor.apps.base.db.ResearchParameter">
+    <call class="com.axelor.apps.base.web.ResearchParameterController" method="setQuery"/>
+  </action-method>
+
+
+  <action-method name="action-research-parameter-method-mapping-domain"
+    model="com.axelor.apps.base.db.ResearchParameter">
+    <call class="com.axelor.apps.base.web.ResearchParameterController"
+      method="getMappingDomain"/>
+  </action-method>
+
+</object-views>
