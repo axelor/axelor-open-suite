@@ -40,8 +40,6 @@ public interface AnalyticLineService {
   List<Long> getAxisDomains(AnalyticLine line, Company company, int position)
       throws AxelorException;
 
-  List<Long> getAnalyticAccountIdList(Company company, int position) throws AxelorException;
-
   boolean isAxisRequired(AnalyticLine line, Company company, int position) throws AxelorException;
 
   AnalyticLine checkAnalyticLineForAxis(AnalyticLine line);

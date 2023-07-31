@@ -29,9 +29,11 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.utils.StringTool;
 import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -143,5 +145,19 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
     }
 
     return domain;
+  }
+
+  @Override
+  public List<Long> getAnalyticAccountIdList(Company company, int position) throws AxelorException {
+    return accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
+        .filter(it -> it.getSequence() + 1 == position)
+        .findFirst()
+        .stream()
+        .map(AnalyticAxisByCompany::getAnalyticAxis)
+        .map(analyticAccountRepository::findByAnalyticAxis)
+        .map(Query::fetch)
+        .flatMap(Collection::stream)
+        .map(AnalyticAccount::getId)
+        .collect(Collectors.toList());
   }
 }

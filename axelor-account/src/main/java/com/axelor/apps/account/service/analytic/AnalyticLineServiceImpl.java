@@ -34,14 +34,12 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.db.Query;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,20 +131,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       analyticAccountListByAxis = getAnalyticAccountsByAxis(line, analyticAxis);
     }
     return analyticAccountListByAxis;
-  }
-
-  @Override
-  public List<Long> getAnalyticAccountIdList(Company company, int position) throws AxelorException {
-    return accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
-        .filter(it -> it.getSequence() + 1 == position)
-        .findFirst()
-        .stream()
-        .map(AnalyticAxisByCompany::getAnalyticAxis)
-        .map(analyticAccountRepository::findByAnalyticAxis)
-        .map(Query::fetch)
-        .flatMap(Collection::stream)
-        .map(AnalyticAccount::getId)
-        .collect(Collectors.toList());
   }
 
   @Override
