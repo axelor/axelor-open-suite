@@ -123,6 +123,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
             purchaseOrderLine.getProduct(),
             purchaseOrder.getCompany(),
             purchaseOrder.getTradingName(),
+            null,
             true);
 
     purchaseOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);

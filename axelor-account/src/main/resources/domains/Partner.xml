@@ -33,10 +33,6 @@
     <many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr"
       title="Active UMR" index="false"/>
 
-    <many-to-one name="analyticDistributionTemplate"
-      title="Analytic distribution template"
-      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" index="false"/>
-
     <string name="specificTaxNote" title="Specific tax note" large="true"/>
 
     <boolean name="isFactor" title="Factor"/>
