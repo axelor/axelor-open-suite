@@ -81,7 +81,7 @@ public class PeriodController {
             "adjustBtn",
             "hidden",
             !(period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-                && period.getYear().getStatusSelect() == YearRepository.STATUS_CLOSED));
+                && period.getYear().getStatusSelect() == YearRepository.STATUS_ADJUSTING));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
