@@ -1,0 +1,1003 @@
+"importId";"code";"parent_code";"name";"accountType.technicalTypeSelect";"reconcileOk";"company.importId";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"commonPosition";"serviceType_code";"defaultTax.code";"statusSelect";"manageCutOffPeriod";"isRegulatoryAccount";"isRetrievedOnPaymentSession";"vatSystemSelect"
+1;0;;"Chart of Account Root";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+2;"CL1_5";0;"Balance sheet accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+3;"CL6_7";0;"Management accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+4;"CL1";"CL1_5";"Capital accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+5;"CL2";"CL1_5";"Property accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+6;"CL3";"CL1_5";"Inventory accounts and in-progress";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+7;"CL4";"CL1_5";"Third party accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+8;"CL5";"CL1_5";"Financial Accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+9;"CL6";"CL6_7";"Expense Accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+10;"CL7";"CL6_7";"Revenue Accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+11;"CL8";0;"Special Accounts";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+12;10;"CL1";"Capital and reserves";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+13;101000;10;"Capital";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+14;101100;101000;"Issued capital - uncalled";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+15;101200;101000;"Capital subscribed - called unpaid";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+16;101300;101000;"Capital subscribed - called paid";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+17;101310;101300;"Part-unredeemed share capital";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+18;101320;101300;"Amortized principal/depreciated capital";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+19;101800;101000;"Subscribed capital subject to special regulations";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+20;104000;10;"Premiums related to capital";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+21;104100;104000;"Share premium";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+22;104200;104000;"Merger premiums";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+23;104300;104000;"Contribution premiums";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+24;104400;104000;"Premium conversion of bonds into shares";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+25;104500;104000;"Good Stock";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+26;105000;10;"Revaluation";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+27;105100;105000;"Special revaluation reserve";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+28;105200;105000;"Voluntary revaluation reserve";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+29;105300;105000;"Revaluation reserve";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+30;105500;105000;"Unrealized surplus from the appreciation of assets/Revaluation Surplus (other legal transactions)";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+31;105700;105000;"Other revaluation reserves in France";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+32;105800;105000;"Other revaluation reserves in England";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+33;106000;10;"Reserves";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+34;106100;106000;"Legal Reserves";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+35;106110;106100;"General statutory reserve";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+36;106120;106100;"Long-term capital gain ";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+37;106200;106000;"Restricted reserve";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+38;106300;106000;"Statutory or contractual reserves";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+39;106400;106000;"Special regulatory reserve";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+40;106410;106400;"Long-term capital gain ";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+41;106430;106400;"Reserves resulting from the granting of investment subsidies";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+42;106480;106400;"Other special regulatory reserve";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+43;106800;106000;"Other Reserves";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+44;106810;106800;"self-insurance reserve";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+45;106880;106800;"Various reserves";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+46;107000;10;"Equity method evaluation difference";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+47;108000;10;"Behalf of the operator";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+48;109000;10;"Shareholders: issued capital - uncalled";"asset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+49;11;"CL1";"Retained earnings (credit or debit balance)";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+50;110000;11;"Retained earnings (balance)";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+51;119000;11;"Retained earnings (debit balance)";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+52;12;"CL1";"Profit for the year (profit or loss)";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+53;120000;12;"Profit for the year (earnings)";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+54;129000;12;"Profit for the year (loss)";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+55;13;"CL1";"Investment subsidies";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+56;131000;13;"Equipment Grants";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+57;131100;131000;"State";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+58;131200;131000;"Regions";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+59;131300;131000;"Departements";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+60;131400;131000;"municipalities";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+61;131500;131000;"Public Sector";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+62;131600;131000;"public enterprise";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+63;131700;131000;"Businesses and private organizations";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+64;131800;131000;"Other";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+65;138000;13;"Other investment subsidies (same breakdown as Account 131)";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+66;139000;13;"Investment subsidies included in the income statement";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+67;139100;139000;"Equipments Subsidiaries";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+68;139110;139100;"State";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+69;139120;139100;"Regions";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+70;139130;139100;"Departements";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+71;139140;139100;"Commons";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+72;139150;139100;"Public Sector";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+73;139160;139100;"public enterprise";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+74;139170;139100;"Businesses and private organizations";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+75;139180;139100;"Other";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+76;139800;139000;"Other investment subsidies (same breakdown as Account 1391)";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+77;14;"CL1";"Regulated provisions";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+78;142000;14;"Regulated provisions relating to fixed assets";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+79;142300;142000;"Provisions recovery of mineral deposits and petroleum";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+80;142400;142000;"Provisions for investment (employee participation)";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+81;143000;14;"Regulated provisions relating to inventories";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+82;143100;143000;"Rise in prices";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+83;143200;143000;"Fluctuation in prices";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+84;144000;14;"Regulated provisions relating to other assets";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+85;145000;14;"Depreciation allowances";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+86;146000;14;"Special revaluation surplus reserve";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+87;147000;14;"Capital gains reinvested";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+88;148000;14;"Other regulated provisions";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+89;15;"CL1";"Provisions";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+90;151000;15;"Provisions for risks";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+91;151100;151000;"dispute and litigation reserve";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+92;151200;151000;"Provisions for customer warranties";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+93;151300;151000;"Provision for loses in futures markets";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+94;151400;151000;"Reserve for fines and penalties";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+95;151500;151000;"Reserve for foreign exchange losses";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+96;151600;151000;"Provisions for losses on contracts";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+97;151800;151000;"Other risk provisions";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+98;153000;15;"Provisions for pensions and similar obligations";"provision";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+99;154000;15;"Provisions for restructuring";"provision";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+100;155000;15;"Provisions for taxes";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+101;156000;15;"Provisions for renewal of fixed assets (concessionaires)";"provision";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+102;157000;15;"Reserve for deferred charges";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+103;157200;157000;"Provisions for major repairs or major overhauls";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+104;158000;15;"Other provisions for charges";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+105;158100;158000;"Provision for reclamation";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+106;16;"CL1";"Debentures and similar debt";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+107;161000;16;"Convertible bonds";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+108;163000;16;"Autres emprunts obligataires ";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+109;164000;16;"Other bonds";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+110;165000;16;"Deposits and guarantees received";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+111;165100;165000;"Deposits";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+112;165500;165000;"Deposits";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+113;166000;16;"Employee profit participation";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+114;166100;166000;"Blocked accounts";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+115;166200;166000;"Participation Fund";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+116;167000;16;"Loans and debt Special Terms";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+117;167100;167000;"Issuing equity securities";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+118;167400;167000;"Conditional advances the state";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+119;167500;167000;"Participating loans";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+120;168000;16;"Other loans and similar debts";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+121;168100;168000;"Other loans";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+122;168500;168000;"Annuities capitalized";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+123;168700;168000;"Other liabilities";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+124;168800;168000;"Accrued Interest";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+125;168810;168800;"On convertible bonds";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+126;168830;168800;"On other bonds debenture loans";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+127;168840;168800;"Borrowings from credit institutions";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+128;168850;168800;"Deposits received";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+129;168860;168800;"On employee participation results";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+130;168870;168800;"Borrowings on special terms";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+131;168880;168800;"On other loans and similar debts";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+132;169000;16;"Bond redemption premiums";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+133;17;"CL1";"Liabilities to subsidiaries";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+134;171000;17;"Liabilities to subsidiaries (Group)";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+135;174000;17;"Debt to equity investments (excluding Group)";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+136;178000;17;"Debts related to joint ventures";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+137;178100;178000;"Main";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+138;178800;178000;"Accrued Interest";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+139;18;"CL1";"Liaison accounts of institutions and ventures";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+140;181000;18;"Accounts Liaison institutions";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+141;186000;18;"Goods and services exchanged between institutions (expense)";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+142;187000;18;"Goods and services exchanged between businesses (products)";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+143;188000;18;"Accounts Liaison ventures";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+144;20;"CL2";"Intangible assets";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+145;201000;20;"Facility Fee";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+146;201100;201000;"Formation expenses";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+147;201200;201000;"Start-up costs";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+148;201210;201200;"Exploration expenses";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+149;201220;201200;"Advertising costs";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+150;201300;201000;"Capital increase expenses and miscellaneous transactions (mergers, conversions)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+151;203000;20;"Costs of research and development";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+152;205000;20;"Concessions and similar rights, patents, licenses, trademarks, processes, software, similar rights and assets";"immobilisation";;1;;;;;2;"DAUT";;1;"false";"false";"false";2
+153;206000;20;"Lease rights";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+154;207000;20;"Goodwill";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+155;208000;20;"Other intangible assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+156;21;"CL2";"Tangible assets";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+157;211000;21;"Land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+158;211100;211000;"Unimproved";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+159;211200;211000;"Developed land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+160;211300;211000;"Basements and cellars";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+161;211400;211000;"Lots of deposit";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+162;211410;211400;"Careers";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+163;211500;211000;"Unimproved";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+164;211510;211500;"Industrial building complexes (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+165;211550;211500;"Administrative and selling housing developments (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+166;211580;211500;"Other housing estates";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+167;211581;211580;"Allocated to business operations (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+168;211588;211580;"Assigned to non-business operations (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+169;211600;211000;"Order on capital account";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+170;212000;21;"Fixtures and land improvements (same breakdown as the total of 211)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+171;213000;21;"Constructions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+172;213100;213000;"Buildings";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+173;213110;213100;"Industrial building complexes (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+174;213150;213100;"Administrative and selling housing developments (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+175;213180;213100;"Other housing estates";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+176;213181;213180;"Allocated to business operations (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+177;213188;213180;"Assigned to non-business operations (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+178;213500;213000;"General facilities, fixtures and fittings of buildings (same breakdown as Account 2131)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+179;213800;213000;"Infrastructure works";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+180;213810;213800;"Tract of land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+181;213820;213800;"Assault Iron";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+182;213830;213800;"Waterways";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+183;213840;213800;"Dams";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+184;213850;213800;"Airfield runways";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+185;214000;21;"Buildings on land of another (same breakdown as Account 213)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+186;215000;21;"Technical facilities equipment and tooling";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+187;215100;215000;"Specialized complex installations";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+188;215110;215100;"On own land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+189;215140;215100;"On other land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+190;215300;215000;"Facilities to specific character";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+191;215310;215300;"On own land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+192;215340;215300;"On other land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+193;215400;215000;"Industrial equipment";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+194;215500;215000;"Industrial Machinery";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+195;215700;215000;"Fixtures and fittings of industrial machinery and equipment";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+196;218000;21;"Other tangible assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+197;218100;218000;"General facilities, fixtures and fittings various";"immobilisation";;1;;;;;2;"HONO";;1;"false";"false";"false";1
+198;218200;218000;"Transportation equipment";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+199;218300;218000;"Office equipment and computer hardware";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+200;218400;218000;"Furniture";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+201;218500;218000;"Livestock";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+202;218600;218000;"Returnable packaging";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+203;22;"CL2";"Assets in concession";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+204;23;"CL2";"Assets under construction";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+205;231000;23;"Assets under construction";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+206;231200;231000;"Land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+207;231300;231000;"Constructions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+208;231500;231000;"Technical equipment industrial machinery and equipment";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+209;231800;231000;"Other tangible assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+210;232000;23;"Intangible assets under";"immobilisation";;1;;;;;2;"HONO";;1;"false";"false";"false";1
+211;237000;23;"Advances and prepayments of intangible assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+212;238000;23;"Advances and prepayments of fixed assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+213;238200;238000;"Land";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+214;238300;238000;"Construction";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+215;238500;238000;"Technical equipment industrial machinery and equipment";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+216;238800;238000;"Other tangible assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+217;25;"CL2";"Shares in affiliated undertakings and amounts receivable in affiliated enterprises";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+218;26;"CL2";"Investments and advances in subsidiaries";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+219;261000;26;"Equity";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+220;261100;261000;"Actions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+221;261800;261000;"Other titles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+222;262000;26;"Investments stated at equity";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+223;266000;26;"Forms of participation";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+224;267000;26;"Receivables from participations";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+225;267100;267000;"Receivables from affiliates (Group)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+226;267400;267000;"Receivables from affiliates (excluding Group)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+227;267500;267000;"Payments representing unfunded contributions (fundraising)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+228;267600;267000;"Advances's consolidating";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+229;267700;267000;"Other receivables from participations";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+230;267800;267000;"Accrued Interest";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+231;268000;26;"Receivables from joint ventures";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+232;268100;268000;"Main";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+233;268800;268000;"Accrued Interest";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+234;269000;26;"Payments outstanding equity securities on an undischarged";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+235;27;"CL2";"Other financial assets";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+236;271000;27;"Other investments other than investment securities portfolio activity (property)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+237;271100;271000;"Actions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+238;271800;271000;"Other titles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+239;272000;27;"Term investments (debt)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+240;272100;272000;"Bonds";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+241;272200;272000;"Good";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+242;273000;27;"Investment securities portfolio activity (portfolio investments)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+243;274000;27;"Loans";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+244;274100;274000;"Equity loans";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+245;274200;274000;"Loans to associates";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+246;274300;274000;"Staff loans";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+247;274800;274000;"Other loans";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+248;275000;27;"Deposits and guarantees paid";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+249;275100;275000;"Deposits";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+250;275500;275000;"Deposits";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+251;276000;27;"Other long term receivables";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+252;276100;276000;"Other receivables";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+253;276800;276000;"Accrued Interest";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+254;276820;276800;"On investment securities (debt)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+255;276840;276800;"Loan";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+256;276850;276800;"On deposits and bonds";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+257;276880;276800;"Various credit";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+258;277000;27;"Own shares or own shares";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+259;277100;277000;"Own shares or own shares";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+260;277200;277000;"Own shares or own shares in the cancellation";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+261;279000;27;"Payments outstanding on an undischarged term investments";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+262;28;"CL2";"Amortization of capital assets";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+263;280000;28;"Amortization of intangible assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+264;280100;280000;"Expenses (same breakdown as the account 201)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+265;280300;280000;"Costs of research and development";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+266;280500;280000;"Concessions and similar rights, patents, licenses, software, similar rights and assets";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+267;280700;280000;"Goodwill";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+268;280800;280000;"Other intangible assets";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+269;281000;28;"Depreciation of fixed assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+270;281100;281000;"Lots of deposit";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+271;281200;281000;"Fixtures and fittings of land (same breakdown as the account 212)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+272;281300;281000;"Structures (same breakdown as the account 213)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+273;281400;281000;"Buildings on land of another (same breakdown as Account 214)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+274;281500;281000;"Industrial machinery and equipment installations (same breakdown as Account 215)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+275;281800;281000;"Other intangible assets (same breakdown as the account 218)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+276;282000;28;"Depreciation of fixed assets in concession";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+277;29;"CL2";"Impairment of assets";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+278;290000;29;"Impairment of intangible assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+279;290500;290000;"Marks, processes, rights and similar values";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+280;290600;290000;"Lease rights";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+281;290700;290000;"Goodwill";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+282;290800;290000;"Other intangible assets";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+283;291000;29;"Impairment of fixed assets (same breakdown as the account 21)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+284;291100;291000;"Land (other than land of deposit)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+285;292000;29;"Impairment of fixed assets in concession";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+286;293000;29;"Impairment of assets under";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+287;293100;293000;"Assets under construction";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+288;293200;293000;"Intangible assets under";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+289;296000;29;"Impairment of investments and advances to subsidiaries";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+290;296100;296000;"Equity";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+291;296600;296000;"Forms of participation";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+292;296700;296000;"Receivables from affiliates (same breakdown as the 267)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+293;296800;296000;"Receivables from associated companies (same breakdown as Account 268)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+294;297000;29;"Impairment of other investments";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+295;297100;297000;"Other investments other than investment securities portfolio of activity - property rights (breakdown: 271)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+296;297200;297000;"Investment securities - debt securities (same breakdown as Account 272)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+297;297300;297000;"Investment securities portfolio activity";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+298;297400;297000;"Loans (same breakdown as Account 274)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+299;297500;297000;"Deposits and guarantees paid (same breakdown as the account 275)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+300;297600;297000;"Other long term receivables (same breakdown as Account 276)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+301;31;"CL3";"Raw materials (and delivery)";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+302;311000;31;"Material (or group) A";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+303;312000;31;"Material (or group) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+304;317000;31;"Supplies A, B, C, ..";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+305;32;"CL3";"Other supplies";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+306;321000;32;"Consumables";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+307;321100;321000;"Material (or group) C";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+308;321200;321000;"Material (or group) D";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+309;322000;32;"Consumables";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+310;322100;322000;"Fuels";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+311;322200;322000;"Cleaning Products";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+312;322300;322000;"Shop Supplies and plant";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+313;322400;322000;"Store supplies";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+314;322500;322000;"Office Supplies";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+315;326000;32;"Packaging";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+316;326100;326000;"Packaging waste";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+317;326500;326000;"Returnable packaging unidentifiable";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+318;326700;326000;"Mixed-use packaging";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+319;33;"CL3";"In-process goods";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+320;331000;33;"Products in";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+321;331100;331000;"Product in P 1";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+322;331200;331000;"Product in P 2";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+323;335000;33;"Work in progress";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+324;335100;335000;"Work in Progress T 1";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+325;335200;335000;"Work in Progress T 2";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+326;34;"CL3";"In-process services";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+327;341000;34;"Ongoing Studies";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+328;341100;341000;"Ongoing Studies E 1";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+329;341200;341000;"Ongoing studies E 2";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+330;345000;34;"Services being";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+331;345100;345000;"Services S 1";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+332;345200;345000;"Services S 2";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+333;35;"CL3";"Product Stocks";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+334;351000;35;"Intermediates";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+335;351100;351000;"Intermediate products (or group) A";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+336;351200;351000;"Intermediate products (or group) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+337;355000;35;"Finished Products";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+338;355100;355000;"Finished goods (or group) A";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+339;355200;355000;"Finished goods (or group) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+340;358000;35;"Residual products (or material recovery)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+341;358100;358000;"Waste";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+342;358500;358000;"Garbage";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+343;358600;358000;"Materials recovery";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+344;36;"CL3";"Stocks from capital";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+345;37;"CL3";"Merchandise inventories";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+346;371000;37;"Goods (or group) A";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+347;372000;37;"Goods (or group) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+348;38;"CL3";"Inventory en route";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+349;39;"CL3";"Impairment of inventory and WIP";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+350;391000;39;"Impairment of raw materials (supplies)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+351;391100;391000;"Subjects (or group) A";"currentAsset";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+352;391200;391000;"Material (or group) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+353;391700;391000;"Supplies A, B, C, ..";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+354;392000;39;"Impairment of other supplies";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+355;392100;392000;"Consumables (same breakdown as the account 321)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+356;392200;392000;"Consumables (same breakdown as the account 322)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+357;392600;392000;"Packaging (same breakdown as the account 326)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+358;393000;39;"Impairment of in-process goods";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+359;393100;393000;"Products in (same breakdown as Account 331)";"currentAsset";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+360;393500;393000;"Work in progress (same breakdown as the account 335)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+361;394000;39;"Impairment of in-process services";"currentAsset";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+362;394100;394000;"Ongoing studies (same breakdown as the account 341)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+363;394500;394000;"Services in progress (same breakdown as Account 345)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+364;395000;39;"Impairment of inventories of";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+365;395100;395000;"Intermediate products (same breakdown as the account 351)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+366;395500;395000;"Finished goods (same breakdown as the account 355)";"currentAsset";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+367;397000;39;"Provisions for depreciation of stocks of goods";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+368;397100;397000;"Goods (or group) A";"currentAsset";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+369;397200;397000;"Goods (or group) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+370;40;"CL4";"Trade accounts payable";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+371;400000;40;"Trade accounts payable";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+372;401;40;"Suppliers";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+373;401100;401;"Suppliers - Purchases of goods and services";"payable";"true";1;"411100|411700|416000";"true";;;1;"DAS2";;1;"false";"false";"true";0
+374;401700;401;"Suppliers - Holdbacks";"payable";"true";1;"411100|411700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+375;403000;40;"Payable - Notes Payable";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+376;404000;40;"Fixed asset suppliers";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+377;404100;404000;"Suppliers - Purchases of capital assets";"payable";"true";1;;;;;1;"DAS2";;1;"false";"false";"false";0
+378;404700;404000;"Suppliers of capital - Holdbacks";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+379;405000;40;"Suppliers of capital - Notes Payable";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+380;408000;40;"Suppliers - Invoices not received";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+381;408100;408000;"Suppliers";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+382;408400;408000;"Fixed asset suppliers";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+383;408800;408000;"Suppliers - Accrued interest";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+384;409;40;"Receivables from suppliers";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+385;409100;409;"Suppliers - Advances and prepayments";"payable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+386;409600;409;"Suppliers - Claims for packaging and equipment to make";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+387;409700;409;"Suppliers - Other assets";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+388;409710;409700;"Providers operating";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+389;409740;409700;"Fixed asset suppliers";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+390;409800;409;"Discounts, rebates, discounts available and other assets not yet received";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+391;41;"CL4";"Accounts receivable";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+392;410000;41;"Accounts receivable";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+393;411;41;"Customer";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+394;411100;411;"Customers - Sales of goods or services";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+395;411700;411;"Customer - Holdbacks";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+396;413000;41;"Customers - Accounts Receivable";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+397;416000;41;"Doubtful or disputed";"receivable";"true";1;"401100|401700|411100|411700";"true";;;2;"NDAS";;1;"false";"false";"false";0
+398;418000;41;"Customers - unbilled";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+399;418100;418000;"Customer - Unbilled";"receivable";"true";1;;;;;1;"NDAS";;1;"false";"false";"false";0
+400;418800;418000;"Customer - Accrued interest";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+401;419000;41;"Customer prepayments";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+402;419100;419000;"Customer - Advances received on orders";"debt";"true";1;;"true";;;1;"NDAS";;1;"false";"false";"false";0
+403;419600;419000;"Customer - Debts for returnable packaging and material";"debt";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+404;419700;419000;"Customer - Other assets";"debt";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+405;419800;419000;"Rebates, discounts, rebates and other funds to grant to establish";"debt";"true";1;;"true";;;1;"NDAS";;1;"false";"false";"false";0
+406;42;"CL4";"Personnel and related accounts";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+407;421000;42;"Personnel - Compensation due";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+408;422000;42;"Works of establishment";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+409;424000;42;"Employee profit participation";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+410;424600;424000;"Special reserve";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+411;424800;424000;"Current accounts";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+412;425000;42;"People – Advances and prepayment";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+413;426000;42;"Staff - Deposits";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+414;427000;42;"Staff - Objections";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+415;428000;42;"Staff - Accounts payable and accruals";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+416;428200;428000;"Accrued liabilities for vacation pay";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+417;428400;428000;"Debts accrued for employee profit sharing results";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+418;428600;428000;"Other accrued liabilities";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+419;428700;428000;"Accrued income";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+420;43;"CL4";"Social Security and other social agencies";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+421;431000;43;"Social Security";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+422;437000;43;"Other social agencies";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+423;438000;43;"Social organizations - Accrued expenses and accrued income";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+424;438200;438000;"Payroll tax on holiday pay";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+425;438600;438000;"Other accrued liabilities";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+426;438700;438000;"Accrued income";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+427;44;"CL4";"State and other public";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+428;441000;44;"State - Grants receivable";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+429;441100;441000;"Investment subsidies";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+430;441700;441000;"Operating subsidies";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+431;441800;441000;"Matching grants";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+432;441900;441000;"Advances on grants";"receivable";;1;;;;"true";2;"NDAS";;1;"false";"false";"false";0
+433;442000;44;"State-Taxes recoverable from third parties";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+434;442400;442000;"Bond";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+435;442500;442000;"Related";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+436;443000;44;"Special operations with the State, public authorities, international agencies";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+437;443100;443000;"Sovereign debt resulting from the elimination of the rule of one-month delay in VAT";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+438;443800;443000;"Accrued interest on debt on the accounts 4431";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+439;444000;44;"State - Income taxes";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+440;445000;44;"State - Taxes on turnover";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+441;445200;445000;"Intra-Community VAT payable";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+442;445201;445000;"Intra-Community VAT payable 19.6%";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+443;445202;445000;"Intra-Community VAT payable 5.5%";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+444;445203;445000;"current accounts";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+445;445500;445000;"People - Advances";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+446;445510;445500;"VAT to be disbursed";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+447;445511;445510;"VAT N to be disbursed (19.6%)";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+448;445512;445510;"VAT R1 to be disbursed (7%)";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+449;445513;445510;"VAT R2 to be disbursed (5.5%)";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+450;445514;445510;"VAT to be disbursed (other rate : U...)";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+451;445580;445500;"Similar taxes to VAT";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+452;445600;445000;"Taxes on turnover deductible";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+453;445620;445600;"VAT on fixed assets";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+454;445630;445600;"VAT transferred by other companies";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+455;445660;445600;"VAT on other goods and services";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+456;445662;445600;"Intra-deductible VAT";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+457;445670;445600;"VAT credit to postpone";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+458;445680;445600;"Similar taxes to VAT";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+459;445700;445000;"Tax revenues collected by the company";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+460;445710;445700;"VAT collected";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+461;445711;445710;"VAT N collected 19.6%";"tax";;1;;;"true";;1;"NDAS";;1;"false";"false";"false";0
+462;445712;445710;"VAT R1 collected 7%";"tax";;1;;;"true";;1;"NDAS";;1;"false";"false";"false";0
+463;445713;445710;"VAT R2 collected 5.5%";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+464;445714;445710;"VAT collection (other rate : U …)";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+465;445780;445700;"Similar taxes to VAT";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+466;445800;445000;"Taxes on turnover to regulate or pending";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+467;445810;445800;"Installments - Simplified tax";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+468;445820;445800;"Installments - Package Plan";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+469;445830;445800;"Reimbursement of taxes on turnover requested";"tax";;1;;;"true";;1;"NDAS";;1;"false";"false";"false";0
+470;445840;445800;"VAT recovered in advance";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+471;445860;445800;"Taxes on sale invoices not received";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+472;445870;445800;"Taxes on sale invoices to determine";"tax";;1;;;"true";;1;"NDAS";;1;"false";"false";"false";0
+473;446000;44;"Secured bonds";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+474;447000;44;"Other taxes, fees and similar payments";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+475;448000;44;"State - Accrued expenses and accrued income";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+476;448200;448000;"Tax burden on holiday pay";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+477;448600;448000;"Accruals";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+478;448700;448000;"Accrued income";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+479;449000;44;"Emission allowances to be returned to the State";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+480;45;"CL4";"Group and associates";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+481;451000;45;"Group";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+482;455000;45;"Associates - Current Account";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+483;455100;455000;"Main";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+484;455800;455000;"Accrued Interest";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+485;456000;45;"Associate - Capital transactions";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+486;456100;456000;"Associate - Accounts contribution in society";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+487;456110;456100;"Contributions in kind";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+488;456150;456100;"Cash contributions";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+489;456200;456000;"Contributors - Called up capital, unpaid";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+490;456210;456200;"Shareholders - Capital subscribed and called, unpaid";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+491;456250;456200;"Associates - Called up capital, unpaid";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+492;456300;456000;"Associates - Payments received on capital increase";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+493;456400;456000;"Associates - Advance payments";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+494;456600;456000;"Shareholders failed";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+495;456700;456000;"Associate - Capital repayment";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+496;457000;45;"Shareholders - Dividends payable";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+497;458000;45;"Associates - joint ventures and GIE";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+498;458100;458000;"Current Operations";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+499;458800;458000;"Accrued Interest";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+500;46;"CL4";"Sundry debtors and sundry creditors";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+501;462000;46;"Receivables from sale of property";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+502;464000;46;"Debt related to acquisition of investment securities";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+503;465000;46;"Receivables from sale of marketable securities";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+504;467;46;"Other accounts receivable or payable";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+505;468000;46;"Miscellaneous - Accrued expenses and accrued income";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+506;468600;468000;"Accruals";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+507;468700;468000;"Accrued income";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+508;47;"CL4";"Prepayments or waiting";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+509;471000;47;"Suspense Accounts 1";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+510;472000;47;"Suspense accounts 2";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+511;473000;47;"Suspense accounts 3";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+512;474000;47;"Suspense accounts 4";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+513;475000;47;"Suspense accounts 5";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+514;476000;47;"Translation differences - ASSETS";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+515;476100;476000;"Decrease in receivables";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+516;476200;476000;"Increase in payables";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+517;476800;476000;"Differences offset by hedging";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+518;477000;47;"Translation differences - Liabilities";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+519;477100;477000;"Increase in receivables";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+520;477200;477000;"Decrease in debt";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+521;477800;477000;"Differences offset by hedging";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+522;478;47;"Other transitory accounts";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+523;48;"CL4";"Accruals";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+524;481000;48;"Accrued Deferred";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+525;481600;481000;"Issue costs of borrowings";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+526;486000;48;"Prepaid expenses";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+527;487000;48;"Deferred income";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+528;488;48;"Accounts of periodic distribution of income and expense";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+529;488600;488;"Charges";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+530;488700;488;"Products";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+531;489000;48;"Emission allowances allocated by the State";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+532;49;"CL4";"Impairment of accounts of others";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+533;491000;49;"Impairment of client accounts";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+534;495000;49;"Depreciation of the group and associates";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+535;495100;495000;"Group accounts";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+536;495500;495000;"Current accounts of shareholders";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+537;495800;495000;"Joint ventures and GIE";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+538;496000;49;"Impairment of sundry debtors";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+539;496200;496000;"Receivables from sale of property";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+540;496500;496000;"Receivables from sale of marketable securities";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+541;496700;496000;"Other accounts receivable";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+542;50;"CL5";"Marketable securities";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+543;501000;50;"Shares in affiliated companies";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+544;502000;50;"Treasury shares";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+545;503000;50;"Actions";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+546;503100;503000;"Listed securities";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+547;503500;503000;"Unlisted";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+548;504000;50;"Other securities conferring the right of ownership";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+549;505000;50;"Bonds and notes issued by the company and purchased by it";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+550;506000;50;"Bonds";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+551;506100;506000;"Listed securities";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+552;506500;506000;"Unlisted";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+553;507000;50;"Treasury bills and certificates of deposit in the short term";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+554;508000;50;"Other marketable securities and other similar debts";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+555;508100;508000;"Other securities";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+556;508200;508000;"Warrants";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+557;508800;508000;"Accrued interest on bonds, bills and similar securities";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+558;509000;50;"Payments outstanding on marketable securities uncleared";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+559;51;"CL5";"Banks and similar financial institutions";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+560;511000;51;"Items for collection";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+561;511100;511000;"Coupons due for collection";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+562;511200;511000;"Cheque cashing";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+563;511300;511000;"Collection items";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+564;511400;511000;"Bills discounting";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+565;511500;511000;"Credit card cashed";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+566;512;51;"Banks";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+567;512100;512;"Accounts in national currency";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+568;512400;512;"Currency Accounts";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+569;514000;51;"Giro";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+570;515000;51;"Treasury funds and public institutions";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+571;516000;51;"Brokerage firms";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+572;517000;51;"Other financial institutions";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+573;518000;51;"Accrued Interest";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+574;518100;518000;"Accrued interest payable";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+575;518800;518000;"Accrued interest receivable";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+576;519000;51;"Bank overdrafts";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+577;519100;519000;"Credit mobilization of commercial debt (CMCC)";"cash";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+578;519300;519000;"Mobilization of claims arising abroad";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+579;519800;519000;"Accrued interest on bank overdrafts";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+580;52;"CL5";"Cash instruments";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+581;53;"CL5";"Fund";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+582;531000;53;"Box office";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+583;531100;531000;"Cash in national currency";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+584;531400;531000;"Fund currency";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+585;532000;53;"Fund branch (or factory) A";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+586;533000;53;"Fund branch (or factory) B";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+587;54;"CL5";"Imprest accounts and credentials";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+588;58;"CL5";"Internal transfers";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+589;580100;58;"Internal transfers";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+590;580200;58;"Cashier closure differences";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+591;580300;58;"Payment variances";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+592;59;"CL5";"Impairment of financial accounts";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+593;590000;59;"Impairment of marketable securities";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+594;590300;59;"Actions";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+595;590400;59;"Other securities conferring the right of ownership";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+596;590600;59;"Bonds";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+597;590800;59;"Other investment securities and related receivables (provisions)";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+598;60;"CL6";"Purchases (except 603)";"view";;1;;;"true";"true";2;"NDAS";;1;"true";"true";"false";0
+599;601000;60;"Stored purchase - Raw (and supplies)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+600;601100;601000;"Subjects (or group) A";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+601;601200;601000;"Material (or group) B";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+602;601700;601000;"Supplies A, B, C, ..";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+603;602000;60;"Stored purchase - Other supplies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+604;602100;602000;"Consumables";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+605;602110;602100;"Material (or group) C";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+606;602120;602100;"Material (or group) D";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+607;602200;602000;"Consumables";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+608;602210;602200;"Fuels";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+609;602220;602200;"Cleaning Products";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+610;602230;602200;"Shop Supplies and factory";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+611;602240;602200;"Store supplies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+612;602250;602200;"Office Supplies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+613;602600;602000;"Packaging";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+614;602610;602600;"Packaging waste";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+615;602650;602600;"Returnable packaging unidentifiable";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+616;602670;602600;"Mixed-use packaging";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+617;603000;60;"Changes in inventories (supplies and goods)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+618;603100;603000;"Changes in inventories of raw materials (supplies)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+619;603200;603000;"Change in stocks of other supplies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+620;603700;603000;"Changes in inventories of goods";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+621;604000;60;"Purchases of studies and services";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+622;605000;60;"Purchases of equipment and work equipment";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+623;606000;60;"Non stored purchase of materials and supplies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+624;606100;606000;"Non-storable supplies (water, energy ...)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+625;606300;606000;"Maintenance supplies and small equipment";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+626;606400;606000;"Administrative supplies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+627;606800;606000;"Other materials and supplies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+628;607000;60;"Purchases of goods";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+629;607100;607000;"Commodity (or group) A";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+630;607200;607000;"Commodity (or group) B";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+631;608000;60;"Incidentals included purchase";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+632;609000;60;"Discounts, rebates and discounts available on purchase";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+633;609100;609000;"- raw materials (supplies)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+634;609200;609000;"- other supplies stored";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+635;609400;609000;"- studies and services";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";1
+636;609500;609000;"- materials, equipment and work";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+637;609600;609000;"- non-stock supplies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+638;609700;609000;"- Merchandise";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+639;609800;609000;"Rebates, discounts and rebates Unrestricted";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+640;61;"CL6";"Outdoor Services";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+641;611000;61;"Subcontracting";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+642;612000;61;"Leasing charges";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+643;612200;612000;"Equipment leasing";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+644;612500;612000;"Property leasing";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+645;613000;61;"Rentals";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+646;613200;613000;"Property rentals";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";2
+647;613500;613000;"Real estate rentals";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+648;613600;613000;"Malis on packaging";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+649;614000;61;"Charges and condominium";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+650;615000;61;"Maintenance and repairs";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+651;615200;615000;"- on property";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+652;615500;615000;"- on movable";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";2
+653;615600;615000;"Maintenance";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+654;616000;61;"Insurance Premiums";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+655;616100;616000;"Casualty";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+656;616200;616000;"Compulsory insurance building damage";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+657;616300;616000;"Transportation Insurance";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+658;616360;616300;"Transport insurance on purchase";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+659;616370;616300;"Transportsur insurance sale";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+660;616380;616300;"Transport insurance on other property";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+661;616400;616000;"Operating Risks";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+662;616500;616000;"Insolvent customers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+663;617000;61;"Research and Studies";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";2
+664;618000;61;"Miscellaneous";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+665;618100;618000;"General Documentation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+666;618300;618000;"Technical Documentation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+667;618500;618000;"Expenses of conferences, seminars, conferences";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";2
+668;619000;61;"Discounts, rebates and discounts on services obtained outside";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+669;62;"CL6";"Other external services";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+670;621000;62;"Personnel from outside the company";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+671;621100;621000;"Temporary Staff";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+672;621400;621000;"Staff seconded or loaned to the company";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+673;622000;62;"Intermediary fees and fees";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+674;622100;622000;"And brokerage commissions on purchase";"charge";;1;;;"true";"true";2;"COMM";"N_D";1;"true";"false";"false";2
+675;622200;622000;"Commission and brokerage on sale";"charge";;1;;;"true";"true";2;"COMM";"N_D";1;"true";"false";"false";2
+676;622400;622000;"Remuneration Freight";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+677;622500;622000;"Factoring Compensation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+678;622600;622000;"Fees";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";2
+679;622700;622000;"Legal fees and litigation";"charge";;1;;;"true";"true";2;"AREM";"N_D";1;"true";"false";"false";2
+680;622800;622000;"Miscellaneous";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+681;623000;62;"Advertising, publishing, public relations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+682;623100;623000;"Ads and inserts";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+683;623200;623000;"Samples";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+684;623300;623000;"Fairs and exhibitions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+685;623400;623000;"Gifts to clients";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+686;623500;623000;"Rewards";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+687;623600;623000;"Catalogues and";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+688;623700;623000;"Publications";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+689;623800;623000;"Miscellaneous (tips, current grants ...)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+690;624000;62;"Transport of goods and transport staff";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+691;624100;624000;"Transport on purchase";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+692;624200;624000;"Transport on sale";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+693;624300;624000;"Transport between facilities or sites";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+694;624400;624000;"Transportation Administrative";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+695;624700;624000;"Transport staff";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+696;624800;624000;"Miscellaneous";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+697;625000;62;"Travel missions and receptions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+698;625100;625000;"Travel and transport";"charge";;1;;;"true";"false";2;"NDAS";"N_D";1;"true";"false";"false";2
+699;625500;625000;"Removal expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+700;625600;625000;"Missions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+701;625700;625000;"Receptions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+702;626000;62;"Postage and telecommunication costs";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+703;627000;62;"Banking and related";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+704;627100;627000;"Fees on securities (purchase, sale, custody)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+705;627200;627000;"Commissions and fees on debt issuance";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+706;627500;627000;"Charge effects";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+707;627600;627000;"Safe custody";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+708;627800;627000;"Other fees and commissions on services";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+709;628000;62;"Miscellaneous";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+710;628100;628000;"Various competitions (cotisations...)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+711;628400;628000;"Staff recruitment costs";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";2
+712;629000;62;"Discounts, rebates and discounts on other services obtained outside";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+713;63;"CL6";"Taxes and similar payments";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+714;631000;63;"Taxes on salaries and related payments (Tax Administration)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+715;631100;631000;"Payroll tax";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+716;631200;631000;"Apprenticeship tax";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+717;631300;631000;"Employer participation in continuing vocational training";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+718;631400;631000;"Fee for non-mandatory investment in construction";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+719;631800;631000;"Other";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+720;633000;63;"Taxes on salaries and related payments (other agencies)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+721;633100;633000;"Transport tax";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+722;633200;633000;"Housing benefit";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+723;633300;633000;"Employer participation in continuing vocational training";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";0
+724;633400;633000;"Employer participation in the construction effort";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+725;633500;633000;"Release calls entitlement to tax exemption learning";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+726;633800;633000;"Other";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+727;635000;63;"Other taxes, fees and similar payments (Tax Administration)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+728;635100;635000;"Direct taxes (except income taxes)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+729;635110;635100;"Business Tax";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+730;635120;635100;"Property Taxes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+731;635130;635100;"Other local taxes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+732;635140;635100;"Tax on company vehicles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+733;635200;635000;"Taxes on turnover not recoverable";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+734;635300;635000;"Indirect taxes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+735;635400;635000;"Registration fees and stamp duty";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+736;635410;635400;"Transfer taxes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+737;635800;635000;"Other rights";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+738;637000;63;"Other taxes, fees and similar payments (other agencies)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+739;637100;637000;"Social solidarity contribution levied on companies to";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+740;637200;637000;"Fees charged by public international bodies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+741;637400;637000;"Taxes due from abroad";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+742;637800;637000;"Miscellaneous taxes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+743;64;"CL6";"Personnel expenses";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+744;641000;64;"Staff salaries";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+745;641100;641000;"Wages and salaries";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+746;641200;641000;"Paid vacation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+747;641300;641000;"Bonuses and gratuities";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+748;641400;641000;"Fringe benefits";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+749;641500;641000;"FS";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+750;644000;64;"Remuneration for work of the operator";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+751;645;64;"Burdens of Social Security and Welfare";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+752;645100;645;"Contributions to URSSAF";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+753;645200;645;"Contributions to mutual";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+754;645300;645;"Contributions to pension funds";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+755;645400;645;"Contributions to ASSEDIC";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+756;645800;645;"Contributions to other social agencies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+757;646;64;"Personal social security contributions of the operator";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+758;647000;64;"Other social charges";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+759;647100;647000;"Direct benefits";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+760;647200;647000;"Payments to councils and school";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+761;647300;647000;"Payments to health committees and safety";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+762;647400;647000;"Payments to other social works";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+763;647500;647000;"Occupational medicine";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+764;648000;64;"Other personnel expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+765;65;"CL6";"Other current operating expenses";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+766;651000;65;"Fees for concessions, patents, licenses, trademarks, processes, software, similar rights and assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+767;651100;651000;"Patent Fees for concessions, licenses, trademarks, processes, software";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+768;651600;651000;"Copyright and reproduction";"charge";;1;;;"true";"true";2;"DAUT";"N_D";1;"true";"false";"false";2
+769;651800;651000;"Other similar rights and assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+770;653000;65;"Attendance";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+771;654000;65;"Losses on bad debts";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+772;654100;654000;"Receivables for the year";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+773;654400;654000;"Prior years'claims";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+774;655000;65;"Assessed on income from joint ventures";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+775;655100;655000;"Share of profit transferred (Accounting Manager)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+776;655500;655000;"Share of loss incurred (accounts of shareholders who are not managers)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+777;658000;65;"Various routine administrative expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+778;66;"CL6";"Financial charges";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+779;661000;66;"Interest expense";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+780;661100;661000;"Interest on loans and debts";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+781;661160;661100;"Interest on loans and similar debts";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+782;661170;661100;"Interest on debt related to investments";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+783;661500;661000;"Interest on current accounts and deposits payable";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+784;661600;661000;"Bank interest and financing activities (discount, ...)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+785;661700;661000;"Interests of secured bonds";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+786;661800;661000;"Interests of other debts";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+787;661810;661800;"Interests in trade payables";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";2
+788;661880;661800;"Interests of various debt";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+789;664000;66;"Credit losses associated with investments";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+790;665000;66;"Discounts granted";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+791;666000;66;"Exchange losses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+792;667000;66;"Net losses on sale of marketable securities";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+793;668000;66;"Other financial charges";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+794;67;"CL6";"Extraordinary expenses";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+795;671000;67;"Extraordinary expenses on management operations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+796;671100;671000;"Penalties on markets (and forfeits paid on purchase and sale)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+797;671200;671000;"Penalties, fines and criminal tax";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+798;671300;671000;"Donations,gifts";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+799;671400;671000;"Receivables become uncollectible in the year";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+800;671500;671000;"Subsidies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+801;671700;671000;"Reminders of taxes (other than taxes on profits)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+802;671800;671000;"Other extraordinary charges on transaction management";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+803;672000;67;"Prior period expenses (in-year only)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+804;675000;67;"Carrying values of assets transferred";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+805;675100;675000;"Intangible assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+806;675200;675000;"Tangible assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+807;675600;675000;"Financial assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+808;675800;675000;"Other assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+809;678000;67;"Other extraordinary charges";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+810;678100;678000;"Malis from indexation clauses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+811;678200;678000;"Lots";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+812;678300;678000;"Malis from the repurchase by the Company of shares and bonds issued by itself";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+813;678800;678000;"Various exceptional charges";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+814;68;"CL6";"Depreciation, amortization and provisions";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+815;681000;68;"expense";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+816;681100;681000;"Amortisation of intangible and tangible";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+817;681110;681100;"Intangible assets";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+818;681120;681100;"Tangible assets";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+819;681200;681000;"Amortisation of operating expenses to be apportioned";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+820;681500;681000;"Provisions for risks and expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+821;681600;681000;"Allowances for impairment of intangible and tangible";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+822;681610;681600;"Intangible assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+823;681620;681600;"Tangible assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+824;681700;681000;"Provisions for impairment of assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+825;681730;681700;"Stocks and work in progress";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+826;681740;681700;"Claims";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+827;686000;68;"Amortisation, depreciation and provisions - financial charges";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+828;686100;686000;"Amortisation of premium on redemption of bonds";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+829;686500;686000;"Provisions for risks and expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+830;686600;686000;"Depreciation and impairment of financial items";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+831;686620;686600;"Financial assets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+832;686650;686600;"Marketable securities";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+833;686800;686000;"Other allocations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+834;687000;68;"Amortisation, depreciation and provisions - Extraordinary expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+835;687100;687000;"Depreciation of fixed assets outstanding";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+836;687200;687000;"Regulated provisions (capital)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+837;687250;687200;"Depreciation allowances";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+838;687300;687000;"Regulated provisions (stocks)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+839;687400;687000;"Depreciation and other regulatory provisions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+840;687500;687000;"Depreciation and exceptional items";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+841;687600;687000;"Depreciation and impairment losses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+842;69;"CL6";"Employee participation - income taxes and related";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+843;691000;69;"Employee profit participation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+844;695000;69;"Income taxes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+845;695100;695000;"Taxes due in France";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+846;695200;695000;"Additional contribution to profits tax";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+847;695400;695000;"Taxes due to foreign";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+848;696000;69;"Additional tax on companies related to distributions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+849;697000;69;"Fixed annual tax of companies";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+850;698000;69;"Tax consolidation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+851;698100;698000;"Tax consolidation - Expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+852;698900;698000;"Tax consolidation - Products";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+853;699000;69;"Products, carry back losses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+854;70;"CL7";"Produced sale - Services - Merchandise";"view";;1;;;"true";"true";0;"NDAS";"N_C";1;"true";"true";"false";0
+855;701000;70;"Sales of finished products";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+856;701200;701000;"Finished goods (or group) B";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+857;702000;70;"Sales of intermediate products";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+858;703000;70;"Sales of residual products";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+859;704000;70;"Works";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+860;704100;704000;"Class work (or activity) A";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+861;704200;704000;"Class work (or activity) B";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+862;705000;70;"Studies";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+863;706000;70;"Services";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+864;707000;70;"Merchandise Sales";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+865;707100;707000;"Goods (or group) A";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+866;707200;707000;"Goods (or group) B";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+867;707210;707200;"Sales of textile product";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+868;707300;707000;"Goods for export";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+869;708000;70;"Revenue from auxiliary activities";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+870;708100;708000;"Income from services operated in the interests of staff";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+871;708200;708000;"Commission and brokerage";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+872;708300;708000;"Various rentals";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+873;708400;708000;"Provision of staff charged";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+874;708500;708000;"Transportation and incidental costs charged";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+875;708600;708000;"Bonus on occasions of returnable packaging";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+876;708700;708000;"Bonuses and premiums obtained from customers on sale";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+877;708800;708000;"Other products activities (sale of supplies ...)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+878;709000;70;"Discounts, rebates and discounts granted by the company";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+879;709100;709000;"- On sale of finished products";"income";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"false";"false";1
+880;709200;709000;"- On sale of intermediate products";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+881;709400;709000;"- Work on";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+882;709500;709000;"- Studies on";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+883;709600;709000;"- On services";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+884;709700;709000;"- On sale of goods";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+885;709800;709000;"- Revenue from ancillary activities on";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+886;71;"CL7";"Stored production (or stocking)";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+887;713000;71;"Changes in inventories (in-progress, products)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+888;713300;713000;"Change in stocks of goods production";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+889;713310;713300;"Products in";"income";;1;;;"true";"true";0;"NDAS";"N_C";1;"true";"false";"false";0
+890;713350;713300;"Work in progress";"income";;1;;;"true";"true";0;"NDAS";"N_C";1;"true";"false";"false";0
+891;713400;713000;"Change in stocks of service production";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+892;713410;713400;"Ongoing Studies";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+893;713450;713400;"Services being";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+894;713500;713000;"Change in product inventories";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+895;713510;713500;"Intermediates";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+896;713550;713500;"Finished Products";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+897;713580;713500;"Residual products";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+898;72;"CL7";"Capitalised production";"view";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"true";"false";0
+899;721000;72;"Intangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+900;722000;72;"Tangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+901;74;"CL7";"Operating subsidies";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+902;75;"CL7";"Other products of daily management";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+903;751000;75;"Fees for concessions, patents, licenses, trademarks, processes, software, similar rights and assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+904;751100;751000;"Fees for concessions, patents, licenses, trademarks, processes, software";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+905;751600;751000;"Copyright and reproduction";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+906;751800;751000;"Other similar rights and assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+907;752000;75;"Revenue from property not used for professional activities";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+908;753000;75;"Fees and remuneration of directors, managers...";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+909;754000;75;"Levies collected from cooperatives (from surplus)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+910;755000;75;"Assessments of results from joint ventures";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+911;755100;755000;"Share of loss transferred (Accounting Manager)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+912;755500;755000;"Share of profits allocated (accounting for non-managing)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+913;758000;75;"Miscellaneous current management";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+914;76;"CL7";"Financial Products";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+915;761000;76;"Income from investments";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+916;761100;761000;"Income on equity";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+917;761600;761000;"Income from other forms of participation";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+918;761700;761000;"Income from debt to equity investments";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+919;762000;76;"Income from other investments";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+920;762100;762000;"Fixed income securities";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+921;762600;762000;"Income from loans";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+922;762700;762000;"Revenue from long term receivables";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+923;763000;76;"Revenues from other receivables";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+924;763100;763000;"Revenue from trade debtors";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+925;763800;763000;"Revenue from miscellaneous claims";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+926;764000;76;"Income from securities investment";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+927;765000;76;"Discounts obtained";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+928;766000;76;"Foreign exchange gains";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+929;767000;76;"Net gains on sale of marketable securities";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+930;768000;76;"Other financial";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+931;77;"CL7";"Exceptional items";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+932;771000;77;"Extraordinary income on management operations";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+933;771100;771000;"Forfeits and penalties levied on purchase and sale";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+934;771300;771000;"Donations received";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+935;771400;771000;"Bad debt written off";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+936;771500;771000;"Matching grants";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+937;771700;771000;"Tax relief other than taxes on profits";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+938;771800;771000;"Other extraordinary income on management operations";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+939;772000;77;"Products in previous years (during the year only)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+940;775000;77;"Proceeds from sale of assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+941;775100;775000;"Intangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+942;775200;775000;"Tangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+943;775600;775000;"Financial assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+944;775800;775000;"Other assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+945;777000;77;"Share of investment grants transferred to income statement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+946;778000;77;"Other extraordinary income";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+947;778100;778000;"Bonuses from indexation clauses";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+948;778200;778000;"Lots";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+949;778300;778000;"Bonuses from the repurchase by the Company of shares and bonds issued by itself";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+950;778800;778000;"Exceptional income";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+951;78;"CL7";"Reversals of depreciation, amortization and provisions";"view";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"true";"false";0
+952;781000;78;"Reversals of depreciation, amortization and provisions (to be included in revenue)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+953;781100;781000;"Reversal of amortization of intangible and tangible";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+954;781110;781100;"Intangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+955;781120;781100;"Tangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+956;781500;781000;"Reversals of operating provisions";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+957;781600;781000;"Reversals of impairment of tangible and intangible";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+958;781610;781600;"Intangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+959;781620;781600;"Tangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+960;781700;781000;"Reversals of impairment of assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+961;781730;781700;"Stocks and work in progress";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+962;781740;781700;"Claims";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+963;786000;78;"Reversals of impairment losses and provisions (to be included in financial income)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+964;786500;786000;"Financial Provision reversals";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+965;786600;786000;"Reversals of impairment losses on financial items";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+966;786620;786600;"Financial assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+967;786650;786600;"Marketable securities";"income";;1;;;"true";"true";0;"NDAS";"N_C";1;"true";"false";"false";0
+968;787000;78;"Reversals of impairment losses and provisions (the register in extraordinary income)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+969;787200;787000;"Reversal of regulated provisions (capital)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+970;787250;787200;"Depreciation allowances";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+971;787260;787200;"Special revaluation reserve";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+972;787270;787200;"Capital gains reinvested";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+973;787300;787000;"Reversals of provisions regulated (stocks)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+974;787400;787000;"Reversal of other provisions regulated";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+975;787500;787000;"Reversals of provisions for exceptional";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+976;787600;787000;"Reversals of impairment losses for";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+977;79;"CL7";"Expense transfers";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+978;791000;79;"Transfers of operating expenses";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+979;796000;79;"Transfers of financial charges";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+980;797000;79;"Transfers exceptional costs";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+981;80;"CL8";"Commitments";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+982;801000;80;"Commitments made by the entity";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+983;801100;801000;"Endorsements, guarantees";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+984;801400;801000;"Effects flowing in the back of the entity";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+985;801600;801000;"Leasing charges remaining";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+986;801610;801600;"Equipment leasing";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+987;801650;801600;"Property leasing";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+988;801800;801000;"Other commitments";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+989;802000;80;"Commitments received by the entity";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+990;802100;802000;"Endorsements, guarantees";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+991;802400;802000;"Unmatured claims expected";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+992;802600;802000;"Commitments received for use in leasing";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+993;802610;802600;"Equipment leasing";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+994;802650;802600;"Property leasing";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+995;802800;802000;"Other commitments received";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+996;809;80;"For commitments";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+997;809100;809;"Consideration 801";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+998;809200;809;"Consideration 802";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+999;88;"CL8";"Results pending allocation";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+1000;89;"CL8";"Balance Sheet";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+1001;890000;89;"Opening balance";"special";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+1002;891000;89;"Closing balance";"special";;1;;;;;2;"NDAS";;1;"false";"false";"false";0

@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Lead" lang="java">
+  <entity name="Lead">
 
-    <string name="titleSelect" title="Title" selection="partner.title.type.select"/>
+    <string name="titleSelect" title="Gender" selection="partner.title.type.select"/>
     <string name="name" required="true" title="Last name"/>
     <string name="firstName" title="First name"/>
+    <string name="simpleFullName" title="Full name">
+    	<![CDATA[
+    		if(firstName != null)
+    			return firstName+" "+name;
+    		else
+    			return name;
+    	]]>
+    </string>
     <string name="enterpriseName" title="Enterprise"/>
     <string name="officeName" title="Office name"/>
     <many-to-one name="jobTitleFunction" title="Job Title"
       ref="com.axelor.apps.base.db.Function"/>
-    <string name="mobilePhone" title="Mobile N°"/>
-    <string name="fixedPhone" title="Fixed Phone"/>
+    <string name="mobilePhone" title="Mobile number"/>
+    <string name="fixedPhone" title="Phone number"/>
     <string name="department" title="Dep./Div."/>
     <string name="webSite" title="Website"/>
 
@@ -27,27 +35,23 @@
     <many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country"
       title="Country"/>
 
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress"
+    <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email"/>
     <binary name="picture" title="Picture"/>
 
     <string name="description" title="Description" large="true"/>
-    <date name="contactDate" title="Contact date"/>
-
-    <integer name="statusSelect" title="Status" selection="crm.lead.status.select"
-      default="1" required="true" massUpdate="true"/>
-    <boolean name="isRecycled" title="Recycled"/>
+    <date name="contactDate" title="Creation date"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
     <string name="statusDescription" title="Status description" large="true"/>
-    <decimal name="estimatedBudget" title="Estimated budget"/>
     <string name="sourceDescription" title="Source description" large="true"/>
-    <string name="referredBy" title="Referred by"/>
-    <boolean name="isDoNotCall" title="Rejection of calls"/>
-    <boolean name="isDoNotSendEmail" title="Rejection of e-mails"/>
+    <boolean name="isDoNotCall" title="Do not call"/>
+    <boolean name="isDoNotSendEmail" title="Do not email"/>
 
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Contact"
       readonly="true"/>
 
+    <many-to-one ref="com.axelor.apps.crm.db.LeadStatus" name="leadStatus"
+      title="Lead status"/>
 
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="Assigned to" massUpdate="true"/>
@@ -57,24 +61,52 @@
       ref="com.axelor.apps.base.db.IndustrySector" massUpdate="true"/>
 
     <one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events"
-      mappedBy="lead"/>
-    <one-to-many name="opportunitiesList" ref="com.axelor.apps.crm.db.Opportunity"
-      title="Opportunities" mappedBy="lead"/>
+      mappedBy="eventLead"/>
     <many-to-one name="lostReason" ref="LostReason" title="Lost reason"/>
 
     <string name="lostReasonStr" title="Lost reason" large="true"/>
     <string name="fullName" title="Contact name" namecolumn="true"/>
 
+    <boolean name="isNurturing" title="Nurturing"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="agency" ref="com.axelor.apps.crm.db.Agency" title="Agency"/>
+
+    <integer name="numberOfEmployees" title="Number of employees"/>
+    <boolean name="isConverted" title="Converted"/>
+    <many-to-one ref="com.axelor.apps.base.db.CompanyDepartment"
+      name="companyDepartment" title="Department"/>
+    <datetime name="lastEventDateT" title="Last event date" formula="true">
+      <![CDATA[
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.event_lead = id AND ICAL_EVENT.end_date_time < NOW() ORDER BY ICAL_EVENT.end_date_time DESC LIMIT 1
+      ]]>
+    </datetime>
+    <datetime name="nextScheduledEventDateT" title="Next scheduled event date"
+      formula="true">
+      <![CDATA[
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.event_lead = id AND ICAL_EVENT.start_date_time > NOW() ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
+      ]]>
+    </datetime>
+    <integer name="leadScoringSelect" title="Lead scoring"
+      selection="gold.rating.icon.select"/>
+    <integer name="sizeSelect" title="Size" selection="crm.lead.size.select"/>
+    <boolean name="isKeyAccount" title="Key account"/>
+    <many-to-one ref="com.axelor.apps.base.db.PartnerCategory" name="type"
+      title="Category"/>
+    <many-to-many ref="com.axelor.apps.crm.db.LeadTag" name="leadTagSet" title="Tags"/>
+    <integer name="sequence" title="Sequence"/>
     <extra-code>
     <![CDATA[
-    	public static final int LEAD_STATUS_NEW = 1;
-    	public static final int LEAD_STATUS_ASSIGNED = 2;
-    	public static final int LEAD_STATUS_IN_PROCESS = 3;
-    	public static final int LEAD_STATUS_CONVERTED = 4;
-    	public static final int LEAD_STATUS_LOST = 5;
+		//lead size select
+		public static final int LEAD_SIZE_ONE_TO_TWENTY = 1;
+		public static final int LEAD_SIZE_TWENTY_TO_HUNDERED = 2;
+		public static final int LEAD_SIZE_HUNDERED_TO_FIVE_HUNDRED = 3;
+		public static final int LEAD_SIZE_FIVE_HUNDRED_TO_ONE_THOUSAND = 4;
+		public static final int LEAD_SIZE_ONE_THOUSAND_TO_TWO_THOUSAND = 5;
+		public static final int LEAD_SIZE_OVER_TWO_THOUSAND = 6;
 
     	public static final int CONVERT_LEAD_CREATE_PARTNER = 1;
     	public static final int CONVERT_LEAD_SELECT_PARTNER = 2;
+    	public static final int CONVERT_LEAD_NO_CONTACT_CREATION = 0;
     	public static final int CONVERT_LEAD_CREATE_CONTACT = 1;
     	public static final int CONVERT_LEAD_SELECT_CONTACT = 2;
 
@@ -83,10 +115,8 @@
 
     <track>
       <field name="name"/>
-      <field name="statusSelect" on="UPDATE"/>
+      <field name="leadStatus" on="UPDATE"/>
       <message if="true" on="CREATE">Lead created</message>
-      <message if="statusSelect == 2" tag="important">Lead Assigned</message>
-      <message if="statusSelect == 5" tag="success">Lead Converted</message>
     </track>
 
   </entity>

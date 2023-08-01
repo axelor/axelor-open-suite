@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="timesheet-report-grid" title="Timesheet report"
     model="com.axelor.apps.hr.db.TimesheetReport">
@@ -11,9 +11,9 @@
   </grid>
 
   <form name="timesheet-report-form" title="Timesheet report"
-    model="com.axelor.apps.hr.db.TimesheetReport" cols="12" width="large"
+    model="com.axelor.apps.hr.db.TimesheetReport" width="large"
     onNew="action-human-resource-record-timesheet-report-onnew">
-    <panel name="mainPanel">
+    <panel name="mainPanel" colSpan="12">
       <field name="typeSelect"/>
       <spacer/>
       <field name="fromDate" onChange="action-human-resource-group-date"/>

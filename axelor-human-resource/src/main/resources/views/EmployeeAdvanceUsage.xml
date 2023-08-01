@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="employee-advance-usage-grid" title="Employee advance"
     model="com.axelor.apps.hr.db.EmployeeAdvanceUsage">
@@ -27,19 +27,23 @@
 
   <form name="employee-advance-usage-form" title="Employee advance"
     model="com.axelor.apps.hr.db.EmployeeAdvanceUsage">
-    <field name="employeeAdvance"/>
-    <field name="usedAmount"/>
-    <field name="expense"/>
+    <panel name="mainPanel">
+      <field name="employeeAdvance"/>
+      <field name="usedAmount"/>
+      <field name="expense"/>
+    </panel>
   </form>
 
   <form name="employee-advance-usage-expense-form" title="Employee advance"
     model="com.axelor.apps.hr.db.EmployeeAdvanceUsage">
-    <field name="usedAmount"/>
-    <field name="employeeAdvance.reason" readonly="true"/>
-    <field name="employeeAdvance.remainingAmount" title="Remaining amount" readonly="true"/>
-    <field name="employeeAdvance.requestedAmount" title="Total amount" readonly="true"/>
-    <field name="employeeAdvance.statusSelect" readonly="true"/>
-    <field name="employeeAdvance" hidden="true"/>
+    <panel name="mainPanel">
+      <field name="usedAmount"/>
+      <field name="employeeAdvance.reason" readonly="true"/>
+      <field name="employeeAdvance.remainingAmount" title="Remaining amount" readonly="true"/>
+      <field name="employeeAdvance.requestedAmount" title="Total amount" readonly="true"/>
+      <field name="employeeAdvance.statusSelect" readonly="true"/>
+      <field name="employeeAdvance" hidden="true"/>
+    </panel>
   </form>
 
   <form name="employee-advance-usage-advance-form" title="Employee advance"

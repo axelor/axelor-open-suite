@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,10 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businesssupport.service;
 
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.businesssupport.db.ProjectAnnouncement;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementRepository;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
@@ -26,6 +26,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.db.Wizard;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Map;
@@ -70,9 +71,9 @@ public class ProjectActivityDashboardServiceBusinessSupportImpl
   }
 
   @Override
-  protected Map<String, Object> getModelWithUtilityClass(String model) {
-    Map<String, Object> dataMap = super.getModelWithUtilityClass(model);
-    if (ProjectAnnouncement.class.getName().equals(model)) {
+  protected Map<String, Object> getModelWithUtilityClass(MailMessage message) {
+    Map<String, Object> dataMap = super.getModelWithUtilityClass(message);
+    if (ProjectAnnouncement.class.getName().equals(message.getRelatedModel())) {
       dataMap.put("modelName", "Project announcement");
       dataMap.put("utilityClass", "label-info");
     }

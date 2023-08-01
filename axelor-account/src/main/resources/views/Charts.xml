@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <custom name="report-top-3-suppliers" title="Top 3 supplier" css="report-box">
     <dataset type="jpql"><![CDATA[
@@ -1445,19 +1445,25 @@ from InvoiceTerm as self
     title="Custom">
 
     <field name="amount" type="decimal" x-scale="2"/>
+    <field name="statusSelect" title="Status"
+      selection="payment.session.dashlet.status.select" widget="single-select"/>
 
     <dataset type="jpql"><![CDATA[
-	 select round(sum(self.amountPaid),2) as amount, _partner.name as supplier, _bankDetails.fullName as bankDetails
-	 from InvoiceTerm as self
-	 left join self.moveLine.partner as _partner
-	 left join self.bankDetails as _bankDetails
-	 where self.isSelectedOnPaymentSession = true and self.paymentSession.id = :_id
-	 group by _partner.id,_bankDetails.id
-	 order by _partner.name
+	   SELECT
+	     ROUND(SUM(self.amountPaid), 2) AS amount,
+	     CASE WHEN ROUND(SUM(self.amountPaid), 2) > 0 THEN 2 ELSE 1 END AS statusSelect,
+	     _partner.name AS supplier,
+	     _bankDetails.fullName AS bankDetails
+	   FROM InvoiceTerm AS self
+	   LEFT JOIN self.moveLine.partner AS _partner
+	   LEFT JOIN self.bankDetails AS _bankDetails
+	   WHERE self.isSelectedOnPaymentSession IS TRUE AND self.paymentSession.id = :_id
+	   GROUP BY _partner.id, _bankDetails.id
+	   ORDER BY _partner.name
 	 ]]></dataset>
 
     <template><![CDATA[
-	<report-table data='data' columns='supplier,bankDetails,amount' sums='amount'></report-table>
+	   <report-table data='data' columns='supplier,bankDetails,amount,statusSelect' sums='amount'/>
 	 ]]></template>
 
   </custom>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form id="account-period-form" name="period-form" title="Period"
     model="com.axelor.apps.base.db.Period" extension="true">
@@ -122,7 +122,6 @@
     <action name="action-account-period-validate-need-confirmation"/>
     <action name="action-method-validate-close-period"/>
     <action name="action-method-period-call-service"/>
-    <action name="action-method-period-close"/>
   </action-group>
 
   <action-method name="action-method-period-show-buttons">

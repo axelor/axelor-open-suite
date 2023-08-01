@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
+
+  <entity name="MobileMenu">
+    <string name="technicalName" unique="true" required="true" title="Technical name"
+      help="Technical name should be the menu key used in module export on mobile application."/>
+    <string name="name" title="Menu name"/>
+    <many-to-many name="authorizedRoles" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="List of roles that have access to this application menu. If the field is empty then nobody has access to this menu. If it contains at least one role then only users with one of the roles present have access to the menu. However, if the application itself has restrictions on roles then the user must have a role included in the roles allowed for the application concerned as well as a role filled in this field."/>
+
+    <track>
+      <field name="technicalName"/>
+      <field name="name"/>
+    </track>
+  </entity>
+
+</domain-models>

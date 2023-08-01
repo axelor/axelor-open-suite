@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details"
     name="print-sale-invoices-details-grid">
@@ -34,7 +34,7 @@
     </panel>
     <panel name="optionsPanel" title="Options" sidebar="true">
       <field name="graphTypeSelect" widget="RadioSelect"/>
-      <field name="formatSelect" widget="RadioSelect"/>
+      <field name="formatSelect" widget="RadioSelect" selection-in="['pdf','xlsx','ods']"/>
       <field name="turnoverTypeSelect" widget="RadioSelect"/>
       <button name="printReportBtn" title="Print"
         onClick="action-print-invoices-details-group-print-sales"/>
@@ -60,7 +60,7 @@
     </panel>
     <panel name="optionsPanel" title="Options" sidebar="true">
       <field name="graphTypeSelect" widget="RadioSelect"/>
-      <field name="formatSelect" widget="RadioSelect"/>
+      <field name="formatSelect" widget="RadioSelect" selection-in="['pdf','xlsx','ods']"/>
       <field name="turnoverTypeSelect" widget="RadioSelect"/>
       <button name="printReportBtn" title="Print"
         onClick="action-print-invoices-details-group-print-purchases"/>

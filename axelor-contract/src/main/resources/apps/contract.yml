@@ -1,0 +1,15 @@
+---
+name: Contract
+code: contract
+typeSelect: standard
+installOrder: 2250
+description: |
+   Contract configuration
+image: app-contract.png
+modules: 
+   axelor-contract
+dependsOn:
+   - account
+   - purchase
+   - sale
+sequence: 10

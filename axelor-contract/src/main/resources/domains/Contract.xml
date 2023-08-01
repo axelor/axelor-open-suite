@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
@@ -60,6 +60,23 @@
       ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
+
+    <!-- Revaluation -->
+
+    <boolean name="isToRevaluate" title="To revaluate"/>
+    <many-to-one name="revaluationPeriod" ref="com.axelor.apps.base.db.Duration"
+      title="Revaluation period"/>
+    <many-to-one name="index1" ref="com.axelor.apps.contract.db.IndexRevaluation"
+      title="Index 1"/>
+    <date name="index1Date" title="Index 1 date"/>
+    <many-to-one name="index2" ref="com.axelor.apps.contract.db.IndexRevaluation"
+      title="Index 2"/>
+    <date name="index2Date" title="Index 2 date"/>
+    <many-to-one name="revaluationFormula"
+      ref="com.axelor.apps.contract.db.RevaluationFormula" title="Formula"/>
+    <date name="lastRevaluationDate" title="Last revaluation date"/>
+    <date name="nextRevaluationDate" title="Next revaluation date"/>
+    <date name="endOfApplicationDate" title="End of application"/>
 
     <extra-code><![CDATA[
             static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";

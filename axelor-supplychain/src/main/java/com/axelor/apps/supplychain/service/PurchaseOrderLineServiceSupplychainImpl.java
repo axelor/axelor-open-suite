@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,18 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -34,8 +35,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -123,6 +122,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
             purchaseOrder.getSupplierPartner(),
             purchaseOrderLine.getProduct(),
             purchaseOrder.getCompany(),
+            purchaseOrder.getTradingName(),
             true);
 
     purchaseOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
@@ -183,23 +183,5 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
       return undeliveryQty;
     }
     return BigDecimal.ZERO;
-  }
-
-  public void computeBudgetDistributionSumAmount(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
-    List<BudgetDistribution> budgetDistributionList = purchaseOrderLine.getBudgetDistributionList();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = purchaseOrder.getOrderDate();
-
-    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
-
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        Beans.get(BudgetSupplychainService.class)
-            .computeBudgetDistributionSumAmount(budgetDistribution, computeDate);
-      }
-    }
-    purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 }

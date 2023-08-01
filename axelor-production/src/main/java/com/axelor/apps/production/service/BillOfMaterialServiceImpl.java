@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -33,9 +36,8 @@ import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -48,6 +50,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -134,15 +137,23 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     if (billOfMaterial != null) {
+      long noOfPersonalizedBOM =
+          billOfMaterialRepo
+                  .all()
+                  .filter(
+                      "self.product = ?1 AND self.personalized = true", billOfMaterial.getProduct())
+                  .count()
+              + 1;
       BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
-      billOfMaterialRepo.save(personalizedBOM);
-      personalizedBOM.setName(
+      String name =
           personalizedBOM.getName()
               + " ("
               + I18n.get(ProductionExceptionMessage.BOM_1)
               + " "
-              + personalizedBOM.getId()
-              + ")");
+              + noOfPersonalizedBOM
+              + ")";
+      personalizedBOM.setName(name);
+      personalizedBOM.setFullName(name);
       personalizedBOM.setPersonalized(true);
       Set<BillOfMaterial> personalizedBOMSet = new HashSet<BillOfMaterial>();
       for (BillOfMaterial childBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
@@ -150,7 +161,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       }
       personalizedBOM.setBillOfMaterialSet(personalizedBOMSet);
 
-      return personalizedBOM;
+      return billOfMaterialRepo.save(personalizedBOM);
     }
 
     return null;
@@ -232,6 +243,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
+  @Transactional
   public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom) {
 
     processedBom = new ArrayList<>();
@@ -333,7 +345,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException {
     Company company = billOfMaterial.getCompany();
     Product product = billOfMaterial.getProduct();
@@ -357,7 +369,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addRawMaterials(
       long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException {
@@ -384,7 +396,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected BillOfMaterial createBomFromRawMaterial(long productId, int priority)
       throws AxelorException {
     BillOfMaterial newBom = new BillOfMaterial();
@@ -416,7 +428,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       throws AxelorException {
 
     if (company == null) {
-      company = AuthUtils.getUser().getActiveCompany();
+      company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
     }
 
     BillOfMaterial billOfMaterial = null;
@@ -449,6 +461,56 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         .fetch();
   }
 
+  protected BillOfMaterial getAnyBOM(Product originalProduct, Company company) {
+    return billOfMaterialRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.company = ?2 AND self.statusSelect = ?3 AND (self.archived is null or self.archived is false)",
+            originalProduct,
+            company,
+            BillOfMaterialRepository.STATUS_APPLICABLE)
+        .order("id")
+        .fetchOne();
+  }
+
+  @Override
+  public BillOfMaterial getBOM(Product originalProduct, Company company) throws AxelorException {
+
+    if (company == null) {
+      company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+    }
+
+    BillOfMaterial billOfMaterial = null;
+    if (originalProduct != null) {
+
+      // First we try to search for company specific default BOM in the the original product.
+      Object obj =
+          productCompanyService.getWithNoDefault(originalProduct, "defaultBillOfMaterial", company);
+
+      if (obj != null) {
+        billOfMaterial = (BillOfMaterial) obj;
+      }
+
+      BillOfMaterial defaultBillOfMaterial = originalProduct.getDefaultBillOfMaterial();
+      // If we can't find any, check for the default BOM for the product if it has the same company
+      // as the cost calculation
+      if (billOfMaterial == null
+          && defaultBillOfMaterial != null
+          && defaultBillOfMaterial.getCompany() != null
+          && defaultBillOfMaterial.getCompany().equals(company)) {
+        billOfMaterial = defaultBillOfMaterial;
+      }
+
+      // If we can't find any
+      if (billOfMaterial == null) {
+        // Get any BOM with original product and company.
+        billOfMaterial = getAnyBOM(originalProduct, company);
+      }
+    }
+
+    return billOfMaterial;
+  }
+
   @Override
   public List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException {
 
@@ -463,5 +525,61 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     List<Long> productIds = (List<Long>) query.getResultList();
 
     return productIds;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setDraftStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_NULL_STATUS));
+    } else if (billOfMaterial.getStatusSelect() != null
+        && billOfMaterial.getStatusSelect() == BillOfMaterialRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_ALREADY_DRAFT_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_DRAFT);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setValidateStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_VALIDATED_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_VALIDATED);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setApplicableStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_APPLICABLE_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_APPLICABLE);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setObsoleteStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_APPLICABLE) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_OBSOLETE_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_OBSOLETE);
+    return billOfMaterialRepo.save(billOfMaterial);
   }
 }

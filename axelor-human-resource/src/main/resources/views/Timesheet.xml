@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
     canNew="false" groupBy="employee" orderBy="employee,-fromDate">
@@ -18,7 +18,7 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
@@ -39,13 +39,13 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
   <grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet"
-    canNew="false" orderBy="-fromDate">
+    canNew="true" orderBy="-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-see-timesheet-lines"
@@ -59,7 +59,7 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
@@ -76,21 +76,20 @@
     </menubar>
     <hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
     <hilite background="warning"
-      if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/>
+      if="$moment(todayDate).diff(sentDateTime,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="periodTotal"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
   <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
-    cols="12" width="large" onNew="action-group-timesheet-onnew"
-    onLoad="action-timesheet-group-onload" canNew="false" onSave="action-timesheet-group-onsave"
-    canCopy="false">
+    width="large" onNew="action-group-timesheet-onnew" onLoad="action-timesheet-group-onload"
+    canNew="false" onSave="action-timesheet-group-onsave" canCopy="false">
     <menubar>
       <menu name="timesheetToolsMenu" title="Reports" icon="fa-files-o">
         <item name="printTimesheetItem" title="Print" action="save,action-print-timesheet"/>
@@ -102,7 +101,7 @@
           action="save,action-timesheet-method-generate-lines-from-expected-planning"/>
       </menu>
     </menubar>
-    <panel name="mainPanel">
+    <panel name="mainPanel" colSpan="12">
       <panel name="detailsPanel" colSpan="9">
         <panel name="headPanel" colSpan="12">
           <field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"
@@ -175,8 +174,8 @@
       <field name="$toGenerationDate" title="To generation date" widget="Date"
         onChange="action-hr-condition-automatic-to-generation-date"/>
       <field name="$project" title="Project" target="com.axelor.apps.project.db.Project"
-        domain="self.imputable=true and self." type="many-to-one" form-view="project-form"
-        grid-view="project-grid" onSelect="action-hr-timesheet-attrs-domain-project"
+        type="many-to-one" form-view="project-form" grid-view="project-grid"
+        onSelect="action-hr-timesheet-attrs-domain-project"
         onChange="action-hr-timesheet-record-empty-product"/>
       <field name="$product" title="Activity" type="many-to-one"
         target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product"
@@ -227,15 +226,15 @@
     <panel-dashlet name="totalHoursPerDayPanel" title="Total Hours per Day"
       hidden="true" showIf="id &amp;&amp; employee.timesheetImputationSelect != 2"
       action="action-timesheet-view-total-hours-per-day"/>
-    <panel name="validationInfoPanel" showIf="sentDate != null"
+    <panel name="validationInfoPanel" showIf="sentDateTime != null"
       if="__config__.app.getApp('timesheet')?.needValidation">
-      <field name="sentDate"/>
+      <field name="sentDateTime"/>
       <field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="validatedBy != null"/>
       <field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="refusedBy != null"/>
-      <field name="validationDate" showIf="validationDate != null"/>
-      <field name="refusalDate" showIf="refusalDate != null"/>
+      <field name="validationDateTime" showIf="validationDateTime != null"/>
+      <field name="refusalDateTime" showIf="refusalDateTime != null"/>
       <field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
     </panel>
     <panel name="attrsPanel">
@@ -249,15 +248,19 @@
 
   <form name="popup-timesheet-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.Timesheet">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-timesheet-form" title="Select the timesheet you want to edit"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
-    <field name="$timesheetSelect" title="Select Timesheet" type="many-to-one"
-      target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox"/>
-    <button name="editTimesheetSelectedBtn" title="Edit Timesheet Selected"
-      onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected,close"/>
+    model="com.axelor.utils.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
+    <panel name="mainPanel">
+      <field name="$timesheetSelect" title="Select Timesheet" type="many-to-one"
+        target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox"/>
+      <button name="editTimesheetSelectedBtn" title="Edit Timesheet Selected"
+        onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected,close"/>
+    </panel>
   </form>
 
   <action-group name="action-timesheet-group-employee-onchange">
@@ -411,7 +414,7 @@
 
   <action-attrs name="action-hr-timesheet-attrs-domain-project">
     <attribute name="domain" for="$project"
-      expr="eval: &quot; (${user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${user?.id}) AND self.isShowTimeSpent = true &quot;"/>
+      expr="eval: &quot; (${employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${employee?.user?.id}) AND self.isShowTimeSpent = true &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-title-project">
@@ -440,7 +443,7 @@
     <attribute name="hidden" for="validateBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="cancelBtn"
-      expr="eval: !(statusSelect == 1) &amp;&amp; !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
+      expr="eval: !(statusSelect == 1) &amp;&amp; !((statusSelect == 2 || statusSelect == 3) &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="readonly" for="headPanel"

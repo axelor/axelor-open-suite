@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="analytic-move-line-grid" title="Analytic Move Lines"
     model="com.axelor.apps.account.db.AnalyticMoveLine">
@@ -228,10 +228,13 @@
   <search-filters name="analytic-move-line-filters"
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move line filters">
     <field name="project" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <filter name="analytic-move-line-filters-type-select" title="Real (accounting)">
+      <domain>self.typeSelect = 3</domain>
+    </filter>
   </search-filters>
 
   <action-method name="action-method-domain-onselect-axis-analytic-move-line">
-    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
       method="setAnalyticAxisDomain"/>
   </action-method>
 

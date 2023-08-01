@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -25,15 +26,16 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -47,6 +49,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +67,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   protected AccountService accountService;
   protected AccountRepository accountRepository;
   protected BankDetailsService bankDetailsService;
+  protected MoveSimulateService moveSimulateService;
   protected int counter = 0;
 
   @Inject
@@ -76,7 +80,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       AccountService accountService,
       AccountRepository accountRepository,
       MoveLineCreateService moveLineCreateService,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      MoveSimulateService moveSimulateService) {
 
     this.moveCreateService = moveCreateService;
     this.accountConfigService = accountConfigService;
@@ -87,9 +92,10 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     this.accountRepository = accountRepository;
     this.moveLineCreateService = moveLineCreateService;
     this.bankDetailsService = bankDetailsService;
+    this.moveSimulateService = moveSimulateService;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAndOpenAnnualAccount(
       Year year,
       Account account,
@@ -100,7 +106,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String moveDescription,
       boolean closeYear,
       boolean openYear,
-      boolean allocatePerPartner)
+      boolean allocatePerPartner,
+      boolean isSimulatedMove)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -119,7 +126,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               moveDescription,
               partner,
               false,
-              allocatePerPartner);
+              allocatePerPartner,
+              isSimulatedMove);
 
       if (closeYearMove == null) {
         return null;
@@ -138,7 +146,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               moveDescription,
               partner,
               true,
-              allocatePerPartner);
+              allocatePerPartner,
+              isSimulatedMove);
 
       if (openYearMove == null) {
         return null;
@@ -153,7 +162,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAnnualAccount(
       Year year,
       Account account,
@@ -163,7 +172,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String origin,
       String moveDescription,
       boolean closeYear,
-      boolean allocatePerPartner)
+      boolean allocatePerPartner,
+      boolean isSimulatedMove)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -181,7 +191,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               moveDescription,
               partner,
               false,
-              allocatePerPartner);
+              allocatePerPartner,
+              isSimulatedMove);
 
       if (closeYearMove == null) {
         return null;
@@ -192,7 +203,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateOpenAnnualAccount(
       Year year,
       Account account,
@@ -202,7 +213,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String origin,
       String moveDescription,
       boolean openYear,
-      boolean allocatePerPartner)
+      boolean allocatePerPartner,
+      boolean isSimulatedMove)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -220,7 +232,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               moveDescription,
               partner,
               true,
-              allocatePerPartner);
+              allocatePerPartner,
+              isSimulatedMove);
 
       if (openYearMove == null) {
         return null;
@@ -240,7 +253,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String moveDescription,
       Partner partner,
       boolean isReverse,
-      boolean allocatePerPartner)
+      boolean allocatePerPartner,
+      boolean isSimulatedMove)
       throws AxelorException {
 
     Company company = account.getCompany();
@@ -301,7 +315,15 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         balance);
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
-      moveValidateService.accounting(move);
+      if (move.getJournal() != null
+          && accountConfig.getIsActivateSimulatedMove()
+          && isSimulatedMove
+          && move.getJournal().getAuthorizeSimulatedMove()) {
+
+        moveSimulateService.simulate(move);
+      } else {
+        moveValidateService.accounting(move);
+      }
     } else {
       moveRepository.remove(move);
       return null;
@@ -413,6 +435,11 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     List<Long> accountIdList =
         accountService.getAllAccountsSubAccountIncluded(
             accountSet.stream().map(Account::getId).collect(Collectors.toList()));
+
+    if (CollectionUtils.isEmpty(accountIdList)) {
+      return new ArrayList<>();
+    }
+
     Query q =
         JPA.em()
             .createQuery(

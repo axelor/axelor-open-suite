@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,22 +14,21 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.service.CalendarService;
-import com.axelor.apps.crm.service.EventService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -41,24 +41,14 @@ public class EventManagementRepository extends EventRepository {
 
   @Override
   public Event copy(Event entity, boolean deep) {
-    int eventType = entity.getTypeSelect();
-    switch (eventType) {
-      case 1: // call
-      case 2: // metting
-        break;
-      case 3: // task s
-        entity.setStatusSelect(EventRepository.STATUS_NOT_STARTED);
-        break;
-    }
-    return super.copy(entity, deep);
+    Event event = super.copy(entity, deep);
+    event.setStatusSelect(EventRepository.STATUS_PLANNED);
+    return event;
   }
 
   @Override
   public Event save(Event entity) {
-    if (entity.getTypeSelect() == EventRepository.TYPE_MEETING) {
-      super.save(entity);
-      Beans.get(EventService.class).manageFollowers(entity);
-    }
+
     User creator = entity.getCreatedBy();
     if (creator == null) {
       creator = AuthUtils.getUser();

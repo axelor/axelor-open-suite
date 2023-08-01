@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
-    orderBy="-sentDate">
+    orderBy="-sentDateTime">
     <hilite color="danger" if="statusSelect == 5"/>
     <hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="expenseSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="currency" colSpan="2" required="true"/>
     <field name="statusSelect"/>
     <field name="ventilated"/>
   </grid>
 
   <grid name="expense-payroll-preparation-grid" title="Expenses"
-    model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
-    <field name="sentDate"/>
+    model="com.axelor.apps.hr.db.Expense" orderBy="-sentDateTime">
+    <field name="sentDateTime"/>
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="inTaxTotal" aggregate="sum"/>
   </grid>
 
   <grid name="expense-validate-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
-    orderBy="-sentDate">
+    orderBy="-sentDateTime">
     <toolbar>
       <button name="showSubordinateExpenseToValidateBtn"
         title="Show expenses to be validated by my subordinates"
         onClick="com.axelor.apps.hr.web.expense.ExpenseController:showSubordinateExpenses"/>
     </toolbar>
-    <hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
-    <hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
+    <hilite background="danger" if="$moment(sentDateTime).diff(todayDate,'days') &lt;= 0"/>
+    <hilite background="warning" if="$moment(todayDate).diff(sentDateTime,'days') &gt;= 7"/>
     <field name="expenseSeq" width="120"/>
     <field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
@@ -47,9 +48,8 @@
   </grid>
 
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
-    onNew="action-expense-record-default,action-expense-attrs-hide-button-readonly-field,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
-    onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
-    onSave="action-expense-method-validate-and-compute">
+    onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
+    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printExpenseItem" title="Print" action="save,action-print-expense"/>
@@ -78,15 +78,17 @@
           </viewer>
         </field>
         <panel name="generalInfoPanel" colSpan="12">
-          <field name="multipleUsers" colSpan="12" hidden="true"
-            onChange="action-expense-attrs-multiple-users"/>
           <field name="company" canEdit="false" form-view="company-form"
-            grid-view="company-grid" onChange="action-expense-record-company-onchange"
+            grid-view="company-grid"
+            onChange="action-expense-record-company-onchange,action-expense-attrs-kilometric-panel-visibility"
             required="true"/>
           <field name="employee" form-view="employee-form"
             onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
             canEdit="false" canView="false" onChange="action-expense-record-employee-onchange"
             required="true"/>
+          <field name="currency" canEdit="false" colSpan="6" required="true"
+            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
+            onChange="action-expense-attrs-kilometric-panel-visibility"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
@@ -129,15 +131,15 @@
         <panel name="inTaxTotalPanel" readonly="true">
           <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
             <viewer
-              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund">
+              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund,currency.symbol">
 		                    <![CDATA[
 		                    <dl class="dl-horizontal">
 		                        <dt x-translate>Total W.T.</dt>
-		                        <dd>{{$fmt('exTaxTotal')}}</dd>
+		                        <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
 		                        <dt x-translate>Total tax</dt>
-		                        <dd>{{$fmt('taxTotal')}}</dd>
+		                        <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal')}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
 		                        <dt ng-show="record.personalExpenseAmount != 0" x-translate>Personal expense</dt>
 		                        <dd ng-show="record.personalExpenseAmount != 0"> -{{$fmt('personalExpenseAmount')}}</dd>
 		                        <dt ng-show="record.withdrawnCash != 0" x-translate>Withdrawn cash</dt>
@@ -147,7 +149,7 @@
 		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
 		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{$fmt('paymentAmount')}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
-		                        <dd class="order-subtotal-total">{{$fmt('$totalToRefund')}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('$totalToRefund') | currency: record.currency.symbol}}</dd>
 		                    </dl>
 		                    ]]>
             </viewer>
@@ -157,15 +159,15 @@
       </panel>
     </panel>
 
-    <panel name="followupPanel" title="Follow-up" showIf="sentDate" colSpan="12"
+    <panel name="followupPanel" title="Follow-up" showIf="sentDateTime" colSpan="12"
       canCollapse="true">
-      <field name="sentDate" colSpan="4"/>
+      <field name="sentDateTime" colSpan="4"/>
       <field name="validatedBy" canEdit="false" hidden="true" form-view="user-form"
         grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
-      <field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
+      <field name="validationDateTime" hidden="true" showIf="validationDateTime" colSpan="4"/>
       <field name="refusedBy" canEdit="false" hidden="true" form-view="user-form"
         grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
-      <field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
+      <field name="refusalDateTime" hidden="true" showIf="refusalDateTime" colSpan="4"/>
       <field name="groundForRefusal" hidden="true"
         showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12" readonly="true"/>
     </panel>
@@ -176,11 +178,11 @@
         onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="kilometricExpenseLineListPanel"
         field="kilometricExpenseLineList" title="Kilometric Allowances"
-        readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers" editable="true"
+        readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
         onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="employeeAdvanceUsageListPanel"
-        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length > 0"
+        showIf="employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length > 0"
         field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
         canNew="false" canSelect="false" canEdit="true" editable="true"
         form-view="employee-advance-usage-expense-form"
@@ -211,11 +213,13 @@
 
   <form name="popup-expense-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.Expense">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-expense-form" title="Select the expense you want to edit"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
+    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
     <panel name="mainPanel">
       <field name="$expenseSelect" title="Select Expense" type="many-to-one"
         target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
@@ -233,6 +237,20 @@
         onClick="save,action-expense-method-add-payment,close"/>
     </panel>
   </form>
+
+  <action-group name="action-expense-group-form-onNew">
+    <action name="action-expense-record-default"/>
+    <action name="action-expense-attrs-hide-button-readonly-field"/>
+    <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-attrs-kilometric-panel-visibility"/>
+  </action-group>
+
+  <action-group name="action-expense-group-form-onLoad">
+    <action name="action-expense-attrs-hide-button-readonly-field"/>
+    <action name="action-expense-attrs-expense-company-cb"/>
+    <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-attrs-kilometric-panel-visibility"/>
+  </action-group>
 
   <action-group name="action-expense-group-send">
     <action name="save"/>
@@ -271,9 +289,10 @@
     <field name="exTaxTotal" expr="eval: 0"/>
     <field name="taxTotal" expr="eval: 0"/>
     <field name="inTaxTotal" expr="eval: 0"/>
-    <field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
     <field name="bankDetails"
       expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
+    <field name="currency"
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany.currency ?: __user__.activeCompany.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-employee-onchange"
@@ -288,6 +307,7 @@
       expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, company).fetchOne()"/>
     <field name="bankDetails" expr="eval: null"/>
     <field name="employee" expr="eval: null"/>
+    <field name="currency" expr="eval: company?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-draft"
@@ -364,18 +384,14 @@
       if="__user__.employee?.hrManager"/>
   </action-attrs>
 
-  <action-attrs name="action-expense-attrs-multiple-users">
-    <attribute name="hidden" for="generalExpenseLineList.employee"
-      expr="eval: !multipleUsers"/>
-  </action-attrs>
-
   <action-attrs name="action-expense-attrs-expense-company-cb">
     <attribute name="hidden" for="generalExpenseLineList.companyCbPaymentSelect"
       expr="eval: companyCbSelect == 1"/>
   </action-attrs>
 
   <action-validate name="action-expense-validate-period">
-    <error message="Period is closed" if="period?.statusSelect == 2"/>
+    <error message="Period is closed"
+      if="period?.statusSelect == 2 || period?.statusSelect == 5"/>
   </action-validate>
 
   <action-view name="action-expense-refusal-popup-form" title="Ground for refusal"
@@ -413,6 +429,11 @@
   <action-attrs name="action-expense-attrs-set-total-to-refund">
     <attribute name="value" for="$totalToRefund"
       expr="eval: inTaxTotal - (advanceAmount + withdrawnCash + personalExpenseAmount + paymentAmount)"/>
+  </action-attrs>
+
+  <action-attrs name="action-expense-attrs-kilometric-panel-visibility">
+    <attribute for="kilometricExpenseLineList" name="hidden"
+      expr="eval: currency != company?.currency"/>
   </action-attrs>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"
