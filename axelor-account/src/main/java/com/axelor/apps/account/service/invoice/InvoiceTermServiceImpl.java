@@ -1437,7 +1437,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal getTotalInvoiceTermsAmount(
       MoveLine moveLine, Account holdbackAccount, boolean holdback) {
     Move move = moveLine.getMove();
-    BigDecimal total = moveLine.getCurrencyAmount();
+    BigDecimal total = moveLine.getCurrencyAmount().abs();
 
     if (move != null && move.getMoveLineList() != null) {
       for (MoveLine moveLineIt : move.getMoveLineList()) {
@@ -1447,7 +1447,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             && moveLineIt.getAccount().getUseForPartnerBalance()
             && (holdback
                 || (holdbackAccount != null && !moveLineIt.getAccount().equals(holdbackAccount)))) {
-          total = total.add(moveLineIt.getCurrencyAmount());
+          total = total.add(moveLineIt.getCurrencyAmount().abs());
         }
       }
     }
