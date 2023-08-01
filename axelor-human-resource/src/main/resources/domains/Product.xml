@@ -13,7 +13,7 @@
     <boolean name="personalExpense" title="Personal expense"/>
     <boolean name="unavailableToUsers" title="Unavailable to users" default="false"/>
     <integer name="taxComputeModeSelect" title="Tax computing method"
-      selection="hrs.expenses.product.compute.mode.select" default="1"
+      selection="hrs.expenses.product.compute.mode.select" default="1" required="true"
       help="- Tax in amount : Tax amount must be entered manually on the expense line &lt;br&gt;
 - No tax : Tax amount entry is disabled on the expense line and can't be entered &lt;br&gt;
 - Tax in percentage : Tax amount is computed automatically based on configured tax rate"/>
