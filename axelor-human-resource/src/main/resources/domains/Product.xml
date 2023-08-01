@@ -21,9 +21,9 @@
     <extra-code>
       <![CDATA[
       		//TAX COMPUTE MODE SELECT
-	  		public static final int TAX_IN_AMOUNT = 10;
-	  		public static final int NO_TAX = 20;
-	  		public static final int TAX_IN_PERCENTAGE = 30;
+	  		public static final int TAX_IN_AMOUNT = 1;
+	  		public static final int NO_TAX = 2;
+	  		public static final int TAX_IN_PERCENTAGE = 3;
 	  ]]>
     </extra-code>
   </entity>
