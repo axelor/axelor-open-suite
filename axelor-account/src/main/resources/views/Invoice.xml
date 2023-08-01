@@ -1532,11 +1532,16 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-set-payment-visibility"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-group-empty-financial-discount"
-      if="!__config__.app.getApp('account')?.getManageFinancialDiscount()"/>
+      if="!__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
   </action-group>
 
+  <action-method name="action-method-fdzaerdgnbegrnhezrat">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateFinancialDiscountWhenManageFinancialDiscountIsDisabled"/>
+  </action-method>
+
   <action-group name="action-invoice-group-empty-financial-discount">
-    <action name="action-invoice-record-set-financial-discount-null"/>
+    <action name="action-method-fdzaerdgnbegrnhezrat"/>
     <action name="save"/>
   </action-group>
 
@@ -1937,11 +1942,6 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-set-payment-condition"
     model="com.axelor.apps.account.db.Invoice">
     <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
-  </action-record>
-
-  <action-record name="action-invoice-record-set-financial-discount-null"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="financialDiscount" expr="eval: null"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
@@ -2703,7 +2703,7 @@ InvoiceSet.length > 0))"
     <field name="remainingAmountAfterFinDiscount"
       expr="eval: inTaxTotal - (financialDiscountRate * inTaxTotal / 100)"
       if="partner &amp;&amp; partner.financialDiscount"/>
-    <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
+    <field name="legalNotice" expr="eval: partner.financialDiscount?.legalNotice"
       if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
       expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
