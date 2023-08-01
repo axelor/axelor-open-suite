@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
@@ -42,8 +43,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -58,7 +57,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected StockMoveLine stockMoveLine;
 
   protected UnitConversionService unitConversionService;
-  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public InvoiceLineGeneratorSupplyChain(
@@ -185,20 +183,22 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
    */
   @Override
   protected InvoiceLine createInvoiceLine() throws AxelorException {
+
     InvoiceLine invoiceLine = super.createInvoiceLine();
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return invoiceLine;
     }
 
-    InvoiceLineAnalyticSupplychainService invoiceLineAnalyticService =
-        Beans.get(InvoiceLineAnalyticSupplychainServiceImpl.class);
+    InvoiceLineAnalyticService invoiceLineAnalyticService =
+        Beans.get(InvoiceLineAnalyticService.class);
 
     this.assignOriginElements(invoiceLine);
 
-    List<AnalyticMoveLine> analyticMoveLineList;
+    List<AnalyticMoveLine> analyticMoveLineList = null;
 
     if (saleOrderLine != null) {
+
       switch (saleOrderLine.getTypeSelect()) {
         case SaleOrderLineRepository.TYPE_END_OF_PACK:
           invoiceLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
@@ -275,7 +275,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       analyticMoveLineList =
           invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+      analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
