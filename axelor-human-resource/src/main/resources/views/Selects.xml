@@ -4,9 +4,9 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <selection name="hrs.expenses.product.compute.mode.select">
-    <option value="10">Tax in amount</option>
-    <option value="20">No tax</option>
-    <option value="30">Tax in percentage</option>
+    <option value="1">Tax in amount</option>
+    <option value="2">No tax</option>
+    <option value="3">Tax in percentage</option>
   </selection>
 
   <selection name="hrs.expenses.status.select">
