@@ -488,7 +488,7 @@
         readonlyIf="statusSelect > 1"
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
-        if="__config__.app.isApp('supplychain')"/>
+        if="__config__.app.isApp('supplychain')" widget="boolean-switch"/>
       <field name="createdByInterco" showIf="createdByInterco" readonly="true"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
@@ -1560,7 +1560,7 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-group-account-invoice-partner-onchange">
     <action name="action-record-invoice-set-discount-values"
-      if="[1,3].contains(operationTypeSelect)"/>
+      if="[1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
     <action name="action-group-account-invoice-partner-onchange-client"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
@@ -1588,7 +1588,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect)"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-fiscal-position-on-change"/>
     <action name="action-invoice-method-compute"/>
@@ -1663,7 +1663,7 @@ InvoiceSet.length > 0))"
     <action name="save"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect)"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
     <action name="action-invoice-method-validate"/>
   </action-group>
 
@@ -1735,7 +1735,7 @@ InvoiceSet.length > 0))"
     <action name="action-group-account-invoice-partner-onchange"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
-      if="[1,3].contains(operationTypeSelect)"/>
+      if="[1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-check-multi-currency"/>

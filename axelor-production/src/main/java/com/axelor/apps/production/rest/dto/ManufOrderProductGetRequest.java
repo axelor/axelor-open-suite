@@ -34,8 +34,6 @@ public class ManufOrderProductGetRequest extends RequestPostStructure {
   @Min(0)
   private Integer manufOrderVersion;
 
-  public ManufOrderProductGetRequest() {}
-
   public Long getManufOrderId() {
     return manufOrderId;
   }

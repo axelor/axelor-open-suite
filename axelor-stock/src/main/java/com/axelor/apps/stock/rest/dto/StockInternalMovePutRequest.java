@@ -40,8 +40,6 @@ public class StockInternalMovePutRequest extends RequestStructure {
   @Max(StockMoveRepository.STATUS_CANCELED)
   private Integer status;
 
-  public StockInternalMovePutRequest() {}
-
   public Long getUnitId() {
     return unitId;
   }

@@ -169,7 +169,7 @@
         <item name="envelopeItem" title="Envelope"
           action="save,action-partner-method-show-envelope" readonlyIf="!id"/>
         <item name="customerSituationItem" title="Customer Situation"
-          action="save,action-partner-method-show-client-situation" readonlyIf="!id"
+          action="save,action-partner-view-customer-situation-filters" readonlyIf="!id"
           showIf="isCustomer" if-module="axelor-account"/>
       </menu>
     </menubar>
@@ -550,7 +550,7 @@
           if-module="axelor-sale">
           <button name="createSaleOrderBtn" title="Create sale quotation" colSpan="4"
             onClick="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1"
-            showIf="isProspect || isCustomer"/>
+            showIf="isCustomer"/>
           <panel-include view="incl-sales-partner-form"/>
         </panel>
       </panel>
@@ -641,7 +641,7 @@
         <item name="envelopeItem" title="Envelope"
           action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
-          action="save,action-partner-method-show-client-situation" readonlyIf="id == null"
+          action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
       </menu>
     </menubar>
@@ -1079,7 +1079,7 @@
         <item name="envelopeItem" title="Envelope"
           action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
-          action="save,action-partner-method-show-client-situation" readonlyIf="id == null"
+          action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
       </menu>
     </menubar>
@@ -1170,6 +1170,31 @@
     </panel>
     <panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
       <field name="description" showTitle="false" colSpan="12" height="6" widget="Html"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.base.db.Partner" title="Customer situation filters"
+    name="popup-customer-situation-form" onLoad="action-attrs-customer-situation-popup-on-load">
+    <panel name="mainPanel">
+      <panel name="filtersPanel" colSpan="12">
+        <field name="$company" type="many-to-one" target="com.axelor.apps.base.db.Company"
+          title="Company"/>
+        <field name="$tradingName" title="Trading name" type="many-to-one"
+          target="com.axelor.apps.base.db.TradingName"
+          if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+        <panel name="datePanel" colSpan="12">
+          <field name="$fromDate" title="From Date" type="date"/>
+          <field name="$toDate" title="To Date" type="date"/>
+        </panel>
+        <field name="$saleOrderStatus" title="Sale order status" type="selection"
+          selection="sale.order.status.select" widget="MultiSelect"/>
+        <field name="$invoiceStatus" title="Invoice status" type="selection"
+          selection="iaccount.invoice.status.select" widget="MultiSelect"/>
+        <field name="$stockMoveStatus" title="Delivery status" type="selection"
+          selection="stock.move.status.select" widget="MultiSelect"/>
+      </panel>
+      <button onClick="action-partner-method-show-client-situation,close" name="printBtn"
+        title="Print" colOffset="3"/>
     </panel>
   </form>
 
@@ -1857,6 +1882,22 @@
 
   <action-attrs name="action-attrs-update-manually-blocked-account">
     <attribute name="value" for="hasManuallyBlockedAccount" expr="eval: hasBlockedAccount"/>
+  </action-attrs>
+
+  <action-view name="action-partner-view-customer-situation-filters"
+    title="Customer situation filters" model="com.axelor.apps.base.db.Partner">
+    <view name="popup-customer-situation-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-attrs name="action-attrs-customer-situation-popup-on-load">
+    <attribute name="hidden" for="$company"
+      expr="eval: __repo__(Company).all().count() == 1"/>
   </action-attrs>
 
 </object-views>

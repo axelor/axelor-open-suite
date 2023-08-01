@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
+import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -42,16 +42,16 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
 
   protected FixedAssetLineService fixedAssetLineService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
-  protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  protected FixedAssetLineComputationServiceFactory fixedAssetLineComputationServiceFactory;
 
   @Inject
   public FixedAssetLineGenerationServiceImpl(
       FixedAssetLineService fixedAssetLineService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
-      FixedAssetLineServiceFactory fixedAssetLineServiceFactory) {
+      FixedAssetLineComputationServiceFactory fixedAssetLineComputationServiceFactory) {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
-    this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
+    this.fixedAssetLineComputationServiceFactory = fixedAssetLineComputationServiceFactory;
   }
 
   /**
@@ -100,7 +100,7 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
-          fixedAssetLineServiceFactory.getFixedAssetComputationService(
+          fixedAssetLineComputationServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_IFRS);
       Optional<FixedAssetLine> initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
@@ -130,7 +130,7 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
-          fixedAssetLineServiceFactory.getFixedAssetComputationService(
+          fixedAssetLineComputationServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
       Optional<FixedAssetLine> initialFiscalFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
@@ -158,7 +158,7 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
-          fixedAssetLineServiceFactory.getFixedAssetComputationService(
+          fixedAssetLineComputationServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       Optional<FixedAssetLine> initialFixedAssetLine =
           fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
