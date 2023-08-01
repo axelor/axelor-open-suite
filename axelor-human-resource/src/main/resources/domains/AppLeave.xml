@@ -11,9 +11,28 @@
 
     <boolean name="allowNegativeLeaveEmployees"
       title="Allow negative values for employee leaves"/>
+    <integer name="useWeeklyPlanningCoefficientSelect"
+      title="Use weekly planning coefficient"
+      selection="hr.app.leave.use.weekly.planning.coefficient.select"/>
+    <boolean name="isPayrollPreparationExportEnabled"
+      title="Enable payroll preparation export"/>
+    <integer name="firstLeaveDayPeriod" title="Starting day for leave period" min="1"
+      max="31" default="1"/>
+    <integer name="firstLeaveMonthPeriod" title="Starting month for leave period" min="1"
+      max="12" default="6"/>
+
+    <extra-code>
+      <![CDATA[
+        public static final int USE_WEEKLY_PLANNING_COEFFICIENT_TYPE_ALWAYS = 1;
+		public static final int USE_WEEKLY_PLANNING_COEFFICIENT_TYPE_CONFIGURABLE = 2;
+		public static final int USE_WEEKLY_PLANNING_COEFFICIENT_TYPE_NEVER = 3;
+      ]]>
+    </extra-code>
 
     <track>
       <field name="allowNegativeLeaveEmployees" on="UPDATE"/>
+      <field name="useWeeklyPlanningCoefficientSelect" on="UPDATE"/>
+      <field name="isPayrollPreparationExportEnabled" on="UPDATE"/>
     </track>
   </entity>
 

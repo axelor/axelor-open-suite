@@ -56,9 +56,24 @@ public class LeaveManagementService {
       LocalDate toDate,
       BigDecimal value) {
 
+    LeaveManagement leaveManagement =
+        createLeaveManagement(user, comments, date, fromDate, toDate, value);
+    leaveManagement.setLeaveLine(leaveLine);
+
+    return leaveManagement;
+  }
+
+  @Transactional
+  public LeaveManagement createLeaveManagement(
+      User user,
+      String comments,
+      LocalDate date,
+      LocalDate fromDate,
+      LocalDate toDate,
+      BigDecimal value) {
+
     LeaveManagement leaveManagement = new LeaveManagement();
 
-    leaveManagement.setLeaveLine(leaveLine);
     leaveManagement.setComments(comments);
     if (date == null) {
       leaveManagement.setDate(
@@ -78,7 +93,6 @@ public class LeaveManagementService {
    * Reset leave management list by adding a new leave management line with negative quantity.
    *
    * @param leaveLine
-   * @param employee
    * @param comments
    * @param date
    * @param fromDate

@@ -66,4 +66,6 @@ public interface ITranslation {
 
   public static final String EDITOR_TEAM_TASK = /*$$(*/ "TeamTask"; /*)*/
   public static final String EDITOR_ADD_A_LINE = /*$$(*/ "ADD A LINE"; /*)*/
+  public static final String INCREMENT_LEAVE_REASON_BATCH_EXECUTION_RESULT = /*$$(*/
+      "%d leave reason(s) treated and %d anomaly(ies) reported !"; /*)*/
 }

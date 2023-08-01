@@ -31,6 +31,8 @@
     <many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning"
       title="Plannings"/>
     <boolean name="useWeeklyPlanningCoef" title="Use weekly plannning coef."/>
+    <integer name="leaveReasonTypeSelect" title="Leave type"
+      selection="hr.leave.reason.type.select"/>
 
 
     <!-- Seniority Leave Management -->
@@ -64,6 +66,7 @@
 		public static final int ACTION_LEAVE_MANAGEMENT_RESET = 5;
 		public static final int ACTION_EMPLOYMENT_CONTRACT_EXPORT = 6;
         public static final int ACTION_TIMESHEET_REMINDER = 7;
+        public static final int ACTION_INCREMENT_LEAVE = 8;
 
 		//PAYROLL PREPARATION EXPORT TYPE SELECT
 		public static final int EXPORT_TYPE_STANDARD = 1;

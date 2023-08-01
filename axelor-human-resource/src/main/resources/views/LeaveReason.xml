@@ -8,24 +8,55 @@
     <field name="manageAccumulation"/>
     <field name="allowNegativeValue"/>
     <field name="allowInjection"/>
+    <field name="isActive"/>
   </grid>
 
-  <form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
+  <form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason"
+    onNew="action-leave-reason-group-onnew">
     <panel name="mainPanel">
-      <field name="name"/>
-      <field name="manageAccumulation" hideIf="$popup()"/>
-      <field name="allowNegativeValue" showIf="manageAccumulation &amp;&amp; !$popup()"/>
-      <field name="allowInjection" showIf="manageAccumulation &amp;&amp; !$popup()"/>
+      <field name="$viewerTags" showTitle="false" readonly="true"
+        showIf="$readonly() &amp;&amp; leaveReasonTypeSelect == 1" colSpan="9" depends="isActive">
+        <viewer>
+          <![CDATA[
+            <h4>
+                <span class="label label-important"  ng-show="!record.isActive" x-translate>Inactive</span>
+                <span class="label label-success"  ng-show="record.isActive" x-translate>Active</span>
+            </h4>
+          ]]>
+        </viewer>
+      </field>
+
+      <field name="name" colSpan="4"/>
+      <field name="leaveReasonTypeSelect" colSpan="4"/>
+      <field name="defaultDayNumberGain" colSpan="4"/>
+      <field name="manageAccumulation" widget="boolean-switch" colSpan="4"/>
+      <field name="selectedByMgtOnly" widget="boolean-switch" colSpan="4"/>
+      <field name="isActive" widget="boolean-switch" colSpan="4"/>
       <field name="instruction" colSpan="12" widget="html"/>
-      <field name="defaultDayNumberGain"/>
-      <field name="selectedByMgtOnly"/>
-      <field name="unitSelect"/>
+
+      <panel name="planningPanel" colSpan="12"
+        if="__config__.app.getApp('leave')?.getUseWeeklyPlanningCoefficientSelect() != 2">
+        <field name="useWeeklyPlanningCoef" widget="boolean-switch" colSpan="6"/>
+        <field name="planningSet" colSpan="6" canNew="false" widget="TagSelect"/>
+      </panel>
     </panel>
-    <panel name="exportsPanel">
+
+    <panel name="exportsPanel"
+      if="__config__.app.getApp('leave')?.getIsPayrollPreparationExportEnabled()">
       <field name="payrollPreprationExport"/>
       <field name="exportCode" requiredIf="payrollPreprationExport"
         hideIf="!payrollPreprationExport"/>
     </panel>
+
   </form>
+
+  <action-group name="action-leave-reason-group-onnew">
+    <action name="action-leave-reason-record-set-unit"/>
+  </action-group>
+
+  <action-record name="action-leave-reason-record-set-unit"
+    model="com.axelor.apps.hr.db.LeaveReason">
+    <field name="unitSelect" expr="eval: 1"/>
+  </action-record>
 
 </object-views>

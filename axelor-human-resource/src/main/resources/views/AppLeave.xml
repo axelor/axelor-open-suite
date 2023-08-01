@@ -6,7 +6,13 @@
   <form name="app-leave-config-form" title="App Leave" model="com.axelor.studio.db.AppLeave"
     canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
+      <field name="firstLeaveDayPeriod" colSpan="6"/>
+      <field name="firstLeaveMonthPeriod" colSpan="6"/>
       <field name="allowNegativeLeaveEmployees" widget="boolean-switch"/>
+      <field name="isPayrollPreparationExportEnabled" widget="boolean-switch"
+        if="__config__.app.getApp('employee')?.getPayrollPreparation()"/>
+      <field name="useWeeklyPlanningCoefficientSelect"/>
+
     </panel>
 
     <panel-mail name="mailPanel">

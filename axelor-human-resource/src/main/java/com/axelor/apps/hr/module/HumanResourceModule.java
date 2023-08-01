@@ -97,6 +97,8 @@ import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursServiceImpl;
+import com.axelor.apps.hr.service.leave.IncrementLeaveService;
+import com.axelor.apps.hr.service.leave.IncrementLeaveServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.LeaveServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
@@ -192,5 +194,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseToolService.class).to(ExpenseToolServiceImpl.class);
     bind(ExpenseComputationService.class).to(ExpenseComputationServiceImpl.class);
     bind(EmployeeFileDMSService.class).to(EmployeeFileDMSServiceImpl.class);
+    bind(IncrementLeaveService.class).to(IncrementLeaveServiceImpl.class);
   }
 }
