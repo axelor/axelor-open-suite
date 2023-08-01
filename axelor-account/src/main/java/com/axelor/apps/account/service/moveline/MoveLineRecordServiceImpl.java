@@ -106,6 +106,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     Account accountingAccount = moveLine.getAccount();
 
     if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+      moveLine.setTaxLine(null);
       return;
     }
 
