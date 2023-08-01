@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="user-form-mobilesettings" name="user-form" title="User"
+    model="com.axelor.auth.db.User" extension="true">
+    <extend target="//panel[@name='mainUserPanel']/panel[@name='overviewPanel']">
+      <insert position="after">
+        <panel name="qrCodePanel" colSpan="2">
+          <field name="qrCode" colSpan="12" showTitle="false" hidden="true" readonly="true"
+            hideIf="qrCode == null" widget="Image" canRemove="true"
+            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
+        </panel>
+      </insert>
+      <attribute name="colSpan" value="10"/>
+    </extend>
+    <extend target="//panel[@name='testingPanel']">
+      <insert position="after">
+        <panel name="configAppPanel" sidebar="true">
+          <button name="generateQrCodeBtn" title="Generate QR Code"
+            readonlyIf="qrCode != null" onClick="action-user-group-generate-qr-code-button-on-click"
+            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <form id="base-user-preferences-form-mobilesettings" name="user-preferences-form"
+    title="User" model="com.axelor.auth.db.User" extension="true">
+    <extend target="//panel[@name='userPreferencesPanel']/field[@name='image']">
+      <insert position="after">
+        <field name="qrCode" colSpan="2" showTitle="false" hidden="true" readonly="true"
+          hideIf="qrCode == null" widget="Image" canRemove="true"
+          if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
+      </insert>
+      <attribute name="colSpan" value="10"/>
+    </extend>
+  </form>
+
+  <action-group name="action-user-group-generate-qr-code-button-on-click">
+    <action name="action-user-method-generate-qr-code"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-method name="action-user-method-generate-qr-code">
+    <call class="com.axelor.apps.mobilesettings.web.UserController" method="generateQrCode"/>
+  </action-method>
+
+</object-views>

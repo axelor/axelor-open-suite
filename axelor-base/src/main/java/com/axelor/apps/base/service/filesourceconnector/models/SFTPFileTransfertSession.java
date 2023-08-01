@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,20 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.filesourceconnector.models;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.tool.SFTPUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.SFTPUtils;
 import com.google.inject.Inject;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
@@ -63,7 +64,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     if (this.session == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_NOT_STARTED));
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_NOT_STARTED));
     }
 
     try {
@@ -88,7 +89,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     } catch (Exception e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_UPLOAD_FAILED),
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_UPLOAD_FAILED),
           e.getMessage());
     }
   }
@@ -100,7 +101,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     if (this.session == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_NOT_STARTED));
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_NOT_STARTED));
     }
     try {
       final ChannelSftp channel = SFTPUtils.openSftpChannel(this.session);
@@ -136,7 +137,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     } catch (Exception e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_DOWNLOAD_FAILED),
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_DOWNLOAD_FAILED),
           e.getMessage());
     }
   }
@@ -183,7 +184,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     if (fileSourceConnector.getHost() == null || fileSourceConnector.getPort() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS));
+          I18n.get(BaseExceptionMessage.FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS));
     }
 
     String privateKeyFileName = null;
@@ -235,7 +236,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     if (this.session == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.FILE_TRANSFERT_SESSION_NOT_CONFIGURED));
+          I18n.get(BaseExceptionMessage.FILE_TRANSFERT_SESSION_NOT_CONFIGURED));
     }
     try {
       this.session.connect();

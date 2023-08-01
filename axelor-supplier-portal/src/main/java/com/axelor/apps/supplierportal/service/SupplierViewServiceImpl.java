@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplierportal.service;
 
@@ -28,14 +29,12 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SupplierViewServiceImpl implements SupplierViewService {
-  protected static final DateTimeFormatter DATE_FORMATTER =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   protected static final String SUPPLIER_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
 
@@ -56,10 +55,11 @@ public class SupplierViewServiceImpl implements SupplierViewService {
         "$quotationInProgress",
         getCount(PurchaseOrder.class, getPurchaseQuotationsInProgressOfSupplier(user)));
     PurchaseOrder lastOrder = getData(PurchaseOrder.class, getLastPurchaseOrderOfSupplier(user));
+    L10n dateFormat = L10n.getInstance();
     map.put(
         "$lastOrder",
         lastOrder != null
-            ? lastOrder.getValidationDate().format(DATE_FORMATTER)
+            ? dateFormat.format(lastOrder.getValidationDateTime())
             : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     /* StockMove */
@@ -67,14 +67,14 @@ public class SupplierViewServiceImpl implements SupplierViewService {
     map.put(
         "$lastDelivery",
         stockMoveLastDelivery != null
-            ? stockMoveLastDelivery.getRealDate().format(DATE_FORMATTER)
+            ? dateFormat.format(stockMoveLastDelivery.getRealDate())
             : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     StockMove stockMoveNextDelivery = getData(StockMove.class, getNextDeliveryOfSupplier(user));
     map.put(
         "$nextDelivery",
         stockMoveNextDelivery != null
-            ? stockMoveNextDelivery.getEstimatedDate().format(DATE_FORMATTER)
+            ? dateFormat.format(stockMoveNextDelivery.getEstimatedDate())
             : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     map.put(
@@ -117,8 +117,8 @@ public class SupplierViewServiceImpl implements SupplierViewService {
         + user.getPartner().getId()
         + " AND self.statusSelect = "
         + PurchaseOrderRepository.STATUS_FINISHED
-        + " GROUP BY self.validationDate,self.id"
-        + " ORDER BY self.validationDate DESC";
+        + " GROUP BY self.validationDateTime,self.id"
+        + " ORDER BY self.validationDateTime DESC";
   }
 
   /* StockMove Query */

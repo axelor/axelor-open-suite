@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Opportunity" lang="java">
+  <entity name="Opportunity">
 
     <string name="name" title="Name" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"
@@ -13,13 +13,13 @@
     <many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <date name="expectedCloseDate" title="Expected close date"/>
-    <decimal name="amount" title="Amount"/>
+    <decimal name="amount" title="Amount" min="0"/>
     <string name="opportunityType" title="Type of need"/>
-    <decimal name="bestCase" title="Best case"/>
-    <decimal name="worstCase" title="Worst case"/>
+    <decimal name="bestCase" title="Best case" min="0"/>
+    <decimal name="worstCase" title="Worst case" min="0"/>
     <many-to-one name="opportunityStatus" title="Sales stage"
       ref="com.axelor.apps.crm.db.OpportunityStatus"/>
-    <decimal name="probability" title="Probability (%)"/>
+    <decimal name="probability" title="Probability (%)" min="0" max="100"/>
     <string name="description" large="true" title="Description"/>
     <string name="customerDescription" large="true" title="Customer Description"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
@@ -30,7 +30,19 @@
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="Assigned to"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
-
+    <datetime name="lastEventDateT" title="Last event date" formula="true">
+      <![CDATA[
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.opportunity = id AND ICAL_EVENT.end_date_time < NOW() ORDER BY ICAL_EVENT.end_date_time DESC LIMIT 1
+      ]]>
+    </datetime>
+    <datetime name="nextScheduledEventDateT" title="Next scheduled event date"
+      formula="true">
+      <![CDATA[
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.opportunity = id AND ICAL_EVENT.start_date_time > NOW() ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
+      ]]>
+    </datetime>
+    <one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events"
+      mappedBy="opportunity"/>
     <many-to-one name="lostReason" ref="LostReason" title="Lost reason"/>
     <string name="lostReasonStr" title="Lost reason" large="true"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>

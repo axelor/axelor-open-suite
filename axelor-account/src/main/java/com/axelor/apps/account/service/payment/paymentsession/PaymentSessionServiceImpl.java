@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,22 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -34,24 +38,26 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -65,6 +71,9 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected InvoiceTermService invoiceTermService;
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected AccountConfigService accountConfigService;
+  protected DateService dateService;
+  protected PaymentSessionCancelService paymentSessionCancelService;
+  protected int jpaLimit = 4;
 
   @Inject
   public PaymentSessionServiceImpl(
@@ -72,16 +81,20 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       InvoiceTermRepository invoiceTermRepository,
       InvoiceTermService invoiceTermService,
       PaymentSessionValidateService paymentSessionValidateService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      DateService dateService,
+      PaymentSessionCancelService paymentSessionCancelService) {
     this.paymentSessionRepository = paymentSessionRepository;
     this.invoiceTermRepository = invoiceTermRepository;
     this.invoiceTermService = invoiceTermService;
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.accountConfigService = accountConfigService;
+    this.dateService = dateService;
+    this.paymentSessionCancelService = paymentSessionCancelService;
   }
 
   @Override
-  public String computeName(PaymentSession paymentSession) {
+  public String computeName(PaymentSession paymentSession) throws AxelorException {
     StringBuilder name = new StringBuilder("Session");
     User createdBy = paymentSession.getCreatedBy();
     if (ObjectUtils.notEmpty(paymentSession.getPaymentMode())) {
@@ -92,9 +105,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
           String.format(
               " %s %s",
               I18n.get(ITranslation.PAYMENT_SESSION_COMPUTE_NAME_ON_THE),
-              paymentSession
-                  .getCreatedOn()
-                  .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
+              paymentSession.getCreatedOn().format(dateService.getDateTimeFormat())));
     }
     if (ObjectUtils.notEmpty(createdBy)) {
       name.append(
@@ -125,20 +136,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     } else {
       paymentSession.setJournal(null);
     }
-  }
-
-  @Override
-  @Transactional
-  public void computeTotalPaymentSession(PaymentSession paymentSession) {
-    BigDecimal sessionTotalAmount =
-        (BigDecimal)
-            JPA.em()
-                .createQuery(
-                    "select SUM(self.amountPaid) FROM InvoiceTerm as self WHERE self.paymentSession = ?1 AND self.isSelectedOnPaymentSession = TRUE")
-                .setParameter(1, paymentSession)
-                .getSingleResult();
-    paymentSession.setSessionTotalAmount(sessionTotalAmount);
-    paymentSessionRepository.save(paymentSession);
   }
 
   @Override
@@ -207,7 +204,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void selectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, false).fetch();
     invoiceTermService.toggle(invoiceTermList, true);
-    computeTotalPaymentSession(paymentSession);
   }
 
   @Override
@@ -215,7 +211,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, true).fetch();
     invoiceTermService.toggle(invoiceTermList, false);
-    computeTotalPaymentSession(paymentSession);
   }
 
   protected Query<InvoiceTerm> getTermsBySession(
@@ -235,10 +230,13 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         .bind("paymentSession", paymentSession.getId());
   }
 
-  @Override
-  @Transactional
-  public void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException {
-    List<InvoiceTerm> eligibleInvoiceTermList =
+  protected void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException {
+    List<Long> partnerIdList =
+        paymentSession.getPartnerSet().stream().map(Partner::getId).collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(partnerIdList)) {
+      partnerIdList.add((long) 0);
+    }
+    Query<InvoiceTerm> eligibleInvoiceTermQuery =
         invoiceTermRepository
             .all()
             .filter(retrieveEligibleTermsQuery(paymentSession.getCompany()))
@@ -262,17 +260,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind(
                 "pfpValidateStatusPartiallyValidated",
                 InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
-            .fetch();
+            .bind("pfpValidateStatusNoPfp", InvoiceTermRepository.PFP_STATUS_NO_PFP)
+            .bind("partnerIds", partnerIdList)
+            .bind("accountingMethodSelect", paymentSession.getAccountingMethodSelect())
+            .order("id");
 
-    eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
-    eligibleInvoiceTermList = this.filterBlocking(eligibleInvoiceTermList, paymentSession);
-    eligibleInvoiceTermList.forEach(
-        invoiceTerm -> {
-          fillEligibleTerm(paymentSession, invoiceTerm);
-          invoiceTermRepository.save(invoiceTerm);
-        });
-
-    computeTotalPaymentSession(paymentSession);
+    this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
   }
 
   protected String retrieveEligibleTermsQuery(Company company) throws AxelorException {
@@ -281,7 +274,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.dueDate <= :paymentDatePlusMargin "
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "
-            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     if (!accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
@@ -290,16 +282,18 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     String termsMoveLineCondition =
-        " AND ((self.moveLine.partner.isCustomer = TRUE "
+        " AND (0 in (:partnerIds) OR self.moveLine.move.partner.id in (:partnerIds))"
+            + " AND ((self.moveLine.partner.isCustomer = TRUE "
+            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND :partnerTypeSelect = :partnerTypeClient"
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
+            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND :partnerTypeSelect = :partnerTypeSupplier "
-            + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
-            + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
-            + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
-            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated))))) ";
+            + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier ) "
+            + " OR ( :accountingMethodSelect in (2,3) AND self.moveLine.partner.isCustomer = TRUE AND self.moveLine.partner.isSupplier = TRUE AND self.moveLine.partner.isCompensation = TRUE "
+            + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier )))"
+            + " AND (self.pfpValidateStatusSelect IN (:pfpValidateStatusNoPfp,:pfpValidateStatusValidated,:pfpValidateStatusPartiallyValidated))";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
             + " AND self.amountRemaining > 0"
@@ -307,17 +301,39 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
   }
 
-  public List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream()
-        .filter(invoiceTerm -> invoiceTermService.isNotAwaitingPayment(invoiceTerm))
-        .collect(Collectors.toList());
+  public void filterInvoiceTerms(
+      Query<InvoiceTerm> eligibleInvoiceTermQuery, PaymentSession paymentSession) {
+    List<InvoiceTerm> invoiceTermList;
+
+    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(jpaLimit)).isEmpty()) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        if (this.isNotAwaitingPayment(invoiceTerm)
+            && !this.isBlocking(invoiceTerm, paymentSession)) {
+          this.saveFilledInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
+        }
+      }
+      JPA.clear();
+      paymentSession = paymentSessionRepository.find(paymentSession.getId());
+    }
   }
 
-  protected List<InvoiceTerm> filterBlocking(
-      List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
-    return invoiceTermList.stream()
-        .filter(it -> !this.isBlocking(it, paymentSession))
-        .collect(Collectors.toList());
+  public boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm == null) {
+      return false;
+    } else if (invoiceTerm.getInvoice() != null) {
+      Invoice invoice = invoiceTerm.getInvoice();
+
+      if (CollectionUtils.isNotEmpty(invoice.getInvoicePaymentList())) {
+        return invoice.getInvoicePaymentList().stream()
+            .filter(it -> it.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING)
+            .map(InvoicePayment::getInvoiceTermPaymentList)
+            .flatMap(Collection::stream)
+            .map(InvoiceTermPayment::getInvoiceTerm)
+            .noneMatch(it -> it.getId().equals(invoiceTerm.getId()));
+      }
+    }
+
+    return true;
   }
 
   protected boolean isBlocking(InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
@@ -370,6 +386,15 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
 
+    if ((paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
+        || (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER
+            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                == MoveRepository.FUNCTIONAL_ORIGIN_SALE)) {
+      isSignedNegative = !isSignedNegative;
+    }
+
     invoiceTerm.setPaymentSession(paymentSession);
     invoiceTerm.setIsSelectedOnPaymentSession(true);
     if (isSignedNegative) {
@@ -400,6 +425,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     if (invoiceTerm.getMoveLine() != null) {
       if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
           == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+
         isSignedNegative =
             invoiceTerm
                     .getMoveLine()
@@ -424,5 +450,48 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   @Override
   public boolean hasInvoiceTerm(PaymentSession paymentSession) {
     return getTermsBySession(paymentSession).count() > 0;
+  }
+
+  @Override
+  public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
+    Query<InvoiceTerm> invoiceTermQuery = this.getNegativeBalanceInvoiceTermQuery(paymentSession);
+    List<InvoiceTerm> invoiceTermList;
+    int offset = 0;
+
+    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      invoiceTermService.toggle(invoiceTermList, false);
+
+      offset += invoiceTermList.size();
+      JPA.clear();
+    }
+  }
+
+  protected Query<InvoiceTerm> getNegativeBalanceInvoiceTermQuery(PaymentSession paymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter(
+            "self.paymentSession = :paymentSession "
+                + "AND self.isSelectedOnPaymentSession IS TRUE "
+                + "AND self.partner IN ("
+                + "SELECT it.partner FROM InvoiceTerm it "
+                + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
+                + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
+        .bind("paymentSession", paymentSession)
+        .order("id");
+  }
+
+  @Transactional
+  protected void saveFilledInvoiceTermWithPaymentSession(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    fillEligibleTerm(paymentSession, invoiceTerm);
+    invoiceTermRepository.save(invoiceTerm);
+  }
+
+  @Override
+  public void searchEligibleTerms(PaymentSession paymentSession) throws AxelorException {
+    paymentSessionCancelService.cancelInvoiceTerms(paymentSession);
+    paymentSession = paymentSessionRepository.find(paymentSession.getId());
+    retrieveEligibleTerms(paymentSession);
   }
 }

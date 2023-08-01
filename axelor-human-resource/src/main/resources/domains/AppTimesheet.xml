@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppTimesheet" lang="java">
+  <entity name="AppTimesheet" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times"
       selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
@@ -26,8 +26,8 @@
     <boolean name="timesheetEditor" title="Timesheet editor"/>
     <boolean name="displayTimesheetLineNumber" title="Display timesheet line number"/>
 
-    <many-to-one name="timesheetReminderTemplate"
-      ref="com.axelor.apps.message.db.Template" title="Timesheet reminder template"/>
+    <many-to-one name="timesheetReminderTemplate" ref="com.axelor.message.db.Template"
+      title="Timesheet reminder template"/>
     <boolean name="isAlertManufOrderFinish" title="Alert if the manuf. order is finish"/>
 
     <boolean name="displayTaskColumnInPrinting" title="Display task column in printing"/>
@@ -51,6 +51,13 @@
       <field name="createLinesForHolidays" on="UPDATE"/>
 
       <field name="timesheetEditor" on="UPDATE"/>
+      <field name="displayTimesheetLineNumber" on="UPDATE"/>
+      <field name="isAlertManufOrderFinish" on="UPDATE"/>
+      <field name="needValidation" on="UPDATE"/>
+      <field name="enableActivity" on="UPDATE"/>
+      <field name="timesheetReminderTemplate" on="UPDATE"/>
+      <field name="displayTaskColumnInPrinting" on="UPDATE"/>
+      <field name="displayActivityColumnInPrinting" on="UPDATE"/>
     </track>
   </entity>
 

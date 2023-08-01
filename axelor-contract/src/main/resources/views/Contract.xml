@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
     orderBy="-contractId">
@@ -14,6 +14,8 @@
     <field name="startDate"/>
     <field name="currentContractVersion.supposedEndDate"/>
     <field name="statusSelect"/>
+    <field name="currentContractVersion.initialExTaxTotalPerYear"/>
+    <field name="currentContractVersion.yearlyExTaxTotalRevalued"/>
   </grid>
 
   <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
@@ -64,16 +66,17 @@
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
               <panel colSpan="6">
                 <panel hideIf="statusSelect >= 3" colSpan="12">
-                  <field name="supposedActivationDate"/>
+                  <field name="supposedActivationDate"
+                    onChange="action-method-contract-version-check-supposed-activation-date,save,action-method-contract-version-update-contract-lines"/>
                   <field name="supposedEndDate"/>
                 </panel>
                 <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
                   <field name="activatedByUser" colSpan="4"/>
-                  <field name="activationDate" colSpan="4"/>
+                  <field name="activationDateTime" colSpan="4"/>
                   <panel colSpan="4">
                     <field name="supposedEndDate" hidden="true" readonly="true"
                       showIf="statusSelect == 3" colSpan="12"/>
-                    <field name="endDate" hidden="true" readonly="true"
+                    <field name="endDateTime" hidden="true" readonly="true"
                       showIf="statusSelect == 4" colSpan="12"/>
                   </panel>
                 </panel>
@@ -128,6 +131,22 @@
         </panel>
         <panel title="Notes" stacked="true" name="notesPanel">
           <field name="note" showTitle="false"/>
+        </panel>
+        <panel name="pricesPerYear" title="Prices per year">
+          <field name="currentContractVersion" showTitle="false" colSpan="12"
+            x-show-icons="false" readonly="true">
+            <viewer
+              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol">
+              <![CDATA[
+              <div style="text-align: left;">
+              <div style="padding-top: 2%; font-weight: 600" x-translate>Initial ex tax total per year</div>
+              <div style="padding: 2% 0 5% 0; font-size: 22px; font-weight: 600; border-bottom: 1px solid #eee;">{{$fmt('initialExTaxTotalPerYear') | currency: record.contract.currency.symbol}}</div>
+              <div style="padding-top: 4%; font-weight: 600;" x-translate>Yearly ex tax total revalued</div>
+              <div style="padding: 2% 0; font-size: 22px; font-weight: 600;">{{$fmt('yearlyExTaxTotalRevalued') | currency: record.contract.currency.symbol}}</div>
+              </div>
+              ]]>
+            </viewer>
+          </field>
         </panel>
       </panel>
     </panel>
@@ -326,12 +345,30 @@
           </editor>
         </field>
       </panel>
+
+      <panel name="commercialConditionPanel" title="Commercial condition" hidden="true"
+        showIf="targetTypeSelect == 1">
+        <field name="isToRevaluate" widget="boolean-switch" colSpan="12"/>
+        <field name="revaluationPeriod"
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          domain="self.applicationTypeSelect = 2"/>
+        <field name="revaluationFormula"
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index2"/>
+        <field name="index2Date"/>
+        <field name="endOfApplicationDate"/>
+        <field name="lastRevaluationDate" readonly="true"/>
+        <field name="nextRevaluationDate"/>
+      </panel>
+
       <panel-related name="versionHistoryPanel" hidden="true" readonly="true"
         showIf="versionHistory &amp;&amp; versionHistory.length > 0" field="versionHistory"
         form-view="contract-archived-version-form">
         <field name="createdOn"/>
-        <field name="activationDate"/>
-        <field name="endDate"/>
+        <field name="activationDateTime"/>
+        <field name="endDateTime"/>
         <field name="statusSelect"/>
       </panel-related>
     </panel-tabs>
@@ -424,11 +461,11 @@
         <field name="createdBy"/>
       </panel>
       <panel name="activationPanel" showIf="statusSelect >= 3" colSpan="12" readonly="true">
-        <field name="activationDate"/>
+        <field name="activationDateTime"/>
         <field name="activatedByUser"/>
       </panel>
       <field name="supposedEndDate"/>
-      <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
+      <field name="endDateTime" hidden="true" showIf="endDateTime" readonly="true"/>
       <field name="description" widget="html"/>
       <field name="metaFile" widget="binary-link"/>
       <field name="contractLineList" showTitle="false" hidden="true"

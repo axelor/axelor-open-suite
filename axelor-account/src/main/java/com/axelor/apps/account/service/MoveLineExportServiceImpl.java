@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -34,20 +34,20 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.file.CsvTool;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
@@ -468,13 +468,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
     if (reconcileGroup != null
-        && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
+        && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_BALANCED) {
       items[13] = reconcileGroup.getCode();
       items[14] =
           reconcileGroup
-              .getDateOfLettering()
-              .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD))
-              .toString();
+              .getLetteringDateTime()
+              .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
     } else {
       items[13] = "";
       items[14] = "";
@@ -486,211 +485,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     }
 
     items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
-    if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0
-        && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      items[16] = "-" + items[16];
-    }
 
     if (move.getCurrency() != null) {
       items[17] = move.getCurrency().getCodeISO();
     }
     return items;
-  }
-
-  /**
-   * Méthode réalisant l'export SI - des fichiers détails
-   *
-   * @param mlr
-   * @param fileName
-   * @throws AxelorException
-   * @throws IOException
-   */
-  @SuppressWarnings("unchecked")
-  public void exportMoveLineAllTypeSelectFILE2(AccountingReport accountingReport, String fileName)
-      throws AxelorException, IOException {
-
-    log.info("In export service FILE 2 :");
-
-    Company company = accountingReport.getCompany();
-
-    String companyCode = "";
-    String moveLineQueryStr = "";
-
-    int typeSelect = accountingReport.getReportType().getTypeSelect();
-
-    if (company != null) {
-      companyCode = company.getCode();
-      moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
-    }
-    if (accountingReport.getJournal() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.move.journal = %s", accountingReport.getJournal().getId());
-    }
-    if (accountingReport.getPeriod() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.move.period = %s", accountingReport.getPeriod().getId());
-    }
-    if (accountingReport.getDateFrom() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date >= '%s'", accountingReport.getDateFrom().toString());
-    }
-
-    if (accountingReport.getDateTo() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
-    }
-    if (accountingReport.getDate() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
-    }
-    if (typeSelect != 8) {
-      moveLineQueryStr += " AND self.account.useForPartnerBalance = false ";
-    }
-    moveLineQueryStr +=
-        String.format(
-            "AND self.move.accountingOk = true AND self.move.ignoreInAccountingOk = false AND self.move.accountingReport = %s",
-            accountingReport.getId());
-    moveLineQueryStr +=
-        String.format(
-            " AND (self.move.statusSelect = %s OR self.move.statusSelect = %s) ",
-            MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
-
-    Query queryDate =
-        JPA.em()
-            .createQuery(
-                "SELECT self.date from MoveLine self where self.account != null AND (self.debit > 0 OR self.credit > 0) "
-                    + moveLineQueryStr
-                    + " group by self.date ORDER BY self.date");
-
-    List<LocalDate> dates = queryDate.getResultList();
-
-    log.debug("dates : {}", dates);
-
-    List<String[]> allMoveLineData = new ArrayList<>();
-
-    for (LocalDate localDate : dates) {
-
-      Query queryExportRef =
-          JPA.em()
-              .createQuery(
-                  "SELECT DISTINCT self.move.exportNumber from MoveLine self where self.account != null "
-                      + "AND (self.debit > 0 OR self.credit > 0) AND self.date = '"
-                      + localDate.toString()
-                      + "'"
-                      + moveLineQueryStr);
-      List<String> exportRefs = queryExportRef.getResultList();
-      for (String exportRef : exportRefs) {
-
-        if (exportRef != null && !exportRef.isEmpty()) {
-
-          int sequence = 1;
-
-          Query query =
-              JPA.em()
-                  .createQuery(
-                      "SELECT self.account.id from MoveLine self where self.account != null AND (self.debit > 0 OR self.credit > 0) "
-                          + "AND self.date = '"
-                          + localDate.toString()
-                          + "' AND self.move.exportNumber = '"
-                          + exportRef
-                          + "'"
-                          + moveLineQueryStr
-                          + " group by self.account.id");
-
-          List<Long> accountIds = query.getResultList();
-
-          log.debug("accountIds : {}", accountIds);
-
-          for (Long accountId : accountIds) {
-            if (accountId != null) {
-              String accountCode = accountRepo.find(accountId).getCode();
-              List<MoveLine> moveLines =
-                  moveLineRepo
-                      .all()
-                      .filter(
-                          "self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"
-                              + localDate.toString()
-                              + "' AND self.move.exportNumber = '"
-                              + exportRef
-                              + "'"
-                              + moveLineQueryStr,
-                          accountId)
-                      .fetch();
-
-              log.debug("movelines  : {} ", moveLines);
-
-              if (!moveLines.isEmpty()) {
-
-                List<MoveLine> moveLineList =
-                    moveLineConsolidateService.consolidateMoveLines(moveLines);
-
-                List<MoveLine> sortMoveLineList = this.sortMoveLineByDebitCredit(moveLineList);
-
-                for (MoveLine moveLine3 : sortMoveLineList) {
-
-                  Journal journal = moveLine3.getMove().getJournal();
-                  LocalDate date = moveLine3.getDate();
-                  String items[] = null;
-
-                  if (typeSelect == 9) {
-                    items = new String[13];
-                  } else {
-                    items = new String[12];
-                  }
-
-                  items[0] = companyCode;
-                  items[1] = journal.getExportCode();
-                  items[2] = moveLine3.getMove().getExportNumber();
-                  items[3] = String.format("%s", sequence);
-                  sequence++;
-                  items[4] = accountCode;
-
-                  BigDecimal totAmt = moveLine3.getCredit().subtract(moveLine3.getDebit());
-                  String moveLineSign = "C";
-                  if (totAmt.compareTo(BigDecimal.ZERO) < 0) {
-                    moveLineSign = "D";
-                    totAmt = totAmt.negate();
-                  }
-                  items[5] = moveLineSign;
-                  items[6] = totAmt.toString();
-
-                  String analyticAccounts = "";
-                  for (AnalyticMoveLine analyticDistributionLine :
-                      moveLine3.getAnalyticMoveLineList()) {
-                    analyticAccounts =
-                        analyticAccounts
-                            + analyticDistributionLine.getAnalyticAccount().getCode()
-                            + "/";
-                  }
-
-                  if (typeSelect == 9) {
-                    items[7] = "";
-                    items[8] = analyticAccounts;
-                    items[9] =
-                        String.format(
-                            "%s DU %s",
-                            journal.getCode(),
-                            date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                  } else {
-                    items[7] = analyticAccounts;
-                    items[8] =
-                        String.format(
-                            "%s DU %s",
-                            journal.getCode(),
-                            date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                  }
-
-                  allMoveLineData.add(items);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    writeMoveLineToCsvFile(
-        company, fileName, this.createHeaderForDetailFile(), allMoveLineData, accountingReport);
   }
 
   protected MetaFile writeMoveLineToCsvFile(
@@ -721,29 +520,6 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     try (InputStream is = new FileInputStream(path.toFile())) {
       return Beans.get(MetaFiles.class).attach(is, fileName, accountingReport).getMetaFile();
     }
-  }
-
-  /**
-   * Méthode permettant de trier une liste en ajoutant d'abord les lignes d'écriture au débit puis
-   * celles au crédit
-   *
-   * @param moveLineList Une list de ligne d'écriture non triée
-   * @return
-   */
-  public List<MoveLine> sortMoveLineByDebitCredit(List<MoveLine> moveLineList) {
-    List<MoveLine> sortMoveLineList = new ArrayList<>();
-    List<MoveLine> debitMoveLineList = new ArrayList<>();
-    List<MoveLine> creditMoveLineList = new ArrayList<>();
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getDebit().compareTo(moveLine.getCredit()) > 0) {
-        debitMoveLineList.add(moveLine);
-      } else {
-        creditMoveLineList.add(moveLine);
-      }
-    }
-    sortMoveLineList.addAll(debitMoveLineList);
-    sortMoveLineList.addAll(creditMoveLineList);
-    return sortMoveLineList;
   }
 
   public String[] createHeaderForJournalEntry() {

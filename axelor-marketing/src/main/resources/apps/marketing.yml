@@ -1,0 +1,13 @@
+---
+name: Marketing Management
+code: marketing
+typeSelect: standard
+installOrder: 2240
+description: |
+   Marketing Management Configuration
+image: app-marketing.png
+modules: 
+   axelor-marketing
+dependsOn:
+   - crm
+sequence: 26

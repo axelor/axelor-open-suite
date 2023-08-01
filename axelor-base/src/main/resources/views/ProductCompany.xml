@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="product-company-grid" title="Product per company"
     model="com.axelor.apps.base.db.ProductCompany">
@@ -43,6 +43,12 @@
         onSelect="action-product-company-attrs-bill-of-material-domain"
         if="__config__.app.isApp('production') &amp;&amp;__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"
         if-module="axelor-production"/>
+      <field name="controlOnReceipt"
+        if="__config__.app.isApp('stock') &amp;&amp;__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'controlOnReceipt'})"
+        if-module="axelor-stock"/>
+      <field name="customsCodeNomenclature"
+        if="__config__.app.isApp('stock') &amp;&amp;__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'customsCodeNomenclature'})"
+        if-module="axelor-stock"/>
     </panel>
   </form>
 

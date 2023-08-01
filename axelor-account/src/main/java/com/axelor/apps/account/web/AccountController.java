@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
@@ -28,18 +29,18 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.translation.ITranslation;
-import com.axelor.apps.tool.MassUpdateTool;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.MassUpdateTool;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
@@ -107,7 +108,11 @@ public class AccountController {
     try {
       Account account = request.getContext().asType(Account.class);
       Beans.get(AccountService.class)
-          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
+          .checkAnalyticAxis(
+              account,
+              account.getAnalyticDistributionTemplate(),
+              account.getAnalyticDistributionRequiredOnMoveLines(),
+              account.getAnalyticDistributionRequiredOnInvoiceLines());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -211,7 +216,7 @@ public class AccountController {
       } else {
         message = I18n.get(AccountExceptionMessage.MASS_UPDATE_SELECTED_NO_RECORD);
       }
-      response.setFlash(message);
+      response.setInfo(message);
       response.setCanClose(true);
 
     } catch (Exception e) {
@@ -242,7 +247,7 @@ public class AccountController {
         message = I18n.get(AccountExceptionMessage.MASS_UPDATE_ALL_NO_RECORD);
       }
 
-      response.setFlash(message);
+      response.setInfo(message);
       response.setCanClose(true);
 
     } catch (Exception e) {
@@ -269,7 +274,11 @@ public class AccountController {
       analyticDistributionTemplateService.verifyTemplateValues(
           account.getAnalyticDistributionTemplate());
       Beans.get(AccountService.class)
-          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
+          .checkAnalyticAxis(
+              account,
+              account.getAnalyticDistributionTemplate(),
+              account.getAnalyticDistributionRequiredOnMoveLines(),
+              account.getAnalyticDistributionRequiredOnInvoiceLines());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
     } catch (Exception e) {

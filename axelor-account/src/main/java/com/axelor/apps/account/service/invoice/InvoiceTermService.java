@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
 
@@ -27,16 +28,19 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoiceTermService {
 
@@ -61,6 +65,9 @@ public interface InvoiceTermService {
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount);
+
+  @CallMethod
+  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine);
 
   /**
    * Method that creates a customized invoiceTerm
@@ -237,6 +244,7 @@ public interface InvoiceTermService {
 
   InvoiceTerm createInvoiceTerm(
       Invoice invoice,
+      Move move,
       MoveLine moveLine,
       BankDetails bankDetails,
       User pfpUser,
@@ -249,9 +257,9 @@ public interface InvoiceTermService {
       boolean isHoldBack)
       throws AxelorException;
 
-  void setPfpStatus(InvoiceTerm invoiceTerm) throws AxelorException;
+  void setPfpStatus(InvoiceTerm invoiceTerm, Move move) throws AxelorException;
 
-  void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);
+  void setParentFields(InvoiceTerm invoiceTerm, Move move, MoveLine moveLine, Invoice invoice);
 
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
@@ -263,15 +271,14 @@ public interface InvoiceTermService {
 
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException;
 
-  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
+  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
 
   BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
-      List<InvoiceTerm> invoiceTermList) throws AxelorException;
-
-  void reconcileAndUpdateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
+      List<InvoiceTerm> invoiceTermList,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
+      throws AxelorException;
 
   List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList);
 
@@ -309,6 +316,18 @@ public interface InvoiceTermService {
   @CallMethod
   boolean isMultiCurrency(InvoiceTerm invoiceTerm);
 
+  InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
+      throws AxelorException;
+
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
+
+  boolean isThresholdNotOnLastInvoiceTerm(
+      MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
 }

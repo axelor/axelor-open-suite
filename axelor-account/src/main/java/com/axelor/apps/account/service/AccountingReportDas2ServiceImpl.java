@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -26,12 +27,12 @@ import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.tool.StringHTMLListBuilder;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.StringHTMLListBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -151,7 +152,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND account NOT IN (:supplierAccount, :customerAccount) "
             + "AND journalType = :journalType "
             + "AND company = :company "
-            + "AND currency = :currency "
+            + "AND (:currency is null OR currency = :currency) "
             + "AND move.ignoreInAccountingOk != true "
             + "AND pmvld NOT IN (SELECT pmvld "
             + "FROM AccountingReportMoveLine history "
@@ -288,15 +289,23 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
   protected BigDecimal getBalance(String query, boolean isCredit) {
     String sumQuery;
+    String debitCreditConstraint;
+
     if (isCredit) {
       sumQuery = "SUM(self.inTaxProratedAmount)";
+      debitCreditConstraint = "self.moveLine.credit != 0 AND ";
     } else {
       sumQuery = "SUM(self.exTaxProratedAmount) + SUM(self.taxProratedAmount)";
+      debitCreditConstraint = "self.moveLine.debit != 0 AND ";
     }
     Query q =
         JPA.em()
             .createQuery(
-                "select " + sumQuery + " FROM PaymentMoveLineDistribution as self WHERE " + query,
+                "select "
+                    + sumQuery
+                    + " FROM PaymentMoveLineDistribution as self WHERE "
+                    + debitCreditConstraint
+                    + query,
                 BigDecimal.class);
 
     return getNullSafeBalance(q);

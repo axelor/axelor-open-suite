@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
   <grid name="manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <toolbar>
@@ -187,10 +187,10 @@
         <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
           domain="self.isCustomer=true AND :company member of self.companySet"
-          onChange="action-manuf-order-atts-sale-order-onchange-client-partner" canEdit="false"/>
+          onChange="action-manuf-order-attrs-sale-order-onchange-client-partner" canEdit="false"/>
         <field name="saleOrderSet" widget="TagSelect" form-view="sale-order-form"
           grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect"
-          canEdit="false"/>
+          canEdit="false" onChange="action-manuf-order-record-client-partner"/>
         <field name="manufOrderMergeResult" showIf="manufOrderMergeResult"
           form-view="manuf-order-form" grid-view="manuf-order-grid" canNew="false" canEdit="false"
           canView="true"/>
@@ -484,7 +484,7 @@
 
   </grid>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Draft orders"
+  <form model="com.axelor.utils.db.Wizard" title="Draft orders"
     name="multi-level-generated-draft-manuf-order-wizard-form"
     onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
     <panel name="mainPanel">
@@ -591,18 +591,18 @@
 
   <action-attrs name="action-manuf-order-attrs-sale-order-onselect">
     <attribute if="clientPartner != null" name="domain"
-      expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrder"/>
+      expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrderSet"/>
     <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3"
-      for="saleOrder"/>
+      for="saleOrderSet"/>
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-set-unit">
     <attribute name="value" for="unit" expr="eval: billOfMaterial.unit"/>
   </action-attrs>
 
-  <action-attrs name="action-manuf-order-atts-sale-order-onchange-client-partner">
-    <attribute name="value" expr="eval:null" for="saleOrder"
-      if="saleOrder?.clientPartner != clientPartner"/>
+  <action-attrs name="action-manuf-order-attrs-sale-order-onchange-client-partner">
+    <attribute name="value" expr="eval:null" for="saleOrderSet"
+      if="saleOrderSet?.any{it.clientPartner != clientPartner}"/>
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-scale-and-precision">
@@ -616,10 +616,11 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
-  <action-record name="action-manuf-order-record-client-partner-onchange-sale-order"
+  <action-record name="action-manuf-order-record-client-partner"
     model="com.axelor.apps.production.db.ManufOrder">
-    <field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
-    <field name="moCommentFromSaleOrder" expr="eval: saleOrder?.productionNote"/>
+    <field name="clientPartner"
+      expr="eval: saleOrderSet?.collect{it->it.clientPartner}?.first()"
+      if="!saleOrderSet?.isEmpty() &amp;&amp; saleOrderSet?.clientPartner?.unique()?.size() == 1"/>
   </action-record>
 
   <action-record name="action-manuf-order-default-record"

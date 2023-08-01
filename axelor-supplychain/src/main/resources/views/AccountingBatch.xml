@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="accounting-batch-form" id="supplychain-accounting-batch-form"
     title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch" extension="true">
@@ -47,6 +47,8 @@
     id="supplychain-action-accounting-batch-group-accounting-cut-off">
     <action name="save"/>
     <action name="action-accounting-batch-validate-cut-off-move-status"/>
+    <action name="action-accounting-batch-method-compute-move-line-cut-off-fields"
+      if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
     <action name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
       if="previewRecordsToProcess &amp;&amp; [1,2].contains(accountingCutOffTypeSelect)"/>
     <action name="action-accounting-batch-view-preview-move-lines-to-process"
@@ -62,8 +64,13 @@
     <view type="grid" name="stock-move-line-cut-off-grid"/>
     <view type="form" name="stock-move-line-form"/>
     <domain>
-      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty OR self.product IS NULL
-      OR (:_includeNotStockManagedProduct IS TRUE AND self.product.stockManaged IS FALSE))
+      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty)
+      AND
+      (self.product IS NULL
+      OR (:_includeNotStockManagedProduct IS TRUE AND (self.product.stockManaged IS FALSE OR
+      self.product.stockManaged IS TRUE))
+      OR (:_includeNotStockManagedProduct IS FALSE AND
+      self.product.stockManaged IS TRUE))
       AND
       self.stockMove.invoicingStatusSelect &lt;&gt; 2
       AND
@@ -94,9 +101,9 @@
   <action-view name="action-batch-show-stock-move" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-in-grid"
-      if="accountingBatch.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; accountingBatch.accountingCutOffTypeSelect == 1"/>
+      if="accountingBatch &amp;&amp; accountingBatch.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; accountingBatch.accountingCutOffTypeSelect == 1"/>
     <view type="grid" name="stock-move-out-grid"
-      if="accountingBatch.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF || accountingBatch.accountingCutOffTypeSelect == 2"/>
+      if="(supplychainBatch &amp;&amp; supplychainBatch.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES) || (accountingBatch &amp;&amp; accountingBatch.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; accountingBatch.accountingCutOffTypeSelect == 2)"/>
     <view type="form" name="stock-move-form"/>
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>

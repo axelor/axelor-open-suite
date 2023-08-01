@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-details-grid" title="Bank details"
     model="com.axelor.apps.base.db.BankDetails">
@@ -35,9 +35,11 @@
       <field name="label"/>
       <field name="currency"/>
       <field name="bankAccount" showIf="company != null"
-        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
+        if="__config__.app.isApp('account')" if-module="axelor-account"/>
       <field name="journal" showIf="company != null"
-        domain="self.company = :company AND self.statusSelect = 1"/>
+        domain="self.company = :company AND self.statusSelect = 1" if-module="axelor-account"
+        if="__config__.app.isApp('account')"/>
       <field name="code" x-bind="{{code|uppercase}}" hidden="true"/>
     </panel>
     <panel name="activePanel" sidebar="true">
@@ -219,7 +221,8 @@
 
   <action-attrs name="action-bank-details-attrs-specific-notes">
     <attribute name="hidden" for="specificNotesPanel"
-      expr="eval: !partner?.isFactor &amp;&amp; !__parent__?.getContextClass().equals('Company')"/>
+      expr="eval: !partner?.isFactor &amp;&amp; !__parent__?.getContextClass().equals('Company')"
+      if="__config__.app.isApp('account')"/>
   </action-attrs>
 
   <search-filters name="bank-detail-filters"

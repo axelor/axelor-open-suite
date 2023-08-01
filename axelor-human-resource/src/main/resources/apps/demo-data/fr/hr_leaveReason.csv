@@ -1,0 +1,12 @@
+"importId";"name";"selectedByMgtOnly";"exportCode";"unitSelect"
+1;"Absence à justifier";"false";"AB";1
+2;"Accident du travail";"false";"AT";1
+3;"Congé maternité";"false";"MATER";1
+4;"Congé payé légal et ancienneté";"false";"CPA";1
+5;"Congé payé exceptionnel";"false";"CPE";1
+6;"Jours fériés";"false";"JF";1
+7;"Maladie";"false";"MALA";1
+8;"Jour RTT";"false";"RTTs";1
+9;"Enfant malade";"false";"EM";1
+10;"Congé sans solde";"false";"CSS";1
+11;"Congé parental";"false";"PAREN";1

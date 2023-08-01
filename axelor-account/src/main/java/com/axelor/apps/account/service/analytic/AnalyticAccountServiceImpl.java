@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,23 +14,23 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
+import com.axelor.utils.StringTool;
+import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,18 +40,18 @@ import org.apache.commons.collections.CollectionUtils;
 public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AccountConfigRepository accountConfigRepository;
   protected AccountConfigService accountConfigService;
+  protected AccountService accountService;
 
   @Inject
   public AnalyticAccountServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      AccountService accountService,
       AccountConfigRepository accountConfigRepository,
       AccountConfigService accountConfigService) {
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
+    this.accountService = accountService;
     this.accountConfigRepository = accountConfigRepository;
     this.accountConfigService = accountConfigService;
   }
@@ -108,25 +109,20 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
   @Override
   public String getAnalyticAccountDomain(
-      AnalyticDistributionTemplate analyticDistributionTemplate,
-      AnalyticDistributionLine analyticDistributionLine,
-      Account account)
-      throws AxelorException {
+      Company company, AnalyticAxis analyticAxis, Account account) throws AxelorException {
     String domain = "null";
 
-    if (analyticDistributionTemplate != null && analyticDistributionTemplate.getCompany() != null) {
+    if (company != null) {
       domain =
           "(self.company is null OR self.company.id = "
-              + analyticDistributionTemplate.getCompany().getId()
+              + company.getId()
               + ") AND self.analyticAxis.id ";
-      if (analyticDistributionLine.getAnalyticAxis() != null) {
-        domain += "= " + analyticDistributionLine.getAnalyticAxis().getId();
+      if (analyticAxis != null) {
+        domain += "= " + analyticAxis.getId();
       } else {
         String analyticAxisIdList = "0";
         List<AnalyticAxisByCompany> analyticAxisByCompanyList =
-            accountConfigService
-                .getAccountConfig(analyticDistributionTemplate.getCompany())
-                .getAnalyticAxisByCompanyList();
+            accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList();
         if (ObjectUtils.notEmpty(analyticAxisByCompanyList)) {
           analyticAxisIdList =
               StringTool.getIdListString(
@@ -139,11 +135,10 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       }
 
       if (account != null) {
-        List<AnalyticAccount> analyticAccountList =
-            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(account);
-        domain += " AND self.id in (";
-        String idList = StringTool.getIdListString(analyticAccountList);
-        domain += idList + ")";
+        List<Long> analyticAccountList = accountService.getAnalyticAccountsIds(account);
+        if (CollectionUtils.isNotEmpty(analyticAccountList)) {
+          domain += " AND self.id in (" + Joiner.on(",").join(analyticAccountList) + ")";
+        }
       }
     }
 

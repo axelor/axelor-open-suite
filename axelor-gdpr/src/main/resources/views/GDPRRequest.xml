@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-  http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <grid name="gdpr-request-grid" title="Requests" canNew="true"
@@ -37,7 +37,7 @@
           onChange="action-gdpr-request-group-search-person" colSpan="6"/>
         <field name="__firstName" title="First name"
           onChange="action-gdpr-request-group-search-person" colSpan="6"/>
-        <field name="__email" title="Email" widget="email" colSpan="4"
+        <field name="__email" title="Email" colSpan="4"
           onChange="action-gdpr-request-group-search-person"/>
         <field name="__phone" title="Phone" widget="phone" colSpan="4"
           onChange="action-gdpr-request-group-search-person"/>
@@ -45,7 +45,7 @@
           onClick="action-gdpr-request-group-search-person" colSpan="4"/>
 
         <panel-related name="gdprSearchResultsPanel" title="Results"
-          field="__searchResults" type="one-to-many" target="com.axelor.apps.base.db.Wizard"
+          field="__searchResults" type="one-to-many" target="com.axelor.utils.db.Wizard"
           colSpan="12" grid-view="search-result-grid" canNew="false" canView="false"
           canRemove="false" canEdit="false">
         </panel-related>
@@ -71,6 +71,7 @@
       <field name="gdprResponse.sendingDateT" widget="date-time"
         showIf="gdprResponse.sendingDateT"/>
       <field name="gdprResponse.responseMessage" showIf="gdprResponse.responseMessage"/>
+      <field name="gdprResponse.anonymizationResult" colSpan="12"/>
       <field name="gdprResponse.responseErasureLogList" colSpan="12"
         showIf="gdprResponse.responseErasureLogList.length > 0"/>
     </panel>
@@ -99,7 +100,7 @@
   </form>
 
   <!-- Search results -->
-  <grid model="com.axelor.apps.base.db.Wizard" title="result" name="search-result-grid"
+  <grid model="com.axelor.utils.db.Wizard" title="result" name="search-result-grid"
     canEdit="false" edit-icon="false">
     <field name="selected" widget="RadioSelect"/>
     <field name="type"/>
@@ -120,7 +121,7 @@
   </action-record>
 
   <action-record name="action-gdpr-search-form-clear"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="__searchResults" expr=""/>
   </action-record>
 

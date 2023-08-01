@@ -1,4 +1,0 @@
----
-title : "Move: fixed an issue where the form view is marked as dirty even when opening a form view in readonly."
-type : fix
-

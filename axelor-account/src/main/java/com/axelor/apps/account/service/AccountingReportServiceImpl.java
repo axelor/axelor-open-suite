@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -33,19 +34,20 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -56,6 +58,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -206,16 +209,20 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
     }
 
-    if (accountingReport.getDateFrom() != null) {
-      this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
-    }
+    if (accountingReport.getReportType() == null
+        || accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      if (accountingReport.getDateFrom() != null) {
+        this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
+      }
 
-    if (accountingReport.getDateTo() != null) {
-      this.addParams("self.date <= ?%d", accountingReport.getDateTo());
-    }
+      if (accountingReport.getDateTo() != null) {
+        this.addParams("self.date <= ?%d", accountingReport.getDateTo());
+      }
 
-    if (accountingReport.getDate() != null) {
-      this.addParams("self.date <= ?%d", accountingReport.getDate());
+      if (accountingReport.getDate() != null) {
+        this.addParams("self.date <= ?%d", accountingReport.getDate());
+      }
     }
 
     if (accountingReport.getJournal() != null) {
@@ -276,14 +283,20 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       }
       String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
       String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String reconcileDateConditionQuery =
+          String.format(
+              "reconcile.statusSelect = %s AND reconcile.effectiveDate >= %s AND reconcile.effectiveDate <= %s",
+              ReconcileRepository.STATUS_CONFIRMED, dateFromStr, dateToStr);
       String selfReconciledQuery =
-          String.format(
-              "(self.reconcileGroup is not null AND self.reconcileGroup.dateOfLettering >= %s AND self.reconcileGroup.dateOfLettering <= %s)",
-              dateFromStr, dateToStr);
+          "(self.reconcileGroup IS NOT null AND self.reconcileGroup.letteringDateTime IS NOT null "
+              + "AND EXISTS (SELECT 1 FROM Reconcile AS reconcile WHERE "
+              + reconcileDateConditionQuery
+              + " AND self.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine = self.id OR reconcile.creditMoveLine = self.id)))";
       String otherLinedReconciledQuery =
-          String.format(
-              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.dateOfLettering >= %s AND ml.reconcileGroup.dateOfLettering <= %s AND ml.move.id = self.move.id)",
-              dateFromStr, dateToStr);
+          "EXISTS (SELECT 1 FROM MoveLine AS ml WHERE ml.reconcileGroup IS NOT null AND ml.reconcileGroup.letteringDateTime IS NOT null AND ml.move.id = self.move.id "
+              + "AND EXISTS (SELECT 1 FROM Reconcile AS reconcile WHERE "
+              + reconcileDateConditionQuery
+              + " AND ml.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine = ml.id OR reconcile.creditMoveLine = ml.id)))";
       String reconcileQuery =
           String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);
       this.addParams(reconcileQuery);
@@ -325,12 +338,23 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)) {
-      Account cashPositionVariationAccount =
-          Beans.get((AccountConfigService.class))
-              .getAccountConfig(accountingReport.getCompany())
-              .getCashPositionVariationAccount();
-      if (cashPositionVariationAccount != null) {
-        this.addParams("self.account = ?%d", cashPositionVariationAccount);
+      AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(accountingReport.getCompany());
+
+      Account cashPositionVariationDebitAccount =
+          accountConfigService.getCashPositionVariationDebitAccount(accountConfig);
+      Account cashPositionVariationCreditAccount =
+          accountConfigService.getCashPositionVariationCreditAccount(accountConfig);
+      Set<Account> accountSet = new HashSet();
+      if (cashPositionVariationDebitAccount != null) {
+        accountSet.add(cashPositionVariationDebitAccount);
+      }
+      if (cashPositionVariationCreditAccount != null) {
+        accountSet.add(cashPositionVariationCreditAccount);
+      }
+      if (!CollectionUtils.isEmpty(accountSet)) {
+        this.addParams("self.account.id in (?%d)", accountSet);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

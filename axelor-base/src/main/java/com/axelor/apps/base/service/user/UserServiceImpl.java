@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,31 +14,32 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.user;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.db.AppBase;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -48,7 +50,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -330,17 +331,11 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void processChangedPassword(User user)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
 
     try {
       if (!user.getSendEmailUponPasswordChange()) {
-        return;
-      }
-
-      if (user.equals(AuthUtils.getUser())) {
-        logger.debug("User {} changed own password.", user.getCode());
         return;
       }
 
@@ -388,50 +383,45 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean verifyCurrentUserPassword(String password) {
-
-    if (!StringUtils.isBlank(password)) {
-      final User current = AuthUtils.getUser();
-      final AuthService authService = AuthService.getInstance();
-
-      if (authService.match(password, current.getPassword())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateRandomPasswordForUsers(List<Long> userIds) {
+  public void generateRandomPasswordForUser(User user) {
     AuthService authService = Beans.get(AuthService.class);
     LocalDateTime todayDateTime =
         Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
 
-    for (Long userId : userIds) {
-      User user = userRepo.find(userId);
-      String password = this.generateRandomPassword().toString();
-      user.setTransientPassword(password);
-      password = authService.encrypt(password);
-      user.setPassword(password);
-      user.setPasswordUpdatedOn(todayDateTime);
-      userRepo.save(user);
-    }
+    String password = this.generateRandomPassword().toString();
+    user.setTransientPassword(password);
+    password = authService.encrypt(password);
+    user.setPassword(password);
+    user.setPasswordUpdatedOn(todayDateTime);
+
+    User loginUser = this.getUser();
 
     // Update login date in session so that user changing own password doesn't get logged out.
-    if (userIds.contains(getUserId())) {
+    if (loginUser.equals(user)) {
       Session session = AuthUtils.getSubject().getSession();
-      session.setAttribute("loginDate", todayDateTime);
+      session.setAttribute("com.axelor.internal.loginDate", todayDateTime);
     }
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Partner setUserPartner(Partner partner, User user) {
     partner.setUser(user);
     partner.setTeam(user.getActiveTeam());
     user.setPartner(partner);
     userRepo.save(user);
     return partner;
+  }
+
+  @Override
+  public TradingName getTradingName() {
+    final User user = getUser();
+
+    if (user == null) {
+      return null;
+    }
+
+    return user.getTradingName();
   }
 }

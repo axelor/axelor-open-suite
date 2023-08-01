@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="machine-grid" title="Machines" model="com.axelor.apps.production.db.Machine">
     <field name="name"/>
@@ -13,6 +13,10 @@
 
   <form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine"
     width="large" onLoad="action-record-machine-set-operating-duration">
+    <toolbar>
+      <button onClick="action-manufacturing-view-on-click-planning-machine-calender-view"
+        name="planningMachineBtn" title="Machine.planningMachineBtn" showIf="id"/>
+    </toolbar>
     <panel name="mainPanel">
       <panel name="informationsPanel" colSpan="9">
         <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
@@ -24,11 +28,12 @@
         </field>
       </panel>
       <panel name="actionPanel" colSpan="3">
-        <button name="$operatingDurationBtn" onClick="" title="Operating duration"
+        <button name="$operatingDurationBtn"
+          onClick="action-machine-view-open-finished-operation-orders" title="Operating duration"
           colSpan="12" icon="fa-clock-o" widget="info-button"/>
       </panel>
     </panel>
-    <panel name="machineInformationPanel" title="Machine Information">
+    <panel name="machineInformationPanel" title="Machine Information" canCollapse="true">
       <field name="brand"/>
       <field name="stockLocation" required="true" grid-view="stock-location-grid"
         form-view="stock-location-form"/>
@@ -42,15 +47,18 @@
       <field name="disposalDate"/>
       <field name="numberOfStations"/>
       <field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
+    </panel>
+    <panel name="planningAndPerformancesPanel" title="Planning and performances"
+      canCollapse="true">
       <field name="weeklyPlanning" canNew="true"/>
-      <field name="startingDuration" widget="duration" x-big="true" x-seconds="true"/>
-      <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
-      <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
+      <field name="publicHolidayEventsPlanning" canEdit="false"
+        form-view="events-planning-form" grid-view="events-planning-grid"/>
+
     </panel>
     <panel-related field="machineToolLineList" name="machineToolLineListPanel"
       if="__config__.app.getApp('production')?.getEnableToolManagement()" showIf="code || name"
-      form-view="machine-tool-form" grid-view="machine-tool-machine-grid"/>
-    <panel name="descriptionPanel" title="Description">
+      form-view="machine-tool-form" grid-view="machine-tool-machine-grid" canCollapse="true"/>
+    <panel name="descriptionPanel" title="Description" canCollapse="true">
       <field name="description" colSpan="12" showTitle="false"/>
     </panel>
   </form>
@@ -60,5 +68,17 @@
     <field name="$operatingDurationBtn" if="operatingDuration != null"
       expr="eval: String.format('%d:%02d:%02d', (int)(operatingDuration / 3600), (int)((operatingDuration % 3600) / 60), (int)((operatingDuration % 60)))"/>
   </action-record>
+
+  <action-view name="action-machine-view-open-finished-operation-orders"
+    title="Operation order" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="grid" name="operation-order-group-grid"/>
+    <view type="form" name="operation-order-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <domain>self.statusSelect = :_statusSelect AND self.machine.id = :_machineId</domain>
+    <context name="_machineId" expr="eval: id"/>
+    <context name="_statusSelect" expr="eval: __repo__(OperationOrder).STATUS_FINISHED"/>
+  </action-view>
 
 </object-views>

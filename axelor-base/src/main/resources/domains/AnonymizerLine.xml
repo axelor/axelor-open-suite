@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="AnonymizerLine">
+    <many-to-one name="anonymizer" ref="com.axelor.apps.base.db.Anonymizer"
+      title="Pseudonymizer"/>
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"
+      title="Model to pseudonymize" required="true"/>
+    <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"
+      title="Field to pseudonymize" required="true"/>
+    <boolean name="useFakeData" title="Use fake data"/>
+    <many-to-one name="fakerApiField" ref="com.axelor.apps.base.db.FakerApiField"
+      title="Faker API field"/>
+    <many-to-one ref="com.axelor.meta.db.MetaJsonField" name="metaJsonField"
+      title="Meta Json Field"/>
+  </entity>
+
+</domain-models>

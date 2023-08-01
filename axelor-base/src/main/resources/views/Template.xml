@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="template-grid" id="template-grid-base" title="Templates"
-    model="com.axelor.apps.message.db.Template">
+    model="com.axelor.message.db.Template">
     <field name="name"/>
     <field name="subject"/>
     <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
@@ -12,7 +12,7 @@
   </grid>
 
   <form id="template-form-base" name="template-form" title="Template"
-    model="com.axelor.apps.message.db.Template" onSave="action-template-check-receptor"
+    model="com.axelor.message.db.Template" onSave="action-template-check-receptor"
     onNew="action-template-record-new">
     <toolbar>
       <button name="testTemplateBtn" title="Test template"
@@ -87,6 +87,68 @@
       <panel title="Configuration" name="configurationPanel">
         <field name="isDefault" widget="boolean-switch"/>
         <field name="isSystem" widget="boolean-switch"/>
+      </panel>
+      <panel name="stringHelpPanel" title="String Template Help"
+        showIf="templateEngineSelect == 1">
+        <field name="$stringHelpViewer" showTitle="false" readonly="true" colSpan="12">
+          <viewer><![CDATA[
+<h3 id="access-to-model-fields"><span x-translate>Access to model fields</span></h3>
+<p><span x-translate>We can access direct/o2o/m2o fields of template model by specifying field path surrounded by</span> <code>$$</code><br>
+<span x-translate>Examples</span>:
+<ul>
+<li> <span x-translate>To access product's full name</span>: <code>$Product.fullName$</code>
+<li> <span x-translate>To access product's ProductCategory</span>: <code>$Product.productCategory.name$</code>
+</ul></p>
+<p><span x-translate>We can access o2m/m2m fields of template model with this syntax</span>: <code>$Model.fieldName:{it|$it.fieldPath$}$</code><br>
+<span x-translate>Examples</span>:
+<ul>
+<li> <span x-translate>To access company name of productCompanyList</span>: <code>$Product.productCompanyList:{it|$it.company.name$}$</code>
+<li> <span x-translate>To access trading name of tradingNameSellerSet of product</span>: <code>$Product.tradingNameSellerSet:{it|$it.name$}$</code>
+</ul></p>
+<h4 id="selection"><span x-translate>Selection</span></h4>
+<p><span x-translate>We can access selection fields as follows</span>:<br>
+<span x-translate>Examples</span>:
+<ul>
+<li> <span x-translate>To display title of costTypeSelect of product</span>: <code>$Product.costTypeSelect$</code>  <span x-translate>or</span>  <code>$Product.costTypeSelect.title$</code>
+<li> <span x-translate>To display value of productTypeSelect of product</span>: <code>$Product.productTypeSelect.value$</code>
+</ul></p>
+<h4 id="custom-fields"><span x-translate>Custom fields</span></h4>
+<p><span x-translate>We can access custom fields same as normal fields</span>:<br>
+<span x-translate>Examples</span>:  <span x-translate>To display value of custom field of product</span>: <code>$Product.customFieldName$</code></p>
+]]>
+          </viewer>
+        </field>
+      </panel>
+      <panel name="groovyHelpPanel" title="Groovy Template Help"
+        showIf="templateEngineSelect == 2">
+        <field name="$groovyHelpViewer" showTitle="false" readonly="true" colSpan="12">
+          <viewer><![CDATA[
+<h3 id="the-script-must-be-written-in-groovy"><a href="http://docs.groovy-lang.org/latest/html/documentation/" target="_blank">Groovy</a></h3>
+<h4 id="string"><span x-translate>String</span></h4>
+<p><code>+</code> <span x-translate>is used for concatenation</span>:</p>
+<pre><code>v = &quot;def&quot;
+&quot;abc&quot; + v // returns &quot;abcdef&quot;</code></pre>
+<p><span x-translate>String interpolation can also be used</span>:</p>
+<pre><code>v = &quot;def&quot;
+&quot;abc${v}&quot; // also returns &quot;abcdef&quot;</code></pre>
+<h4 id="decimal"><span x-translate>Decimal</span></h4>
+<p><span x-translate>Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.</span></p>
+<h4 id="current-user" x-translate>Current User</h4>
+<p><code>__user__</code> <span x-translate>gives access to connected user.</span> <br>
+<span x-translate>Example: accessing the name of the user</span>: <code>__user__.name</code>.</p>
+<h4 id="date">Date</h4>
+<p><code>__date__</code> <span x-translate>gives access to today date and</span> <code>__datetime__</code> <span x-translate>to current date time.</span></p>
+<h4 id="query-to-database" x-translate>Query to database</h4>
+<p><code>__repo__</code> <span x-translate>gives access to a repository with the same syntax as the repositories in java</span>.<br>
+<span x-translate>Examples</span>:
+<ul>
+<li> <span x-translate>searching for Product with id = 1:</span> <code>__repo__(Product).find(1)</code>
+<li> <span x-translate>searching for ProductFamily with the code ‘SERV’</span>: <code>__repo__(ProductFamily).all().filter("self.code = 'SERV'").fetchOne()</code>
+<li> <span x-translate>searching Partners that are suppliers and with a name starting with “A”</span>: <code>__repo__(Partner).all().filter("self.isSupplier IS TRUE AND self.name LIKE 'A%'").fetchOne()</code>
+</ul>
+</p>]]>
+          </viewer>
+        </field>
       </panel>
     </panel-tabs>
   </form>

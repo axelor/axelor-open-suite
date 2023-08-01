@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestStructure;
+import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -37,6 +39,12 @@ public class StockMoveLinePutRequest extends RequestStructure {
   @Min(StockMoveLineRepository.CONFORMITY_NONE)
   @Max(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT)
   private Integer conformity;
+
+  @Min(0)
+  private Long fromStockLocationId;
+
+  @Min(0)
+  private Long toStockLocationId;
 
   public StockMoveLinePutRequest() {}
 
@@ -64,11 +72,41 @@ public class StockMoveLinePutRequest extends RequestStructure {
     this.conformity = conformity;
   }
 
+  public Long getFromStockLocationId() {
+    return fromStockLocationId;
+  }
+
+  public void setFromStockLocationId(Long fromStockLocationId) {
+    this.fromStockLocationId = fromStockLocationId;
+  }
+
+  public Long getToStockLocationId() {
+    return toStockLocationId;
+  }
+
+  public void setToStockLocationId(Long toStockLocationId) {
+    this.toStockLocationId = toStockLocationId;
+  }
+
   public Unit fetchUnit() {
     if (this.unitId != null) {
       return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }
+  }
+
+  public StockLocation fetchFromStockLocation() {
+    if (fromStockLocationId != null) {
+      return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
+    }
+    return null;
+  }
+
+  public StockLocation fetchToStockLocation() {
+    if (toStockLocationId != null) {
+      return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
+    }
+    return null;
   }
 }

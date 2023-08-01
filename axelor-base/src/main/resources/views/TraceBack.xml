@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="trace-back-grid" title="TraceBack" model="com.axelor.apps.base.db.TraceBack"
+    orderBy="-id" canDelete="false" canNew="false" canSave="false" canEdit="false">
+    <toolbar>
+      <button name="cancel" title="" hidden="true" onClick=""/>
+    </toolbar>
+    <hilite color="danger" if="typeSelect == 0"/>
+    <field name="id"/>
+    <field name="date"/>
+    <field name="internalUser"/>
+    <field name="origin"/>
+    <field name="typeSelect"/>
+    <field name="categorySelect"/>
+    <field name="exception"/>
+  </grid>
+
+  <grid name="trace-back-lite-grid" title="TraceBack" model="com.axelor.apps.base.db.TraceBack"
+    orderBy="-id" canDelete="false" canNew="false" canSave="false" canEdit="false">
+    <toolbar>
+      <button name="cancel" title="" hidden="true" onClick=""/>
+    </toolbar>
+    <field name="date"/>
+    <field name="typeSelect"/>
+    <field name="categorySelect"/>
+    <field name="message" width="1000"/>
+  </grid>
+
+  <form name="trace-back-form" title="TraceBack" model="com.axelor.apps.base.db.TraceBack"
+    onLoad="action-trace-back-load" canNew="false" canEdit="false" canSave="false" canCopy="false"
+    canDelete="false">
+    <toolbar>
+      <button name="cancel" title="" hidden="true" onClick=""/>
+      <button name="printBtn" title="Print" icon="fa-print"
+        onClick="action-trace-back-method-print-trace-back"/>
+    </toolbar>
+    <panel name="mainPanel" sidebar="true">
+      <field name="date"/>
+      <field name="internalUser"/>
+      <field name="origin"/>
+      <field name="typeSelect"/>
+      <field name="categorySelect"/>
+    </panel>
+    <panel name="referencePanel" title="Reference" showIf="ref" sidebar="true">
+      <field name="ref" colSpan="10"/>
+      <field name="refId" title="ID" showIf="refId" colSpan="2"/>
+      <button name="showReferenceBtn" title="Show the reference" icon="fa-share"
+        css="btn-primary" onClick="action-traceback-show-reference"/>
+    </panel>
+    <panel name="batchPanel" title="Batch" showIf="batchId" sidebar="true"
+      if="__config__.app.isApp('base')">
+      <field name="batchId" colSpan="4"/>
+      <button name="showBatchBtn" title="Show the batch" icon="fa-share" css="btn-primary"
+        onClick="action-batch-show-batch" colSpan="8"/>
+    </panel>
+    <panel name="exceptionGroupPanel" title="Anomaly" canCollapse="true">
+      <field name="exception" showTitle="false" colSpan="12"/>
+    </panel>
+    <panel name="errorGroupPanel" title="Error" canCollapse="true">
+      <field name="error" showTitle="false" colSpan="12"/>
+    </panel>
+    <panel name="causeGroupPanel" title="Cause" canCollapse="true">
+      <field name="cause" showTitle="false" colSpan="12"/>
+    </panel>
+    <panel name="messageGroupPanel" title="Message" canCollapse="true">
+      <field name="message" showTitle="false" colSpan="12"/>
+    </panel>
+    <panel name="traceGroupPanel" title="Trace" canCollapse="true">
+      <field name="trace" showTitle="false" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-trace-back-load">
+    <attribute name="hidden" for="categorySelect" expr="eval: !categorySelect"/>
+    <attribute name="hidden" for="errorGroupPanel" expr="eval: !error"/>
+    <attribute name="hidden" for="causeGroupPanel" expr="eval: !cause"/>
+    <attribute name="hidden" for="messageGroupPanel" expr="eval: !message"/>
+    <attribute name="hidden" for="traceGroupPanel" expr="eval: !trace"/>
+  </action-attrs>
+
+  <action-method name="action-traceback-show-reference">
+    <call class="com.axelor.apps.base.web.TraceBackController" method="showReference"/>
+  </action-method>
+
+  <action-method name="action-trace-back-method-print-trace-back">
+    <call class="com.axelor.apps.base.web.TraceBackController" method="printTraceback"/>
+  </action-method>
+
+</object-views>

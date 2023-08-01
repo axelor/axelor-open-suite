@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,26 +14,28 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.db.AppCrm;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.CrmReporting;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.studio.db.AppCrm;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.HashSet;
 import java.util.Set;
 
 public class CrmReportingServiceImpl implements CrmReportingService {
@@ -41,7 +44,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
 
   protected AppBaseService appBaseService;
   protected static final String PARTNER = "Partner";
-  protected static final String LEAD = "Lead";
+  protected static final String LEAD = "eventLead";
   protected static final String OPPORTUNITY = "Opportunity";
   protected static final String EVENT = "Event";
 
@@ -66,7 +69,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
         if (isPartner) {
           model = PARTNER.toLowerCase();
         } else {
-          model = LEAD.toLowerCase();
+          model = LEAD;
         }
 
         if (className.equals(OPPORTUNITY)) {
@@ -98,6 +101,18 @@ public class CrmReportingServiceImpl implements CrmReportingService {
     throw new AxelorException(
         TraceBackRepository.CATEGORY_MISSING_FIELD,
         I18n.get(CrmExceptionMessage.CRM_REPORTING_TYPE_SELECT_MISSING));
+  }
+
+  @Override
+  public Set<Company> prefillCompanySet(CrmReporting crmReporting) {
+    Set<Company> companySet = new HashSet<>();
+    if (crmReporting.getCompanySet() != null) {
+      companySet = crmReporting.getCompanySet();
+    }
+    if (AuthUtils.getUser() != null && AuthUtils.getUser().getActiveCompany() != null) {
+      companySet.add(AuthUtils.getUser().getActiveCompany());
+    }
+    return companySet;
   }
 
   protected void prepareQuery(CrmReporting crmReporting, boolean isPartner, String model) {

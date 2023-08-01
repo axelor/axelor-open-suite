@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
@@ -30,15 +32,15 @@ import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
+import com.axelor.common.csv.CSVFile;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import com.opencsv.CSVWriter;
+import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -51,6 +53,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +63,7 @@ import wslite.json.JSONException;
 public class AddressServiceImpl implements AddressService {
 
   @Inject protected AddressRepository addressRepo;
-  @Inject protected com.axelor.apps.tool.address.AddressTool ads;
+  @Inject protected com.axelor.utils.address.AddressTool ads;
   @Inject protected MapService mapService;
   @Inject protected CityRepository cityRepository;
   @Inject protected StreetRepository streetRepository;
@@ -97,8 +100,10 @@ public class AddressServiceImpl implements AddressService {
   public int export(String path) throws IOException {
     List<Address> addresses = addressRepo.all().filter("self.certifiedOk IS FALSE").fetch();
 
-    CSVWriter csv =
-        new CSVWriter(new java.io.FileWriter(path), "|".charAt(0), CSVWriter.NO_QUOTE_CHARACTER);
+    File tempFile = new File(path);
+    CSVFile csvFormat = CSVFile.DEFAULT.withDelimiter('|').withFirstRecordAsHeader();
+    CSVPrinter printer = csvFormat.write(tempFile);
+
     List<String> header = new ArrayList<>();
     header.add("Id");
     header.add("AddressL1");
@@ -109,7 +114,7 @@ public class AddressServiceImpl implements AddressService {
     header.add("AddressL6");
     header.add("CodeINSEE");
 
-    csv.writeNext(header.toArray(new String[header.size()]));
+    printer.printRecord(header);
     List<String> items = new ArrayList<>();
     for (Address a : addresses) {
 
@@ -121,10 +126,10 @@ public class AddressServiceImpl implements AddressService {
       items.add(a.getAddressL6() != null ? a.getAddressL6() : "");
       items.add(a.getInseeCode() != null ? a.getInseeCode() : "");
 
-      csv.writeNext(items.toArray(new String[items.size()]));
+      printer.printRecord(items);
       items.clear();
     }
-    csv.close();
+    printer.close();
     LOG.info("{} exported", path);
 
     return addresses.size();

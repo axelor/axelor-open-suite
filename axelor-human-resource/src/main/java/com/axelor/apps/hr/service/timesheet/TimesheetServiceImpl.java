@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.AppTimesheet;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
@@ -29,9 +30,9 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -54,12 +55,8 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -70,12 +67,15 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JpaSupport;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.studio.db.AppTimesheet;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -83,6 +83,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -92,11 +93,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
@@ -163,14 +164,14 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.validateDates(timesheet);
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
-    timesheet.setSentDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
+    timesheet.setSentDateTime(
+        appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendConfirmationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getSentTimesheetTemplate();
@@ -236,8 +237,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     confirm(timesheet);
     return sendConfirmationEmail(timesheet);
   }
@@ -248,14 +248,14 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
-    timesheet.setValidationDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
+    timesheet.setValidationDateTime(
+        appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendValidationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getValidatedTimesheetTemplate();
@@ -271,8 +271,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message validateAndSendValidationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     validate(timesheet);
     return sendValidationEmail(timesheet);
   }
@@ -283,14 +282,14 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
-    timesheet.setRefusalDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
+    timesheet.setRefusalDateTime(
+        appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendRefusalEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getRefusedTimesheetTemplate();
@@ -306,8 +305,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     refuse(timesheet);
     return sendRefusalEmail(timesheet);
   }
@@ -327,8 +325,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendCancellationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getCanceledTimesheetTemplate();
@@ -344,8 +341,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     cancel(timesheet);
     return sendCancellationEmail(timesheet);
   }
@@ -731,15 +727,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                         final Project updateProject = findProject(project.getId());
                         getEntityManager().lock(updateProject, LockModeType.PESSIMISTIC_WRITE);
 
-                        BigDecimal timeSpent =
-                            projectTimeSpentMap
-                                .get(updateProject)
-                                .add(this.computeSubTimeSpent(updateProject));
-                        updateProject.setTimeSpent(timeSpent);
-
                         projectRepo.save(updateProject);
-
-                        this.computeParentTimeSpent(updateProject);
                       });
                   done = true;
                 } catch (PersistenceException e) {
@@ -755,7 +743,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             });
       }
     }
-    this.setProjectTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
   protected Project findProject(Long projectId) {
@@ -791,17 +778,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       sum = sum.add(this.computeSubTimeSpent(projectIt));
     }
     return sum;
-  }
-
-  @Override
-  public void computeParentTimeSpent(Project project) {
-    Project parentProject = project.getParentProject();
-    if (parentProject == null) {
-      return;
-    }
-    parentProject.setTimeSpent(project.getTimeSpent().add(this.computeTimeSpent(parentProject)));
-    projectRepo.save(parentProject);
-    this.computeParentTimeSpent(parentProject);
   }
 
   @Override
@@ -1090,8 +1066,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?3) "
-                      + "AND self.projectTask != null ",
+                      + "AND timesheetLine.timesheet = ?3) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
                   timesheet)
@@ -1106,8 +1081,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?4) "
-                      + "AND self.projectTask != null ",
+                      + "AND timesheetLine.timesheet = ?4) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
@@ -1174,23 +1148,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
   @Override
   @Transactional
-  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
-    for (TimesheetLine timesheetLine : timesheetLines) {
-      ProjectTask projectTask = timesheetLine.getProjectTask();
-      if (projectTask != null) {
-        projectTask = projectTaskRepo.find(projectTask.getId());
-        BigDecimal totalrealhrs =
-            isAdd
-                ? projectTask.getTotalRealHrs().add(timesheetLine.getHoursDuration())
-                : projectTask.getTotalRealHrs().subtract(timesheetLine.getHoursDuration());
-        projectTask.setTotalRealHrs(totalrealhrs);
-        projectTaskRepo.save(projectTask);
-      }
-    }
-  }
-
-  @Override
-  @Transactional
   public void removeAfterToDateTimesheetLines(Timesheet timesheet) {
 
     List<TimesheetLine> removedTimesheetLines = new ArrayList<>();
@@ -1210,10 +1167,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
     TimesheetLine timesheetLine = new TimesheetLine();
     Project project = projectPlanningTime.getProject();
-    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedTime());
     timesheetLine.setDuration(
         timesheetLineService.computeHoursDuration(
-            timesheet, projectPlanningTime.getPlannedHours(), false));
+            timesheet, projectPlanningTime.getPlannedTime(), false));
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
     timesheetLine.setProduct(projectPlanningTime.getProduct());
@@ -1221,7 +1178,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
     }
-    timesheetLine.setDate(projectPlanningTime.getDate());
+    LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
+    if (!Objects.isNull(startDateTime)) {
+      timesheetLine.setDate(startDateTime.toLocalDate());
+    }
     timesheetLine.setProjectPlanningTime(projectPlanningTime);
     return timesheetLine;
   }

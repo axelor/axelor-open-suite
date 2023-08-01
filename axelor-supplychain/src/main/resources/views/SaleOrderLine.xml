@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
+
     <extend target="/">
-      <attribute name="onNew"
-        value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs"/>
-      <attribute name="onLoad"
-        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-group-manage-attrs"/>
+      <attribute name="onNew" value="action-supplychain-group-sale-saleorderline-onnew"/>
+      <attribute name="onLoad" value="action-sale-order-line-supplychain-group-onload"/>
     </extend>
+
     <extend target="//panel[@name='statusPanel']">
       <insert position="inside">
         <field name="$_xFillProductAvailableQty" hidden="true" type="boolean" readonly="true"/>
@@ -47,6 +47,12 @@
       <field name="qty" hidden="true"/>
     </panel>
   </form>
+
+  <action-group name="action-supplychain-group-sale-saleorderline-onnew">
+    <action name="action-group-sale-saleorderline-onnew"/>
+    <action name="action-record-sale-order-line-fill-request-qty"/>
+    <action name="action-sale-order-line-group-manage-attrs"/>
+  </action-group>
 
 
   <action-method name="action-method-sale-order-line-available-and-allocated-stock"
@@ -165,8 +171,8 @@
     <view type="form" name="stock-move-line-all-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.stockMove.statusSelect = 2 AND self.product.id = :productId AND
-      (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id =
-      :locationId)</domain>
+      (self.stockMove.fromStockLocation.id = :locationId OR
+      self.toStockLocation.id = :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: __parent__.stockLocation?.id"/>
   </action-view>
@@ -188,6 +194,12 @@
   <action-group name="action-sale-order-line-group-manage-attrs">
     <action name="action-sale-order-line-attrs-hide-panel"/>
     <action name="action-sale-order-line-attrs-fill-ctx"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-supplychain-group-onload">
+    <action name="action-group-sale-saleorderline-onload"/>
+    <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
+    <action name="action-sale-order-line-group-manage-attrs"/>
   </action-group>
 
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -31,6 +31,9 @@
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     <many-to-one name="justificationMetaFile" ref="com.axelor.meta.db.MetaFile"
       title="Justification"/>
+    <boolean name="isAloneMeal" title="Alone meal"/>
+    <many-to-many name="invitedCollaboratorSet" title="Invited collaborators"
+      ref="com.axelor.apps.hr.db.Employee"/>
 
     <!-- integration of KilometricAllowance -->
     <many-to-one name="kilometricAllowParam"

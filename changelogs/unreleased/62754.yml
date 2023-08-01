@@ -1,3 +1,0 @@
----
-title: "Invoice: fix unbalanced move generation when we create an invoice with holdback"
-type: fix

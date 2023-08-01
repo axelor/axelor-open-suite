@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice.print;
 
@@ -22,13 +23,14 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceProductStatement;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -75,17 +77,21 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     if (invoiceProductStatementList.isEmpty()) {
       return "";
     }
-    String statement = getCorrespondingStatement(productTypes, invoiceProductStatementList);
-    if (statement.isEmpty()) {
-      List<InvoiceProductStatement> minSizeCorrespondingInvoiceProductStatements =
-          getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList);
-      statement =
-          minSizeCorrespondingInvoiceProductStatements.stream()
-              .findFirst()
-              .map(InvoiceProductStatement::getStatement)
-              .orElse("");
-    }
-    return statement;
+
+    return getCorrespondingStatement(productTypes, invoiceProductStatementList)
+        .orElseGet(
+            () ->
+                getMinSizeCorrespondingInvoiceProductStatement(
+                    productTypes, invoiceProductStatementList));
+  }
+
+  protected String getMinSizeCorrespondingInvoiceProductStatement(
+      Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
+
+    return getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList).stream()
+        .findFirst()
+        .map(InvoiceProductStatement::getStatement)
+        .orElse("");
   }
 
   protected List<InvoiceProductStatement> getCorrectInvoiceProductStatements(
@@ -136,16 +142,16 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     return correspondingStatements;
   }
 
-  protected String getCorrespondingStatement(
+  protected Optional<String> getCorrespondingStatement(
       Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
-    String statement = "";
+    String statement = null;
     for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
       Set<String> result = getTypesList(invoiceProductStatement);
       if (result.equals(productTypes)) {
         statement = invoiceProductStatement.getStatement();
       }
     }
-    return statement;
+    return Optional.ofNullable(statement);
   }
 
   protected Set<String> getTypesList(InvoiceProductStatement invoiceProductStatement) {
