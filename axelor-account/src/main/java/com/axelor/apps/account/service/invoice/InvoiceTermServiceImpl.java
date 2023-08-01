@@ -1051,7 +1051,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
 
-    if (move != null && invoiceTerm != null && invoiceTerm.getOriginDate() == null) {
+    if (move != null && moveLine != null && invoiceTerm != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
     }
   }
