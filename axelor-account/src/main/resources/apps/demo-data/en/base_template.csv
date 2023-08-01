@@ -51,7 +51,7 @@ L'équipe Axelor</p>
 
 <p>Best regards<br/>
 Axelor Team</p>";"$NoteBills.emailAddress.address$";;;2;;
-"B2C Reminder email";"DebtRecoveryMethodLine";2;;30;;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Payment reminder of $DebtRecoveryHistory.debtRecovery.accountingSituation.company.name$ invoice(s)";"Dear $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
+"B2C Reminder email";"DebtRecoveryHistory";2;;30;;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Payment reminder of $DebtRecoveryHistory.debtRecovery.accountingSituation.company.name$ invoice(s)";"Dear $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
 We are glad to count you as one of our great customers. However, after a detailed analysis of your balance, we noticed that the following listed invoice(s) remain(s) with a due balance:<br/>
 <table style=""border-collapse: collapse"" border=""1"">
 <tr>
@@ -63,7 +63,7 @@ We are glad to count you as one of our great customers. However, after a detaile
 </tr>
 $DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
 <tr>
-<td>$list.id$</td>
+<td>$list.invoiceId$</td>
 <td>$list.amountRemaining; format=""%,10.2f""$ $list.currency.symbol$ ($list.currency.name$)</td>
 <td>$list.invoiceDate; format=""dd/MM/yyy""$</td>
 <td>$list.dueDate; format=""dd/MM/yyy""$</td>
@@ -75,7 +75,7 @@ $DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
 If a payment has already been executed during this message transit time, please ignore it. May you have any question regarding the payment of those invoice(s), please contact us by replying to this email.<br/><br/>
 Kind regards<br/>
 For the accounting department of $DebtRecoveryHistory.debtRecovery.company.name$";"$DebtRecoveryHistory.debtRecovery.accountingSituation.partner.emailAddress.address$";;;2;"true";"$__user__.emailSignature$"
-"B2B Reminder email";"DebtRecoveryMethodLine";2;;30;;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Payment reminder of $DebtRecoveryHistory.debtRecovery.accountingSituation.company.name$";"Dear manager of $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
+"B2B Reminder email";"DebtRecoveryHistory";2;;30;;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Payment reminder of $DebtRecoveryHistory.debtRecovery.accountingSituation.company.name$";"Dear manager of $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
  We are glad to count you as one of our great customers. However, after a detailed analysis of your balance, we noticed that the following listed invoice(s) remain(s) with a due balance :<br/>
  <table style=""border-collapse: collapse"" border=""1"">
  <tr>
@@ -87,7 +87,7 @@ For the accounting department of $DebtRecoveryHistory.debtRecovery.company.name$
  </tr>
  $DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
  <tr>
- <td>$list.id$</td>
+ <td>$list.invoiceId$</td>
  <td>$list.amountRemaining; format=""%,10.2f""$ $list.currency.symbol$ ($list.currency.name$)</td>
  <td>$list.invoiceDate; format=""dd/MM/yyy""$</td>
  <td>$list.dueDate; format=""dd/MM/yyy""$</td>
