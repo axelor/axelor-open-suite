@@ -47,7 +47,7 @@
             widget="info-button" onClick="action-method-supplychain-stock-available-product"/>
         </panel>
         <panel name="productionIndicators" colSpan="12" itemSpan="3"
-          if-module="axelor-production">
+          if="__config__.app.isApp('production')">
           <button name="$buildingQty" title="Building quantity" icon="fa-cogs"
             widget="info-button" onClick="action-method-production-building-quantity-product"/>
           <button name="$consumeManufOrderQty" title="Consume manuf order quantity"
