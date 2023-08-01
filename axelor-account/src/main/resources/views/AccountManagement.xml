@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="account-management-payment-mode-grid" title="Account Managements"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
@@ -80,9 +80,9 @@
     <extend
       target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
       <attribute name="showIf"
-        value="paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
+        value="paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
       <attribute name="requiredIf"
-        value="typeSelect == 3 &amp;&amp; (paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
+        value="typeSelect == 3 &amp;&amp; (paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
       <insert position="after">
         <field name="chequeDepositJournal"
           domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 4"
@@ -97,6 +97,7 @@
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="paymentMode.accountingTriggerSelect" hidden="true"/>
+        <field name="paymentMode.canSelectInPaymentSession" hidden="true"/>
       </insert>
     </extend>
     <extend target="//panel[@name='purchaseConfig2Panel']/field[@name='purchaseAccount']">
@@ -189,6 +190,13 @@
     <attribute for="bankDetails" name="value" expr="null"/>
     <attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails"
       if="company?.defaultBankDetails?.active"/>
+  </action-attrs>
+
+  <action-attrs name="action-account-management-attrs-bank-details-on-change">
+    <attribute name="value" for="cashAccount" expr="eval: bankDetails?.bankAccount"
+      if="__config__.app.isApp('account')"/>
+    <attribute name="value" for="journal" expr="eval: bankDetails?.journal"
+      if="__config__.app.isApp('account')"/>
   </action-attrs>
 
   <action-record name="action-account-management-fill-company"

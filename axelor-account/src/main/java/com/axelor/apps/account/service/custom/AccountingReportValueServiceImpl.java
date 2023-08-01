@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.custom;
 
@@ -32,12 +33,13 @@ import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -67,8 +69,10 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AccountingReportValueMoveLineService accountingReportValueMoveLineService;
   protected AccountingReportValuePercentageService accountingReportValuePercentageService;
   protected AppBaseService appBaseService;
+  protected TraceBackRepository traceBackRepository;
 
   protected static int lineOffset = 0;
+  protected static int periodNumber = 0;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -79,12 +83,15 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       AccountingReportValueMoveLineService accountingReportValueMoveLineService,
       AccountingReportValuePercentageService accountingReportValuePercentageService,
       AppBaseService appBaseService,
-      AnalyticAccountRepository analyticAccountRepo) {
-    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
+      AnalyticAccountRepository analyticAccountRepo,
+      DateService dateService,
+      TraceBackRepository traceBackRepository) {
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo, dateService);
     this.accountingReportValueCustomRuleService = accountingReportValueCustomRuleService;
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
     this.appBaseService = appBaseService;
+    this.traceBackRepository = traceBackRepository;
   }
 
   public static synchronized void incrementLineOffset() {
@@ -95,8 +102,16 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     return lineOffset;
   }
 
+  public static synchronized void incrementPeriodNumber() {
+    periodNumber++;
+  }
+
+  public static synchronized int getPeriodNumber() {
+    return periodNumber;
+  }
+
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void clearReportValues(AccountingReport accountingReport) {
     accountingReportValueRepo.findByAccountingReport(accountingReport).remove();
   }
@@ -194,6 +209,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     switch (reportType.getComparison()) {
       case AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR:
         for (int i = 1; i < accountingReport.getReportType().getNoOfPeriods() + 1; i++) {
+          AccountingReportValueServiceImpl.incrementPeriodNumber();
+
           this.computeReportValues(
               accountingReport,
               configAnalyticAccount,
@@ -204,6 +221,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         break;
       case AccountingReportTypeRepository.COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR:
         for (int i = 1; i < accountingReport.getReportType().getNoOfPeriods() + 1; i++) {
+          AccountingReportValueServiceImpl.incrementPeriodNumber();
+
           this.computeReportValues(
               accountingReport,
               configAnalyticAccount,
@@ -213,6 +232,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         }
         break;
       case AccountingReportTypeRepository.COMPARISON_OTHER_PERIOD:
+        AccountingReportValueServiceImpl.incrementPeriodNumber();
+
         this.computeReportValues(
             accountingReport,
             configAnalyticAccount,
@@ -235,6 +256,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     AccountingReportType accountingReportType = accountingReport.getReportType();
     this.checkAccountingReportType(accountingReportType);
 
+    this.clearTracebacks(accountingReport);
+    accountingReport.setTraceAnomalies(false);
+
     int nullCount = -1;
     int previousNullCount;
 
@@ -252,12 +276,33 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               analyticCounter);
 
       if (nullCount == previousNullCount) {
+        accountingReport.setTraceAnomalies(true);
+
+        this.createReportValues(
+            accountingReport,
+            valuesMapByColumn,
+            valuesMapByLine,
+            configAnalyticAccount,
+            startDate,
+            endDate,
+            analyticCounter);
+
         throw new AxelorException(
+            accountingReport,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
+            I18n.get(AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT),
             accountingReport.getRef());
       }
     }
+  }
+
+  @Transactional
+  protected void clearTracebacks(AccountingReport accountingReport) {
+    traceBackRepository
+        .all()
+        .filter("self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = :id")
+        .bind("id", accountingReport.getId())
+        .remove();
   }
 
   protected void checkAccountingReportType(AccountingReportType accountingReportType)
@@ -411,8 +456,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate,
-      int analyticCounter)
-      throws AxelorException {
+      int analyticCounter) {
     for (AccountingReportConfigLine column : columnList) {
       if (StringUtils.notEmpty(column.getGroupsWithoutColumn()) && groupColumn != null) {
         List<String> groupsWithoutColumnCodeList =
@@ -431,7 +475,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       }
 
       for (AccountingReportConfigLine line : lineList) {
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
+        accountingReport = this.fetchAccountingReport(accountingReport);
+
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
         column = JPA.find(AccountingReportConfigLine.class, column.getId());
         groupColumn =
@@ -480,8 +525,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate,
-      int analyticCounter)
-      throws AxelorException {
+      int analyticCounter) {
     if (this.isValueAlreadyComputed(
         groupColumn, column, line, valuesMapByColumn, configAnalyticAccount, parentTitle)) {
       return;
@@ -583,15 +627,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             analyticCounter);
       }
     } catch (Exception e) {
-      throw new AxelorException(
-          e,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(
-                  "An exception occured while computing the following elements: group: %s, column: %s, line %s"),
-              groupColumn != null ? groupColumn.getCode() : "",
-              column.getCode(),
-              line.getCode()));
+      this.traceException(e, accountingReport, groupColumn, column, line);
     }
   }
 
@@ -629,11 +665,11 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     return String.join(
         " AND ",
         this.getAccountFilters(
-            configLine.getAccountSet(),
             configLine.getAccountTypeSet(),
             configLine.getAccountCode(),
             null,
             null,
-            false));
+            false,
+            CollectionUtils.isEmpty(configLine.getAccountSet())));
   }
 }

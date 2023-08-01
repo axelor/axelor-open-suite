@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Language;
@@ -26,10 +28,9 @@ import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.PrintTemplate;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
-import com.axelor.apps.message.db.TemplateContext;
-import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -37,13 +38,13 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.TemplateContext;
+import com.axelor.message.service.TemplateContextService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.Context;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.utils.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -51,6 +52,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -84,7 +86,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
 
   @SuppressWarnings("unchecked")
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Print generatePrint(Long objectId, PrintTemplate printTemplate)
       throws AxelorException, IOException, ClassNotFoundException {
     MetaModel metaModel = printTemplate.getMetaModel();
@@ -180,7 +182,11 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
     print = printRepo.save(print);
 
-    printService.attachMetaFiles(print, getMetaFiles(maker, printTemplate));
+    if (StringUtils.notEmpty(model)) {
+      Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(model);
+      Model entity = JPA.find(modelClass, objectId);
+      printService.attachMetaFiles(print, getMetaFiles(Map.of(simpleModel, entity), printTemplate));
+    }
 
     return print;
   }
@@ -243,7 +249,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           }
 
           PrintLine printLine = new PrintLine();
-          printLine.setRank(rank);
+          printLine.setPrintLineRank(rank);
           printLine.setSequence(seq);
           printLine.setTitle(title);
           printLine.setContent(content);
@@ -301,7 +307,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     return maker;
   }
 
-  public Set<MetaFile> getMetaFiles(TemplateMaker maker, PrintTemplate printTemplate)
+  public Set<MetaFile> getMetaFiles(Map<String, Object> context, PrintTemplate printTemplate)
       throws AxelorException, IOException {
     Set<MetaFile> metaFiles = new HashSet<>();
     if (printTemplate.getBirtTemplateSet() == null) {
@@ -309,8 +315,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
 
     for (BirtTemplate birtTemplate : printTemplate.getBirtTemplateSet()) {
-      metaFiles.add(
-          templateMessageService.createMetaFileUsingBirtTemplate(maker, birtTemplate, null, null));
+      metaFiles.add(templateMessageService.createMetaFileUsingBirtTemplate(birtTemplate, context));
     }
 
     LOG.debug("MetaFile to attach: {}", metaFiles);

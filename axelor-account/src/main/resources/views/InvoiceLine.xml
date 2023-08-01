@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="invoice-line-grid" title="Invoice lines"
     model="com.axelor.apps.account.db.InvoiceLine">
@@ -102,20 +102,20 @@
         <field name="unit" colSpan="3" canEdit="false" requiredIf="typeSelect == 0"
           form-view="unit-form" grid-view="unit-grid"/>
         <field name="price" colSpan="3" required="true"
-          onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
+          onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
         <field name="inTaxPrice" colSpan="3" required="true"
-          onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"
+          onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           hidden="true"/>
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
-            onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
+            onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
-            onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"
+            onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
             hideIf="discountTypeSelect == 0"/>
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
         <field name="taxLine" canEdit="false"
-          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"
+          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form"
           domain="self.endDate = null or self.endDate &gt; :__date__"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
@@ -163,27 +163,6 @@
         </panel>
       </panel>
 
-      <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
-        <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-          hidden="false">
-          <viewer depends="companyExTaxTotal,$currencySymbol">
-						<![CDATA[
-							<dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
-						]]>
-          </viewer>
-        </field>
-        <field name="budgetDistributionSumAmount" colSpan="6"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"/>
-        <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
-          canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
-        <panel-related name="budgetDistributionListPanel"
-          field="budgetDistributionList" grid-view="invoice-budget-distribution-grid"
-          form-view="invoice-budget-distribution-form" editable="true" colSpan="12"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-          onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
-        <field name="$currencySymbol" hidden="true"/>
-      </panel>
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()"
         title="Business Project" if-module="axelor-business-project">
@@ -194,10 +173,8 @@
           action="action-invoice-line-view-project-tasks" colSpan="12"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
-        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form"
           onChange="action-invoice-line-group-analytic-distribution-template-onchange"
@@ -205,41 +182,39 @@
           requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
           form-view="analytic-move-line-move-line-form" colSpan="12"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           onChange="action-invoice-line-group-analytic-move-line-onchange"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="account.analyticDistributionRequiredOnInvoiceLines" hidden="true"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+        <field name="account.company" hidden="true"/>
+        <field name="account.company.accountConfig" hidden="true"/>
+        <field name="account.company.accountConfig.analyticDistributionTypeSelect"
+          hidden="true"/>
       </panel>
       <panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
@@ -363,9 +338,6 @@
       expr="eval: __parent__?.statusSelect &gt; 1"/>
     <attribute name="readonly" for="analyticDistributionPanel"
       expr="eval: __parent__?.statusSelect &gt; 2"/>
-    <attribute name="readonly" for="budgetPanel"
-      expr="eval: __parent__?.statusSelect &gt; 1"/>
-
     <attribute name="readonly" for="accountingPanel"
       expr="eval: __parent__?.statusSelect &gt; 2"/>
   </action-attrs>
@@ -379,7 +351,6 @@
     <attribute name="readonly" for="projectPanel" expr="eval: invoice.statusSelect &gt; 1"/>
     <attribute name="readonly" for="analyticDistributionPanel"
       expr="eval: invoice.statusSelect &gt; 1"/>
-    <attribute name="readonly" for="budgetPanel" expr="eval: invoice.statusSelect &gt; 1"/>
 
     <attribute name="readonly" for="accountingPanel"
       expr="eval: invoice.statusSelect &gt; 2"/>
@@ -397,9 +368,6 @@
       expr="eval: invoice?.operationTypeSelect != 3 &amp;&amp; invoice?.operationTypeSelect != 4"
       if="__config__.app.isApp('business-project')"/>
     <attribute name="hidden" for="purchaseOrderLine"
-      expr="eval: invoice?.operationTypeSelect != 1 &amp;&amp; invoice?.operationTypeSelect != 2"
-      if="__config__.app.isApp('business-project')"/>
-    <attribute name="hidden" for="budgetPanel"
       expr="eval: invoice?.operationTypeSelect != 1 &amp;&amp; invoice?.operationTypeSelect != 2"
       if="__config__.app.isApp('business-project')"/>
     <attribute name="hidden" for="$isFilterOnSupplier"
@@ -427,23 +395,21 @@
     <action name="action-invoice-line-record-project"/>
     <action name="action-invoice-line-record-operation-type"/>
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
-    <action name="action-budget-distribution-attrs-budget-amount-available"
-      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-invoice-line-attrs-readonly-form"/>
     <action name="action-invoice-line-record-operation-type"/>
-    <action name="action-budget-distribution-attrs-budget-amount-available"
-      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -452,19 +418,19 @@
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-invoice-line-method-compute"/>
     <action name="action-invoice-line-method-get-and-compute-analytic-distribution"/>
-    <action name="action-budget-validate-exceed-line-amount"/>
+    <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
     <action name="action-invoice-line-method-get-fixed-asset-category"
       if="__config__.app.isApp('account')"/>
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-invoice-line-method-translate-product-description-and-name"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
     <action name="action-invoice-line-method-get-discount"/>
     <action name="action-invoice-line-method-compute"/>
     <action name="action-invoice-line-method-compute-analytic-distribution"/>
-    <action name="action-budget-validate-exceed-line-amount"/>
     <action name="action-invoice-line-method-check-qty"/>
   </action-group>
 
@@ -484,6 +450,8 @@
     <action name="action-invoice-line-method-axis-create-analytic-line"/>
     <action name="action-invoice-line-group-analytic-distribution-template-onchange"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
+    <action name="action-invoice-line-record-set-tax"/>
   </action-group>
 
   <action-group
@@ -496,9 +464,9 @@
   </action-group>
 
   <action-group name="action-invoice-line-group-analytic-move-line-onchange">
-    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
     <action name="action-invoice-line-method-check-analytic-account-on-invoice-line"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
   </action-group>
 
   <!-- ACTION RECORDS -->
@@ -527,6 +495,12 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
     <field name="cutOffEndDate"
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
+  </action-record>
+
+  <action-record name="action-invoice-line-record-set-tax"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="taxLine" expr="eval: account.defaultTax.activeTaxLine"
+      if="!taxLine &amp;&amp; account &amp;&amp; account.defaultTax"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -578,12 +552,6 @@
   <action-method name="action-invoice-line-method-get-fixed-asset-category">
     <call class="com.axelor.apps.account.web.InvoiceLineController"
       method="getFixedAssetCategory"/>
-  </action-method>
-
-  <action-method
-    name="action-invoice-order-method-compute-budget-distribution-sum-amount">
-    <call class="com.axelor.apps.supplychain.web.InvoiceLineController"
-      method="computeBudgetDistributionSumAmount"/>
   </action-method>
 
   <action-method name="action-invoice-line-method-set-axis-domain">
@@ -645,9 +613,6 @@
       expr="eval: __parent__?.operationTypeSelect != 3 &amp;&amp; __parent__?.operationTypeSelect != 4"
       if="__config__.app.isApp('business-project')"/>
     <attribute name="hidden" for="purchaseOrderLine"
-      expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2"
-      if="__config__.app.isApp('business-project')"/>
-    <attribute name="hidden" for="budgetPanel"
       expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2"
       if="__config__.app.isApp('business-project')"/>
     <attribute name="hidden" for="$isFilterOnSupplier"
@@ -725,18 +690,10 @@
 
   <search-filters name="invoice-line-filters"
     model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
-    <field name="invoice.invoiceDate" title="Invoice Date"/>
+    <field name="invoice.invoiceDate" title="Invoice date"/>
     <field name="invoice.paymentDate" title="Payment date"/>
     <field name="invoice.company" title="Company"/>
     <field name="invoice.statusSelect" title="Status select"/>
-    <field name="companyExTaxTotal" hidden="true"
-      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget())"/>
-    <field name="budgetDistributionSumAmount" hidden="true"
-      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget())"/>
-    <field name="budget" hidden="true"
-      if="!(__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget())"/>
-    <field name="budgetDistributionList" hidden="true"
-      if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget())"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines())"/>
     <field name="analyticDistributionTemplate" hidden="true"
@@ -777,4 +734,9 @@
   <action-method name="action-invoice-line-method-check-qty">
     <call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="checkQty"/>
   </action-method>
+
+  <action-attrs name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel">
+    <attribute for="analyticDistributionPanel" name="hidden"
+      expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !account?.analyticDistributionAuthorized"/>
+  </action-attrs>
 </object-views>

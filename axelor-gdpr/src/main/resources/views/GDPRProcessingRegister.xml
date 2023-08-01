@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-  http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="gdpr-processing-register-grid" title="GDPR processing registers" canNew="true"
     model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
@@ -15,12 +15,14 @@
     <field name="retentionPeriod"/>
     <field name="status"/>
     <field name="anonymizer"/>
+    <field name="isArchiveData"/>
     <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
       icon="fa-cog"/>
   </grid>
 
   <form name="gdpr-processing-register-form" title="Processing register"
-    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large">
+    onSave="action-processing-register-validate-check-options"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large" canCopy="false">
     <panel name="statusPanel">
       <field name="status" widget="NavSelect" colSpan="6" readonly="true" showTitle="false"/>
     </panel>
@@ -39,12 +41,15 @@
 
     <panel name="sidePanel" sidebar="true">
       <field name="anonymizer" canNew="true" canEdit="true" form-view="anonymizer-form"/>
-      <button name="registerActivateBtn" onClick="action-gdpr-record-activate-register,save"
+      <field name="isArchiveData" widget="boolean-switch"/>
+      <button name="registerActivateBtn"
+        onClick="action-processing-register-validate-check-options,action-gdpr-record-activate-register,save"
         title="Activate"
         showIf="status == 0 &amp;&amp; gdprProcessingRegisterRuleList &amp;&amp; gdprProcessingRegisterRuleList.length > 0"
         icon="fa-check" css="btn-success"/>
-      <button name="archiveBtn" onClick="save, action-gdpr-method-launch-register"
-        title="Archive" hidden="true"
+      <button name="archiveBtn"
+        onClick="action-processing-register-validate-check-options,save,action-gdpr-method-launch-register"
+        title="Run process" hidden="true"
         showIf="status == 1 &amp;&amp; gdprProcessingRegisterRuleList &amp;&amp; gdprProcessingRegisterRuleList.length > 0"
         icon="fa-cog"/>
       <button name="registerCancelBtn" onClick="action-gdpr-record-cancel-register,save"
@@ -87,4 +92,10 @@
     <domain>self.gdprProcessingRegister = :processingRegister</domain>
     <context name="processingRegister" expr="eval:__this__" if="id != null"/>
   </action-view>
+
+  <action-validate name="action-processing-register-validate-check-options">
+    <error message="Please select at least a pseudonymizer and/or choose to archive the data."
+      if="!anonymizer &amp;&amp; !isArchiveData"/>
+  </action-validate>
+
 </object-views>

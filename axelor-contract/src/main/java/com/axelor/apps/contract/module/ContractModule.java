@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.contract.module;
 
@@ -29,10 +30,16 @@ import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
+import com.axelor.apps.contract.service.ContractLineViewService;
+import com.axelor.apps.contract.service.ContractLineViewServiceImpl;
+import com.axelor.apps.contract.service.ContractRevaluationService;
+import com.axelor.apps.contract.service.ContractRevaluationServiceImpl;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.contract.service.ContractVersionServiceImpl;
+import com.axelor.apps.contract.service.IndexRevaluationService;
+import com.axelor.apps.contract.service.IndexRevaluationServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
@@ -55,5 +62,8 @@ public class ContractModule extends AxelorModule {
         .to(InvoiceLineAnalyticContractServiceImpl.class);
     bind(WorkflowCancelServiceSupplychainImpl.class).to(WorkflowCancelServiceContractImpl.class);
     bind(ContractLineRepository.class).to(ContractLineManagementRepository.class);
+    bind(IndexRevaluationService.class).to(IndexRevaluationServiceImpl.class);
+    bind(ContractRevaluationService.class).to(ContractRevaluationServiceImpl.class);
+    bind(ContractLineViewService.class).to(ContractLineViewServiceImpl.class);
   }
 }

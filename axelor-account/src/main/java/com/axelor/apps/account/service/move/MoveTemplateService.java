@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
@@ -33,13 +35,13 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -72,6 +74,7 @@ public class MoveTemplateService {
   protected BankDetailsService bankDetailsService;
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
 
   protected List<String> exceptionsList;
 
@@ -87,7 +90,8 @@ public class MoveTemplateService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       BankDetailsService bankDetailsService,
       MoveTemplateRepository moveTemplateRepo,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -100,6 +104,8 @@ public class MoveTemplateService {
     this.bankDetailsService = bankDetailsService;
     this.moveTemplateRepo = moveTemplateRepo;
     this.moveLineTaxService = moveLineTaxService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+
     this.exceptionsList = Lists.newArrayList();
   }
 
@@ -253,15 +259,27 @@ public class MoveTemplateService {
                 moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
               }
             }
+            List<AnalyticMoveLine> analyticMoveLineList =
+                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                    ? new ArrayList<>()
+                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+            moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
+
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+            }
+
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
 
             counter++;
           }
         }
 
-        moveLineTaxService.autoTaxLineGenerate(move);
+        moveLineTaxService.autoTaxLineGenerate(move, null, true);
         manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
@@ -360,9 +378,19 @@ public class MoveTemplateService {
               }
             }
 
+            List<AnalyticMoveLine> analyticMoveLineList =
+                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                    ? new ArrayList<>()
+                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+            moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
+
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+            }
             counter++;
           } else {
             taxLineDescription = moveTemplateLine.getName();
@@ -379,7 +407,7 @@ public class MoveTemplateService {
         }
 
         move.setDescription(taxLineDescription);
-        moveLineTaxService.autoTaxLineGenerate(move);
+        moveLineTaxService.autoTaxLineGenerate(move, null, false);
         manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());

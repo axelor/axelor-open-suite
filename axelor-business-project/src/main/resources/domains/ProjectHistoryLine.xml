@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="ProjectHistoryLine" cacheable="true">
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <decimal name="soldTime" title="Sold time"/>
+    <decimal name="updatedTime" title="Updated time"/>
+    <decimal name="plannedTime" title="Planned time"/>
+    <decimal name="spentTime" title="Spent time"/>
+    <decimal name="percentageOfProgress" title="% of progress" precision="5" scale="2"/>
+    <decimal name="percentageOfConsumption" title="% of consumption" precision="5" scale="2"/>
+    <decimal name="remainingAmountToDo" title="Remaining amount to do" precision="6"
+      scale="2"/>
+
+    <decimal name="turnover" title="ProjectTask.Turnover"/>
+    <decimal name="initialCosts" title="ProjectTask.Costs"/>
+    <decimal name="initialMargin" title="ProjectTask.Margin"/>
+    <decimal name="initialMarkup" title="ProjectTask.Markup"/>
+    <decimal name="realTurnover" title="Real turnover"/>
+    <decimal name="realCosts" title="ProjectTask.Costs"/>
+    <decimal name="realMargin" title="ProjectTask.Margin"/>
+    <decimal name="realMarkup" title="ProjectTask.Markup"/>
+    <decimal name="forecastCosts" title="ProjectTask.Costs"/>
+    <decimal name="forecastMargin" title="ProjectTask.Margin"/>
+    <decimal name="forecastMarkup" title="ProjectTask.Markup"/>
+  </entity>
+
+</domain-models>

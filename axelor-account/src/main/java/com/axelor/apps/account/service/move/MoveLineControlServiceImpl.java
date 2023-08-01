@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.move;
 
@@ -30,15 +31,15 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -99,9 +100,9 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   @Override
   public void validateMoveLine(MoveLine moveLine) throws AxelorException {
-    if ((moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
+    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
         && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
-        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0)) {
+        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -112,29 +113,39 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
       Invoice invoiceAttached = invoiceTermList.get(0).getInvoice();
+      BigDecimal total = moveLine.getCurrencyAmount().abs();
+
       if (invoiceAttached != null) {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
+        total = invoiceAttached.getInTaxTotal();
       }
-      if (invoiceAttached != null
-          && invoiceTermList.stream()
-                  .map(
-                      it ->
-                          invoiceTermService.computeCustomizedPercentageUnscaled(
-                              it.getAmount(), invoiceAttached.getInTaxTotal()))
-                  .reduce(BigDecimal.ZERO, BigDecimal::add)
-                  .compareTo(new BigDecimal(100))
-              != 0) {
-        throw new AxelorException(
-            moveLine,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
-            moveLine.getAccount().getCode());
-      } else {
+
+      if (this.compareInvoiceTermAmountSumToTotal(invoiceTermList, total)) {
         this.checkTotal(invoiceTermList, invoiceAttached, moveLine, false);
         this.checkTotal(invoiceTermList, invoiceAttached, moveLine, true);
+
+        if (this.compareInvoiceTermAmountSumToTotal(invoiceTermList, total)) {
+          throw new AxelorException(
+              moveLine,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
+              moveLine.getAccount().getCode());
+        }
       }
+
+      invoiceTermService.recomputeInvoiceTermsPercentage(invoiceTermList, total);
     }
+
     controlAccountingAccount(moveLine);
+  }
+
+  protected boolean compareInvoiceTermAmountSumToTotal(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    return invoiceTermList.stream()
+            .map(InvoiceTerm::getAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .compareTo(total)
+        != 0;
   }
 
   protected void checkTotal(
@@ -209,23 +220,20 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       return false;
     }
     boolean hasInvoiceTermAndInvoice =
-        ObjectUtils.notEmpty(move.getInvoice()) && moveLine.getAccount().getHasInvoiceTerm();
+        ObjectUtils.notEmpty(move.getInvoice()) && moveLine.getAccount().getUseForPartnerBalance();
     List<MoveLine> moveLines = move.getMoveLineList();
     boolean containsInvoiceTerm =
         moveLines.stream()
-                .filter(
-                    ml ->
-                        ObjectUtils.notEmpty(ml.getInvoiceTermList())
-                            && ml.getInvoiceTermList().stream()
-                                .anyMatch(InvoiceTerm::getIsHoldBack))
-                .count()
-            > 0;
+            .anyMatch(
+                ml ->
+                    ObjectUtils.notEmpty(ml.getInvoiceTermList())
+                        && ml.getInvoiceTermList().stream().anyMatch(InvoiceTerm::getIsHoldBack));
     boolean hasInvoiceTermMoveLines =
         moveLines.stream()
                 .filter(
                     ml ->
                         ObjectUtils.notEmpty(ml.getAccount())
-                            && ml.getAccount().getHasInvoiceTerm())
+                            && ml.getAccount().getUseForPartnerBalance())
                 .count()
             >= 2;
     return (hasInvoiceTermAndInvoice && containsInvoiceTerm) || hasInvoiceTermMoveLines;
@@ -310,6 +318,33 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER),
           optMoveLinePartner.get().getName(),
           optMovePartner.get().getName());
+    }
+  }
+
+  @Override
+  public void checkAccountAnalytic(Move move, MoveLine moveLine, Account account)
+      throws AxelorException {
+    if (moveLine.getAnalyticDistributionTemplate() == null
+        && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+        && account.getAnalyticDistributionAuthorized()
+        && account.getAnalyticDistributionRequiredOnMoveLines()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.MOVE_10),
+          account.getName(),
+          moveLine.getName());
+    }
+
+    if (account != null
+        && !account.getAnalyticDistributionAuthorized()
+        && (moveLine.getAnalyticDistributionTemplate() != null
+            || (moveLine.getAnalyticMoveLineList() != null
+                && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_11),
+          moveLine.getName());
     }
   }
 }

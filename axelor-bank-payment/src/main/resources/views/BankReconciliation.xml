@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-reconciliation-grid" title="Bank reconciliations"
     model="com.axelor.apps.bankpayment.db.BankReconciliation"
@@ -35,7 +35,7 @@
       <panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
         <field name="statusSelect" showTitle="false" colSpan="6" widget="NavSelect"/>
         <field name="validatedByUser" colSpan="2"/>
-        <field name="validatedDate" colSpan="2"/>
+        <field name="validateDateTime" colSpan="2"/>
         <button name="validateBtn" title="Validate reconciliation"
           readonlyIf="!(bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0)"
           hideIf="statusSelect == 2" colSpan="2"

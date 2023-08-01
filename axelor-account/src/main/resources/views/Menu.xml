@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="invoice-root" title="Invoicing" order="-100"
+  <menuitem name="invoice-root" title="Invoicing" order="-1000"
     if="__config__.app.isApp('invoice')" icon="fa-file-text-o" icon-background="#31b4a9"/>
 
-  <menuitem name="invoice-root-custinvoices" parent="invoice-root" order="5"
+  <menuitem name="invoice-root-custinvoices" parent="invoice-root" order="100"
     title="Cust. Invoices" action="invoice.root.custinvoices"/>
 
   <action-view name="invoice.root.custinvoices" title="Cust. Invoices"
@@ -19,7 +19,7 @@
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
-  <menuitem name="invoice-root-custrefunds" parent="invoice-root" order="10"
+  <menuitem name="invoice-root-custrefunds" parent="invoice-root" order="200"
     title="Cust. Refunds" action="invoice.root.custrefunds"/>
 
   <action-view name="invoice.root.custrefunds" title="Cust. Refunds"
@@ -32,7 +32,7 @@
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
-  <menuitem name="invoice-root-purchase-supinvoices" parent="invoice-root" order="15"
+  <menuitem name="invoice-root-purchase-supinvoices" parent="invoice-root" order="300"
     title="Suppl. Invoices" action="invoice.root.purchase.supinvoices"/>
 
   <action-view name="invoice.root.purchase.supinvoices" title="Suppl. Invoices"
@@ -48,15 +48,15 @@
   <menuitem name="invoice-root-my-awaiting-pfp" title="My awaiting PFP"
     action="invoice.root.my.awaiting.pfp" parent="invoice-root"
     if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; !__user__.isSuperPfpUser"
-    order="16"/>
+    order="400"/>
 
   <menuitem name="invoice-root-pfp" title="PFP" parent="invoice-root"
     if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
-    order="16"/>
+    order="500"/>
 
   <menuitem name="invoice-root-pfp-my-awaiting-pfp" title="My awaiting PFP"
     action="invoice.root.my.awaiting.pfp" parent="invoice-root-pfp"
-    if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment()" order="100"/>
 
   <action-view name="invoice.root.my.awaiting.pfp" title="My awaiting PFP"
     model="com.axelor.apps.account.db.InvoiceTerm">
@@ -71,7 +71,7 @@
   </action-view>
 
   <menuitem name="invoice-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
-    action="invoice.root.pfp.awaiting.pfp" parent="invoice-root-pfp"
+    action="invoice.root.pfp.awaiting.pfp" parent="invoice-root-pfp" order="200"
     if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
 
   <action-view name="invoice.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
@@ -84,7 +84,7 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root" order="20"
+  <menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root" order="600"
     title="Suppl. Refunds" action="invoice.root.purchase.suprefunds"/>
 
   <action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
@@ -97,7 +97,7 @@
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
-  <menuitem name="invoice-root-invoice-terms" parent="invoice-root" order="21"
+  <menuitem name="invoice-root-invoice-terms" parent="invoice-root" order="700"
     title="Terms list" action="invoice.root.invoice.terms"/>
 
   <action-view name="invoice.root.invoice.terms" title="Terms list"
@@ -106,13 +106,13 @@
     <view type="form" name="invoice-term-form"/>
   </action-view>
 
-  <menuitem name="account-root-payment-schedule" title="Payment Schedule" order="25"
+  <menuitem name="account-root-payment-schedule" title="Payment Schedule" order="800"
     if-module="axelor-bank-payment" parent="invoice-root"
     if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
 
   <menuitem name="account-root-payment-schedule-payment-schedule"
     parent="account-root-payment-schedule" title="Payment Schedules"
-    action="account.root.payment.schedule.payment.schedule"/>
+    action="account.root.payment.schedule.payment.schedule" order="100"/>
 
   <action-view name="account.root.payment.schedule.payment.schedule"
     title="Payment Schedules" model="com.axelor.apps.account.db.PaymentSchedule">
@@ -123,7 +123,7 @@
 
   <menuitem name="account-root-payment-schedule-payment-schedule-line"
     parent="account-root-payment-schedule" title="Payment schedule lines:all"
-    action="account.root.payment.schedule.payment.schedule.line"/>
+    action="account.root.payment.schedule.payment.schedule.line" order="200"/>
 
   <action-view name="account.root.payment.schedule.payment.schedule.line"
     title="Payment schedule lines:all" model="com.axelor.apps.account.db.PaymentScheduleLine">
@@ -133,54 +133,58 @@
   </action-view>
 
 
-  <menuitem name="invoice-root-report" parent="invoice-root" order="50" icon="fa-bar-chart"
-    title="Reportings"/>
+  <menuitem name="invoice-root-report" parent="invoice-root" order="1000"
+    icon="fa-bar-chart" title="Reportings"/>
 
-  <menuitem name="account-root" title="Accounting" order="-90"
+  <menuitem name="account-root" title="Accounting" order="-900"
     if="__config__.app.isApp('account')" icon="fa-calculator" icon-background="#2fa042"/>
-  <menuitem name="account-root-move" parent="account-root" title="Moves" order="0"/>
+  <menuitem name="account-root-move" parent="account-root" title="Moves" order="100"/>
 
   <menuitem name="account-root-move-move" parent="account-root-move" title="Moves"
-    action="account.root.move.move" order="0"/>
+    action="account.root.move.move" order="100"/>
 
   <action-view name="account.root.move.move" title="Moves"
     model="com.axelor.apps.account.db.Move">
     <view type="grid" name="move-grid"/>
     <view type="form" name="move-form"/>
     <view-param name="search-filters" value="move-filters"/>
+    <domain> self.massEntryStatusSelect = 0</domain>
     <context name="_isActivateSimulatedMoves"
       expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
-  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
-    title="Simplified Moves" action="account.root.move.move.simplifed" order="0"/>
+  <menuitem name="account-root-move-mass-entry-move" parent="account-root-move"
+    title="Mass entry" action="account.root.move.mass.entry.move" order="0"/>
 
-  <action-view name="account.root.move.move.simplifed"
-    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
-    <view name="move-grid" type="grid"/>
-    <view name="move-simplified-form" type="form"/>
+  <action-view name="account.root.move.mass.entry.move" title="Mass entry"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-mass-entry-grid"/>
+    <view type="form" name="move-mass-entry-form"/>
     <view-param name="search-filters" value="move-filters"/>
+    <domain> self.massEntryStatusSelect != 0</domain>
     <context name="_isActivateSimulatedMoves"
-      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+      expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
   <menuitem name="account-root-move-move-line" parent="account-root-move"
-    title="Move lines" action="account.root.move.move.line" order="5"/>
+    title="Move lines" action="account.root.move.move.line" order="300"/>
 
   <action-view name="account.root.move.move.line" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <view-param name="search-filters" value="move-line-filters"/>
+    <domain>self.move.massEntryStatusSelect = 0</domain>
   </action-view>
 
   <menuitem name="account-root-pfp" title="PFP" parent="account-root"
     if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"
-    order="2"/>
+    order="200"/>
 
   <menuitem name="account-root-pfp-my-awaiting-pfp" title="My awaiting PFP"
     action="account.root.my.awaiting.pfp" parent="account-root-pfp"
-    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"
+    order="100"/>
 
   <action-view name="account.root.my.awaiting.pfp" title="My awaiting PFP"
     model="com.axelor.apps.account.db.InvoiceTerm">
@@ -198,7 +202,8 @@
 
   <menuitem name="account-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
     action="account.root.pfp.awaiting.pfp" parent="account-root-pfp"
-    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
+    order="200"/>
 
   <action-view name="account.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
     model="com.axelor.apps.account.db.InvoiceTerm">
@@ -213,11 +218,11 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="account-root-payments" parent="account-root" title="Payments" order="5"/>
+  <menuitem name="account-root-payments" parent="account-root" title="Payments" order="300"/>
 
   <menuitem name="account-root-payments-payment-session" parent="account-root-payments"
     title="Payment sessions" action="account.root.payments.payment.session"
-    if="__config__.app.isApp('account')" order="0"/>
+    if="__config__.app.isApp('account')" order="100"/>
 
   <action-view name="account.root.payments.payment.session" title="Payment sessions"
     model="com.axelor.apps.account.db.PaymentSession">
@@ -226,7 +231,7 @@
   </action-view>
 
   <menuitem name="account-root-payments-payment-voucher" parent="account-root-payments"
-    title="Payments assistant" action="account.root.payments.payment.voucher" order="5"/>
+    title="Payments assistant" action="account.root.payments.payment.voucher" order="200"/>
 
   <action-view name="account.root.payments.payment.voucher" title="Payments assistant"
     model="com.axelor.apps.account.db.PaymentVoucher">
@@ -238,7 +243,7 @@
 
   <menuitem name="account-root-payments-suppl-invoices-to-pay"
     parent="account-root-payments" title="Suppl. Invoices to pay"
-    action="account.root.payments.suppl.invoices.to.pay" order="10"/>
+    action="account.root.payments.suppl.invoices.to.pay" order="300"/>
 
   <action-view name="account.root.payments.suppl.invoices.to.pay"
     title="Suppl. Invoices to pay" model="com.axelor.apps.account.db.Invoice">
@@ -255,7 +260,7 @@
 
   <menuitem name="account-root-payments-cheque-deposit-slip-all"
     parent="account-root-payments" title="Deposit slips"
-    action="account.root.payments.cheque.deposit.slip.all" order="15"/>
+    action="account.root.payments.cheque.deposit.slip.all" order="400"/>
 
   <action-view name="account.root.payments.cheque.deposit.slip.all"
     title="Deposit slips" model="com.axelor.apps.account.db.DepositSlip">
@@ -265,11 +270,11 @@
   </action-view>
 
   <menuitem name="account-root-periodic-processing" parent="account-root"
-    title="Periodical processing" order="10"/>
+    title="Periodical processing" order="400"/>
 
   <menuitem name="account-root-periodic-processing-reconcile-manager"
     parent="account-root-periodic-processing" title="Reconcile managers"
-    action="account.root.periodic.processing.reconcile.manager" order="1"/>
+    action="account.root.periodic.processing.reconcile.manager" order="100"/>
 
   <action-view name="account.root.periodic.processing.reconcile.manager"
     title="Reconcile managers" model="com.axelor.apps.account.db.MoveLineQuery">
@@ -279,7 +284,7 @@
 
   <menuitem name="account-root-periodic-processing-reconcile"
     parent="account-root-periodic-processing" title="Reconcilations"
-    action="account.root.periodic.processing.reconcile" order="2"/>
+    action="account.root.periodic.processing.reconcile" order="200"/>
 
   <action-view name="account.root.periodic.processing.reconcile" title="Reconcilations"
     model="com.axelor.apps.account.db.Reconcile">
@@ -290,7 +295,7 @@
 
   <menuitem name="account-root-periodic-processing-reconcile-group"
     parent="account-root-periodic-processing" title="Reconcile Groups"
-    action="account.root.periodic.processing.reconcile.group" order="3"/>
+    action="account.root.periodic.processing.reconcile.group" order="300"/>
 
   <action-view name="account.root.periodic.processing.reconcile.group"
     title="Reconcile Groups" model="com.axelor.apps.account.db.ReconcileGroup">
@@ -299,9 +304,21 @@
     <view-param name="search-filters" value="reconcile-group-filters"/>
   </action-view>
 
+  <menuitem name="account-root-periodic-processing-reconcile-group-proposal"
+    parent="account-root-periodic-processing" title="Reconcile Group proposals"
+    action="account.root.periodic.processing.reconcile.group.proposal" order="4"/>
+
+  <action-view name="account.root.periodic.processing.reconcile.group.proposal"
+    title="Reconcile Group proposals" model="com.axelor.apps.account.db.ReconcileGroup">
+    <view type="grid" name="reconcile-group-grid"/>
+    <view type="form" name="reconcile-group-form"/>
+    <view-param name="search-filters" value="reconcile-group-filters"/>
+    <domain>self.isProposal IS true</domain>
+  </action-view>
+
   <menuitem name="account-root-periodic-processing-overpayment-clearances"
     parent="account-root-periodic-processing" title="Overpayments clearances"
-    action="account.root.periodic.processing.overpayment.clearances" order="4"/>
+    action="account.root.periodic.processing.overpayment.clearances" order="5"/>
 
   <action-view name="account.root.periodic.processing.overpayment.clearances"
     title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance">
@@ -312,7 +329,7 @@
 
   <menuitem name="account-root-periodic-processing-shift-irrecoverable"
     parent="account-root-periodic-processing" title="Shift to irrecoverable"
-    action="account.root.periodic.processing.shift.irrecoverable" order="5"/>
+    action="account.root.periodic.processing.shift.irrecoverable" order="6"/>
 
   <action-view name="account.root.periodic.processing.shift.irrecoverable"
     title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable">
@@ -323,7 +340,7 @@
 
   <menuitem name="account-root-periodic-processing-cheque-reject"
     parent="account-root-periodic-processing" title="Rejects of cheques"
-    action="account.root.periodic.processing.cheque.reject" order="6"/>
+    action="account.root.periodic.processing.cheque.reject" order="7"/>
 
   <action-view name="account.root.periodic.processing.cheque.reject"
     title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection">
@@ -335,11 +352,11 @@
   </action-view>
 
   <menuitem name="account-root-periodic-processing-annual-processing"
-    parent="account-root-periodic-processing" title="Annual processing" order="7"/>
+    parent="account-root-periodic-processing" title="Annual processing" order="8"/>
 
   <menuitem name="account-root-periodic-processing-annual-processing-year-closure"
     parent="account-root-periodic-processing-annual-processing" title="Year closure"
-    action="account.root.periodic.processing.annual.processing.year.closure"/>
+    action="account.root.periodic.processing.annual.processing.year.closure" order="100"/>
 
   <action-view name="account.root.periodic.processing.annual.processing.year.closure"
     title="Year closure" model="com.axelor.apps.account.db.ClosureAssistant">
@@ -349,10 +366,10 @@
 
 
   <menuitem name="account-root-debt-recovery" parent="account-root" title="Debt recovery"
-    order="15"/>
+    order="500"/>
 
   <menuitem name="debt-recovery-root-debt-recovery" parent="account-root-debt-recovery"
-    title="Debt recovery" order="0" action="debt.recovery.root.debt.recovery"/>
+    title="Debt recovery" order="100" action="debt.recovery.root.debt.recovery"/>
 
   <action-view name="debt.recovery.root.debt.recovery" title="Debt recovery"
     model="com.axelor.apps.account.db.DebtRecovery">
@@ -361,7 +378,7 @@
   </action-view>
 
   <menuitem name="debt-recovery-root-history" parent="account-root-debt-recovery"
-    title="Debt recovery history" action="debt.recovery.root.history" order="1"/>
+    title="Debt recovery history" action="debt.recovery.root.history" order="200"/>
 
   <action-view name="debt.recovery.root.history" title="Debt recovery history"
     model="com.axelor.apps.account.db.DebtRecoveryHistory">
@@ -370,10 +387,11 @@
   </action-view>
 
   <menuitem title="Factoring" name="debt-recovery-root-factoring"
-    parent="account-root-debt-recovery" order="1"/>
+    parent="account-root-debt-recovery" order="300"/>
 
   <menuitem title="Subrogation releases" name="debt-recovery-root-subrogation-releases"
-    parent="debt-recovery-root-factoring" action="debt.recovery.root.subrogation.releases" order="1"/>
+    parent="debt-recovery-root-factoring" action="debt.recovery.root.subrogation.releases"
+    order="100"/>
 
   <action-view name="debt.recovery.root.subrogation.releases"
     title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">
@@ -383,7 +401,7 @@
   </action-view>
 
   <menuitem title="Notifications" name="debt-recovery-root-notifications"
-    parent="debt-recovery-root-factoring" action="debt.recovery.root.notifications" order="2"/>
+    parent="debt-recovery-root-factoring" action="debt.recovery.root.notifications" order="200"/>
 
   <action-view name="debt.recovery.root.notifications" title="Notifications"
     model="com.axelor.apps.account.db.Notification">
@@ -392,11 +410,11 @@
   </action-view>
 
   <menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
-    title="Configuration" order="4" icon="fa-cog"/>
+    title="Configuration" order="400" icon="fa-cog"/>
 
   <menuitem name="debt-recovery-root-conf-debt-recovery-method"
     parent="debt-recovery-root-conf" title="Debt recovery methods"
-    action="debt.recovery.root.conf.debt.recovery.method"/>
+    action="debt.recovery.root.conf.debt.recovery.method" order="100"/>
 
   <action-view name="debt.recovery.root.conf.debt.recovery.method"
     title="Debt recovery methods" model="com.axelor.apps.account.db.DebtRecoveryMethod">
@@ -405,7 +423,7 @@
   </action-view>
 
   <menuitem name="debt-recovery-root-conf-factor" parent="debt-recovery-root-conf"
-    title="Factor" action="debt.recovery.root.conf.factor"/>
+    title="Factor" action="debt.recovery.root.conf.factor" order="200"/>
 
   <action-view name="debt.recovery.root.conf.factor" title="Factor"
     model="com.axelor.apps.base.db.Partner">
@@ -417,10 +435,10 @@
 
 
   <menuitem name="account-root-accounting" parent="account-root"
-    title="Accounting Exports/Reports" order="20"/>
+    title="Accounting Exports/Reports" order="700"/>
 
   <menuitem name="account-root-accounting-reimbursement" parent="account-root-accounting"
-    title="Reimbursements" action="account.root.accounting.reimbursement"/>
+    title="Reimbursements" action="account.root.accounting.reimbursement" order="100"/>
 
   <action-view name="account.root.accounting.reimbursement" title="Reimbursements"
     model="com.axelor.apps.account.db.Reimbursement">
@@ -431,7 +449,7 @@
 
   <menuitem name="account-root-accounting-accounting-reports"
     parent="account-root-accounting" title="Accounting reports"
-    action="account.root.accounting.accounting.reports" icon="fa-bar-chart"/>
+    action="account.root.accounting.accounting.reports" icon="fa-bar-chart" order="200"/>
 
   <action-view name="account.root.accounting.accounting.reports"
     title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
@@ -443,7 +461,7 @@
 
   <menuitem name="account-root-accounting-accounting-exports"
     parent="account-root-accounting" title="Accounting exports"
-    action="account.root.accounting.accounting.exports"/>
+    action="account.root.accounting.accounting.exports" order="300"/>
 
   <action-view name="account.root.accounting.accounting.exports"
     title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport">
@@ -452,10 +470,11 @@
     <domain>self.reportType.typeSelect &gt;= 1000 and self.reportType.typeSelect &lt; 2000</domain>
   </action-view>
 
-  <menuitem name="account-conf-reporting" parent="account-conf" title="Exports/Imports"/>
+  <menuitem name="account-conf-reporting" parent="account-conf" title="Exports/Imports"
+    order="900"/>
 
   <menuitem title="Import FEC Type" name="account-conf-import-fec-type"
-    parent="account-conf-reporting" action="account.conf.import.fec.type"/>
+    parent="account-conf-reporting" action="account.conf.import.fec.type" order="100"/>
 
   <action-view name="account.conf.import.fec.type" title="Import FEC Type"
     model="com.axelor.apps.account.db.ImportFECType">
@@ -464,7 +483,7 @@
   </action-view>
 
   <menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
-    title="Interbank codes" action="account.conf.reporting.interbank.code"/>
+    title="Interbank codes" action="account.conf.reporting.interbank.code" order="200"/>
 
   <action-view name="account.conf.reporting.interbank.code" title="Interbank codes"
     model="com.axelor.apps.account.db.InterbankCode">
@@ -474,11 +493,11 @@
 
   <menuitem name="account-root-accounting-conf-report-types-report"
     action="account.conf.reporting.accounting.report.types.report" parent="account-conf-reporting"
-    title="Report types"/>
+    title="Report types" order="300"/>
 
   <menuitem name="account-root-accounting-conf-report-types-export"
     action="account.conf.reporting.accounting.report.types.export" parent="account-conf-reporting"
-    title="Export types"/>
+    title="Export types" order="400"/>
 
   <action-view name="account.conf.reporting.accounting.report.types.report"
     title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
@@ -496,40 +515,12 @@
     <context name="_reportExportTypeSelect" expr="2"/>
   </action-view>
 
-  <menuitem name="account-root-budget-management" parent="account-root"
-    if="__config__.app.isApp('budget')" title="Budget Preparation" order="25"/>
-
-  <menuitem name="account-root-budget-management-my-budgets"
-    parent="account-root-budget-management" title="My budgets"
-    action="account.root.budget.management.my.budgets"/>
-
-  <action-view name="account.root.budget.management.my.budgets" title="My budgets"
-    model="com.axelor.apps.account.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="search-filters" value="budget-filters"/>
-    <domain>self.inChargeUser.id = :_id</domain>
-    <context name="_id" expr="eval: __user__.id"/>
-  </action-view>
-
-  <menuitem name="account-root-budget-management-all-budgets"
-    parent="account-root-budget-management" title="All budgets"
-    action="account.root.budget.management.all.budgets"/>
-
-  <action-view name="account.root.budget.management.all.budgets" title="All budgets"
-    model="com.axelor.apps.account.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="search-filters" value="budget-filters"/>
-  </action-view>
-
-
   <menuitem title="Fixed assets" name="account-root-asset-management" parent="account-root"
-    order="30"/>
+    order="1100"/>
 
   <menuitem title="Fixed assets" name="account-root-asset-management-fixed-assets"
     parent="account-root-asset-management" action="account.root.asset.management.fixed.assets"
-    order="1"/>
+    order="100"/>
 
   <action-view name="account.root.asset.management.fixed.assets" title="Fixed assets"
     model="com.axelor.apps.account.db.FixedAsset">
@@ -539,12 +530,12 @@
   </action-view>
 
   <menuitem title="Configurations" name="account-root-asset-management-conf"
-    parent="account-root-asset-management" icon="fa-cog" order="10"/>
+    parent="account-root-asset-management" icon="fa-cog" order="200"/>
 
   <menuitem title="Fixed asset categories"
     name="account-root-asset-management-conf-asset-categories"
     parent="account-root-asset-management-conf"
-    action="accont.root.asset.management.conf.asset.categories"/>
+    action="accont.root.asset.management.conf.asset.categories" order="100"/>
 
   <action-view name="accont.root.asset.management.conf.asset.categories"
     title="Fixed asset categories" model="com.axelor.apps.account.db.FixedAssetCategory">
@@ -555,7 +546,7 @@
 
   <menuitem title="Fixed asset types" name="account-root-asset-management-conf-asset-type"
     parent="account-root-asset-management-conf"
-    action="accont.root.asset.management.conf.asset.types" order="1"/>
+    action="accont.root.asset.management.conf.asset.types" order="200"/>
 
   <action-view name="accont.root.asset.management.conf.asset.types"
     title="Fixed asset types" model="com.axelor.apps.account.db.FixedAssetType">
@@ -566,7 +557,7 @@
   <menuitem title="Asset disposal reasons"
     name="account-root-asset-management-asset-disposal-reasons"
     parent="account-root-asset-management-conf"
-    action="account.root.asset.management.asset-disposal-reasons" order="2"/>
+    action="account.root.asset.management.asset-disposal-reasons" order="300"/>
 
   <action-view name="account.root.asset.management.asset-disposal-reasons"
     title="Asset disposal reasons" model="com.axelor.apps.account.db.AssetDisposalReason">
@@ -575,17 +566,18 @@
   </action-view>
 
 
-  <menuitem name="account-root-report" parent="account-root" title="Reportings" order="35"
-    icon="fa-bar-chart"/>
+  <menuitem name="account-root-report" parent="account-root" title="Reportings"
+    order="1200" icon="fa-bar-chart"/>
 
 
-  <menuitem name="account-conf" parent="account-root" title="Configuration" order="50"
+  <menuitem name="account-conf" parent="account-root" title="Configuration" order="1300"
     icon="fa-cog"/>
 
-  <menuitem name="account-conf-financial" parent="account-conf" title="Financial"/>
+  <menuitem name="account-conf-financial" parent="account-conf" title="Financial"
+    order="100"/>
 
   <menuitem name="account-conf-fiscal-position" parent="account-conf-financial"
-    title="Fiscal positions" action="account.conf.fiscal.position"/>
+    title="Fiscal positions" action="account.conf.fiscal.position" order="100"/>
 
   <action-view name="account.conf.fiscal.position" title="Fiscal positions"
     model="com.axelor.apps.account.db.FiscalPosition">
@@ -594,7 +586,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-year" parent="account-conf-financial"
-    title="Fiscal years" action="account.conf.financial.year"/>
+    title="Fiscal years" action="account.conf.financial.year" order="200"/>
 
   <action-view name="account.conf.financial.year" title="Fiscal years"
     model="com.axelor.apps.base.db.Year">
@@ -605,7 +597,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-period" parent="account-conf-financial"
-    title="Periods" action="account.conf.financial.period"/>
+    title="Periods" action="account.conf.financial.period" order="300"/>
 
   <action-view name="account.conf.financial.period" title="Periods"
     model="com.axelor.apps.base.db.Period">
@@ -615,7 +607,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-journal" parent="account-conf-financial"
-    title="Journals" action="account.conf.financial.journal"/>
+    title="Journals" action="account.conf.financial.journal" order="400"/>
 
   <action-view name="account.conf.financial.journal" title="Journals"
     model="com.axelor.apps.account.db.Journal">
@@ -624,7 +616,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-journal-type" parent="account-conf-financial"
-    title="Journal types" action="account.conf.financial.journal.type"/>
+    title="Journal types" action="account.conf.financial.journal.type" order="500"/>
 
   <action-view name="account.conf.financial.journal.type" title="Journal types"
     model="com.axelor.apps.account.db.JournalType">
@@ -633,7 +625,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-account" parent="account-conf-financial"
-    title="Financial Accounts" action="account.conf.financial.account"/>
+    title="Financial Accounts" action="account.conf.financial.account" order="600"/>
 
   <action-view name="account.conf.financial.account" title="Financial Accounts"
     model="com.axelor.apps.account.db.Account">
@@ -643,7 +635,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-accounting-plan" parent="account-conf-financial"
-    title="Chart of Accounts" action="account.conf.financial.accounting.plan"/>
+    title="Chart of Accounts" action="account.conf.financial.accounting.plan" order="700"/>
 
   <action-view name="account.conf.financial.accounting.plan" title="Chart of Accounts"
     model="com.axelor.apps.account.db.Account">
@@ -654,7 +646,7 @@
 
   <menuitem name="account-conf-financial-account-management"
     parent="account-conf-financial" title="Financial Accounts Management"
-    action="account.conf.financial.account.management"/>
+    action="account.conf.financial.account.management" order="800"/>
 
   <action-view name="account.conf.financial.account.management"
     title="Financial Accounts Management" model="com.axelor.apps.account.db.AccountManagement">
@@ -664,7 +656,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-account-type" parent="account-conf-financial"
-    title="Account types" action="account.conf.financial.account.type"/>
+    title="Account types" action="account.conf.financial.account.type" order="900"/>
 
   <action-view name="account.conf.financial.account.type" title="Account types"
     model="com.axelor.apps.account.db.AccountType">
@@ -673,7 +665,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-tax" parent="account-conf-financial" title="Taxes"
-    action="account.conf.financial.tax"/>
+    action="account.conf.financial.tax" order="1000"/>
 
   <action-view name="account.conf.financial.tax" title="Taxes"
     model="com.axelor.apps.account.db.Tax">
@@ -682,7 +674,7 @@
     <view-param name="search-filters" value="tax-filters"/>
   </action-view>
   <menuitem name="account-conf-financial-service-types" parent="account-conf-financial"
-    title="Service types" action="account.conf.financial.service.types"/>
+    title="Service types" action="account.conf.financial.service.types" order="1100"/>
 
   <action-view name="account.conf.financial.service.types" title="Service types"
     model="com.axelor.apps.account.db.ServiceType">
@@ -691,7 +683,7 @@
   </action-view>
 
   <menuitem name="account-conf-financial-tax-number" parent="account-conf-financial"
-    title="Tax numbers" action="account.conf.financial.tax.number"/>
+    title="Tax numbers" action="account.conf.financial.tax.number" order="1200"/>
 
   <action-view name="account.conf.financial.tax.number" title="Tax number"
     model="com.axelor.apps.account.db.TaxNumber">
@@ -701,7 +693,7 @@
 
   <menuitem name="account-conf-financial-financial-discount" title="Financial Discounts"
     parent="account-conf-financial" action="financial.discount"
-    if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    if="__config__.app.getApp('account').getManageFinancialDiscount()" order="1300"/>
 
   <action-view name="financial.discount" title="Financial Discounts"
     model="com.axelor.apps.account.db.FinancialDiscount">
@@ -710,10 +702,10 @@
   </action-view>
 
   <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"
-    if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+    if="__config__.app.getApp('account')?.getManageAnalyticAccounting()" order="200"/>
 
   <menuitem name="account-conf-analytic-journal" parent="account-conf-analytic"
-    title="Analytic journals" action="account.conf.analytic.journal"/>
+    title="Analytic journals" action="account.conf.analytic.journal" order="200"/>
 
   <action-view name="account.conf.analytic.journal" title="Analytic journals"
     model="com.axelor.apps.account.db.AnalyticJournal">
@@ -723,7 +715,7 @@
   </action-view>
 
   <menuitem name="account-conf-analytic-journal-type" parent="account-conf-analytic"
-    title="Analytic journals types" action="account.conf.analytic.journal.type"/>
+    title="Analytic journals types" action="account.conf.analytic.journal.type" order="300"/>
 
   <action-view name="account.conf.analytic.journal.type" title="Analytic journal types"
     model="com.axelor.apps.account.db.AnalyticJournalType">
@@ -732,7 +724,7 @@
   </action-view>
 
   <menuitem name="account-conf-analytic-account" parent="account-conf-analytic"
-    title="Analytic accounts" action="account.conf.analytic.account"/>
+    title="Analytic accounts" action="account.conf.analytic.account" order="400"/>
 
   <action-view name="account.conf.analytic.account" title="Analytic accounts"
     model="com.axelor.apps.account.db.AnalyticAccount">
@@ -741,7 +733,7 @@
   </action-view>
 
   <menuitem name="account-conf-analytic-accounting-plan" parent="account-conf-analytic"
-    title="Chart of Analytic Accounts" action="account.conf.analytic.accounting.plan"/>
+    title="Chart of Analytic Accounts" action="account.conf.analytic.accounting.plan" order="500"/>
 
   <action-view name="account.conf.analytic.accounting.plan"
     title="Chart of Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount">
@@ -750,7 +742,7 @@
   </action-view>
 
   <menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"
-    title="analyticAxis.plurial" action="account.conf.analytic.axis"/>
+    title="analyticAxis.plurial" action="account.conf.analytic.axis" order="600"/>
 
   <action-view name="account.conf.analytic.axis" title="analyticAxis.plurial"
     model="com.axelor.apps.account.db.AnalyticAxis">
@@ -759,18 +751,20 @@
   </action-view>
 
   <menuitem name="account-conf-analytic-move-line" parent="account-conf-analytic"
-    title="Analytic Move Lines" action="account.conf.analytic.move.line"/>
+    title="Analytic Move Lines" action="account.conf.analytic.move.line" order="700"/>
 
   <action-view name="account.conf.analytic.move.line" title="Analytic Move Lines"
     model="com.axelor.apps.account.db.AnalyticMoveLine">
     <view type="grid" name="analytic-move-line-grid"/>
     <view type="form" name="analytic-move-line-form"/>
     <view-param name="search-filters" value="analytic-move-line-filters"/>
+    <view-param name="default-search-filters"
+      value="analytic-move-line-filters-type-select"/>
   </action-view>
 
   <menuitem name="account-conf-analytic-distribution-template"
     parent="account-conf-analytic" title="Analytic Distribution Template"
-    action="account.conf.analytic.distribution.template"/>
+    action="account.conf.analytic.distribution.template" order="800"/>
 
   <action-view name="account.conf.analytic.distribution.template"
     title="Analytic Distribution Template"
@@ -781,10 +775,10 @@
     <domain>self.isSpecific = false</domain>
   </action-view>
 
-  <menuitem name="account-conf-payment" parent="account-conf" title="Payment"/>
+  <menuitem name="account-conf-payment" parent="account-conf" title="Payment" order="300"/>
 
   <menuitem name="account-conf-payment-payment-mode" parent="account-conf-payment"
-    title="Payment modes" action="account.conf.payment.payment.mode"/>
+    title="Payment modes" action="account.conf.payment.payment.mode" order="100"/>
 
   <action-view name="account.conf.payment.payment.mode" title="Payment modes"
     model="com.axelor.apps.account.db.PaymentMode">
@@ -795,7 +789,7 @@
 
 
   <menuitem name="account-conf-payment-payment-condition" parent="account-conf-payment"
-    title="Payment conditions" action="account.conf.payment.payment.condition"/>
+    title="Payment conditions" action="account.conf.payment.payment.condition" order="200"/>
 
   <action-view name="account.conf.payment.payment.condition" title="Payment conditions"
     model="com.axelor.apps.account.db.PaymentCondition">
@@ -806,7 +800,7 @@
 
   <menuitem name="admin-root-batch-accounting" parent="admin-root-batch"
     if="__config__.app.isApp('account')" if-module="axelor-account" title="Accounting batches"
-    action="admin.root.batch.accounting"/>
+    action="admin.root.batch.accounting" order="500"/>
 
   <action-view name="admin.root.batch.accounting" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -872,7 +866,7 @@
   </action-view>
 
   <menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report"
-    title="Sale Invoices" action="account.sale.invoice.dashboard.1.view"/>
+    title="Sale Invoices" action="account.sale.invoice.dashboard.1.view" order="100"/>
 
   <action-view name="account.sale.invoice.dashboard.1.view"
     title="Sale Invoices Details">
@@ -880,7 +874,7 @@
   </action-view>
 
   <menuitem name="menu-account-purchase-invoice-dashboard-1" parent="invoice-root-report"
-    title="Purchase Invoices" action="account.purchase.invoice.dashboard.2.view"/>
+    title="Purchase Invoices" action="account.purchase.invoice.dashboard.2.view" order="200"/>
 
   <action-view name="account.purchase.invoice.dashboard.2.view"
     title="Purchase Invoices Details">
@@ -888,11 +882,11 @@
   </action-view>
 
   <menuitem name="menu-account-invoice-advanced" parent="invoice-root-report"
-    title="Advanced"/>
+    title="Advanced" order="300"/>
 
   <menuitem name="menu-account-sale-invoice-advanced"
     parent="menu-account-invoice-advanced" title="Turnover"
-    action="account.sale.invoice.advanced.view"/>
+    action="account.sale.invoice.advanced.view" order="100"/>
 
   <action-view name="account.sale.invoice.advanced.view" title="Sale Invoices Details"
     model="com.axelor.apps.account.db.AssistantReportInvoice">
@@ -904,7 +898,7 @@
 
   <menuitem name="menu-account-purchase-invoice-advanced"
     parent="menu-account-invoice-advanced" title="Purchases Invoiced"
-    action="account.purchase.invoice.advanced.view"/>
+    action="account.purchase.invoice.advanced.view" order="200"/>
 
   <action-view name="account.purchase.invoice.advanced.view"
     title="Purchase Invoices Details" model="com.axelor.apps.account.db.AssistantReportInvoice">
@@ -916,14 +910,15 @@
 
 
   <menuitem name="menu-accounting-dashboard-1" parent="account-root-report"
-    title="Accounting" action="accounting.dashboard.view"/>
+    title="Accounting" action="accounting.dashboard.view" order="100"/>
 
   <action-view name="accounting.dashboard.view" title="Accounting Details">
     <view type="dashboard" name="accounting.dashboard.sample"/>
   </action-view>
 
   <menuitem name="menu-accounting-dashboard-2" parent="account-root-report"
-    title="Accounting with invoice terms" action="accounting.dashboard.invoice.terms.view"/>
+    title="Accounting with invoice terms" action="accounting.dashboard.invoice.terms.view"
+    order="200"/>
 
   <action-view name="accounting.dashboard.invoice.terms.view"
     title="Accounting Details with invoice terms">
@@ -932,9 +927,9 @@
   <!-- Move template -->
 
   <menuitem name="move-template-wizard" title="Move From Template"
-    parent="account-root-move" action="move.template.wizard" top="true" order="10"/>
+    parent="account-root-move" action="move.template.wizard" top="true" order="400"/>
   <action-view name="move.template.wizard" title="Move From Template"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="move-template-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>
@@ -943,10 +938,11 @@
     <view-param name="show-toolbar" value="false"/>
   </action-view>
 
-  <menuitem name="move-template-root" title="Move Templates" parent="account-conf"/>
+  <menuitem name="move-template-root" title="Move Templates" parent="account-conf"
+    order="400"/>
 
   <menuitem name="move-template" title="Move Templates" parent="move-template-root"
-    action="move.template" top="true"/>
+    action="move.template" top="true" order="100"/>
 
   <action-view name="move.template" title="Move Templates"
     model="com.axelor.apps.account.db.MoveTemplate">
@@ -956,19 +952,19 @@
   </action-view>
 
   <menuitem name="move-template-type" title="Move Template Types"
-    parent="move-template-root" action="move.template.type" top="true"/>
+    parent="move-template-root" action="move.template.type" top="true" order="200"/>
   <action-view name="move.template.type" title="Move Template Types"
     model="com.axelor.apps.account.db.MoveTemplateType">
     <view type="grid" name="move-template-type-grid"/>
     <view type="form" name="move-template-type-form"/>
   </action-view>
 
-  <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50"
+  <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="1100"
     icon="fa-cog" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <menuitem name="invoice-conf-refusalreason" parent="invoice-conf"
     title="Reason of refusal" action="invoice.conf.refusalreason"
-    if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment()" order="100"/>
 
   <action-view name="invoice.conf.refusalreason" title="Reason of refusal"
     model="com.axelor.apps.base.db.CancelReason">
@@ -981,7 +977,7 @@
 
   <menuitem name="invoice-conf-pfp-partial-reason" parent="invoice-conf"
     title="PFP Partial Reasons" action="invoice.conf.pfp.partial.reason"
-    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account').getActivatePassedForPayment()" order="200"/>
 
   <action-view name="invoice.conf.pfp.partial.reason" title="PFP Partial Reasons"
     model="com.axelor.apps.account.db.PfpPartialReason">
@@ -992,7 +988,8 @@
 
   <!-- FEC Import -->
 
-  <menuitem name="fec-import" title="FEC import" parent="account-conf" action="fec.import"/>
+  <menuitem name="fec-import" title="FEC import" parent="account-conf" action="fec.import"
+    order="500"/>
 
   <action-view name="fec.import" title="FEC import"
     model="com.axelor.apps.account.db.FECImport">
@@ -1004,7 +1001,7 @@
 
   <menuitem name="debt-recovery-root-conf-payment-delay-reason"
     parent="debt-recovery-root-conf" title="Payment delay reasons"
-    action="debt.recovery.root.conf.payment.delay.reason"/>
+    action="debt.recovery.root.conf.payment.delay.reason" order="300"/>
 
   <action-view name="debt.recovery.root.conf.payment.delay.reason"
     title="Payment delay reasons" model="com.axelor.apps.account.db.PaymentDelayReason">
@@ -1016,7 +1013,7 @@
   <!-- Conf Referential -->
 
   <menuitem name="referential-conf-das2-activity" parent="referential-conf"
-    title="DAS2 activities" action="account.referential.conf.das2.activity"/>
+    title="DAS2 activities" action="account.referential.conf.das2.activity" order="300"/>
 
   <action-view name="account.referential.conf.das2.activity" title="DAS2 activities"
     model="com.axelor.apps.account.db.Das2Activity">
@@ -1027,7 +1024,7 @@
 
 
   <menuitem name="account-analytic-grouping" parent="account-conf-analytic"
-    title="Analytic Groupings" action="account.analytic.grouping"/>
+    title="Analytic Groupings" action="account.analytic.grouping" order="900"/>
 
   <action-view name="account.analytic.grouping" title="Analytic Groupings"
     model="com.axelor.apps.account.db.AnalyticGrouping">
@@ -1037,7 +1034,8 @@
 
 
   <menuitem name="account-analytic-structure" parent="account-conf-analytic"
-    action="account.conf.analytic.axis.tree" title="Analytic Structure" icon="fa-sitemap" order="-1"/>
+    action="account.conf.analytic.axis.tree" title="Analytic Structure" icon="fa-sitemap"
+    order="100"/>
 
   <action-view name="account.conf.analytic.axis.tree" title="Analytic Tree"
     model="com.axelor.apps.account.db.AnalyticAccount">
@@ -1045,7 +1043,7 @@
   </action-view>
 
   <menuitem name="account-analytic-rules" parent="account-conf-analytic"
-    action="account.conf.analytic.rules" title="Analytic Rules"/>
+    action="account.conf.analytic.rules" title="Analytic Rules" order="1000"/>
 
   <action-view name="account.conf.analytic.rules" title="Analytic Rules"
     model="com.axelor.apps.account.db.AnalyticRules">
@@ -1054,7 +1052,7 @@
   </action-view>
 
   <menuitem name="account-analytic-grouping-value" parent="account-conf-analytic"
-    action="account.conf.analytic.grouping.values" title="Analytic Regrouping Values" order="90"/>
+    action="account.conf.analytic.grouping.values" title="Analytic Regrouping Values" order="1200"/>
 
   <action-view name="account.conf.analytic.grouping.values"
     title="Analytic Regrouping Values" model="com.axelor.apps.account.db.AnalyticGroupingValue">
@@ -1065,7 +1063,7 @@
   <menuitem name="account-root-periodic-processing-annual-move-consistency-control"
     parent="account-root-periodic-processing-annual-processing"
     action="account.root.periodic.processing.annual.processing.move.consistency.control"
-    title="Moves consistency control" order="90"/>
+    title="Moves consistency control" order="200"/>
 
   <action-view
     name="account.root.periodic.processing.annual.processing.move.consistency.control"
@@ -1078,7 +1076,7 @@
 
   <menuitem name="account-analytic-move-line-search" title="Analytic review"
     parent="account-conf-analytic" action="account.analytic.move.line.search"
-    if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+    if="__config__.app.getApp('account').getManageAnalyticAccounting()" order="1100"/>
 
   <action-view name="account.analytic.move.line.search" title="Analytic review"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery">

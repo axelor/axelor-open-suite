@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -75,9 +76,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -867,14 +865,14 @@ on ResultSelection.name = 'accounting.report.config.line.sum.of.account.select'
 left join meta_select_item as ResultSelect
 on (ResultSelect.value = cast( ReportConfigLine.result_select AS text )
 	and ResultSelect.select_id = ResultSelection.id)
-	
+
 left join meta_select as StyleSelection
 on StyleSelection.name = 'accounting.report.config.line.style.select'
 
 left join meta_select_item as StyleSelect
 on (StyleSelect.value = cast( ReportConfigLine.style_select AS text )
 	and StyleSelect.select_id = StyleSelection.id)
-	
+
 left join meta_select as DetailBySelection
 on DetailBySelection.name = 'accounting.report.config.line.detail.by.select'
 
@@ -1146,17 +1144,17 @@ where ReportConfigLine.id=?]]></xml-property>
 	AnalyticAccount.name AS account_name,
 	AnalyticAccount.id AS account_id,
 	ReportConfigLine.id AS config_line
-	
+
 FROM account_analytic_account AS AnalyticAccount
 
 LEFT JOIN account_accounting_report_config_line_analytic_account_set as AnalyticAccountSet
 on AnalyticAccountSet.analytic_account_set = AnalyticAccount.id
 
-LEFT JOIN account_accounting_report_config_line AS ReportConfigLine 
-ON ReportConfigLine.id = AnalyticAccountSet.account_accounting_report_config_line 
+LEFT JOIN account_accounting_report_config_line AS ReportConfigLine
+ON ReportConfigLine.id = AnalyticAccountSet.account_accounting_report_config_line
 
 LEFT JOIN account_accounting_report_type AS ReportType
-ON ReportConfigLine.report_type = ReportType.id 
+ON ReportConfigLine.report_type = ReportType.id
 
 where ReportType.id = ?]]></xml-property>
         </oda-data-set>
@@ -1200,14 +1198,14 @@ where ReportType.id = ?]]></xml-property>
                             <property name="name">logo_height</property>
                             <text-property name="displayName">logo_height</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
                         <structure>
@@ -1241,23 +1239,18 @@ where ReportType.id = ?]]></xml-property>
                     <row id="3120">
                         <property name="height">55px</property>
                         <cell id="4157">
-                            <text id="4310">
-                                <property name="fontSize">8pt</property>
+                            <image id="5451">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="3121">
                             <property name="verticalAlign">top</property>
@@ -2154,7 +2147,7 @@ row["code"] +' - '+ row["label"]
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">row["type_select"] == 'Value' 
+                                                                <value type="javascript">row["type_select"] == 'Value'
  ? 'AccountingReportTypeConfigLine.column'
  : 'AccountingReportTypeConfigLine.group'</value>
                                                             </simple-property-list>

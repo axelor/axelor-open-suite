@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,30 +14,31 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.gdpr.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Anonymizer;
 import com.axelor.apps.base.db.AnonymizerLine;
-import com.axelor.apps.base.service.app.AnonymizeService;
+import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegister;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterLogRepository;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
-import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.service.MailMessageService;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.schema.views.Selection;
@@ -46,7 +48,12 @@ import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -115,6 +122,8 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     List<GDPRProcessingRegisterRule> gdprProcessingRegisterRuleList =
         gdprProcessingRegister.getGdprProcessingRegisterRuleList();
 
+    boolean isArchiveData = gdprProcessingRegister.getIsArchiveData();
+
     Anonymizer anonymizer = gdprProcessingRegister.getAnonymizer();
 
     LocalDate calculatedDate =
@@ -123,10 +132,13 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     int count = 0;
 
     for (GDPRProcessingRegisterRule gdprProcessingRegisterRule : gdprProcessingRegisterRuleList) {
+      gdprProcessingRegisterRule =
+          JPA.find(GDPRProcessingRegisterRule.class, gdprProcessingRegisterRule.getId());
       MetaModel metaModel = gdprProcessingRegisterRule.getMetaModel();
-      String filter = computeFilter(gdprProcessingRegisterRule.getRule());
+
       Class<? extends AuditableModel> entityKlass =
           (Class<? extends AuditableModel>) Class.forName(metaModel.getFullName());
+      String filter = computeFilter(gdprProcessingRegisterRule.getRule(), metaModel);
 
       AuditableModel model;
 
@@ -143,7 +155,9 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
 
       for (Long id : ids) {
         model = Query.of(entityKlass).filter("id = :id").bind("id", id).fetchOne();
-        model.setArchived(true);
+        if (isArchiveData) {
+          model.setArchived(true);
+        }
         anonymize(metaModel, model, anonymizer);
         count++;
 
@@ -153,16 +167,20 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
 
         if (count % 10 == 0) {
           JPA.clear();
+          // Need to find if there are more than 10 entities
+          if (anonymizer != null) {
+            anonymizer = JPA.find(Anonymizer.class, anonymizer.getId());
+          }
+          metaModel = JPA.find(MetaModel.class, metaModel.getId());
         }
       }
-      JPA.clear();
     }
     if (count > 0) {
       addProcessingLog(gdprProcessingRegister, count);
     }
   }
 
-  protected String computeFilter(String rule) {
+  protected String computeFilter(String rule, MetaModel metaModel) {
     StringBuilder stringBuilder = new StringBuilder();
     String fields = rule.replaceAll("\\s", "");
     List<String> fieldList = Arrays.asList(fields.split(","));
@@ -176,12 +194,18 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
         stringBuilder.append(" AND ");
       }
     }
+
+    // Exclude admin user
+    if (User.class.getName().equals(metaModel.getFullName())) {
+      stringBuilder.append(" AND self.code != 'admin'");
+    }
+
     return stringBuilder.toString();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void anonymize(MetaModel metaModel, AuditableModel model, Anonymizer anonymizer)
-      throws AxelorException, IOException {
+      throws AxelorException {
 
     if (anonymizer == null) {
       return;
@@ -194,7 +218,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
             .collect(Collectors.toList());
 
     Mapper mapper = Mapper.of(model.getClass());
-    Object newValue = null;
+    Object newValue;
 
     for (AnonymizerLine anonymizerLine : anonymizerLines) {
       Object currentValue = mapper.get(model, anonymizerLine.getMetaField().getName());
@@ -214,7 +238,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     JPA.merge(model);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional
   protected void addProcessingLog(GDPRProcessingRegister gdprProcessingRegister, int nbProcessed) {
 
     GDPRProcessingRegisterLog processingLog = new GDPRProcessingRegisterLog();

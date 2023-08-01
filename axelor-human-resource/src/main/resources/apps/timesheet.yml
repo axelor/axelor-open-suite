@@ -1,0 +1,15 @@
+---
+name: Timesheet Management
+code: timesheet
+typeSelect: standard
+installOrder: 2150
+description: |
+   Timesheet Management
+image: app-timesheet.png
+modules: 
+   axelor-human-resource
+dependsOn:
+   - account
+   - project
+   - employee
+sequence: 20

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product"
     orderBy="code,name" x-row-height="80">
@@ -205,7 +205,8 @@
             showIf="sellable" canNew="false" canSelect="true"/>
           <field name="productSynchronizedInPrestashop" colSpan="6"
             if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
-          <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
+          <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"
+            onChange="action-product-record-compute-sale-price"/>
           <field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable"
             colSpan="12"/>
           <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12"
@@ -375,24 +376,6 @@
         <panel-dashlet name="productionProcessPanel" colSpan="12"
           action="action-product-view-production-process"
           showIf="id &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"/>
-      </panel>
-      <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
-        showIf="productTypeSelect == 'storable'" if-module="axelor-stock"
-        if="__config__.app.isApp('stock')">
-        <panel colSpan="12" name="trackingDetailsPanel">
-          <field name="hasWarranty"/>
-          <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
-          <field name="isPerishable"/>
-          <field name="perishableNbrOfMonths" showIf="isPerishable"/>
-          <field name="checkExpirationDateAtStockMoveRealization"
-            showIf="hasWarranty || isPerishable"/>
-        </panel>
-        <panel colSpan="12" name="trackingConfigPanel">
-          <field name="trackingNumberConfiguration"
-            requiredIf="checkExpirationDateAtStockMoveRealization" canNew="true"
-            form-view="tracking-number-configuration-form"
-            grid-view="tracking-number-configuration-grid"/>
-        </panel>
       </panel>
       <panel name="variantsPanel" title="Variants" showTitle="false"
         if="__config__.app.getApp('base')?.getManageProductVariants()">
@@ -583,7 +566,7 @@
   </cards>
 
   <action-view name="action-product-view-create-production-order"
-    title="Create production order (${ name })" model="com.axelor.apps.base.db.Wizard">
+    title="Create production order (${ name })" model="com.axelor.utils.db.Wizard">
     <view type="form" name="production-order-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>

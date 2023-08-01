@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="production-order-grid" title="Production orders"
     model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
@@ -76,7 +76,7 @@
     </panel-tabs>
   </form>
 
-  <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="add-manuf-order-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Add Manuf. Order"
     onNew="action-production-order-record-default-wizard,action-add-manuf-order-wizard-attrs-scale">
     <panel name="wizardPanel">
@@ -131,7 +131,7 @@
   </action-method>
 
   <action-record name="action-production-order-record-default-wizard"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="$qty" expr="eval: 1.0"/>
     <field name="$_startDate" expr="eval: __datetime__"/>
   </action-record>
@@ -163,7 +163,7 @@
   </action-view>
 
   <action-view name="action-production-order-view-add-manuf-order-wizard"
-    title="Add Manuf. Order" model="com.axelor.apps.base.db.Wizard">
+    title="Add Manuf. Order" model="com.axelor.utils.db.Wizard">
     <view type="form" name="add-manuf-order-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="false"/>

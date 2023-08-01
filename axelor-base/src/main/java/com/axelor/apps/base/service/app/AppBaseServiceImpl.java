@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,24 +14,31 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.app;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.studio.app.service.AppServiceImpl;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
+import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
+import com.axelor.utils.date.DateTool;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -44,9 +52,19 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
   protected static String DEFAULT_LOCALE = "en";
 
+  @Inject
+  public AppBaseServiceImpl(
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+  }
+
   @Override
   public AppBase getAppBase() {
-    return Query.of(AppBase.class).cacheable().fetchOne();
+    return Query.of(AppBase.class).fetchOne();
   }
 
   @Override
@@ -208,6 +226,9 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public String getCustomStyle() {
 
     AppBase appBase = Beans.get(AppBaseRepository.class).all().fetchOne();
+    if (appBase == null) {
+      return null;
+    }
     String style = appBase.getCustomAppStyle();
     if (StringUtils.isBlank(style)) {
       return null;

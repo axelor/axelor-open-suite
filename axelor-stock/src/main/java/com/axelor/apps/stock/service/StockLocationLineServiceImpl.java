@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -34,14 +38,12 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -68,8 +70,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   protected AppBaseService appBaseService;
 
-  protected WapHistoryService wapHistoryService;
-
   protected UnitConversionService unitConversionService;
 
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
@@ -80,14 +80,12 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockRulesService stockRulesService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      WapHistoryService wapHistoryService,
       UnitConversionService unitConversionService,
       StockLocationLineHistoryService stockLocationLineHistoryService) {
     this.stockLocationLineRepo = stockLocationLineRepo;
     this.stockRulesService = stockRulesService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
-    this.wapHistoryService = wapHistoryService;
     this.unitConversionService = unitConversionService;
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
   }
@@ -103,7 +101,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber)
+      TrackingNumber trackingNumber,
+      boolean generateOrder)
       throws AxelorException {
 
     this.updateLocation(
@@ -114,7 +113,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         current,
         future,
         isIncrement,
-        lastFutureStockMoveDate);
+        lastFutureStockMoveDate,
+        generateOrder);
 
     if (trackingNumber != null) {
       this.updateDetailLocation(
@@ -140,7 +140,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate)
+      LocalDate lastFutureStockMoveDate,
+      boolean generateOrder)
       throws AxelorException {
 
     StockLocationLine stockLocationLine = this.getOrCreateStockLocationLine(stockLocation, product);
@@ -173,10 +174,12 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         isIncrement,
         lastFutureStockMoveDate);
 
-    if (!isIncrement) {
-      minStockRules(product, qty, stockLocationLine, current, future);
-    } else {
-      maxStockRules(product, qty, stockLocationLine, current, future);
+    if (generateOrder) {
+      if (!isIncrement) {
+        minStockRules(product, qty, stockLocationLine, current, future);
+      } else {
+        maxStockRules(product, qty, stockLocationLine, current, future);
+      }
     }
 
     stockLocationLine =
@@ -214,6 +217,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
   }
 
+  @Override
   public void maxStockRules(
       Product product,
       BigDecimal qty,
@@ -494,7 +498,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   @Override
   public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product) {
 
-    if (product == null || !product.getStockManaged()) {
+    if (product == null || !product.getStockManaged() || stockLocation == null) {
       return null;
     }
 
@@ -714,7 +718,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine) {
     boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String incomingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.toStockLocation.id = :stockLocationId";
+        STOCK_MOVE_LINE_FILTER + "AND self.toStockLocation.id = :stockLocationId";
     if (isDetailsStockLocationLine) {
       incomingStockMoveLineFilter =
           incomingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
@@ -739,7 +743,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine) {
     boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String outgoingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.fromStockLocation.id = :stockLocationId";
+        STOCK_MOVE_LINE_FILTER + "AND self.fromStockLocation.id = :stockLocationId";
     if (isDetailsStockLocationLine) {
       outgoingStockMoveLineFilter =
           outgoingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
@@ -886,17 +890,23 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     if (dateT == null) {
-      dateT =
-          appBaseService
-              .getTodayDateTime(
-                  stockLocationLine.getStockLocation() != null
-                      ? stockLocationLine.getStockLocation().getCompany()
-                      : Optional.ofNullable(AuthUtils.getUser())
-                          .map(User::getActiveCompany)
-                          .orElse(null))
-              .toLocalDateTime();
+      Company company = getCompany(stockLocationLine);
+      dateT = appBaseService.getTodayDateTime(company).toLocalDateTime();
+    }
+    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, typeSelect);
+  }
+
+  protected Company getCompany(StockLocationLine stockLocationLine) {
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
+    StockLocation detailsStockLocation = stockLocationLine.getDetailsStockLocation();
+
+    if (stockLocation != null) {
+      return stockLocation.getCompany();
     }
 
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, typeSelect);
+    if (detailsStockLocation != null) {
+      return detailsStockLocation.getCompany();
+    }
+    return Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
   }
 }
