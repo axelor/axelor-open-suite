@@ -22,7 +22,7 @@
       onChange="action-expense-line-method-total-tax, action-expense-on-change-tax-untaxt-amount"
       width="170"/>
     <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-      aggregate="sum" readonlyIf="expenseProduct.taxComputeModeSelect != 10" width="80"
+      aggregate="sum" readonlyIf="expenseProduct.taxComputeModeSelect != 1" width="80"
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice"/>
     <field name="justificationMetaFile" widget="binary-link"/>
@@ -85,8 +85,8 @@
         onChange="action-expense-line-method-total-tax, action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
       <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
         onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
-        readonlyIf="expenseProduct.taxComputeModeSelect != 10"
-        hideIf="expenseProduct.taxComputeModeSelect == 20"/>
+        readonlyIf="expenseProduct.taxComputeModeSelect != 1"
+        hideIf="expenseProduct.taxComputeModeSelect == 2"/>
       <field name="untaxedAmount"/>
       <field name="toInvoice" colSpan="3"/>
       <field name="invoiced" colSpan="3"
