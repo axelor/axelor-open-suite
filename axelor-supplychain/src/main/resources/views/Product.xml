@@ -31,7 +31,9 @@
             widget="info-button"
             onClick="action-supplychain-stock-move-line-product-future-quantity"/>
           <button name="$reservedQty" title="Reserved quantity" icon="fa-building-o"
-            widget="info-button" onClick="action-supplychain-stock-move-line-product-reserved"/>
+            widget="info-button"
+            if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
+            onClick="action-supplychain-stock-move-line-product-reserved"/>
           <button name="$requestedReservedQty" title="Requested reserved quantity"
             icon="fa-building-o" widget="info-button"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
