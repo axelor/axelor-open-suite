@@ -1,0 +1,20 @@
+"name";"metaModel.name";"language.code";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"RGPD Demande d'accès";"GDPRResponse";"fr";"true";;"RGPD : Demande d'accès à vos données";"<p>Madame, Monsieur,<br/>
+Suite à votre demande, veuillez trouver en pièce jointe l'extraction de vos données. </p>
+<p>Cordialement,<br/>
+L'équipe Axelor</p>
+";"$GDPRResponse.responseEmailAddress$";;;2
+"GDPR Access Request";"GDPRResponse";"en";"true";;"GDPR : Access Request";"<p>Dear Sir or Madam,<br/>
+According to your request, please find your data in attachement. </p>
+<p>Best regards,<br/>
+Axelor Team</p>";"$GDPRResponse.responseEmailAddress$";;;2
+"RGPD Demande d'effacement";"GDPRResponse";"fr";"true";;"RGPD : Demande d'effacement de vos données";"<p>Madame, Monsieur,<br/>
+Suite à votre demande, vos données ont bien été effacées. </p>
+<p>Cordialement,<br/>
+L'équipe Axelor</p>
+";"$GDPRResponse.responseEmailAddress$";;;2
+"GDPR Erasure Request";"GDPRResponse";"en";"true";;"GDPR : Erasure Request";"<p>Dear Sir or Madam,<br/>
+According to your request, your data have been erased. </p>
+<p>Best regards,<br/>
+Axelor Team</p>";"$GDPRResponse.responseEmailAddress$";;;2
+

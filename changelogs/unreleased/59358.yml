@@ -1,8 +1,0 @@
----
-title : "BPM: Fix view attrs and dmn expression builders"
-type : fix
-description : 
-  Add meta attrs support in view attrs
-  Display all models from all pools in view attrs
-  Fix blank screen when editing a column properties in DMN editor
-  Fix uncomplete selection when using models for output in DMN editor

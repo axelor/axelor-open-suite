@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+
+  <entity name="GDPRSearchConfigLine">
+    <many-to-one name="searchConfig" ref="com.axelor.apps.gdpr.db.GDPRSearchConfig"
+      required="true" title="GDPR search configuration"/>
+    <string name="key" column="viewKey" selection="gdpr.search.config.line.key.select"
+      required="true" help="Name of the key for the search engine" title="Key"/>
+    <string name="query" required="true" help="JPQL filter to add to the query" title="Query"/>
+    <string name="mapping" required="true"
+      help="Field displayed in the result of the research" title="Mapping"/>
+    <unique-constraint columns="key,searchConfig"/>
+  </entity>
+
+</domain-models>

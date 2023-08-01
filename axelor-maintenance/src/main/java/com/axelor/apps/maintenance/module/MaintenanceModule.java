@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.maintenance.module;
 
@@ -26,12 +27,12 @@ import com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.MaintenanceRequestService;
 import com.axelor.apps.maintenance.service.MaintenanceRequestServiceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderPrintServiceMaintenanceImpl;
-import com.axelor.apps.maintenance.service.ManufOrderWorkFlowMaintenanceService;
+import com.axelor.apps.maintenance.service.ManufOrderWorkflowMaintenanceServiceImpl;
 import com.axelor.apps.maintenance.service.ProdProcessMaintenanceService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPrintServiceImpl;
-import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 
 public class MaintenanceModule extends AxelorModule {
 
@@ -42,7 +43,7 @@ public class MaintenanceModule extends AxelorModule {
     bind(MaintenanceRequestService.class).to(MaintenanceRequestServiceImpl.class);
     bind(MaintenanceRequestRepository.class).to(MaintenanceRequestRepo.class);
     bind(BillOfMaterialServiceImpl.class).to(BillOfMaterialServiceMaintenanceImpl.class);
-    bind(ManufOrderWorkflowService.class).to(ManufOrderWorkFlowMaintenanceService.class);
+    bind(ManufOrderWorkflowServiceImpl.class).to(ManufOrderWorkflowMaintenanceServiceImpl.class);
     bind(ManufOrderPrintServiceImpl.class).to(ManufOrderPrintServiceMaintenanceImpl.class);
     bind(ProdProcessService.class).to(ProdProcessMaintenanceService.class);
   }

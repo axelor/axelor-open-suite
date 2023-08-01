@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.move;
 
@@ -23,9 +24,9 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -34,8 +35,8 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -59,9 +60,9 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       MoveRepository moveRepository,
       MoveLineCreateService moveLineCreateService,
       ExtractContextMoveService extractContextMoveService,
-      CancelFactory cancelFactory,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
+      MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository) {
     super(
@@ -71,15 +72,15 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         moveRepository,
         moveLineCreateService,
         extractContextMoveService,
-        cancelFactory,
         invoicePaymentRepository,
-        invoicePaymentCancelService);
+        invoicePaymentCancelService,
+        moveToolService);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
 
     boolean isHiddenMoveLinesInBankReconciliation =
@@ -119,7 +120,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException {
     boolean isHiddenMoveLinesInBankReconciliation =

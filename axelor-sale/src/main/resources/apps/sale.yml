@@ -1,0 +1,14 @@
+---
+importId: 5
+name: Sale
+code: sale
+typeSelect: standard
+installOrder: 2040
+description: |
+   Sales configuration
+image: app-sale.png
+modules: 
+   axelor-sale
+dependsOn:
+   - crm
+sequence: 2

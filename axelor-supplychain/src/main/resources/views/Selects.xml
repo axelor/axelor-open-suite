@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-
-  <selection name="supplychain.batch.action.select">
-    <option value="3">Invoice orders</option>
-    <option value="4">Update stock history</option>
-  </selection>
 
   <selection name="supplychain.batch.invoice.stock.moves.action.select">
     <option value="2">Invoice outgoing stock moves</option>
@@ -181,6 +176,12 @@
 
   <selection name="batch.batch.type.select" id="supplychain.batch.batch.type.select">
     <option value="900">Supplychain batch</option>
+  </selection>
+
+  <selection name="supplychain.sale.order.invoicing.state.select">
+    <option value="1">Not invoiced</option>
+    <option value="2">Partially invoiced</option>
+    <option value="3">Invoiced</option>
   </selection>
 
 </object-views>

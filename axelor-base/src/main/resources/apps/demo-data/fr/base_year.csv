@@ -1,0 +1,10 @@
+"importId";"name";"code";"fromDate";"toDate";"company_importId";"statusSelect";"typeSelect";"periodDurationSelect"
+1;"AF";"AF";"TODAY[-1y=1M=1d]";"TODAY[-1y=12M=31d]";1;1;1;1
+2;"AF";"AF";"TODAY[=1M=1d]";"TODAY[=12M=31d]";1;1;1;1
+3;"AF";"AF";"TODAY[+1y=1M=1d]";"TODAY[+1y=12M=31d]";1;1;1;1
+4;"AC";"AC";"TODAY[-1y=1M=1d]";"TODAY[-1y=12M=31d]";1;1;0;1
+5;"AC";"AC";"TODAY[=1M=1d]";"TODAY[=12M=31d]";1;1;0;1
+6;"AC";"AC";"TODAY[+1y=1M=1d]";"TODAY[+1y=12M=31d]";1;1;0;1
+7;"AP";"AP";"TODAY[-1y=1M=1d]";"TODAY[-1y=12M=31d]";1;1;2;12
+8;"AP";"AP";"TODAY[=1M=1d]";"TODAY[=12M=31d]";1;1;2;12
+9;"AP";"AP";"TODAY[+1y=1M=1d]";"TODAY[+1y=12M=31d]";1;1;2;12

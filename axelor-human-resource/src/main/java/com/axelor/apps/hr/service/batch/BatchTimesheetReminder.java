@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,31 +14,30 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.MetaModel;
 import com.google.inject.Inject;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -119,7 +119,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
     return employees;
   }
 
-  private boolean hasRecentTimesheet(LocalDate now, long daysBeforeReminder, Employee employee) {
+  protected boolean hasRecentTimesheet(LocalDate now, long daysBeforeReminder, Employee employee) {
     Timesheet timesheet = getRecentEmployeeTimesheet(employee);
     return timesheet != null && timesheet.getToDate().plusDays(daysBeforeReminder).isAfter(now);
   }
@@ -140,8 +140,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
   }
 
   protected void sendReminderUsingEmployees(Template template)
-      throws AxelorException, MessagingException, IOException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException {
+      throws ClassNotFoundException, MessagingException {
     for (Employee employee :
         getEmployeesWithoutRecentTimesheet(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
@@ -155,8 +154,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
   }
 
   protected void sendReminderUsingTimesheets(Template template)
-      throws AxelorException, MessagingException, IOException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException {
+      throws ClassNotFoundException, MessagingException, AxelorException {
     for (Employee employee :
         getEmployeesWithoutRecentTimesheet(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))

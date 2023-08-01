@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="leave-request-grid" title="Leave Requests"
     model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
@@ -28,8 +28,7 @@
         onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
     </toolbar>
     <hilite background="danger" if="$moment(fromDateT).diff(todayDate,'days') &lt;= 0"/>
-    <hilite background="warning"
-      if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/>
+    <hilite background="warning" if="$moment(todayDate).diff(requestDate,'days') &gt;= 7"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"
@@ -131,13 +130,13 @@
       <field name="comments" colSpan="12"/>
     </panel>
     <panel name="validationDetailsPanel"
-      showIf="validatedBy || refusedBy || validationDate || refusalDate || statusSelect == 4">
+      showIf="validatedBy || refusedBy || validationDateTime || refusalDateTime || statusSelect == 4">
       <field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="validatedBy"/>
       <field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="refusedBy"/>
-      <field name="validationDate" showIf="validationDate"/>
-      <field name="refusalDate" showIf="refusalDate"/>
+      <field name="validationDateTime" showIf="validationDateTime"/>
+      <field name="refusalDateTime" showIf="refusalDateTime"/>
       <field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
       <field name="toJustifyLeaveReason" hidden="true"/>
     </panel>
@@ -152,16 +151,20 @@
 
   <form name="popup-leave-request-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.LeaveRequest">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-leave-request-form" title="Select the leave request you want to edit"
-    model="com.axelor.apps.base.db.Wizard"
+    model="com.axelor.utils.db.Wizard"
     onNew="action-leave-request-attrs-domain-leave-request-select">
-    <field name="$leaveSelect" title="Select Leave Request" type="many-to-one"
-      target="com.axelor.apps.hr.db.LeaveRequest" widget="SuggestBox"/>
-    <button name="editLeaveRequestSelectedBtn" title="Edit Leave Request Selected"
-      onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
+    <panel name="mainPanel">
+      <field name="$leaveSelect" title="Select Leave Request" type="many-to-one"
+        target="com.axelor.apps.hr.db.LeaveRequest" widget="SuggestBox"/>
+      <button name="editLeaveRequestSelectedBtn" title="Edit Leave Request Selected"
+        onClick="com.axelor.apps.hr.web.leave.LeaveController:editLeaveSelected,close"/>
+    </panel>
   </form>
 
   <calendar name="calendar-event-leave-request" model="com.axelor.apps.hr.db.LeaveRequest"

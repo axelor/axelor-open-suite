@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="talent-employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee">
     <panel name="skillsPanel" title="Skills" if="__config__.app.isApp('training')">
-      <field name="trainingSkillList" colSpan="12"/>
-      <field name="experienceSkillSet" colSpan="12"/>
-      <field name="skillSet" colSpan="12"/>
+      <field name="trainingSkillList" form-view="training-skill-form"
+        grid-view="training-skill-grid" colSpan="12"/>
     </panel>
 
     <panel name="trainingPanel" title="Training" if="__config__.app.isApp('training')">

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -27,13 +29,13 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingComputer;
 import com.axelor.apps.base.service.pricing.PricingObserver;
 import com.axelor.apps.base.service.pricing.PricingService;
@@ -54,8 +56,6 @@ import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserv
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.loader.ModuleManager;
 import com.axelor.rpc.ActionResponse;
@@ -89,6 +89,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected SaleOrderService saleOrderService;
   protected PricingService pricingService;
   protected TaxService taxService;
+  protected SaleOrderMarginService saleOrderMarginService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -101,7 +102,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderService saleOrderService,
       PricingService pricingService,
-      TaxService taxService) {
+      TaxService taxService,
+      SaleOrderMarginService saleOrderMarginService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -112,10 +114,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.saleOrderService = saleOrderService;
     this.pricingService = pricingService;
     this.taxService = taxService;
+    this.saleOrderMarginService = saleOrderMarginService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
-  @Inject protected PricingRepository pricingRepository;
   @Inject protected ProductCompanyService productCompanyService;
 
   @Override
@@ -399,7 +401,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     map.put("companyInTaxTotal", companyInTaxTotal);
     map.put("subTotalCostPrice", subTotalCostPrice);
 
-    map.putAll(this.computeSubMargin(saleOrder, saleOrderLine));
+    map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
 
     return map;
   }
@@ -454,7 +456,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
    * @return the unit price of the sale order line
    * @throws AxelorException
    */
-  private BigDecimal getUnitPrice(
+  protected BigDecimal getUnitPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine, boolean resultInAti)
       throws AxelorException {
     Product product = saleOrderLine.getProduct();
@@ -625,63 +627,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     return saleOrder;
-  }
-
-  @Override
-  public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException {
-
-    HashMap<String, BigDecimal> map = new HashMap<>();
-
-    BigDecimal subTotalCostPrice = BigDecimal.ZERO;
-    BigDecimal subTotalGrossProfit = BigDecimal.ZERO;
-    BigDecimal subMarginRate = BigDecimal.ZERO;
-    BigDecimal subTotalMarkup = BigDecimal.ZERO;
-    BigDecimal totalWT = BigDecimal.ZERO;
-
-    if (saleOrderLine.getProduct() != null
-        && ((BigDecimal)
-                    productCompanyService.get(
-                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-                .compareTo(BigDecimal.ZERO)
-            != 0
-        && saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
-
-      totalWT =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              saleOrder.getCurrency(),
-              saleOrder.getCompany().getCurrency(),
-              saleOrderLine.getExTaxTotal(),
-              null);
-
-      logger.debug("Total WT in company currency: {}", totalWT);
-      subTotalCostPrice = saleOrderLine.getSubTotalCostPrice();
-      logger.debug("Subtotal cost price: {}", subTotalCostPrice);
-      subTotalGrossProfit = totalWT.subtract(subTotalCostPrice);
-      logger.debug("Subtotal gross margin: {}", subTotalGrossProfit);
-      subMarginRate =
-          subTotalGrossProfit
-              .multiply(new BigDecimal(100))
-              .divide(totalWT, 2, RoundingMode.HALF_UP);
-      logger.debug("Subtotal gross margin rate: {}", subMarginRate);
-
-      if (subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
-        subTotalMarkup =
-            subTotalGrossProfit
-                .multiply(new BigDecimal(100))
-                .divide(subTotalCostPrice, 2, RoundingMode.HALF_UP);
-        logger.debug("Subtotal markup: {}", subTotalMarkup);
-      }
-    }
-
-    saleOrderLine.setSubTotalGrossMargin(subTotalGrossProfit);
-    saleOrderLine.setSubMarginRate(subMarginRate);
-    saleOrderLine.setSubTotalMarkup(subTotalMarkup);
-
-    map.put("subTotalGrossMargin", subTotalGrossProfit);
-    map.put("subMarginRate", subMarginRate);
-    map.put("subTotalMarkup", subTotalMarkup);
-    return map;
   }
 
   @Override
@@ -1118,15 +1063,24 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
       saleOrderLine.setTaxEquiv(taxEquiv);
 
+      BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
+
+      BigDecimal companyExTaxTotal = saleOrderLine.getCompanyExTaxTotal();
+
+      BigDecimal salePrice =
+          (BigDecimal)
+              productCompanyService.get(
+                  saleOrderLine.getProduct(), "salePrice", saleOrder.getCompany());
+
       saleOrderLine.setInTaxTotal(
-          saleOrderLine
-              .getExTaxTotal()
-              .multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100)))
-              .setScale(2, RoundingMode.HALF_UP));
+          taxService.convertUnitPrice(
+              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
       saleOrderLine.setCompanyInTaxTotal(
-          saleOrderLine
-              .getCompanyExTaxTotal()
-              .multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
+          taxService.convertUnitPrice(
+              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      saleOrderLine.setInTaxPrice(
+          taxService.convertUnitPrice(
+              false, taxLine, salePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return saleOrderLineList;
   }

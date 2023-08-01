@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -31,12 +33,11 @@ import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.file.CsvTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -211,7 +212,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             + "AND self.stockMove.company.id = :companyId "
             + "AND self.stockMove.realDate >= :beginDate "
             + "AND self.stockMove.realDate < :endDate "
-            + "AND self.stockMove.fromStockLocation.id IN :stockLocationIdList ";
+            + "AND self.fromStockLocation.id IN :stockLocationIdList ";
 
     List<StockMoveLine> stockMoveLineList =
         stockMoveLineRepository
@@ -262,9 +263,9 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             + "AND self.stockMove.realDate < :endDate ";
 
     if (incoming) {
-      filter += "AND self.stockMove.toStockLocation.id IN :stockLocationIdList ";
+      filter += "AND self.toStockLocation.id IN :stockLocationIdList ";
     } else {
-      filter += "AND self.stockMove.fromStockLocation.id IN :stockLocationIdList ";
+      filter += "AND self.fromStockLocation.id IN :stockLocationIdList ";
     }
 
     List<StockMoveLine> stockMoveLineList =

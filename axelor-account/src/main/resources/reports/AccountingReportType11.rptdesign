@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -44,7 +45,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -58,9 +59,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -131,8 +129,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -384,7 +381,7 @@ left outer join public.account_account_config as AccountConfig on (AccountConfig
 left outer join public.account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id)
 
 where 
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND 
@@ -411,75 +408,93 @@ ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">company_name</property>
+                    <property name="alias">company_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company_name</text-property>
                     <text-property name="heading">company_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_height</text-property>
                     <text-property name="heading">logo_height</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_width</text-property>
                     <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">journal_code</property>
+                    <property name="alias">journal_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">journal_code</text-property>
                     <text-property name="heading">journal_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">journal_name</property>
+                    <property name="alias">journal_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">journal_name</text-property>
                     <text-property name="heading">journal_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_from</property>
+                    <property name="alias">date_from</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_from</text-property>
                     <text-property name="heading">date_from</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_to</property>
+                    <property name="alias">date_to</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_to</text-property>
                     <text-property name="heading">date_to</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">report_date</property>
+                    <property name="alias">report_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date</text-property>
                     <text-property name="heading">report_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">report_date_edition</property>
+                    <property name="alias">report_date_edition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date_edition</text-property>
                     <text-property name="heading">report_date_edition</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">period_name</property>
+                    <property name="alias">period_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">period_name</text-property>
                     <text-property name="heading">period_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
+                    <property name="alias">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ref</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ref</text-property>
+                    <text-property name="heading">ref</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -554,6 +569,11 @@ ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
                     <structure>
                         <property name="position">12</property>
                         <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -644,11 +664,19 @@ ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, Company.height as logo_height, Company.width as logo_width,
 Journal.code as journal_code, Journal.name as journal_name, AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, Period.name as period_name, MetaFile.file_path as logo_path,
-Currency.code as currency
+Currency.code as currency,
+AccountingReport.ref
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -814,25 +842,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <row id="3786">
                         <property name="height">0.4479166666666667in</property>
                         <cell id="3787">
-                            <text id="4612">
-                                <property name="fontSize">8pt</property>
-                                <property name="color">black</property>
-                                <property name="textAlign">left</property>
+                            <image id="4637">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value + row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="3788">
                             <property name="fontSize">9pt</property>
@@ -874,15 +895,34 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </page-header>
             <page-footer>
                 <grid id="3098">
-                    <property name="width">11.033333333333333in</property>
+                    <property name="width">11.072916666666666in</property>
                     <column id="3099">
-                        <property name="width">10.022222222222222in</property>
+                        <property name="width">5.75in</property>
+                    </column>
+                    <column id="4636">
+                        <property name="width">4.010416666666667in</property>
                     </column>
                     <column id="3100">
-                        <property name="width">1.011111111111111in</property>
+                        <property name="width">1.3125in</property>
                     </column>
                     <row id="3101">
                         <cell id="3102">
+                            <data id="4630">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">accountingReport.ref</property>
+                                        <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
+                        </cell>
+                        <cell id="4635">
                             <label id="3115">
                                 <property name="fontSize">9pt</property>
                                 <property name="textAlign">right</property>
@@ -1812,9 +1852,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expressionValue" type="javascript">row["MoveLineDate"]</expression>
                 </structure>
                 <property name="hideDetail">false</property>
-                <property name="pageBreakAfter">avoid</property>
+                <property name="pageBreakAfter">auto</property>
                 <property name="pageBreakBefore">auto</property>
-                <property name="pageBreakInside">avoid</property>
+                <property name="pageBreakInside">auto</property>
                 <header>
                     <row id="4290">
                         <property name="borderBottomStyle">solid</property>

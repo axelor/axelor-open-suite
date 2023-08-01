@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.db.AppBudget;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.db.repo.AppBudgetRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -36,18 +37,14 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
-import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
@@ -92,7 +89,7 @@ public class PurchaseOrderController {
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .map());
         } else {
-          response.setFlash(
+          response.setInfo(
               I18n.get(SupplychainExceptionMessage.PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
@@ -119,19 +116,6 @@ public class PurchaseOrderController {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
     Beans.get(PurchaseOrderStockServiceImpl.class).cancelReceipt(purchaseOrder);
-  }
-
-  public void generateBudgetDistribution(ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-
-    AppAccountService appAccountService = Beans.get(AppAccountService.class);
-
-    if (appAccountService.isApp("budget")
-        && !appAccountService.getAppBudget().getManageMultiBudget()) {
-      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderSupplychainService.class).generateBudgetDistribution(purchaseOrder);
-      response.setValues(purchaseOrder);
-    }
   }
 
   // Generate single purchase order from several
@@ -250,7 +234,7 @@ public class PurchaseOrderController {
     }
 
     if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
+      response.setInfo(fieldErrors.toString());
       return;
     }
 
@@ -334,7 +318,7 @@ public class PurchaseOrderController {
         response.setCanClose(true);
       }
     } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
+      response.setInfo(e.getLocalizedMessage());
     }
   }
 
@@ -352,28 +336,7 @@ public class PurchaseOrderController {
     }
   }
 
-  public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService =
-          Beans.get(PurchaseOrderSupplychainService.class);
-      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
-
-      if (appBudget.getManageMultiBudget()) {
-        purchaseOrderSupplychainService.applyToallBudgetDistribution(purchaseOrder);
-      } else {
-        purchaseOrderSupplychainService.setPurchaseOrderLineBudget(purchaseOrder);
-
-        response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void updateEstimatedDelivDate(ActionRequest request, ActionResponse response) {
+  public void updateEstimatedReceiptDate(ActionRequest request, ActionResponse response) {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
@@ -383,7 +346,7 @@ public class PurchaseOrderController {
         if (receiptState != null
             && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
             && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_PARTIALLY_RECEIVED)) {
-          purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+          purchaseOrderLine.setEstimatedReceiptDate(purchaseOrder.getEstimatedReceiptDate());
         }
       }
     }
@@ -435,35 +398,9 @@ public class PurchaseOrderController {
       String message =
           Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
       if (message != null) {
-        response.setFlash(message);
+        response.setInfo(message);
       }
       response.setValues(purchaseOrder);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void updateBudgetDistributionAmountAvailable(
-      ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderSupplychainService.class)
-          .updateBudgetDistributionAmountAvailable(purchaseOrder);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void confirmBudgetDistributionList(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-
-      if (!Beans.get(PurchaseOrderSupplychainService.class)
-          .isGoodAmountBudgetDistribution(purchaseOrder)) {
-        response.setAlert(I18n.get(ITranslation.PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_NOT_EQUAL));
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

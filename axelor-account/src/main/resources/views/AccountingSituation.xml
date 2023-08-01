@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="accounting-situation-partner-grid" title="Accounting situations"
     model="com.axelor.apps.account.db.AccountingSituation">
@@ -79,9 +79,9 @@
       <field name="__parent" hidden="true"/>
     </panel>
     <panel name="vatSystemPanel" title="VAT System"
-      showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier) )|| (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)">
+      showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )|| (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)">
       <field name="vatSystemSelect"
-        showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
+        showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
@@ -112,10 +112,6 @@
         field="tradingNameDebtRecoveryList" canNew="false" canRemove="false" canSelect="false"
         grid-view="debt-recovery-grid" form-view="debt-recovery-form" colSpan="12"/>
     </panel>
-
-    <panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList"
-      hideIf="reportedBalanceLineList.length == 0" colSpan="12"
-      form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
 
     <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
       <field name="acceptedCredit"/>
@@ -183,10 +179,6 @@
     <panel name="debtRecoveryProcessPanel" title="Debt recovery process">
       <field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
     </panel>
-
-    <panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList"
-      colSpan="12" form-view="reported-balance-line-custom-form"
-      grid-view="reported-balance-line-custom-grid"/>
 
     <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
       <field name="acceptedCredit"/>
