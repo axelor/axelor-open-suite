@@ -538,16 +538,14 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected BigDecimal getTotal(MoveLine moveLine, BigDecimal amount, boolean isInvoicePayment) {
     // Recompute currency rate to avoid rounding issue
     BigDecimal ratioPaid = BigDecimal.ONE;
+    BigDecimal percentage = BigDecimal.ONE;
     BigDecimal moveLineAmount = moveLine.getCredit().add(moveLine.getDebit());
     BigDecimal currencyRate = moveLine.getCurrencyRate();
     BigDecimal computedCurrencyAmount =
         moveLineAmount.divide(currencyRate, 10, RoundingMode.HALF_UP);
     BigDecimal computedAmount = computedCurrencyAmount.multiply(currencyRate);
-    BigDecimal percentage =
-        amount.divide(
-            computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
     BigDecimal invoiceTermAmount = amount.add(moveLineAmount.subtract(moveLine.getAmountPaid()));
+
     if (isInvoicePayment) {
       // ReCompute percentage paid when it's partial payment with invoice payment
 
@@ -558,8 +556,14 @@ public class ReconcileServiceImpl implements ReconcileService {
             .compareTo(amount)
         != 0) {
       // Compute ratio paid when it's invoice term partial payment
-
+      percentage =
+          invoiceTermAmount.divide(
+              computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       ratioPaid = amount.divide(invoiceTermAmount, 5, RoundingMode.HALF_UP);
+    } else {
+      percentage =
+          amount.divide(
+              computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
 
     return percentage
