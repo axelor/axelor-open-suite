@@ -1198,7 +1198,7 @@ public class InvoiceController {
     }
   }
 
-  public void updateFinancialDiscountWhenManageFinancialDiscountIsDisabled(
+  public void emptyFinancialDiscountWhenManageFinancialDiscountIsDisabled(
       ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
