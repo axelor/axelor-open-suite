@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
 
@@ -24,7 +25,9 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -32,7 +35,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -44,16 +46,16 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -66,7 +68,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 
   private PriceListService priceListService;
 
-  private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
+  private PurchaseOrderLineService purchaseOrderLineService;
 
   protected AppBusinessProjectService appBusinessProjectService;
 
@@ -74,7 +76,8 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
 
   @Inject
   public PurchaseOrderInvoiceProjectServiceImpl(
-      InvoiceServiceSupplychainImpl invoiceService,
+      InvoiceServiceSupplychain invoiceServiceSupplychain,
+      InvoiceService invoiceService,
       InvoiceRepository invoiceRepo,
       TimetableRepository timetableRepo,
       AppSupplychainService appSupplychainService,
@@ -83,10 +86,11 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
       PriceListService priceListService,
-      PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl,
+      PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
       ProductCompanyService productCompanyService) {
     super(
+        invoiceServiceSupplychain,
         invoiceService,
         invoiceRepo,
         timetableRepo,
@@ -96,7 +100,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
         addressService,
         invoiceLineOrderService);
     this.priceListService = priceListService;
-    this.purchaseOrderLineServiceImpl = purchaseOrderLineServiceImpl;
+    this.purchaseOrderLineService = purchaseOrderLineService;
     this.appBusinessProjectService = appBusinessProjectService;
     this.productCompanyService = productCompanyService;
   }
@@ -121,7 +125,14 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
         purchaseOrderLine.getPurchaseOrder() != null
             ? purchaseOrderLine.getPurchaseOrder().getCompany()
             : null;
-    BigDecimal price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    BigDecimal price;
+
+    if (product != null) {
+      price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    } else {
+      price = purchaseOrderLine.getPrice();
+    }
+
     BigDecimal discountAmount = price;
     int discountTypeSelect = 1;
     if (invoice.getPartner().getChargeBackPurchaseSelect()
@@ -131,7 +142,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
       if (priceList != null) {
         PriceListLine priceListLine =
-            purchaseOrderLineServiceImpl.getPriceListLine(purchaseOrderLine, priceList, price);
+            purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList, price);
         if (priceListLine != null) {
           discountTypeSelect = priceListLine.getTypeSelect();
         }
@@ -181,7 +192,6 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               false) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
-
               InvoiceLine invoiceLine = this.createInvoiceLine();
               invoiceLine.setProject(purchaseOrderLine.getProject());
 

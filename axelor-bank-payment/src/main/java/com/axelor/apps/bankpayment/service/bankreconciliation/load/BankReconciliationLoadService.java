@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation.load;
 
@@ -79,32 +80,29 @@ public class BankReconciliationLoadService {
    * @return the filter.
    */
   protected String getBankStatementLinesFilter(
-      boolean includeOtherBankStatements, boolean includeBankStatement) {
+      boolean includeOtherBankStatements,
+      boolean includeBankStatement,
+      boolean isLineTypeMovement) {
 
-    String filter;
+    String filter =
+        "self.bankDetails = :bankDetails"
+            + " and self.currency = :currency"
+            + " and self.bankStatement.statusSelect = :statusImported";
+
     if (!includeOtherBankStatements && includeBankStatement) {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement = :bankStatement";
+      filter += " and self.bankStatement = :bankStatement";
     } else if (includeOtherBankStatements && includeBankStatement) {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat";
+      filter += " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat";
     } else {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
+      filter +=
+          " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
               + " and self.bankStatement != :bankStatement";
     }
+
+    if (isLineTypeMovement) {
+      filter += " and self.amountRemainToReconcile > 0";
+    }
+
     return filter;
   }
 
@@ -114,7 +112,7 @@ public class BankReconciliationLoadService {
     BankStatement bankStatement = bankReconciliation.getBankStatement();
     String queryFilter =
         getBankStatementLinesFilter(
-            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement);
+            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, true);
     Query<BankStatementLine> bankStatementLinesQuery =
         JPA.all(BankStatementLine.class)
             .bind("bankDetails", bankReconciliation.getBankDetails())

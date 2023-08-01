@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sop-line-grid" title="Sales and Operations Planning Line"
     model="com.axelor.apps.production.db.SopLine">
@@ -52,7 +52,7 @@
   </form>
 
   <form name="sop-line-generate-mps-forecasts-wizard-form" title="Generate MPS forecasts"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-sop-line-wizard-method-fill-mrp-forecasts">
+    model="com.axelor.utils.db.Wizard" onNew="action-sop-line-wizard-method-fill-mrp-forecasts">
     <panel name="wizardPanel" colSpan="12">
       <panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
@@ -74,6 +74,7 @@
       <field name="$difference" readonly="true" title="Difference" type="decimal"/>
       <field name="$currency" hidden="true" type="many-to-one"
         target="com.axelor.apps.base.db.Currency" colSpan="12"/>
+      <field name="$currency.symbol" hidden="true" colSpan="12"/>
       <button name="computeTotalForecastBtn" title="Compute total forecast"
         onClick="action-mrp-forecast-method-compute-total-forecast"/>
       <button name="confirmForecastsBtn" readonlyIf="$stockLocation==null"
@@ -82,7 +83,7 @@
   </form>
 
   <action-view name="action-sop-line-view-open-wizard" title="Generate MPS forecasts"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="sop-line-generate-mps-forecasts-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup" value="true"/>
@@ -125,13 +126,13 @@
   </action-record>
 
   <action-record name="action-sop-line-record-compute-total-price"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="$totalPrice" expr="eval: qty.multiply(new BigDecimal(unitPrice))"
       if="unitPrice != null"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-qty"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="qty"
       expr="eval: new BigDecimal(totalPrice).divide(new BigDecimal(unitPrice),0,java.math.RoundingMode.HALF_UP)"
       if="unitPrice != null &amp;&amp; totalPrice != null &amp;&amp; new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) != 0"/>
@@ -171,7 +172,7 @@
 
   <action-validate name="action-mrp-forecast-validate-check-difference">
     <alert
-      message="There currently is a ${difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?"
+      message="There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&amp;OP forecast. Proceed?"
       if="difference != 0"/>
   </action-validate>
 

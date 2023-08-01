@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -36,8 +36,7 @@
   <selection name="partner.title.type.select">
     <option value="1">M.</option>
     <option value="2">Ms.</option>
-    <option value="3">Dr</option>
-    <option value="4">Prof.</option>
+    <option value="3">Mx.</option>
   </selection>
 
   <selection name="partner.partner.type.select">
@@ -72,12 +71,6 @@
     <option value="3">Produce</option>
   </selection>
 
-  <selection name='ialarm.type.select'>
-    <option value='invoice'>Invoice</option>
-    <option value='payment'>Payment Schedule</option>
-    <option value='reject'>Reject</option>
-  </selection>
-
   <selection name='iimport.type.select'>
     <option value='csv'>CSV File</option>
     <option value='xml'>XML File</option>
@@ -100,8 +93,13 @@
 
   <selection name='iadministration.export.type.select'>
     <option value="pdf">PDF</option>
-    <option value="xlsx">XLS</option>
+    <option value="xlsx">XLSX</option>
     <option value="ods">ODS</option>
+    <option value="xls">XLS</option>
+    <option value="doc">DOC</option>
+    <option value="docx">DOCX</option>
+    <option value="odt">ODT</option>
+    <option value="html">HTML</option>
   </selection>
 
   <selection name='iadministration.declaration.of.exchanges.export.type.select'>
@@ -122,8 +120,8 @@
   </selection>
 
   <selection name='ibase.batch.action.select'>
-    <option value='1'>Target</option>
     <option value='2'>Calendar synchronization</option>
+    <option value='3'>Password change</option>
   </selection>
 
   <selection name="base.routing.rule.type.select">
@@ -135,11 +133,6 @@
   <selection name="base.app.base.map.api.select">
     <option value="1">Google</option>
     <option value="2">Open street map</option>
-  </selection>
-
-  <selection name="base.app.base.osm.routing.api.select">
-    <option value="1">YOUR navigation</option>
-    <option value="2">OSRM</option>
   </selection>
 
   <selection name="base.app.base.currency.api.select">
@@ -259,6 +252,7 @@
     <option value="2">Permanently Closed</option>
     <option value="3">Adjusting</option>
     <option value="4">Temporarily Closed</option>
+    <option value="5">Closure in progress</option>
   </selection>
 
   <selection name="company.partner.category.select">
@@ -463,9 +457,9 @@
     <option value="2">Modification</option>
   </selection>
 
-  <selection id="base.object.data.config.model.select"
-    name="object.data.config.model.select">
+  <selection name="object.data.config.model.select">
     <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.auth.db.User">User</option>
   </selection>
 
   <selection name="base.user.form.step.select">
@@ -475,16 +469,6 @@
     <option value="3">Employee</option>
     <option value="4">Activation</option>
     <option value="5">Complete</option>
-  </selection>
-
-  <selection name="select.language" id="base.language.select">
-    <option value="de">German Beta</option>
-    <option value="es">Spanish Beta</option>
-    <option value="pt">Portuguese Beta</option>
-    <option value="it">Italian Beta</option>
-    <option value="nl">Dutch Beta</option>
-    <option value="pl">Polish Beta</option>
-    <option value="ru">Russian Beta</option>
   </selection>
 
   <selection name="frequency.base.type.select">
@@ -547,7 +531,8 @@
     <option value="3">End of pack</option>
   </selection>
 
-  <selection name='trace.back.origin.select' id="trace.back.origin.select.base">
+  <selection name='trace.back.origin.select'>
+    <option value="default">Default</option>
     <option value="import">Importing</option>
   </selection>
 
@@ -662,7 +647,6 @@
 
   <selection name="batch.batch.type.select">
     <option value="100">Base batch</option>
-    <option value="101">Alarm engine batch</option>
     <option value="102">Mail batch</option>
     <option value="103">Import batch</option>
   </selection>
@@ -674,6 +658,93 @@
   <selection name="import.batch.action.select">
     <option value="0">Import</option>
     <option value="1">Advanced import</option>
+  </selection>
+
+  <selection name='trace.back.type.select'>
+    <option value='0'>Technical anomaly</option>
+    <option value='1'>Functional anomaly</option>
+  </selection>
+
+  <selection name='trace.back.category.select'>
+    <option value='1'>Missing field</option>
+    <option value='2'>Non-unique key</option>
+    <option value='3'>No Return Value</option>
+    <option value='4'>Configuration problem</option>
+    <option value='5'>Inconsistency</option>
+  </selection>
+
+  <selection name="permission.assistant.type.select">
+    <option value="1">Groups</option>
+    <option value="2">Roles</option>
+  </selection>
+
+  <selection name="object.data.export.format.select">
+    <option value="csv">CSV</option>
+    <option value="xlsx">Excel</option>
+  </selection>
+
+  <selection name="data.config.line.type.select">
+    <option value="0">Path</option>
+    <option value="1">Query</option>
+  </selection>
+
+  <selection name="data.config.line.reset.path.select">
+    <option value="0">None</option>
+    <option value="1">Replace</option>
+    <option value="2">Delete</option>
+  </selection>
+
+  <selection name="data.backup.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In Progress</option>
+    <option value="2">Backup Created</option>
+    <option value="3">Backup Restored</option>
+    <option value="4">Backup Restore Error</option>
+    <option value="5">Error</option>
+  </selection>
+
+  <selection name="global.tracking.log.type.select">
+    <option value="1">CREATE</option>
+    <option value="3">UPDATE</option>
+    <option value="4">DELETE</option>
+    <option value="5">EXPORT</option>
+  </selection>
+
+  <selection name="research.model.selection">
+    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.apps.base.db.Partner.Contact">Contact</option>
+  </selection>
+
+  <selection name="research.primary.key.type.select">
+    <option value="String">String</option>
+    <option value="LocalDate">Date</option>
+  </selection>
+
+  <selection name="base.batch.password.change.action.select">
+    <option value="1">Generate new random passwords</option>
+    <option value="2">Force the users to update password the next login</option>
+    <option value="3">Generate new random passwords and force password change</option>
+  </selection>
+
+  <selection name="base.faker.api.field.param.type.select">
+    <option value="int">int</option>
+    <option value="long">long</option>
+    <option value="double">double</option>
+    <option value="boolean">boolean</option>
+    <option value="java.lang.String">String</option>
+    <option value="java.util.Date">Date (YYYY-MM-DD)</option>
+    <option value="java.sql.Timestamp">Timestamp (YYYY-MM-DD)</option>
+    <option value="java.util.concurrent.TimeUnit">TimeUnit</option>
+  </selection>
+
+  <selection name="base.faker.api.field.data.type.select">
+    <option value="Integer">Integer</option>
+    <option value="Long">Long</option>
+    <option value="BigDecimal">BigDecimal</option>
+    <option value="LocalDate">LocalDate</option>
+    <option value="LocalDateTime">LocalDateTime</option>
+    <option value="String">String</option>
+    <option value="Boolean">Boolean</option>
   </selection>
 
 </object-views>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestPostStructure;
-import java.math.BigDecimal;
+import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestPostStructure;
+import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -32,56 +30,17 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
-  private Long productId;
+  private Long fromStockLocationId;
 
   @NotNull
   @Min(0)
-  private Long originStockLocationId;
-
-  @NotNull
-  @Min(0)
-  private Long destStockLocationId;
+  private Long toStockLocationId;
 
   @NotNull
   @Min(0)
   private Long companyId;
 
-  @Min(0)
-  private Long trackingNumberId;
-
-  @NotNull
-  @Min(0)
-  private Long unitId;
-
-  @NotNull
-  @Min(0)
-  private BigDecimal movedQty;
-
-  public StockInternalMovePostRequest() {}
-
-  public Long getProductId() {
-    return productId;
-  }
-
-  public void setProductId(Long productId) {
-    this.productId = productId;
-  }
-
-  public Long getOriginStockLocationId() {
-    return originStockLocationId;
-  }
-
-  public void setOriginStockLocationId(Long originStockLocationId) {
-    this.originStockLocationId = originStockLocationId;
-  }
-
-  public Long getDestStockLocationId() {
-    return destStockLocationId;
-  }
-
-  public void setDestStockLocationId(Long destStockLocationId) {
-    this.destStockLocationId = destStockLocationId;
-  }
+  private List<StockInternalMoveStockMoveLinePostRequest> lineList;
 
   public Long getCompanyId() {
     return companyId;
@@ -91,56 +50,39 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
     this.companyId = companyId;
   }
 
-  public Long getTrackingNumberId() {
-    return trackingNumberId;
+  public Long getFromStockLocationId() {
+    return fromStockLocationId;
   }
 
-  public void setTrackingNumberId(Long trackingNumberId) {
-    this.trackingNumberId = trackingNumberId;
+  public void setFromStockLocationId(Long fromStockLocationId) {
+    this.fromStockLocationId = fromStockLocationId;
   }
 
-  public Long getUnitId() {
-    return unitId;
+  public Long getToStockLocationId() {
+    return toStockLocationId;
   }
 
-  public void setUnitId(Long unitId) {
-    this.unitId = unitId;
+  public void setToStockLocationId(Long toStockLocationId) {
+    this.toStockLocationId = toStockLocationId;
   }
 
-  public BigDecimal getMovedQty() {
-    return movedQty;
+  public List<StockInternalMoveStockMoveLinePostRequest> getLineList() {
+    return lineList;
   }
 
-  public void setMovedQty(BigDecimal movedQty) {
-    this.movedQty = movedQty;
+  public void setLineList(List<StockInternalMoveStockMoveLinePostRequest> lineList) {
+    this.lineList = lineList;
   }
 
-  // Transform id to object
-  public Product fetchProduct() {
-    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
+  public StockLocation fetchFromStockLocation() {
+    return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
   }
 
-  public StockLocation fetchOriginStockLocation() {
-    return ObjectFinder.find(StockLocation.class, originStockLocationId, ObjectFinder.NO_VERSION);
-  }
-
-  public StockLocation fetchDestStockLocation() {
-    return ObjectFinder.find(StockLocation.class, destStockLocationId, ObjectFinder.NO_VERSION);
+  public StockLocation fetchToStockLocation() {
+    return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
   }
 
   public Company fetchCompany() {
     return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
-  }
-
-  public Unit fetchUnit() {
-    return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
-  }
-
-  public TrackingNumber fetchTrackingNumber() {
-    if (this.trackingNumberId != null) {
-      return ObjectFinder.find(TrackingNumber.class, trackingNumberId, ObjectFinder.NO_VERSION);
-    } else {
-      return null;
-    }
   }
 }

@@ -1,0 +1,13 @@
+---
+name: Accounting
+code: account
+typeSelect: standard
+installOrder: 2090
+description: |
+   Accounting configuration
+image: app-account.png
+modules: 
+   axelor-account
+dependsOn: 
+   - base
+sequence: 6

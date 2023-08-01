@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.administration;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SequenceLettersTypeSelect;
@@ -24,17 +26,16 @@ import com.axelor.apps.base.db.SequenceTypeSelect;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -66,6 +67,7 @@ public class SequenceService {
   protected static final String PATTERN_DAY = "%D";
   protected static final String PATTERN_WEEK = "%WY";
   protected static final String PADDING_STRING = "0";
+  protected static final int SEQ_MAX_LENGTH = 14;
 
   protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -121,11 +123,15 @@ public class SequenceService {
         && (seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR));
   }
 
-  public static boolean isSequenceLengthValid(Sequence sequence) {
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replace("%", "");
-    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replace("%", "");
+  public void checkSequenceLengthValidity(Sequence sequence) throws AxelorException {
+    Company company = sequence.getCompany();
+    String nextSeq = computeTestSeq(sequence, appBaseService.getTodayDate(company));
 
-    return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
+    if (nextSeq.length() > SEQ_MAX_LENGTH) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.SEQUENCE_LENGTH_NOT_VALID));
+    }
   }
 
   public Sequence getSequence(String code, Company company) {
@@ -177,7 +183,7 @@ public class SequenceService {
    * @param refDate
    * @return
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public String getSequenceNumber(
       Sequence sequence, LocalDate refDate, Class objectClass, String fieldName)
       throws AxelorException {

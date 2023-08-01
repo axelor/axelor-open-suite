@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,37 +14,41 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,6 +68,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected MoveValidateService moveValidateService;
   protected BatchRepository batchRepository;
   protected BankDetailsService bankDetailsService;
+  protected FixedAssetDateService fixedAssetDateService;
   private Batch batch;
 
   @Inject
@@ -74,7 +80,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -83,10 +90,11 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     this.moveLineCreateService = moveLineCreateService;
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void realize(
       FixedAssetDerogatoryLine fixedAssetDerogatoryLine, boolean isBatch, boolean generateMove)
       throws AxelorException {
@@ -124,7 +132,9 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               computeCreditAccount(fixedAssetDerogatoryLine),
               computeDebitAccount(fixedAssetDerogatoryLine),
               amount,
-              false);
+              false,
+              false,
+              null);
       if (fixedAssetDerogatoryLine.getIsSimulated() && deragotaryDepreciationMove != null) {
         this.moveValidateService.accounting(deragotaryDepreciationMove);
       }
@@ -169,10 +179,16 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     // When calling this fonction, incomeDepreciationAmount and derogatoryAmount are not supposed to
     // be both different to 0.
     // Because when computed, only one of theses values is filled. But they can be both equals to 0.
+    BigDecimal amount;
     if (fixedAssetDerogatoryLine.getIncomeDepreciationAmount().signum() != 0) {
-      return fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
+      amount = fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
+    } else {
+      amount = fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
     }
-    return fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
+    if (fixedAssetDerogatoryLine.getFixedAsset().getGrossValue().signum() < 0) {
+      amount = amount.negate();
+    }
+    return amount;
   }
 
   protected Account computeDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
@@ -198,7 +214,9 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       Account creditLineAccount,
       Account debitLineAccount,
       BigDecimal amount,
-      Boolean isSimulated)
+      Boolean isSimulated,
+      Boolean isDisposal,
+      LocalDate disposalDate)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
 
@@ -206,6 +224,18 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetDerogatoryLine.getDepreciationDate();
+    if (!isDisposal) {
+      int periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
+      if (periodicityTypeSelect == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+        date = date.with(TemporalAdjusters.lastDayOfMonth());
+      } else {
+        date =
+            fixedAssetDateService.computeLastDayOfFiscalYear(company, date, periodicityTypeSelect);
+      }
+    } else {
+      date = disposalDate;
+    }
+
     String origin =
         fixedAsset.getFixedAssetSeq() != null
             ? fixedAsset.getFixedAssetSeq()
@@ -247,11 +277,26 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       List<MoveLine> moveLines = new ArrayList<>();
 
       if (creditLineAccount == null || debitLineAccount == null) {
+        List<String> missingAccounts = new ArrayList<>();
+        FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+        if (fixedAssetCategory.getCapitalDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
+        if (fixedAssetCategory.getExpenseDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.EXPENSE_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
+        if (fixedAssetCategory.getIncomeDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.INCOME_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-            I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
+            Joiner.on(", ").join(missingAccounts));
       }
+
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(
               move, partner, debitLineAccount, amount, true, date, 1, origin, fixedAsset.getName());
@@ -277,7 +322,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     return moveRepo.save(move);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void simulate(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException {
     Objects.requireNonNull(fixedAssetDerogatoryLine);
@@ -303,7 +348,9 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               computeCreditAccount(fixedAssetDerogatoryLine),
               computeDebitAccount(fixedAssetDerogatoryLine),
               amount,
-              true));
+              true,
+              false,
+              null));
     }
 
     fixedAssetDerogatoryLine.setIsSimulated(true);

@@ -1,41 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingReportConfigLine" lang="java">
+  <entity name="AccountingReportConfigLine">
 
     <string name="label" title="Label"/>
     <string name="code" title="Code"/>
+    <string name="percentageTotalLine" title="Total line"/>
+    <string name="percentageBaseColumn" title="Column to be used"/>
     <integer name="sequence"
       help="Field used to define the sequencing order for automatic reconcile. Rules will be applied in ascending order"/>
     <integer name="typeSelect" title="Type"
       selection="accounting.report.config.line.type.select" required="true"/>
     <integer name="ruleTypeSelect" title="Rule type"
-      selection="accounting.report.config.line.rule.type.select" required="true"
+      selection="accounting.report.config.line.rule.type.select"
       help="Field to define if this query is to be used for accounting or reconcile during automatic proccesses. For the auto reconcile, a sequence must be defined."/>
     <integer name="resultSelect" title="Result" default="1"
       selection="accounting.report.config.line.sum.of.account.select"/>
+    <integer name="styleSelect" title="Style" default="0"
+      selection="accounting.report.config.line.style.select"/>
+    <integer name="priority" title="Priority" min="0"/>
+    <integer name="stylePriority" title="Priority" min="0"/>
+    <integer name="detailBySelect" title="Detail line"
+      selection="accounting.report.config.line.detail.by.select"/>
     <boolean name="hidden" title="Hidden"/>
+    <boolean name="notComputedIfIntersect" title="Do not compute intersection"/>
+    <boolean name="computePreviousYear" title="Compute previous year"/>
+    <boolean name="computeOtherPeriod" title="Compute on comparison period"/>
+    <boolean name="balanceBeforePeriod" title="Period's start balance"/>
+    <boolean name="negateValue" title="Negate value"/>
     <many-to-many name="accountTypeSet" title="Account types"
       ref="com.axelor.apps.account.db.AccountType"/>
     <many-to-many name="accountSet" title="Accounts"
       ref="com.axelor.apps.account.db.Account"/>
-    <many-to-one name="reportType" ref="com.axelor.apps.account.db.AccountingReportType"/>
+    <many-to-one name="reportType" title="Report type"
+      ref="com.axelor.apps.account.db.AccountingReportType"/>
+    <many-to-one name="reportTypeColumn" title="Report type"
+      ref="com.axelor.apps.account.db.AccountingReportType"/>
     <string name="rule" title="Rule" large="true"/>
     <string name="accountCode" title="Account code"/>
     <string name="analyticAccountCode" title="Analytic account code"/>
+    <string name="groupsWithoutColumn" title="Groups without this column"/>
     <many-to-many ref="com.axelor.apps.account.db.AnalyticAccount"
       name="analyticAccountSet" title="Analytic accounts"/>
 
     <extra-code><![CDATA[
 
-	   	// RULE TYPE SELECT
+	   // RULE TYPE SELECT
       public static final int RULE_TYPE_NO_VALUE = 1;
       public static final int RULE_TYPE_SUM_OF_ACCOUNTS = 2;
       public static final int RULE_TYPE_CUSTOM_RULE = 3;
+      public static final int RULE_TYPE_PERCENTAGE = 4;
+
+      // TYPE SELECT
+      public static final int TYPE_VALUE = 1;
+      public static final int TYPE_GROUP = 4;
+      public static final int TYPE_GROUP_BY_ACCOUNT = 5;
+
+      // RESULT SELECT
+      public static final int RESULT_DEBIT_MINUS_CREDIT = 1;
+      public static final int RESULT_DEBIT = 2;
+      public static final int RESULT_CREDIT = 6;
+      public static final int RESULT_SAME_AS_COLUMN = 3;
+      public static final int RESULT_SAME_AS_LINE = 4;
+      public static final int RESULT_SAME_AS_GROUP = 5;
+
+      // STYLE SELECT
+      public static final int STYLE_NO_STYLE = 0;
+
+      // DETAIL BY SELECT
+      public static final int DETAIL_BY_NOTHING = 0;
+      public static final int DETAIL_BY_ACCOUNT_TYPE = 1;
+      public static final int DETAIL_BY_ACCOUNT = 2;
+      public static final int DETAIL_BY_ANALYTIC_ACCOUNT = 3;
 
 	  ]]></extra-code>
 

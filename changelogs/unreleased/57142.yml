@@ -1,3 +1,0 @@
----
-title : "Stock move: fixed query exception that happened on the form view when the user had no active company"
-type: fix

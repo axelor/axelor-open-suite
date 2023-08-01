@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="analytic-distribution-template-grid" title="Analytic distribution templates"
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate">
@@ -23,11 +23,13 @@
     <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
       form-view="analytic-distribution-line-form"
-      onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"
+      canNew="name &amp;&amp; company"/>
     <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
       form-view="analytic-distribution-line-personalized-form"
-      onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"
+      canNew="name &amp;&amp; company"/>
   </form>
 
   <form name="analytic-distribution-template-fixed-asset-form"

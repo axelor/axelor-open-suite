@@ -2,23 +2,25 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="contract-line-grid" title="Contract Lines"
     model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
     <hilite if="isConsumptionLine" background="primary"/>
     <field name="productName"/>
     <field name="qty"/>
+    <field name="isConsumptionLine"/>
     <field name="price"/>
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
-    <field name="isConsumptionLine" hidden="true"/>
+    <field name="isToRevaluate"/>
+    <field name="initialPricePerYear" readonly="true"/>
+    <field name="yearlyPriceRevalued" readonly="true"/>
   </grid>
 
   <form name="contract-line-form" title="Contract line"
-    model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-hide-consumption-line"
-    onLoad="action-contract-line-attrs-hide-consumption-line">
+    model="com.axelor.apps.contract.db.ContractLine" onNew="action-contract-line-group-onnew"
+    onLoad="action-contract-line-group-onload">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -28,18 +30,35 @@
         <field name="productName"/>
         <field name="qty" readonlyIf="isConsumptionLine"
           onChange="action-method-contract-line-compute-total"/>
+        <field name="initialUnitPrice" readonly="true" showIf="initialUnitPrice"/>
         <field name="price" onChange="action-method-contract-line-compute-total"/>
+        <panel name="discountPanel" colSpan="12">
+          <field name="discountTypeSelect" colSpan="3"
+            onChange="action-method-contract-line-compute-total"/>
+          <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
+            onChange="action-method-contract-line-compute-total"/>
+          <field name="priceDiscounted" hideIf="discountTypeSelect == 0" readonly="true"
+            colSpan="3" showIf="priceDiscounted != 0"/>
+        </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
         <field name="unit" canEdit="false"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
+
         <field name="isConsumptionLine" hidden="true"
           onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
         <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="contractVersion" hidden="true"/>
       </panel>
+
+      <panel name="pricesPerYear" title="Prices per year">
+        <field name="initialPricePerYear" readonly="true"/>
+        <field name="yearlyPriceRevalued" readonly="true"/>
+        <field name="isToRevaluate"/>
+      </panel>
+
       <panel name="analyticDistributionPanel" title="Analytics"
         if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
@@ -52,6 +71,9 @@
           form-view="analytic-move-line-distribution-form" colSpan="12"
           onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      </panel>
+      <panel name="datePanel" title="Date" hidden="true">
+        <field name="fromDate" onChange="action-method-contract-line-check-from-date"/>
       </panel>
     </panel-tabs>
   </form>
@@ -87,6 +109,13 @@
     <call class="com.axelor.apps.contract.web.ContractLineController" method="computeTotal"/>
   </action-method>
 
+  <action-attrs name="action-contract-line-attrs-scale-and-precision">
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
+
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <hilite if="isInvoiced" background="success"/>
@@ -96,10 +125,16 @@
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
     <field name="isInvoiced" hidden="true"/>
+    <field name="invoiceId" type="string" title="Invoice N°"/>
+    <field name="subscriptionFromDate" type="date" title="From"/>
+    <field name="subscriptionToDate" type="date" title="To"/>
+    <field name="statusSelect" type="string" title="Status"/>
   </grid>
 
   <form name="additional-contract-line-form" title="Additional benefit"
-    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced">
+    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -145,7 +180,9 @@
   </grid>
 
   <form name="contract-line-form-for-template" title="Contract Line"
-    model="com.axelor.apps.contract.db.ContractLine">
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
@@ -168,7 +205,9 @@
   </grid>
 
   <form name="additional-contract-line-form-for-template" title="Additional benefit"
-    model="com.axelor.apps.contract.db.ContractLine">
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
@@ -180,5 +219,37 @@
       <field name="description" colSpan="12" widget="html"/>
     </panel>
   </form>
+
+  <action-method name="action-method-contract-line-fill-default">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="fillDefault"/>
+  </action-method>
+  <action-method name="action-method-contract-line-check-from-date">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="checkFromDate"/>
+  </action-method>
+
+  <action-group name="action-contract-line-group-onnew">
+    <action name="action-method-contract-line-fill-default"/>
+    <action name="action-contract-line-group-edit-view"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-onload">
+    <action name="action-contract-line-group-edit-view"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-edit-view">
+    <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-attrs-scale-and-precision"/>
+    <action name="action-contract-line-method-hide-date-panel"/>
+    <action name="action-contract-line-method-hide-is-to-revaluate"/>
+  </action-group>
+
+  <action-method name="action-contract-line-method-hide-date-panel">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="hideDatePanel"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-hide-is-to-revaluate">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="hideIsToRevaluate"/>
+  </action-method>
 
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
     <toolbar>
@@ -34,10 +34,10 @@
       <field name="addressL4" x-bind="{{addressL4|uppercase}}"
         if="!__config__.app.getApp('base')?.getStoreStreets()"/>
       <field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-      <field name="zip" onChange="action-address-method-autocomplete-address"/>
       <field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false"
         canNew="true" onChange="action-address-change-city" form-view="city-form"
         grid-view="city-grid"/>
+      <field name="zip" onChange="action-address-method-autocomplete-address"/>
       <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
       <static name="addressL6Text" colSpan="12"><![CDATA[Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.]]></static>
       <button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()" readonlyIf="!id">
@@ -91,10 +91,10 @@
       <field name="addressL4" x-bind="{{addressL4|uppercase}}"
         if="!__config__.app.getApp('base')?.getStoreStreets()"/>
       <field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-      <field name="zip" onChange="action-address-method-autocomplete-address"/>
       <field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false"
         canNew="true" onChange="action-address-change-city" form-view="city-form"
         grid-view="city-grid"/>
+      <field name="zip" onChange="action-address-method-autocomplete-address"/>
       <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
       <static name="addressL6Text" colSpan="12"><![CDATA[Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.]]></static>
       <field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"

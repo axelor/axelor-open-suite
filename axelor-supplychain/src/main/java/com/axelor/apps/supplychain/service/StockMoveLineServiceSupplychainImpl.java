@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,21 +14,26 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -40,6 +46,7 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -52,9 +59,6 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -65,6 +69,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -75,6 +80,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   protected PriceListService priceListService;
   protected SupplychainBatchRepository supplychainBatchRepo;
   protected SupplyChainConfigService supplychainConfigService;
+  protected InvoiceLineRepository invoiceLineRepository;
 
   @Inject
   public StockMoveLineServiceSupplychainImpl(
@@ -92,7 +98,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       PriceListService priceListService,
       ProductCompanyService productCompanyService,
       SupplychainBatchRepository supplychainBatchRepo,
-      SupplyChainConfigService supplychainConfigService) {
+      SupplyChainConfigService supplychainConfigService,
+      StockLocationLineHistoryService stockLocationLineHistoryService,
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         trackingNumberService,
         appBaseService,
@@ -104,11 +112,13 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         weightedAveragePriceService,
         trackingNumberRepo,
         productCompanyService,
-        shippingCoefService);
+        shippingCoefService,
+        stockLocationLineHistoryService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.supplychainBatchRepo = supplychainBatchRepo;
     this.supplychainConfigService = supplychainConfigService;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
@@ -127,7 +137,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       boolean taxed,
       BigDecimal taxRate,
       SaleOrderLine saleOrderLine,
-      PurchaseOrderLine purchaseOrderLine)
+      PurchaseOrderLine purchaseOrderLine,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     if (product != null) {
 
@@ -143,7 +155,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               unit,
               stockMove,
               taxed,
-              taxRate);
+              taxRate,
+              fromStockLocation,
+              toStockLocation);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
       stockMoveLine.setIsQtyRequested(
           requestedReservedQty != null && requestedReservedQty.signum() > 0);
@@ -166,7 +180,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           BigDecimal.ZERO,
           unit,
           stockMove,
-          null);
+          null,
+          fromStockLocation,
+          toStockLocation);
     }
   }
 
@@ -179,10 +195,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
-    if (stockMove.getOriginId() != null
-        && stockMove.getOriginId() != 0L
-        && (stockMoveLine.getSaleOrderLine() != null
-            || stockMoveLine.getPurchaseOrderLine() != null)) {
+    if ((stockMove.getSaleOrder() != null && stockMoveLine.getSaleOrderLine() != null)
+        || (stockMove.getPurchaseOrder() != null && stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
@@ -196,7 +210,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal unitPriceUntaxed = stockMoveLine.getUnitPriceUntaxed();
     BigDecimal unitPriceTaxed = stockMoveLine.getUnitPriceTaxed();
     Unit orderUnit = null;
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    if (stockMove.getSaleOrder() != null) {
       SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
       if (saleOrderLine == null) {
         // log the exception
@@ -204,14 +218,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 SupplychainExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
-                stockMove.getOriginId(),
+                stockMove.getSaleOrder(),
                 stockMove.getName()));
       } else {
         unitPriceUntaxed = saleOrderLine.getPriceDiscounted();
         unitPriceTaxed = saleOrderLine.getInTaxPrice();
         orderUnit = saleOrderLine.getUnit();
       }
-    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    } else if (stockMove.getPurchaseOrder() != null) {
       PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
       if (purchaseOrderLine == null) {
         // log the exception
@@ -219,7 +233,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 SupplychainExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
-                stockMove.getOriginId(),
+                stockMove.getPurchaseOrder(),
                 stockMove.getName()));
       } else {
         unitPriceUntaxed = purchaseOrderLine.getPriceDiscounted();
@@ -393,6 +407,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             BigDecimal.ZERO,
             unit,
             stockMove,
+            null,
+            null,
             null);
 
     generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
@@ -462,12 +478,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  public boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine) {
+  public boolean isAvailableProduct(StockMoveLine stockMoveLine) {
     if (stockMoveLine.getProduct() == null
         || (stockMoveLine.getProduct() != null && !stockMoveLine.getProduct().getStockManaged())) {
       return true;
     }
-    updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
+    updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
     BigDecimal availableQty = stockMoveLine.getAvailableQty();
     if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null
         && stockMoveLine.getTrackingNumber() == null) {
@@ -601,7 +617,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
 
     if ((isOutMove && supplyChainConfig.getHasOutSmForStorableProduct())
-        || (isInMove && supplyChainConfig.getHasInSmForStorableProduct())) {
+        || (isInMove && supplyChainConfig.getHasInSmForStorableProduct())
+        || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       storableFilter =
           " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_STORABLE + "'";
       return "(" + storableFilter + checkQtyFilterStr + ")";
@@ -615,9 +632,23 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isOutMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING;
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
     if ((isOutMove && supplyChainConfig.getHasOutSmForNonStorableProduct())
-        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())) {
+        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())
+        || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       return " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_SERVICE + "'";
     }
     return "";
+  }
+
+  @Override
+  public List<InvoiceLine> getInvoiceLines(StockMoveLine stockMoveLine) {
+    Objects.requireNonNull(stockMoveLine);
+    if (stockMoveLine.getId() != null) {
+      return invoiceLineRepository
+          .all()
+          .filter("self.stockMoveLine = :stockMoveLine")
+          .bind("stockMoveLine", stockMoveLine)
+          .fetch();
+    }
+    return new ArrayList<>();
   }
 }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,21 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -34,23 +36,22 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -58,10 +59,10 @@ import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -207,7 +208,7 @@ public class PartnerController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  private String getTimezone(User user) {
+  protected String getTimezone(User user) {
     if (user == null || user.getActiveCompany() == null) {
       return null;
     }
@@ -233,25 +234,40 @@ public class PartnerController {
             .getSocialNetworkUrl(
                 partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
-    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
-  public void findPartnerMails(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner);
-
-    List<Message> emailsList = new ArrayList<Message>();
-    for (Long id : idList) {
-      Message message = Beans.get(MessageRepository.class).find(id);
-      if (!emailsList.contains(message)) {
-        emailsList.add(message);
-      }
+  public void findSentMails(ActionRequest request, ActionResponse response) {
+    try {
+      this.findMails(request, response, MessageRepository.TYPE_SENT);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 
-    response.setValue("$emailsList", emailsList);
+  @Deprecated
+  public void findReceivedMails(ActionRequest request, ActionResponse response) {
+    try {
+      this.findMails(request, response, MessageRepository.TYPE_RECEIVED);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  private void findMails(ActionRequest request, ActionResponse response, int emailType) {
+    Partner partner = request.getContext().asType(Partner.class);
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner, emailType);
+
+    response.setView(
+        ActionView.define(I18n.get("Emails"))
+            .model(Message.class.getName())
+            .add("cards", "message-cards")
+            .add("grid", "message-grid")
+            .add("form", "message-form")
+            .domain("self.id IN (:ids)")
+            .context("ids", !CollectionUtils.isEmpty(idList) ? idList : null)
+            .map());
   }
 
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
@@ -271,21 +287,6 @@ public class PartnerController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void findContactMails(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    List<Long> idList = Beans.get(PartnerService.class).findContactMails(partner);
-
-    List<Message> emailsList = new ArrayList<Message>();
-    for (Long id : idList) {
-      Message message = Beans.get(MessageRepository.class).find(id);
-      if (!emailsList.contains(message)) {
-        emailsList.add(message);
-      }
-    }
-
-    response.setValue("$emailsList", emailsList);
   }
 
   public void checkIbanValidity(ActionRequest request, ActionResponse response)
@@ -316,9 +317,9 @@ public class PartnerController {
 
       Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
 
-      response.setAlert(
+      response.setError(
           String.format(
-              BaseExceptionMessage.BANK_DETAILS_2,
+              I18n.get(BaseExceptionMessage.BANK_DETAILS_2),
               "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
     }
   }

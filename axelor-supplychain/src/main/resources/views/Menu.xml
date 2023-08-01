@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <menuitem name="menu-products-dashboard-1" parent="referential-report"
     if="__config__.app.isApp('supplychain')" title="Products"
-    action="supplychain.products.dashboard.1"/>
+    action="supplychain.products.dashboard.1" order="200"/>
 
   <action-view name="supplychain.products.dashboard.1" title="Products Details">
     <view type="dashboard" name="supplychain.products.dashboard.view.1"/>
@@ -16,7 +16,7 @@
 
   <menuitem name="admin-root-batch-supplychain" parent="admin-root-batch"
     if="__config__.app.isApp('supplychain')" title="Supplychain batches"
-    action="admin.root.batch.supplychain"/>
+    action="admin.root.batch.supplychain" order="1100"/>
 
   <action-view name="admin.root.batch.supplychain" title="Supplychain batches"
     model="com.axelor.apps.supplychain.db.SupplychainBatch">
@@ -33,11 +33,11 @@
 
   <!-- MRP -->
 
-  <menuitem name="stock-mrp" parent="stock-root" title="MRP"
-    if="__config__.app.isApp('supplychain')" order="40"/>
+  <menuitem name="stock-mrp" parent="sc-root-purchase" title="MRP"
+    if="__config__.app.isApp('supplychain')" order="1000"/>
 
   <menuitem name="stock-mrp-calculation" parent="stock-mrp" title="MRP"
-    action="stock.mrp.calculation" order="1"/>
+    action="stock.mrp.calculation" order="100"/>
 
   <action-view name="stock.mrp.calculation" title="MRP"
     model="com.axelor.apps.supplychain.db.Mrp">
@@ -47,7 +47,7 @@
   </action-view>
 
   <menuitem name="stock-mrp-forecast" parent="stock-mrp" title="Forecasts"
-    action="stock.mrp.forecast" order="2"/>
+    action="stock.mrp.forecast" order="200"/>
 
   <action-view name="stock.mrp.forecast" title="Forecasts"
     model="com.axelor.apps.supplychain.db.MrpForecast">
@@ -58,10 +58,10 @@
 
 
   <menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration"
-    icon="fa-cog" order="3"/>
+    icon="fa-cog" order="300"/>
 
   <menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration"
-    title="MRP move types" action="stock.mrp.configuration.mrp.line.type"/>
+    title="MRP move types" action="stock.mrp.configuration.mrp.line.type" order="100"/>
 
   <action-view name="stock.mrp.configuration.mrp.line.type" title="MRP move types"
     model="com.axelor.apps.supplychain.db.MrpLineType">
@@ -70,7 +70,7 @@
   </action-view>
 
   <menuitem name="invoice-root-subscription-invoice" parent="invoice-root"
-    title="Subscription invoices to validate" action="invoice.root.subscription.invoice" order="22"/>
+    title="Subscription invoices to validate" action="invoice.root.subscription.invoice" order="900"/>
 
   <action-view name="invoice.root.subscription.invoice"
     title="Subscription invoices to validate" model="com.axelor.apps.account.db.Invoice">
@@ -84,7 +84,7 @@
 
   <menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"
     parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"
-    order="8"/>
+    order="800"/>
 
   <action-view name="supplychain.declarations.of.exchanges"
     title="Declarations of exchanges" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
@@ -100,15 +100,14 @@
   </action-view>
 
   <menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase"
-    if="__config__.app.isApp('stock')" title="Supplier Arrivals"
-    action="top.menu.purchase.suparrivals" top="true"/>
+    title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
 
   <action-view name="top.menu.purchase.suparrivals" title="Supplier Arrivals"
     model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-in-grid"/>
     <view type="form" name="stock-move-form"/>
     <view-param name="search-filters" value="supplier-arrivals-filters"/>
-    <domain>self.fromStockLocation.typeSelect = 2</domain>
+    <domain>self.stockMoveLineList.fromStockLocation.typeSelect = 2</domain>
     <context name="_typeSelect" expr="3"/>
     <context name="_newDate" expr="eval: __config__.date.plusWeeks(1)"/>
   </action-view>
@@ -122,13 +121,14 @@
     <view type="grid" name="stock-move-out-grid"/>
     <view type="form" name="stock-move-form"/>
     <view-param name="search-filters" value="customer-deliveries-filters"/>
-    <domain>self.toStockLocation.typeSelect = 2</domain>
-    <context name="_typeSelect" expr="2"/>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+    <context name="_isReversion" expr="eval: false"/>
   </action-view>
 
   <menuitem name="purchase-root-purchase-orders-without-stock.move"
     title="Purchase order without stock move" parent="sc-root-purchase"
-    action="purchase.root.purchase.orders.without.stock.move" order="25"
+    action="purchase.root.purchase.orders.without.stock.move" order="700"
     if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.isPurchaseOrderWithoutIncomingStockMove"/>
 
   <action-view name="purchase.root.purchase.orders.without.stock.move"
@@ -139,13 +139,13 @@
     <view-param name="search-filters" value="purchase-order-filters"/>
     <domain>self.statusSelect = 3 AND self IN (select p.purchaseOrder from PurchaseOrderLine as p
       where p.receiptState != 3 AND p.product.productTypeSelect = 'storable' AND
-      p.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE
-      s.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND s.statusSelect = 2)</domain>
+      p.product.stockManaged = true) AND self.id NOT IN (SELECT s.purchaseOrder.id FROM StockMove s
+      WHERE s.statusSelect = 2)</domain>
   </action-view>
 
   <menuitem name="sale-root-sale-orders-without-stock-move"
     title="Sale order without stock move" parent="sc-root-sale"
-    action="sale.root.sale.orders.without.stock.move" order="25"
+    action="sale.root.sale.orders.without.stock.move" order="700"
     if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.isSaleOrderWithoutOutgoingStockMove"/>
 
   <action-view name="sale.root.sale.orders.without.stock.move"
@@ -157,12 +157,11 @@
     <view-param name="search-filters" value="sale-order-filters"/>
     <domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where
       s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged =
-      true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE
-      'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
+      true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2)</domain>
   </action-view>
 
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"
-    parent="sc-root-sale-conf" action="sale.conf.timetable.template"/>
+    parent="sc-root-sale-conf" action="sale.conf.timetable.template" order="100"/>
 
   <action-view name="sale.conf.timetable.template" title="Timetable templates"
     model="com.axelor.apps.supplychain.db.TimetableTemplate">
@@ -170,7 +169,7 @@
     <view type="form" name="timetable-template-form"/>
   </action-view>
 
-  <menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"
+  <menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="800"
     title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
 
   <action-view name="stock.root.multi.purchase.invoicing"
@@ -178,7 +177,7 @@
     <view type="form" name="stock-move-multi-purchase-invoicing-form"/>
   </action-view>
 
-  <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="26"
+  <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="800"
     if="__config__.app.isApp('supplychain')" title="Mass Cust. Stock Move Invoicing"
     action="stock.root.multi.sale.invoicing"/>
 
@@ -187,7 +186,7 @@
     <view type="form" name="stock-move-multi-sale-invoicing-form"/>
   </action-view>
 
-  <menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="27"
+  <menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="900"
     title="Availability requests" action="stock.root.availabilityreq"
     if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
 
@@ -205,10 +204,10 @@
 
   <menuitem name="stock-root-stock-details-by-product" parent="stock-root"
     if="__config__.app.isApp('supplychain')" title="Stock details by product"
-    action="stock.root.stock.details.by.product"/>
+    action="stock.root.stock.details.by.product" order="500"/>
 
   <action-view name="stock.root.stock.details.by.product"
-    title="Stock details by product" model="com.axelor.apps.base.db.Wizard">
+    title="Stock details by product" model="com.axelor.utils.db.Wizard">
     <view type="form" name="supplychain-stock-details-by-product-form"/>
     <context name="_isFromMenu" expr="eval: true"/>
   </action-view>
@@ -222,7 +221,7 @@
 
   <menuitem name="referential-conf-partner" parent="referential-conf"
     if="__config__.app.isApp('supplychain')" title="Partner relations type"
-    action="supplychain.referential.conf.partner"/>
+    action="supplychain.referential.conf.partner" order="400"/>
 
   <action-view name="supplychain.referential.conf.partner"
     title="Partner relations types"
@@ -232,9 +231,9 @@
   </action-view>
 
 
-  <menuitem name="stock-root-custdeliveries-invoicing-block"
-    parent="stock-root-stock-moves" tag-count="true" title="Invoicing blocked customer deliveries"
-    action="stock.root.custdeliveries.invoicing.block" order="7"/>
+  <menuitem name="stock-root-custdeliveries-invoicing-block" parent="stock-root-deliveries"
+    tag-count="true" title="Invoicing blocked customer deliveries"
+    action="stock.root.custdeliveries.invoicing.block" order="400"/>
 
   <action-view name="stock.root.custdeliveries.invoicing.block"
     title="Invoicing blocked customer deliveries" model="com.axelor.apps.stock.db.StockMove">
@@ -251,7 +250,7 @@
   </action-view>
 
   <menuitem name="stock-root-conf-invoice-blocking-reason" title="Invoice blocking reason"
-    parent="stock-root-conf" action="action.stock.view.invoice.blocking.reason"/>
+    parent="stock-root-conf" action="action.stock.view.invoice.blocking.reason" order="1100"/>
 
   <action-view name="action.stock.view.invoice.blocking.reason"
     title="Invoice blocking reason"

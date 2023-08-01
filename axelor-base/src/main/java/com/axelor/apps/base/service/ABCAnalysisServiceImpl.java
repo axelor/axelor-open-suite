@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
 import com.axelor.apps.base.db.ABCAnalysisLine;
@@ -29,16 +31,15 @@ import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -96,7 +97,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     return abcAnalysisClassList;
   }
 
-  private ABCAnalysisClass createAbcClass(
+  protected ABCAnalysisClass createAbcClass(
       String name, Integer sequence, BigDecimal worth, BigDecimal qty) {
     ABCAnalysisClass abcAnalysisClass = new ABCAnalysisClass();
 
@@ -145,7 +146,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     abcAnalysisRepository.save(abcAnalysis);
   }
 
-  private void getAbcAnalysisClassList(ABCAnalysis abcAnalysis) {
+  protected void getAbcAnalysisClassList(ABCAnalysis abcAnalysis) {
     Query<ABCAnalysisClass> abcAnalysisClassQuery =
         abcAnalysisClassRepository
             .all()
@@ -281,7 +282,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     abcAnalysisLineRepository.save(abcAnalysisLine);
   }
 
-  private void computePercentage(ABCAnalysisLine abcAnalysisLine) {
+  protected void computePercentage(ABCAnalysisLine abcAnalysisLine) {
     BigDecimal qty = BigDecimal.ZERO;
     if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
       qty =
@@ -336,11 +337,11 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     this.totalWorth = this.totalWorth.add(totalWorth);
   }
 
-  private void incCumulatedQty(BigDecimal cumulatedQty) {
+  protected void incCumulatedQty(BigDecimal cumulatedQty) {
     this.cumulatedQty = this.cumulatedQty.add(cumulatedQty);
   }
 
-  private void incCumulatedWorth(BigDecimal cumulatedWorth) {
+  protected void incCumulatedWorth(BigDecimal cumulatedWorth) {
     this.cumulatedWorth = this.cumulatedWorth.add(cumulatedWorth);
   }
 

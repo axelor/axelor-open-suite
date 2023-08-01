@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,29 +14,27 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.ReportedBalanceLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdjustHistory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,7 +51,6 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected ReportedBalanceLineRepository reportedBalanceLineRepo;
   protected AdjustHistoryService adjustHistoryService;
   protected PartnerRepository partnerRepository;
   protected PeriodService periodService;
@@ -60,13 +58,11 @@ public class YearServiceAccountImpl extends YearServiceImpl {
   @Inject
   public YearServiceAccountImpl(
       PartnerRepository partnerRepository,
-      ReportedBalanceLineRepository reportedBalanceLineRepo,
       YearRepository yearRepository,
       AdjustHistoryService adjustHistoryService,
       PeriodService periodService) {
     super(yearRepository);
     this.partnerRepository = partnerRepository;
-    this.reportedBalanceLineRepo = reportedBalanceLineRepo;
     this.adjustHistoryService = adjustHistoryService;
     this.periodService = periodService;
   }
@@ -159,7 +155,6 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
           BigDecimal reportedBalanceAmount =
               this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, year);
-          this.createReportedBalanceLine(accountingSituation, reportedBalanceAmount, year);
 
           break;
         }
@@ -191,17 +186,6 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
     year.setStatusSelect(YearRepository.STATUS_ADJUSTING);
     yearRepository.save(year);
-  }
-
-  @Transactional
-  public ReportedBalanceLine createReportedBalanceLine(
-      AccountingSituation accountingSituation, BigDecimal amount, Year year) {
-    ReportedBalanceLine reportedBalanceLine = new ReportedBalanceLine();
-    accountingSituation.addReportedBalanceLineListItem(reportedBalanceLine);
-    reportedBalanceLine.setAmount(amount);
-    reportedBalanceLine.setYear(year);
-    reportedBalanceLineRepo.save(reportedBalanceLine);
-    return reportedBalanceLine;
   }
 
   public BigDecimal computeReportedBalance(

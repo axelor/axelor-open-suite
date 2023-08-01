@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -34,18 +37,16 @@ import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.ContextEntity;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -510,6 +511,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     List<String> domainList = new ArrayList<>();
 
+    domainList.add("self.company = :company");
     domainList.add("self.partner = :deliverToCustomerPartner");
     domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
     domainList.add(
@@ -518,7 +520,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
-      domainList.add("self.fromStockLocation = :stockLocation");
+      domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");
     }
     List<StockMove> fullySpreadStockMoveList = getFullySpreadStockMoveList(logisticalForm);
 

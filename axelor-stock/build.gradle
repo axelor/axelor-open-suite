@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -17,4 +19,5 @@ dependencies {
 
 	implementation libs.commons_lang3
 	implementation libs.commons_collections4
+	implementation libs.swagger_jaxrs
 }

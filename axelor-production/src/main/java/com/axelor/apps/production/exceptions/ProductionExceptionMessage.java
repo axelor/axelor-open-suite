@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.exceptions;
 
@@ -24,6 +25,10 @@ public final class ProductionExceptionMessage {
   /** Production order service */
   public static final String PRODUCTION_ORDER_SEQ = /*$$(*/
       "There's no configured sequence for production's orders" /*)*/;
+
+  /** Operation order service */
+  public static final String PRODUCTION_PROCESS_IS_EMPTY = /*$$(*/
+      "Your production process is empty." /*)*/;
 
   /** Production order sale order service */
   public static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = /*$$(*/
@@ -100,9 +105,6 @@ public final class ProductionExceptionMessage {
   public static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;
 
-  /** Sale order line Controller */
-  public static final String SALE_ORDER_LINE_1 = /*$$(*/ "Personalized nomenclature created" /*)*/;
-
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
       "No production order could be generated. Make sure that everything has been configured correctly. Reminder: check that the order lines that should be produced have their supply method set to 'produce' and that the chosen BoM has a production process associated to it." /*)*/;
@@ -125,6 +127,21 @@ public final class ProductionExceptionMessage {
 
   public static final String MAX_DEPTH_REACHED = /*$$(*/
       "Max depth reached when copying BOM." /*)*/;
+
+  public static final String BILL_OF_MATERIAL_NULL_STATUS = /*$$(*/
+      "BOM currently has no status" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_ALREADY_DRAFT_STATUS = /*$$(*/
+      "BOM is already on draft status" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_VALIDATED_WRONG_STATUS = /*$$(*/
+      "Cannot validate BOM that is not draft" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_APPLICABLE_WRONG_STATUS = /*$$(*/
+      "Cannot make BOM applicable that is not validated" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_OBSOLETE_WRONG_STATUS = /*$$(*/
+      "Cannot make BOM obsolete that is not applicable" /*)*/;
 
   /** Configurator Controller */
   public static final String BILL_OF_MATERIAL_GENERATED = /*$$(*/
@@ -279,4 +296,22 @@ public final class ProductionExceptionMessage {
   public static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION =
       /*$$(*/
       "The produced product stock location is missing in the prod process" /*)*/;
+
+  public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
+      /*$$(*/
+      "The quantity of the bill of material %s is equal to zero." /*)*/;
+
+  public static final String OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES =
+      /*$$(*/
+      "No period has been found in the weekly planning for the operation order %s" /*)*/;
+
+  public static final String OPERATION_ORDER_ALREADY_FINISHED =
+      /*$$(*/
+      "The operation order is already finished and cannot be moved." /*)*/;
+
+  public static final String GENERATE_MANUF_ORDER_BOM_MISSING_UNIT =
+      /*$$(*/ "The unit of the bill of material %s is missing. Please correct it." /*)*/;
+
+  public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
+      /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
 }

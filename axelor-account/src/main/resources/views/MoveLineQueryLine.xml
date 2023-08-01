@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move lines"
     name="move-line-query-line-grid" editable="true">
-    <field name="isSelected"/>
+    <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
+      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelected"/>
+    <button name="unselectBtn" onClick="action-move-line-query-line-group-set-isselected"
+      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelected"/>
     <field name="moveLine.reconcileGroup" width="120"/>
     <field name="moveLine" readonly="true"/>
     <field name="moveLine.name" width="135"/>
@@ -29,6 +32,7 @@
     <field name="moveLine.description"/>
     <field name="moveLine.dueDate"/>
     <field name="moveLineQuery.processSelect" hidden="true"/>
+    <field name="isSelected" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move line"
@@ -59,5 +63,14 @@
       <field name="isSelected"/>
     </panel>
   </form>
+
+  <action-group name="action-move-line-query-line-group-set-isselected">
+    <action name="action-move-line-query-line-record-update-isselected"/>
+  </action-group>
+
+  <action-record name="action-move-line-query-line-record-update-isselected"
+    model="com.axelor.apps.account.db.MoveLineQueryLine">
+    <field name="isSelected" expr="eval: !isSelected"/>
+  </action-record>
 
 </object-views>

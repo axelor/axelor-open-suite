@@ -1,6 +1,0 @@
----
-title : "Multiple small fixes in UI"
-type : fix
-description: |
-  Invoice: correctly hide refund list when there is no refund.
-  Move: on move generation from template view, correctly set "generate move" button as readonly when there is no input.

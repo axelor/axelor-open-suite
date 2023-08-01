@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,35 +14,38 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
+import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.tool.date.DateTool;
-import com.axelor.apps.tool.date.DurationTool;
+import com.axelor.apps.crm.service.LeadService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.base.service.ical.ICalendarEventService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAddress;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.date.DateTool;
+import com.axelor.utils.date.DurationTool;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -163,9 +167,32 @@ public class EventController {
           mapView.put("viewType", "html");
           response.setView(mapView);
         } else
-          response.setFlash(
+          response.setInfo(
               String.format(I18n.get(BaseExceptionMessage.ADDRESS_5), event.getLocation()));
-      } else response.setFlash(I18n.get(CrmExceptionMessage.EVENT_1));
+      } else response.setInfo(I18n.get(CrmExceptionMessage.EVENT_1));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("rawtypes")
+  public void assignToMeLead(ActionRequest request, ActionResponse response) {
+
+    try {
+      LeadService leadService = Beans.get(LeadService.class);
+      LeadRepository leadRepo = Beans.get(LeadRepository.class);
+
+      if (request.getContext().get("id") != null) {
+        Lead lead = leadRepo.find((Long) request.getContext().get("id"));
+        leadService.assignToMeLead(lead);
+      } else if (((List) request.getContext().get("_ids")) != null) {
+        for (Lead lead :
+            leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
+          lead.setUser(AuthUtils.getUser());
+          leadService.assignToMeLead(lead);
+        }
+      }
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -188,17 +215,6 @@ public class EventController {
       }
     }
     response.setReload(true);
-  }
-
-  public void manageFollowers(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-      Event event = request.getContext().asType(Event.class);
-      event = Beans.get(EventRepository.class).find(event.getId());
-      Beans.get(EventService.class).manageFollowers(event);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -451,9 +467,14 @@ public class EventController {
   }
 
   public void computeRecurrenceName(ActionRequest request, ActionResponse response) {
-    RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
-    response.setValue(
-        "recurrenceName", Beans.get(EventService.class).computeRecurrenceName(recurrConf));
+    try {
+      RecurrenceConfiguration recurrConf =
+          request.getContext().asType(RecurrenceConfiguration.class);
+      response.setValue(
+          "recurrenceName", Beans.get(EventService.class).computeRecurrenceName(recurrConf));
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setCalendarDomain(ActionRequest request, ActionResponse response) {
@@ -512,6 +533,31 @@ public class EventController {
           eventReminderRepository.find((long) request.getContext().get("id"));
       eventReminderRepository.remove(eventReminder);
       response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void realizeEvent(ActionRequest request, ActionResponse response) {
+    try {
+      Event event =
+          Beans.get(EventRepository.class).find(request.getContext().asType(Event.class).getId());
+
+      Beans.get(EventService.class).realizeEvent(event);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelEvent(ActionRequest request, ActionResponse response) {
+    try {
+      Event event =
+          Beans.get(EventRepository.class).find(request.getContext().asType(Event.class).getId());
+
+      Beans.get(EventService.class).cancelEvent(event);
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,15 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -52,8 +55,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -160,8 +161,11 @@ public class MrpLineServiceImpl implements MrpLineService {
     PurchaseOrder purchaseOrder = null;
 
     if (isProposalsPerSupplier) {
-      if (purchaseOrdersPerSupplier != null) {
+      if (purchaseOrdersPerSupplier != null && !purchaseOrdersPerSupplier.isEmpty()) {
         purchaseOrder = purchaseOrdersPerSupplier.get(supplierPartner);
+        if (purchaseOrder != null) {
+          purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+        }
       }
     } else {
       if (purchaseOrders != null) {
@@ -178,7 +182,7 @@ public class MrpLineServiceImpl implements MrpLineService {
                   company,
                   null,
                   supplierPartner.getCurrency(),
-                  maturityDate,
+                  null,
                   this.getPurchaseOrderOrigin(mrpLine),
                   null,
                   stockLocation,
@@ -222,7 +226,11 @@ public class MrpLineServiceImpl implements MrpLineService {
     PurchaseOrderLine poLine =
         purchaseOrderLineService.createPurchaseOrderLine(
             purchaseOrder, product, null, null, qty, unit);
-    poLine.setDesiredDelivDate(maturityDate);
+    poLine.setDesiredReceiptDate(maturityDate);
+    if (mrpLine.getEstimatedDeliveryMrpLine() != null) {
+      poLine.setDesiredReceiptDate(mrpLine.getEstimatedDeliveryMrpLine().getMaturityDate());
+    }
+    poLine.setEstimatedReceiptDate(poLine.getDesiredReceiptDate());
     purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

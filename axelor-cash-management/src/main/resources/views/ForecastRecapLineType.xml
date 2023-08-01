@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="forecast-recap-line-type-grid" title="Forecast Types"
     model="com.axelor.apps.cash.management.db.ForecastRecapLineType" orderBy="sequence">
@@ -31,10 +31,13 @@
         selection="sale.order.status.select" selection-in="[1,2,3,4]"/>
       <field name="statusSelect" showIf="elementSelect == 3" widget="MultiSelect"
         selection="purchase.purchase.order.status.select" selection-in="[1,2,3,4]"/>
-      <field name="statusSelect" showIf="elementSelect == 6"
-        selection="crm.opportunity.sales.stage.select" widget="MultiSelect"/>
+      <field name="statusSelectSet" showIf="elementSelect == 6"
+        onChange="action-forecast-recap-line-type-record-set-status-select" widget="TagSelect"/>
       <field name="statusSelect" showIf="elementSelect == 8" widget="MultiSelect"
         selection="iaccount.move.status.select" selection-in="[1,2,3,5]"/>
+      <field name="journalSet" showIf="elementSelect == 1 || elementSelect == 8"
+        widget="TagSelect" domain="self.statusSelect = 1" canNew="false"/>
+      <field name="functionalOriginSelect" showIf="elementSelect == 8" widget="MultiSelect"/>
       <field name="payDaySelect" showIf="elementSelect == 7"/>
       <field name="estimatedDuration" showIf="elementSelect == 2 || elementSelect == 3"/>
     </panel>
@@ -59,6 +62,11 @@
   <action-record name="action-forecast-recap-type-select-onchange-record"
     model="com.axelor.apps.cash.management.db.ForecastRecapLineType">
     <field name="operationTypeSelect" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-forecast-recap-line-type-record-set-status-select"
+    model="com.axelor.apps.cash.management.db.ForecastRecapLineType">
+    <field name="statusSelect" expr="eval: statusSelectSet?.collect{it.id}.join(', ')"/> <!-- Joining id's in format of 1, 2, 3 (with space) to be coherent with MultiSelect -->
   </action-record>
 
 </object-views>

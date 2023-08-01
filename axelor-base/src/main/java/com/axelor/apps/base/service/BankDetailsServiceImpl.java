@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,18 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.exception.AxelorException;
+import com.axelor.utils.StringTool;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -189,49 +190,5 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     if (IbanUtil.isSupportedCountry(countryCode)) {
       IbanUtil.validate(iban);
     }
-  }
-
-  public String computeBankDetailsFullName(BankDetails bankDetails) {
-    if (bankDetails.getBank() != null) {
-      return computeBankDetailsFullName(
-          bankDetails.getCode(),
-          bankDetails.getLabel(),
-          bankDetails.getIban(),
-          bankDetails.getBank().getFullName());
-    } else {
-      return computeBankDetailsFullName(
-          bankDetails.getCode(), bankDetails.getLabel(), bankDetails.getIban(), null);
-    }
-  }
-
-  public static String computeBankDetailsFullName(
-      String code, String label, String iban, String bankFullName) {
-    StringBuilder stringBuilder = new StringBuilder();
-
-    if (code != null && !code.isEmpty()) {
-      stringBuilder.append(code);
-    }
-
-    if (label != null && !label.isEmpty()) {
-      if (stringBuilder.toString().isEmpty()) {
-        stringBuilder.append(label);
-      } else {
-        stringBuilder.append(" - ").append(label);
-      }
-    }
-
-    if (!stringBuilder.toString().isEmpty()) {
-      stringBuilder.append(" - ");
-    }
-
-    if (iban != null && !iban.isEmpty()) {
-      stringBuilder.append(iban);
-    }
-
-    if (bankFullName != null && !bankFullName.isEmpty()) {
-      stringBuilder.append(" - ").append(bankFullName);
-    }
-
-    return stringBuilder.toString();
   }
 }

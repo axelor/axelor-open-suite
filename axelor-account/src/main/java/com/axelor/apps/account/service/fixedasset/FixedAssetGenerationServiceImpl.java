@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,33 +14,30 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
-import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
-import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
-import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -49,8 +47,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,32 +55,32 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
   protected FixedAssetLineService fixedAssetLineService;
-  protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetRepository fixedAssetRepo;
-  protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
   protected FixedAssetValidateService fixedAssetValidateService;
   protected FixedAssetDateService fixedAssetDateService;
+  protected FixedAssetImportService fixedAssetImportService;
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
 
   @Inject
   public FixedAssetGenerationServiceImpl(
+      FixedAssetLineGenerationService fixedAssetLineGenerationService,
+      FixedAssetImportService fixedAssetImportService,
       FixedAssetDateService fixedAssetDateService,
       FixedAssetLineService fixedAssetLineService,
-      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetRepository fixedAssetRepository,
-      FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       FixedAssetValidateService fixedAssetValidateService) {
+    this.fixedAssetLineGenerationService = fixedAssetLineGenerationService;
+    this.fixedAssetImportService = fixedAssetImportService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.fixedAssetLineService = fixedAssetLineService;
-    this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepository;
-    this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
@@ -92,209 +88,35 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException {
 
-    if (fixedAsset.getGrossValue().signum() > 0) {
-
-      if (fixedAsset.getFixedAssetLineList() != null
-          && !fixedAsset.getFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
-      }
-      if (fixedAsset.getFiscalFixedAssetLineList() != null
-          && !fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
-      }
-      if (fixedAsset.getIfrsFixedAssetLineList() != null
-          && !fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
-      }
-
-      generateAndComputeFixedAssetLines(fixedAsset);
-      generateAndComputeFiscalFixedAssetLines(fixedAsset);
-      generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
-      generateAndComputeIfrsFixedAssetLines(fixedAsset);
-    } else {
-      if (fixedAsset.getFixedAssetLineList() != null) {
-        fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
-      }
-      if (fixedAsset.getFiscalFixedAssetLineList() != null) {
-        fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
-      }
-      if (fixedAsset.getIfrsFixedAssetLineList() != null) {
-        fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
-      }
+    if (fixedAsset.getFixedAssetLineList() != null
+        && !fixedAsset.getFixedAssetLineList().isEmpty()) {
+      fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
     }
+    if (fixedAsset.getFiscalFixedAssetLineList() != null
+        && !fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
+      fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
+    }
+    if (fixedAsset.getIfrsFixedAssetLineList() != null
+        && !fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
+      fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
+    }
+
+    FixedAsset importedFixedAsset =
+        fixedAssetImportService.generateAndComputeLines(fixedAsset, fixedAssetRepo);
+
+    if (importedFixedAsset == null) {
+      fixedAssetLineGenerationService.generateAndComputeFixedAssetLines(fixedAsset);
+      fixedAssetLineGenerationService.generateAndComputeFiscalFixedAssetLines(fixedAsset);
+      fixedAssetLineGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+      fixedAssetLineGenerationService.generateAndComputeIfrsFixedAssetLines(fixedAsset);
+    }
+
+    fixedAssetImportService.realizeFirstLine(fixedAsset);
 
     return fixedAssetRepo.save(fixedAsset);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @throws NullPointerException if fixedAsset is null
-   */
-  @Override
-  public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset) {
-    Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-
-      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
-          fixedAssetDerogatoryLineService.computePlannedFixedAssetDerogatoryLineList(fixedAsset);
-      if (fixedAssetDerogatoryLineList.size() != 0) {
-        if (fixedAsset.getFixedAssetDerogatoryLineList() == null) {
-          fixedAsset.setFixedAssetDerogatoryLineList(new ArrayList<>());
-          fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
-        } else {
-          List<FixedAssetDerogatoryLine> linesToKeep =
-              fixedAsset.getFixedAssetDerogatoryLineList().stream()
-                  .filter(
-                      line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED)
-                  .collect(Collectors.toList());
-          fixedAssetDerogatoryLineService.clear(fixedAsset.getFixedAssetDerogatoryLineList());
-          fixedAsset.getFixedAssetDerogatoryLineList().addAll(linesToKeep);
-          fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
-        }
-        fixedAssetDerogatoryLineService.computeDerogatoryBalanceAmount(
-            fixedAsset.getFixedAssetDerogatoryLineList());
-      }
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
-   */
-  @Override
-  public void generateAndComputeIfrsFixedAssetLines(FixedAsset fixedAsset) throws AxelorException {
-    Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
-      FixedAssetLineComputationService fixedAssetLineComputationService =
-          fixedAssetLineServiceFactory.getFixedAssetComputationService(
-              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_IFRS);
-      Optional<FixedAssetLine> initialFiscalFixedAssetLine =
-          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      if (initialFiscalFixedAssetLine.isPresent()) {
-        fixedAsset.addIfrsFixedAssetLineListItem(initialFiscalFixedAssetLine.get());
-
-        generateComputedPlannedFixedAssetLines(
-            fixedAsset,
-            initialFiscalFixedAssetLine.get(),
-            fixedAsset.getIfrsFixedAssetLineList(),
-            fixedAssetLineComputationService);
-      }
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
-   */
-  @Override
-  public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset)
-      throws AxelorException {
-    Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
-      FixedAssetLineComputationService fixedAssetLineComputationService =
-          fixedAssetLineServiceFactory.getFixedAssetComputationService(
-              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
-      Optional<FixedAssetLine> initialFiscalFixedAssetLine =
-          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      if (initialFiscalFixedAssetLine.isPresent()) {
-        fixedAsset.addFiscalFixedAssetLineListItem(initialFiscalFixedAssetLine.get());
-
-        generateComputedPlannedFixedAssetLines(
-            fixedAsset,
-            initialFiscalFixedAssetLine.get(),
-            fixedAsset.getFiscalFixedAssetLineList(),
-            fixedAssetLineComputationService);
-      }
-    }
-  }
-  /**
-   * {@inheritDoc}
-   *
-   * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
-   */
-  @Override
-  public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) throws AxelorException {
-    Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
-      FixedAssetLineComputationService fixedAssetLineComputationService =
-          fixedAssetLineServiceFactory.getFixedAssetComputationService(
-              fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
-      Optional<FixedAssetLine> initialFixedAssetLine =
-          fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
-      if (initialFixedAssetLine.isPresent()) {
-        fixedAsset.addFixedAssetLineListItem(initialFixedAssetLine.get());
-
-        generateComputedPlannedFixedAssetLines(
-            fixedAsset,
-            initialFixedAssetLine.get(),
-            fixedAsset.getFixedAssetLineList(),
-            fixedAssetLineComputationService);
-      }
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
-   */
-  @Override
-  public void generateAndComputeFixedAssetLinesStartingWith(
-      FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException {
-    Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
-      FixedAssetLineComputationService fixedAssetLineComputationService =
-          Beans.get(FixedAssetLineEconomicRecomputationServiceImpl.class);
-      if (fixedAssetLine != null) {
-        generateComputedPlannedFixedAssetLines(
-            fixedAsset,
-            fixedAssetLine,
-            fixedAsset.getFixedAssetLineList(),
-            fixedAssetLineComputationService);
-      }
-    }
-  }
-
-  private List<FixedAssetLine> generateComputedPlannedFixedAssetLines(
-      FixedAsset fixedAsset,
-      FixedAssetLine initialFixedAssetLine,
-      List<FixedAssetLine> fixedAssetLineList,
-      FixedAssetLineComputationService fixedAssetLineComputationService)
-      throws AxelorException {
-
-    // counter to avoid too many iterations in case of a current or future mistake
-    int c = 0;
-    final int MAX_ITERATION = 1000;
-    FixedAssetLine fixedAssetLine = initialFixedAssetLine;
-    while (c < MAX_ITERATION && fixedAssetLine.getAccountingValue().signum() != 0) {
-      fixedAssetLine =
-          fixedAssetLineComputationService.computePlannedFixedAssetLine(fixedAsset, fixedAssetLine);
-      fixedAssetLineList.add(fixedAssetLine);
-      fixedAssetLineService.setFixedAsset(fixedAsset, fixedAssetLine);
-      c++;
-    }
-
-    return fixedAssetLineList;
   }
 
   @Override
@@ -350,7 +172,11 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setCompany(fixedAsset.getFixedAssetCategory().getCompany());
       fixedAsset.setJournal(fixedAsset.getFixedAssetCategory().getJournal());
       copyInfos(fixedAsset.getFixedAssetCategory(), fixedAsset);
-      fixedAsset.setGrossValue(invoiceLine.getCompanyExTaxTotal());
+      BigDecimal grossValue = invoiceLine.getCompanyExTaxTotal();
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        grossValue = grossValue.negate();
+      }
+      fixedAsset.setGrossValue(grossValue);
       fixedAsset.setPartner(invoice.getPartner());
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
       fixedAsset.setInvoiceLine(invoiceLine);
@@ -394,7 +220,6 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because copy does not copy list
     fixedAssetLineService.copyFixedAssetLineList(fixedAsset, newFixedAsset);
-    fixedAssetDerogatoryLineService.copyFixedAssetDerogatoryLineList(fixedAsset, newFixedAsset);
     newFixedAsset.setStatusSelect(fixedAsset.getStatusSelect());
     if (newFixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
       newFixedAsset.setFixedAssetSeq(generateSequence(newFixedAsset));
@@ -423,15 +248,21 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
           I18n.get(AccountExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
           moveLine.getName());
     }
+    Journal journal = null;
     fixedAsset.setName(moveLine.getDescription());
     if (moveLine.getMove() != null) {
       fixedAsset.setCompany(moveLine.getMove().getCompany());
-      fixedAsset.setJournal(moveLine.getMove().getJournal());
+      journal = moveLine.getMove().getJournal();
     }
     FixedAssetCategory fixedAssetCategory = moveLine.getFixedAssetCategory();
     fixedAsset.setFixedAssetCategory(fixedAssetCategory);
     fixedAsset.setPartner(moveLine.getPartner());
     fixedAsset.setPurchaseAccount(moveLine.getAccount());
+
+    if (fixedAssetCategory.getJournal() != null) {
+      journal = fixedAssetCategory.getJournal();
+    }
+    fixedAsset.setJournal(journal);
     if (fixedAssetCategory != null) {
       copyInfos(fixedAssetCategory, fixedAsset);
     }
@@ -444,7 +275,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     return fixedAsset;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public FixedAsset generateAndSaveFixedAsset(Move move, MoveLine moveLine) throws AxelorException {
 

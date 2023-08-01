@@ -1,3 +1,0 @@
----
-title: "Purchase Order : now correctly take the default virtual supplier stock location when creating a purchase order"
-type: fix

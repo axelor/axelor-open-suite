@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,17 +14,18 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -51,14 +53,12 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,13 +66,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppSupplychainService appSupplychainService;
   protected SaleOrderStockService saleOrderStockService;
@@ -120,6 +116,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     return saleOrder;
   }
 
+  @Override
   public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
     List<Timetable> timetableList = saleOrder.getTimetableList();
     BigDecimal totalHT = saleOrder.getExTaxTotal();
@@ -144,10 +141,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
     List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
-            .findAllBySaleOrderAndStatus(
-                StockMoveRepository.ORIGIN_SALE_ORDER,
-                saleOrder.getId(),
-                StockMoveRepository.STATUS_PLANNED)
+            .findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED)
             .fetch();
     List<StockMove> stockMoves =
         !allStockMoves.isEmpty()
@@ -246,7 +240,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateToConfirmedStatus(SaleOrder saleOrder) throws AxelorException {
     if (saleOrder.getStatusSelect() == null
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_COMPLETED) {

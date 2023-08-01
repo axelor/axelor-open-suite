@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="leave-management-grid" title="Leave Management"
     model="com.axelor.apps.hr.db.LeaveManagement" editable="true" orderBy="-fromDate,-date"
     onNew="action-leave-management-record-default">
     <field name="value" onChange="action-leave-management-record-counted"/>
     <field name="date"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="comments"/>
@@ -22,8 +21,6 @@
     <panel name="mainPanel">
       <field name="value" onChange="action-leave-management-record-counted"/>
       <field name="date"/>
-      <field name="user" form-view="user-form" grid-view="user-grid" canNew="false"
-        canEdit="false" canView="false"/>
       <field name="fromDate"/>
       <field name="toDate"/>
       <field name="comments"/>
@@ -33,7 +30,6 @@
   <action-record name="action-leave-management-record-default"
     model="com.axelor.apps.hr.db.LeaveManagement">
     <field name="date" expr="eval: __config__.date"/>
-    <field name="user" expr="eval: __user__"/>
   </action-record>
 
   <action-record name="action-leave-management-record-counted"

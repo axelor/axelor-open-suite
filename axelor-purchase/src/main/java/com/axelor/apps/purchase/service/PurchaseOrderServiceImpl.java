@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -30,6 +32,7 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -50,8 +53,6 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -129,18 +130,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
    * @throws AxelorException
    */
   @Override
-  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLineList == null) {
+      return;
+    }
 
     logger.debug(
         "Populate an invoice => purchase order lines: {} ",
-        new Object[] {purchaseOrder.getPurchaseOrderLineList().size()});
+        new Object[] {purchaseOrderLineList.size()});
 
     // create Tva lines
     purchaseOrder
         .getPurchaseOrderLineTaxList()
         .addAll(
             purchaseOrderLineVatService.createsPurchaseOrderLineTax(
-                purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
+                purchaseOrder, purchaseOrderLineList));
   }
 
   /**
@@ -157,20 +162,27 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setTaxTotal(BigDecimal.ZERO);
     purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      purchaseOrder.setExTaxTotal(
-          purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    List<PurchaseOrderLineTax> purchaseOrderLineTaxList =
+        purchaseOrder.getPurchaseOrderLineTaxList();
+    if (purchaseOrderLineList != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        purchaseOrder.setExTaxTotal(
+            purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
 
-      // In the company accounting currency
-      purchaseOrder.setCompanyExTaxTotal(
-          purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+        // In the company accounting currency
+        purchaseOrder.setCompanyExTaxTotal(
+            purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+      }
     }
 
-    for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
+    if (purchaseOrderLineTaxList != null) {
+      for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrderLineTaxList) {
 
-      // In the purchase order currency
-      purchaseOrder.setTaxTotal(
-          purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+        // In the purchase order currency
+        purchaseOrder.setTaxTotal(
+            purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+      }
     }
 
     purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add(purchaseOrder.getTaxTotal()));
@@ -221,7 +233,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setCompany(company);
     purchaseOrder.setContactPartner(contactPartner);
     purchaseOrder.setCurrency(currency);
-    purchaseOrder.setDeliveryDate(deliveryDate);
+    purchaseOrder.setEstimatedReceiptDate(deliveryDate);
     purchaseOrder.setInternalReference(internalReference);
     purchaseOrder.setExternalReference(externalReference);
     purchaseOrder.setOrderDate(orderDate);
@@ -235,6 +247,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setDisplayPriceOnQuotationRequest(
         purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());
     return purchaseOrder;

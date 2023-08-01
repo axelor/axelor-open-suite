@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -25,11 +25,13 @@
       selection="hr.lunch.voucher.line.status.select" readonly="true"/>
     <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format"
       selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select" readonly="true"/>
+    <integer name="restaurant" title="Restaurant"/>
 
     <extra-code>
           <![CDATA[
             public static final Integer STATUS_CALCULATED = 1;
             public static final Integer STATUS_ANOMALY = 2;
+            public static final Integer STATUS_TO_CALCULATE = 3;
           ]]>
     </extra-code>
   </entity>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -60,10 +60,16 @@
       <field name="sepaDirectDebitSequence" on="UPDATE"/>
       <field name="intCreditTransSequence" on="UPDATE"/>
       <field name="intDirectDebitSequence" on="UPDATE"/>
+      <field name="billOfExchangeSequence" on="UPDATE"/>
 
       <field name="intTreasuryTransSequence" on="UPDATE"/>
       <field name="natTreasuryTransSequence" on="UPDATE"/>
       <field name="otherBankOrderSequence" on="UPDATE"/>
+
+      <field name="hasAutomaticReconciliation" on="UPDATE"/>
+      <field name="hasAutoMoveFromStatementRule" on="UPDATE"/>
+      <field name="bnkStmtAutoReconcileAmountMargin" on="UPDATE"/>
+      <field name="bnkStmtAutoReconcileDateMargin" on="UPDATE"/>
 
       <field name="icsNumber" on="UPDATE"/>
     </track>

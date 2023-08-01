@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.account.db.MoveLineQuery" title="Reconcile managers"
     name="move-line-query-grid">
@@ -40,7 +40,7 @@
     <panel name="btnPanel" itemSpan="4">
       <button name="filterMoveLineBtn" title="Filter move lines"
         onClick="action-move-line-query-group-filter-move-lines"
-        readonlyIf="!company || !fromDate || !toDate || !account || !partner"/>
+        readonlyIf="!company || !fromDate || !toDate || !account"/>
     </panel>
     <panel name="moveLineQueryLinesPanel">
       <panel-related field="moveLineQueryLineList"

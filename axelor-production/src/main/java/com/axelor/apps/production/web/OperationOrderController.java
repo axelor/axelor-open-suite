@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,13 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -28,7 +31,6 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -60,21 +62,29 @@ public class OperationOrderController {
   }
 
   public void setPlannedDates(ActionRequest request, ActionResponse response) {
-    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-    LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
-    LocalDateTime plannedEndDateT = operationOrder.getPlannedEndDateT();
-    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-    Beans.get(OperationOrderWorkflowService.class)
-        .setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
+      LocalDateTime plannedEndDateT = operationOrder.getPlannedEndDateT();
+      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+      Beans.get(OperationOrderWorkflowService.class)
+          .setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setRealDates(ActionRequest request, ActionResponse response) {
-    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-    LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
-    LocalDateTime realEndDateT = operationOrder.getRealEndDateT();
-    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-    Beans.get(OperationOrderWorkflowService.class)
-        .setRealDates(operationOrder, realStartDateT, realEndDateT);
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
+      LocalDateTime realEndDateT = operationOrder.getRealEndDateT();
+      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+      Beans.get(OperationOrderWorkflowService.class)
+          .setRealDates(operationOrder, realStartDateT, realEndDateT);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void plan(ActionRequest request, ActionResponse response) {
@@ -217,14 +227,14 @@ public class OperationOrderController {
 
         response.setView(ActionView.define(name).add("html", fileLink).map());
       } else {
-        response.setFlash(I18n.get(ProductionExceptionMessage.OPERATION_ORDER_1));
+        response.setInfo(I18n.get(ProductionExceptionMessage.OPERATION_ORDER_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  private String getTimezone(OperationOrder operationOrder) {
+  protected String getTimezone(OperationOrder operationOrder) {
     if (operationOrder.getManufOrder() == null
         || operationOrder.getManufOrder().getCompany() == null) {
       return null;
