@@ -227,4 +227,10 @@
     <option value="600">HR Batch</option>
   </selection>
 
+  <selection name="hr.medical.leave.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Planned</option>
+    <option value="3">Realized</option>
+  </selection>
+
 </object-views>

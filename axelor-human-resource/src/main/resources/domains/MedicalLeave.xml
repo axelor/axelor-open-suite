@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="MedicalLeave">
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"
+      required="true"/>
+    <integer name="statusSelect" selection="hr.medical.leave.status.select" title="Status"
+      default="1"/>
+    <date name="medicalLeaveDate" title="Date" required="true"/>
+    <string name="leaveReason" title="Medical leave reason"/>
+    <string name="note" title="Note"/>
+    <many-to-one name="medicalLeaveFile" ref="com.axelor.meta.db.MetaFile"/>
+
+    <extra-code>
+      <![CDATA[
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_PLANNED = 2;
+		public static final int STATUS_REALIZED = 3;
+      ]]>
+    </extra-code>
+
+  </entity>
+</domain-models>

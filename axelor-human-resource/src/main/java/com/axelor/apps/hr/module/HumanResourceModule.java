@@ -53,6 +53,8 @@ import com.axelor.apps.hr.service.EmployeeFileDMSService;
 import com.axelor.apps.hr.service.EmployeeFileDMSServiceImpl;
 import com.axelor.apps.hr.service.HRDashboardService;
 import com.axelor.apps.hr.service.HRDashboardServiceImpl;
+import com.axelor.apps.hr.service.MedicalLeaveService;
+import com.axelor.apps.hr.service.MedicalLeaveServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -213,5 +215,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestMailService.class).to(LeaveRequestMailServiceImpl.class);
     bind(LeaveRequestManagementService.class).to(LeaveRequestManagementServiceImpl.class);
     bind(LeaveRequestWorkflowService.class).to(LeaveRequestWorkflowServiceImpl.class);
+    bind(MedicalLeaveService.class).to(MedicalLeaveServiceImpl.class);
   }
 }
