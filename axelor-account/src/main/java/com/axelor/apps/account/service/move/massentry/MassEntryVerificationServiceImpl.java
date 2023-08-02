@@ -115,11 +115,11 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     // Check move line mass entry date
     LocalDate newDate = newMoveLine.getDate();
     Company company = parentMove.getCompany();
-    if (!moveLine.getDate().equals(newDate)) {
+    if (newDate != null && !newDate.equals(moveLine.getDate())) {
       moveLine.setDate(newDate);
 
       Period period;
-      if (newDate != null && company != null) {
+      if (company != null) {
         period = periodService.getActivePeriod(newDate, company, YearRepository.TYPE_FISCAL);
         parentMove.setPeriod(period);
       }
@@ -200,16 +200,30 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   public void checkDateMassEntryMove(Move move, int temporaryMoveNumber) throws AxelorException {
     MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
 
-    boolean hasPeriodError = this.checkPeriod(move, temporaryMoveNumber);
+    boolean hasPeriodError = false;
     boolean hasDateError = false;
+    boolean hasEmptyDate = false;
+
     for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      if (!firstMoveLine.getDate().equals(moveLine.getDate()) && !hasDateError) {
+      if (!hasDateError && moveLine.getDate() == null) {
+        hasDateError = true;
+        hasEmptyDate = true;
+        this.setMassEntryErrorMessage(
+            move,
+            I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE),
+            true,
+            temporaryMoveNumber);
+      } else if (!hasDateError && !firstMoveLine.getDate().equals(moveLine.getDate())) {
         hasDateError = true;
         this.setMassEntryErrorMessage(
             move,
             I18n.get(AccountExceptionMessage.MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE),
             true,
             temporaryMoveNumber);
+      }
+
+      if (!hasEmptyDate) {
+        hasPeriodError = this.checkPeriod(move, temporaryMoveNumber);
       }
 
       if (hasDateError || hasPeriodError) {
@@ -402,7 +416,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
     switch (fieldName) {
       case "date":
-        message.append(moveLine.getDate().toString());
+        message.append(moveLine.getDate() != null ? moveLine.getDate().toString() : "");
         break;
       case "currencyRate":
         message.append(moveLine.getCurrencyRate().toString());
