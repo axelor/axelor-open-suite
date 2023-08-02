@@ -163,4 +163,20 @@
     <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
   </selection>
 
+  <selection name="stock.product.reservation.type.select">
+    <option value="1">Reservation</option><!-- TODO raduire -->
+    <option value="2">Allocation</option><!-- TODO traduire -->
+  </selection>
+
+  <selection name="stock.requested.reservation.type.select">
+    <option value="1">On Purchase</option><!-- TODO traduire -->
+    <option value="2">On Manuf Order</option><!-- TODO traduire -->
+  </selection>
+
+  <selection name="stock.product.reservation.status.select">
+    <option value="1">In progress</option>
+    <option value="2">Realized</option>
+    <option value="3">Canceled</option>
+  </selection>
+
 </object-views>
