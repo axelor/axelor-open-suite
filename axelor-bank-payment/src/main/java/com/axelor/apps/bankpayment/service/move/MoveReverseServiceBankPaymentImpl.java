@@ -117,7 +117,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
                           == BankReconciliationRepository.STATUS_UNDER_CORRECTION)
               .collect(Collectors.toList()));
     } else {
-      this.updateBankAmountReconcile(move);
+      this.updateBankAmountReconcile(newMove);
     }
     return newMove;
   }
