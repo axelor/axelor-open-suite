@@ -263,15 +263,16 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "
             + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
-            + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
+            + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE "
+            + " AND (self.moveLine.move.statusSelect = "
+            + MoveRepository.STATUS_ACCOUNTED;
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    if (!accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
-      generalCondition +=
-          " AND self.moveLine.move.statusSelect != " + MoveRepository.STATUS_DAYBOOK + " ";
+    if (accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
+      generalCondition += " OR self.moveLine.move.statusSelect = " + MoveRepository.STATUS_DAYBOOK;
     }
 
     String termsMoveLineCondition =
-        " AND ((self.moveLine.partner.isCustomer = TRUE "
+        ") AND ((self.moveLine.partner.isCustomer = TRUE "
             + " AND :partnerTypeSelect = :partnerTypeClient"
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
