@@ -70,13 +70,14 @@
     <extend target="//panel[@name='internalDescriptionPanel']">
       <insert position="before">
         <panel name="timeFollowUpPanel" title="Time follow-up"
-          if="__config__.app.isApp('business-project')">
+          if="__config__.app.isApp('business-project')" showIf="timeUnit">
           <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
-            onChange="action-project-task-record-fill-updated-time"/>
-          <field name="updatedTime" hidden="true" showIf="!parentTask"/>
-          <field name="plannedTime" readonly="true"/>
-          <field name="spentTime" readonly="true"/>
-          <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
+            onChange="action-project-task-record-fill-updated-time" colSpan="3"/>
+          <field name="updatedTime" hidden="true" showIf="!parentTask" colSpan="3"/>
+          <spacer/>
+          <field name="plannedTime" readonly="true" colSpan="3"/>
+          <field name="spentTime" readonly="true" colSpan="3"/>
+          <panel name="reportingPanel" showIf="!parentTask" colSpan="12" title="Reporting">
             <panel-dashlet
               action="action-project-task-view-percentage-progress-custom" colSpan="3"
               showTitle="false"/>
@@ -102,11 +103,32 @@
               onChange="action-project-task-group-qty-onchange" readonlyIf="saleOrderLine"/>
             <field name="unitPrice" colSpan="3"
               onChange="action-project-task-group-unit-price-onchange" readonlyIf="saleOrderLine"/>
-            <field name="unitCost" colSpan="3"/>
+            <field name="unitCost" colSpan="3" readonlyIf="saleOrderLine"/>
             <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
               form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"/>
             <field name="currency" colSpan="3" grid-view="currency-grid"
               form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
+            <field name="exTaxTotal" readonly="true" colSpan="3"/>
+            <field name="totalCosts" colSpan="3"/>
+            <field name="invoicingType" colSpan="3"
+              onChange="action-project-task-attrs-onchange-invoice-type"/>
+            <field name="toInvoice" colSpan="2" readonly="true"
+              if="__config__.app.getApp('business-project').automaticInvoicing"/>
+            <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
+              if="!__config__.app.getApp('business-project').automaticInvoicing"/>
+            <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/>
+            <field name="isTaskRefused" colSpan="2"/>
+            <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())"
+              colSpan="1"/>
+            <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()"
+              showTitle="false" colSpan="1">
+              <viewer><![CDATA[
+                     <h4 class="text-right">
+                         <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
+                         <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                     </h4>
+					]]></viewer>
+            </field>
             <panel name="discountPanel" readonly="true" colSpan="12"
               hideIf="discountTypeSelect == 3 || discountTypeSelect == 0"
               if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
@@ -115,26 +137,6 @@
               <field name="discountAmount" colSpan="3"/>
               <field name="priceDiscounted" colSpan="3"/>
             </panel>
-            <field name="exTaxTotal" readonly="true" colSpan="3"/>
-            <spacer/>
-            <field name="invoicingType" colspan="6"
-              onChange="action-project-task-attrs-onchange-invoice-type"/>
-            <field name="toInvoice" colSpan="2" readonly="true"
-              if="__config__.app.getApp('business-project').automaticInvoicing"/>
-            <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
-              if="!__config__.app.getApp('business-project').automaticInvoicing"/>
-            <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="1"/>
-            <field name="isTaskRefused" colSpan="1"/>
-            <field name="invoiced" showIf="id &amp;&amp; !($readonly())" colSpan="1"/>
-            <field name="invoiced" showIf="id &amp;&amp; $readonly()" showTitle="false"
-              colSpan="1">
-              <viewer><![CDATA[
-                     <h4 class="text-right">
-                         <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
-                         <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                     </h4>
-					]]></viewer>
-            </field>
             <field name="project.invoicingSequenceSelect" hidden="true"
               if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
             <field name="invoiceLine" readonly="true" showIf="invoiceLine"
@@ -142,8 +144,7 @@
           </panel>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>
-          <panel name="initialPanel" title="ProjectTask.Initial" colSpan="12"
-            showIf="!parentTask">
+          <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
             <panel-dashlet action="action-project-task-view-turnover-custom"
               colSpan="3"/>
             <panel-dashlet action="action-project-task-view-initial-costs-custom"
@@ -156,6 +157,17 @@
             <field name="initialCosts" hidden="true"/>
             <field name="initialMargin" hidden="true"/>
             <field name="initialMarkup" hidden="true"/>
+          </panel>
+          <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+            <panel-dashlet action="action-project-task-view-forecast-costs-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-forecast-margin-custom"
+              colSpan="3" hidden="true" showIf="!parentTask"/>
+            <panel-dashlet action="action-project-task-view-forecast-markup-custom"
+              colSpan="3" hidden="true" showIf="!parentTask"/>
+            <field name="forecastCosts" hidden="true"/>
+            <field name="forecastMargin" hidden="true"/>
+            <field name="forecastMarkup" hidden="true"/>
           </panel>
           <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
             <panel-dashlet action="action-project-task-view-real-turnover-custom"
@@ -171,16 +183,16 @@
             <field name="realMargin" hidden="true"/>
             <field name="realMarkup" hidden="true"/>
           </panel>
-          <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
-            <panel-dashlet action="action-project-task-view-forecast-costs-custom"
+          <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
+            <panel-dashlet action="action-project-task-view-landing-costs-custom"
               colSpan="3"/>
-            <panel-dashlet action="action-project-task-view-forecast-margin-custom"
+            <panel-dashlet action="action-project-task-view-landing-margin-custom"
               colSpan="3"/>
-            <panel-dashlet action="action-project-task-view-forecast-markup-custom"
+            <panel-dashlet action="action-project-task-view-landing-markup-custom"
               colSpan="3"/>
-            <field name="forecastCosts" hidden="true"/>
-            <field name="forecastMargin" hidden="true"/>
-            <field name="forecastMarkup" hidden="true"/>
+            <field name="landingCosts" hidden="true"/>
+            <field name="landingMargin" hidden="true"/>
+            <field name="landingMarkup" hidden="true"/>
           </panel>
         </panel>
       </insert>

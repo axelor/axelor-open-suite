@@ -647,6 +647,8 @@
       expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'salePrice', project.company)"/>
     <field name="currency"
       expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'saleCurrency', project.company)"/>
+    <field name="unitCost" expr="eval: product?.costPrice"/>
+    <field name="totalCosts" expr="eval: product?.costPrice"/>
   </action-record>
 
   <action-method name="action-project-task-method-manage-timer-buttons">

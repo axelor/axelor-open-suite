@@ -52,9 +52,12 @@
     <decimal name="forecastCosts" title="ProjectTask.Costs"/>
     <decimal name="forecastMargin" title="ProjectTask.Margin"/>
     <decimal name="forecastMarkup" title="ProjectTask.Markup"/>
+    <decimal name="landingCosts" title="ProjectTask.Costs"/>
+    <decimal name="landingMargin" title="ProjectTask.Margin"/>
+    <decimal name="landingMarkup" title="ProjectTask.Markup"/>
 
     <decimal name="unitCost" title="Unit cost"/>
-    <decimal name="totalCost" title="Total cost"/>
+    <decimal name="totalCosts" title="Total cost" readonly="true"/>
 
     <extra-code>
 			<![CDATA[

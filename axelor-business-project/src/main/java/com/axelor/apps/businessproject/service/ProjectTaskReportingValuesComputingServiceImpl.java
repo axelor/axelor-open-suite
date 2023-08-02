@@ -48,6 +48,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
   private ProjectTaskRepository projectTaskRepo;
   private TimesheetLineRepository timesheetLineRepository;
   private AppBusinessProjectService appBusinessProjectService;
+  private ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   public static final int RESULT_SCALE = 2;
   public static final int COMPUTATION_SCALE = 5;
@@ -61,10 +62,12 @@ public class ProjectTaskReportingValuesComputingServiceImpl
   public ProjectTaskReportingValuesComputingServiceImpl(
       ProjectTaskRepository projectTaskRepo,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
     this.projectTaskRepo = projectTaskRepo;
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
   @Override
@@ -154,48 +157,13 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     Product product = projectTask.getProduct();
 
     Unit projectTaskUnit = projectTask.getTimeUnit();
-
-    if (projectTask.getSoldTime().signum() <= 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_SOLD_TIME_ERROR),
-              projectTask.getName()));
-    }
-
-    // sale order line unit not compatible with BusinessProject configuration
-    if (saleOrderLine != null
-        && !daysUnit.equals(saleOrderLine.getUnit())
-        && !hoursUnit.equals(saleOrderLine.getUnit())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(
-                  BusinessProjectExceptionMessage.PROJECT_TASK_PRODUCT_SALE_ORDER_LINE_UNIT_ERROR),
-              product.getName()));
-    }
-
-    // stock unit not compatible with BusinessProject configuration
-    if (saleOrderLine == null
-        && product != null
-        && !daysUnit.equals(product.getUnit())
-        && !hoursUnit.equals(product.getUnit())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_PRODUCT_STOCK_UNIT_ERROR),
-              product.getName()));
-    }
+    boolean unitIsTimeUnit = projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit);
 
     // Initial
     BigDecimal initialCosts = BigDecimal.ZERO;
-    BigDecimal forecastUnitCost = BigDecimal.ZERO;
+    BigDecimal landingUnitCost = BigDecimal.ZERO;
     if (saleOrderLine != null) {
       initialCosts = saleOrderLine.getSubTotalCostPrice();
-      forecastUnitCost =
-          saleOrderLine
-              .getSubTotalCostPrice()
-              .divide(projectTask.getSoldTime(), RESULT_SCALE, RoundingMode.HALF_UP);
     } else if (product != null) {
       BigDecimal convertedProductPrice = getProductConvertedPrice(product, projectTaskUnit);
       initialCosts =
@@ -203,9 +171,24 @@ public class ProjectTaskReportingValuesComputingServiceImpl
               .getSoldTime()
               .multiply(convertedProductPrice)
               .setScale(RESULT_SCALE, RoundingMode.HALF_UP);
-      forecastUnitCost = convertedProductPrice;
+      landingUnitCost = convertedProductPrice;
     }
     projectTask.setInitialCosts(initialCosts);
+
+    if (saleOrderLine != null && unitIsTimeUnit) {
+      if (projectTask.getSoldTime().signum() <= 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_SOLD_TIME_ERROR),
+                projectTask.getName()));
+      }
+
+      landingUnitCost =
+          saleOrderLine
+              .getSubTotalCostPrice()
+              .divide(projectTask.getSoldTime(), RESULT_SCALE, RoundingMode.HALF_UP);
+    }
 
     projectTask.setInitialMargin(projectTask.getTurnover().subtract(projectTask.getInitialCosts()));
     if (initialCosts.signum() > 0) {
@@ -215,6 +198,17 @@ public class ProjectTaskReportingValuesComputingServiceImpl
                   .getInitialMargin()
                   .divide(projectTask.getInitialCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
     }
+
+    // new forecast
+    computeForecastCosts(projectTask);
+    projectTask.setForecastMargin(
+        projectTask.getTurnover().subtract(projectTask.getForecastCosts()));
+    projectTask.setForecastMarkup(
+        getPercentValue(
+            projectTask
+                .getForecastMargin()
+                .divide(projectTask.getForecastCosts(), RESULT_SCALE, RoundingMode.HALF_UP)));
+
     // unitCost to compute other values
     BigDecimal unitCost = computeUnitCost(projectTask, project);
 
@@ -239,26 +233,51 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
     projectTask.setRealMarkup(realMarkup);
 
-    // Forecast
-    projectTask.setForecastCosts(
-        projectTask
-            .getRealCosts()
-            .add(
-                projectTask
-                    .getUpdatedTime()
-                    .subtract(projectTask.getSpentTime())
-                    .multiply(forecastUnitCost))
-            .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
-    projectTask.setForecastMargin(
-        projectTask.getTurnover().subtract(projectTask.getForecastCosts()));
-    if (projectTask.getForecastCosts().signum() > 0) {
-      projectTask.setForecastMarkup(
+    // Landing
+    BigDecimal landingCosts;
+
+    if (unitIsTimeUnit) {
+      landingCosts =
+          projectTask
+              .getRealCosts()
+              .add(
+                  projectTask
+                      .getUpdatedTime()
+                      .subtract(projectTask.getSpentTime())
+                      .multiply(landingUnitCost))
+              .setScale(RESULT_SCALE, RoundingMode.HALF_UP);
+    } else {
+      landingCosts =
+          projectTask.getStatus().getIsCompleted()
+              ? projectTask.getRealCosts()
+              : projectTask.getInitialCosts();
+    }
+
+    projectTask.setLandingCosts(landingCosts);
+
+    projectTask.setLandingMargin(projectTask.getTurnover().subtract(projectTask.getLandingCosts()));
+    if (projectTask.getLandingCosts().signum() > 0) {
+      projectTask.setLandingMarkup(
           getPercentValue(
               projectTask
-                  .getForecastMargin()
-                  .divide(
-                      projectTask.getForecastCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
+                  .getLandingMargin()
+                  .divide(projectTask.getLandingCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
     }
+  }
+
+  protected void computeForecastCosts(ProjectTask projectTask) {
+    BigDecimal forecastCosts = BigDecimal.ZERO;
+    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
+    if (projectTask.getParentTask() != null || projectTaskList.isEmpty()) {
+      forecastCosts = forecastCosts.add(projectTask.getTotalCosts());
+    }
+
+    for (ProjectTask subTask : projectTaskList) {
+      computeForecastCosts(subTask);
+      forecastCosts = forecastCosts.add(subTask.getForecastCosts());
+    }
+
+    projectTask.setForecastCosts(forecastCosts);
   }
 
   /**
@@ -268,8 +287,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project)
-      throws AxelorException {
+  protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project) {
     BigDecimal unitCost = BigDecimal.ZERO;
 
     Unit timeUnit = projectTask.getTimeUnit();

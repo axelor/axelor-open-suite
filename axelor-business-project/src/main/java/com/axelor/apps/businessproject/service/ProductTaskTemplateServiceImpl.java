@@ -20,7 +20,9 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -29,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +42,18 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   protected ProjectTaskRepository projectTaskRepo;
   protected ProductCompanyService productCompanyService;
+  protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProductTaskTemplateServiceImpl(
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskRepository projectTaskRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      AppBusinessProjectService appBusinessProjectService) {
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
+    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override
@@ -61,11 +67,10 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       SaleOrderLine saleOrderLine)
       throws AxelorException {
     List<ProjectTask> tasks = new ArrayList<>();
-    Product product = saleOrderLine.getProduct();
 
     for (TaskTemplate template : templates) {
       BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
-
+      Product product = template.getProduct();
       while (qtyTmp.signum() > 0) {
         LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
 
@@ -104,11 +109,18 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       throws AxelorException {
     task.setParentTask(parent);
     task.setProduct(product);
+    BigDecimal costPrice = product.getCostPrice();
+    task.setUnitCost(costPrice);
+    task.setTotalCosts(costPrice.multiply(qty).setScale(2, RoundingMode.HALF_UP));
     if (Objects.isNull(parent)) {
       task.setSaleOrderLine(saleOrderLine);
     }
     task.setPlannedTime(qty);
-    task.setTimeUnit(product.getUnit());
+    Unit orderLineUnit = saleOrderLine.getUnit();
+    if (projectTaskBusinessProjectService.isTimeUnitValid(orderLineUnit)) {
+      task.setTimeUnit(orderLineUnit);
+    }
+
     task.setUnitPrice(
         (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
     task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));

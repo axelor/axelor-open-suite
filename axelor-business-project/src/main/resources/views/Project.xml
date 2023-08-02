@@ -63,8 +63,7 @@
           </panel>
 
           <panel title="Financial follow-up" colSpan="12">
-            <panel name="initialPanel" title="ProjectTask.Initial" colSpan="12"
-              showIf="!parentTask">
+            <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
               <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"/>
               <panel-dashlet action="action-project-view-initial-costs-custom"
                 colSpan="3"/>
@@ -76,6 +75,17 @@
               <field name="initialCosts" hidden="true"/>
               <field name="initialMargin" hidden="true"/>
               <field name="initialMarkup" hidden="true"/>
+            </panel>
+            <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+              <panel-dashlet action="action-project-view-forecast-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-forecast-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-forecast-markup-custom"
+                colSpan="3"/>
+              <field name="forecastCosts" hidden="true"/>
+              <field name="forecastMargin" hidden="true"/>
+              <field name="forecastMarkup" hidden="true"/>
             </panel>
             <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
               <panel-dashlet action="action-project-view-real-turnover-custom"
@@ -91,16 +101,16 @@
               <field name="realMargin" hidden="true"/>
               <field name="realMarkup" hidden="true"/>
             </panel>
-            <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
-              <panel-dashlet action="action-project-view-forecast-costs-custom"
+            <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
+              <panel-dashlet action="action-project-view-landing-costs-custom"
                 colSpan="3"/>
-              <panel-dashlet action="action-project-view-forecast-margin-custom"
+              <panel-dashlet action="action-project-view-landing-margin-custom"
                 colSpan="3"/>
-              <panel-dashlet action="action-project-view-forecast-markup-custom"
+              <panel-dashlet action="action-project-view-landing-markup-custom"
                 colSpan="3"/>
-              <field name="forecastCosts" hidden="true"/>
-              <field name="forecastMargin" hidden="true"/>
-              <field name="forecastMarkup" hidden="true"/>
+              <field name="landingCosts" hidden="true"/>
+              <field name="landingMargin" hidden="true"/>
+              <field name="landingMarkup" hidden="true"/>
             </panel>
           </panel>
           <panel name="projectHistoryPanel" title="Project history" colSpan="12">

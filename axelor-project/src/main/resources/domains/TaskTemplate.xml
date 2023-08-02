@@ -20,6 +20,7 @@
     <string name="description" title="Description" large="true"/>
     <many-to-one name="projectTaskCategory"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Project task category"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   </entity>
 
 </domain-models>

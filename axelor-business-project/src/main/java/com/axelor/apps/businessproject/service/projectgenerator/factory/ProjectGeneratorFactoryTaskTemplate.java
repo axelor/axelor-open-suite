@@ -44,6 +44,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +128,10 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       if (root == null) {
         root = projectTaskBusinessProjectService.create(rootName, project, project.getAssignedTo());
         root.setTaskDate(startDate.toLocalDate());
-        updateSoldTime(root, orderLine);
+        if (projectTaskBusinessProjectService.isTimeUnitValid(orderLine.getUnit())) {
+          updateSoldTime(root, orderLine);
+        }
+
         productTaskTemplateService.fillProjectTask(
             project, orderLine.getQty(), orderLine, tasks, product, root, null);
         roots.add(root);
@@ -185,6 +189,9 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     childTask.setQuantity(orderLine.getQty());
     Product product = orderLine.getProduct();
     childTask.setProduct(product);
+    childTask.setUnitCost(product.getCostPrice());
+    childTask.setTotalCosts(
+        product.getCostPrice().multiply(orderLine.getQty()).setScale(2, RoundingMode.HALF_UP));
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
     Company company =
         orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
@@ -192,8 +199,11 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         product != null
             ? (BigDecimal) productCompanyService.get(product, "salePrice", company)
             : null);
-    childTask.setTimeUnit(
-        product != null ? (Unit) productCompanyService.get(product, "unit", company) : null);
+    Unit orderLineUnit = orderLine.getUnit();
+    if (projectTaskBusinessProjectService.isTimeUnitValid(orderLineUnit)) {
+      childTask.setTimeUnit(orderLineUnit);
+    }
+
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);
       childTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);

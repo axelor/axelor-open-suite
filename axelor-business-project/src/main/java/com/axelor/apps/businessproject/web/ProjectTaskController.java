@@ -63,6 +63,7 @@ public class ProjectTaskController {
       projectTask = Beans.get(ProjectTaskBusinessProjectService.class).compute(projectTask);
       response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
       response.setValue("exTaxTotal", projectTask.getExTaxTotal());
+      response.setValue("totalCosts", projectTask.getTotalCosts());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -130,6 +131,9 @@ public class ProjectTaskController {
     data.put("realCosts", request.getData().get("realCosts"));
     data.put("realMargin", request.getData().get("realMargin"));
     data.put("realMarkup", request.getData().get("realMarkup"));
+    data.put("landingCosts", request.getData().get("landingCosts"));
+    data.put("landingMargin", request.getData().get("landingMargin"));
+    data.put("landingMarkup", request.getData().get("landingMarkup"));
     data.put("forecastCosts", request.getData().get("forecastCosts"));
     data.put("forecastMargin", request.getData().get("forecastMargin"));
     data.put("forecastMarkup", request.getData().get("forecastMarkup"));

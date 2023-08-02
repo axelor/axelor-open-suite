@@ -21,6 +21,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -69,4 +70,6 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException;
 
   Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException;
+
+  boolean isTimeUnitValid(Unit unit);
 }

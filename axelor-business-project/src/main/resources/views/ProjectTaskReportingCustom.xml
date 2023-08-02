@@ -56,6 +56,47 @@
     </template>
   </custom>
 
+  <!-- FORECAST -->
+  <custom title="ProjectTask.Costs" name="project-task-forecast-costs-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.forecastCosts}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Margin" name="project-task-forecast-margin-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.forecastMargin}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Markup" name="project-task-forecast-markup-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.forecastMarkup}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+
   <!-- REAL -->
   <custom title="Real turnover" name="project-task-real-turnover-custom"
     css="report-box dashlet-no-dropdown">
@@ -110,41 +151,41 @@
   </custom>
 
 
-  <!-- FORECAST -->
-  <custom title="ProjectTask.Costs" name="project-task-forecast-costs-custom"
+  <!-- LANDING -->
+  <custom title="ProjectTask.Costs" name="project-task-landing-costs-custom"
     css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastCosts}}</h1>
+          <h1>{{first.landingCosts}}</h1>
         </div>
       ]]>
     </template>
   </custom>
 
-  <custom title="ProjectTask.Margin" name="project-task-forecast-margin-custom"
+  <custom title="ProjectTask.Margin" name="project-task-landing-margin-custom"
     css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastMargin}}</h1>
+          <h1>{{first.landingMargin}}</h1>
         </div>
       ]]>
     </template>
   </custom>
 
-  <custom title="ProjectTask.Markup" name="project-task-forecast-markup-custom"
+  <custom title="ProjectTask.Markup" name="project-task-landing-markup-custom"
     css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
         <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastMarkup}}</h1>
+          <h1>{{first.landingMarkup}}</h1>
         </div>
       ]]>
     </template>
@@ -236,6 +277,19 @@
   <action-view name="action-project-task-view-forecast-markup-custom"
     title="ProjectTask.Markup">
     <view type="custom" name="project-task-forecast-markup-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-landing-costs-custom"
+    title="ProjectTask.Costs">
+    <view type="custom" name="project-task-landing-costs-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-landing-margin-custom"
+    title="ProjectTask.Margin">
+    <view type="custom" name="project-task-landing-margin-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-landing-markup-custom"
+    title="ProjectTask.Markup">
+    <view type="custom" name="project-task-landing-markup-custom"/>
   </action-view>
 
 
