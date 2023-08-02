@@ -56,6 +56,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineServiceImpl implements InvoiceLineService {
@@ -666,5 +667,26 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     return internationalService.getProductDescriptionAndNameTranslation(
         product, invoice.getPartner(), userLanguage);
+  }
+
+  @Override
+  public BigDecimal getInTaxPrice(InvoiceLine invoiceLine) {
+    if (invoiceLine.getPrice() == null) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal taxValue =
+        Optional.of(invoiceLine)
+            .map(InvoiceLine::getTaxLine)
+            .map(TaxLine::getValue)
+            .map(
+                it ->
+                    it.divide(
+                        new BigDecimal(100),
+                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                        RoundingMode.HALF_UP))
+            .orElse(BigDecimal.ZERO);
+
+    return invoiceLine.getPrice().add(taxValue);
   }
 }
