@@ -77,7 +77,7 @@
           <spacer/>
           <field name="plannedTime" readonly="true" colSpan="3"/>
           <field name="spentTime" readonly="true" colSpan="3"/>
-          <panel name="reportingPanel" showIf="!parentTask" colSpan="12" title="Reporting">
+          <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
             <panel-dashlet
               action="action-project-task-view-percentage-progress-custom" colSpan="3"
               showTitle="false"/>
@@ -171,7 +171,7 @@
           </panel>
           <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
             <panel-dashlet action="action-project-task-view-real-turnover-custom"
-              colSpan="3"/>
+              colSpan="3" showIf="timeUnit"/>
             <panel-dashlet action="action-project-task-view-real-costs-custom"
               colSpan="3"/>
             <panel-dashlet action="action-project-task-view-real-margin-custom"

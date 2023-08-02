@@ -20,7 +20,7 @@
     <panel name="mainPanel">
       <field name="name" colSpan="12" css="label-bold bold large"/>
       <field name="product" domain="self.productTypeSelect = 'service'"/>
-      <spacer/>
+      <field name="qty"/>
       <field name="delayToStart"/>
       <field name="duration"/>
       <field name="totalPlannedHrs"/>

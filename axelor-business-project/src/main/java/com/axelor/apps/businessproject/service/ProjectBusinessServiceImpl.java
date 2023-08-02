@@ -296,7 +296,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .collect(Collectors.toList());
     for (ProjectTask projectTask : projectTaskList) {
       projectTaskReportingValuesComputingService.computeProjectTaskTotals(projectTask);
-      projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
     }
 
     computeProjectReportingValues(project, projectTaskList);
@@ -328,6 +327,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     for (ProjectTask projectTask : projectTaskList) {
       Unit projectTaskUnit = projectTask.getTimeUnit();
+      if (!projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
+        continue;
+      }
       totalSoldTime =
           totalSoldTime
               .add(

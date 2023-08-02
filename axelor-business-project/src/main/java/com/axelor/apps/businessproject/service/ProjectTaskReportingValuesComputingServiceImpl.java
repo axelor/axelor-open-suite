@@ -98,7 +98,9 @@ public class ProjectTaskReportingValuesComputingServiceImpl
               projectTask.getName()));
     }
 
-    computeProjectTaskTimes(projectTask);
+    if (projectTaskBusinessProjectService.isTimeUnitValid(projectTask.getTimeUnit())) {
+      computeProjectTaskTimes(projectTask);
+    }
     computeFinancialReporting(projectTask, project);
 
     projectTaskRepo.save(projectTask);
@@ -149,7 +151,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     projectTask.setTurnover(
         projectTask
-            .getSoldTime()
+            .getQuantity()
             .multiply(projectTask.getUnitPrice())
             .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
 
@@ -212,26 +214,31 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     // unitCost to compute other values
     BigDecimal unitCost = computeUnitCost(projectTask, project);
 
-    // Real
-    BigDecimal progress =
-        projectTask
-            .getSpentTime()
-            .divide(projectTask.getUpdatedTime(), RESULT_SCALE, RoundingMode.HALF_UP);
-    projectTask.setRealTurnover(
-        progress.multiply(projectTask.getTurnover()).setScale(RESULT_SCALE, RoundingMode.HALF_UP));
     projectTask.setRealCosts(
         projectTask.getSpentTime().multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP));
-    projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
 
-    BigDecimal realMarkup = BigDecimal.ZERO;
-    if (projectTask.getRealCosts().signum() > 0) {
-      realMarkup =
-          getPercentValue(
-              projectTask
-                  .getRealMargin()
-                  .divide(projectTask.getRealCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP));
+    if (unitIsTimeUnit) {
+      // Real
+      BigDecimal progress =
+          projectTask
+              .getSpentTime()
+              .divide(projectTask.getUpdatedTime(), RESULT_SCALE, RoundingMode.HALF_UP);
+
+      projectTask.setRealTurnover(
+          progress
+              .multiply(projectTask.getTurnover())
+              .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
+      projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
+      BigDecimal realMarkup = BigDecimal.ZERO;
+      if (projectTask.getRealCosts().signum() > 0) {
+        realMarkup =
+            getPercentValue(
+                projectTask
+                    .getRealMargin()
+                    .divide(projectTask.getRealCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP));
+      }
+      projectTask.setRealMarkup(realMarkup);
     }
-    projectTask.setRealMarkup(realMarkup);
 
     // Landing
     BigDecimal landingCosts;
@@ -411,6 +418,10 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    */
   protected BigDecimal getProductConvertedPrice(Product product, Unit projectTaskUnit) {
     BigDecimal convertedProductPrice = product.getCostPrice();
+    if (projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
+      return convertedProductPrice;
+    }
+
     if (projectTaskUnit.equals(daysUnit) && product.getUnit().equals(hoursUnit)) {
       convertedProductPrice = convertedProductPrice.multiply(defaultHoursADay);
     } else if (projectTaskUnit.equals(hoursUnit) && product.getUnit().equals(daysUnit)) {
