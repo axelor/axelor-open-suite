@@ -65,6 +65,9 @@ public class ProjectHistoryServiceImpl implements ProjectHistoryService {
     data.put("forecastCosts", projectHistoryLine.getForecastCosts());
     data.put("forecastMargin", projectHistoryLine.getForecastMargin());
     data.put("forecastMarkup", projectHistoryLine.getForecastMarkup());
+    data.put("landingCosts", projectHistoryLine.getLandingCosts());
+    data.put("landingMargin", projectHistoryLine.getLandingMargin());
+    data.put("landingMarkup", projectHistoryLine.getLandingMarkup());
 
     return data;
   }
