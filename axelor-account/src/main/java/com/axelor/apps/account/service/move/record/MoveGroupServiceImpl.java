@@ -351,6 +351,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     }
 
     valuesMap.put("flash", moveRecordUpdateService.updateInvoiceTerms(move, true, headerChange));
+    moveRecordUpdateService.resetDueDate(move);
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
     moveRecordUpdateService.updateDueDate(move, true, dateChange);
 

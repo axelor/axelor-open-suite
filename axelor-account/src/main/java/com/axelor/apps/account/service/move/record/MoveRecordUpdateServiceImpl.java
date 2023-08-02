@@ -145,4 +145,11 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
         return null;
     }
   }
+
+  @Override
+  public void resetDueDate(Move move) {
+    if (move.getPaymentCondition() == null || !moveInvoiceTermService.displayDueDate(move)) {
+      move.setDueDate(null);
+    }
+  }
 }
