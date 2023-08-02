@@ -35,6 +35,8 @@
       title="Product category"/>
     <many-to-one name="previousPricing" ref="com.axelor.apps.base.db.Pricing"
       title="Previous pricing"/>
+    <many-to-one name="nextPricing" ref="com.axelor.apps.base.db.Pricing"
+      title="Next Pricing"/>
     <one-to-many name="pricingLineList" ref="com.axelor.apps.base.db.PricingLine"
       mappedBy="pricing" title="Pricing lines"/>
     <many-to-one name="currentPricing" ref="com.axelor.apps.base.db.Pricing"

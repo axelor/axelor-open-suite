@@ -13,6 +13,7 @@
     <field name="endDate"/>
     <field name="name"/>
     <field name="previousPricing"/>
+    <field name="nextPricing"/>
   </grid>
 
   <grid model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-history-grid"
@@ -70,6 +71,8 @@
           readonlyIf="productCategory" requiredIf="!productCategory"/>
         <field name="productCategory" readonlyIf="product" requiredIf="!product"/>
         <field name="previousPricing"
+          domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
+        <field name="nextPricing"
           domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
       </panel>
       <panel-related field="pricingLineList" name="pricingLineListPanel" colSpan="12"
@@ -149,6 +152,8 @@
       expr="eval: result3PricingRule == null"/>
     <attribute name="hidden" for="pricingLineList.resultParam4"
       expr="eval: result4PricingRule == null"/>
+    <attribute name="hidden" for="previousPricing" expr="false"/>
+    <attribute name="hidden" for="nextPricing" expr="true"/>
   </action-attrs>
 
   <action-attrs name="action-pricing-attrs-pricing-line-list-change-titles">
@@ -222,12 +227,13 @@
 
   <action-attrs name="action-pricing-attrs-concerned-model-onchange">
     <attribute name="value"
-      for="class1PricingRule,class2PricingRule,class3PricingRule,class4PricingRule,result1PricingRule,result2PricingRule,result3PricingRule,result4PricingRule,previousPricing"
+      for="class1PricingRule,class2PricingRule,class3PricingRule,class4PricingRule,result1PricingRule,result2PricingRule,result3PricingRule,result4PricingRule,previousPricing,nextPricing"
       expr="eval: null" if="!concernedModel"/>
   </action-attrs>
 
   <action-attrs name="action-pricing-attrs-company-onchange">
     <attribute name="value" for="previousPricing" expr="eval: null"/>
+    <attribute name="value" for="nextPricing" expr="eval: null"/>
   </action-attrs>
 
   <action-method name="action-pricing-method-historize-pricing">

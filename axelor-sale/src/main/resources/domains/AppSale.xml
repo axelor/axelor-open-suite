@@ -37,6 +37,9 @@
     <boolean name="considerZeroCost"
       title="Consider zero cost and zero price lines in the margin"
       help="When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero."/>
+    <integer name="pricingComputingOrder" title="Pricing Computation Order"
+      selection="sale.pricing.order.type.select"
+      help="When selected this is the Order of Computation of Pricing"/>
 
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>
