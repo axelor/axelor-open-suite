@@ -409,6 +409,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   public void confirm(BankOrder bankOrder)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
     checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
+    LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
 
     if (bankOrder.getGeneratedMetaFile() == null) {
       checkLines(bankOrder);
@@ -437,7 +438,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
-      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      if (ObjectUtils.isEmpty(bankOrder.getBankOrderDate())
+          || bankOrder.getBankOrderDate().isBefore(todayDate)) {
+        bankOrder.setBankOrderDate(todayDate);
+      }
       this.generateMoves(bankOrder);
     }
   }
@@ -456,11 +460,15 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
+    LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
 
     if (!bankOrder.getAreMovesGenerated()
         && bankOrder.getAccountingTriggerSelect()
             == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
-      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      if (ObjectUtils.isEmpty(bankOrder.getBankOrderDate())
+          || bankOrder.getBankOrderDate().isBefore(todayDate)) {
+        bankOrder.setBankOrderDate(todayDate);
+      }
       bankOrder = this.generateMoves(bankOrder);
     }
 
@@ -519,11 +527,15 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
+    LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
 
     if (!bankOrder.getAreMovesGenerated()
         && bankOrder.getAccountingTriggerSelect()
             == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
-      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
+      if (ObjectUtils.isEmpty(bankOrder.getBankOrderDate())
+          || bankOrder.getBankOrderDate().isBefore(todayDate)) {
+        bankOrder.setBankOrderDate(todayDate);
+      }
       bankOrder = this.generateMoves(bankOrder);
     }
 
