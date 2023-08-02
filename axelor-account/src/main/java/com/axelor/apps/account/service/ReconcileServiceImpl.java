@@ -87,6 +87,7 @@ import org.slf4j.LoggerFactory;
 public class ReconcileServiceImpl implements ReconcileService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final int ALTERNATIVE_SCALE = 5;
 
   protected MoveToolService moveToolService;
   protected AccountCustomerService accountCustomerService;
@@ -538,32 +539,34 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected BigDecimal getTotal(MoveLine moveLine, BigDecimal amount, boolean isInvoicePayment) {
     // Recompute currency rate to avoid rounding issue
     BigDecimal ratioPaid = BigDecimal.ONE;
-    BigDecimal percentage = BigDecimal.ONE;
     BigDecimal moveLineAmount = moveLine.getCredit().add(moveLine.getDebit());
     BigDecimal currencyRate = moveLine.getCurrencyRate();
-    BigDecimal computedCurrencyAmount =
-        moveLineAmount.divide(currencyRate, 10, RoundingMode.HALF_UP);
-    BigDecimal computedAmount = computedCurrencyAmount.multiply(currencyRate);
+    BigDecimal computedAmount =
+        moveLineAmount.divide(currencyRate, 10, RoundingMode.HALF_UP).multiply(currencyRate);
     BigDecimal invoiceTermAmount = amount.add(moveLineAmount.subtract(moveLine.getAmountPaid()));
 
+    BigDecimal percentage =
+        amount.divide(
+            computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     if (isInvoicePayment) {
       // ReCompute percentage paid when it's partial payment with invoice payment
 
-      percentage = amount.divide(invoiceTermAmount, 5, RoundingMode.HALF_UP);
+      percentage = amount.divide(invoiceTermAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     } else if (moveLineAmount
             .multiply(percentage)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
             .compareTo(amount)
         != 0) {
       // Compute ratio paid when it's invoice term partial payment
-      percentage =
-          invoiceTermAmount.divide(
-              computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-      ratioPaid = amount.divide(invoiceTermAmount, 5, RoundingMode.HALF_UP);
-    } else {
-      percentage =
-          amount.divide(
-              computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      if (amount.compareTo(invoiceTermAmount) != 0) {
+        percentage =
+            invoiceTermAmount.divide(
+                computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      } else {
+        percentage =
+            invoiceTermAmount.divide(computedAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
+      }
+      ratioPaid = amount.divide(invoiceTermAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     }
 
     return percentage
