@@ -73,6 +73,9 @@ public interface AnalyticMoveLineService {
       InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
       throws AxelorException;
 
+  AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
+      throws AxelorException;
+
   AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
   AnalyticMoveLine reverseAndPersist(
