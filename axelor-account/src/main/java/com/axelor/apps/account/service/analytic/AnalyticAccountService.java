@@ -35,4 +35,6 @@ public interface AnalyticAccountService {
 
   String getAnalyticAccountDomain(Company company, AnalyticAxis analyticAxis, Account account)
       throws AxelorException;
+
+  List<Long> getAnalyticAccountIdList(Company company, int position) throws AxelorException;
 }

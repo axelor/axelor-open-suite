@@ -40,7 +40,6 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   private final int endAxisPosition = 5;
 
   protected AccountConfigService accountConfigService;
-  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
   protected PeriodServiceAccount periodServiceAccount;
@@ -48,12 +47,10 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   @Inject
   public MoveLineAttrsServiceImpl(
       AccountConfigService accountConfigService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService,
       PeriodServiceAccount periodServiceAccount) {
     this.accountConfigService = accountConfigService;
-    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
     this.periodServiceAccount = periodServiceAccount;
@@ -66,54 +63,6 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     }
 
     attrsMap.get(field).put(attr, value);
-  }
-
-  @Override
-  public void addAnalyticAxisAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException {
-    if (move != null && move.getCompany() != null) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
-
-      if (moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
-        AnalyticAxis analyticAxis = null;
-
-        for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-          this.addAttr(
-              String.format("axis%dAnalyticAccount", i),
-              "hidden",
-              !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
-              attrsMap);
-
-          for (AnalyticAxisByCompany analyticAxisByCompany :
-              accountConfig.getAnalyticAxisByCompanyList()) {
-            if (analyticAxisByCompany.getSequence() + 1 == i) {
-              analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-            }
-          }
-
-          if (analyticAxis != null) {
-            this.addAttr(
-                String.format("axis%dAnalyticAccount", i),
-                "title",
-                analyticAxis.getName(),
-                attrsMap);
-
-            analyticAxis = null;
-          }
-        }
-      } else {
-        this.addAttr("analyticDistributionTemplate", "hidden", true, attrsMap);
-        this.addAttr("analyticMoveLineList", "hidden", true, attrsMap);
-
-        for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-          this.addAttr(
-              "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-              "hidden",
-              true,
-              attrsMap);
-        }
-      }
-    }
   }
 
   @Override

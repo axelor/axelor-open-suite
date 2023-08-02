@@ -24,8 +24,6 @@ import com.axelor.apps.base.AxelorException;
 import java.util.Map;
 
 public interface MoveLineAttrsService {
-  void addAnalyticAxisAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException;
 
   void addDescriptionRequired(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
