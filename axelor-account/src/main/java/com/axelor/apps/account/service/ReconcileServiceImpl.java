@@ -537,42 +537,48 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected BigDecimal getTotal(MoveLine moveLine, BigDecimal amount, boolean isInvoicePayment) {
-    // Recompute currency rate to avoid rounding issue
-    BigDecimal ratioPaid = BigDecimal.ONE;
     BigDecimal moveLineAmount = moveLine.getCredit().add(moveLine.getDebit());
-    BigDecimal currencyRate = moveLine.getCurrencyRate();
+    BigDecimal invoiceAmount =
+        moveLine.getAmountPaid().add(moveLineAmount.subtract(moveLine.getAmountPaid()));
     BigDecimal computedAmount =
-        moveLineAmount.divide(currencyRate, 10, RoundingMode.HALF_UP).multiply(currencyRate);
-    BigDecimal invoiceTermAmount = amount.add(moveLineAmount.subtract(moveLine.getAmountPaid()));
+        moveLineAmount
+            .divide(moveLine.getCurrencyRate(), 10, RoundingMode.HALF_UP)
+            .multiply(moveLine.getCurrencyRate());
 
-    BigDecimal percentage =
-        amount.divide(
-            computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    // Recompute currency rate to avoid rounding issue
+    return computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
+        .multiply(moveLine.getCurrencyAmount().abs())
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal computePaidRatio(
+      BigDecimal moveLineAmount,
+      BigDecimal amountToPay,
+      BigDecimal invoiceAmount,
+      BigDecimal computedAmount,
+      boolean isInvoicePayment) {
+    BigDecimal ratioPaid = BigDecimal.ONE;
+    int scale = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
+    BigDecimal percentage = amountToPay.divide(computedAmount, scale, RoundingMode.HALF_UP);
+
     if (isInvoicePayment) {
       // ReCompute percentage paid when it's partial payment with invoice payment
-
-      percentage = amount.divide(invoiceTermAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
+      percentage = amountToPay.divide(invoiceAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     } else if (moveLineAmount
             .multiply(percentage)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
-            .compareTo(amount)
+            .setScale(scale, RoundingMode.HALF_UP)
+            .compareTo(amountToPay)
         != 0) {
       // Compute ratio paid when it's invoice term partial payment
-      if (amount.compareTo(invoiceTermAmount) != 0) {
-        percentage =
-            invoiceTermAmount.divide(
-                computedAmount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      if (amountToPay.compareTo(invoiceAmount) != 0) {
+        percentage = invoiceAmount.divide(computedAmount, scale, RoundingMode.HALF_UP);
       } else {
-        percentage =
-            invoiceTermAmount.divide(computedAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
+        percentage = invoiceAmount.divide(computedAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
       }
-      ratioPaid = amount.divide(invoiceTermAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
+      ratioPaid = amountToPay.divide(invoiceAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     }
 
-    return percentage
-        .multiply(moveLine.getCurrencyAmount().abs())
-        .multiply(ratioPaid)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    return ratioPaid.multiply(percentage);
   }
 
   @Override
