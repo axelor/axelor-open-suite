@@ -106,7 +106,8 @@
     <string name="maritalName" title="Marital name"/>
     <integer name="dependentChildren" title="Dependent children"/>
 
-    <one-to-many name="medicalLeaveList" ref="com.axelor.apps.hr.db.MedicalLeave"/>
+    <one-to-many name="medicalLeaveList" ref="com.axelor.apps.hr.db.MedicalLeave"
+      mappedBy="employee"/>
 
     <extra-code>
    		<![CDATA[
