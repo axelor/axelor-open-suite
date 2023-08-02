@@ -267,30 +267,13 @@ public class InvoiceLineController {
   }
 
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-
-    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-    Invoice invoice = this.getInvoice(context);
-
-    if (invoice == null
-        || invoiceLine.getProduct() == null
-        || invoiceLine.getPrice() == null
-        || invoiceLine.getInTaxPrice() == null) {
-      return;
-    }
-
     try {
-      BigDecimal price = invoiceLine.getPrice();
-      BigDecimal inTaxPrice =
-          price.add(
-              price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))));
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
-      response.setValue("inTaxPrice", inTaxPrice);
-
+      response.setValue(
+          "inTaxPrice", Beans.get(InvoiceLineService.class).getInTaxPrice(invoiceLine));
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
