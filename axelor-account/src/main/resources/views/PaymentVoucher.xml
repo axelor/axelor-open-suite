@@ -134,7 +134,7 @@
           readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherDueElementList.length == 0"
           colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation"
+          onClick="action-payment-voucher-method-reset-imputation"
           readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"
           colSpan="6"/>
       </panel>
@@ -369,12 +369,8 @@
 
   <action-group name="action-group-payment-voucher-reset-imputation"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <action name="action-payment-voucher-reset-imputation" if="payVoucherElementToPayList"/>
+    <action name="action-payment-voucher-method-reset-imputation" if="payVoucherElementToPayList"/>
   </action-group>
-
-  <action-method name="action-payment-voucher-reset-imputation">
-    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
-  </action-method>
 
   <action-record name="action-payment-voucher-reset-due-element-list"
     model="com.axelor.apps.account.db.PaymentVoucher">
