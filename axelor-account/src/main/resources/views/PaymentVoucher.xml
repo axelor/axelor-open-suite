@@ -369,7 +369,8 @@
 
   <action-group name="action-group-payment-voucher-reset-imputation"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <action name="action-payment-voucher-method-reset-imputation" if="payVoucherElementToPayList"/>
+    <action name="action-payment-voucher-method-reset-imputation"
+      if="payVoucherElementToPayList"/>
   </action-group>
 
   <action-record name="action-payment-voucher-reset-due-element-list"
