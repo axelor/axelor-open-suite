@@ -73,19 +73,22 @@
     <field name="name"/>
     <field name="invoice"/>
     <field name="dueDate"/>
-    <field name="amount" title="To pay / To use"/>
-    <field name="amountRemaining" title="Left to pay / to use"/>
+    <field name="amount" title="To pay / To use" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" title="Left to pay / to use"
+      x-scale="currency.numberOfDecimals"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
     <field name="financialDiscount.discountRate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"
+      x-scale="currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-invoice-payment-grid" title="Invoice terms" orderBy="sequence"
@@ -534,17 +537,20 @@
           if="__config__.app.isApp('cash-management')"/>
         <field name="amount" title="To pay / To use"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          validIf="amount > 0" onChange="action-invoice-term-group-move-line-amount-onchange"/>
+          validIf="amount > 0" onChange="action-invoice-term-group-move-line-amount-onchange"
+          x-scale="currency.numberOfDecimals"/>
         <field name="percentage"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           onChange="action-invoice-term-group-move-line-percentage-onchange"
           validIf="percentage > 0"/>
-        <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
+        <field name="amountRemaining" title="Left to pay / to use" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
         <panel name="companyCurrencyPanel" colSpan="12" itemSpan="4" readonly="true"
           showIf="$isMultiCurrency">
-          <field name="companyAmount"/>
+          <field name="companyAmount"
+            x-scale="moveLine.move.company.currency.numberOfDecimals"/>
           <spacer/>
-          <field name="companyAmountRemaining"/>
+          <field name="companyAmountRemaining" x-scale=""/>
           <field name="$isMultiCurrency" type="boolean" hidden="true"/>
         </panel>
         <field name="paymentMode" requiredIf="invoice != null"/>
@@ -560,8 +566,10 @@
         <field name="origin" hidden="true"/>
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
+        <field name="moveLine.move.company.currency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
@@ -570,9 +578,12 @@
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
-        <field name="financialDiscountAmount" readonly="true"/>
-        <field name="remainingAmountAfterFinDiscount" readonly="true"/>
-        <field name="amountRemainingAfterFinDiscount" readonly="true"/>
+        <field name="financialDiscountAmount" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
+        <field name="remainingAmountAfterFinDiscount" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
+        <field name="amountRemainingAfterFinDiscount" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
         <field name="invoice.company" hidden="true"/>
         <field name="invoice.originDate" hidden="true"/>
         <field name="invoice.statusSelect" hidden="true"/>
