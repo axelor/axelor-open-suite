@@ -1349,7 +1349,7 @@
 "Default Payment Modes","Modes de paiement par défaut",,
 "Default analytic journal","Journal analytique par défaut",,
 "Default bank details are missing for company %s.","RIB par défaut manquant pour la société %s.",,
-"Default bank details are missing for partner %s.","RIB par défaut manquant pour le tiers %s",,
+"Default bank details are missing for partner %s.","RIB par défaut manquant pour le tiers %s.",,
 "Default days Margin to retrieve terms on Payment Session ?","Délai (jr) par défaut de récupération anticipée des échéances",,
 "Default email address","Adresse email par défaut",,
 "Default expense account","Compte de charge par défaut",,
