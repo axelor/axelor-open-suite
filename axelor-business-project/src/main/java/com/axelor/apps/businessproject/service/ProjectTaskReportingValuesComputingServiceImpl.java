@@ -33,6 +33,8 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -41,6 +43,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ProjectTaskReportingValuesComputingServiceImpl
     implements ProjectTaskReportingValuesComputingService {
@@ -181,9 +184,6 @@ public class ProjectTaskReportingValuesComputingServiceImpl
         computeLandingUnitCost(
             projectTask, saleOrderLine, product, projectTaskUnit, unitIsTimeUnit);
 
-    projectTask.setRealCosts(
-        projectTask.getSpentTime().multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP));
-
     if (unitIsTimeUnit) {
       // Real
       BigDecimal progress =
@@ -195,9 +195,9 @@ public class ProjectTaskReportingValuesComputingServiceImpl
           progress
               .multiply(projectTask.getTurnover())
               .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
-      projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
       BigDecimal realCosts = computeRealCosts(projectTask, project);
       projectTask.setRealCosts(realCosts);
+      projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
       BigDecimal realMarkup = BigDecimal.ZERO;
       if (projectTask.getRealCosts().signum() > 0) {
         realMarkup =
@@ -279,12 +279,14 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     projectTask.setForecastCosts(forecastCosts);
 
     projectTask.setForecastMargin(
-        projectTask.getTurnover().subtract(projectTask.getForecastCosts()));
-    projectTask.setForecastMarkup(
-        getPercentValue(
-            projectTask
-                .getForecastMargin()
-                .divide(projectTask.getForecastCosts(), RESULT_SCALE, RoundingMode.HALF_UP)));
+        projectTask.getTurnover().subtract(forecastCosts));
+    if (!forecastCosts.equals(BigDecimal.ZERO)) {
+      projectTask.setForecastMarkup(
+              getPercentValue(
+                      projectTask
+                              .getForecastMargin()
+                              .divide(forecastCosts, RESULT_SCALE, RoundingMode.HALF_UP)));
+    }
   }
 
   protected void computeLandingValues(
@@ -327,7 +329,22 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     BigDecimal timeSpent = getTaskSpentTime(projectTask);
 
-    BigDecimal realCost = timeSpent.multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP);
+    BigDecimal realCost =
+        timeSpent
+            .multiply(unitCost)
+            .setScale(RESULT_SCALE, RoundingMode.HALF_UP)
+            .add(
+                projectTask.getPurchaseOrderLineList().stream()
+                    .filter(
+                        purchaseOrderLine -> {
+                          Integer purchaseOrderStatus =
+                              purchaseOrderLine.getPurchaseOrder().getStatusSelect();
+                          return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
+                              || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
+                        })
+                    .map(PurchaseOrderLine::getExTaxTotal)
+                    .reduce(BigDecimal::add)
+                    .orElse(BigDecimal.ZERO));
 
     // add subtask real cost
     for (ProjectTask task : projectTask.getProjectTaskList()) {

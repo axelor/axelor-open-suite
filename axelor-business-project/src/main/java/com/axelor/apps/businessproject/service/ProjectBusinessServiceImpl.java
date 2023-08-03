@@ -412,11 +412,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     project.setForecastCosts(forecastCosts);
 
     project.setForecastMargin(project.getTurnover().subtract(forecastCosts));
-    project.setForecastMarkup(
-        project
-            .getForecastMargin()
-            .multiply(new BigDecimal("100"))
-            .divide(forecastCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    if (!forecastCosts.equals(BigDecimal.ZERO)) {
+      project.setForecastMarkup(
+              project
+                      .getForecastMargin()
+                      .multiply(new BigDecimal("100"))
+                      .divide(forecastCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
 
     BigDecimal realTurnover =
         projectTaskList.stream()

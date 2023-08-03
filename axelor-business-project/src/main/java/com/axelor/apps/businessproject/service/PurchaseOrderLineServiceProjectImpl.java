@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -63,6 +64,22 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
 
       for (PurchaseOrderLine line : purchaseOrderLineList) {
         line.setProject(project);
+        purchaseOrderLineRepo.save(line);
+      }
+    }
+  }
+
+  @Transactional
+  @Override
+  public void setProjectTask(List<Long> purchaseOrderLineIds, ProjectTask projectTask) {
+
+    if (purchaseOrderLineIds != null) {
+
+      List<PurchaseOrderLine> purchaseOrderLineList =
+          purchaseOrderLineRepo.all().filter("self.id in ?1", purchaseOrderLineIds).fetch();
+
+      for (PurchaseOrderLine line : purchaseOrderLineList) {
+        line.setProjectTask(projectTask);
         purchaseOrderLineRepo.save(line);
       }
     }

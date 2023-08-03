@@ -19,13 +19,19 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -138,5 +144,58 @@ public class ProjectTaskController {
     data.put("forecastMargin", request.getData().get("forecastMargin"));
     data.put("forecastMarkup", request.getData().get("forecastMarkup"));
     response.setData(List.of(data));
+  }
+
+  public void generatePurchaseOrder(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = null;
+    if (request.getContext().get("_projectTaskId") != null) {
+      projectTask =
+          Beans.get(ProjectTaskRepository.class)
+              .find(Long.valueOf((Integer) request.getContext().get("_projectTaskId")));
+    } else {
+      projectTask = request.getContext().asType(ProjectTask.class);
+    }
+    SaleOrderLine saleOrderLine = projectTask.getSaleOrderLine();
+    Partner supplierPartner = null;
+    String saleOrderLinesIdStr = null;
+
+    if (request.getContext().get("supplierPartnerSelect") != null) {
+      supplierPartner =
+          JPA.em()
+              .find(
+                  Partner.class,
+                  Long.valueOf(
+                      (Integer)
+                          ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
+      saleOrderLinesIdStr = (String) request.getContext().get("saleOrderLineIdSelected");
+    }
+    Map<String, Object> view = null;
+
+    try {
+      if (saleOrderLine != null) {
+        SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+        List<SaleOrderLine> saleOrderLines = List.of(saleOrderLine);
+        view =
+            Beans.get(PurchaseOrderFromSaleOrderLinesService.class)
+                .generatePurchaseOrdersFromSOLines(
+                    saleOrder, saleOrderLines, supplierPartner, saleOrderLinesIdStr);
+      } else {
+        view =
+            Beans.get(PurchaseOrderProjectService.class)
+                .generateEmptyPurchaseOrderFromProjectTask(projectTask, supplierPartner);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+
+    ((Map) view.get("context")).put("_projectTaskId", projectTask.getId());
+    response.setView(view);
+    if (supplierPartner != null) {
+      Long purchaseOrderId =
+          Long.parseLong((String) ((Map) view.get("context")).get("_showRecord"));
+      Beans.get(PurchaseOrderProjectService.class)
+          .setProjectAndProjectTask(purchaseOrderId, projectTask.getProject(), projectTask);
+      response.setCanClose(true);
+    }
   }
 }

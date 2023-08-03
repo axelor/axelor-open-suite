@@ -18,19 +18,17 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.google.inject.persist.Transactional;
-import java.util.List;
+import java.util.Map;
 
-public interface PurchaseOrderLineProjectService {
-
-  public void setProject(List<Long> purchaseOrderLineIds, Project project);
-
+public interface PurchaseOrderProjectService {
   @Transactional
-  public void setProjectTask(List<Long> purchaseOrderLineIds, ProjectTask projectTask);
+  void setProjectAndProjectTask(Long purchaseOrderId, Project project, ProjectTask projectTask);
 
-  public PurchaseOrderLine updateAnalyticDistributionWithProject(
-      PurchaseOrderLine purchaseOrderLine);
+  public Map<String, Object> generateEmptyPurchaseOrderFromProjectTask(
+      ProjectTask projectTask, Partner supplierPartner) throws AxelorException;
 }

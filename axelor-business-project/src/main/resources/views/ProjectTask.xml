@@ -92,6 +92,17 @@
     </extend>
     <extend target="//panel[@name='treeViewPanel']">
       <insert position="after">
+        <panel name="purchasePanel" title="Purchase" colSpan="12"
+          if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+          <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
+            onClick="action-project-task-generate-purchase-order"/>
+          <field name="purchaseOrderList" colSpan="12"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+            canNew="false"/>
+          <field name="purchaseOrderLineList" colSpan="12"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+            canNew="false"/>
+        </panel>
         <panel name="financialDataPanel" title="Financial Data" colSpan="12"
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
           <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
@@ -205,6 +216,93 @@
     </extend>
   </form>
 
+  <tree id="business-project-project-task-tree" name="project-project-task-tree" title="Task">
+    <column name="name" type="string"/>
+    <column name="taskDate" type="date"/>
+    <column name="assignedTo" type="reference"/>
+    <column name="openTaskBtn" type="button"/>
+    <column name="generatePurchaseOrderBtn" type="button"/>
+    <column name="deleteTaskBtn" type="button"/>
+    <node model="com.axelor.apps.project.db.ProjectTask"
+      onClick="action-project-task-view-task" domain="self.project.id = :_id" orderBy="taskDate">
+      <field name="name" as="name"/>
+      <field name="taskDate" as="taskDate"/>
+      <field name="assignedTo" as="assignedTo"/>
+      <field name="progressSelect" as="progress"/>
+      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
+        onClick="save, action-project-task-method-generate-purchase-order"/>
+      <button name="deleteTaskBtn" icon="fa-times-circle"
+        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+    </node>
+    <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask"
+      onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
+      <field name="name" as="name"/>
+      <field name="taskDate" as="taskDate"/>
+      <field name="assignedTo" as="assignedTo"/>
+      <field name="progressSelect" as="progress"/>
+      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
+        onClick="save, action-project-task-method-generate-purchase-order"/>
+      <button name="deleteTaskBtn" icon="fa-times-circle"
+        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+    </node>
+  </tree>
+
+  <action-view name="action-project-task-view-percentage-progress-custom"
+    title="% of progress">
+    <view type="custom" name="project-task-percentage-progress-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-percentage-consumption-custom"
+    title="% of consumption">
+    <view type="custom" name="project-task-percentage-consumption-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-remaining-to-do-custom"
+    title="Remaining amount to do">
+    <view type="custom" name="project-task-remaining-to-do-custom"/>
+  </action-view>
+
+  <custom title="% of progress" name="project-task-percentage-progress-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfProgress</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-line-chart' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.progress}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="% of consumption" name="project-task-percentage-consumption-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfConsumption</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-hourglass-half' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.consumption}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Remaining amount to do" name="project-task-remaining-to-do-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getRemainingToDo</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-tasks' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.remaining}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
   <action-method name="action-project-task-method-update-to-invoice">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateToInvoice"/>
@@ -218,6 +316,12 @@
   <action-method name="action-project-task-method-compute">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="compute"/>
   </action-method>
+
+  <action-method name="action-project-task-method-generate-purchase-order">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="generatePurchaseOrder"/>
+  </action-method>
+
 
   <action-attrs name="action-project-task-attrs-scale-and-precision">
     <attribute name="scale" for="priceDiscounted"
