@@ -488,7 +488,7 @@
         readonlyIf="statusSelect > 1"
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
-        if="__config__.app.isApp('supplychain')"/>
+        if="__config__.app.isApp('supplychain')" widget="boolean-switch"/>
       <field name="createdByInterco" showIf="createdByInterco" readonly="true"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
@@ -695,7 +695,8 @@
         <field name="partner.factorizedCustomer" hidden="true"/>
       </panel>
       <panel name="analyticAccountingPanel" title="Analytic Accounting" showTitle="false">
-        <panel-dashlet action="action-invoice-analytic-lines" colSpan="12"/>
+        <panel-dashlet action="action-invoice-analytic-lines" colSpan="12"
+          readonly="true"/>
       </panel>
       <panel name="advancePaymentPanel" title="Advance payments"
         showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;

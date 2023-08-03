@@ -67,17 +67,6 @@ public class PaymentSessionController {
     }
   }
 
-  public void computeTotal(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void cancelPaymentSession(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
