@@ -121,9 +121,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     BigDecimal totalAmount = BigDecimal.ZERO;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      totalAmount = totalAmount.add(invoiceTerm.getCompanyAmount());
+      totalAmount = totalAmount.add(invoiceTerm.getAmount());
     }
-    if (invoice.getCompanyInTaxTotal().compareTo(totalAmount) != 0) {
+    if (invoice.getInTaxTotal().compareTo(totalAmount) != 0) {
       return false;
     }
     return true;
