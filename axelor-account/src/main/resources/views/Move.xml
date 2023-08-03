@@ -571,22 +571,22 @@
 
   <action-group name="action-move-group-date-onchange">
     <action name="action-account-move-method-date-onchange"/>
-    <action name="action-move-method-check-date"/>
+    <action name="action-move-method-check-period"/>
   </action-group>
 
   <action-group name="action-account-group-onnew">
     <action name="action-account-move-method-onnew"/>
-    <action name="action-move-method-check-date"/>
+    <action name="action-move-method-check-period"/>
   </action-group>
 
   <action-group name="action-account-group-onLoad">
     <action name="action-account-move-method-onLoad"/>
-    <action name="action-move-method-check-date"/>
+    <action name="action-move-method-check-period"/>
   </action-group>
 
   <action-group name="action-move-group-company-onchange">
     <action name="action-move-method-company-onchange"/>
-    <action name="action-move-method-check-date"/>
+    <action name="action-move-method-check-period"/>
   </action-group>
 
   <!-- ACTION METHOD ON CLICK -->
@@ -794,8 +794,8 @@
     <call class="com.axelor.apps.account.web.MoveController" method="refusalToPay"/>
   </action-method>
 
-  <action-method name="action-move-method-check-date">
-    <call class="com.axelor.apps.account.web.MoveController" method="checkDate"/>
+  <action-method name="action-move-method-check-period">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
   </action-method>
 
   <!-- ACTION VIEW -->

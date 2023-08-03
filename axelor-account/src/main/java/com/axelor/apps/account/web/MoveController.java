@@ -780,11 +780,11 @@ public class MoveController {
     }
   }
 
-  public void checkDate(ActionRequest request, ActionResponse response) {
+  public void checkPeriod(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      String alert = Beans.get(MoveCheckService.class).getDateAlert(move);
+      String alert = Beans.get(MoveCheckService.class).getPeriodAlert(move);
 
       if (StringUtils.notEmpty(alert)) {
         response.setAlert(alert);

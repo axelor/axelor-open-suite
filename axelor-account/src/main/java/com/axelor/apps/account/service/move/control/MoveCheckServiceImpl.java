@@ -258,7 +258,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public String getDateAlert(Move move) {
+  public String getPeriodAlert(Move move) {
     try {
       if (move.getDate() != null && move.getCompany() != null) {
         periodService.getActivePeriod(

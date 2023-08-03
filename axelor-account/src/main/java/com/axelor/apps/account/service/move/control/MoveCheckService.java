@@ -55,5 +55,5 @@ public interface MoveCheckService {
 
   void checkCurrencyAmountSum(Move move) throws AxelorException;
 
-  String getDateAlert(Move move);
+  String getPeriodAlert(Move move);
 }
