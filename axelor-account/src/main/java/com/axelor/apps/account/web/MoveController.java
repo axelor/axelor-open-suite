@@ -435,8 +435,7 @@ public class MoveController {
       boolean paymentConditionChange =
           this.getChangeDummyBoolean(context, "paymentConditionChange");
 
-      response.setValues(
-          moveGroupService.getDateOnChangeValuesMap(move, paymentConditionChange, false));
+      response.setValues(moveGroupService.getDateOnChangeValuesMap(move, paymentConditionChange));
       response.setAttrs(moveGroupService.getDateOnChangeAttrsMap(move, paymentConditionChange));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -772,6 +771,20 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
 
       String alert = Beans.get(MoveCheckService.class).getAccountingAlert(move);
+
+      if (StringUtils.notEmpty(alert)) {
+        response.setAlert(alert);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkDate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      String alert = Beans.get(MoveCheckService.class).getDateAlert(move);
 
       if (StringUtils.notEmpty(alert)) {
         response.setAlert(alert);

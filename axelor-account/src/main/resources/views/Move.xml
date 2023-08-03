@@ -73,7 +73,7 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-move-method-onnew" onLoad="action-account-move-method-onLoad"
+    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
@@ -91,7 +91,7 @@
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
-            onChange="action-move-method-company-onchange" form-view="company-form"
+            onChange="action-move-group-company-onchange" form-view="company-form"
             grid-view="company-grid" colSpan="2"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
@@ -118,7 +118,7 @@
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
             <field name="date"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-              onChange="action-account-move-method-date-onchange" colSpan="2"/>
+              onChange="action-move-group-date-onchange" colSpan="2"/>
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
           </panel>
           <field name="partner" readonlyIf="$validatePeriod || moveLineList.length &gt; 0"
@@ -569,6 +569,26 @@
     <action name="action-account-move-method-origin-onchange"/>
   </action-group>
 
+  <action-group name="action-move-group-date-onchange">
+    <action name="action-account-move-method-date-onchange"/>
+    <action name="action-move-method-check-date"/>
+  </action-group>
+
+  <action-group name="action-account-group-onnew">
+    <action name="action-account-move-method-onnew"/>
+    <action name="action-move-method-check-date"/>
+  </action-group>
+
+  <action-group name="action-account-group-onLoad">
+    <action name="action-account-move-method-onLoad"/>
+    <action name="action-move-method-check-date"/>
+  </action-group>
+
+  <action-group name="action-move-group-company-onchange">
+    <action name="action-move-method-company-onchange"/>
+    <action name="action-move-method-check-date"/>
+  </action-group>
+
   <!-- ACTION METHOD ON CLICK -->
 
   <action-method name="action-move-method-accounting">
@@ -772,6 +792,10 @@
 
   <action-method name="action-move-method-refusal-to-pay">
     <call class="com.axelor.apps.account.web.MoveController" method="refusalToPay"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-date">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkDate"/>
   </action-method>
 
   <!-- ACTION VIEW -->

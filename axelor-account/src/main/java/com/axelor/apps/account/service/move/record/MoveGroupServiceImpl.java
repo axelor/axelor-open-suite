@@ -149,7 +149,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveCheckService.checkPeriodPermission(move);
     moveDefaultService.setDefaultValues(move);
     moveRecordSetService.setJournal(move);
-    moveRecordSetService.setPeriod(move, true);
+    moveRecordSetService.setPeriod(move);
     moveRecordSetService.setFunctionalOriginSelect(move);
     moveRecordSetService.setOriginDate(move);
 
@@ -236,12 +236,11 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getDateOnChangeValuesMap(
-      Move move, boolean paymentConditionChange, boolean disablePeriodException)
+  public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveCheckService.checkPeriodPermission(move);
-      moveRecordSetService.setPeriod(move, disablePeriodException);
+      moveRecordSetService.setPeriod(move);
     }
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
@@ -501,8 +500,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getCompanyOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
-    Map<String, Object> valuesMap =
-        this.getDateOnChangeValuesMap(move, paymentConditionChange, true);
+    Map<String, Object> valuesMap = this.getDateOnChangeValuesMap(move, paymentConditionChange);
 
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setCompanyBankDetails(move);
