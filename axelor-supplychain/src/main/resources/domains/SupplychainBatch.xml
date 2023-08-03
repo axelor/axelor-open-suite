@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="SupplychainBatch" lang="java">
+  <entity name="SupplychainBatch">
 
     <!-- HEADER -->
     <string name="code" title="Code" namecolumn="true" unique="true"/>
     <integer name="actionSelect" title="Action" required="true"
-      selection="supplychain.batch.action.select" default="1"/>
+      selection="supplychain.batch.invoice.stock.moves.action.select" default="1"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="freight-carrier-mode-grid" title="Freight Carrier Mode grid"
+  <grid name="freight-carrier-mode-grid" title="Freight carrier modes"
     model="com.axelor.apps.stock.db.FreightCarrierMode">
     <field name="name"/>
     <field name="carrierPartner" domain="self.isCarrier = true" form-view="partner-form"
@@ -13,7 +13,7 @@
   </grid>
 
   <form name="freight-carrier-mode-form" model="com.axelor.apps.stock.db.FreightCarrierMode"
-    title="Freight Carrier Mode form">
+    title="Freight carrier mode">
     <panel name="mainPanel">
       <field name="name" required="true"/>
       <field name="carrierPartner" domain="self.isCarrier = true" form-view="partner-form"
@@ -24,14 +24,14 @@
   </form>
 
   <grid name="freight-carrier-mode-shipment-mode-grid"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode grid">
+    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier modes">
     <field name="name"/>
     <field name="carrierPartner" domain="self.isCarrier = true" form-view="partner-form"
       grid-view="partner-grid"/>
   </grid>
 
   <form name="freight-carrier-mode-shipment-mode-form"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode form">
+    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier mode">
     <panel name="mainPanel">
       <field name="name" required="true"/>
       <field name="carrierPartner" domain="self.isCarrier = true" form-view="partner-form"
@@ -40,13 +40,13 @@
   </form>
 
   <grid name="freight-carrier-mode-freight-carrier-grid"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode grid">
+    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier modes">
     <field name="name"/>
     <field name="shipmentMode" form-view="shipment-mode-form" grid-view="shipment-mode-grid"/>
   </grid>
 
   <form name="freight-carrier-mode-freight-carrier-form"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight Carrier Mode form">
+    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier mode">
     <panel name="mainPanel">
       <field name="name" required="true"/>
       <field name="shipmentMode" form-view="shipment-mode-form" grid-view="shipment-mode-grid"/>

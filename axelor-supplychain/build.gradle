@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -17,6 +19,5 @@ dependencies {
 	api project(":modules:axelor-sale")
 	api project(":modules:axelor-stock")
 	api project(":modules:axelor-account")
-	api project(":modules:axelor-bank-payment")
     testImplementation libs.mockito
 }

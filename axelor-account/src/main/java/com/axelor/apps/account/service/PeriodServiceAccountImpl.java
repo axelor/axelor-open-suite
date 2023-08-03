@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -23,6 +24,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -32,7 +34,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.collections.CollectionUtils;
@@ -69,6 +70,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     moveRemoveService.deleteMultiple(
         getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
 
+    period = periodRepo.find(period.getId());
     super.close(period);
   }
 
@@ -76,7 +78,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     return moveRepository
         .all()
         .filter(
-            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)))",
+            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)",
             period.getId(),
             status)
         .order("date")
@@ -141,10 +143,12 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   public boolean isAuthorizedToAccountOnPeriod(Move move, User user) throws AxelorException {
-    if (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
+    if (move.getCompany() == null
+        || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
         || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE) {
       return true;
     }
+
     return isAuthorizedToAccountOnPeriod(move.getPeriod(), user);
   }
 

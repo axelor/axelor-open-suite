@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.talent.service;
 
 import com.axelor.apps.base.db.Duration;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -75,7 +77,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
   protected Event generateMeeting(TrainingRegister trainingRegister) {
 
     Event event = new Event();
-    event.setTypeSelect(EventRepository.TYPE_MEETING);
+    event.setTypeSelect(ICalendarEventRepository.TYPE_MEETING);
     event.setStartDateTime(trainingRegister.getFromDate());
     event.setEndDateTime(trainingRegister.getToDate());
     event.setSubject(trainingRegister.getTraining().getName());
@@ -99,7 +101,6 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
     if (CollectionUtils.isNotEmpty(skills)) {
 
       Employee employee = trainingRegister.getEmployee();
-      employee.getSkillSet().addAll(skills);
 
       skills.forEach(
           skill -> {

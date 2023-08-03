@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="DebtRecoveryMethodLine" lang="java" cacheable="true">
+  <entity name="DebtRecoveryMethodLine" cacheable="true">
 
     <integer name="sequence" title="Sequence"/>
     <string name="debtRecoveryLevelLabel" namecolumn="true" title="Label"/>
     <integer name="standardDeadline" title="Standard trigger delay (days)"/>
     <decimal name="minThreshold" title="Min. amount (€)"/>
-    <many-to-many name="messageTemplateSet" ref="com.axelor.apps.message.db.Template"
+    <many-to-many name="messageTemplateSet" ref="com.axelor.message.db.Template"
       title="Message models"/>
     <boolean name="manualValidationOk" title="Manual validation"/>
     <many-to-one name="debtRecoveryMethod"

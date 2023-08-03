@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="dms-file-invoice-term-form" title="Document" model="com.axelor.dms.db.DMSFile"
+    canNew="false" canAttach="false" canArchive="false" width="large"
+    onLoad="action-account-dms-file-method-initialize-values">
+    <panel name="mainPanel" itemSpan="12">
+      <field name="fileName" title="Name"/>
+    </panel>
+    <panel showIf="fileType == 'application/pdf'" itemSpan="12">
+      <field name="$pdf" showTitle="false" readonly="true">
+        <viewer depends="inlineUrl"><![CDATA[
+      <iframe ng-src="{{record.inlineUrl}}" frameborder="0" scrolling="auto" height="700px"/>
+    ]]></viewer>
+      </field>
+    </panel>
+    <panel showIf="fileType.indexOf('image') == 0" itemSpan="12">
+      <field name="$img" showTitle="false" readonly="true">
+        <viewer depends="inlineUrl,fileName"><![CDATA[
+      <img ng-src="{{record.inlineUrl}}" alt="{{record.fileName}}"/>
+    ]]></viewer>
+      </field>
+    </panel>
+  </form>
+
+  <action-method name="action-account-dms-file-method-initialize-values">
+    <call class="com.axelor.apps.account.web.DMSFileController" method="initPdfValues"/>
+  </action-method>
+
+</object-views>

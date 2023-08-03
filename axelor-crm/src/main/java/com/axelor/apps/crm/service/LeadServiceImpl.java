@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,101 +14,69 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LeadServiceImpl implements LeadService {
 
-  @Inject protected SequenceService sequenceService;
+  protected SequenceService sequenceService;
+  protected UserService userService;
+  protected PartnerRepository partnerRepo;
+  protected LeadRepository leadRepo;
+  protected EventRepository eventRepo;
+  protected MultiRelatedRepository multiRelatedRepository;
+  protected LeadStatusRepository leadStatusRepo;
+  protected AppCrmService appCrmService;
 
-  @Inject protected UserService userService;
-
-  @Inject protected PartnerRepository partnerRepo;
-
-  @Inject protected OpportunityRepository opportunityRepo;
-
-  @Inject protected LeadRepository leadRepo;
-
-  @Inject protected EventRepository eventRepo;
-
-  /**
-   * Convert lead into a partner
-   *
-   * @param lead
-   * @return
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
-      throws AxelorException {
-
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_ASSIGNED);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_IN_PROCESS);
-    if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS));
-    }
-
-    if (partner != null && contactPartner != null) {
-      contactPartner = partnerRepo.save(contactPartner);
-      if (partner.getContactPartnerSet() == null) {
-        partner.setContactPartnerSet(new HashSet<>());
-      }
-      partner.getContactPartnerSet().add(contactPartner);
-      contactPartner.setMainPartner(partner);
-    }
-    if (partner != null) {
-      partner = partnerRepo.save(partner);
-      lead.setPartner(partner);
-    }
-
-    for (Event event : lead.getEventList()) {
-      event.setPartner(partner);
-      event.setContactPartner(contactPartner);
-      eventRepo.save(event);
-    }
-
-    for (Opportunity opportunity : lead.getOpportunitiesList()) {
-      opportunity.setPartner(partner);
-      opportunityRepo.save(opportunity);
-    }
-
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_CONVERTED);
-
-    return leadRepo.save(lead);
+  @Inject
+  public LeadServiceImpl(
+      SequenceService sequenceService,
+      UserService userService,
+      PartnerRepository partnerRepo,
+      LeadRepository leadRepo,
+      EventRepository eventRepo,
+      MultiRelatedRepository multiRelatedRepository,
+      LeadStatusRepository leadStatusRepo,
+      AppCrmService appCrmService) {
+    this.sequenceService = sequenceService;
+    this.userService = userService;
+    this.partnerRepo = partnerRepo;
+    this.leadRepo = leadRepo;
+    this.eventRepo = eventRepo;
+    this.multiRelatedRepository = multiRelatedRepository;
+    this.leadStatusRepo = leadStatusRepo;
+    this.appCrmService = appCrmService;
   }
 
   /**
@@ -154,44 +123,25 @@ public class LeadServiceImpl implements LeadService {
             : name == null ? firstName : name;
     searchName = searchName == null ? "" : searchName;
     urlMap.put(
-        "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
-            + searchName
-            + "&init=public"
-            + "' target='_blank'/>");
-    urlMap.put(
-        "twitter",
-        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
-            + searchName
-            + "' target='_blank' />");
-    urlMap.put(
         "linkedin",
         "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
             + searchName.replace("+", "/")
             + "' target='_blank' />");
     if (companyName != null) {
       urlMap.put(
-          "youtube",
-          "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-              + companyName
-              + "' target='_blank' />");
-      urlMap.put(
           "google",
-          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
+          "<a class='fa fa-google' href='https://www.google.com/search?q="
               + companyName
               + "+"
               + searchName
+              + "&gws_rd=cr"
               + "' target='_blank' />");
     } else {
       urlMap.put(
-          "youtube",
-          "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-              + searchName
-              + "' target='_blank' />");
-      urlMap.put(
           "google",
-          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
+          "<a class='fa fa-google' href='https://www.google.com/search?q="
               + searchName
+              + "&gws_rd=cr"
               + "' target='_blank' />");
     }
     return urlMap;
@@ -242,34 +192,17 @@ public class LeadServiceImpl implements LeadService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void startLead(Lead lead) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_ASSIGNED);
-    if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.LEAD_START_WRONG_STATUS));
-    }
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_IN_PROCESS);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
   public void assignToMeLead(Lead lead) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_ASSIGNED);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_IN_PROCESS);
-    if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
+    LeadStatus leadStatus = lead.getLeadStatus();
+
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_ASSIGN_TO_ME_WRONG_STATUS));
     }
     lead.setUser(AuthUtils.getUser());
-    if (lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW) {
-      lead.setStatusSelect(LeadRepository.LEAD_STATUS_ASSIGNED);
-    }
     leadRepo.save(lead);
   }
 
@@ -282,32 +215,20 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void recycleLead(Lead lead) throws AxelorException {
-    if (lead.getStatusSelect() == null
-        || lead.getStatusSelect() != LeadRepository.LEAD_STATUS_LOST) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.LEAD_RECYCLE_WRONG_STATUS));
-    }
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_IN_PROCESS);
-    lead.setIsRecycled(true);
-  }
+  public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
+      throws AxelorException {
+    LeadStatus leadStatus = lead.getLeadStatus();
 
-  @Transactional
-  public void loseLead(Lead lead, LostReason lostReason) throws AxelorException {
-    List<Integer> authorizedStatus = new ArrayList<>();
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_ASSIGNED);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_IN_PROCESS);
-    authorizedStatus.add(LeadRepository.LEAD_STATUS_CONVERTED);
-    if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_LOSE_WRONG_STATUS));
     }
-    lead.setStatusSelect(LeadRepository.LEAD_STATUS_LOST);
+    lead.setLeadStatus(lostLeadStatus);
     lead.setLostReason(lostReason);
+    lead.setLostReasonStr(lostReasonStr);
   }
 
   public String processFullName(String enterpriseName, String name, String firstName) {
@@ -325,5 +246,36 @@ public class LeadServiceImpl implements LeadService {
     else if (!Strings.isNullOrEmpty(name)) fullName.append(name);
 
     return fullName.toString();
+  }
+
+  @Override
+  public LeadStatus getDefaultLeadStatus() throws AxelorException {
+    return appCrmService.getLeadDefaultStatus();
+  }
+
+  @Override
+  public boolean computeIsLost(Lead lead) throws AxelorException {
+    return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());
+  }
+
+  @Override
+  public void kanbanLeadOnMove(Lead lead) throws AxelorException {
+    LeadStatus leadStatus = lead.getLeadStatus();
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+
+    if (Objects.isNull(leadStatus)) {
+      return;
+    }
+    if (leadStatus.equals(convertedLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_KANBAN));
+    }
+    if (leadStatus.equals(lostLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
+    }
   }
 }

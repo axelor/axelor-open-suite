@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -44,12 +47,10 @@ import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
-import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.utils.file.CsvTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -66,6 +67,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PayrollPreparationService {
+
+  private static final DateTimeFormatter NIBELIS_EXPORT_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  private static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   protected LeaveService leaveService;
   protected LeaveRequestRepository leaveRequestRepo;
@@ -228,7 +234,7 @@ public class PayrollPreparationService {
                     + "AND self.statusSelect = ?2 "
                     + "AND (self.payrollPreparation IS NULL OR self.payrollPreparation.id = ?3) "
                     + "AND self.companyCbSelect = ?4 "
-                    + "AND self.validationDate BETWEEN ?5 AND ?6",
+                    + "AND self.validationDateTime BETWEEN ?5 AND ?6",
                 payrollPreparation.getEmployee(),
                 ExpenseRepository.STATUS_VALIDATED,
                 payrollPreparation.getId(),
@@ -320,7 +326,8 @@ public class PayrollPreparationService {
     }
 
     payrollPreparation.setExported(true);
-    payrollPreparation.setExportDate(appBaseService.getTodayDate(payrollPreparation.getCompany()));
+    payrollPreparation.setExportDateTime(
+        appBaseService.getTodayDateTime(payrollPreparation.getCompany()).toLocalDateTime());
     payrollPreparationRepo.save(payrollPreparation);
 
     return file.getPath();
@@ -347,9 +354,8 @@ public class PayrollPreparationService {
         if (payrollLeave.getLeaveReason().getPayrollPreprationExport()) {
           String[] leaveLine = createExportFileLine(payrollPreparation);
           leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
-          leaveLine[4] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-          leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[4] = payrollLeave.getFromDate().format(NIBELIS_EXPORT_DATE_FORMATTER);
+          leaveLine[5] = payrollLeave.getToDate().format(NIBELIS_EXPORT_DATE_FORMATTER);
           leaveLine[6] = payrollLeave.getDuration().toString();
           list.add(leaveLine);
         }
@@ -488,9 +494,8 @@ public class PayrollPreparationService {
           String[] leaveLine = createSilaeExportFileLine(payrollPrep);
           leaveLine[1] = payrollLeave.getLeaveReason().getExportCode();
           leaveLine[2] = String.valueOf(payrollLeave.getDuration());
-          leaveLine[3] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-          leaveLine[4] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[3] = payrollLeave.getFromDate().format(SILAE_EXPORT_DATE_FORMATTER);
+          leaveLine[4] = payrollLeave.getToDate().format(SILAE_EXPORT_DATE_FORMATTER);
           exportLineList.add(leaveLine);
         }
       }
@@ -522,8 +527,8 @@ public class PayrollPreparationService {
   public String[] createSilaeExportFileLine(PayrollPreparation payroll) {
     String[] item = new String[5];
     item[0] = payroll.getEmployee().getExportCode();
-    item[3] = payroll.getPeriod().getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-    item[4] = payroll.getPeriod().getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    item[3] = payroll.getPeriod().getFromDate().format(SILAE_EXPORT_DATE_FORMATTER);
+    item[4] = payroll.getPeriod().getToDate().format(SILAE_EXPORT_DATE_FORMATTER);
     return item;
   }
 }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,15 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -47,12 +50,10 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -126,9 +127,9 @@ public class ImportSupplyChain {
           StockMove stockMove = stockMoveRepo.find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
-          stockMove.setRealDate(purchaseOrder.getDeliveryDate());
+          stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
         }
-        purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
+        purchaseOrder.setValidationDateTime(purchaseOrder.getOrderDate().atStartOfDay());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
         purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
         Invoice invoice =
@@ -139,14 +140,17 @@ public class ImportSupplyChain {
 
         invoice.setInternalReference(purchaseOrder.getInternalReference());
 
-        LocalDate date;
-        if (purchaseOrder.getValidationDate() != null) {
-          date = purchaseOrder.getValidationDate();
+        LocalDateTime dateTime;
+        if (purchaseOrder.getValidationDateTime() != null) {
+          dateTime = purchaseOrder.getValidationDateTime();
         } else {
-          date = Beans.get(AppBaseService.class).getTodayDate(purchaseOrder.getCompany());
+          dateTime =
+              Beans.get(AppBaseService.class)
+                  .getTodayDateTime(purchaseOrder.getCompany())
+                  .toLocalDateTime();
         }
-        invoice.setInvoiceDate(date);
-        invoice.setOriginDate(date.minusDays(15));
+        invoice.setInvoiceDate(dateTime.toLocalDate());
+        invoice.setOriginDate(dateTime.toLocalDate().minusDays(15));
         invoiceTermService.computeInvoiceTerms(invoice);
 
         invoiceService.validateAndVentilate(invoice);
@@ -194,6 +198,7 @@ public class ImportSupplyChain {
               Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()));
         }
         invoiceTermService.computeInvoiceTerms(invoice);
+        invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
         invoiceService.validateAndVentilate(invoice);
 
         List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);

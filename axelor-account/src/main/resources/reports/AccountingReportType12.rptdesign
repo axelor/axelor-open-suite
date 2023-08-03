@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -69,6 +69,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -480,12 +481,13 @@ left outer join public.account_accounting_situation as CompanyAccountingSituatio
 left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
-where (AccountingReport.currency = Move.company_currency) 
+where
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND MoveLine.tax_line is not null
-AND (((AccountType.technical_type_select not like 'tax' 
+AND ((((AccountType.technical_type_select not like 'tax'
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
 						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
@@ -498,7 +500,8 @@ AND (((AccountType.technical_type_select not like 'tax'
 						or (CompanyAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1))))
 			or  (Move.functional_origin_select = 4 
 				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
-						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1)))))) 
+						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1))))))
+	or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 ))
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
@@ -508,7 +511,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND  Move.ignore_in_accounting_ok = false
 AND (CompanyAccountingSituation.company = Company.id)
-AND (MoveLinePartnerAccountingSituation.company = Company.id)
+AND (MoveLinePartnerAccountingSituation.company = Company.id or MoveLinePartnerAccountingSituation.id IS NULL)
 order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -545,10 +548,22 @@ order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
                     <text-property name="heading">ReportDateEdition</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ref</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ref</text-property>
+                    <text-property name="heading">ref</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -593,7 +608,17 @@ order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
+                        <property name="name">logo_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
                         <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -637,19 +662,39 @@ order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name,AccountingReport.date_from,AccountingReport.date_to,
-AcYear.name as year_name, AccountingReport.publication_date_time as "ReportDateEdition",
-Currency.code as currency 
+            <xml-property name="queryText"><![CDATA[select 
+Company.name as company_name,
+AccountingReport.date_from,
+AccountingReport.date_to,
+AcYear.name as year_name, 
+AccountingReport.publication_date_time as "ReportDateEdition",
+MetaFile.file_path AS logo_path,
+Currency.code as currency, AccountingReport.ref
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
 left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)
+LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 where AccountingReport.id = ? 
 ]]></xml-property>
         </oda-data-set>
@@ -867,13 +912,13 @@ left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 where 
-(AccountingReport.currency = Move.company_currency) 
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move)) 
 AND MoveLine.tax_line is not null
-AND (((AccountType.technical_type_select not like 'tax' 
+AND ((((AccountType.technical_type_select not like 'tax'
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
 						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
@@ -887,6 +932,7 @@ AND (((AccountType.technical_type_select not like 'tax'
 			or  (Move.functional_origin_select = 4 
 				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
 						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1)))))) 
+		or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 ))
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -895,7 +941,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND  Move.ignore_in_accounting_ok = false
 AND (CompanyAccountingSituation.company = Company.id)
-AND (MoveLinePartnerAccountingSituation.company = Company.id)
+AND (MoveLinePartnerAccountingSituation.company = Company.id or MoveLinePartnerAccountingSituation.id IS NULL)
 group by Tax.id, TaxLine.value, FiscalPosition.code
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>
@@ -1352,11 +1398,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="dataType">date-time</property>
                             <property name="allowExport">true</property>
                         </structure>
+                        <structure>
+                            <property name="name">accountingReport.ref</property>
+                            <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
                     </list-property>
                     <column id="4257">
                         <property name="width">15%</property>
                     </column>
-                    <column id="3099"/>
+                    <column id="3099">
+                        <property name="width">3.8020833333333335in</property>
+                    </column>
+                    <column id="4921">
+                        <property name="width">2.2604166666666665in</property>
+                    </column>
                     <column id="4249">
                         <property name="width">15%</property>
                     </column>
@@ -1419,6 +1476,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                             </text>
+                        </cell>
+                        <cell id="4920">
+                            <data id="4918">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
                         </cell>
                         <cell id="4248">
                             <data id="4743">
@@ -2629,6 +2693,58 @@ balance
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">totalCredit</property>
+                    <text-property name="displayName">totalCredit</text-property>
+                    <property name="dataType">decimal</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["credit"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">totalCreditTaxAmount</property>
+                    <text-property name="displayName">totalCreditTaxAmount</text-property>
+                    <property name="dataType">decimal</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["credittaxamount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">totalDebit</property>
+                    <text-property name="displayName">totalDebit</text-property>
+                    <property name="dataType">decimal</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["debit"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">totalDebitTaxAmount</property>
+                    <text-property name="displayName">totalDebitTaxAmount</text-property>
+                    <property name="dataType">decimal</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["debittaxamount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
             <column id="4052">
@@ -3316,82 +3432,140 @@ balance
                     <cell id="4047">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                     </cell>
                     <cell id="4048">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                     </cell>
                     <cell id="4049">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                     </cell>
                     <cell id="4050">
+                        <property name="colSpan">1</property>
+                        <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                     </cell>
-                    <cell id="4051">
+                    <cell id="4916">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                    </cell>
-                    <cell id="4193">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4911">
+                            <property name="fontSize">10pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.total'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4059">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="4912">
+                            <property name="fontSize">9pt</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">totalCredit</property>
+                        </data>
                     </cell>
                     <cell id="4063">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="4913">
+                            <property name="fontSize">9pt</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">totalCreditTaxAmount</property>
+                        </data>
                     </cell>
                     <cell id="4067">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="4914">
+                            <property name="fontSize">9pt</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">totalDebit</property>
+                        </data>
                     </cell>
                     <cell id="4071">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="4915">
+                            <property name="fontSize">9pt</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">totalDebitTaxAmount</property>
+                        </data>
                     </cell>
                 </row>
             </footer>

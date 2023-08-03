@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+
+  <input file="business-project_role.csv" separator=";" type="com.axelor.auth.db.Role"
+    search="self.name = :name"/>
+
+  <input file="business-project_permission.csv" separator=";"
+    type="com.axelor.auth.db.Permission" search="self.name = :name"
+    call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+    <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
+    <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
+    <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
+    <bind to="canRemove" eval="can_remove == 'x' ? 'true' : 'false'"/>
+    <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
+  </input>
+
+  <input file="business-project_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
+    search="self.name = :name" update="true">
+    <bind column="roles" to="roles" search="self.name in :roles"
+      eval="roles.split('\\|') as List"/>
+  </input>
+
+</csv-inputs>
