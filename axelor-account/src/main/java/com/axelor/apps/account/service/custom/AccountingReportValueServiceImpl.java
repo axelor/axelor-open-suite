@@ -381,7 +381,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     if (CollectionUtils.isNotEmpty(groupColumnList) && groupByAccountColumn != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.REPORT_TYPE_MULTIPLE_GROUPS));
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_MULTIPLE_GROUPS),
+          accountingReport.getRef());
     }
 
     if (groupByAccountColumn != null) {
