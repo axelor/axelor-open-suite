@@ -129,6 +129,14 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       qtyToInvoiceMap = null;
     }
 
+    invoice = createInvoiceFromStockMove(stockMove, qtyToInvoiceMap);
+    return invoice;
+  }
+
+  @Override
+  public Invoice createInvoiceFromStockMove(
+      StockMove stockMove, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
+    Invoice invoice;
     if (stockMove.getSaleOrder() != null) {
       invoice = createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder(), qtyToInvoiceMap);
     } else if (stockMove.getPurchaseOrder() != null) {

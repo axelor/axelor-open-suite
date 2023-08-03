@@ -1,3 +1,30 @@
+## [7.1.1] (2023-07-20)
+
+#### Fixed
+
+* App builder: updated axelor-studio dependency from 1.2.0 to 1.2.1.
+* Account/Move/Invoice: fixed analytic check when required on move line, invoice line.
+* Manufacturing order: fixed JNPE error when merging manufacturing orders missing units.
+* Cost sheet: fixed wrong bill of materials used for cost calculation.
+* Move: set description required on move line when it is enabled in company account configuration.
+* Stock move line: fixed display issues with the button used to generate tracking numbers in stock move lines.
+* Custom accounting report: added a tab listing anomalies that are preventing generation.
+* Operation order: correctly filter work center field on work center group (when the feature is activated).
+* Payment condition: improved warning message when modifying an existing payment condition.
+* Stock move: fixed issue preventing the display of invoicing button.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves.
+* Invoice: fixed unwanted financial discount on advance payment invoice.
+* Bank payment printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Accounting report: fixed error on N4DS export when the partner address has no city filled.
+* Payment session/Bank order: fix of compensation in payment session process with bank order.
+* Sale order: fixed missing actions on loading sale order form views.
+* Fixed asset: improved the error message shown when an exception occurs during a mass validation.
+* Analytic distribution template: fixed error when creating a new analytic distribution template.
+* Product: fixed wrong filter on analytic on product accounting panel.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves without sale order.
+* Faker API: update documentation in help message.
+* Interco: fixed generated sale order/purchase order missing a fiscal position.
+
 ## [7.1.0] (2023-07-12)
 
 ### Features/Changes
@@ -224,4 +251,5 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.1]: https://github.com/axelor/axelor-open-suite/compare/v7.1.0...v7.1.1
 [7.1.0]: https://github.com/axelor/axelor-open-suite/compare/v7.0.5...v7.1.0

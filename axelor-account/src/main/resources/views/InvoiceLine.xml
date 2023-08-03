@@ -182,27 +182,27 @@
           requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
@@ -211,6 +211,10 @@
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="account.analyticDistributionRequiredOnInvoiceLines" hidden="true"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+        <field name="account.company" hidden="true"/>
+        <field name="account.company.accountConfig" hidden="true"/>
+        <field name="account.company.accountConfig.analyticDistributionTypeSelect"
+          hidden="true"/>
       </panel>
       <panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
@@ -447,6 +451,7 @@
     <action name="action-invoice-line-group-analytic-distribution-template-onchange"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
+    <action name="action-invoice-line-record-set-tax"/>
   </action-group>
 
   <action-group
@@ -490,6 +495,12 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
     <field name="cutOffEndDate"
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
+  </action-record>
+
+  <action-record name="action-invoice-line-record-set-tax"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="taxLine" expr="eval: account.defaultTax.activeTaxLine"
+      if="!taxLine &amp;&amp; account &amp;&amp; account.defaultTax"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -679,7 +690,7 @@
 
   <search-filters name="invoice-line-filters"
     model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
-    <field name="invoice.invoiceDate" title="Invoice Date"/>
+    <field name="invoice.invoiceDate" title="Invoice date"/>
     <field name="invoice.paymentDate" title="Payment date"/>
     <field name="invoice.company" title="Company"/>
     <field name="invoice.statusSelect" title="Status select"/>
