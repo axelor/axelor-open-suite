@@ -195,7 +195,7 @@ public class PaymentVoucherConfirmService {
         .anyMatch(
             it ->
                 it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_VALIDATED
-                    || it.getPfpValidateStatusSelect()
+                    && it.getPfpValidateStatusSelect()
                         != InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
