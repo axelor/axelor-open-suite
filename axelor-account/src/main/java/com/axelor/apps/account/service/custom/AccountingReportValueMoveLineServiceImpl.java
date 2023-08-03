@@ -781,14 +781,16 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
     List<Integer> statusList = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
 
-    if (accountingReport
-        .getMoveStatusSelect()
-        .contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
+    if (accountingReport.getMoveStatusSelect() != null
+        && accountingReport
+            .getMoveStatusSelect()
+            .contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
       statusList.add(MoveRepository.STATUS_DAYBOOK);
     }
-    if (accountingReport
-        .getMoveStatusSelect()
-        .contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
+    if (accountingReport.getMoveStatusSelect() != null
+        && accountingReport
+            .getMoveStatusSelect()
+            .contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
       statusList.add(MoveRepository.STATUS_SIMULATED);
     }
 
