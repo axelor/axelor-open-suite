@@ -537,18 +537,24 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected BigDecimal getTotal(MoveLine moveLine, BigDecimal amount, boolean isInvoicePayment) {
+    BigDecimal total;
     BigDecimal moveLineAmount = moveLine.getCredit().add(moveLine.getDebit());
+    BigDecimal rate = moveLine.getCurrencyRate();
     BigDecimal invoiceAmount =
         moveLine.getAmountPaid().add(moveLineAmount.subtract(moveLine.getAmountPaid()));
     BigDecimal computedAmount =
-        moveLineAmount
-            .divide(moveLine.getCurrencyRate(), 10, RoundingMode.HALF_UP)
-            .multiply(moveLine.getCurrencyRate());
+        moveLineAmount.divide(rate, 10, RoundingMode.HALF_UP).multiply(rate);
 
     // Recompute currency rate to avoid rounding issue
-    return computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
-        .multiply(moveLine.getCurrencyAmount().abs())
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    total = amount.divide(rate, 10, RoundingMode.HALF_UP);
+    if (total.stripTrailingZeros().scale() > AppBaseService.DEFAULT_NB_DECIMAL_DIGITS) {
+      total =
+          computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
+              .multiply(moveLine.getCurrencyAmount().abs())
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    }
+
+    return total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computePaidRatio(
@@ -575,7 +581,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       } else {
         percentage = invoiceAmount.divide(computedAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
       }
-      ratioPaid = amountToPay.divide(invoiceAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
+      ratioPaid = amountToPay.divide(invoiceAmount, 10, RoundingMode.HALF_UP);
     }
 
     return ratioPaid.multiply(percentage);
