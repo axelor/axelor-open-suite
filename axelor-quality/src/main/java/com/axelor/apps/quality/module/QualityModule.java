@@ -25,6 +25,8 @@ import com.axelor.apps.quality.db.repo.QualityControlManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityImprovementManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
+import com.axelor.apps.quality.service.QIIdentificationService;
+import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.QualityControlServiceImpl;
 import com.axelor.apps.quality.service.app.AppQualityService;
@@ -39,5 +41,6 @@ public class QualityModule extends AxelorModule {
     bind(QualityControlRepository.class).to(QualityControlManagementRepository.class);
     bind(AppQualityService.class).to(AppQualityServiceImpl.class);
     bind(QualityImprovementRepository.class).to(QualityImprovementManagementRepository.class);
+    bind(QIIdentificationService.class).to(QIIdentificationServiceImpl.class);
   }
 }
