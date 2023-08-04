@@ -132,6 +132,8 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
+import com.axelor.apps.base.service.ScaleService;
+import com.axelor.apps.base.service.ScaleServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -346,5 +348,6 @@ public class BaseModule extends AxelorModule {
     bind(DayPlanningService.class).to(DayPlanningServiceImpl.class);
     bind(AnonymizerLineService.class).to(AnonymizerLineServiceImpl.class);
     bind(DMSService.class).to(DMSServiceImpl.class);
+    bind(ScaleService.class).to(ScaleServiceImpl.class);
   }
 }
