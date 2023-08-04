@@ -128,10 +128,14 @@ import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductCompanyServiceImpl;
+import com.axelor.apps.base.service.ProductConversionService;
+import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
+import com.axelor.apps.base.service.ProductUpdateService;
+import com.axelor.apps.base.service.ProductUpdateServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
@@ -341,5 +345,7 @@ public class BaseModule extends AxelorModule {
     bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
+    bind(ProductUpdateService.class).to(ProductUpdateServiceImpl.class);
+    bind(ProductConversionService.class).to(ProductConversionServiceImpl.class);
   }
 }
