@@ -146,7 +146,8 @@ public class ProjectTaskController {
     response.setData(List.of(data));
   }
 
-  public void generatePurchaseOrder(ActionRequest request, ActionResponse response) {
+  public void generatePurchaseOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     ProjectTask projectTask = null;
     if (request.getContext().get("_projectTaskId") != null) {
       projectTask =
@@ -171,21 +172,17 @@ public class ProjectTaskController {
     }
     Map<String, Object> view = null;
 
-    try {
-      if (saleOrderLine != null) {
-        SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-        List<SaleOrderLine> saleOrderLines = List.of(saleOrderLine);
-        view =
-            Beans.get(PurchaseOrderFromSaleOrderLinesService.class)
-                .generatePurchaseOrdersFromSOLines(
-                    saleOrder, saleOrderLines, supplierPartner, saleOrderLinesIdStr);
-      } else {
-        view =
-            Beans.get(PurchaseOrderProjectService.class)
-                .generateEmptyPurchaseOrderFromProjectTask(projectTask, supplierPartner);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (saleOrderLine != null) {
+      SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+      List<SaleOrderLine> saleOrderLines = List.of(saleOrderLine);
+      view =
+          Beans.get(PurchaseOrderFromSaleOrderLinesService.class)
+              .generatePurchaseOrdersFromSOLines(
+                  saleOrder, saleOrderLines, supplierPartner, saleOrderLinesIdStr);
+    } else {
+      view =
+          Beans.get(PurchaseOrderProjectService.class)
+              .generateEmptyPurchaseOrderFromProjectTask(projectTask, supplierPartner);
     }
 
     ((Map) view.get("context")).put("_projectTaskId", projectTask.getId());

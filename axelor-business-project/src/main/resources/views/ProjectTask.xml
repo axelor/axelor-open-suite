@@ -322,7 +322,6 @@
       method="generatePurchaseOrder"/>
   </action-method>
 
-
   <action-attrs name="action-project-task-attrs-scale-and-precision">
     <attribute name="scale" for="priceDiscounted"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>

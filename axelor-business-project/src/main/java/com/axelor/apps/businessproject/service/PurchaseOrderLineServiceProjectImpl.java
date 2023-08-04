@@ -60,7 +60,11 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
     if (purchaseOrderLineIds != null) {
 
       List<PurchaseOrderLine> purchaseOrderLineList =
-          purchaseOrderLineRepo.all().filter("self.id in ?1", purchaseOrderLineIds).fetch();
+          purchaseOrderLineRepo
+              .all()
+              .filter("self.id in :purchaseOrderLineIds")
+              .bind("purchaseOrderLineIds", purchaseOrderLineIds)
+              .fetch();
 
       for (PurchaseOrderLine line : purchaseOrderLineList) {
         line.setProject(project);
@@ -76,7 +80,11 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
     if (purchaseOrderLineIds != null) {
 
       List<PurchaseOrderLine> purchaseOrderLineList =
-          purchaseOrderLineRepo.all().filter("self.id in ?1", purchaseOrderLineIds).fetch();
+          purchaseOrderLineRepo
+              .all()
+              .filter("self.id in :purchaseOrderLineIds")
+              .bind("purchaseOrderLineIds", purchaseOrderLineIds)
+              .fetch();
 
       for (PurchaseOrderLine line : purchaseOrderLineList) {
         line.setProjectTask(projectTask);

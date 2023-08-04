@@ -38,7 +38,7 @@ public class PurchaseOrderServiceProjectImpl implements PurchaseOrderProjectServ
 
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected PurchaseOrderLineProjectService purchaseOrderLineProjectService;
-  PurchaseOrderFromSaleOrderLinesService purchaseOrderFromSaleOrderLinesService;
+  protected PurchaseOrderFromSaleOrderLinesService purchaseOrderFromSaleOrderLinesService;
 
   protected PurchaseOrderService purchaseOrderService;
 
@@ -75,22 +75,21 @@ public class PurchaseOrderServiceProjectImpl implements PurchaseOrderProjectServ
       ProjectTask projectTask, Partner supplierPartner) throws AxelorException {
     if (supplierPartner == null) {
       return purchaseOrderFromSaleOrderLinesService.selectSupplierPartner(null, null, null);
-    } else {
-      PurchaseOrder purchaseOrder =
-          purchaseOrderRepository.save(
-              purchaseOrderService.createPurchaseOrder(
-                  AuthUtils.getUser(),
-                  projectTask.getProject().getCompany(),
-                  null,
-                  supplierPartner.getCurrency(),
-                  null,
-                  null,
-                  null,
-                  null,
-                  null,
-                  supplierPartner,
-                  null));
-      return purchaseOrderFromSaleOrderLinesService.showPurchaseOrderForm(purchaseOrder);
     }
+    PurchaseOrder purchaseOrder =
+        purchaseOrderRepository.save(
+            purchaseOrderService.createPurchaseOrder(
+                AuthUtils.getUser(),
+                projectTask.getProject().getCompany(),
+                null,
+                supplierPartner.getCurrency(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                supplierPartner,
+                null));
+    return purchaseOrderFromSaleOrderLinesService.showPurchaseOrderForm(purchaseOrder);
   }
 }
