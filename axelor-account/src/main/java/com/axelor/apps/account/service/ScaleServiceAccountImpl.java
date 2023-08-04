@@ -6,10 +6,12 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.service.ScaleServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleServiceAccount {
 
   private static final int DEFAULT_SCALE = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
+  private static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
 
   @Override
   public BigDecimal getScaledValue(BigDecimal value) {
@@ -23,17 +25,27 @@ public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleSe
 
   @Override
   public BigDecimal getScaledValue(Object object, BigDecimal amount, boolean isCompanyAmount) {
+    return super.getScaledValue(amount, this.getScale(object, isCompanyAmount));
+  }
+
+  protected int getScale(Object object, boolean isCompanyAmount) {
     int scale = DEFAULT_SCALE;
 
-    if (object.getClass().equals(Move.class)) {
+    if (object.getClass().getSuperclass().equals(Move.class)) {
       scale = this.getMoveScale((Move) object, isCompanyAmount);
-    } else if (object.getClass().equals(MoveLine.class)) {
+    } else if (object.getClass().getSuperclass().equals(MoveLine.class)) {
       scale = this.getMoveLineScale((MoveLine) object, isCompanyAmount);
-    } else if (object.getClass().equals(Invoice.class)) {
+    } else if (object.getClass().getSuperclass().equals(Invoice.class)) {
       scale = this.getInvoiceScale((Invoice) object, isCompanyAmount);
     }
 
-    return super.getScaledValue(amount, scale);
+    return scale;
+  }
+
+  @Override
+  public BigDecimal getDivideScaledValue(
+      Object object, BigDecimal amount, BigDecimal divisor, boolean isCompanyAmount) {
+    return amount.divide(divisor, this.getScale(object, isCompanyAmount), DEFAULT_ROUNDING_MODE);
   }
 
   // Get scale from invoice

@@ -38,6 +38,7 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
@@ -92,6 +93,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected TaxService taxService;
   protected AppBaseService appBaseService;
   protected AnalyticLineService analyticLineService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -110,7 +112,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AppBaseService appBaseService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      ScaleServiceAccount scaleServiceAccount) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -127,6 +130,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.taxService = taxService;
     this.appBaseService = appBaseService;
     this.analyticLineService = analyticLineService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   /**
@@ -735,14 +739,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         }
       }
 
-      moveLine.setDebit(
-          moveLine
-              .getDebit()
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
-      moveLine.setCredit(
-          moveLine
-              .getCredit()
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      moveLine.setDebit(scaleServiceAccount.getScaledValue(move, moveLine.getDebit(), false));
+      moveLine.setCredit(scaleServiceAccount.getScaledValue(move, moveLine.getCredit(), false));
 
       moveLines.add(moveLine);
     }
@@ -771,7 +769,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     TaxLine taxLineBeforeReverse = null;
     Account newAccountRC = null;
     String newSourceTaxLineRCKey = null;
-    int numberOfDecimals = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
 
     FiscalPosition fiscalPosition = move.getFiscalPosition();
 
@@ -871,18 +868,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_RECEIVABLE);
     }
 
-    if (company.getCurrency() != null) {
-      numberOfDecimals = company.getCurrency().getNumberOfDecimals();
-    }
-
     BigDecimal newMoveLineDebit =
-        debit
-            .multiply(taxLineValue)
-            .divide(BigDecimal.valueOf(100), numberOfDecimals, RoundingMode.HALF_UP);
+        scaleServiceAccount.getDivideScaledValue(
+            move, debit.multiply(taxLineValue), BigDecimal.valueOf(100), false);
     BigDecimal newMoveLineCredit =
-        credit
-            .multiply(taxLineValue)
-            .divide(BigDecimal.valueOf(100), numberOfDecimals, RoundingMode.HALF_UP);
+        scaleServiceAccount.getDivideScaledValue(
+            move, credit.multiply(taxLineValue), BigDecimal.valueOf(100), false);
+
     this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());

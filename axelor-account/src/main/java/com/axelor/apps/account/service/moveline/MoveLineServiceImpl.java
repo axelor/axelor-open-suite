@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -84,6 +85,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public MoveLineServiceImpl(
@@ -95,7 +97,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
-      AccountingCutOffService cutOffService) {
+      AccountingCutOffService cutOffService,
+      ScaleServiceAccount scaleServiceAccount) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -105,6 +108,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   @Override
@@ -443,10 +447,16 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
-          amount.multiply(
-              financialDiscount
-                  .getDiscountRate()
-                  .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+          scaleServiceAccount.getScaledValue(
+              moveLine,
+              amount.multiply(
+                  financialDiscount
+                      .getDiscountRate()
+                      .divide(
+                          BigDecimal.valueOf(100),
+                          AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
+                          RoundingMode.HALF_UP)),
+              true));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
     } else {

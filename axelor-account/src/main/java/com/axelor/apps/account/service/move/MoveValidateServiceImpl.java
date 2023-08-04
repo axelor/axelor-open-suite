@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -66,7 +67,6 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,6 +101,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveControlService moveControlService;
   protected MoveComputeService moveComputeService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -120,7 +121,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveLineTaxService moveLineTaxService,
       PeriodServiceAccount periodServiceAccount,
       MoveControlService moveControlService,
-      MoveComputeService moveComputeService) {
+      MoveComputeService moveComputeService,
+      ScaleServiceAccount scaleServiceAccount) {
 
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -139,6 +141,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.periodServiceAccount = periodServiceAccount;
     this.moveControlService = moveControlService;
     this.moveComputeService = moveComputeService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   /**
@@ -874,12 +877,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal lineTotal = moveLine.getCredit().add(moveLine.getDebit());
 
-    return lineTotal
-        .multiply(moveLine.getTaxLine().getValue())
-        .divide(
-            BigDecimal.valueOf(100),
-            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-            RoundingMode.HALF_UP);
+    return scaleServiceAccount.getDivideScaledValue(
+        moveLine,
+        lineTotal.multiply(moveLine.getTaxLine().getValue()),
+        BigDecimal.valueOf(100),
+        true);
   }
 
   protected boolean isReverseCharge(Move move) {

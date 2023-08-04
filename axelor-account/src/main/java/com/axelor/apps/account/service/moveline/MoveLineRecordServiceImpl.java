@@ -23,17 +23,16 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 
 public class MoveLineRecordServiceImpl implements MoveLineRecordService {
@@ -41,17 +40,20 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected FiscalPositionService fiscalPositionService;
   protected CurrencyService currencyService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public MoveLineRecordServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       FiscalPositionService fiscalPositionService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      ScaleServiceAccount scaleServiceAccount) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
     this.currencyService = currencyService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   @Override
@@ -59,7 +61,6 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     Currency currency = move.getCurrency();
     Currency companyCurrency = move.getCompanyCurrency();
     BigDecimal currencyRate = BigDecimal.ONE;
-    int numberOfDecimals = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
 
     if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
       if (move.getMoveLineList().size() == 0) {
@@ -74,14 +75,10 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
     BigDecimal total = moveLine.getCredit().add(moveLine.getDebit());
 
-    if (currency != null) {
-      numberOfDecimals = currency.getNumberOfDecimals();
-    }
-
     if (total.signum() != 0) {
       boolean isCredit = moveLine.getCredit().signum() > 0;
       BigDecimal currencyAmount =
-          total.divide(moveLine.getCurrencyRate(), numberOfDecimals, RoundingMode.HALF_UP);
+          scaleServiceAccount.getDivideScaledValue(move, total, moveLine.getCurrencyRate(), false);
       if (isCredit) {
         currencyAmount = currencyAmount.negate();
       }

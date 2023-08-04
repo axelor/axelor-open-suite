@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -68,6 +69,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
       PeriodServiceAccount periodServiceAccount,
       MoveControlService moveControlService,
       MoveComputeService moveComputeService,
+      ScaleServiceAccount scaleServiceAccount,
       ExpenseRepository expenseRepository) {
     super(
         moveLineControlService,
@@ -86,7 +88,8 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
         moveLineTaxService,
         periodServiceAccount,
         moveControlService,
-        moveComputeService);
+        moveComputeService,
+        scaleServiceAccount);
     this.expenseRepository = expenseRepository;
   }
 
