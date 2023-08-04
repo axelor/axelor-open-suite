@@ -98,7 +98,6 @@ public class BatchUpdateTaskService extends AbstractBatch {
       offset++;
       try {
         projectTaskBusinessProjectService.setProjectTaskValues(projectTaskRepo.find(projectTaskId));
-        incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(
@@ -143,7 +142,6 @@ public class BatchUpdateTaskService extends AbstractBatch {
           Map<String, Object> map = new HashMap<>();
           map.put("id", projectTask.getId());
           updatedTaskList.add(map);
-          incrementDone();
         }
       } catch (Exception e) {
         incrementAnomaly();
@@ -186,7 +184,6 @@ public class BatchUpdateTaskService extends AbstractBatch {
           Map<String, Object> map = new HashMap<>();
           map.put("id", timesheetLine.getId());
           updatedTimesheetLineList.add(map);
-          incrementDone();
         }
       } catch (Exception e) {
         incrementAnomaly();
