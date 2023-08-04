@@ -169,7 +169,8 @@
             <field name="forecastMargin" hidden="true"/>
             <field name="forecastMarkup" hidden="true"/>
           </panel>
-          <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
+          <panel name="realPanel" title="ProjectTask.Real" colSpan="12" hidden="true"
+            showIf="!parentTask">
             <panel-dashlet action="action-project-task-view-real-turnover-custom"
               colSpan="3" showIf="timeUnit"/>
             <panel-dashlet action="action-project-task-view-real-costs-custom"
@@ -182,6 +183,11 @@
             <field name="realCosts" hidden="true"/>
             <field name="realMargin" hidden="true"/>
             <field name="realMarkup" hidden="true"/>
+          </panel>
+          <panel name="realCostPanel" title="" colSpan="12" hidden="true" showIf="parentTask">
+            <panel-dashlet action="action-project-task-view-real-costs-custom"
+              title="Real costs" colSpan="3"/>
+            <field name="realCosts" hidden="true"/>
           </panel>
           <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
             <panel-dashlet action="action-project-task-view-landing-costs-custom"

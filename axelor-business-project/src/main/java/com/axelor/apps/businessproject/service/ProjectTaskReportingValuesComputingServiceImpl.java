@@ -113,19 +113,12 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @throws AxelorException
    */
   protected void computeProjectTaskTimes(ProjectTask projectTask) throws AxelorException {
-    BigDecimal plannedTime;
-    BigDecimal spentTime = BigDecimal.ZERO;
+    BigDecimal spentTime = getTaskSpentTime(projectTask);
 
-    List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
-    Unit timeUnit = projectTask.getTimeUnit();
-    plannedTime =
+    BigDecimal plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
             .map(ProjectPlanningTime::getPlannedTime)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    for (TimesheetLine timeSheetLine : timesheetLines) {
-      spentTime = spentTime.add(convertTimesheetLineDurationToTimeUnit(timeSheetLine, timeUnit));
-    }
 
     // compute task children
     List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
@@ -138,6 +131,24 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     projectTask.setPlannedTime(plannedTime);
     projectTask.setSpentTime(spentTime);
+  }
+
+  /**
+   * get specific task timeSpent (without children)
+   *
+   * @param projectTask
+   * @return
+   */
+  protected BigDecimal getTaskSpentTime(ProjectTask projectTask) {
+    List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
+    Unit timeUnit = projectTask.getTimeUnit();
+    BigDecimal spentTime = BigDecimal.ZERO;
+
+    for (TimesheetLine timeSheetLine : timesheetLines) {
+      spentTime = spentTime.add(convertTimesheetLineDurationToTimeUnit(timeSheetLine, timeUnit));
+    }
+
+    return spentTime;
   }
 
   /**
@@ -185,6 +196,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
               .multiply(projectTask.getTurnover())
               .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
       projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
+      BigDecimal realCosts = computeRealCosts(projectTask, project);
+      projectTask.setRealCosts(realCosts);
       BigDecimal realMarkup = BigDecimal.ZERO;
       if (projectTask.getRealCosts().signum() > 0) {
         realMarkup =
@@ -306,6 +319,24 @@ public class ProjectTaskReportingValuesComputingServiceImpl
                   .divide(projectTask.getLandingCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
     }
   }
+
+  protected BigDecimal computeRealCosts(ProjectTask projectTask, Project project)
+      throws AxelorException {
+    BigDecimal unitCost = computeUnitCost(projectTask, project);
+    projectTask.setUnitCost(unitCost);
+
+    BigDecimal timeSpent = getTaskSpentTime(projectTask);
+
+    BigDecimal realCost = timeSpent.multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP);
+
+    // add subtask real cost
+    for (ProjectTask task : projectTask.getProjectTaskList()) {
+      realCost = realCost.add(computeRealCosts(task, project));
+    }
+    projectTask.setRealCosts(realCost);
+    return realCost;
+  }
+
   /**
    * compute unit cost depending on Project spentTimeCostComputationMethod
    *
