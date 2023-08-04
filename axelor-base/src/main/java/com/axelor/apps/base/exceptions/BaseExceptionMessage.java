@@ -518,4 +518,7 @@ public final class BaseExceptionMessage {
       "The start date cannot be later than the end date." /*)*/;
 
   public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
+
+  public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
+      "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
 }

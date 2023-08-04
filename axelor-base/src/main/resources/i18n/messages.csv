@@ -1856,6 +1856,7 @@
 "The previous period is not closed or temporarily closed while it should be.",,,
 "The previous period is not closed.",,,
 "The price list %s will still be active when the price list %s will become active.",,,
+"The product %s is missing stock unit or purchase unit to make the conversion of last purchase price.",,,
 "The product pulled-off date must be greater than the launch date.",,,
 "The same bank details are already active.",,,
 "The scheduler service is enabled.",,,
