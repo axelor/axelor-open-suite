@@ -1,0 +1,3 @@
+---
+title: "Product: When changing costTypeSelect to 'last purchase price', the cost price will now be correctly converted."
+type: fix
