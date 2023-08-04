@@ -62,12 +62,18 @@ public class InvoiceTermController {
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
         BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
-        BigDecimal amount =
-            Beans.get(InvoiceTermService.class).getCustomizedAmount(invoiceTerm, total);
+
+        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+        BigDecimal amount = invoiceTermService.getCustomizedAmount(invoiceTerm, total);
+        invoiceTerm.setAmount(amount);
+        invoiceTerm.setAmountRemaining(amount);
+        invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
 
         if (amount.signum() > 0) {
-          response.setValue("amount", amount);
-          response.setValue("amountRemaining", amount);
+          response.setValue("amount", invoiceTerm.getAmount());
+          response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
+          response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
+          response.setValue("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
         }
       }
     } catch (Exception e) {
@@ -91,8 +97,14 @@ public class InvoiceTermController {
         BigDecimal percentage =
             invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
 
+        invoiceTerm.setPercentage(percentage);
+        invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+        invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
+
         response.setValue("percentage", percentage);
-        response.setValue("amountRemaining", invoiceTerm.getAmount());
+        response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
+        response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
+        response.setValue("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
         response.setValue(
             "isCustomized",
             invoiceTerm.getPaymentConditionLine() == null

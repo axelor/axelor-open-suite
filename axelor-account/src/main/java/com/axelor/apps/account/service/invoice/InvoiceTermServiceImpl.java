@@ -115,10 +115,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       totalAmount = totalAmount.add(invoiceTerm.getAmount());
     }
-    if (invoice.getInTaxTotal().compareTo(totalAmount) != 0) {
-      return false;
-    }
-    return true;
+    return invoice.getInTaxTotal().compareTo(totalAmount) == 0;
   }
 
   @Override
@@ -138,7 +135,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 invoiceTerm.getAmount().divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP));
       }
     }
-    return sum.multiply(BigDecimal.valueOf(100));
+    return sum.multiply(BigDecimal.valueOf(100))
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -199,7 +197,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
-        this.computeCompanyAmounts(invoiceTerm);
+        this.computeCompanyAmounts(invoiceTerm, false);
         this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       } else {
         total = total.add(invoiceTerm.getAmount());
@@ -247,22 +245,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return invoiceTerm;
   }
 
-  protected void computeCompanyAmounts(InvoiceTerm invoiceTerm) {
+  public void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate) {
     BigDecimal invoiceTermAmount = invoiceTerm.getAmount();
     BigDecimal invoiceTermAmountRemaining = invoiceTerm.getAmountRemaining();
     BigDecimal companyAmount = invoiceTermAmount;
     BigDecimal companyAmountRemaining = invoiceTermAmountRemaining;
     MoveLine moveLine = invoiceTerm.getMoveLine();
     Invoice invoice = invoiceTerm.getInvoice();
+    BigDecimal ratioPaid = BigDecimal.ONE;
 
     if (invoiceTermAmount.signum() != 0 && this.isMultiCurrency(invoiceTerm)) {
       BigDecimal companyTotal =
           invoice != null
               ? invoice.getCompanyInTaxTotal()
               : moveLine.getDebit().max(moveLine.getCredit());
-      BigDecimal ratioPaid =
-          invoiceTermAmountRemaining.divide(invoiceTermAmount, 10, RoundingMode.HALF_UP);
 
+      if (!isUpdate) {
+        ratioPaid = invoiceTermAmountRemaining.divide(invoiceTermAmount, 10, RoundingMode.HALF_UP);
+      }
       companyAmount =
           companyTotal
               .multiply(invoiceTerm.getPercentage())
@@ -370,7 +370,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-    this.computeCompanyAmounts(invoiceTerm);
+    this.computeCompanyAmounts(invoiceTerm, false);
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
@@ -417,7 +417,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-    this.computeCompanyAmounts(invoiceTerm);
+    this.computeCompanyAmounts(invoiceTerm, false);
 
     if (move != null
         && move.getPaymentCondition() != null
@@ -948,7 +948,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     this.setPfpStatus(newInvoiceTerm);
-    this.computeCompanyAmounts(newInvoiceTerm);
+    this.computeCompanyAmounts(newInvoiceTerm, false);
 
     return newInvoiceTerm;
   }
@@ -1374,11 +1374,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal getTotalInvoiceTermsAmount(
       MoveLine moveLine, Account holdbackAccount, boolean holdback) {
     Move move = moveLine.getMove();
-    BigDecimal total = moveLine.getCurrencyAmount();
+    BigDecimal total = moveLine.getCurrencyAmount().abs();
 
     if (move != null && move.getMoveLineList() != null) {
       for (MoveLine moveLineIt : move.getMoveLineList()) {
-        if (!moveLineIt.equals(moveLine)
+        if (!moveLineIt.getCounter().equals(moveLine.getCounter())
             && moveLineIt.getCredit().signum() == moveLine.getCredit().signum()
             && moveLineIt.getAccount() != null
             && moveLineIt.getAccount().getUseForPartnerBalance()

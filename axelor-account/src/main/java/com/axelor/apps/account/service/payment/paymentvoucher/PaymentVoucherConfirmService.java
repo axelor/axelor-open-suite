@@ -473,15 +473,17 @@ public class PaymentVoucherConfirmService {
       MoveLine moveLine = null;
 
       BigDecimal currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
-
       // cancelling the moveLine (excess payment) by creating the balance of all the
       // payments
       // on the same account as the moveLine (excess payment)
       // in the else case we create a classical balance on the bank account of the
       // payment mode
       BigDecimal companyPaidAmount =
-          currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-              paymentVoucher.getPaidAmount(), currencyRate);
+          move.getMoveLineList().stream()
+              .map(ml -> ml.getCredit().add(ml.getDebit()))
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO)
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =
@@ -806,11 +808,12 @@ public class PaymentVoucherConfirmService {
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
 
     InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
-    BigDecimal ratioPaid = amountToPay.divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+    BigDecimal ratio =
+        invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
     BigDecimal companyAmountToPay =
-        invoiceTerm
-            .getCompanyAmount()
-            .multiply(ratioPaid)
+        payVoucherElementToPay
+            .getAmountToPayCurrency()
+            .multiply(ratio)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     BigDecimal currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
 
