@@ -232,7 +232,6 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND self.dtype
       = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="false"/>
     <context name="_productTypeSelect" expr="storable"/>
   </action-view>
@@ -250,7 +249,6 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND self.dtype
       = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="false"/>
     <context name="_productTypeSelect" expr="service"/>
   </action-view>
@@ -267,7 +265,6 @@
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = :_isModel AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="true"/>
   </action-view>
 
