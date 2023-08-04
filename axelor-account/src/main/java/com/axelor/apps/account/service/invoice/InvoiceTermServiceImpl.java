@@ -947,7 +947,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       moveLine.addInvoiceTermListItem(newInvoiceTerm);
     }
 
-    this.setPfpStatus(newInvoiceTerm, move);
+    this.setPfpStatus(newInvoiceTerm);
     this.computeCompanyAmounts(newInvoiceTerm, false);
 
     return newInvoiceTerm;
