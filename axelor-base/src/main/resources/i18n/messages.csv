@@ -1972,7 +1972,7 @@
 "The groovy condition result must be a boolean",,,
 "The line cannot be imported (import : %s)",,,
 "The method '%s' doesn't exist in the Faker API.",,,
-"The previous period is not closed or temporarily closed.",,,
+"The previous period is not closed or temporarily closed while it should be.",,,
 "The previous period is not closed.",,,
 "The price list %s will still be active when the price list %s will become active.",,,
 "The product pulled-off date must be greater than the launch date.",,,

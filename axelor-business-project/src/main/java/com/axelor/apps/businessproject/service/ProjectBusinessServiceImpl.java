@@ -296,7 +296,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .collect(Collectors.toList());
     for (ProjectTask projectTask : projectTaskList) {
       projectTaskReportingValuesComputingService.computeProjectTaskTotals(projectTask);
-      projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
     }
 
     computeProjectReportingValues(project, projectTaskList);
@@ -328,6 +327,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     for (ProjectTask projectTask : projectTaskList) {
       Unit projectTaskUnit = projectTask.getTimeUnit();
+      if (!projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
+        continue;
+      }
       totalSoldTime =
           totalSoldTime
               .add(
@@ -402,6 +404,20 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
               .divide(initialCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
     }
 
+    // forecast
+    BigDecimal forecastCosts =
+        projectTaskList.stream()
+            .map(ProjectTask::getForecastCosts)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    project.setForecastCosts(forecastCosts);
+
+    project.setForecastMargin(project.getTurnover().subtract(forecastCosts));
+    project.setForecastMarkup(
+        project
+            .getForecastMargin()
+            .multiply(new BigDecimal("100"))
+            .divide(forecastCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+
     BigDecimal realTurnover =
         projectTaskList.stream()
             .map(ProjectTask::getRealTurnover)
@@ -423,20 +439,20 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
               .divide(realCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
     }
 
-    BigDecimal forecastCosts =
+    BigDecimal landingCosts =
         projectTaskList.stream()
-            .map(ProjectTask::getForecastCosts)
+            .map(ProjectTask::getLandingCosts)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    project.setForecastCosts(forecastCosts);
-    BigDecimal forecastMargin = initialTurnover.subtract(forecastCosts);
+    project.setLandingCosts(landingCosts);
+    BigDecimal landingMargin = initialTurnover.subtract(landingCosts);
 
-    project.setForecastMargin(forecastMargin);
+    project.setLandingMargin(landingMargin);
 
-    if (forecastCosts.signum() != 0) {
-      project.setForecastMarkup(
-          forecastMargin
+    if (landingCosts.signum() != 0) {
+      project.setLandingMarkup(
+          landingMargin
               .multiply(new BigDecimal("100"))
-              .divide(forecastCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+              .divide(landingCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
     }
   }
 
@@ -477,6 +493,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setForecastCosts(project.getForecastCosts());
     projectHistoryLine.setForecastMargin(project.getForecastMargin());
     projectHistoryLine.setForecastMarkup(project.getForecastMarkup());
+    projectHistoryLine.setLandingCosts(project.getLandingCosts());
+    projectHistoryLine.setLandingMargin(project.getLandingMargin());
+    projectHistoryLine.setLandingMarkup(project.getLandingMarkup());
 
     project.addProjectHistoryLineListItem(projectHistoryLine);
 
@@ -523,6 +542,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal forecastCosts = project.getForecastCosts();
     BigDecimal forecastMargin = project.getForecastMargin();
     BigDecimal forecastMarkup = project.getForecastMarkup();
+    BigDecimal landingCosts = project.getLandingCosts();
+    BigDecimal landingMargin = project.getLandingMargin();
+    BigDecimal landingMarkup = project.getLandingMarkup();
 
     data.put("turnover", turnover);
     data.put("initialCosts", initialCosts);
@@ -535,6 +557,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     data.put("forecastCosts", forecastCosts);
     data.put("forecastMargin", forecastMargin);
     data.put("forecastMarkup", forecastMarkup);
+    data.put("landingCosts", landingCosts);
+    data.put("landingMargin", landingMargin);
+    data.put("landingMarkup", landingMarkup);
 
     List<ProjectHistoryLine> projectHistoryLineList = project.getProjectHistoryLineList();
 
@@ -581,6 +606,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     data.put(
         "forecastMarkupProgress",
         getProgressIcon(projectHistoryLine.getForecastMarkup().compareTo(forecastMarkup)));
+    data.put(
+        "landingCostsProgress",
+        getProgressIcon(projectHistoryLine.getLandingCosts().compareTo(landingCosts)));
+    data.put(
+        "landingMarginProgress",
+        getProgressIcon(projectHistoryLine.getLandingMargin().compareTo(landingMargin)));
+    data.put(
+        "landingMarkupProgress",
+        getProgressIcon(projectHistoryLine.getLandingMarkup().compareTo(landingMarkup)));
 
     return data;
   }
