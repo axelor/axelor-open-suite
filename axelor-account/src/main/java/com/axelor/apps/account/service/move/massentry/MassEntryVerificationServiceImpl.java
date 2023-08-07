@@ -301,6 +301,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
                       ObjectUtils.notEmpty(ml.getMoveLineMassEntryList())
                           && ml.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber()
                               != temporaryMoveNumber
+                          && ml.getOrigin() != null
+                          && move.getOrigin() != null
                           && ml.getOrigin().equals(move.getOrigin()))
               .map(Move::getReference)
               .collect(Collectors.joining(","));
