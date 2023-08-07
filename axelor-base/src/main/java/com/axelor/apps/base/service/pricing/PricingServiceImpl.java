@@ -36,10 +36,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,31 +61,39 @@ public class PricingServiceImpl implements PricingService {
 
   @Override
   public Optional<Pricing> getRandomPricing(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing linkedPricing) {
-    return getPricings(company, product, productCategory, modelName, linkedPricing).stream()
-        .findAny();
+          Company company,
+          Product product,
+          ProductCategory productCategory,
+          String modelName,
+          Pricing pricing) {
+    return getPricings(company, product, productCategory, modelName, null).stream().findAny();
   }
 
-  @Override
-  public Optional<Pricing> getRandomPricingWithLinkedPricing(
+    @Override
+  public Optional<Pricing> getRootPricingForNextPricings(
           Company company,
           Product product,
           ProductCategory productCategory,
           String modelName) {
-    Optional<Pricing> pricingWithLinkedPricing = getPricingsWithLinkedPricing(company, product, productCategory, modelName)
-            .stream()
-            .findAny();
+    List<Pricing> pricings = getAllPricings(company, product, productCategory, modelName);
 
-    if (pricingWithLinkedPricing.isEmpty()) {
-      pricingWithLinkedPricing = getRandomPricing(company, product, productCategory, modelName, null);
+    Set<Long> pricingsPointedTo = pricings.stream().map(Pricing::getLinkedPricing).filter(Objects::nonNull)
+            .map(Pricing::getId)
+            .collect(Collectors.toSet());
+
+    Optional<Pricing> rootPricing = Optional.empty();
+
+    //find the pricing that doesn't have any pricing pointing to it, that's the root
+    for (Pricing pricing : pricings) {
+      if (!pricingsPointedTo.contains(pricing.getId())) {
+        rootPricing = Optional.ofNullable(pricing);
+        break;
+      }
     }
 
-    return pricingWithLinkedPricing;
+    return rootPricing;
   }
+
 
   @Override
   public List<Pricing> getPricings(
@@ -94,7 +101,7 @@ public class PricingServiceImpl implements PricingService {
       Product product,
       ProductCategory productCategory,
       String modelName,
-      Pricing linkedPricing) {
+      Pricing pricing) {
     LOG.debug("Fetching pricings");
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
@@ -113,9 +120,9 @@ public class PricingServiceImpl implements PricingService {
       bindings.put("modelName", modelName);
     }
 
-    if (linkedPricing != null) {
+    if (pricing != null) {
       filter.append("AND self.linkedPricing = :linkedPricing ");
-      bindings.put("linkedPricing", linkedPricing);
+      bindings.put("linkedPricing", pricing);
     } else {
       filter.append("AND self.linkedPricing is NULL ");
     }
@@ -127,9 +134,8 @@ public class PricingServiceImpl implements PricingService {
     return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
   }
 
-
   @Override
-  public List<Pricing> getPricingsWithLinkedPricing(
+  public List<Pricing> getAllPricings(
           Company company,
           Product product,
           ProductCategory productCategory,
@@ -152,7 +158,6 @@ public class PricingServiceImpl implements PricingService {
       bindings.put("modelName", modelName);
     }
 
-    filter.append("AND self.linkedPricing is NOT NULL");
 
     filter.append("AND (self.archived = false OR self.archived is null) ");
 

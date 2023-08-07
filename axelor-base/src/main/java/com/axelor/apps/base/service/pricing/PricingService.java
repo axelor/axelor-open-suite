@@ -36,7 +36,7 @@ public interface PricingService {
    * @param product {@link Product}: can be null
    * @param productCategory {@link ProductCategory}: can be null
    * @param modelName {@link String}: can be null or empty
-   * @param linkedPricing {@link Pricing}: can be null
+   * @param pricing {@link Pricing}: can be null
    * @return a {@link Optional} of Pricing.
    */
   Optional<Pricing> getRandomPricing(
@@ -44,9 +44,10 @@ public interface PricingService {
       Product product,
       ProductCategory productCategory,
       String modelName,
-      Pricing linkedPricing);
+      Pricing pricing);
 
-  Optional<Pricing> getRandomPricingWithLinkedPricing(
+
+  Optional<Pricing> getRootPricingForNextPricings(
           Company company,
           Product product,
           ProductCategory productCategory,
@@ -61,7 +62,7 @@ public interface PricingService {
    * @param product {@link Product}: can be null
    * @param productCategory {@link ProductCategory}: can be null
    * @param modelName {@link String}: can be null or empty
-   * @param linkedPricing {@link Pricing}: can be null
+   * @param pricing {@link Pricing}: can be null
    * @return a {@link Optional} of Pricing.
    */
   List<Pricing> getPricings(
@@ -69,13 +70,14 @@ public interface PricingService {
       Product product,
       ProductCategory productCategory,
       String modelName,
-      Pricing linkedPricing);
+      Pricing pricing);
 
-  List<Pricing> getPricingsWithLinkedPricing(
+  List<Pricing> getAllPricings(
           Company company,
           Product product,
           ProductCategory productCategory,
           String modelName);
+
 
   public void historizePricing(Pricing pricing) throws AxelorException;
 

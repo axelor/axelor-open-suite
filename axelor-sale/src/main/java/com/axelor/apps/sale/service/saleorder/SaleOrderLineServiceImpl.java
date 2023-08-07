@@ -178,7 +178,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
               SaleOrderLine.class.getSimpleName(),
               null);
     }else if (AppSaleRepository.PRICING_COMPUTATION_ORDER_NEXT == appSaleService.getAppSale().getPricingComputingOrder()) {
-      return pricingService.getRandomPricingWithLinkedPricing(saleOrder.getCompany(), saleOrderLine.getProduct(),
+      return pricingService.getRootPricingForNextPricings(saleOrder.getCompany(), saleOrderLine.getProduct(),
               saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
               SaleOrderLine.class.getSimpleName());
     }

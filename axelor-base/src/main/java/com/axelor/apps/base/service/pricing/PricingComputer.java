@@ -132,10 +132,10 @@ public class PricingComputer extends AbstractObservablePricing {
     if (context == null || pricing == null || model == null || product == null) {
       throw new IllegalStateException("This instance has not been correctly initialized");
     }
-    if (pricing.getLinkedPricing() != null) {
-      throw new IllegalStateException(
-          "This method can only be called with root pricing (pricing with not previous pricing or next pricing)");
-    }
+//    if (pricing.getLinkedPricing() != null) {
+//      throw new IllegalStateException(
+//          "This method can only be called with root pricing (pricing with not previous pricing or next pricing)");
+//    }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
     notifyStarted();
     if (!applyPricing(this.pricing).isPresent()) {
@@ -146,7 +146,13 @@ public class PricingComputer extends AbstractObservablePricing {
     LOG.debug("Treating pricing childs of {}", this.pricing);
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
 
-      Optional<Pricing> optChildPricing = getNextPricing(currentPricing);
+      Optional<Pricing> optChildPricing = Optional.empty();
+
+      if (pricing.getLinkedPricing() == null) {
+        optChildPricing = getPreviousPricing(currentPricing);
+      } else {
+        optChildPricing = Optional.ofNullable(currentPricing.getLinkedPricing());
+      }
       if (optChildPricing.isPresent() && applyPricing(optChildPricing.get()).isPresent()) {
         currentPricing = optChildPricing.get();
       } else {
@@ -157,7 +163,7 @@ public class PricingComputer extends AbstractObservablePricing {
     notifyFinished();
   }
 
-  protected Optional<Pricing> getNextPricing(Pricing pricing) throws AxelorException {
+  protected Optional<Pricing> getPreviousPricing(Pricing pricing) throws AxelorException {
     List<Pricing> childPricings =
         pricingService.getPricings(
             this.pricing.getCompany(),
