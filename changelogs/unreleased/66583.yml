@@ -1,0 +1,3 @@
+---
+title: "Move : Fix currency amount of automatically generated reverse charge move line not being computed"
+type: fix
