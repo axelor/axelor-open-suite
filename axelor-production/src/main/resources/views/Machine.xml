@@ -42,7 +42,7 @@
       <field name="disposalDate"/>
       <field name="numberOfStations"/>
       <field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
-      <field name="weeklyPlanning" canNew="true"/>
+      <field name="weeklyPlanning" canNew="true" domain="self.typeSelect = 2"/>
       <field name="startingDuration" widget="duration" x-big="true" x-seconds="true"/>
       <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
       <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
