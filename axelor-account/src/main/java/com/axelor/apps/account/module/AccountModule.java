@@ -298,7 +298,6 @@ import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
-import com.axelor.apps.base.service.ScaleServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.message.service.TemplateMessageService;
@@ -687,8 +686,6 @@ public class AccountModule extends AxelorModule {
         .to(AccountingReportAnalyticConfigLineServiceImpl.class);
 
     bind(AnalyticAttrsService.class).to(AnalyticAttrsServiceImpl.class);
-
-    bind(ScaleServiceImpl.class).to(ScaleServiceAccountImpl.class);
 
     bind(ScaleServiceAccount.class).to(ScaleServiceAccountImpl.class);
   }

@@ -24,4 +24,9 @@ public class ScaleServiceImpl implements ScaleService {
 
     return value.setScale(scale, DEFAULT_ROUNDING_MODE);
   }
+
+  @Override
+  public int getScale() {
+    return DEFAULT_SCALE;
+  }
 }

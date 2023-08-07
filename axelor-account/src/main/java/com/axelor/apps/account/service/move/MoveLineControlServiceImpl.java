@@ -168,9 +168,12 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           invoiceAttached == null ? moveLine.getCurrencyAmount() : invoiceAttached.getInTaxTotal();
     }
 
-    total =
-        scaleServiceAccount.getScaledValue(
-            invoiceAttached == null ? moveLine : invoiceAttached, total, isCompanyAmount);
+    if (invoiceAttached == null) {
+      total = scaleServiceAccount.getScaledValue(moveLine, total, isCompanyAmount);
+    } else {
+      total = scaleServiceAccount.getScaledValue(invoiceAttached, total, isCompanyAmount);
+    }
+
     BigDecimal invoiceTermTotal =
         invoiceTermList.stream()
             .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())

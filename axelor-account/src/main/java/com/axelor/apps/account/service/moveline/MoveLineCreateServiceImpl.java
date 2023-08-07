@@ -868,12 +868,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_RECEIVABLE);
     }
 
+    int scale = scaleServiceAccount.getScale(move, false);
     BigDecimal newMoveLineDebit =
-        scaleServiceAccount.getDivideScaledValue(
-            move, debit.multiply(taxLineValue), BigDecimal.valueOf(100), false);
+        debit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
     BigDecimal newMoveLineCredit =
-        scaleServiceAccount.getDivideScaledValue(
-            move, credit.multiply(taxLineValue), BigDecimal.valueOf(100), false);
+        credit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
 
     this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 

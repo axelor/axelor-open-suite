@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 public class MoveLineRecordServiceImpl implements MoveLineRecordService {
@@ -78,7 +79,10 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     if (total.signum() != 0) {
       boolean isCredit = moveLine.getCredit().signum() > 0;
       BigDecimal currencyAmount =
-          scaleServiceAccount.getDivideScaledValue(move, total, moveLine.getCurrencyRate(), false);
+          total.divide(
+              moveLine.getCurrencyRate(),
+              scaleServiceAccount.getScale(move, false),
+              RoundingMode.HALF_UP);
       if (isCredit) {
         currencyAmount = currencyAmount.negate();
       }

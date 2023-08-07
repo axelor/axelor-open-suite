@@ -7,4 +7,6 @@ public interface ScaleService {
   BigDecimal getScaledValue(BigDecimal value);
 
   BigDecimal getScaledValue(BigDecimal value, int customizedScale);
+
+  int getScale();
 }

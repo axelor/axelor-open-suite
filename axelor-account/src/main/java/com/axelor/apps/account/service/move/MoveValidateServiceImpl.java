@@ -67,6 +67,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -877,11 +878,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal lineTotal = moveLine.getCredit().add(moveLine.getDebit());
 
-    return scaleServiceAccount.getDivideScaledValue(
-        moveLine,
-        lineTotal.multiply(moveLine.getTaxLine().getValue()),
-        BigDecimal.valueOf(100),
-        true);
+    return lineTotal
+        .multiply(moveLine.getTaxLine().getValue())
+        .divide(
+            BigDecimal.valueOf(100),
+            scaleServiceAccount.getScale(moveLine, true),
+            RoundingMode.HALF_UP);
   }
 
   protected boolean isReverseCharge(Move move) {
