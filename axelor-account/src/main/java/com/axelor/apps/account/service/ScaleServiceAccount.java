@@ -4,6 +4,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import java.math.BigDecimal;
 
 public interface ScaleServiceAccount {
@@ -29,4 +31,6 @@ public interface ScaleServiceAccount {
   int getScale(Invoice invoice, boolean isCompanyAmount);
 
   int getScale(InvoiceTerm invoiceTerm, boolean isCompanyAmount);
+
+  int getScale(Company company, Currency currency, boolean isCompanyAmount);
 }

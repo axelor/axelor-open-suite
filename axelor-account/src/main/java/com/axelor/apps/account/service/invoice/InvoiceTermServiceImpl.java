@@ -852,7 +852,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                         taxRate.divide(
                             BigDecimal.valueOf(100), ALTERNATIVE_SCALE, RoundingMode.HALF_UP))
                     .multiply(BigDecimal.valueOf(100)),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                scaleServiceAccount.getScale(invoiceTerm, true),
                 RoundingMode.HALF_UP);
       }
     } else {

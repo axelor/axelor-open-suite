@@ -75,6 +75,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected int jpaLimit = 20;
+  private final int ALTERNATIVE_SCALE = 10;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
@@ -350,10 +351,11 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     BigDecimal prorata = BigDecimal.ONE;
     if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-      prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+      prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     }
 
-    return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
+    return scaleServiceAccount.getScaledValue(
+        moveLine, prorata.multiply(moveLine.getCurrencyAmount()), false);
   }
 
   @Override
@@ -395,11 +397,12 @@ public class MoveLineServiceImpl implements MoveLineService {
       if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
         BigDecimal prorata = BigDecimal.ONE;
         if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-          prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+          prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
         }
 
         moveLine.setCutOffProrataAmount(
-            prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP));
+            scaleServiceAccount.getScaledValue(
+                moveLine, prorata.multiply(moveLine.getCurrencyAmount()), false));
         moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
         moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
       }

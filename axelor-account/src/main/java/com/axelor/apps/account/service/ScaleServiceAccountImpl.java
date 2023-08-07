@@ -81,7 +81,7 @@ public class ScaleServiceAccountImpl implements ScaleServiceAccount {
     return this.getScale(invoiceTerm.getCompany(), invoiceTerm.getCurrency(), isCompanyAmount);
   }
 
-  protected int getScale(Company company, Currency currency, boolean isCompanyAmount) {
+  public int getScale(Company company, Currency currency, boolean isCompanyAmount) {
     return isCompanyAmount
         ? this.getCompanyCurrencyScale(company)
         : this.getCurrencyScale(currency);
