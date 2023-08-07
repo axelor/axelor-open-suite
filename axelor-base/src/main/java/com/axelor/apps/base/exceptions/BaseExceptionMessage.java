@@ -583,4 +583,7 @@ public final class BaseExceptionMessage {
 
   public static final String UNKNOWN_DURATION = /*$$(*/
       "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
+
+  public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
+      "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
 }

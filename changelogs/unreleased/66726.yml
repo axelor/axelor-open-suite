@@ -1,0 +1,3 @@
+---
+title: "Product/ProductFamily : set analytic distribution template readonly if the config analytic type is not by product"
+type: fix
