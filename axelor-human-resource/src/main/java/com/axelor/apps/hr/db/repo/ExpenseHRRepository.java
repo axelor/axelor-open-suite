@@ -51,7 +51,7 @@ public class ExpenseHRRepository extends ExpenseRepository {
       if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
         Beans.get(ExpenseLineService.class).completeExpenseLines(expense);
       }
-
+      Beans.get(ExpenseLineService.class).convertProofFilesInPdf(expense);
       return expense;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

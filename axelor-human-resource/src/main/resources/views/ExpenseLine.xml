@@ -23,10 +23,12 @@
       aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax" width="80"
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice"/>
-    <field name="justificationMetaFile" widget="binary-link"/>
+    <field name="justificationMetaFile" widget="binary-link"
+      onChange="action-expense-line-reset-is-signed"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct.blockExpenseTax" hidden="true"/>
+    <field name="isJustificationFileDigitallySigned" hidden="true"/>
   </grid>
 
   <grid name="expense-line-kilometric-grid" title="Kilometric Allowances"
@@ -96,7 +98,9 @@
                     ]]>
         </viewer>
       </field>
-      <field name="justificationMetaFile" widget="binary-link"/>
+      <field name="justificationMetaFile" widget="binary-link"
+        onChange="action-expense-line-reset-is-signed"/>
+      <field name="isJustificationFileDigitallySigned" hidden="true"/>
       <field name="isAloneMeal" hidden="true" showIf="expenseProduct.deductLunchVoucher"
         onChange="action-expense-line-record-alone-meal-on-change"/>
       <field name="invitedCollaboratorSet" grid-view="employee-grid" form-view="employee-form"
@@ -307,5 +311,9 @@
       if="__config__.app.isApp('account') &amp;&amp;
    __config__.app.getApp('account')?.getManageAnalyticAccounting() &amp;&amp; analyticDistributionTemplate"/>
   </action-group>
+
+  <action-attrs name="action-expense-line-reset-is-signed">
+    <attribute for="isJustificationFileDigitallySigned" name="value" expr="eval: false"/>
+  </action-attrs>
 
 </object-views>
