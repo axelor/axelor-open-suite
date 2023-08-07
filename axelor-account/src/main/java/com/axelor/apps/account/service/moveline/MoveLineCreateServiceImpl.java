@@ -914,6 +914,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           || newOrUpdatedMoveLineRC.getCredit().signum() != 0) {
         newMap.put(newSourceTaxLineRCKey, newOrUpdatedMoveLineRC);
       }
+
+      moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
     }
     return newOrUpdatedMoveLine;
   }
