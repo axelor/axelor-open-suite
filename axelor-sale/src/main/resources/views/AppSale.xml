@@ -28,6 +28,8 @@
       <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
         showIf="enablePricingScale"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
+      <field name="pricingComputingOrder" title="Pricing Computation Order"
+        selection="sale.pricing.order.type.select" widget="NavSelect"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"

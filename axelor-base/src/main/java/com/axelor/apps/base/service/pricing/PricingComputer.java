@@ -132,9 +132,9 @@ public class PricingComputer extends AbstractObservablePricing {
     if (context == null || pricing == null || model == null || product == null) {
       throw new IllegalStateException("This instance has not been correctly initialized");
     }
-    if (pricing.getPreviousPricing() != null) {
+    if (pricing.getLinkedPricing() != null) {
       throw new IllegalStateException(
-          "This method can only be called with root pricing (pricing with not previous pricing)");
+          "This method can only be called with root pricing (pricing with not previous pricing or next pricing)");
     }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
     notifyStarted();

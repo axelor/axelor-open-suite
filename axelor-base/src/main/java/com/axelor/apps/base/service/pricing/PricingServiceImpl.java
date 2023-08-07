@@ -66,10 +66,26 @@ public class PricingServiceImpl implements PricingService {
       Product product,
       ProductCategory productCategory,
       String modelName,
-      Pricing previousPricing) {
-
-    return getPricings(company, product, productCategory, modelName, previousPricing).stream()
+      Pricing linkedPricing) {
+    return getPricings(company, product, productCategory, modelName, linkedPricing).stream()
         .findAny();
+  }
+
+  @Override
+  public Optional<Pricing> getRandomPricingWithLinkedPricing(
+          Company company,
+          Product product,
+          ProductCategory productCategory,
+          String modelName) {
+    Optional<Pricing> pricingWithLinkedPricing = getPricingsWithLinkedPricing(company, product, productCategory, modelName)
+            .stream()
+            .findAny();
+
+    if (pricingWithLinkedPricing.isEmpty()) {
+      pricingWithLinkedPricing = getRandomPricing(company, product, productCategory, modelName, null);
+    }
+
+    return pricingWithLinkedPricing;
   }
 
   @Override
@@ -78,8 +94,7 @@ public class PricingServiceImpl implements PricingService {
       Product product,
       ProductCategory productCategory,
       String modelName,
-      Pricing previousPricing) {
-
+      Pricing linkedPricing) {
     LOG.debug("Fetching pricings");
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
@@ -98,12 +113,47 @@ public class PricingServiceImpl implements PricingService {
       bindings.put("modelName", modelName);
     }
 
-    if (previousPricing != null) {
-      filter.append("AND self.previousPricing = :previousPricing ");
-      bindings.put("previousPricing", previousPricing);
+    if (linkedPricing != null) {
+      filter.append("AND self.linkedPricing = :linkedPricing ");
+      bindings.put("linkedPricing", linkedPricing);
     } else {
-      filter.append("AND self.previousPricing is NULL ");
+      filter.append("AND self.linkedPricing is NULL ");
     }
+
+    filter.append("AND (self.archived = false OR self.archived is null) ");
+
+    appendProductFilter(product, productCategory, filter, bindings);
+    LOG.debug("Filtering pricing with {}", filter.toString());
+    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+  }
+
+
+  @Override
+  public List<Pricing> getPricingsWithLinkedPricing(
+          Company company,
+          Product product,
+          ProductCategory productCategory,
+          String modelName) {
+    LOG.debug("Fetching pricings");
+    StringBuilder filter = new StringBuilder();
+    Map<String, Object> bindings = new HashMap<>();
+
+    filter.append("self.startDate <= :todayDate ");
+    filter.append("AND (self.endDate > :todayDate OR self.endDate = NULL) ");
+    bindings.put("todayDate", appBaseService.getTodayDate(company));
+
+    if (company != null) {
+      filter.append("AND self.company = :company ");
+      bindings.put("company", company);
+    }
+
+    if (modelName != null) {
+      filter.append("AND self.concernedModel.name = :modelName ");
+      bindings.put("modelName", modelName);
+    }
+
+    filter.append("AND self.linkedPricing is NOT NULL");
+
     filter.append("AND (self.archived = false OR self.archived is null) ");
 
     appendProductFilter(product, productCategory, filter, bindings);
@@ -187,7 +237,7 @@ public class PricingServiceImpl implements PricingService {
     currentPricing.setClass4PricingRule(pricing.getClass4PricingRule());
     currentPricing.setCompany(pricing.getCompany());
     currentPricing.setConcernedModel(pricing.getConcernedModel());
-    currentPricing.setPreviousPricing(pricing.getPreviousPricing());
+    currentPricing.setLinkedPricing(pricing.getLinkedPricing());
     currentPricing.setResult1PricingRule(pricing.getResult1PricingRule());
     currentPricing.setResult2PricingRule(pricing.getResult2PricingRule());
     currentPricing.setResult3PricingRule(pricing.getResult3PricingRule());
