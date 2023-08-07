@@ -25,12 +25,13 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"
-      x-scale="currency.numberOfDecimals"/>
+      x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="moveLine.move.statusSelect"/>
     <field name="isPaid" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-pfp-grid" title="Invoice terms"
@@ -53,7 +54,7 @@
     <field name="partner"/>
     <field name="dueDate"/>
     <field name="amount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
-    <field name="percentage" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="percentage" aggregate="sum"/>
     <field name="paymentMode"/>
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="$originBasedPaymentDelay" type="integer" title="Payment delay"/>
@@ -87,12 +88,13 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"
-      x-scale="currency.numberOfDecimals"/>
+      x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-invoice-payment-grid" title="Invoice terms" orderBy="sequence"
@@ -146,12 +148,13 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"
-      x-scale="currency.numberOfDecimals"/>
+      x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
@@ -253,8 +256,10 @@
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" x-scale="currency.numberOfDecimals"/>
-        <field name="remainingAmountAfterFinDiscount" x-scale="currency.numberOfDecimals"/>
-        <field name="amountRemainingAfterFinDiscount" x-scale="currency.numberOfDecimals"/>
+        <field name="remainingAmountAfterFinDiscount"
+          x-scale="company.currency.numberOfDecimals"/>
+        <field name="amountRemainingAfterFinDiscount"
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="pfpPanel" colSpan="12"
@@ -588,9 +593,9 @@
         <field name="financialDiscountAmount" readonly="true"
           x-scale="currency.numberOfDecimals"/>
         <field name="remainingAmountAfterFinDiscount" readonly="true"
-          x-scale="currency.numberOfDecimals"/>
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="amountRemainingAfterFinDiscount" readonly="true"
-          x-scale="currency.numberOfDecimals"/>
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="invoice.company" hidden="true"/>
         <field name="invoice.originDate" hidden="true"/>
         <field name="invoice.statusSelect" hidden="true"/>
@@ -761,9 +766,11 @@
         <field name="financialDiscount"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
-        <field name="financialDiscountAmount" x-scale="currency.numberOfDecimals"/>
-        <field name="remainingAmountAfterFinDiscount" x-scale="currency.numberOfDecimals"/>
-        <field name="amountRemainingAfterFinDiscount" x-scale="currency.numberOfDecimals"/>
+        <field name="financialDiscountAmount" x-scale="company.currency.numberOfDecimals"/>
+        <field name="remainingAmountAfterFinDiscount"
+          x-scale="company.currency.numberOfDecimals"/>
+        <field name="amountRemainingAfterFinDiscount"
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="pfpPanel" colSpan="12"
@@ -849,7 +856,8 @@
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
+          onChange="action-invoice-term-record-set-amount-paid"
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
           showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>

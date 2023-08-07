@@ -32,7 +32,6 @@ public class ScaleServiceAccountImpl implements ScaleServiceAccount {
     return scaleService.getScaledValue(value, customizedScale);
   }
 
-  // Get scaled amount according to company or currency decimals
   @Override
   public BigDecimal getScaledValue(Move move, BigDecimal amount, boolean isCompanyAmount) {
     return this.getScaledValue(

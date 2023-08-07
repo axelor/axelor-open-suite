@@ -95,6 +95,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected UserRepository userRepo;
   protected ScaleServiceAccount scaleServiceAccount;
+  private static final int ALTERNATIVE_SCALE = 10;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -144,7 +145,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
         sum =
             sum.add(
-                invoiceTerm.getAmount().divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP));
+                invoiceTerm
+                    .getAmount()
+                    .divide(invoice.getInTaxTotal(), ALTERNATIVE_SCALE, RoundingMode.HALF_UP));
       }
     }
     return sum.multiply(BigDecimal.valueOf(100))
@@ -274,18 +277,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               : moveLine.getDebit().max(moveLine.getCredit());
 
       if (!isUpdate) {
-        ratioPaid = invoiceTermAmountRemaining.divide(invoiceTermAmount, 10, RoundingMode.HALF_UP);
+        ratioPaid =
+            invoiceTermAmountRemaining.divide(
+                invoiceTermAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
       }
       companyAmount =
           companyTotal
               .multiply(invoiceTerm.getPercentage())
-              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+              .divide(BigDecimal.valueOf(100), ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
       companyAmountRemaining =
-          companyAmount
-              .multiply(ratioPaid)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-      companyAmount =
-          companyAmount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          scaleServiceAccount.getScaledValue(invoiceTerm, companyAmount.multiply(ratioPaid), true);
+      companyAmount = scaleServiceAccount.getScaledValue(invoiceTerm, companyAmount, true);
     }
 
     invoiceTerm.setCompanyAmount(companyAmount);
@@ -313,16 +315,18 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         && financialDiscount != null) {
       BigDecimal percentage =
           this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
-              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+              .divide(BigDecimal.valueOf(100), ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
 
       invoiceTerm.setApplyFinancialDiscount(true);
       invoiceTerm.setFinancialDiscount(financialDiscount);
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setFinancialDiscountAmount(
-          financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
+          scaleServiceAccount.getScaledValue(
+              invoiceTerm, financialDiscountAmount.multiply(percentage), true));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
-          remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
+          scaleServiceAccount.getScaledValue(
+              invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage), true));
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
 
       invoiceTerm.setFinancialDiscountDeadlineDate(
@@ -343,7 +347,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           invoiceTerm
               .getAmountRemaining()
               .multiply(invoiceTerm.getRemainingAmountAfterFinDiscount())
-              .divide(invoiceTerm.getAmount(), 2, RoundingMode.HALF_UP));
+              .divide(
+                  invoiceTerm.getAmount(),
+                  scaleServiceAccount.getScale(invoiceTerm, true),
+                  RoundingMode.HALF_UP));
     }
   }
 
@@ -823,7 +830,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         return total
             .multiply(invoiceTerm.getPercentage())
             .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
-            .divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP);
+            .divide(
+                BigDecimal.valueOf(10000),
+                scaleServiceAccount.getScale(invoiceTerm, true),
+                RoundingMode.HALF_UP);
       } else {
         Tax financialDiscountTax =
             this.isPurchase(invoiceTerm)
@@ -838,7 +848,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(taxRate)
             .divide(
                 BigDecimal.ONE
-                    .add(taxRate.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP))
+                    .add(
+                        taxRate.divide(
+                            BigDecimal.valueOf(100), ALTERNATIVE_SCALE, RoundingMode.HALF_UP))
                     .multiply(BigDecimal.valueOf(100)),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
@@ -894,7 +906,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .getPercentage()
         .multiply(total)
         .divide(
-            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            new BigDecimal(100),
+            scaleServiceAccount.getScale(invoiceTerm, false),
+            RoundingMode.HALF_UP);
   }
 
   @Override
