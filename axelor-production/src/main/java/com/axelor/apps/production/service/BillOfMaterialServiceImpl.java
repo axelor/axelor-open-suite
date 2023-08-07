@@ -465,7 +465,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     return billOfMaterialRepo
         .all()
         .filter(
-            "self.product = ?1 AND self.company = ?2 AND self.statusSelect = ?3",
+            "self.product = ?1 AND self.company = ?2 AND self.statusSelect = ?3 AND (self.archived is null or self.archived is false)",
             originalProduct,
             company,
             BillOfMaterialRepository.STATUS_APPLICABLE)
@@ -490,16 +490,21 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       if (obj != null) {
         billOfMaterial = (BillOfMaterial) obj;
       }
+
+      BillOfMaterial defaultBillOfMaterial = originalProduct.getDefaultBillOfMaterial();
+      // If we can't find any, check for the default BOM for the product if it has the same company
+      // as the cost calculation
+      if (billOfMaterial == null
+          && defaultBillOfMaterial != null
+          && defaultBillOfMaterial.getCompany() != null
+          && defaultBillOfMaterial.getCompany().equals(company)) {
+        billOfMaterial = defaultBillOfMaterial;
+      }
+
       // If we can't find any
       if (billOfMaterial == null) {
         // Get any BOM with original product and company.
         billOfMaterial = getAnyBOM(originalProduct, company);
-      }
-
-      // If we can't find any again, then we take the default bom of the original product regardless
-      // of the company
-      if (billOfMaterial == null) {
-        billOfMaterial = originalProduct.getDefaultBillOfMaterial();
       }
     }
 

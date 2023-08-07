@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
@@ -44,6 +45,7 @@ import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionVali
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
@@ -58,6 +60,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -70,9 +73,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateBankPaymentServiceImpl
@@ -242,6 +247,16 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       boolean out,
       boolean isGlobal)
       throws AxelorException {
+
+    if (paymentSession.getBankOrder() != null
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      this.createOrUpdateBankOrderLineFromInvoiceTerm(
+          paymentSession,
+          invoiceTerm,
+          paymentSession.getBankOrder(),
+          invoiceTermLinkWithRefundList);
+    }
+
     paymentSession =
         super.processInvoiceTerm(
             paymentSession,
@@ -251,11 +266,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTermLinkWithRefundList,
             out,
             isGlobal);
-    if (paymentSession.getBankOrder() != null
-        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
-      this.createOrUpdateBankOrderLineFromInvoiceTerm(
-          paymentSession, invoiceTerm, paymentSession.getBankOrder());
-    }
 
     return paymentSession;
   }
@@ -284,7 +294,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   protected void createOrUpdateBankOrderLineFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrder bankOrder)
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      BankOrder bankOrder,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
       throws AxelorException {
     BankOrderLine bankOrderLine = null;
 
@@ -305,19 +318,40 @@ public class PaymentSessionValidateBankPaymentServiceImpl
               .orElse(null);
     }
 
+    BigDecimal reconciledAmount = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(invoiceTermLinkWithRefundList)) {
+      List<Pair<InvoiceTerm, BigDecimal>> invoiceTermByAmountList =
+          invoiceTermLinkWithRefundList.stream()
+              .filter(pair -> pair.getLeft().equals(invoiceTerm))
+              .map(pair -> pair.getRight())
+              .collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(invoiceTermByAmountList)) {
+        for (Pair<InvoiceTerm, BigDecimal> pair : invoiceTermByAmountList) {
+          reconciledAmount = reconciledAmount.add(pair.getRight());
+        }
+      }
+    }
+
     if (bankOrderLine == null) {
-      this.generateBankOrderLineFromInvoiceTerm(paymentSession, invoiceTerm, bankOrder);
+      this.generateBankOrderLineFromInvoiceTerm(
+          paymentSession, invoiceTerm, bankOrder, reconciledAmount);
     } else {
-      this.updateBankOrderLine(paymentSession, invoiceTerm, bankOrderLine);
+      this.updateBankOrderLine(paymentSession, invoiceTerm, bankOrderLine, reconciledAmount);
     }
 
     bankOrderRepo.save(paymentSession.getBankOrder());
   }
 
   protected void generateBankOrderLineFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrder bankOrder)
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      BankOrder bankOrder,
+      BigDecimal reconciledAmount)
       throws AxelorException {
     LocalDate bankOrderDate = null;
+    if (invoiceTerm.getAmountPaid().subtract(reconciledAmount).signum() == 0) {
+      return;
+    }
     if (this.isFileFormatMultiDate(paymentSession)) {
       bankOrderDate =
           paymentSession.getMoveAccountingDateSelect()
@@ -332,7 +366,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             null,
             invoiceTerm.getMoveLine().getPartner(),
             invoiceTerm.getBankDetails(),
-            invoiceTerm.getAmountPaid(),
+            invoiceTerm.getAmountPaid().subtract(reconciledAmount),
             paymentSession.getCurrency(),
             bankOrderDate,
             this.getReference(invoiceTerm),
@@ -341,19 +375,35 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
     bankOrder.addBankOrderLineListItem(bankOrderLine);
     bankOrderLine.setCompanyCurrencyAmount(
-        this.getAmountPaidInCompanyCurrency(paymentSession, invoiceTerm, bankOrderLine));
+        this.getAmountPaidInCompanyCurrency(
+            paymentSession, invoiceTerm, bankOrderLine, reconciledAmount));
   }
 
   protected void updateBankOrderLine(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine)
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      BankOrderLine bankOrderLine,
+      BigDecimal reconciledAmount)
       throws AxelorException {
+
+    if (invoiceTerm.getAmountPaid().subtract(reconciledAmount).signum() == 0) {
+      return;
+    }
     this.updateReference(invoiceTerm, bankOrderLine);
     bankOrderLine.setBankOrderAmount(
-        bankOrderLine.getBankOrderAmount().add(invoiceTerm.getAmountPaid()));
+        bankOrderLine
+            .getBankOrderAmount()
+            .add(invoiceTerm.getAmountPaid().subtract(reconciledAmount)));
+    if (bankOrderLine.getBankOrderAmount().signum() == 0) {
+      resetBankOrderLine(bankOrderLine);
+      return;
+    }
     bankOrderLine.setCompanyCurrencyAmount(
         bankOrderLine
             .getCompanyCurrencyAmount()
-            .add(this.getAmountPaidInCompanyCurrency(paymentSession, invoiceTerm, bankOrderLine)));
+            .add(
+                this.getAmountPaidInCompanyCurrency(
+                    paymentSession, invoiceTerm, bankOrderLine, reconciledAmount)));
     bankOrderLine.addBankOrderLineOriginListItem(
         bankOrderLineOriginService.createBankOrderLineOrigin(invoiceTerm));
   }
@@ -386,17 +436,20 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   protected BigDecimal getAmountPaidInCompanyCurrency(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine)
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      BankOrderLine bankOrderLine,
+      BigDecimal reconciledAmount)
       throws AxelorException {
     return bankOrderLine.getBankOrder().getIsMultiCurrency()
         ? currencyService
             .getAmountCurrencyConvertedAtDate(
                 paymentSession.getCurrency(),
                 paymentSession.getCompany().getCurrency(),
-                invoiceTerm.getAmountPaid(),
+                invoiceTerm.getAmountPaid().subtract(reconciledAmount),
                 bankOrderLine.getBankOrderDate())
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
-        : invoiceTerm.getAmountPaid();
+        : invoiceTerm.getAmountPaid().subtract(reconciledAmount);
   }
 
   public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount) {
@@ -430,5 +483,60 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     partnerQuery.setParameter("paymentSession", paymentSession);
 
     return partnerQuery.getResultList();
+  }
+
+  @Transactional
+  protected void resetBankOrderLine(BankOrderLine bankOrderLine) {
+    if (bankOrderLine != null) {
+      BankOrder bankOrder = bankOrderLine.getBankOrder();
+      bankOrder.removeBankOrderLineListItem(bankOrderLine);
+      bankOrderLine.setBankOrder(null);
+      if (!ObjectUtils.isEmpty(bankOrderLine.getBankOrderLineOriginList())) {
+        for (BankOrderLineOrigin origin : bankOrderLine.getBankOrderLineOriginList()) {
+          origin.setBankOrderLine(null);
+          bankOrderLine.removeBankOrderLineOriginListItem(origin);
+        }
+      }
+    }
+  }
+
+  @Override
+  public void createAndReconcileMoveLineFromPair(
+      PaymentSession paymentSession,
+      Move move,
+      InvoiceTerm invoiceTerm,
+      Pair<InvoiceTerm, BigDecimal> pair,
+      boolean out,
+      Map<Move, BigDecimal> paymentAmountMap)
+      throws AxelorException {
+    super.createAndReconcileMoveLineFromPair(
+        paymentSession, move, invoiceTerm, pair, out, paymentAmountMap);
+
+    manageInvoicePayment(paymentSession, invoiceTerm, pair.getRight());
+  }
+
+  @Transactional
+  protected void manageInvoicePayment(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm, BigDecimal reconciliedAmount) {
+    InvoicePayment invoicePayment = this.findInvoicePayment(paymentSession, invoiceTerm);
+    if (invoicePayment != null) {
+      if (invoicePayment.getAmount().subtract(reconciliedAmount).signum() == 0) {
+        Invoice invoice = invoicePayment.getInvoice();
+        if (invoice != null) {
+          invoice.removeInvoicePaymentListItem(invoicePayment);
+          invoicePayment.setInvoice(null);
+        }
+
+        invoicePayment.setPaymentSession(null);
+        invoicePayment.clearInvoiceTermPaymentList();
+        invoicePayment.setBankOrder(null);
+        invoicePayment.setMove(null);
+        if (invoicePayment.getId() != null) {
+          invoicePaymentRepo.remove(invoicePayment);
+        }
+      } else {
+        invoicePayment.setAmount(invoicePayment.getAmount().subtract(reconciliedAmount));
+      }
+    }
   }
 }
