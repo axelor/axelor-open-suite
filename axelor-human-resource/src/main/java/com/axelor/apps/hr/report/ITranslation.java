@@ -33,7 +33,6 @@ public class ITranslation {
       "Expense.personalExpenseAmount"; /*)*/
   public static final String EXPENSE_COMPANY_CB_SELECT = /*$$(*/ "Expense.companyCbSelect"; /*)*/
   public static final String EXPENSE_ADVANCE_AMOUNT = /*$$(*/ "Expense.advanceAmount"; /*)*/
-  public static final String EXPENSE_MULTIPLE_USERS = /*$$(*/ "Expense.multipleUsers"; /*)*/
   public static final String EXPENSE_TOTAL_LABEL = /*$$(*/ "Expense.total"; /*)*/
   public static final String EXPENSE_CURRENCY = /*$$(*/ "Expense.currency"; /*)*/
   public static final String EXPENSE_GENERAL_EXPENSES = /*$$(*/ "General Expenses"; /*)*/

@@ -38,8 +38,6 @@ public class StockTrackingNumberPostRequest extends RequestPostStructure {
 
   private String origin;
 
-  public StockTrackingNumberPostRequest() {}
-
   public Long getProductId() {
     return productId;
   }

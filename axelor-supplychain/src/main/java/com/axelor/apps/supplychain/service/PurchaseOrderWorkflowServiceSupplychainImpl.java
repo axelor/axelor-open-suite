@@ -35,7 +35,6 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   protected AppSupplychainService appSupplychainService;
   protected PurchaseOrderStockService purchaseOrderStockService;
   protected AppAccountService appAccountService;
-  protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
 
   @Inject
@@ -46,13 +45,11 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       AppSupplychainService appSupplychainService,
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
-      BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
     super(purchaseOrderService, purchaseOrderRepo, appPurchaseService);
     this.appSupplychainService = appSupplychainService;
     this.purchaseOrderStockService = purchaseOrderStockService;
     this.appAccountService = appAccountService;
-    this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
   }
 
@@ -65,45 +62,16 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       return;
     }
 
-    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
-
     if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
         && !purchaseOrderStockService.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
       purchaseOrderStockService.createStockMoveFromPurchaseOrder(purchaseOrder);
     }
 
-    if (appAccountService.getAppBudget().getApp().getActive()
-        && !appAccountService.getAppBudget().getManageMultiBudget()) {
-      purchaseOrderSupplychainService.generateBudgetDistribution(purchaseOrder);
-    }
     int intercoPurchaseCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
         && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
-    }
-
-    if (!appAccountService.getAppBudget().getManageMultiBudget()) {
-      purchaseOrderSupplychainService.updateBudgetDistributionAmountAvailable(purchaseOrder);
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-    super.cancelPurchaseOrder(purchaseOrder);
-
-    if (appSupplychainService.isApp("supplychain") && appAccountService.isApp("budget")) {
-      budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
-
-      if (purchaseOrder.getPurchaseOrderLineList() != null) {
-        purchaseOrder.getPurchaseOrderLineList().stream()
-            .forEach(
-                poLine -> {
-                  poLine.clearBudgetDistributionList();
-                  poLine.setBudget(null);
-                });
-      }
     }
   }
 }

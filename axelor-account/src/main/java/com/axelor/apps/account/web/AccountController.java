@@ -108,7 +108,11 @@ public class AccountController {
     try {
       Account account = request.getContext().asType(Account.class);
       Beans.get(AccountService.class)
-          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
+          .checkAnalyticAxis(
+              account,
+              account.getAnalyticDistributionTemplate(),
+              account.getAnalyticDistributionRequiredOnMoveLines(),
+              account.getAnalyticDistributionRequiredOnInvoiceLines());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -270,7 +274,11 @@ public class AccountController {
       analyticDistributionTemplateService.verifyTemplateValues(
           account.getAnalyticDistributionTemplate());
       Beans.get(AccountService.class)
-          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
+          .checkAnalyticAxis(
+              account,
+              account.getAnalyticDistributionTemplate(),
+              account.getAnalyticDistributionRequiredOnMoveLines(),
+              account.getAnalyticDistributionRequiredOnInvoiceLines());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
     } catch (Exception e) {

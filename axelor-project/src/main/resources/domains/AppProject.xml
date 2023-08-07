@@ -19,9 +19,10 @@
     <one-to-many name="projectCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
       title="Project fields" orphanRemoval="true"/>
     <many-to-many name="defaultTaskStatusSet" title="Default task status"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <many-to-many name="defaultPrioritySet" title="Default priorities"
       ref="com.axelor.apps.project.db.ProjectPriority"/>
+    <boolean name="generateProjectSequence" title="Generate sequence for project"/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>
@@ -29,6 +30,7 @@
       <field name="checkResourceAvailibility" on="UPDATE"/>
       <field name="isEnableSignature" on="UPDATE"/>
       <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
+      <field name="generateProjectSequence" on="UPDATE"/>
       <field name="defaultTaskStatusSet" on="UPDATE"/>
       <field name="defaultPrioritySet" on="UPDATE"/>
     </track>

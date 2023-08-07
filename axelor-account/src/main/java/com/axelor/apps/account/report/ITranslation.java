@@ -65,6 +65,8 @@ public interface ITranslation {
   public static final String INVOICE_OF = /*$$(*/ "Invoice.of"; /*)*/
   public static final String INVOICE_IMPUTED_ON = /*$$(*/ "Invoice.imputedOn"; /*)*/
   public static final String INVOICE_TOTAL_TO_PAY = /*$$(*/ "Invoice.totalToPay"; /*)*/
+  public static final String INVOICE_TOTAL_TO_BE_CREDITED = /*$$(*/
+      "Invoice.totalToBeCredited"; /*)*/
   public static final String INVOICE_CANCEL_INVOICE_NO = /*$$(*/ "Invoice.cancelInvoiceNo"; /*)*/
 
   public static final String INVOICE_TIMESHEET_TITLE = /*$$(*/ "Invoice.timesheetTitle"; /*)*/
@@ -119,6 +121,8 @@ public interface ITranslation {
       "Invoice.invoiceTermHoldBackTrue"; /*)*/
   public static final String INVOICE_INVOICE_TERMS_HOLD_BACK_FALSE = /*$$(*/
       "Invoice.invoiceTermHoldBackFalse"; /*)*/
+  public static final String INVOICE_REFUND_PART_1 = /*$$(*/ "Invoice.refundInvoicePart1"; /*)*/
+  public static final String INVOICE_REFUND_PART_2 = /*$$(*/ "Invoice.refundInvoicePart2"; /*)*/
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
   public static final String ACCOUNTING_REPORT_RECAP_BY_ACCOUNT = /*$$(*/

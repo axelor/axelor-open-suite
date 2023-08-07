@@ -74,10 +74,6 @@ public interface EventService {
 
   public EmailAddress getEmailAddress(Event event);
 
-  public void fillEventDates(Event event) throws AxelorException;
-
-  public void planEvent(Event event);
-
   public void realizeEvent(Event event);
 
   public void cancelEvent(Event event);

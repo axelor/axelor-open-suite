@@ -50,8 +50,6 @@ public class ManufOrderProductPostRequest extends RequestStructure {
       flags = Pattern.Flag.CASE_INSENSITIVE)
   private String productType;
 
-  public ManufOrderProductPostRequest() {};
-
   public long getProductId() {
     return productId;
   }

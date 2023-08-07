@@ -1445,19 +1445,25 @@ from InvoiceTerm as self
     title="Custom">
 
     <field name="amount" type="decimal" x-scale="2"/>
+    <field name="statusSelect" title="Status"
+      selection="payment.session.dashlet.status.select" widget="single-select"/>
 
     <dataset type="jpql"><![CDATA[
-	 select round(sum(self.amountPaid),2) as amount, _partner.name as supplier, _bankDetails.fullName as bankDetails
-	 from InvoiceTerm as self
-	 left join self.moveLine.partner as _partner
-	 left join self.bankDetails as _bankDetails
-	 where self.isSelectedOnPaymentSession = true and self.paymentSession.id = :_id
-	 group by _partner.id,_bankDetails.id
-	 order by _partner.name
+	   SELECT
+	     ROUND(SUM(self.amountPaid), 2) AS amount,
+	     CASE WHEN ROUND(SUM(self.amountPaid), 2) > 0 THEN 2 ELSE 1 END AS statusSelect,
+	     _partner.name AS supplier,
+	     _bankDetails.fullName AS bankDetails
+	   FROM InvoiceTerm AS self
+	   LEFT JOIN self.moveLine.partner AS _partner
+	   LEFT JOIN self.bankDetails AS _bankDetails
+	   WHERE self.isSelectedOnPaymentSession IS TRUE AND self.paymentSession.id = :_id
+	   GROUP BY _partner.id, _bankDetails.id
+	   ORDER BY _partner.name
 	 ]]></dataset>
 
     <template><![CDATA[
-	<report-table data='data' columns='supplier,bankDetails,amount' sums='amount'></report-table>
+	   <report-table data='data' columns='supplier,bankDetails,amount,statusSelect' sums='amount'/>
 	 ]]></template>
 
   </custom>

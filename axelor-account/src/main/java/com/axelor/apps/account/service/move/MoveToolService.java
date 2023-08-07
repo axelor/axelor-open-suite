@@ -191,7 +191,7 @@ public interface MoveToolService {
 
   boolean checkMoveLinesCutOffDates(Move move);
 
-  List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
+  List<Move> getMovesWithDuplicatedOrigin(Move move);
 
   List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
 
@@ -201,4 +201,6 @@ public interface MoveToolService {
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 
   void setDescriptionOnMoveLineList(Move move);
+
+  BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
 }

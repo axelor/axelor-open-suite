@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module package="com.axelor.apps.budget.db" name="budget"/>
+
+  <entity name="BudgetLevel">
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name" required="true"/>
+
+    <integer name="budgetTypeSelect" selection="budget.level.budget.type.select" default="1"
+      title="Budget type select"/>
+
+    <date name="startDate" title="Start Date"/>
+    <date name="endDate" title="End Date"/>
+
+    <many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"/>
+    <many-to-one name="parentBudgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Parent Level"/>
+
+    <string name="statusSelect" title="Status" selection="budget.level.status.select"
+      default="draft"/>
+    <string name="typeSelect" readonly="true" title="Type"
+      selection="budget.budget.type.select"/>
+    <string name="sourceSelect" readonly="true" title="Source"
+      selection="budget.budget.source.select"/>
+
+    <decimal name="totalAmountExpected" title="Expected amount"
+      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."/>
+    <decimal name="totalAmountCommitted" title="Committed amount"
+      help="Represents the sum of orders of status requested, validated or finished and that don't have a invoiced invoice."/>
+    <decimal name="totalAmountRealized" title="Realized total amount"/>
+    <decimal name="totalAmountPaid" title="Paid total amount"/>
+    <decimal name="totalAmountAvailable" title="Available amount"
+      help="Represents the expected amount minus the sum of realized amounts."/>
+    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with no order and daybook and accounted moves with no invoice."/>
+    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with an order."/>
+    <decimal name="totalFirmGap" title="Firm gap" precision="20" scale="2"
+      help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
+
+    <one-to-many name="budgetLevelList" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Budget Levels" mappedBy="parentBudgetLevel"/>
+    <one-to-many name="budgetList" ref="com.axelor.apps.budget.db.Budget"
+      title="Budgets" mappedBy="budgetLevel"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
+    <many-to-one name="companyDepartment"
+      ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department"/>
+    <many-to-one name="budgetManager" ref="com.axelor.auth.db.User"
+      title="Budget manager"/>
+
+    <many-to-one name="importFile" ref="com.axelor.meta.db.MetaFile" title="Import file"/>
+
+    <string name="fullName" namecolumn="true" search="code,name" title="Full name">
+         <![CDATA[
+            return code + " " + name;
+         ]]>
+    </string>
+
+    <string name="levelTypeSelect" title="Level Type Select"
+      selection="budget.budget.level.type.select" default="global"/>
+
+    <string name="commentString" title="Commentaires" large="true" multiline="true"/>
+    <string name="versionNumber" title="Version Number" default="1"/>
+    <date name="projectStartDate" title="Project start date"/>
+    <date name="projectEndDate" title="Project end Date"/>
+    <date name="fromDate" title="From date"/>
+    <date name="toDate" title="To date"/>
+
+    <decimal name="simulatedAmount" title="Simulated amount"
+      help="Represents the sum of moves of status simulated."/>
+    <decimal name="availableAmountWithSimulated"
+      title="Available amount with simulated moves"
+      help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
+    </decimal>
+
+    <integer name="checkAvailableSelect" title="Check available amount"
+      selection="budget.budget.level.check.available"/>
+
+    <string name="parentId" search="parentBudgetLevel">
+         <![CDATA[
+         if (parentBudgetLevel != null && parentBudgetLevel.getId() != null){
+
+            return parentBudgetLevel.getId().toString();
+         }
+         else {
+         	return "0";
+         }
+         ]]>
+
+    </string>
+
+    <unique-constraint columns="code,parentId,company,fromDate,toDate"/>
+
+    <extra-code>
+	      <![CDATA[
+				//budget level type select
+				public static final String BUDGET_LEVEL_TYPE_SELECT_BUDGET = "budget";
+				public static final String BUDGET_LEVEL_TYPE_SELECT_TEMPLATE = "template";
+
+				//budget level budget type select
+				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE = 1;
+				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE = 2;
+				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT = 3;
+				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT = 4;
+
+				//budget level status select
+				public static final String BUDGET_LEVEL_STATUS_SELECT_DRAFT = "draft";
+				public static final String BUDGET_LEVEL_STATUS_SELECT_VALID = "valid";
+				public static final String BUDGET_LEVEL_STATUS_SELECT_ARCHIVED = "archived";
+
+				//budget level source select
+				public static final String BUDGET_LEVEL_SOURCE_AUTO = "auto";
+				public static final String BUDGET_LEVEL_SOURCE_CUSTOM = "custom";
+
+				//budget level category select
+				public static final String BUDGET_LEVEL_CATEGORY_TURNOVER = "turnover";
+				public static final String BUDGET_LEVEL_CATEGORY_COSTS = "costs";
+
+	         //budget level sub category select
+	         public static final String BUDGET_LEVEL_SUB_CATEGORY_PROJECT = "proj";
+	         public static final String BUDGET_LEVEL_SUB_CATEGORY_SERVICE = "service";
+
+				//budget level level type select
+				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_GLOBAL = "global";
+				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP = "group";
+				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION = "section";
+
+				//budget level type select
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET = 2;
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION = 3;
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP = 4;
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_GLOBAL_BUDGET = 5;
+	      ]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

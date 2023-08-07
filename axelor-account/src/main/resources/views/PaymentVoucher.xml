@@ -84,6 +84,10 @@
           <field name="bankEntryGenWithoutValEntryCollectionOk" widget="boolean-switch"/>
           <field name="valueForCollectionAccount" title="Value for collection" hidden="true"
             hideIf="bankEntryGenWithoutValEntryCollectionOk"/>
+          <field name="depositBankDetails"
+            requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
+            hideIf="bankEntryGenWithoutValEntryCollectionOk"
+            domain="self.active = true AND self.company = :company"/>
         </panel>
         <panel colSpan="12">
           <field name="chequeNumber"

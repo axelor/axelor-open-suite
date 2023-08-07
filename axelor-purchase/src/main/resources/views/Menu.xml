@@ -111,8 +111,9 @@
 
   <action-view name="purchase.historical.orders" title="Historical"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <view type="cards" name="purchase-order-cards"/>
+
     <view type="grid" name="purchase-order-grid"/>
+    <view type="cards" name="purchase-order-cards"/>
     <view type="form" name="purchase-order-form"/>
     <view-param name="search-filters" value="purchase-order-filters"/>
     <context name="_internalUser" expr="eval: __user__.id"/>

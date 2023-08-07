@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -36,7 +35,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -124,6 +122,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
             purchaseOrder.getSupplierPartner(),
             purchaseOrderLine.getProduct(),
             purchaseOrder.getCompany(),
+            purchaseOrder.getTradingName(),
             true);
 
     purchaseOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
@@ -184,23 +183,5 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
       return undeliveryQty;
     }
     return BigDecimal.ZERO;
-  }
-
-  public void computeBudgetDistributionSumAmount(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
-    List<BudgetDistribution> budgetDistributionList = purchaseOrderLine.getBudgetDistributionList();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = purchaseOrder.getOrderDate();
-
-    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
-
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        Beans.get(BudgetSupplychainService.class)
-            .computeBudgetDistributionSumAmount(budgetDistribution, computeDate);
-      }
-    }
-    purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 }

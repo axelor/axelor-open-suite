@@ -38,8 +38,8 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -48,7 +48,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -85,7 +85,7 @@ public class InvoicingProjectService {
 
   @Inject protected TimesheetService timesheetService;
 
-  @Inject protected ExpenseService expenseService;
+  @Inject protected ExpenseInvoiceLineService expenseInvoiceLineService;
 
   @Inject protected PartnerService partnerService;
 
@@ -208,7 +208,7 @@ public class InvoicingProjectService {
         timesheetService.createInvoiceLines(
             invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
     invoiceLineList.addAll(
-        expenseService.createInvoiceLines(
+        expenseInvoiceLineService.createInvoiceLines(
             invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
     invoiceLineList.addAll(
         projectTaskBusinessProjectService.createInvoiceLines(
@@ -326,6 +326,7 @@ public class InvoicingProjectService {
       projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
       timesheetLineBusinessService.timsheetLineInvoicing(project);
     }
+    invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
       return;
@@ -547,16 +548,17 @@ public class InvoicingProjectService {
     invoicingProject.setProject(project);
 
     if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_CONSOLIDATE_ALL) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_CONSOLIDATE_ALL) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(true);
     } else if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DONT_CONSOLIDATE) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_DONT_CONSOLIDATE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(false);
     } else if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
     }
+    invoicingProject = invoicingProjectRepo.save(invoicingProject);
 
     clearLines(invoicingProject);
     setLines(invoicingProject, project, 0);

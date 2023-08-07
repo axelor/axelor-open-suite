@@ -41,7 +41,7 @@ public interface MoveLineComputeAnalyticService {
 
   void generateAnalyticMoveLines(MoveLine moveLine);
 
-  MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
+  MoveLine selectDefaultDistributionTemplate(MoveLine moveLine, Move move) throws AxelorException;
 
   MoveLine analyzeMoveLine(MoveLine moveLine, Company company) throws AxelorException;
 

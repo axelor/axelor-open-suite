@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
@@ -38,7 +37,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
-import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,8 +44,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.AppBudget;
-import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
@@ -120,19 +116,6 @@ public class PurchaseOrderController {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
     Beans.get(PurchaseOrderStockServiceImpl.class).cancelReceipt(purchaseOrder);
-  }
-
-  public void generateBudgetDistribution(ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-
-    AppAccountService appAccountService = Beans.get(AppAccountService.class);
-
-    if (appAccountService.isApp("budget")
-        && !appAccountService.getAppBudget().getManageMultiBudget()) {
-      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderSupplychainService.class).generateBudgetDistribution(purchaseOrder);
-      response.setValues(purchaseOrder);
-    }
   }
 
   // Generate single purchase order from several
@@ -353,27 +336,6 @@ public class PurchaseOrderController {
     }
   }
 
-  public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService =
-          Beans.get(PurchaseOrderSupplychainService.class);
-      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
-
-      if (appBudget.getManageMultiBudget()) {
-        purchaseOrderSupplychainService.applyToallBudgetDistribution(purchaseOrder);
-      } else {
-        purchaseOrderSupplychainService.setPurchaseOrderLineBudget(purchaseOrder);
-
-        response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void updateEstimatedReceiptDate(ActionRequest request, ActionResponse response) {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
@@ -439,32 +401,6 @@ public class PurchaseOrderController {
         response.setInfo(message);
       }
       response.setValues(purchaseOrder);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void updateBudgetDistributionAmountAvailable(
-      ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderSupplychainService.class)
-          .updateBudgetDistributionAmountAvailable(purchaseOrder);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void confirmBudgetDistributionList(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-
-      if (!Beans.get(PurchaseOrderSupplychainService.class)
-          .isGoodAmountBudgetDistribution(purchaseOrder)) {
-        response.setAlert(I18n.get(ITranslation.PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_NOT_EQUAL));
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
