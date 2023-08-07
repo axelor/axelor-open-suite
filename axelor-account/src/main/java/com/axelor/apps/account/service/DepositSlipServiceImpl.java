@@ -43,12 +43,17 @@ import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,10 +61,14 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
   protected InvoicePaymentRepository invoicePaymentRepository;
+  protected PaymentVoucherRepository paymentVoucherRepository;
 
   @Inject
-  public DepositSlipServiceImpl(InvoicePaymentRepository invoicePaymentRepository) {
+  public DepositSlipServiceImpl(
+      InvoicePaymentRepository invoicePaymentRepository,
+      PaymentVoucherRepository paymentVoucherRepository) {
     this.invoicePaymentRepository = invoicePaymentRepository;
+    this.paymentVoucherRepository = paymentVoucherRepository;
   }
 
   @Override
@@ -84,6 +93,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
               AccountExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO));
     }
 
+    List<Pair<LocalDate, BankDetails>> dateByBankDetailsList =
+        new ArrayList<Pair<LocalDate, BankDetails>>();
     paymentVouchers.stream()
         .forEach(
             paymentVoucher ->
@@ -92,13 +103,22 @@ public class DepositSlipServiceImpl implements DepositSlipService {
                     depositSlip.getDepositNumber(),
                     paymentVoucher.getGeneratedMove()));
 
-    Set<BankDetails> bankDetailsCollection =
-        paymentVouchers.stream()
-            .map(PaymentVoucher::getCompanyBankDetails)
-            .collect(Collectors.toSet());
+    for (PaymentVoucher pv : paymentVouchers) {
+      Pair<LocalDate, BankDetails> dateByBankDetails =
+          new MutablePair<>(
+              pv.getChequeDate(),
+              pv.getDepositBankDetails() != null
+                  ? pv.getDepositBankDetails()
+                  : pv.getCompanyBankDetails());
+      if (!dateByBankDetailsList.contains(dateByBankDetails)) {
+        dateByBankDetailsList.add(dateByBankDetails);
+      }
+    }
 
-    for (BankDetails bankDetails : bankDetailsCollection) {
-      publish(depositSlip, bankDetails);
+    if (!CollectionUtils.isEmpty(dateByBankDetailsList)) {
+      for (Pair<LocalDate, BankDetails> dateByBankDetails : dateByBankDetailsList) {
+        publish(depositSlip, dateByBankDetails.getRight(), dateByBankDetails.getLeft());
+      }
     }
 
     LocalDate date = Beans.get(AppBaseService.class).getTodayDate(depositSlip.getCompany());
@@ -107,15 +127,17 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     return date;
   }
 
-  protected void publish(DepositSlip depositSlip, BankDetails bankDetails) throws AxelorException {
+  protected void publish(DepositSlip depositSlip, BankDetails bankDetails, LocalDate chequeDate)
+      throws AxelorException {
 
-    String filename = getFilename(depositSlip, bankDetails);
+    String filename = getFilename(depositSlip, bankDetails, chequeDate);
 
     deleteExistingPublishDmsFile(depositSlip, filename);
 
     ReportSettings settings = ReportFactory.createReport(getReportName(depositSlip), filename);
     settings.addParam("DepositSlipId", depositSlip.getId());
     settings.addParam("BankDetailsId", bankDetails.getId());
+    settings.addParam("ChequeDate", Date.valueOf(chequeDate));
     settings.addParam("Locale", ReportSettings.getPrintingLocale(null));
     settings.addParam(
         "Timezone",
@@ -137,12 +159,14 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         .forEach(dmsFile -> metaFiles.delete(dmsFile));
   }
 
-  public String getFilename(DepositSlip depositSlip, BankDetails bankDetails)
+  public String getFilename(
+      DepositSlip depositSlip, BankDetails bankDetails, LocalDate chequeDueDate)
       throws AxelorException {
 
     StringBuilder stringBuilder = new StringBuilder(depositSlip.getDepositNumber());
     stringBuilder = stringBuilder.append('-').append(bankDetails.getBankCode());
     stringBuilder = stringBuilder.append('-').append(bankDetails.getAccountNbr());
+    stringBuilder = stringBuilder.append('-').append(chequeDueDate.toString());
 
     return stringBuilder.toString();
   }
@@ -183,10 +207,13 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
     if (Objects.nonNull(depositSlip.getCompanyBankDetails())) {
       queryBuilder.add(
-          "self.companyBankDetails = :companyBankDetails AND ( self.bankEntryGenWithoutValEntryCollectionOk is true OR self.paymentMode.accountingTriggerSelect = :accountingTriggerSelect)");
+          "(self.depositBankDetails = :companyBankDetails AND self.bankEntryGenWithoutValEntryCollectionOk is false AND self.paymentMode.accountingTriggerSelect = :depositAccountingTriggerSelect) OR (self.companyBankDetails = :companyBankDetails AND (self.bankEntryGenWithoutValEntryCollectionOk is true OR self.paymentMode.accountingTriggerSelect = :immediateAccountingTriggerSelect))");
       queryBuilder.bind("companyBankDetails", depositSlip.getCompanyBankDetails());
       queryBuilder.bind(
-          "accountingTriggerSelect", PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
+          "depositAccountingTriggerSelect",
+          PaymentModeRepository.ACCOUNTING_TRIGGER_VALUE_FOR_COLLECTION);
+      queryBuilder.bind(
+          "immediateAccountingTriggerSelect", PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
     }
 
     if (Objects.nonNull(depositSlip.getValueForCollectionAccount())) {
@@ -252,6 +279,27 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     }
 
     depositSlip.setIsBankDepositMoveGenerated(true);
+  }
+
+  @Override
+  public List<Integer> getSelectedPaymentVoucherDueIdList(
+      List<Map<String, Object>> paymentVoucherDueList) {
+    return paymentVoucherDueList.stream()
+        .filter(o -> (Boolean) o.get("selected"))
+        .map(o -> (Integer) o.get("id"))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public BigDecimal getTotalAmount(
+      DepositSlip depositSlip, List<Integer> selectedPaymentVoucherDueIdList) {
+    return depositSlip
+        .getTotalAmount()
+        .add(
+            selectedPaymentVoucherDueIdList.stream()
+                .map(integer -> paymentVoucherRepository.find(integer.longValue()).getPaidAmount())
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO));
   }
 
   @Override

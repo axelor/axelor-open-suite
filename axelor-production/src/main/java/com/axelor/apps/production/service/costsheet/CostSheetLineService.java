@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import java.math.BigDecimal;
@@ -77,7 +76,6 @@ public interface CostSheetLineService {
 
   public CostSheetLine createWorkCenterHRCostSheetLine(
       WorkCenter workCenter,
-      ProdHumanResource prodHumanResource,
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine,

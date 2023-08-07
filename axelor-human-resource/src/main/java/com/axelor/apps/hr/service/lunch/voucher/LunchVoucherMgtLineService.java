@@ -44,4 +44,10 @@ public interface LunchVoucherMgtLineService {
 
   public void computeAllAttrs(
       Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine);
+
+  public int computeRestaurant(Employee employee);
+
+  public int computeInvitation(Employee employee);
+
+  public void setStatusToCalculate(LunchVoucherMgtLine lunchVoucherMgtLine);
 }

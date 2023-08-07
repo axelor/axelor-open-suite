@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 
 public class AnalyticMoveLineGenerateRealServiceHrImpl
@@ -39,14 +40,16 @@ public class AnalyticMoveLineGenerateRealServiceHrImpl
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      AppBaseService appBaseService) {
     super(
         analyticMoveLineRepository,
         analyticMoveLineService,
         accountConfigService,
         appAccountService,
         moveLineComputeAnalyticService,
-        accountManagementAccountService);
+        accountManagementAccountService,
+        appBaseService);
   }
 
   @Override

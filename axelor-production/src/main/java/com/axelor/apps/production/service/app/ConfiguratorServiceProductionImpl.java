@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
@@ -107,5 +108,40 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
           .ifPresent(saleOrderLine::setBillOfMaterial);
     }
     return saleOrderLine;
+  }
+
+  @Override
+  protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
+    if (saleOrderLine.getProduct() == null) {
+      return;
+    }
+    super.fillSaleOrderWithProduct(saleOrderLine);
+    setProductionInformation(saleOrderLine);
+  }
+
+  protected void setProductionInformation(SaleOrderLine saleOrderLine) {
+    saleOrderLine.setBillOfMaterial(getDefaultBOM(saleOrderLine));
+
+    if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE
+        || saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE) {
+      saleOrderLine.setStandardDelay(saleOrderLine.getProduct().getStandardDelay());
+    }
+  }
+
+  protected BillOfMaterial getDefaultBOM(SaleOrderLine saleOrderLine) {
+    Product product = saleOrderLine.getProduct();
+    BillOfMaterial defaultBillOfMaterial = null;
+
+    if (saleOrderLine.getSaleSupplySelect() != ProductRepository.SALE_SUPPLY_PRODUCE) {
+      return defaultBillOfMaterial;
+    }
+
+    if (product.getDefaultBillOfMaterial() != null) {
+      defaultBillOfMaterial = product.getDefaultBillOfMaterial();
+    } else if (product.getParentProduct() != null) {
+      defaultBillOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+    }
+
+    return defaultBillOfMaterial;
   }
 }

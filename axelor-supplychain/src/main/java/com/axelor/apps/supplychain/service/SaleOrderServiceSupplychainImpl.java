@@ -141,10 +141,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
     List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
-            .findAllBySaleOrderAndStatus(
-                StockMoveRepository.ORIGIN_SALE_ORDER,
-                saleOrder.getId(),
-                StockMoveRepository.STATUS_PLANNED)
+            .findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED)
             .fetch();
     List<StockMove> stockMoves =
         !allStockMoves.isEmpty()

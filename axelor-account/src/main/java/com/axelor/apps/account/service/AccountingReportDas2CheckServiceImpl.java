@@ -24,6 +24,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.i18n.I18n;
@@ -72,29 +73,25 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
 
     if (partner == null) {
       errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_MISSING));
-    } else {
-      if (partner.getTitleSelect() == null) {
-        errorList.add(
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING));
-      }
-      if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
-          && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
-        errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE));
-      }
-      if (Strings.isNullOrEmpty(partner.getFirstName())) {
-        errorList.add(
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING));
-      }
-      if (partner.getEmailAddress() == null
-          || Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
-        errorList.add(
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
-      }
-      if (Strings.isNullOrEmpty(partner.getFixedPhone())
-          && Strings.isNullOrEmpty(partner.getMobilePhone())) {
-        errorList.add(
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_PHONE_MISSING));
-      }
+      return errorList;
+    }
+    if (partner.getTitleSelect() == null) {
+      errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_TITLE_MISSING));
+    } else if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
+        && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
+      errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE));
+    }
+    if (Strings.isNullOrEmpty(partner.getFirstName())) {
+      errorList.add(
+          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING));
+    }
+    if (partner.getEmailAddress() == null
+        || Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
+      errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
+    }
+    if (Strings.isNullOrEmpty(partner.getFixedPhone())
+        && Strings.isNullOrEmpty(partner.getMobilePhone())) {
+      errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_PHONE_MISSING));
     }
     return errorList;
   }
@@ -102,6 +99,8 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
   protected List<String> checkDasDeclarantCompany(AccountingReport accountingExport) {
 
     Partner companyPartner = accountingExport.getCompany().getPartner();
+    String companyName = accountingExport.getCompany().getName();
+
     List<String> errorList = new ArrayList<>();
 
     if (companyPartner == null) {
@@ -109,29 +108,44 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
       return errorList;
     }
 
-    if (companyPartner.getMainAddress() == null) {
-      errorList.add(
-          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS));
-    }
+    Address companyPartnerMainAddress = companyPartner.getMainAddress();
 
-    if (companyPartner.getMainAddress() != null
-        && companyPartner.getMainAddress().getAddressL7Country() == null) {
+    if (companyPartnerMainAddress == null) {
       errorList.add(
-          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7));
-    }
-
-    if (companyPartner.getMainAddress() != null
-        && companyPartner.getMainAddress().getAddressL7Country() != null
-        && companyPartner.getMainAddress().getAddressL7Country().getAlpha2Code() == null) {
+          String.format(
+              I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS),
+              companyName));
+    } else if (companyPartnerMainAddress.getAddressL7Country() == null) {
       errorList.add(
-          I18n.get(
-              AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE));
-    }
-
-    if (companyPartner.getMainAddress() != null
-        && companyPartner.getMainAddress().getCity() == null) {
-      errorList.add(
-          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY));
+          String.format(
+              I18n.get(
+                  AccountExceptionMessage.ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7),
+              companyName));
+    } else {
+      if (Strings.isNullOrEmpty(companyPartnerMainAddress.getAddressL7Country().getAlpha2Code())) {
+        errorList.add(
+            String.format(
+                I18n.get(
+                    AccountExceptionMessage
+                        .ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE),
+                companyName));
+      } else if ("FR".equals(companyPartnerMainAddress.getAddressL7Country().getAlpha2Code())) {
+        if (companyPartnerMainAddress.getCity() == null) {
+          errorList.add(
+              String.format(
+                  I18n.get(
+                      AccountExceptionMessage
+                          .ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY),
+                  companyName));
+        } else if (Strings.isNullOrEmpty(companyPartnerMainAddress.getCity().getZip())) {
+          errorList.add(
+              String.format(
+                  I18n.get(
+                      AccountExceptionMessage
+                          .ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY_ZIP),
+                  companyName));
+        }
+      }
     }
 
     if (Strings.isNullOrEmpty(appAccountService.getAppAccount().getDasActiveNorm())) {
@@ -144,7 +158,7 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
               I18n.get(
                   AccountExceptionMessage
                       .ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_REGISTRATION_CODE),
-              accountingExport.getCompany().getName()));
+              companyName));
     }
     if (companyPartner.getMainActivity() == null
         || Strings.isNullOrEmpty(companyPartner.getMainActivity().getCode())) {
@@ -152,16 +166,9 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
           String.format(
               I18n.get(
                   AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF),
-              accountingExport.getCompany().getName()));
+              companyName));
     }
 
-    if (companyPartner.getMainAddress() == null) {
-      errorList.add(
-          String.format(
-              I18n.get(
-                  AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS),
-              accountingExport.getCompany().getName()));
-    }
     return errorList;
   }
 
@@ -182,25 +189,27 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
 
     List<String> errorList = new ArrayList<>();
 
-    if (partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY) {
-      checkDasToDeclarePartnerMainAddress(partner, errorList);
-    } else {
+    checkDasToDeclarePartnerMainAddress(partner, errorList);
+
+    String partnerSeq = partner.getPartnerSeq();
+    String partnerSimpleFullName = partner.getSimpleFullName();
+
+    if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY) {
       if (partner.getTitleSelect() == null) {
         errorList.add(
             String.format(
                 I18n.get(
                     AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING),
-                partner.getPartnerSeq(),
-                partner.getSimpleFullName()));
-      }
-      if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
+                partnerSeq,
+                partnerSimpleFullName));
+      } else if (!partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_M)
           && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
         errorList.add(
             String.format(
                 I18n.get(
                     AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE),
-                partner.getPartnerSeq(),
-                partner.getSimpleFullName()));
+                partnerSeq,
+                partnerSimpleFullName));
       }
       if (partner.getFirstName() == null) {
         errorList.add(
@@ -208,59 +217,69 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
                 I18n.get(
                     AccountExceptionMessage
                         .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING),
-                partner.getPartnerSeq(),
-                partner.getSimpleFullName()));
+                partnerSeq,
+                partnerSimpleFullName));
       }
     }
     return errorList;
   }
 
   protected void checkDasToDeclarePartnerMainAddress(Partner partner, List<String> errorList) {
+    String partnerSeq = partner.getPartnerSeq();
+    String partnerSimpleFullName = partner.getSimpleFullName();
+    Address partnerMainAddress = partner.getMainAddress();
 
-    if (partner.getMainAddress() == null) {
+    if (partnerMainAddress == null) {
       errorList.add(
           String.format(
               I18n.get(
                   AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS),
-              partner.getPartnerSeq(),
-              partner.getSimpleFullName()));
+              partnerSeq,
+              partnerSimpleFullName));
       return;
     }
 
-    if (partner.getMainAddress().getCity() == null) {
-      errorList.add(
-          String.format(
-              I18n.get(
-                  AccountExceptionMessage
-                      .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY),
-              partner.getPartnerSeq(),
-              partner.getSimpleFullName()));
-    } else if (partner.getMainAddress().getCity().getZip() == null) {
-      errorList.add(
-          String.format(
-              I18n.get(
-                  AccountExceptionMessage
-                      .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY_ZIP),
-              partner.getPartnerSeq(),
-              partner.getSimpleFullName()));
+    if (partnerMainAddress.getAddressL7Country() != null
+        && "FR".equals(partnerMainAddress.getAddressL7Country().getAlpha2Code())) {
+      if (partnerMainAddress.getCity() == null) {
+        errorList.add(
+            String.format(
+                I18n.get(
+                    AccountExceptionMessage
+                        .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY),
+                partnerSeq,
+                partnerSimpleFullName));
+      } else if (partnerMainAddress.getCity().getZip() == null) {
+        errorList.add(
+            String.format(
+                I18n.get(
+                    AccountExceptionMessage
+                        .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY_ZIP),
+                partnerSeq,
+                partnerSimpleFullName));
+      }
     }
 
-    if (!partner.getMainAddress().getAddressL7Country().getAlpha2Code().equals("FR")) {
-      errorList.add(
-          String.format(
-              I18n.get(
-                  AccountExceptionMessage
-                      .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE),
-              partner.getPartnerSeq(),
-              partner.getSimpleFullName()));
-    } else if (Strings.isNullOrEmpty(partner.getRegistrationCode())) {
-      errorList.add(
-          String.format(
-              I18n.get(
-                  AccountExceptionMessage
-                      .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE),
-              partner.getPartnerSeq(),
-              partner.getSimpleFullName()));
+    if (partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY) {
+
+      if (!partnerMainAddress.getAddressL7Country().getAlpha2Code().equals("FR")) {
+        errorList.add(
+            String.format(
+                I18n.get(
+                    AccountExceptionMessage
+                        .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE),
+                partnerSeq,
+                partnerSimpleFullName));
+      }
+      if (Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+        errorList.add(
+            String.format(
+                I18n.get(
+                    AccountExceptionMessage
+                        .ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE),
+                partnerSeq,
+                partnerSimpleFullName));
+      }
     }
   }
 }

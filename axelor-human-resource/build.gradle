@@ -25,6 +25,7 @@ dependencies {
 }
 
 node {
+	version = '16.17.0'
 	yarnVersion = '1.22.19'
     download = true
     distBaseUrl = null

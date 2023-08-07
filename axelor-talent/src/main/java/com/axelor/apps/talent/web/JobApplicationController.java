@@ -37,15 +37,11 @@ import java.util.Map;
 public class JobApplicationController {
 
   public void hire(ActionRequest request, ActionResponse response) {
-
     JobApplication jobApplication = request.getContext().asType(JobApplication.class);
-
     jobApplication = Beans.get(JobApplicationRepository.class).find(jobApplication.getId());
-
-    Employee employee = Beans.get(JobApplicationService.class).hire(jobApplication);
-
+    Employee employee =
+        Beans.get(JobApplicationService.class).createEmployeeFromJobApplication(jobApplication);
     response.setReload(true);
-
     response.setView(
         ActionView.define(I18n.get("Employee"))
             .model(Employee.class.getName())
@@ -98,5 +94,11 @@ public class JobApplicationController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setInlineUrl(ActionRequest request, ActionResponse response) {
+    JobApplication jobApplication = request.getContext().asType(JobApplication.class);
+    response.setValue(
+        "$inlineUrl", Beans.get(JobApplicationService.class).getInlineUrl(jobApplication));
   }
 }

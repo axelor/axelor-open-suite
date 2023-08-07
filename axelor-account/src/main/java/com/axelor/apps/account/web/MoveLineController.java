@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -42,7 +43,6 @@ import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
@@ -58,7 +58,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
@@ -76,7 +75,7 @@ public class MoveLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Move move = this.getMove(request, moveLine);
       if (move != null
           && Beans.get(MoveLineComputeAnalyticService.class)
               .checkManageAnalytic(move.getCompany())) {
@@ -208,28 +207,10 @@ public class MoveLineController {
     }
   }
 
-  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
-    try {
-
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
-      if (move != null
-          && Beans.get(MoveLineComputeAnalyticService.class)
-              .checkManageAnalytic(move.getCompany())) {
-        moveLine =
-            Beans.get(MoveLineComputeAnalyticService.class)
-                .analyzeMoveLine(moveLine, move.getCompany());
-        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Move move = this.getMove(request, moveLine);
       List<Long> analyticAccountList;
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
@@ -264,28 +245,6 @@ public class MoveLineController {
             }
           }
         }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-
-      Move move = moveLine.getMove();
-      if (move == null) {
-        move = request.getContext().getParent().asType(Move.class);
-      }
-
-      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        response.setAttr(
-            "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-            "required",
-            analyticLineService.isAxisRequired(
-                moveLine, move != null ? move.getCompany() : null, i));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -344,21 +303,10 @@ public class MoveLineController {
     }
   }
 
-  public void checkDateInPeriod(ActionRequest request, ActionResponse response) {
-    try {
-      if (request.getContext().getParent() != null) {
-        MoveLine moveLine = request.getContext().asType(MoveLine.class);
-        Move move = request.getContext().getParent().asType(Move.class);
-        Beans.get(MoveLineToolService.class).checkDateInPeriod(move, moveLine);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine.setMove(this.getMove(request, moveLine));
 
       response.setAttr(
           "invoiceTermPanel",
@@ -424,10 +372,7 @@ public class MoveLineController {
   public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-
-      if (moveLine.getMove() == null) {
-        moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
-      }
+      moveLine.setMove(this.getMove(request, moveLine));
 
       Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
       response.setValues(moveLine);
@@ -438,6 +383,7 @@ public class MoveLineController {
 
   public void updateDueDates(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    moveLine.setMove(this.getMove(request, moveLine));
     if (moveLine.getMove() != null && moveLine.getMove().getOriginDate() != null) {
       LocalDate dueDate =
           Beans.get(InvoiceTermService.class)
@@ -447,17 +393,21 @@ public class MoveLineController {
   }
 
   protected LocalDate extractDueDate(ActionRequest request) {
+    return this.extractDateFromParent(request, "dueDate");
+  }
+
+  protected LocalDate extractDateFromParent(ActionRequest request, String fieldName) {
     Context parentContext = request.getContext().getParent();
 
     if (parentContext == null) {
       return null;
     }
 
-    if (!parentContext.containsKey("dueDate") || parentContext.get("dueDate") == null) {
+    if (!parentContext.containsKey(fieldName) || parentContext.get(fieldName) == null) {
       return null;
     }
 
-    Object dueDateObj = parentContext.get("dueDate");
+    Object dueDateObj = parentContext.get(fieldName);
     if (LocalDate.class.equals(EntityHelper.getEntityClass(dueDateObj))) {
       return (LocalDate) dueDateObj;
     } else {
@@ -474,6 +424,8 @@ public class MoveLineController {
         TaxLine taxLine = moveLine.getTaxLine();
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
+        response.setValue("taxLineBeforeReverse", null);
+
         if (fiscalPosition != null && taxLine != null) {
           taxEquiv =
               Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
@@ -482,10 +434,10 @@ public class MoveLineController {
             response.setValue("taxLineBeforeReverse", taxLine);
             taxLine =
                 Beans.get(TaxService.class).getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
-            response.setValue("taxLine", taxLine);
-            response.setValue("taxEquiv", taxEquiv);
           }
         }
+        response.setValue("taxLine", taxLine);
+        response.setValue("taxEquiv", taxEquiv);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -521,7 +473,7 @@ public class MoveLineController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       response.setAttrs(Beans.get(MoveLineGroupService.class).getOnLoadAttrsMap(moveLine, move));
     } catch (Exception e) {
@@ -532,7 +484,14 @@ public class MoveLineController {
   public void onLoadMove(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
+
+      Context parentContext = request.getContext().getParent();
+      if (move == null
+          && parentContext != null
+          && Move.class.equals(parentContext.getContextClass())) {
+        move = parentContext.asType(Move.class);
+      }
 
       response.setAttrs(
           Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
@@ -544,7 +503,7 @@ public class MoveLineController {
   public void onLoadAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
@@ -584,19 +543,10 @@ public class MoveLineController {
   public void accountOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move;
-      LocalDate cutOffStartDate = null;
-      LocalDate cutOffEndDate = null;
+      Move move = this.getMove(request, moveLine);
+      LocalDate cutOffStartDate = this.extractDateFromParent(request, "cutOffStartDate");
+      LocalDate cutOffEndDate = this.extractDateFromParent(request, "cutOffEndDate");
       LocalDate dueDate = this.extractDueDate(request);
-
-      if (request.getContext().getParent() != null
-          && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
-        cutOffStartDate = (LocalDate) request.getContext().getParent().get("cutOffStartDate");
-        cutOffEndDate = (LocalDate) request.getContext().getParent().get("cutOffEndDate");
-      } else {
-        move = moveLine.getMove();
-      }
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
@@ -654,11 +604,15 @@ public class MoveLineController {
   public void currencyAmountRateOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
+      moveLine.setMove(this.getMove(request, moveLine));
+
+      moveLine.setMove(move);
 
       response.setValues(
           Beans.get(MoveLineGroupService.class)
-              .getCurrencyAmountRateOnChangeValuesMap(moveLine, dueDate));
+              .getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -706,6 +660,8 @@ public class MoveLineController {
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
 
+      moveLine.setMove(move);
+
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDebitOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
@@ -719,6 +675,8 @@ public class MoveLineController {
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
 
+      moveLine.setMove(move);
+
       response.setValues(
           Beans.get(MoveLineGroupService.class)
               .getCreditOnChangeValuesMap(moveLine, move, dueDate));
@@ -731,9 +689,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      if (moveLine.getMove() == null && request.getContext().getParent() != null) {
-        moveLine.setMove(request.getContext().getParent().asType(Move.class));
-      }
+      moveLine.setMove(this.getMove(request, moveLine));
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getPartnerOnChangeValuesMap(moveLine));
@@ -760,11 +716,42 @@ public class MoveLineController {
   }
 
   protected Move getMove(ActionRequest request, MoveLine moveLine) {
-    if (request.getContext().getParent() != null
-        && Move.class.equals(request.getContext().getParent().getContextClass())) {
-      return request.getContext().getParent().asType(Move.class);
+    Context parentContext = request.getContext().getParent();
+    if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+      return parentContext.asType(Move.class);
     } else {
       return moveLine.getMove();
+    }
+  }
+
+  public void generatePfpPartialTerms(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+
+      if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+        if (Beans.get(InvoiceTermPfpService.class)
+            .generateInvoiceTermsAfterPfpPartial(moveLine.getInvoiceTermList())) {
+          response.setReload(true);
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void analyticMoveLineOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getAnalyticMoveLineOnChangeValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getAnalyticMoveLineOnChangeAttrsMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

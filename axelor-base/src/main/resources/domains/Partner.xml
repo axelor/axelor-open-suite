@@ -110,7 +110,7 @@
     <many-to-one name="mainAddress" ref="com.axelor.apps.base.db.Address"
       title="Address"/>
 
-    <string name="companyStr" title="Companies"/>
+    <string name="companyStr" title="Companies" large="true"/>
 
     <string name="headOfficeAddress" title="Head office address"/>
 

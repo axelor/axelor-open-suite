@@ -206,9 +206,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
     comment.append(
         String.format(
-            "\n\t"
-                + I18n.get(
-                    com.axelor.apps.base.exceptions.BaseExceptionMessage.ALARM_ENGINE_BATCH_4),
+            "\n\t" + I18n.get(com.axelor.apps.base.exceptions.BaseExceptionMessage.BASE_BATCH_3),
             batch.getAnomaly()));
 
     super.stop();

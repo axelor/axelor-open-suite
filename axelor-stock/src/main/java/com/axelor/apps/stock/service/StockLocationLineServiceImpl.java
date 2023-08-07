@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -69,8 +70,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   protected AppBaseService appBaseService;
 
-  protected WapHistoryService wapHistoryService;
-
   protected UnitConversionService unitConversionService;
 
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
@@ -81,14 +80,12 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockRulesService stockRulesService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      WapHistoryService wapHistoryService,
       UnitConversionService unitConversionService,
       StockLocationLineHistoryService stockLocationLineHistoryService) {
     this.stockLocationLineRepo = stockLocationLineRepo;
     this.stockRulesService = stockRulesService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
-    this.wapHistoryService = wapHistoryService;
     this.unitConversionService = unitConversionService;
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
   }
@@ -220,6 +217,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
   }
 
+  @Override
   public void maxStockRules(
       Product product,
       BigDecimal qty,
@@ -500,7 +498,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   @Override
   public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product) {
 
-    if (product == null || !product.getStockManaged()) {
+    if (product == null || !product.getStockManaged() || stockLocation == null) {
       return null;
     }
 
@@ -720,7 +718,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine) {
     boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String incomingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.toStockLocation.id = :stockLocationId";
+        STOCK_MOVE_LINE_FILTER + "AND self.toStockLocation.id = :stockLocationId";
     if (isDetailsStockLocationLine) {
       incomingStockMoveLineFilter =
           incomingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
@@ -745,7 +743,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine) {
     boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String outgoingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.fromStockLocation.id = :stockLocationId";
+        STOCK_MOVE_LINE_FILTER + "AND self.fromStockLocation.id = :stockLocationId";
     if (isDetailsStockLocationLine) {
       outgoingStockMoveLineFilter =
           outgoingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
@@ -892,17 +890,23 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     if (dateT == null) {
-      dateT =
-          appBaseService
-              .getTodayDateTime(
-                  stockLocationLine.getStockLocation() != null
-                      ? stockLocationLine.getStockLocation().getCompany()
-                      : Optional.ofNullable(AuthUtils.getUser())
-                          .map(User::getActiveCompany)
-                          .orElse(null))
-              .toLocalDateTime();
+      Company company = getCompany(stockLocationLine);
+      dateT = appBaseService.getTodayDateTime(company).toLocalDateTime();
+    }
+    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, typeSelect);
+  }
+
+  protected Company getCompany(StockLocationLine stockLocationLine) {
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
+    StockLocation detailsStockLocation = stockLocationLine.getDetailsStockLocation();
+
+    if (stockLocation != null) {
+      return stockLocation.getCompany();
     }
 
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, typeSelect);
+    if (detailsStockLocation != null) {
+      return detailsStockLocation.getCompany();
+    }
+    return Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
   }
 }

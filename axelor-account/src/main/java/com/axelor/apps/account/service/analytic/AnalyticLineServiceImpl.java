@@ -25,9 +25,9 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
@@ -50,7 +50,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   protected AppBaseService appBaseService;
   protected AnalyticToolService analyticToolService;
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
+  protected AccountService accountService;
   protected ListToolService listToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
@@ -60,14 +60,14 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AppBaseService appBaseService,
       AnalyticToolService analyticToolService,
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      AccountService accountService,
       ListToolService listToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
     this.analyticToolService = analyticToolService;
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
+    this.accountService = accountService;
     this.listToolService = listToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
@@ -140,11 +140,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       analyticAccountListByAxis.add(analyticAccount.getId());
     }
     if (line.getAccount() != null) {
-      List<AnalyticAccount> analyticAccountList =
-          accountAnalyticRulesRepository.findAnalyticAccountByAccounts(line.getAccount());
-      if (!analyticAccountList.isEmpty()) {
-        for (AnalyticAccount analyticAccount : analyticAccountList) {
-          analyticAccountListByRules.add(analyticAccount.getId());
+      List<Long> analyticAccountIdList = accountService.getAnalyticAccountsIds(line.getAccount());
+      if (CollectionUtils.isNotEmpty(analyticAccountIdList)) {
+        for (Long analyticAccountId : analyticAccountIdList) {
+          analyticAccountListByRules.add(analyticAccountId);
         }
         if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
           analyticAccountListByAxis =
@@ -203,48 +202,71 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   @Override
   public AnalyticLine printAnalyticAccount(AnalyticLine line, Company company)
       throws AxelorException {
-    if (line.getAnalyticMoveLineList() != null
-        && !line.getAnalyticMoveLineList().isEmpty()
-        && company != null) {
-      List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
-      for (AnalyticAxisByCompany analyticAxisByCompany :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-        for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
-          if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
-            analyticMoveLineList.add(analyticMoveLine);
-          }
-        }
-
-        if (!analyticMoveLineList.isEmpty()) {
-
-          AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
-          if (analyticMoveLineList.size() == 1
-              && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
-            AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
-            switch (analyticAxisByCompany.getSequence()) {
-              case 0:
-                line.setAxis1AnalyticAccount(analyticAccount);
-                break;
-              case 1:
-                line.setAxis2AnalyticAccount(analyticAccount);
-                break;
-              case 2:
-                line.setAxis3AnalyticAccount(analyticAccount);
-                break;
-              case 3:
-                line.setAxis4AnalyticAccount(analyticAccount);
-                break;
-              case 4:
-                line.setAxis5AnalyticAccount(analyticAccount);
-                break;
-              default:
-                break;
-            }
-          }
-        }
-        analyticMoveLineList.clear();
-      }
+    if (CollectionUtils.isEmpty(line.getAnalyticMoveLineList()) || company == null) {
+      this.resetAxisAnalyticAccount(line);
+      return line;
     }
+
+    List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
+    for (AnalyticAxisByCompany analyticAxisByCompany :
+        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+      for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
+        if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
+          analyticMoveLineList.add(analyticMoveLine);
+        }
+      }
+
+      if (!analyticMoveLineList.isEmpty()) {
+
+        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+        if (analyticMoveLineList.size() == 1
+            && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
+          setAxisAccount(line, analyticAxisByCompany, analyticMoveLine);
+        } else {
+          setAxisAccount(line, analyticAxisByCompany, null);
+        }
+      }
+      analyticMoveLineList.clear();
+    }
+
     return line;
+  }
+
+  protected void setAxisAccount(
+      AnalyticLine analyticLine,
+      AnalyticAxisByCompany analyticAxisByCompany,
+      AnalyticMoveLine analyticMoveLine) {
+    AnalyticAccount analyticAccount = null;
+    if (analyticMoveLine != null) {
+      analyticAccount = analyticMoveLine.getAnalyticAccount();
+    }
+
+    switch (analyticAxisByCompany.getSequence()) {
+      case 0:
+        analyticLine.setAxis1AnalyticAccount(analyticAccount);
+        break;
+      case 1:
+        analyticLine.setAxis2AnalyticAccount(analyticAccount);
+        break;
+      case 2:
+        analyticLine.setAxis3AnalyticAccount(analyticAccount);
+        break;
+      case 3:
+        analyticLine.setAxis4AnalyticAccount(analyticAccount);
+        break;
+      case 4:
+        analyticLine.setAxis5AnalyticAccount(analyticAccount);
+        break;
+      default:
+        break;
+    }
+  }
+
+  protected void resetAxisAnalyticAccount(AnalyticLine analyticLine) {
+    analyticLine.setAxis1AnalyticAccount(null);
+    analyticLine.setAxis2AnalyticAccount(null);
+    analyticLine.setAxis3AnalyticAccount(null);
+    analyticLine.setAxis4AnalyticAccount(null);
+    analyticLine.setAxis5AnalyticAccount(null);
   }
 }

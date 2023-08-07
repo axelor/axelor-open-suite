@@ -61,6 +61,23 @@
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
 
+    <!-- Revaluation -->
+
+    <boolean name="isToRevaluate" title="To revaluate"/>
+    <many-to-one name="revaluationPeriod" ref="com.axelor.apps.base.db.Duration"
+      title="Revaluation period"/>
+    <many-to-one name="index1" ref="com.axelor.apps.contract.db.IndexRevaluation"
+      title="Index 1"/>
+    <date name="index1Date" title="Index 1 date"/>
+    <many-to-one name="index2" ref="com.axelor.apps.contract.db.IndexRevaluation"
+      title="Index 2"/>
+    <date name="index2Date" title="Index 2 date"/>
+    <many-to-one name="revaluationFormula"
+      ref="com.axelor.apps.contract.db.RevaluationFormula" title="Formula"/>
+    <date name="lastRevaluationDate" title="Last revaluation date"/>
+    <date name="nextRevaluationDate" title="Next revaluation date"/>
+    <date name="endOfApplicationDate" title="End of application"/>
+
     <extra-code><![CDATA[
             static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";
             static final String SUPPLIER_CONTRACT_SEQUENCE = "supplierContract";

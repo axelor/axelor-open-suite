@@ -65,7 +65,9 @@
     <string name="emailSignature" title="Email signature" large="true"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="Trading name"></many-to-one>
+      title="Trading name"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>

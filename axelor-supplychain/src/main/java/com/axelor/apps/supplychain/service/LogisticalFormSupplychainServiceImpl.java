@@ -20,12 +20,10 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
@@ -59,12 +57,8 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
             ? logisticalFormLine.getStockMoveLine().getStockMove()
             : null;
 
-    if (stockMove != null
-        && stockMove.getOriginId() != null
-        && stockMove.getOriginId() != 0
-        && stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)) {
-      logisticalFormLine.setSaleOrder(
-          Beans.get(SaleOrderRepository.class).find(stockMove.getOriginId()));
+    if (stockMove != null) {
+      logisticalFormLine.setSaleOrder(stockMove.getSaleOrder());
     }
 
     return logisticalFormLine;

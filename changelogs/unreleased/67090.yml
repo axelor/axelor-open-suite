@@ -1,0 +1,3 @@
+---
+title: "Move : Fix invoice terms amount at percentage change with negative currency amount"
+type: fix

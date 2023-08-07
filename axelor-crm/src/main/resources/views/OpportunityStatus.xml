@@ -4,9 +4,10 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="opportunity-status-grid" title="Opportunity statuses" orderBy="sequence"
-    model="com.axelor.apps.crm.db.OpportunityStatus" editable="true" sortable="false">
+    model="com.axelor.apps.crm.db.OpportunityStatus" canMove="true">
     <field name="name"/>
-    <field name="sequence"/>
+    <field name="isOpen"/>
+    <field name="sequence" hidden="true"/>
   </grid>
 
   <form name="opportunity-status-form" title="Opportunity status"
@@ -17,7 +18,8 @@
         title="These statuses are essential to the operation of the process, they can be renamed but cannot be deleted."
         hidden="true" css="label-bold" name="opportunityStatusEssentialLabel"/>
       <field name="name"/>
-      <field name="sequence"/>
+      <field name="isOpen"/>
+      <field name="sequence" hidden="true"/>
     </panel>
   </form>
 

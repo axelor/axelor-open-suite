@@ -7,7 +7,7 @@
     title="Daily planned charge in a month per project">
     <dataset type="jpql">
   <![CDATA[
-   select sum(e.hourlyRate*t.plannedHours) as charge, p.name as project
+   select sum(e.hourlyRate*t.plannedTime) as charge, p.name as project
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id
@@ -23,7 +23,7 @@
     title="Daily planned charge in a month per employee">
     <dataset type="jpql">
   <![CDATA[
-   select sum(e.hourlyRate*t.plannedHours) as charge, p.name as project , e.name as employee
+   select sum(e.hourlyRate*t.plannedTime) as charge, p.name as project , e.name as employee
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id
@@ -39,7 +39,7 @@
     title="Daily planned charge in a month in an average per employee">
     <dataset type="jpql">
   <![CDATA[
-   select avg(e.hourlyRate*t.plannedHours) as charge , e.name as employee
+   select avg(e.hourlyRate*t.plannedTime) as charge , e.name as employee
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id

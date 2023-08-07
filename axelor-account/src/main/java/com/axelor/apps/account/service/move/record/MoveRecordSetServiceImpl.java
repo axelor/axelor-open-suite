@@ -25,9 +25,9 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PaymentConditionService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -37,7 +37,9 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -45,35 +47,36 @@ import java.util.Optional;
 
 public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
-  protected MoveLineControlService moveLineControlService;
   protected PartnerRepository partnerRepository;
   protected BankDetailsService bankDetailsService;
-  protected MoveToolService moveToolService;
   protected PeriodService periodService;
   protected PaymentConditionService paymentConditionService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveRecordSetServiceImpl(
-      MoveLineControlService moveLineControlService,
       PartnerRepository partnerRepository,
       BankDetailsService bankDetailsService,
-      MoveToolService moveToolService,
       PeriodService periodService,
-      PaymentConditionService paymentConditionService) {
-    this.moveLineControlService = moveLineControlService;
+      PaymentConditionService paymentConditionService,
+      InvoiceTermService invoiceTermService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
-    this.moveToolService = moveToolService;
     this.periodService = periodService;
     this.paymentConditionService = paymentConditionService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
-  public void setPeriod(Move move) throws AxelorException {
-    if (move.getDate() != null && move.getCompany() != null) {
-      move.setPeriod(
-          periodService.getActivePeriod(
-              move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+  public void setPeriod(Move move) {
+    try {
+      if (move.getDate() != null && move.getCompany() != null) {
+        move.setPeriod(
+            periodService.getActivePeriod(
+                move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+      }
+    } catch (AxelorException axelorException) {
+      move.setPeriod(null);
     }
   }
 
@@ -173,14 +176,37 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   @Override
   public void setFunctionalOriginSelect(Move move) {
-    if (move.getJournal() != null
-        && move.getJournal().getAuthorizedFunctionalOriginSelect() != null) {
-      if (move.getJournal().getAuthorizedFunctionalOriginSelect().split(",").length == 1) {
-        move.setFunctionalOriginSelect(
-            Integer.valueOf(move.getJournal().getAuthorizedFunctionalOriginSelect()));
-      } else {
-        move.setFunctionalOriginSelect(null);
-      }
+    move.setFunctionalOriginSelect(computeFunctionalOriginSelect(move));
+  }
+
+  /**
+   * Compute the default functional origin select of the move.
+   *
+   * @param move any move, cannot be null
+   * @return the default functional origin select if there is one, else return null
+   */
+  protected Integer computeFunctionalOriginSelect(Move move) {
+    if (move.getJournal() == null) {
+      return null;
+    }
+    String authorizedFunctionalOriginSelect =
+        move.getJournal().getAuthorizedFunctionalOriginSelect();
+
+    if (ObjectUtils.isEmpty(authorizedFunctionalOriginSelect)) {
+      return null;
+    }
+
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      // standard behavior: fill an origin if there is only one authorized
+      return authorizedFunctionalOriginSelect.split(",").length == 1
+          ? Integer.valueOf(authorizedFunctionalOriginSelect)
+          : null;
+    } else {
+      // behavior for mass entry: take the first authorized functional origin select
+      return Arrays.stream(authorizedFunctionalOriginSelect.split(","))
+          .findFirst()
+          .map(Integer::valueOf)
+          .orElse(null);
     }
   }
 
@@ -202,5 +228,45 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     BankDetails defaultBankDetails =
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     move.setCompanyBankDetails(defaultBankDetails);
+  }
+
+  @Override
+  public void setOriginDate(Move move) {
+    Objects.requireNonNull(move);
+
+    if (move.getDate() != null
+        && move.getJournal() != null
+        && move.getJournal().getIsFillOriginDate()) {
+      move.setOriginDate(move.getDate());
+    } else if (move.getDate() == null
+        || (move.getJournal() == null
+            || (move.getJournal() != null && !move.getJournal().getIsFillOriginDate()))) {
+      move.setOriginDate(null);
+    }
+  }
+
+  public void setPfpStatus(Move move) {
+    Objects.requireNonNull(move);
+
+    if (move.getJournal() != null && move.getJournal().getJournalType() != null) {
+      JournalType journalType = move.getJournal().getJournalType();
+      if (move.getCompany() != null
+          && move.getCompany().getAccountConfig() != null
+          && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
+          && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+          && (journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              || journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
+        move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+      }
+    }
+  }
+
+  public void setPfpValidatorUser(Move move) {
+    Objects.requireNonNull(move);
+
+    move.setPfpValidatorUser(
+        invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
   }
 }

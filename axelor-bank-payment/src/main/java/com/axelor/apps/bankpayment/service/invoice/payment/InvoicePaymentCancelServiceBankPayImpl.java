@@ -87,7 +87,8 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
     this.checkPaymentBankOrder(invoicePayment);
 
     BankOrder paymentBankOrder = invoicePayment.getBankOrder();
-    if (paymentBankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
+    if (paymentBankOrder != null
+        && paymentBankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
       bankOrderService.cancelBankOrder(paymentBankOrder);
       this.updateCancelStatus(invoicePayment);
     }

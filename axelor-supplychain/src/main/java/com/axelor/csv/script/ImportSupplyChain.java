@@ -198,6 +198,7 @@ public class ImportSupplyChain {
               Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()));
         }
         invoiceTermService.computeInvoiceTerms(invoice);
+        invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
         invoiceService.validateAndVentilate(invoice);
 
         List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);

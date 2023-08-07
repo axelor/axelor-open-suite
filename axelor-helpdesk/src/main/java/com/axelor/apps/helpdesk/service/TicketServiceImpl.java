@@ -31,9 +31,12 @@ import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
+import com.axelor.utils.date.DateTool;
+import com.axelor.utils.date.DurationTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -243,5 +246,38 @@ public class TicketServiceImpl implements TicketService {
         ticketRepo.save(ticket);
       }
     }
+  }
+
+  @Override
+  public Long computeDuration(Ticket ticket) {
+    if (ticket.getStartDateT() != null
+        && ticket.getEndDateT() != null
+        && ticket.getEndDateT().isAfter(ticket.getStartDateT())) {
+      Duration duration =
+          DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
+      return DurationTool.getSecondsDuration(duration);
+    }
+
+    return ticket.getDuration();
+  }
+
+  @Override
+  public LocalDateTime computeEndDate(Ticket ticket) {
+    if (ticket.getStartDateT() != null
+        && ticket.getDuration() != null
+        && ticket.getDuration() != 0) {
+      return DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration());
+    }
+
+    return ticket.getEndDateT();
+  }
+
+  @Override
+  public LocalDateTime computeStartDate(Ticket ticket) {
+    if (ticket.getEndDateT() != null && ticket.getDuration() != null && ticket.getDuration() != 0) {
+      return DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration());
+    }
+
+    return ticket.getStartDateT();
   }
 }

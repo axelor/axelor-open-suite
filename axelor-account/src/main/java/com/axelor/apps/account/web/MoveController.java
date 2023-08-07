@@ -27,10 +27,14 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.base.AxelorException;
@@ -52,6 +56,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -369,10 +374,13 @@ public class MoveController {
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+      User user = request.getUser();
+      boolean isMassEntryMove =
+          "move-mass-entry-form".equals(request.getContext().get("_viewName").toString());
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
-      response.setValues(moveGroupService.getOnNewValuesMap(move));
-      response.setAttrs(moveGroupService.getOnNewAttrsMap(move));
+      response.setValues(moveGroupService.getOnNewValuesMap(move, isMassEntryMove));
+      response.setAttrs(moveGroupService.getOnNewAttrsMap(move, user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -381,10 +389,11 @@ public class MoveController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+      User user = request.getUser();
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       response.setValues(moveGroupService.getOnLoadValuesMap(move));
-      response.setAttrs(moveGroupService.getOnLoadAttrsMap(move));
+      response.setAttrs(moveGroupService.getOnLoadAttrsMap(move, user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -599,7 +608,7 @@ public class MoveController {
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       response.setValues(moveGroupService.getPaymentModeOnChangeValuesMap(move));
-      response.setAttrs(moveGroupService.getPaymentModeOnChangeAttrsMap());
+      response.setAttrs(moveGroupService.getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -635,6 +644,19 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
 
       response.setValues(Beans.get(MoveGroupService.class).getCurrencyOnChangeValuesMap(move));
+      response.setAttrs(Beans.get(MoveGroupService.class).getCurrencyOnChangeAttrsMap(move));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onChangeFiscalPosition(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setValues(
+          Beans.get(MoveGroupService.class).getFiscalPositionOnChangeValuesMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -642,7 +664,7 @@ public class MoveController {
 
   public void onChangeDateOfReversionSelect(ActionRequest request, ActionResponse response) {
     try {
-      LocalDate moveDate = (LocalDate) request.getContext().get("_moveDate");
+      LocalDate moveDate = LocalDate.parse((String) request.getContext().get("_moveDate"));
       int dateOfReversionSelect = (int) request.getContext().get("dateOfReversionSelect");
 
       response.setValues(
@@ -686,7 +708,7 @@ public class MoveController {
 
   public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttrs(Beans.get(MoveGroupService.class).getPartnerBankDetailsOnChangeAttrsMap());
+      response.setAttrs(Beans.get(MoveGroupService.class).getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -694,7 +716,7 @@ public class MoveController {
 
   public void wizardDefault(ActionRequest request, ActionResponse response) {
     try {
-      LocalDate moveDate = (LocalDate) request.getContext().get("_moveDate");
+      LocalDate moveDate = LocalDate.parse((String) request.getContext().get("_moveDate"));
 
       response.setAttrs(Beans.get(MoveGroupService.class).getWizardDefaultAttrsMap(moveDate));
     } catch (Exception e) {
@@ -758,7 +780,116 @@ public class MoveController {
     }
   }
 
+  public void checkPeriod(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      String alert = Beans.get(MoveCheckService.class).getPeriodAlert(move);
+
+      if (StringUtils.notEmpty(alert)) {
+        response.setAlert(alert);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   protected boolean getChangeDummyBoolean(Context context, String name) {
     return Optional.ofNullable(context.get(name)).map(value -> (Boolean) value).orElse(false);
+  }
+
+  public void applyCutOffDatesInEmptyLines(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
+
+      if (request.getContext().get("cutOffStartDate") != null
+          && request.getContext().get("cutOffEndDate") != null) {
+        LocalDate cutOffStartDate =
+            LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+        LocalDate cutOffEndDate =
+            LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+
+        if (moveComputeService.checkManageCutOffDates(move)) {
+          moveComputeService.applyCutOffDatesInEmptyLines(move, cutOffStartDate, cutOffEndDate);
+
+          response.setValue("moveLineList", move.getMoveLineList());
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MovePfpService.class).validatePfp(move.getId());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setPfpVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      User user = request.getUser();
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      if (move != null) {
+        Beans.get(MoveAttrsService.class).getPfpAttrs(move, user, attrsMap);
+        response.setAttrs(attrsMap);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      response.setAttr(
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(move.getPartner(), move.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void refusalToPay(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MovePfpService.class)
+          .refusalToPay(
+              Beans.get(MoveRepository.class).find(move.getId()),
+              move.getReasonOfRefusalToPay(),
+              move.getReasonOfRefusalToPayStr());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getMassEntryAttributeValues(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+        MoveAttrsService moveAttrsService = Beans.get(MoveAttrsService.class);
+        moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+        moveAttrsService.addMassEntryHidden(move, attrsMap);
+        moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
+        moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+
+        response.setAttrs(attrsMap);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

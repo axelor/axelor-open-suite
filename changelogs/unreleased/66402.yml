@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix tax being empty on invoice line when it's required on account"
+type: fix

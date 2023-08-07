@@ -100,6 +100,9 @@
 	      id]]>
     </integer>
 
+    <boolean name="pfpfPartialValidationOk"/>
+    <decimal name="pfpPartialValidationAmount"/>
+
     <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 
     <extra-code><![CDATA[
@@ -133,6 +136,8 @@
       <field name="pfpValidatorUser"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.account.db.repo.InvoiceTermListener"/>
 
   </entity>
 

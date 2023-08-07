@@ -61,8 +61,9 @@
     <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5">
       <field name="contactPartner" colSpan="12"
         domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
-        form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
-        <editor x-viewer="true">
+        form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
+        onChange="action-employee-attrs-fill-user">
+        <editor>
           <field name="picture" colSpan="2" css="center" showTitle="false" widget="Image"/>
           <panel name="contactDetailsPanel" colSpan="10">
             <field name="titleSelect" colSpan="2"/>
@@ -108,6 +109,7 @@
         onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
       <field name="maritalName" colSpan="4"/>
+      <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
     </panel>
@@ -132,7 +134,8 @@
 
       <panel colSpan="12">
         <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-          form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
+          form-view="weekly-planning-form" grid-view="weekly-planning-grid"
+          domain="self.typeSelect = 1"/>
         <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
           form-view="events-planning-form" grid-view="events-planning-grid"/>
         <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
@@ -203,9 +206,10 @@
 
     <!-- User creation -->
     <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
-      <field name="user" title="Attach to"/>
+      <field name="user" title="Attach to" onSelect="action-employee-attrs-change-domain"/>
       <button name="createUserBtn" title="Create new user"
-        onClick="save,action-employee-view-open-user-creation-wizard"/>
+        onClick="save,action-employee-view-open-user-creation-form" hideIf="user != null"
+        hidden="true"/>
     </panel>
     <!-- END OF User creation -->
     <!-- END OF New employee wizard -->
@@ -227,7 +231,8 @@
         </panel>
         <field name="contactPartner" colSpan="12"
           domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
-          form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
+          form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
+          onChange="action-employee-attrs-fill-user">
           <editor x-viewer="true">
             <panel name="imagePanel" colSpan="2">
               <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>
@@ -309,6 +314,7 @@
             onSelect="action-employee-attrs-city-of-birth-on-select"/>
           <field name="citizenship" colSpan="4"/>
           <field name="maritalName" colSpan="4"/>
+          <field name="dependentChildren" colSpan="4"/>
           <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
           <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
         </panel>
@@ -333,7 +339,8 @@
 
           <panel colSpan="12">
             <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-              form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
+              form-view="weekly-planning-form" grid-view="weekly-planning-grid"
+              domain="self.typeSelect = 1"/>
             <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
               form-view="events-planning-form" grid-view="events-planning-grid"/>
             <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
@@ -419,7 +426,10 @@
         <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"
           colSpan="3"/>
         <field name="companyCbDetails" colSpan="3" hidden="true" showIf="companyCbSelect > 1"/>
-
+        <field name="analyticDistributionTemplate"
+          grid-view="analytic-distribution-template-grid"
+          form-view="analytic-distribution-template-form"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
         <panel-related name="employeeAdvanceListPanel" title="Employee advances"
           field="employeeAdvanceList" colSpan="12" form-view="employee-advance-employee-form"
           grid-view="employee-advance-employee-grid"
@@ -464,16 +474,8 @@
       </panel>
 
       <panel name="employeeFileListPanel" title="Files" colSpan="12">
-        <field name="employeeFileList" showTitle="false" colSpan="12">
-          <editor colSpan="12" x-viewer="true" x-show-on-new="true" x-layout="table">
-            <field name="fileType" colSpan="3" onChange="action-record-set-expiration-date"/>
-            <field name="metaFile" widget="binary-link" colSpan="3"
-              onChange="action-record-set-record-date"/>
-            <field name="recordDate" colSpan="3" readonly="true"/>
-            <field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>
-            <field name="fileType.hasExpirationDate" hidden="true"/>
-          </editor>
-        </field>
+        <panel-related field="employeeFileList" showTitle="false"
+          grid-view="employee-file-grid" form-view="employee-file-form" colSpan="12"/>
       </panel>
     </panel-tabs>
 
@@ -657,6 +659,7 @@
     model="com.axelor.apps.hr.db.Employee">
     <view type="grid" name="employee-grid"/>
     <view type="form" name="employee-form"/>
+    <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval:employee?.id"/>
   </action-view>
 
@@ -719,9 +722,25 @@
       if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
   </action-condition>
 
+  <action-attrs name="action-employee-attrs-change-domain">
+    <attribute for="user" name="domain"
+      expr="eval: &quot;self.employee = null AND self.partner = null&quot;"
+      if="__this__.contactPartner.linkedUser == null"/>
+    <attribute for="user" name="domain"
+      expr="eval: &quot;self.employee = null AND self.partner = :contactPartner&quot;"
+      if="__this__.contactPartner.linkedUser != null"/>
+  </action-attrs>
+
   <action-attrs name="action-employee-attrs-set-seniority-date">
     <attribute name="value" for="seniorityDate" expr="eval: hireDate"
       if="seniorityDate == null"/>
+  </action-attrs>
+
+  <action-attrs name="action-employee-attrs-fill-user">
+    <!-- This case doesn't currently work due to an AOP issue -->
+    <!--attribute for="user" name="value" expr="eval: null" if="contactPartner == null"/ -->
+    <attribute for="user" name="value" expr="eval: contactPartner?.linkedUser"
+      if="contactPartner?.linkedUser != null &amp;&amp; contactPartner?.employee == null"/>
   </action-attrs>
 
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
