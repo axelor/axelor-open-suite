@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -417,18 +416,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     for (ContractLine line : additionalLines) {
       InvoiceLine invLine = generate(invoice, line);
       invLine.setContractLine(line);
-      if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
-        for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
-          analyticMoveLine.setContractLine(line);
-        }
-      }
+
       contractLineRepo.save(line);
     }
 
     // Compute all classic contract lines
     for (ContractVersion version : getVersions(contract)) {
       BigDecimal ratio = BigDecimal.ONE;
-      if (isTimeProratedInvoice) {
+      if (isPeriodicInvoicing && isTimeProratedInvoice) {
         if (isFullProrated(contract)
             && !DateTool.isProrata(
                 contract.getInvoicePeriodStartDate(),
@@ -470,11 +465,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         tmp = this.contractLineService.computeTotal(tmp);
         InvoiceLine invLine = generate(invoice, tmp);
         invLine.setContractLine(line);
-        if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
-          for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
-            analyticMoveLine.setContractLine(line);
-          }
-        }
       }
     }
 
@@ -580,8 +570,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     return mergedLines;
   }
-
-  InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
   public InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
 

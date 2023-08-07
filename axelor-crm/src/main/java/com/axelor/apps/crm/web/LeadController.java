@@ -20,12 +20,14 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
@@ -34,6 +36,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -45,6 +49,9 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class LeadController {
+
+  // using provider for the injection of a parameterized service
+  @Inject private Provider<EmailDomainToolService<Lead>> emailDomainToolServiceProvider;
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -192,7 +199,10 @@ public class LeadController {
       Lead lead = request.getContext().asType(Lead.class);
       lead = Beans.get(LeadRepository.class).find(lead.getId());
 
-      List<Lead> leadList = Beans.get(LeadService.class).getLeadsWithSameDomainName(lead);
+      List<Lead> leadList =
+          emailDomainToolServiceProvider
+              .get()
+              .getEntitiesWithSameEmailAddress(lead, lead.getEmailAddress(), null);
 
       if (ObjectUtils.notEmpty(leadList)) {
         response.setView(null);
@@ -211,6 +221,31 @@ public class LeadController {
                 .map());
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void kanbanLeadOnMove(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    try {
+      Beans.get(LeadService.class).kanbanLeadOnMove(lead);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void rollbackLeadStatus(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    lead = Beans.get(LeadRepository.class).find(lead.getId());
+
+    response.setValue("leadStatus", lead.getLeadStatus());
+  }
+
+  public void computeIsLost(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      response.setValue("$isLost", Beans.get(LeadService.class).computeIsLost(lead));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

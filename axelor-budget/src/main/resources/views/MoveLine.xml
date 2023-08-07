@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form id="budget-move-line-move-form" name="move-line-move-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" extension="true">
@@ -14,6 +14,7 @@
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel" title="Budget"
+          if="__config__.app.isApp('budget')"
           onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"
@@ -33,7 +34,7 @@
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel"
-          readonlyIf="move.statusSelect == 3" title="Budget"
+          if="__config__.app.isApp('budget')" readonlyIf="move.statusSelect == 3" title="Budget"
           onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"

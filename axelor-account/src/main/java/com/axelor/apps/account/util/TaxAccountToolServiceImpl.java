@@ -66,7 +66,7 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
         return MoveLineRepository.VAT_CASH_PAYMENTS;
       }
-    } else {
+    } else if (account != null) {
       return account.getVatSystemSelect();
     }
     return MoveLineRepository.VAT_SYSTEM_DEFAULT;

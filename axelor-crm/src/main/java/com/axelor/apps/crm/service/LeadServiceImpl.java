@@ -37,17 +37,16 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LeadServiceImpl implements LeadService {
 
@@ -255,23 +254,28 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Override
-  public List<Lead> getLeadsWithSameDomainName(Lead lead) {
-    List<Lead> leadsWithSameDomainNameList = new ArrayList<>();
-    if (lead.getEmailAddress() != null) {
-      String leadDomainNameStr = lead.getEmailAddress().getName().split("@")[1].replace("]", "");
+  public boolean computeIsLost(Lead lead) throws AxelorException {
+    return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());
+  }
 
-      List<Lead> leadsWithSameDomainNameListTemp =
-          leadRepo
-              .all()
-              .filter(
-                  "self.emailAddress is not null and self.emailAddress.name like :domainName and self.id !=  :leadId")
-              .bind("domainName", "%" + leadDomainNameStr + "%")
-              .bind("leadId", lead.getId())
-              .fetch();
-      if (ObjectUtils.notEmpty(leadsWithSameDomainNameListTemp)) {
-        leadsWithSameDomainNameList.addAll(leadsWithSameDomainNameListTemp);
-      }
+  @Override
+  public void kanbanLeadOnMove(Lead lead) throws AxelorException {
+    LeadStatus leadStatus = lead.getLeadStatus();
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+
+    if (Objects.isNull(leadStatus)) {
+      return;
     }
-    return leadsWithSameDomainNameList;
+    if (leadStatus.equals(convertedLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_KANBAN));
+    }
+    if (leadStatus.equals(lostLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
+    }
   }
 }

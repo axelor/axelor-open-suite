@@ -55,8 +55,6 @@ public class StockCorrectionPostRequest extends RequestPostStructure {
   @Min(0)
   private BigDecimal realQty;
 
-  public StockCorrectionPostRequest() {}
-
   public Long getProductId() {
     return productId;
   }

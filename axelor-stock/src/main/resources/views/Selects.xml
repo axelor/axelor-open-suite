@@ -159,4 +159,8 @@
     <option value="updateStockLocationFromProduct">Update stock location from product</option>
   </selection>
 
+  <selection name="message.related.to.select" id="stockRule.message.related.to.select">
+    <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
+  </selection>
+
 </object-views>

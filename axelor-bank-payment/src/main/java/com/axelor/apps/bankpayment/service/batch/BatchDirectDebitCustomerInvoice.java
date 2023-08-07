@@ -167,7 +167,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 
         try {
           doneList.add(
-              invoicePaymentCreateService.createInvoicePayment(invoice, companyBankDetails));
+              invoicePaymentCreateService.createAndAddInvoicePayment(invoice, companyBankDetails));
           incrementDone();
         } catch (Exception e) {
           incrementAnomaly();

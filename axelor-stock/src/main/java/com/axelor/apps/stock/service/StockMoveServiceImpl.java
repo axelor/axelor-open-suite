@@ -45,7 +45,6 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -53,6 +52,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -75,6 +75,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,6 +92,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockMoveLineRepository stockMoveLineRepo;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected AppStockService appStockService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -102,7 +104,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       PartnerProductQualityRatingService partnerProductQualityRatingService,
       ProductRepository productRepository,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      AppStockService appStockService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -112,6 +115,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.productRepository = productRepository;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.appStockService = appStockService;
   }
 
   /**
@@ -232,17 +236,30 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public StockMove createStockMoveMobility(
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
       Company company,
-      Product product,
-      TrackingNumber trackNb,
-      BigDecimal movedQty,
-      Unit unit)
+      List<StockMoveLine> stockMoveLines)
       throws AxelorException {
 
+    StockMove stockMove = createStockMoveMobility(fromStockLocation, toStockLocation, company);
+    this.plan(stockMove);
+    if (stockMoveLines != null) {
+      for (StockMoveLine stockMoveLine : stockMoveLines) {
+        // This method will already set sml.stockMove = stockMove so no need to add in list.
+        createStockMoveLine(stockMove, stockMoveLine);
+      }
+    }
+
+    this.realize(stockMove);
+
+    return stockMove;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected StockMove createStockMoveMobility(
+      StockLocation fromStockLocation, StockLocation toStockLocation, Company company) {
     StockMove stockMove = new StockMove();
     stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
     stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
@@ -255,33 +272,41 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setPickingOrderComments(""); // comment to display on picking order
     stockMove.setRealDate(LocalDate.now());
     stockMove.setEstimatedDate(LocalDate.now());
-    stockMoveRepo.save(stockMove);
+    return stockMoveRepo.save(stockMove);
+  }
 
-    StockMoveLine line = new StockMoveLine();
-    line.setStockMove(stockMove);
-    line.setProduct(product);
-    stockMoveLineService.setProductInfo(stockMove, line, company);
+  /**
+   * Usage mostly for mobile aos
+   *
+   * @param stockMove
+   * @param stockMoveLine
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  protected StockMoveLine createStockMoveLine(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
+
+    Product product = stockMoveLine.getProduct();
+    stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
+
     if (product.getTrackingNumberConfiguration() != null) {
-      line.setTrackingNumber(trackNb);
+      stockMoveLine.setTrackingNumber(stockMoveLine.getTrackingNumber());
     }
-    line.setQty(movedQty);
-    line.setRealQty(movedQty);
-    line.setIsRealQtyModifiedByUser(true);
-    line.setUnitPriceUntaxed(product.getLastPurchasePrice());
-    line.setUnit(unit);
-    stockMoveLineRepo.save(line);
-    stockMoveLineService.setAvailableStatus(line);
-    stockMoveLineService.compute(line, stockMove);
-    stockMoveLineRepo.save(line);
 
-    ArrayList<StockMoveLine> stockMoveLineList = new ArrayList<>();
-    stockMoveLineList.add(line);
-    stockMove.setStockMoveLineList(stockMoveLineList);
-    stockMoveRepo.save(stockMove);
+    if (stockMoveLine.getToStockLocation() == null) {
+      stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+    }
+    if (stockMoveLine.getFromStockLocation() == null) {
+      stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+    }
 
-    this.validate(stockMove);
-
-    return stockMove;
+    stockMoveLine.setIsRealQtyModifiedByUser(true);
+    stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
+    stockMove.addStockMoveLineListItem(stockMoveLine);
+    stockMoveLineRepo.save(stockMoveLine);
+    stockMoveLineService.setAvailableStatus(stockMoveLine);
+    stockMoveLineService.compute(stockMoveLine, stockMove);
+    return stockMoveLineRepo.save(stockMoveLine);
   }
 
   @Override
@@ -1467,5 +1492,25 @@ public class StockMoveServiceImpl implements StockMoveService {
     } else if (oldStockMove.getStockCorrection() != null) {
       newStockMove.setStockCorrection(oldStockMove.getStockCorrection());
     }
+  }
+
+  @Override
+  public void changeLinesFromStockLocation(StockMove stockMove, StockLocation stockLocation) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()
+        || CollectionUtils.isEmpty(stockMoveLineList)) {
+      return;
+    }
+    stockMove.getStockMoveLineList().forEach(line -> line.setFromStockLocation(stockLocation));
+  }
+
+  @Override
+  public void changeLinesToStockLocation(StockMove stockMove, StockLocation stockLocation) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()
+        || CollectionUtils.isEmpty(stockMoveLineList)) {
+      return;
+    }
+    stockMoveLineList.forEach(line -> line.setToStockLocation(stockLocation));
   }
 }

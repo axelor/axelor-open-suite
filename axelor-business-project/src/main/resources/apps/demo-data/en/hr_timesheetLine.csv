@@ -1,4 +1,4 @@
-"importId";"project.importId";"product.importId";"employee_importId";"date";"timesheet.importId";"hoursDuration";"projectTask.importId"
+"importId";"project.importId";"product.importId";"employee_importId";"date";"timesheet.importId";"hoursDuration";"projectTask_importId"
 4;demo_project_13;;19;"TODAY[-1d]";3;7;demo_project_task_13_0
 5;demo_project_13;;5;"TODAY[-1d]";5;3;demo_project_task_13_1
 6;demo_project_13;;4;"TODAY[-1d]";4;7;demo_project_task_13_2

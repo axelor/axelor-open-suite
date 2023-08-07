@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
@@ -153,7 +154,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public String getDuplicatedMoveOriginAlert(Move move) throws AxelorException {
+  public String getDuplicatedMoveOriginAlert(Move move) {
     if (move.getJournal() != null
         && move.getPartner() != null
         && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
@@ -219,6 +220,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
                 ml.getMove() != null
                     && invoiceTermService.getPfpValidatorUserCondition(
                         ml.getMove().getInvoice(), ml)
+                    && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
                     && ml.getInvoiceTermList().stream()
                         .anyMatch(it -> it.getPfpValidatorUser() == null))) {
       return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
@@ -253,5 +255,19 @@ public class MoveCheckServiceImpl implements MoveCheckService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.MOVE_CHECK_CURRENCY_AMOUNT_SUM));
     }
+  }
+
+  @Override
+  public String getPeriodAlert(Move move) {
+    try {
+      if (move.getDate() != null && move.getCompany() != null) {
+        periodService.getActivePeriod(
+            move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+      }
+    } catch (AxelorException axelorException) {
+      return axelorException.getMessage();
+    }
+
+    return null;
   }
 }

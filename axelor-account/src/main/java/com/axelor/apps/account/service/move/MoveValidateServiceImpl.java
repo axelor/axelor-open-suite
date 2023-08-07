@@ -23,10 +23,12 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -263,7 +265,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         Account account = moveLine.getAccount();
         if (account.getIsTaxAuthorizedOnMoveLine()
             && account.getIsTaxRequiredOnMoveLine()
-            && moveLine.getTaxLine() == null) {
+            && moveLine.getTaxLine() == null
+            && functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
               I18n.get(AccountExceptionMessage.MOVE_9),
@@ -283,6 +286,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       this.checkTaxAmount(move);
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
+      this.checkMoveLineDescription(move);
 
       moveControlService.checkDuplicateOrigin(move);
     }
@@ -821,6 +825,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkTaxAmount(Move move) throws AxelorException {
+    if (this.isReverseCharge(move)) {
+      return;
+    }
+
     AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -872,5 +880,31 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             BigDecimal.valueOf(100),
             AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
             RoundingMode.HALF_UP);
+  }
+
+  protected boolean isReverseCharge(Move move) {
+    if (move.getInvoice() != null) {
+      return move.getInvoice().getInvoiceLineList().stream()
+          .map(InvoiceLine::getTaxEquiv)
+          .filter(Objects::nonNull)
+          .anyMatch(TaxEquiv::getReverseCharge);
+    } else {
+      return move.getMoveLineList().stream()
+          .map(MoveLine::getTaxEquiv)
+          .filter(Objects::nonNull)
+          .anyMatch(TaxEquiv::getReverseCharge);
+    }
+  }
+
+  protected void checkMoveLineDescription(Move move) throws AxelorException {
+    if (ObjectUtils.notEmpty(move.getMoveLineList())
+        && accountConfigService.getAccountConfig(move.getCompany()).getIsDescriptionRequired()
+        && move.getMoveLineList().stream()
+            .map(MoveLine::getDescription)
+            .anyMatch(ObjectUtils::isEmpty)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_DESCRIPTION_MISSING));
+    }
   }
 }

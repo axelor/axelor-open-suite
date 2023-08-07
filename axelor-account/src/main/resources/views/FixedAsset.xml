@@ -325,7 +325,8 @@
       <field name="disposalAmount" showIf="disposalTypeSelect == 2" type="decimal"
         title="Disposal amount" hidden="true"/>
       <button name="disposalBtn" title="confirm.disposal" colSpan="4"
-        onClick="action-fixed-asset-group-disposal-asset"/>
+        onClick="action-fixed-asset-group-disposal-asset"
+        readonlyIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0 &amp;&amp; $generateSaleMove &amp;&amp; !saleTaxLine"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0" hidden="true"/>
       <field name="saleTaxLine" requiredIf="$generateSaleMove" title="Tax line"

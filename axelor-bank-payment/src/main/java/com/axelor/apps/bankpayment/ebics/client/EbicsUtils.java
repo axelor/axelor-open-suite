@@ -239,7 +239,7 @@ public class EbicsUtils {
         Canonicalizer canonicalizer;
 
         canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-        output.write(canonicalizer.canonicalizeSubtree(node));
+        canonicalizer.canonicalizeSubtree(node, output);
       }
 
       return output.toByteArray();

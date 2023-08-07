@@ -1291,7 +1291,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
 		WHEN ReportValue.analytic_account IS NULL THEN 0
 		ELSE AnalyticAccount.id
 	END ) AS "id",
-	AnalyticAccount.name AS "accountName",
+	SUBSTRING(REGEXP_REPLACE(AnalyticAccount.name, '[?:*[\]\\\/]|^''|''$', '', 'g'), 0, 31) AS "accountName",
 	ReportValue.analytic_order AS "analyticOrder"
 
 FROM account_accounting_report_value AS ReportValue
@@ -1513,9 +1513,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <property name="textAlign">center</property>
                     <property name="verticalAlign">middle</property>
                     <property name="canShrink">true</property>
-                    <column id="5523">
-                        <property name="width">10%</property>
-                    </column>
                     <column id="5488"/>
                     <column id="12">
                         <property name="width">1.448in</property>
@@ -1524,29 +1521,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                         <property name="width">1.448in</property>
                     </column>
                     <row id="14">
-                        <cell id="5522">
-                            <image id="6058">
-                                <property name="height">25px</property>
-                                <property name="width">50px</property>
-                                <property name="dataSet">ReportDS</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
-                                <property name="source">file</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            </image>
-                        </cell>
+                        <property name="verticalAlign">middle</property>
                         <cell id="5487">
                             <text id="5499">
                                 <property name="dataSet">ReportDS</property>
@@ -1799,7 +1774,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <property name="fontSize">24pt</property>
                     <property name="textAlign">center</property>
                     <image id="6056">
-                        <property name="height">50px</property>
                         <property name="width">100px</property>
                         <list-property name="visibility">
                             <structure>
@@ -2473,6 +2447,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[this.name = row["accountName"]]]></method>
+                        <method name="onPageBreak"><![CDATA[this.name = row["accountName"]]]></method>
+                        <property name="pageBreakInterval">1</property>
                         <list-property name="sort">
                             <structure>
                                 <expression name="key" type="javascript">row["analyticOrder"]</expression>
@@ -2488,6 +2465,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                         </header>
                         <detail>
                             <row id="5999">
+                                <property name="pageBreakBefore">auto</property>
                                 <cell id="6006">
                                     <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="5838">
                                         <property name="cube">ReportValues</property>
@@ -2502,8 +2480,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                             <data id="5853">
                                                                 <structure name="numberFormat">
                                                                     <property name="category">Custom</property>
-                                                                    <property name="pattern">#0.00</property>
+                                                                    <property name="pattern">#,##0.00</property>
                                                                 </structure>
+                                                                <property name="textAlign">right</property>
                                                                 <list-property name="highlightRules">
                                                                     <structure>
                                                                         <property name="operator">eq</property>
@@ -3022,7 +3001,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 </simple-property-list>
                                             </filter-condition-element>
                                         </property>
-                                        <property name="pageBreakAfter">always</property>
+                                        <property name="pageBreakAfter">auto</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">line</property>

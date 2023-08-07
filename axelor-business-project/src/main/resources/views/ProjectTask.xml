@@ -143,7 +143,7 @@
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>
           <panel name="initialPanel" title="ProjectTask.Initial" colSpan="12"
-            showIf="!parentTask">
+            showIf="!parentTask" hidden="true">
             <panel-dashlet action="action-project-task-view-turnover-custom"
               colSpan="3"/>
             <panel-dashlet action="action-project-task-view-initial-costs-custom"
@@ -158,7 +158,8 @@
             <field name="initialMarkup" hidden="true"/>
             <field name="unitCost" hidden="true"/>
           </panel>
-          <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
+          <panel name="realPanel" title="ProjectTask.Real" colSpan="12" hidden="true"
+            showIf="!parentTask">
             <panel-dashlet action="action-project-task-view-real-turnover-custom"
               colSpan="3"/>
             <panel-dashlet action="action-project-task-view-real-costs-custom"
@@ -173,7 +174,13 @@
             <field name="realMarkup" hidden="true"/>
             <field name="forecastUnitCost" hidden="true"/>
           </panel>
-          <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+          <panel name="realCostPanel" title="" colSpan="12" hidden="true" showIf="parentTask">
+            <panel-dashlet action="action-project-task-view-real-costs-custom"
+              title="Real costs" colSpan="3"/>
+            <field name="realCosts" hidden="true"/>
+          </panel>
+          <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12" hidden="true"
+            showIf="!parentTask">
             <panel-dashlet action="action-project-task-view-forecast-costs-custom"
               colSpan="3"/>
             <panel-dashlet action="action-project-task-view-forecast-margin-custom"

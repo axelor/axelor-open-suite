@@ -22,12 +22,24 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.PartnerCrmService;
+import com.axelor.apps.crm.service.PartnerEmailDomainToolService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PartnerCrmController {
+
+  // using provider for the injection of a parameterized service
+  @Inject private Provider<EmailDomainToolService<Partner>> emailDomainToolServiceProvider;
 
   public void getSubsidiaryPartnersCount(ActionRequest request, ActionResponse response) {
 
@@ -46,17 +58,57 @@ public class PartnerCrmController {
     }
   }
 
-  public void loseLead(ActionRequest request, ActionResponse response) {
+  public void losePartner(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       Beans.get(PartnerCrmService.class)
-          .loseLead(
+          .losePartner(
               Beans.get(PartnerRepository.class).find(partner.getId()),
               partner.getLostReason(),
               partner.getLostReasonStr());
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  /** Called from partner contact form view, when loading related contact panel. */
+  public void viewRelatedContacts(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    String domain;
+    Map<String, Object> params;
+    if (partner == null || partner.getId() == null) {
+      domain = "";
+      params = new HashMap<>();
+    } else {
+      domain = Beans.get(PartnerEmailDomainToolService.class).computeFilterEmailOnDomain(partner);
+      params =
+          emailDomainToolServiceProvider
+              .get()
+              .computeParameterForFilter(partner, partner.getEmailAddress());
+    }
+    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Contacts"));
+    actionViewBuilder.model(Partner.class.getName());
+    actionViewBuilder.add("grid", "partner-related-contact-grid");
+    actionViewBuilder.add("form", "partner-contact-form");
+    actionViewBuilder.domain(domain);
+    for (Map.Entry<String, Object> entry : params.entrySet()) {
+      actionViewBuilder.context(entry.getKey(), entry.getValue());
+    }
+    response.setView(actionViewBuilder.map());
+  }
+
+  public void kanbanPartnerOnMove(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    try {
+      Beans.get(PartnerCrmService.class).kanbanPartnerOnMove(partner);
+    } catch (Exception e) {
+      if (e.getMessage().equals(I18n.get(CrmExceptionMessage.PROSPECT_CLOSE_WIN_KANBAN))) {
+        TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+        response.setReload(true);
+        return;
+      }
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

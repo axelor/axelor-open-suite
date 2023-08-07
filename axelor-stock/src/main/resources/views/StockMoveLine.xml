@@ -8,9 +8,11 @@
     <hilite strong="true" color="default" if="lineTypeSelect != 0"/>
     <field name="lineTypeSelect" hidden="true"/>
     <field name="fromStockLocation"
-      onSelect="action-stock-move-line-method-compute-from-stock-location-domain"/>
+      onSelect="action-stock-move-line-method-compute-from-stock-location-domain"
+      onChange="action-stock-move-line-group-stock-location-onchange"/>
     <field name="toStockLocation"
-      onSelect="action-stock-move-line-method-compute-to-stock-location-domain"/>
+      onSelect="action-stock-move-line-method-compute-to-stock-location-domain"
+      onChange="action-stock-move-line-group-stock-location-onchange"/>
     <field name="product" canEdit="false"
       onChange="action-group-stock-stockmoveline-product-onchange"
       onSelect="action-stock-move-line-method-product-domain" form-view="product-form"
@@ -84,8 +86,10 @@
       if="__config__.app.isApp('supplychain')"/>
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" icon="fa-barcode"
       onClick="save,action-stock-move-line-method-open-wizard"
-      readonlyIf="lineTypeSelect == 1 || ($get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2))"/>
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isSaleTrackingManaged')) || !($get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr') &amp;&amp; $get('stockMove.typeSelect') == 2)"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
+    <field name="product.trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr"
+      hidden="true"/>
   </grid>
 
   <form name="stock-move-line-form" title="Stock move line"
@@ -147,9 +151,11 @@
 					]]></viewer>
       </field>
       <field name="fromStockLocation"
-        onSelect="action-stock-move-line-method-compute-from-stock-location-domain" hidden="true"/>
+        onSelect="action-stock-move-line-method-compute-from-stock-location-domain"
+        onChange="action-stock-move-line-group-stock-location-onchange" hidden="true"/>
       <field name="toStockLocation"
-        onSelect="action-stock-move-line-method-compute-to-stock-location-domain" hidden="true"/>
+        onSelect="action-stock-move-line-method-compute-to-stock-location-domain"
+        onChange="action-stock-move-line-group-stock-location-onchange" hidden="true"/>
       <field name="product" canEdit="false"
         domain="self.expense = false AND self.dtype = 'Product'"
         onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange"
@@ -937,9 +943,18 @@
       method="getFromStockLocationDomain"/>
   </action-method>
 
+  <action-group name="action-stock-move-line-group-stock-location-onchange">
+    <action name="action-stock-move-line-method-clear-line"
+      if="!toStockLocation || !fromStockLocation"/>
+  </action-group>
+
   <action-method name="action-stock-move-line-method-compute-to-stock-location-domain">
     <call class="com.axelor.apps.stock.web.StockMoveLineController"
       method="getToStockLocationDomain"/>
+  </action-method>
+
+  <action-method name="action-stock-move-line-method-clear-line">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController" method="clearLine"/>
   </action-method>
 
   <search-filters name="stock-move-line-filters"

@@ -16,7 +16,7 @@
   </grid>
 
   <grid name="extra-hours-validate-grid" title="Extra Hours"
-    model="com.axelor.apps.hr.db.ExtraHours" canNew="false" orderBy="-sentDate">
+    model="com.axelor.apps.hr.db.ExtraHours" canNew="true" orderBy="-sentDate">
     <toolbar>
       <button name="showSubordinateExtraHoursToValidateBtn"
         title="Show extra hours to be validated by my subordinates"

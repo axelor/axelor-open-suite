@@ -53,6 +53,7 @@ import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
@@ -103,18 +104,20 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
+      ProductRepository productRepository,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService,
+      AppStockService appStockService,
       AppSupplychainService appSupplyChainService,
+      AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
-      ProductRepository productRepository,
       PartnerSupplychainService partnerSupplychainService,
-      AppAccountService appAccountService,
-      PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService,
-      FixedAssetRepository fixedAssetRepository) {
+      FixedAssetRepository fixedAssetRepository,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -124,16 +127,18 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         partnerProductQualityRatingService,
         productRepository,
         partnerStockSettingsService,
-        stockConfigService);
+        stockConfigService,
+        appStockService);
     this.appSupplyChainService = appSupplyChainService;
+    this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.unitConversionService = unitConversionService;
     this.reservedQtyService = reservedQtyService;
     this.partnerSupplychainService = partnerSupplychainService;
-    this.appAccountService = appAccountService;
     this.fixedAssetRepository = fixedAssetRepository;
+    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
   }
 
   @Override
@@ -670,5 +675,21 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     } else {
       super.setOrigin(oldStockMove, newStockMove);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setInvoicingStatusInvoicedDelayed(StockMove stockMove) {
+    stockMove = stockMoveRepo.find(stockMove.getId());
+    stockMove.setInvoicingStatusSelect(StockMoveRepository.STATUS_DELAYED_INVOICE);
+    stockMoveRepo.save(stockMove);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setInvoicingStatusInvoicedValidated(StockMove stockMove) {
+    stockMove = stockMoveRepo.find(stockMove.getId());
+    stockMove.setInvoicingStatusSelect(StockMoveRepository.STATUS_VALIDATED_INVOICE);
+    stockMoveRepo.save(stockMove);
   }
 }

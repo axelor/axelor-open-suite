@@ -14,8 +14,8 @@
     <boolean name="payrollPreparation" title="Payroll preparation"/>
     <boolean name="lunchVoucher" title="Lunch Voucher"/>
     <boolean name="employeeBonus" title="Employee bonus"/>
-    <boolean name="isMyHrEnabled" title="Enable My HR" default="true"
-      help="Activate My HR enable the HR menu entries for employees."/>
+    <boolean name="isMyHrEnabled" title="Enable MyHR" default="true"
+      help="Activate MyHR enables the HR menu entries for employees."/>
 
     <extra-code>
    		<![CDATA[

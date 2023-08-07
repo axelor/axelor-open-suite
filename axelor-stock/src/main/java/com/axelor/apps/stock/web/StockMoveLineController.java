@@ -70,27 +70,27 @@ public class StockMoveLineController {
 
   public void setProductInfo(ActionRequest request, ActionResponse response) {
 
-    StockMoveLine stockMoveLine;
-
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+    StockMove stockMove = stockMoveLine.getStockMove();
     try {
-      stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      StockMove stockMove = stockMoveLine.getStockMove();
 
       if (stockMove == null) {
         stockMove = request.getContext().getParent().asType(StockMove.class);
       }
 
       if (stockMoveLine.getProduct() == null) {
-        stockMoveLine = new StockMoveLine();
+        stockMoveLineService.resetStockMoveLine(stockMoveLine);
+        stockMoveLine.setStockMove(stockMove);
         response.setValues(Mapper.toMap(stockMoveLine));
         return;
       }
 
-      Beans.get(StockMoveLineService.class)
-          .setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
+      stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
       response.setValues(stockMoveLine);
     } catch (Exception e) {
-      stockMoveLine = new StockMoveLine();
+      stockMoveLineService.resetStockMoveLine(stockMoveLine);
+      stockMoveLine.setStockMove(stockMove);
       response.setValues(Mapper.toMap(stockMoveLine));
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
     }
@@ -108,6 +108,12 @@ public class StockMoveLineController {
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
       response.setValues(newStockMoveLine);
     }
+  }
+
+  public void clearLine(ActionRequest request, ActionResponse response) {
+    Map<String, Object> clearedStockMoveLineMap =
+        Beans.get(StockMoveLineService.class).getClearedStockMoveLineMap();
+    response.setValues(clearedStockMoveLineMap);
   }
 
   public void splitStockMoveLineByTrackingNumber(ActionRequest request, ActionResponse response) {

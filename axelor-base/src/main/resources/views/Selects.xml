@@ -135,11 +135,6 @@
     <option value="2">Open street map</option>
   </selection>
 
-  <selection name="base.app.base.osm.routing.api.select">
-    <option value="1">YOUR navigation</option>
-    <option value="2">OSRM</option>
-  </selection>
-
   <selection name="base.app.base.currency.api.select">
     <option value="com.axelor.apps.base.service.currency.ECBCurrencyConversionService">ECB</option>
     <option value="com.axelor.apps.base.service.currency.FixerCurrencyConversionService">Fixer</option>

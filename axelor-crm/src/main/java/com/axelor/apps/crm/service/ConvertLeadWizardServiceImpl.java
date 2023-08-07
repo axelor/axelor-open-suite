@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LeadStatus;
+import com.axelor.apps.crm.db.PartnerStatus;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
@@ -47,6 +48,7 @@ import com.axelor.message.db.MultiRelated;
 import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected ConvertWizardOpportunityService convertWizardOpportunityService;
 
+  protected PartnerRepository partnerRepository;
+
   @Inject
   public ConvertLeadWizardServiceImpl(
       LeadService leadService,
@@ -82,7 +86,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       AppBaseService appBaseService,
       AppCrmService appCrmService,
       MultiRelatedRepository multiRelatedRepository,
-      ConvertWizardOpportunityService convertWizardOpportunityService) {
+      ConvertWizardOpportunityService convertWizardOpportunityService,
+      PartnerRepository partnerRepository) {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
@@ -92,6 +97,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.appCrmService = appCrmService;
     this.multiRelatedRepository = multiRelatedRepository;
     this.convertWizardOpportunityService = convertWizardOpportunityService;
+    this.partnerRepository = partnerRepository;
   }
 
   /**
@@ -180,9 +186,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected EmailAddress createEmailAddress(String address, Partner partner) {
     EmailAddress emailAddress = new EmailAddress();
-
     emailAddress.setAddress(address);
-
     emailAddress.setPartner(partner);
 
     return emailAddress;
@@ -255,6 +259,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     return partner;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public Partner generateDataAndConvertLead(
       Lead lead,
@@ -262,6 +267,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       Integer leadToContactSelect,
       Partner partner,
       Map<String, Object> partnerMap,
+      PartnerStatus partnerStatus,
       List<Partner> contactPartnerList,
       Map<String, Object> contactPartnerMap)
       throws AxelorException {
@@ -270,19 +276,19 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
     if (partner != null
         && partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
-      contactPartnerList =
-          createContactData(
-              leadToContactSelect, lead, partner, contactPartnerList, contactPartnerMap);
+      contactPartnerList = createContactData(lead, contactPartnerList, contactPartnerMap);
     }
 
     partner = this.convertLead(lead, partner, contactPartnerList);
 
+    if (partnerStatus != null) {
+      partner.setPartnerStatus(partnerStatus);
+    }
     if (lead.getPartner() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.CONVERT_LEAD_ERROR));
     }
-
     return partner;
   }
 
@@ -307,6 +313,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
               convertWizardService.createObject(
                   partnerMap, Mapper.toBean(Partner.class, null), Mapper.of(Partner.class));
       partner = this.createPartner(partner, primaryAddress);
+      partner.setIsProspect(true);
       // TODO check all required fields...
     } else if (partner != null) {
       if (!partner.getIsCustomer()) {
@@ -318,11 +325,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   @SuppressWarnings("unchecked")
   protected List<Partner> createContactData(
-      Integer leadToContactSelect,
-      Lead lead,
-      Partner partner,
-      List<Partner> contactPartnerList,
-      Map<String, Object> contactPartnerMap)
+      Lead lead, List<Partner> contactPartnerList, Map<String, Object> contactPartnerMap)
       throws AxelorException {
 
     if (contactPartnerMap != null) {
@@ -349,9 +352,14 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   }
 
   @Override
-  public List<Partner> generateContactList(
-      Lead lead, List<Partner> contactPartnerList, Map<String, Object> contactPartnerMap)
-      throws AxelorException {
-    return this.createContactData(null, lead, null, contactPartnerList, contactPartnerMap);
+  public List<Partner> convertMapListToPartnerList(List<Map<String, Object>> contactList) {
+    List<Partner> partnerList = new ArrayList<>();
+    if (contactList != null) {
+      for (Map<String, Object> contactMap : contactList) {
+        Partner partner = partnerRepository.find(Long.valueOf(contactMap.get("id").toString()));
+        partnerList.add(partner);
+      }
+    }
+    return partnerList;
   }
 }

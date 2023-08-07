@@ -1,7 +1,6 @@
 "importId";"metaField.name";"title";"targetField";"currentDomain";"advancedExport.importId";"orderBy";"orderByType"
 100;"fullName";"Full name";"fullName";"Budget";100;"false";"asc"
 101;"fullName";"Parent Level";"budgetLevel.fullName";"Budget";100;"false";"asc"
-102;"rootParentBudgetLevel";"Root parent budget level";"rootParentBudgetLevel";"Budget";100;"false";"asc"
 103;"statusSelect";"Status select";"statusSelect";"Budget";100;"false";"asc"
 104;"fromDate";"From";"fromDate";"Budget";100;"false";"asc"
 105;"toDate";"To";"toDate";"Budget";100;"false";"asc"

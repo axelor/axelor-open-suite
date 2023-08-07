@@ -20,6 +20,7 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.CrmReporting;
 import com.axelor.apps.crm.db.Event;
@@ -29,6 +30,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.Set;
 
 public class CrmReportingController {
 
@@ -68,5 +70,11 @@ public class CrmReportingController {
     } catch (ClassNotFoundException | AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void prefillCompanySet(ActionRequest request, ActionResponse response) {
+    CrmReporting crmReporting = request.getContext().asType(CrmReporting.class);
+    Set<Company> companySet = Beans.get(CrmReportingService.class).prefillCompanySet(crmReporting);
+    response.setValue("companySet", companySet);
   }
 }

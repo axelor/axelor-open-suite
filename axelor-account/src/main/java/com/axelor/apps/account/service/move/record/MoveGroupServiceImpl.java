@@ -41,6 +41,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MoveGroupServiceImpl implements MoveGroupService {
@@ -193,6 +194,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addMoveLineListViewerHidden(move, attrsMap);
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
+    moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
 
     if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
       moveAttrsService.getPfpAttrs(move, user, attrsMap);
@@ -235,8 +238,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
-    moveCheckService.checkPeriodPermission(move);
-    moveRecordSetService.setPeriod(move);
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveCheckService.checkPeriodPermission(move);
+      moveRecordSetService.setPeriod(move);
+    }
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
     moveRecordSetService.setOriginDate(move);
@@ -306,6 +311,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
+    moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
 
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
@@ -351,6 +358,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addHidden(move, attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
+    moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
 
     return attrsMap;
   }
@@ -367,6 +375,19 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       valuesMap.put("moveLineMassEntryList", move.getMoveLineMassEntryList());
     }
 
+    if (List.of(
+                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_ACCOUNTED,
+                MoveRepository.STATUS_SIMULATED)
+            .contains(move.getStatusSelect())
+        && appAccountService.getAppAccount() != null
+        && appAccountService.getAppAccount().getActivatePassedForPayment()) {
+      Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
+      if (pfpStatus != null) {
+        valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
+      }
+    }
+
     valuesMap.put("dueDate", move.getDueDate());
 
     return valuesMap;
@@ -381,6 +402,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+    }
+    if (move.getStatusSelect() != MoveRepository.STATUS_NEW) {
+      moveAttrsService.getPfpAttrs(move, AuthUtils.getUser(), attrsMap);
     }
 
     return attrsMap;
@@ -449,13 +473,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addPaymentConditionChangeChangeValue(false, attrsMap);
     moveAttrsService.addHeaderChangeValue(false, attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, true, attrsMap);
     moveAttrsService.addDueDateHidden(move, attrsMap);
+    moveAttrsService.getPfpAttrs(move, AuthUtils.getUser(), attrsMap);
 
     return attrsMap;
   }
@@ -492,7 +518,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
-    valuesMap.put("partner", null);
+
+    if (move.getPartner() != null
+        && move.getCompany() != null
+        && move.getPartner().getCompanySet() != null
+        && !move.getPartner().getCompanySet().contains(move.getCompany())) {
+      valuesMap.put("partner", null);
+      valuesMap.put("currency", move.getCompany().getCurrency());
+      valuesMap.put("companyBankDetails", null);
+    }
 
     return valuesMap;
   }
@@ -503,6 +537,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
+    moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
+
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
     }
@@ -522,7 +559,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPaymentModeOnChangeAttrsMap() {
+  public Map<String, Map<String, Object>> getHeaderChangeAttrsMap() {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addHeaderChangeValue(true, attrsMap);
@@ -578,15 +615,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
         moveRecordUpdateService.getDateOfReversion(moveDate, dateOfReversionSelect));
 
     return valuesMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getPartnerBankDetailsOnChangeAttrsMap() {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addHeaderChangeValue(true, attrsMap);
-
-    return attrsMap;
   }
 
   @Override
