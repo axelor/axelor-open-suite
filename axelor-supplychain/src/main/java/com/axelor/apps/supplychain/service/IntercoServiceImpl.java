@@ -63,6 +63,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -82,14 +83,18 @@ public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
   protected BankDetailsService bankDetailsService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
   public IntercoServiceImpl(
-      PurchaseConfigService purchaseConfigService, BankDetailsService bankDetailsService) {
+      PurchaseConfigService purchaseConfigService,
+      BankDetailsService bankDetailsService,
+      AnalyticLineModelService analyticLineModelService) {
     this.purchaseConfigService = purchaseConfigService;
     this.bankDetailsService = bankDetailsService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -329,9 +334,9 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
 
     // analyticDistribution
-    saleOrderLine =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
-            .getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+
     if (saleOrderLine.getAnalyticMoveLineList() != null) {
       for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
         obj.setSaleOrderLine(saleOrderLine);

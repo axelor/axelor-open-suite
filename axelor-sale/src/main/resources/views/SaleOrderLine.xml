@@ -378,7 +378,7 @@
           readonlyIf="$isReadOnly !== false" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+          onChange="action-sale-order-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
       <panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration">
@@ -505,7 +505,7 @@
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+          onChange="action-sale-order-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
       <panel name="settingsPanel" title="Settings">
@@ -688,6 +688,8 @@
     <action name="action-sale-order-line-record-complementary-products-to-handle"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-method-translate-product-description-and-name"/>
+    <action name="action-sale-order-line-method-compute-analytic-distribution"/>
+    <action name="action-sale-order-line-method-print-analytic-account"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-qty-onchange">

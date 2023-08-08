@@ -82,25 +82,7 @@
 
   <action-group name="action-group-sale-saleorderline-product-onchange"
     id="action-budget-group-sale-saleorderline-product-onchange">
-    <action name="action-sale-order-line-method-get-product-information"/>
-    <action name="action-sale-order-line-method-compute"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
-    <action name="action-sale-order-line-get-production-information"/>
-    <action name="action-sale-order-line-method-supplier-partner-default"
-      if="__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
-    <action name="action-sale-order-line-method-check-qty"
-      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
-    <action if="__config__.app.isApp('supplychain')"
-      name="action-sale-order-line-attrs-show-delivery-panel"/>
-    <action name="action-method-sale-order-line-available-and-allocated-stock"/>
-    <action name="action-sale-order-attrs-hide-ati"/>
-    <action name="action-record-sale-order-line-future-qty"
-      if="__config__.app.isApp('supplychain')"/>
-    <action name="action-sale-order-line-record-complementary-products-to-handle"/>
-    <action name="action-sale-order-line-method-fill-max-discount"/>
-    <action name="action-sale-order-line-method-translate-product-description-and-name"/>
+    <action name="action-group-sale-saleorderline-product-onchange"/>
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
   </action-group>

@@ -41,6 +41,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
@@ -206,18 +207,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           break;
 
         case SaleOrderLineRepository.TYPE_NORMAL:
-          if (saleOrderLine.getAnalyticDistributionTemplate() != null
-              || !ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
-            invoiceLine.setAnalyticDistributionTemplate(
-                saleOrderLine.getAnalyticDistributionTemplate());
-            this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-            analyticMoveLineList =
-                invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
-          } else {
-            analyticMoveLineList =
-                invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-            analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
-          }
+          invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
+              invoiceLine, invoice, new AnalyticLineModel(saleOrderLine));
           break;
 
         default:
@@ -329,6 +320,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
   }
 
+  // TODO to be deleted
   public void copyAnalyticMoveLines(
       List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine) {
 
