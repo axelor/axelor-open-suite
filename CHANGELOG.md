@@ -1,3 +1,24 @@
+## [6.3.25] (2023-08-08)
+
+#### Fixed
+
+* PLANNING: Planning is now correctly filtered on employee and machine form
+* SaleOrderLine: Description is now copied only if the configuration allows it
+* PurchaseOrder and Invoice: Added widget boolean switch for interco field 
+* ManufOrder: Planning a cancelled MO now clears the real dates on operations orders and MO
+* Product/ProductFamily : Analytic distribution template is now on readonly if the config analytic type is not by product
+* Invoice: Fixed french translations
+* SOP/MPS: Fixed a bug where real datas were never increased
+* SOP/MPS: Fixed SOP/MPS Wrong message on forecast generation
+* Debt Recovery: Fixed error message on debt recovery batch to display correctly trading name
+* Period : Fixed an issue where a false warning was displayed preventing the user for re-opening a closed period
+* Invoice: Fixed a bug where subscription invoice was linked to unrelated advance payment invoice
+
+When creating an invoice auto complete advance payement invoice with no internal reference to an already existing sale order.
+
+* Product: When changing costTypeSelect to 'last purchase price', the cost price will now be correctly converted.
+* BUSINESS PROJECT BATCH: Fixed invoicing project batch
+
 ## [6.3.24] (2023-07-20)
 
 #### Fixed
@@ -765,6 +786,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.25]: https://github.com/axelor/axelor-open-suite/compare/v6.3.24...v6.3.25
 [6.3.24]: https://github.com/axelor/axelor-open-suite/compare/v6.3.23...v6.3.24
 [6.3.23]: https://github.com/axelor/axelor-open-suite/compare/v6.3.22...v6.3.23
 [6.3.22]: https://github.com/axelor/axelor-open-suite/compare/v6.3.21...v6.3.22
