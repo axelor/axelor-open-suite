@@ -486,7 +486,7 @@ public final class BaseExceptionMessage {
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
-      "The previous period is not closed or temporarily closed." /*)*/;
+      "The previous period is not closed or temporarily closed while it should be." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
       "The previous period is not closed." /*)*/;

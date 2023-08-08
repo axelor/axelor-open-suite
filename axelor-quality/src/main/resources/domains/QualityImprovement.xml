@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QualityImprovement">
+
+    <string name="sequence" title="Sequence" readonly="true" copy="false"/>
+    <integer name="technicalSeq" title="Technical sequence" required="true" readonly="true"
+      default="1"/>
+    <integer name="type" title="Type" required="true" selection="quality.qi.type.select"
+      default="1"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+      required="true" readonly="true"/>
+    <many-to-one name="qiDetection" title="Detection"
+      ref="com.axelor.apps.quality.db.QIDetection" required="true"/>
+    <many-to-one name="qiStatus" title="Status"
+      ref="com.axelor.apps.quality.db.QIStatus" required="true"/>
+
+    <extra-code><![CDATA[
+	    public static final int TYPE_PRODUCT = 1;
+	    public static final int TYPE_SYSTEM = 2;
+	]]></extra-code>
+
+    <track>
+      <field name="sequence"/>
+      <field name="technicalSeq"/>
+      <field name="type"/>
+      <field name="company"/>
+      <field name="qiDetection"/>
+      <field name="qiStatus"/>
+    </track>
+
+  </entity>
+
+</domain-models>
