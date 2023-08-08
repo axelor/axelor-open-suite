@@ -10,12 +10,8 @@
     <field name="sopSalesForecast"/>
     <field name="sopRealSales"/>
     <field name="sopSalesGap"/>
-    <field name="sopManufForecast"/>
     <field name="sopRealManuf"/>
-    <field name="sopManufGap"/>
-    <field name="sopStockForecast"/>
     <field name="sopRealStock"/>
-    <field name="sopStockGap"/>
   </grid>
 
   <form name="sop-line-form" title="Sales and Operations Planning Line"
@@ -31,16 +27,10 @@
       <field name="sopRealSales" onChange="action-sop-line-record-compute-sop-sales-gap"
         colSpan="4"/>
       <field name="sopSalesGap" readonly="true" colSpan="4"/>
-      <field name="sopManufForecast" onChange="action-sop-line-record-compute-sop-manuf-gap"
-        colSpan="4"/>
       <field name="sopRealManuf" onChange="action-sop-line-record-compute-sop-manuf-gap"
-        colSpan="4"/>
-      <field name="sopManufGap" readonly="true" colSpan="4"/>
-      <field name="sopStockForecast" onChange="action-sop-line-record-compute-sop-stock-gap"
         colSpan="4"/>
       <field name="sopRealStock" onChange="action-sop-line-record-compute-sop-stock-gap"
         colSpan="4"/>
-      <field name="sopStockGap" readonly="true" colSpan="4"/>
       <button name="generateMpsForecastsBtn" title="Generate MPS forecasts"
         onClick="action-sop-line-view-open-wizard"/>
     </panel>
@@ -105,22 +95,6 @@
       expr="eval: ((sopRealSales - sopSalesForecast)/sopSalesForecast)*100"
       if="sopSalesForecast &amp;&amp; sopRealSales"/>
     <field name="sopSalesGap" expr="eval: null" if="!sopSalesForecast || !sopRealSales"/>
-  </action-record>
-
-  <action-record name="action-sop-line-record-compute-sop-manuf-gap"
-    model="com.axelor.apps.production.db.SopLine">
-    <field name="sopManufGap"
-      expr="eval: ((sopRealManuf - sopManufForecast)/sopManufForecast)*100"
-      if="sopManufForecast &amp;&amp; sopRealManuf"/>
-    <field name="sopManufGap" expr="eval: null" if="!sopManufForecast || !sopRealManuf"/>
-  </action-record>
-
-  <action-record name="action-sop-line-record-compute-sop-stock-gap"
-    model="com.axelor.apps.production.db.SopLine">
-    <field name="sopStockGap"
-      expr="eval: ((sopRealStock - sopStockForecast)/sopStockForecast)*100"
-      if="sopStockForecast &amp;&amp; sopRealStock"/>
-    <field name="sopStockGap" expr="eval: null" if="!sopStockForecast || !sopRealStock"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-total-price"
