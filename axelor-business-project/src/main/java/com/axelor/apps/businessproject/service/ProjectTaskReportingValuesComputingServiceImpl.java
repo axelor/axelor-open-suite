@@ -43,7 +43,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class ProjectTaskReportingValuesComputingServiceImpl
     implements ProjectTaskReportingValuesComputingService {
@@ -278,14 +277,13 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     projectTask.setForecastCosts(forecastCosts);
 
-    projectTask.setForecastMargin(
-        projectTask.getTurnover().subtract(forecastCosts));
+    projectTask.setForecastMargin(projectTask.getTurnover().subtract(forecastCosts));
     if (!forecastCosts.equals(BigDecimal.ZERO)) {
       projectTask.setForecastMarkup(
-              getPercentValue(
-                      projectTask
-                              .getForecastMargin()
-                              .divide(forecastCosts, RESULT_SCALE, RoundingMode.HALF_UP)));
+          getPercentValue(
+              projectTask
+                  .getForecastMargin()
+                  .divide(forecastCosts, RESULT_SCALE, RoundingMode.HALF_UP)));
     }
   }
 
