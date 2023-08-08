@@ -464,14 +464,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       moveLine.getInvoiceTermList().stream()
           .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
-          .forEach(
-              it ->
-                  invoiceTermService.computeFinancialDiscount(
-                      it,
-                      moveLine.getCredit().max(moveLine.getDebit()),
-                      moveLine.getFinancialDiscount(),
-                      moveLine.getFinancialDiscountTotalAmount(),
-                      moveLine.getRemainingAmountAfterFinDiscount()));
+          .forEach(it -> invoiceTermService.computeFinancialDiscount(it, moveLine));
     }
   }
 

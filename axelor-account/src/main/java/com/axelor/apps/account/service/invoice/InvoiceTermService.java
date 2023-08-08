@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.CallMethod;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
@@ -60,6 +61,8 @@ public interface InvoiceTermService {
   void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate);
 
   void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
+
+  void computeFinancialDiscount(InvoiceTerm invoiceTerm, MoveLine moveLine);
 
   void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
@@ -332,4 +335,16 @@ public interface InvoiceTermService {
 
   boolean isThresholdNotOnLastInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
+
+  InvoiceTerm initInvoiceTermWithParents(InvoiceTerm invoiceTerm) throws AxelorException;
+
+  boolean setShowFinancialDiscount(InvoiceTerm invoiceTerm);
+
+  boolean isPaymentConditionFree(InvoiceTerm invoiceTerm);
+
+  List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm);
+
+  void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
+
+  void computeFinancialDiscount(InvoiceTerm invoiceTerm);
 }

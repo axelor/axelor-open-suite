@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
@@ -58,8 +59,11 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
+import com.axelor.studio.db.AppAccount;
 import com.axelor.utils.ContextTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -68,6 +72,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -93,6 +98,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected UserRepository userRepo;
+  protected DMSFileRepository DMSFileRepo;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -104,7 +110,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      UserRepository userRepo) {
+      UserRepository userRepo,
+      DMSFileRepository DMSFileRepo) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -114,6 +121,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.userRepo = userRepo;
+    this.DMSFileRepo = DMSFileRepo;
   }
 
   @Override
@@ -299,6 +307,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  public void computeFinancialDiscount(InvoiceTerm invoiceTerm, MoveLine moveLine) {
+    this.computeFinancialDiscount(
+        invoiceTerm,
+        moveLine.getCredit().max(moveLine.getDebit()),
+        moveLine.getFinancialDiscount(),
+        moveLine.getFinancialDiscountTotalAmount(),
+        moveLine.getRemainingAmountAfterFinDiscount());
+  }
+
+  @Override
   public void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
       BigDecimal totalAmount,
@@ -443,6 +461,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
     this.computeCompanyAmounts(invoiceTerm, false);
+    this.computeFinancialDiscount(invoiceTerm, moveLine);
 
     if (move != null
         && move.getPaymentCondition() != null
@@ -995,8 +1014,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       isSupplierRefund =
           invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
     } else {
-      if (move == null) {
+      if (move == null
+          && invoiceTerm.getMoveLine() != null
+          && invoiceTerm.getMoveLine().getMove() != null) {
         move = invoiceTerm.getMoveLine().getMove();
+      }
+
+      if (move == null) {
+        invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_NO_PFP);
+        return;
       }
 
       company = move.getCompany();
@@ -1583,5 +1609,114 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
     return false;
+  }
+
+  @Override
+  public InvoiceTerm initInvoiceTermWithParents(InvoiceTerm invoiceTerm) throws AxelorException {
+    Invoice invoice = invoiceTerm.getInvoice();
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+
+    if (invoice == null && moveLine != null && moveLine.getMove() != null) {
+      this.initCustomizedInvoiceTerm(moveLine, invoiceTerm, moveLine.getMove());
+    } else if (invoice != null) {
+      this.initCustomizedInvoiceTerm(invoice, invoiceTerm);
+    }
+
+    setParentFields(invoiceTerm, moveLine != null ? moveLine.getMove() : null, moveLine, invoice);
+    return invoiceTerm;
+  }
+
+  @Override
+  public boolean setShowFinancialDiscount(InvoiceTerm invoiceTerm) {
+    Invoice invoice = invoiceTerm.getInvoice();
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    AppAccount appAccount = appAccountService.getAppAccount();
+    if (appAccount == null || !appAccount.getManageFinancialDiscount()) {
+      return false;
+    }
+
+    if (invoice != null) {
+      return new ArrayList<>(
+              Arrays.asList(InvoiceRepository.STATUS_VENTILATED, InvoiceRepository.STATUS_CANCELED))
+          .contains(invoice.getStatusSelect());
+    }
+    if (moveLine != null && moveLine.getMove() != null) {
+      return new ArrayList<>(
+              Arrays.asList(
+                  MoveRepository.STATUS_DAYBOOK,
+                  MoveRepository.STATUS_ACCOUNTED,
+                  MoveRepository.STATUS_CANCELED))
+          .contains(moveLine.getMove().getStatusSelect());
+    }
+    return false;
+  }
+
+  @Override
+  public boolean isPaymentConditionFree(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() != null) {
+      return Optional.of(invoiceTerm.getInvoice())
+          .map(Invoice::getPaymentCondition)
+          .map(PaymentCondition::getIsFree)
+          .orElse(false);
+    } else if (invoiceTerm.getMoveLine() != null) {
+      return Optional.of(invoiceTerm.getMoveLine())
+          .map(MoveLine::getMove)
+          .map(Move::getPaymentCondition)
+          .map(PaymentCondition::getIsFree)
+          .orElse(false);
+    }
+
+    return false;
+  }
+
+  @Override
+  public List<DMSFile> getLinkedDmsFile(InvoiceTerm invoiceTerm) {
+    Move move =
+        Optional.of(invoiceTerm).map(InvoiceTerm::getMoveLine).map(MoveLine::getMove).orElse(null);
+    if (move != null) {
+      return DMSFileRepo.all()
+          .filter(
+              String.format(
+                  "self.isDirectory = false AND self.relatedId = %d AND self.relatedModel = 'com.axelor.apps.account.db.Move'"),
+              move.getId())
+          .fetch();
+    }
+    return new ArrayList<>();
+  }
+
+  @Override
+  public void computeCustomizedPercentage(InvoiceTerm invoiceTerm) {
+    BigDecimal total = this.getCustomizedTotal(invoiceTerm);
+
+    if (total.compareTo(BigDecimal.ZERO) == 0) {
+      return;
+    }
+
+    BigDecimal percentage = this.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+
+    invoiceTerm.setPercentage(percentage);
+    invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    this.computeCompanyAmounts(invoiceTerm, true);
+  }
+
+  protected BigDecimal getCustomizedTotal(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() != null) {
+      return invoiceTerm.getInvoice().getInTaxTotal();
+    } else if (invoiceTerm.getMoveLine() != null) {
+      return this.getTotalInvoiceTermsAmount(invoiceTerm.getMoveLine());
+    } else {
+      return BigDecimal.ZERO;
+    }
+  }
+
+  @Override
+  public void computeFinancialDiscount(InvoiceTerm invoiceTerm) {
+    Invoice invoice = invoiceTerm.getInvoice();
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    if (invoice != null) {
+      this.computeFinancialDiscount(invoiceTerm, invoice);
+    } else if (moveLine != null) {
+      this.computeFinancialDiscount(invoiceTerm, moveLine);
+    }
   }
 }

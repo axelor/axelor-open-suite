@@ -169,6 +169,10 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermAttrsService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermAttrsServiceImpl;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupServiceImpl;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeServiceImpl;
 import com.axelor.apps.account.service.journal.JournalControlService;
@@ -686,5 +690,9 @@ public class AccountModule extends AxelorModule {
         .to(AccountingReportAnalyticConfigLineServiceImpl.class);
 
     bind(AnalyticAttrsService.class).to(AnalyticAttrsServiceImpl.class);
+
+    bind(InvoiceTermAttrsService.class).to(InvoiceTermAttrsServiceImpl.class);
+
+    bind(InvoiceTermGroupService.class).to(InvoiceTermGroupServiceImpl.class);
   }
 }

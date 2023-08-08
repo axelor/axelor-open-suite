@@ -65,6 +65,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
+  @Transactional
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
     Company company = invoiceTerm.getCompany();
 
@@ -405,5 +406,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       invoiceTermRepo.save(it);
     }
     return true;
+  }
+
+  @Override
+  public boolean isPfpValidatorUser(InvoiceTerm invoiceTerm, User user) {
+    return user != null
+        && (user.getIsSuperPfpUser()
+            || (invoiceTerm != null
+                && invoiceTerm.getPfpValidatorUser() != null
+                && user.equals(invoiceTerm.getPfpValidatorUser())));
   }
 }
