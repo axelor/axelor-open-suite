@@ -21,14 +21,12 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 
 public interface PurchaseOrderLineProjectService {
 
   public void setProject(List<Long> purchaseOrderLineIds, Project project);
 
-  @Transactional
   public void setProjectTask(List<Long> purchaseOrderLineIds, ProjectTask projectTask);
 
   public PurchaseOrderLine updateAnalyticDistributionWithProject(

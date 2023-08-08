@@ -96,12 +96,8 @@
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
           <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
             onClick="action-project-task-generate-purchase-order"/>
-          <field name="purchaseOrderList" colSpan="12"
-            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-            canNew="false"/>
-          <field name="purchaseOrderLineList" colSpan="12"
-            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-            canNew="false"/>
+          <field name="purchaseOrderList" colSpan="12" canNew="false"/>
+          <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
         </panel>
         <panel name="financialDataPanel" title="Financial Data" colSpan="12"
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
