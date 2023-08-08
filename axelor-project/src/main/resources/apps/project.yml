@@ -1,0 +1,13 @@
+---
+name: Projects
+code: project
+typeSelect: standard
+installOrder: 2080
+description: |
+   Project management
+image: app-project.png
+modules: 
+   axelor-project
+dependsOn:
+   - base
+sequence: 11

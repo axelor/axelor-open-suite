@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="stock-location-line-history-grid" title="Stock location line history"
+    model="com.axelor.apps.stock.db.StockLocationLineHistory">
+    <field name="dateT"/>
+    <field name="wap"/>
+    <field name="qty" x-scale="2"/>
+    <field name="unit"/>
+    <field name="typeSelect"/>
+    <field name="origin"/>
+  </grid>
+
+  <form name="stock-location-line-history-form" title="Stock location line history"
+    model="com.axelor.apps.stock.db.StockLocationLineHistory"
+    onNew="action-stock-history-attrs-set-scale" onLoad="action-stock-history-attrs-set-scale">
+    <panel name="main">
+      <field name="dateT"/>
+      <field name="wap"/>
+      <field name="qty"/>
+      <field name="unit"/>
+      <field name="typeSelect"/>
+      <field name="origin" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-stock-history-attrs-set-scale">
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+</object-views>

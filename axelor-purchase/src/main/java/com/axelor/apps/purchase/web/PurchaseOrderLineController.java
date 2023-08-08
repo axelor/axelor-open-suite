@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.purchase.web;
 
@@ -27,6 +28,7 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -37,7 +39,6 @@ import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -157,9 +158,6 @@ public class PurchaseOrderLineController {
       String productCode = null;
       ProductCompanyService productCompanyService = Beans.get(ProductCompanyService.class);
       if (catalogInfo != null) {
-        if (catalogInfo.get("price") != null) {
-          price = (BigDecimal) catalogInfo.get("price");
-        }
         productName =
             catalogInfo.get("productName") != null
                 ? (String) catalogInfo.get("productName")
@@ -186,9 +184,6 @@ public class PurchaseOrderLineController {
               purchaseOrder, purchaseOrderLine, price);
 
       if (discounts != null) {
-        if (discounts.get("price") != null) {
-          price = (BigDecimal) discounts.get("price");
-        }
         if (purchaseOrderLine.getProduct().getInAti() != purchaseOrder.getInAti()
             && (Integer) discounts.get("discountTypeSelect")
                 != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
@@ -203,32 +198,6 @@ public class PurchaseOrderLineController {
           response.setValue("discountAmount", discounts.get("discountAmount"));
         }
         response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-      }
-
-      if (price.compareTo(
-              purchaseOrderLine.getProduct().getInAti()
-                  ? purchaseOrderLine.getInTaxPrice()
-                  : purchaseOrderLine.getPrice())
-          != 0) {
-        if (purchaseOrderLine.getProduct().getInAti()) {
-          response.setValue("inTaxPrice", price);
-          response.setValue(
-              "price",
-              taxService.convertUnitPrice(
-                  true,
-                  purchaseOrderLine.getTaxLine(),
-                  price,
-                  appBaseService.getNbDecimalDigitForUnitPrice()));
-        } else {
-          response.setValue("price", price);
-          response.setValue(
-              "inTaxPrice",
-              taxService.convertUnitPrice(
-                  false,
-                  purchaseOrderLine.getTaxLine(),
-                  price,
-                  appBaseService.getNbDecimalDigitForUnitPrice()));
-        }
       }
 
     } catch (Exception e) {
@@ -260,7 +229,7 @@ public class PurchaseOrderLineController {
                   inTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -288,7 +257,7 @@ public class PurchaseOrderLineController {
                   exTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -349,12 +318,12 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       if (purchaseOrderLine.getIsTitleLine()) {
-        PurchaseOrderLine newPurchaseOrderLine = new PurchaseOrderLine();
-        newPurchaseOrderLine.setIsTitleLine(true);
-        newPurchaseOrderLine.setQty(BigDecimal.ZERO);
-        newPurchaseOrderLine.setId(purchaseOrderLine.getId());
-        newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
-        response.setValues(Mapper.toMap(purchaseOrderLine));
+        Map<String, Object> newPurchaseOrderLine = Mapper.toMap(new PurchaseOrderLine());
+        newPurchaseOrderLine.put("qty", BigDecimal.ZERO);
+        newPurchaseOrderLine.put("id", purchaseOrderLine.getId());
+        newPurchaseOrderLine.put("version", purchaseOrderLine.getVersion());
+        newPurchaseOrderLine.put("isTitleLine", true);
+        response.setValues(newPurchaseOrderLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

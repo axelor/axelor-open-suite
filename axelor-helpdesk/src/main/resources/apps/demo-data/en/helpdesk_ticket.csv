@@ -1,0 +1,7 @@
+"importId";"subject";"ticketType.name";"startDateT";"endDateT";"assignedToUser.name";"prioritySelect";"statusSelect";"progressSelect"
+"1";"Where to download the ERP source code";"Technical Support";"26/02/18 18:30";"26/02/18 20:30";"Kevin DEMOERP";1;2;100
+"2";"How to access the technical documentation";"Technical Support";"27/02/18 13:30";"27/02/18 16:30";"Kevin DEMOERP";1;2;100
+"3";"Unable to log in with Admin user";"Technical Support";"27/02/18 14:30";"28/02/18 14:00";"Cyril MARCHAL";3;2;100
+"4";"How to attach a file";"Functionnal Support";"27/02/18 18:30";;"Charles DEMOCRM";2;1;10
+"5";"How to perform an advanced search";"Functionnal Support";"28/02/18 13:30";;"Charles DEMOCRM";3;0;
+"6";"How to mass update records";"Functionnal Support";"28/02/18 14:00";;"Kevin DEMOERP";4;0;

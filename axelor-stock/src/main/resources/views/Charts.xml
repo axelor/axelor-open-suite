@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <chart onInit="action.base.default.month.value"
     name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
@@ -22,13 +22,14 @@
       self.typeSelect = 2 AND
       self.statusSelect = 3 AND
       self.company =:activeCompany AND
-      self.toStockLocation = stockLocation
+      self.stockMoveLineList.toStockLocation = stockLocation
       AND
       stockLocation.typeSelect = 2 AND
       self.toAddress = address AND
       address.addressL7Country =
       country AND
-      self.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND
+      self.realDate BETWEEN
+      DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND
       DATE(:todayDate)
       GROUP BY
       country.name
@@ -63,9 +64,11 @@
       stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
       self.stockMove = stockMove
       AND
-      stockMove.toStockLocation = stockLocation AND
-      stockLocation.typeSelect = 2 AND
-      stockMove.toAddress = address AND
+      self.toStockLocation = stockLocation AND
+      stockLocation.typeSelect = 2
+      AND
+      stockMove.toAddress
+      = address AND
       address.addressL7Country = country
       GROUP BY
       country.name
@@ -102,9 +105,11 @@
       stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
       self.stockMove = stockMove
       AND
-      stockMove.toStockLocation = stockLocation AND
-      stockLocation.typeSelect = 2 AND
-      stockMove.toAddress = address AND
+      self.toStockLocation = stockLocation AND
+      stockLocation.typeSelect = 2
+      AND
+      stockMove.toAddress
+      = address AND
       address.addressL7Country = country AND
       self.product.productFamily = productFamily
       GROUP BY
@@ -333,9 +338,9 @@
 		LEFT JOIN
 		    _stockMoveLine.stockMove as _stockMove
 		LEFT JOIN
-		    _stockMove.fromStockLocation AS _from_location
+		    _stockMoveLine.fromStockLocation AS _from_location
 		LEFT JOIN
-		    _stockMove.toStockLocation AS _to_location
+		    _stockMoveLine.toStockLocation AS _to_location
 		WHERE
 		    _product.id = :id AND _stockMoveLine.product.id = _product.id AND (_from_location.typeSelect = 1 OR _to_location.typeSelect = 1 ) AND _stockMove.estimatedDate > current_date
 		GROUP BY

@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"CRM";"crm";2;"CRM configuration";"app-crm.png";"axelor-crm";"base";25

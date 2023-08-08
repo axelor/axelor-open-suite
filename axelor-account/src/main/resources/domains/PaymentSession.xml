@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentSession" lang="java">
+  <entity name="PaymentSession">
     <string name="sequence" title="Sequence" readonly="true"/>
     <string name="name" title="Session name" namecolumn="true"/>
     <many-to-one name="company" title="Company" required="true"
@@ -22,7 +22,6 @@
       ref="com.axelor.auth.db.User"/>
     <date name="paymentDate" title="Payment date" required="true"/>
     <date name="nextSessionDate" title="Next session date"/>
-    <date name="cancellationDate" title="Cancellation date"/>
     <decimal name="sessionTotalAmount" title="Session total amount"/>
     <integer name="statusSelect" title="Status" readonly="true" default="1"
       selection="iaccount.payment.session.select"/>
@@ -44,6 +43,15 @@
       title="Validated by"/>
     <datetime name="validatedDate" title="Validated Date"/>
     <many-to-one name="partnerForEmail" ref="com.axelor.apps.base.db.Partner"/>
+
+    <decimal name="sessionTotalAmountFormula" title="Session total amount" formula="true">
+      <![CDATA[
+        SELECT SUM(self.amount_paid) FROM account_invoice_term as self WHERE self.payment_session = id AND self.is_selected_on_payment_session
+      ]]>
+    </decimal>
+
+    <many-to-many ref="com.axelor.apps.base.db.Partner" name="partnerSet"
+      title="Partners"/>
 
     <extra-code><![CDATA[
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -11,7 +11,7 @@
     <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
     <date name="taskDate" title="Start date"/>
     <many-to-one name="status" title="Status"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <many-to-one name="priority" title="Priority"
       ref="com.axelor.apps.project.db.ProjectPriority"/>
     <date name="taskDeadline" title="Task deadline"/>
@@ -36,7 +36,7 @@
     <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
 
     <many-to-one name="statusBeforeComplete" title="Last status"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <many-to-one name="parentTask" ref="com.axelor.apps.project.db.ProjectTask"
       title="Parent task"/>
     <many-to-one name="projectTaskCategory"
@@ -48,7 +48,8 @@
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Followers"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="invoicingUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Invoicing unit"/>
     <decimal name="quantity" title="Quantity"/>
     <decimal name="unitPrice" title="Unit price"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"

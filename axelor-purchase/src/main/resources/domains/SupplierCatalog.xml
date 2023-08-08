@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="SupplierCatalog" lang="java">
+  <entity name="SupplierCatalog">
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="true"/>
@@ -13,13 +13,16 @@
       required="true" title="Supplier"/>
     <string name="productSupplierName" title="Product name on catalog"/>
     <string name="productSupplierCode" title="Product code on catalog"/>
-    <decimal name="price" title="Unit price" precision="20" scale="10" min="0"/>
+    <decimal name="price" title="Unit price" precision="20" scale="10" min="0"
+      nullable="true"/>
     <date name="updateDate" title="Last update"/>
     <string name="description" title="Description" large="true"/>
     <decimal name="calculatedPrice" title="Calculated price/Qty"/>
     <one-to-many name="shippingCoefList" mappedBy="supplierCatalog"
       title="Shipping Coefficients" ref="com.axelor.apps.base.db.ShippingCoef"/>
     <decimal name="minQty" title="Quantity min" precision="20" scale="10" min="0"/>
+    <boolean name="isTakingProductPurchasePrice" title="Take product purchase price"
+      default="false"/>
   </entity>
 
 </domain-models>

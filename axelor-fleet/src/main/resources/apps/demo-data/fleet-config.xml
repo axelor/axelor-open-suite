@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+
+  <input file="fleet_vehicleContract.csv" separator=";"
+    type="com.axelor.apps.fleet.db.VehicleContract" search="self.importId = :importId">
+    <bind column="invoiceDate" to="invoiceDate"
+      eval="call: com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)"/>
+    <bind column="startDate" to="startDate"
+      eval="call: com.axelor.csv.script.ImportDateTime:importDate(startDate)"/>
+    <bind column="expiryDate" to="expiryDate"
+      eval="call: com.axelor.csv.script.ImportDateTime:importDate(expiryDate)"/>
+  </input>
+
+  <input file="fleet_vehicleMake.csv" separator=";"
+    type="com.axelor.apps.fleet.db.VehicleMake" search="self.importId = :importId"/>
+
+  <input file="fleet_vehicleModel.csv" separator=";"
+    type="com.axelor.apps.fleet.db.VehicleModel" search="self.importId = :importId"/>
+
+  <input file="fleet_vehicle.csv" separator=";" type="com.axelor.apps.fleet.db.Vehicle"
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportVehicle:importVehicle">
+    <bind column="acquisitionDate" to="acquisitionate"
+      eval="call: com.axelor.csv.script.ImportDateTime:importDate(acquisitionDate)"/>
+    <bind column="vehicleTagSetImportId" to="vehicleTagSet"
+      search="self.importId in :vehicleTagSetImportId"
+      eval="vehicleTagSetImportId.split('\\|') as List"/>
+  </input>
+
+  <input file="fleet_vehicleFuelLog.csv" separator=";"
+    type="com.axelor.apps.fleet.db.VehicleFuelLog" search="self.importId = :importId">
+    <bind column="date" to="date"
+      eval="call: com.axelor.csv.script.ImportDateTime:importDate(date)"/>
+  </input>
+
+</csv-inputs>

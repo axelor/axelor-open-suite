@@ -1,0 +1,15 @@
+---
+name: Leave Management
+code: leave
+typeSelect: standard
+installOrder: 2140
+description: |
+   Leave Management
+image: app-leave.png
+modules: 
+   axelor-human-resource
+dependsOn:
+   - acccount
+   - project
+   - employee
+sequence: 18

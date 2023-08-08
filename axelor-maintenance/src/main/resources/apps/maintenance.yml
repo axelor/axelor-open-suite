@@ -1,0 +1,13 @@
+---
+name: Maintenance
+code: maintenance
+typeSelect: standard
+installOrder: 2350
+description: |
+   Computerized Maintenance Management System
+image: app-maintenance.png
+modules: 
+   axelor-maintenance
+dependsOn:
+   - production
+sequence: 52
