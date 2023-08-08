@@ -5,14 +5,15 @@
 
   <grid name="expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
-    onNew="action-expense-line-default, action-kilometric-allowance-record-default">
+    onNew="action-expense-line-group-onnew, action-kilometric-allowance-record-default">
     <hilite if="untaxedAmount == 0" color="danger"/>
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"
       onChange="action-expense-line-attrs-project-on-change"/>
     <field name="expenseProduct" canView="false"
       onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
-      form-view="product-expense-form" grid-view="product-expense-grid" width="200"/>
+      form-view="product-expense-form" grid-view="product-expense-grid" width="200"
+      onChange="action-expense-line-record-expense-product-on-change"/>
     <field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
       onSelect="action-expense-line-attrs-company"/>
@@ -22,6 +23,7 @@
       aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax" width="80"
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice"/>
+    <field name="justificationMetaFile" widget="binary-link"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct.blockExpenseTax" hidden="true"/>
@@ -29,7 +31,7 @@
 
   <grid name="expense-line-kilometric-grid" title="Kilometric Allowances"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
-    onNew="action-expense-line-default, action-expense-line-method-fill-kilometric-expense-product">
+    onNew="action-expense-line-group-onnew, action-expense-line-method-fill-kilometric-expense-product">
     <hilite if="untaxedAmount == 0" color="danger"/>
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
@@ -62,19 +64,19 @@
   </form>
 
   <form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
-    onNew="action-expense-line-default" onSave="action-expense-line-validate-expenseDate"
-    width="large">
+    onNew="action-expense-line-group-onnew" onSave="action-expense-line-validate-expenseDate"
+    width="large" onLoad="action-expense-line-attrs-read-only-analytic-distribution">
 
     <panel name="mainPanel" title="Main">
-      <field name="employee" hidden="true" showIf="expense.multipleUsers"
-        form-view="employee-form" grid-view="employee-grid"
+      <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
         onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="project-form" grid-view="project-grid"/>
       <field name="expenseProduct" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
-        form-view="product-expense-form" grid-view="product-expense-grid"/>
+        form-view="product-expense-form" grid-view="product-expense-grid"
+        onChange="action-expense-line-record-expense-product-on-change"/>
       <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
       <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
         onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
@@ -95,15 +97,20 @@
         </viewer>
       </field>
       <field name="justificationMetaFile" widget="binary-link"/>
+      <field name="isAloneMeal" hidden="true" showIf="expenseProduct.deductLunchVoucher"
+        onChange="action-expense-line-record-alone-meal-on-change"/>
+      <field name="invitedCollaboratorSet" grid-view="employee-grid" form-view="employee-form"
+        onSelect="action-expense-line-attrs-set-invited-collaborators-domain" hidden="true"
+        showIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal"
+        requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="TagSelect"/>
       <field name="comments" colSpan="12"/>
       <field name="expense" hidden="true"/>
       <field name="expense.companyCbSelect" hidden="true"/>
-      <field name="expense.multipleUsers" hidden="true"/>
+      <field name="expenseProduct.deductLunchVoucher" hidden="true"/>
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
@@ -123,8 +130,9 @@
 
   <form name="expense-line-kilometric-form" title="Kilometric Allowance"
     model="com.axelor.apps.hr.db.ExpenseLine"
-    onNew="action-expense-line-default,action-expense-line-method-fill-kilometric-expense-product"
-    onSave="action-expense-line-validate-expenseDate" width="large">
+    onNew="action-expense-line-group-onnew,action-expense-line-method-fill-kilometric-expense-product"
+    onSave="action-expense-line-validate-expenseDate" width="large"
+    onLoad="action-expense-line-attrs-read-only-analytic-distribution">
 
     <panel name="kilometricAllowancePanel" title="Kilometric Allowance">
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
@@ -153,8 +161,7 @@
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
@@ -201,9 +208,15 @@
       method="computeDistanceAndKilometricExpense"/>
   </action-method>
 
-  <action-attrs name="action-expense-line-attrs-read-only-distribution-lines">
+  <action-attrs name="action-expense-line-attrs-read-only-analytic-distribution">
+    <attribute name="readonly" for="analyticDistributionPanel"
+      expr="eval: __parent__?.employee?.analyticDistributionTemplate != null"
+      if="__config__.app.isApp('account') &amp;&amp;
+   __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
+      expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"
+      if="__config__.app.isApp('account') &amp;&amp;
+   __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </action-attrs>
 
   <action-attrs name="action-expense-line-attrs-domain-project">
@@ -214,6 +227,9 @@
   <action-record name="action-expense-line-default"
     model="com.axelor.apps.hr.db.ExpenseLine">
     <field name="employee" expr="eval: __parent__?.employee"/>
+    <field name="analyticDistributionTemplate"
+      expr="eval: __parent__?.employee?.analyticDistributionTemplate"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </action-record>
 
   <action-record name="action-expense-on-change-tax-untaxt-amount"
@@ -234,7 +250,7 @@
 
   <action-record name="action-expense-line-record-expenseDate-invalide"
     model="com.axelor.apps.hr.db.ExpenseLine">
-    <field name="expenseDate" expr="eval :__config__.date"/>
+    <field name="expenseDate" expr="eval: __config__.date"/>
   </action-record>
 
   <action-attrs name="action-expense-line-attrs-company"
@@ -248,20 +264,48 @@
       expr="eval: &quot;self.id IN (0) AND self.dtype = 'Product'&quot;"/>
     <attribute name="domain" for="expenseProduct"
       expr="eval: &quot;self.expense = true AND self.dtype = 'Product'&quot;"
-      if="__user__.employee?.hrManager &amp;&amp; !__parent__.multipleUsers &amp;&amp; __parent__.companyCbSelect != 1"/>
+      if="__user__.employee?.hrManager &amp;&amp; __parent__.companyCbSelect != 1"/>
     <attribute name="domain" for="expenseProduct"
       expr="eval: &quot;self.expense = true AND self.unavailableToUsers = false AND self.dtype = 'Product'&quot;"
-      if="!__user__.employee?.hrManager &amp;&amp; !__parent__.multipleUsers &amp;&amp; __parent__.companyCbSelect != 1"/>
+      if="!__user__.employee?.hrManager &amp;&amp; __parent__.companyCbSelect != 1"/>
     <attribute name="domain" for="expenseProduct"
       expr="eval: &quot;self.expense = true AND self.personalExpense = false AND self.dtype = 'Product'&quot;"
-      if="__user__.employee?.hrManager &amp;&amp; (__parent__.companyCbSelect == 1 || __parent__.multipleUsers)"/>
+      if="__user__.employee?.hrManager &amp;&amp; __parent__.companyCbSelect == 1"/>
     <attribute name="domain" for="expenseProduct"
       expr="eval: &quot;self.expense = true AND self.unavailableToUsers = false AND self.personalExpense = false AND self.dtype = 'Product'&quot;"
-      if="!__user__.employee?.hrManager &amp;&amp; (__parent__.companyCbSelect == 1 || __parent__.multipleUsers)"/>
+      if="!__user__.employee?.hrManager &amp;&amp; __parent__.companyCbSelect == 1"/>
   </action-attrs>
 
   <action-attrs name="action-expense-line-attrs-project-on-change">
     <attribute name="value" for="toInvoice" expr="eval: project?.isInvoicingExpenses"
       if="__config__.app.isApp('business-project')"/>
   </action-attrs>
+
+  <action-attrs name="action-expense-line-attrs-set-invited-collaborators-domain">
+    <attribute name="domain" for="invitedCollaboratorSet"
+      expr="eval: &quot;self.user.blocked = false AND self.hireDate &lt;= '${expenseDate}' AND (self.user.expiresOn is null OR self.user.expiresOn &gt;= CURRENT_DATE) AND self.mainEmploymentContract.payCompany IN (${__user__.companySet?.collect{it.id}.join(',')}) AND self.id != ${__parent__?.employee?.id}&quot;"/>
+  </action-attrs>
+
+  <action-record name="action-expense-line-record-expense-product-on-change"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="isAloneMeal" expr="eval: true" if="expenseProduct?.deductLunchVoucher"/>
+    <field name="invitedCollaboratorSet" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-expense-line-record-alone-meal-on-change"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="invitedCollaboratorSet" expr="eval: null"/>
+  </action-record>
+
+
+  <action-group name="action-expense-line-group-onnew">
+    <action name="action-expense-line-default"/>
+    <action name="action-expense-line-attrs-read-only-analytic-distribution"
+      if="__config__.app.isApp('account') &amp;&amp;
+   __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+    <action name="action-expense-line-method-create-distribution"
+      if="__config__.app.isApp('account') &amp;&amp;
+   __config__.app.getApp('account')?.getManageAnalyticAccounting() &amp;&amp; analyticDistributionTemplate"/>
+  </action-group>
+
 </object-views>

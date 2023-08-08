@@ -1,3 +1,0 @@
----
-title: "Stock move: supplier arrivals now correctly computes the wap price when the unit is different in stock move and stock location"
-type: fix

@@ -43,7 +43,7 @@
   </form>
 
   <form name="print-template-line-test-form" title="Print template line test"
-    model="com.axelor.message.db.Wizard" onNew="action-print-template-line-test-attrs-onnew">
+    model="com.axelor.utils.db.Wizard" onNew="action-print-template-line-test-attrs-onnew">
     <panel name="mainPanel">
       <field name="$reference" colSpan="6" title="Model" widget="RefSelect"
         selection="all.model.reference.select" x-related="$referenceId"/>

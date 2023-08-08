@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202071616</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -68,7 +68,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-test</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -153,7 +153,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -226,11 +226,10 @@
                     <text-property name="heading">validated_user_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">validation_date</property>
+                    <property name="columnName">validation_date_time</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">validation_date</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">validation_date</text-property>
+                    <text-property name="displayName">validation_date_time</text-property>
+                    <text-property name="heading">validation_date_time</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -300,8 +299,8 @@
                     </structure>
                     <structure>
                         <property name="position">11</property>
-                        <property name="name">validation_date</property>
-                        <property name="dataType">date</property>
+                        <property name="name">validation_date_time</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                 </list-property>
             </structure>
@@ -379,10 +378,10 @@
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">validation_date</property>
-                    <property name="nativeName">validation_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="name">validation_date_time</property>
+                    <property name="nativeName">validation_date_time</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Timesheet.id, 
@@ -395,7 +394,7 @@
 	Timesheet.from_date,
 	Timesheet.to_date,
 	ValidatedUser.full_name as validated_user_name,
-	Timesheet.validation_date
+	Timesheet.validation_date_time
 from hr_timesheet as Timesheet
 left join hr_employee as Emp on (Timesheet.employee = Emp.id)
 left join base_company as Company on (Timesheet.company = Company.id)
@@ -1024,9 +1023,9 @@ where Timesheet.id = ?]]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">validation_date</property>
-                            <text-property name="displayName">validation_date</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
+                            <property name="name">validation_date_time</property>
+                            <text-property name="displayName">validation_date_time</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["validation_date_time"]</expression>
                             <property name="dataType">date</property>
                         </structure>
                     </list-property>
@@ -1049,23 +1048,18 @@ where Timesheet.id = ?]]></xml-property>
                         <property name="fontSize">9pt</property>
                         <cell id="4731">
                             <property name="verticalAlign">middle</property>
-                            <text id="5496">
-                                <property name="fontSize">8pt</property>
+                            <image id="5500">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='30px' width='80px'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onRender"><![CDATA[this.width='80px';
+this.height='30px';]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="4817">
                             <property name="verticalAlign">middle</property>
@@ -1153,10 +1147,10 @@ where Timesheet.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">validation_date</property>
-                    <text-property name="displayName">validation_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="name">validation_date_time</property>
+                    <text-property name="displayName">validation_date_time</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["validation_date_time"]</expression>
+                    <property name="dataType">date-time</property>
                 </structure>
             </list-property>
             <column id="3343">
@@ -2083,10 +2077,10 @@ where Timesheet.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">validation_date</property>
-                    <text-property name="displayName">validation_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="name">validation_date_time</property>
+                    <text-property name="displayName">validation_date_time</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["validation_date_time"]</expression>
+                    <property name="dataType">date-time</property>
                 </structure>
             </list-property>
             <column id="4000">
@@ -2180,10 +2174,11 @@ where Timesheet.id = ?]]></xml-property>
                     <property name="rowSpan">1</property>
                     <property name="textAlign">center</property>
                     <text id="4016">
+                        <property name="fontFamily">sans-serif</property>
                         <property name="marginRight">2pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["validated_user_name"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row["validation_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["validated_user_name"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy HH:mm">row["validation_date_time"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>

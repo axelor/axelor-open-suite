@@ -25,4 +25,10 @@
   <input file="talent_hiringStage.csv" separator=";"
     type="com.axelor.apps.talent.db.HiringStage" search="self.name = :name"/>
 
+  <input file="studio_appRecruitment.csv" separator=";"
+    type="com.axelor.studio.db.AppRecruitment" search="self.app.code = :code">
+    <bind to="app" column="code" search="self.code = :code"/>
+    <bind to="hiringStatus" column="hiringStatus_name" search="self.name = :hiringStatus_name"/>
+  </input>
+
 </csv-inputs>

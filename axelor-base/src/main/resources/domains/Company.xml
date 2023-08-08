@@ -59,6 +59,7 @@
     <string name="timezone" title="Time Zone" selection="company.timezone.select"/>
     <one-to-many name="emailAccountList" ref="com.axelor.message.db.EmailAccount"
       title="Email accounts" mappedBy="company"/>
+    <string name="locale" title="Locale"/>
     <extra-code><![CDATA[
 
 	   	// CATEGORY SELECT
@@ -66,6 +67,29 @@
 		public static final int CATEGORY_SUPPLIER = 2;
 
 	]]></extra-code>
+
+    <track>
+      <field name="name" on="UPDATE"/>
+      <field name="code" on="UPDATE"/>
+      <field name="address" on="UPDATE"/>
+      <field name="partner" on="UPDATE"/>
+      <field name="parent" on="UPDATE"/>
+      <field name="notes" on="UPDATE"/>
+      <field name="logo" on="UPDATE"/>
+      <field name="currency" on="UPDATE"/>
+      <field name="customerPaymentDelay" on="UPDATE"/>
+      <field name="supplierPaymentDelay" on="UPDATE"/>
+      <field name="defaultBankDetails" on="UPDATE"/>
+      <field name="printingSettings" on="UPDATE"/>
+      <field name="defaultPartnerTypeSelect" on="UPDATE"/>
+      <field name="defaultPartnerCategorySelect" on="UPDATE"/>
+      <field name="weeklyPlanning" on="UPDATE"/>
+      <field name="publicHolidayEventsPlanning" on="UPDATE"/>
+      <field name="language" on="UPDATE"/>
+      <field name="width" on="UPDATE"/>
+      <field name="height" on="UPDATE"/>
+      <field name="timezone" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

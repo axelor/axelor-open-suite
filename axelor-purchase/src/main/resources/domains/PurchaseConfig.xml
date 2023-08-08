@@ -37,6 +37,7 @@
       <field name="displayProductDetailOnPrinting" on="UPDATE"/>
       <field name="priceRequest" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
+      <field name="displayPriceOnQuotationRequest" on="UPDATE"/>
     </track>
   </entity>
 

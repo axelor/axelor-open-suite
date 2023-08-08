@@ -16,7 +16,11 @@
     separator=";" search="self.importId = :importId"/>
 
   <input file="hr_eventsPlanningLine.csv" type="com.axelor.apps.base.db.EventsPlanningLine"
-    separator=";" search="self.importId = :importId"/>
+    separator=";" search="self.importId = :importId">
+    <bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"
+      column="date"/>
+    <bind to="year" eval="java.time.Year.now().getValue() + year.toInteger()" column="year"/>
+  </input>
 
   <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"
     search="self.importId  = :importId"/>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.advanced.imports;
 
@@ -28,6 +29,7 @@ import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
+import com.axelor.common.csv.CSVFile;
 import com.axelor.data.XStreamUtils;
 import com.axelor.data.adapter.DataAdapter;
 import com.axelor.data.adapter.JavaTimeAdapter;
@@ -53,13 +55,11 @@ import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
-import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
@@ -74,6 +74,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,45 +178,46 @@ public class DataImportServiceImpl implements DataImportService {
       csvInput = this.createCSVInput(fileTab, fileName);
       ifList = new ArrayList<String>();
 
-      try (CSVWriter csvWriter =
-          new CSVWriter(new FileWriter(new File(dataDir, fileName)), CSV_SEPRATOR)) {
+      File tempFile = new File(dataDir, fileName);
+      CSVFile csvFormat =
+          CSVFile.DEFAULT.withDelimiter(CSV_SEPRATOR).withQuoteAll().withFirstRecordAsHeader();
+      CSVPrinter printer = csvFormat.write(tempFile);
 
-        int totalLines = reader.getTotalLines(fileTab.getName());
-        if (totalLines == 0) {
+      int totalLines = reader.getTotalLines(fileTab.getName());
+      if (totalLines == 0) {
+        continue;
+      }
+
+      Mapper mapper = advancedImportService.getMapper(fileTab.getMetaModel().getFullName());
+      List<String[]> allLines = new ArrayList<String[]>();
+      int startIndex = isConfig ? 1 : linesToIgnore;
+
+      String[] row = reader.read(fileTab.getName(), startIndex, 0);
+      String[] headers = this.createHeader(row, fileTab, isConfig, mapper);
+      allLines.add(headers);
+
+      int tabConfigRowCount = 0;
+      if (isTabConfig) {
+        String objectRow[] = reader.read(fileTab.getName(), 0, 0);
+        tabConfigRowCount =
+            advancedImportService.getTabConfigRowCount(
+                fileTab.getName(), reader, totalLines, objectRow);
+      }
+      startIndex =
+          isConfig
+              ? tabConfigRowCount + 3
+              : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
+
+      for (int line = startIndex; line < totalLines; line++) {
+        String[] dataRow = reader.read(fileTab.getName(), line, row.length);
+        if (dataRow == null || Arrays.stream(dataRow).allMatch(StringUtils::isBlank)) {
           continue;
         }
-
-        Mapper mapper = advancedImportService.getMapper(fileTab.getMetaModel().getFullName());
-        List<String[]> allLines = new ArrayList<String[]>();
-        int startIndex = isConfig ? 1 : linesToIgnore;
-
-        String[] row = reader.read(fileTab.getName(), startIndex, 0);
-        String[] headers = this.createHeader(row, fileTab, isConfig, mapper);
-        allLines.add(headers);
-
-        int tabConfigRowCount = 0;
-        if (isTabConfig) {
-          String objectRow[] = reader.read(fileTab.getName(), 0, 0);
-          tabConfigRowCount =
-              advancedImportService.getTabConfigRowCount(
-                  fileTab.getName(), reader, totalLines, objectRow);
-        }
-        startIndex =
-            isConfig
-                ? tabConfigRowCount + 3
-                : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
-
-        for (int line = startIndex; line < totalLines; line++) {
-          String[] dataRow = reader.read(fileTab.getName(), line, row.length);
-          if (dataRow == null || Arrays.stream(dataRow).allMatch(StringUtils::isBlank)) {
-            continue;
-          }
-          String[] data = this.createData(dataRow, fileTab, isConfig, mapper);
-          allLines.add(data);
-        }
-        csvWriter.writeAll(allLines);
-        csvWriter.flush();
+        String[] data = this.createData(dataRow, fileTab, isConfig, mapper);
+        allLines.add(data);
       }
+      printer.printRecords(allLines);
+      printer.close();
 
       inputList.add(csvInput);
       importContext.put("ifConditions" + fileTab.getId(), ifList);

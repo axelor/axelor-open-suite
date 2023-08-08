@@ -8,7 +8,7 @@
     <field name="contract.contractId"/>
     <field name="contract.name"/>
     <field name="contract.partner"/>
-    <field name="activationDate"/>
+    <field name="activationDateTime"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -63,12 +63,12 @@
             <panel name="activationDatesPanel" hidden="true" readonly="true"
               showIf="statusSelect >= 3" colSpan="12">
               <field name="activatedByUser" colSpan="4"/>
-              <field name="activationDate" colSpan="4"/>
+              <field name="activationDateTime" colSpan="4"/>
               <panel colSpan="4" name="endDatesPanel">
                 <field name="supposedEndDate" hidden="true" readonly="true"
                   showIf="statusSelect == 3" colSpan="12"/>
-                <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4"
-                  colSpan="12"/>
+                <field name="endDateTime" hidden="true" readonly="true"
+                  showIf="statusSelect == 4" colSpan="12"/>
               </panel>
             </panel>
           </panel>
@@ -99,7 +99,8 @@
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
         <field if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
-          showIf="nextContract.isInvoicingManagement" name="contractLineList" colSpan="12"/>
+          showIf="nextContract.isInvoicingManagement" name="contractLineList" colSpan="12"
+          form-view="contract-line-form" grid-view="contract-line-grid"/>
         <field name="description" colSpan="9" widget="html"/>
         <field name="metaFile" colSpan="3" widget="binary-link"/>
       </panel>
@@ -124,7 +125,8 @@
               <field name="paymentMode" colSpan="3" widget="SuggestBox" canEdit="false"
                 form-view="payment-mode-form" grid-view="payment-mode-grid"/>
               <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false"
-                form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                form-view="payment-condition-form" grid-view="payment-condition-grid"
+                onSelect="action-contract-version-attrs-payment-condition-set-domain"/>
               <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"/>
               <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
             </panel>
@@ -180,6 +182,12 @@
       if="_xIsNextVersion"/>
   </action-attrs>
 
+  <action-attrs name="action-contract-version-attrs-payment-condition-set-domain">
+    <attribute name="domain" for="paymentCondition"
+      expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
+      if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
+  </action-attrs>
+
   <action-method name="action-contract-version-method-new-draft">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="newDraft"/>
   </action-method>
@@ -192,6 +200,11 @@
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="active"/>
   </action-method>
 
+  <action-method name="action-method-contract-version-update-contract-lines">
+    <call class="com.axelor.apps.contract.web.ContractVersionController"
+      method="updateContractLines"/>
+  </action-method>
+
   <action-method name="action-contract-version-method-waiting">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="waiting"/>
   </action-method>
@@ -199,5 +212,11 @@
   <action-method name="action-method-contract-version-change-product">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="changeProduct"/>
   </action-method>
+
+  <action-method name="action-method-contract-version-check-supposed-activation-date">
+    <call class="com.axelor.apps.contract.web.ContractVersionController"
+      method="checkSupposedActivationDate"/>
+  </action-method>
+
 
 </object-views>

@@ -5,9 +5,9 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppSupplychain">
+  <entity name="AppSupplychain" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="custStockMoveMgtOnSO" title="Customer deliveries management"
       default="false"/>
@@ -94,6 +94,7 @@
       <field name="allowSusbcriptionSaleOrder" on="UPDATE"/>
       <field name="checkSaleStocks" on="UPDATE"/>
       <field name="generateInvoiceFromStockMove" on="UPDATE"/>
+      <field name="validStepForInvOutSM" on="UPDATE"/>
 
       <field name="terminateSaleOrderOnDelivery" on="UPDATE"/>
       <field name="terminatePurchaseOrderOnReceipt" on="UPDATE"/>
@@ -124,6 +125,7 @@
       <field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
       <field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
       <field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
+      <field name="activatePartnerRelations" on="UPDATE"/>
     </track>
   </entity>
 

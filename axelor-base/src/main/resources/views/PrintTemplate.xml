@@ -63,7 +63,7 @@
   </form>
 
   <form name="select-print-template-wizard-form" title="Select print template"
-    model="com.axelor.message.db.Wizard"
+    model="com.axelor.utils.db.Wizard"
     onNew="action-print-template-wizard-attrs-set-template-domain">
     <panel>
       <field name="$language" title="Language" widget="ManyToOne"

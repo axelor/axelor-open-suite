@@ -26,8 +26,8 @@
       readonly="true"/>
     <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By"
       readonly="true"/>
-    <date name="validationDate" title="Validation Date" readonly="true"/>
-    <date name="refusalDate" title="Refusal Date" readonly="true"/>
+    <datetime name="validationDateTime" title="Validation Date" readonly="true"/>
+    <datetime name="refusalDateTime" title="Refusal Date" readonly="true"/>
     <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
     <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent"
       title="Event"/>

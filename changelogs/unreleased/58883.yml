@@ -1,0 +1,3 @@
+---
+title : " Fixed asset : Correct disposal fixed asset depreciation lines which were not generated properly when disposing from a fixed asset."
+type: fix

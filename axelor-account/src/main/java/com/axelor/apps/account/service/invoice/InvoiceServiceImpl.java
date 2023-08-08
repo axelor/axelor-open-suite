@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
 
@@ -48,7 +49,7 @@ import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementServ
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -62,8 +63,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -71,6 +72,8 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.utils.ModelTool;
 import com.axelor.utils.StringTool;
 import com.axelor.utils.ThrowConsumer;
@@ -86,7 +89,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -102,7 +104,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected ValidateFactory validateFactory;
   protected VentilateFactory ventilateFactory;
   protected CancelFactory cancelFactory;
-  protected AlarmEngineService<Invoice> alarmEngineService;
   protected InvoiceRepository invoiceRepo;
   protected AppAccountService appAccountService;
   protected PartnerService partnerService;
@@ -114,13 +115,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected TaxService taxService;
   protected InvoiceProductStatementService invoiceProductStatementService;
+  protected TemplateMessageService templateMessageService;
 
   @Inject
   public InvoiceServiceImpl(
       ValidateFactory validateFactory,
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
-      AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
@@ -131,12 +132,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
       TaxService taxService,
-      InvoiceProductStatementService invoiceProductStatementService) {
+      InvoiceProductStatementService invoiceProductStatementService,
+      TemplateMessageService templateMessageService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
     this.cancelFactory = cancelFactory;
-    this.alarmEngineService = alarmEngineService;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
     this.partnerService = partnerService;
@@ -148,31 +149,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.appBaseService = appBaseService;
     this.taxService = taxService;
     this.invoiceProductStatementService = invoiceProductStatementService;
+    this.templateMessageService = templateMessageService;
   }
 
   // WKF
-
-  @Override
-  public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices) {
-    return alarmEngineService.get(Invoice.class, invoices);
-  }
-
-  /**
-   * Lever l'ensemble des alarmes d'une facture.
-   *
-   * @param invoice Une facture.
-   * @throws Exception
-   */
-  @Override
-  public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
-
-    Alarm alarm = alarmEngineService.get(alarmEngineCode, invoice, true);
-
-    if (alarm != null) {
-
-      alarm.setInvoice(invoice);
-    }
-  }
 
   public Journal getJournal(Invoice invoice) throws AxelorException {
 
@@ -265,9 +245,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(Invoice invoice) throws AxelorException {
+    validateProcess(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && invoice.getInvoiceAutomaticMailOnValidate()) {
+      sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
+    }
+  }
 
+  @Transactional(rollbackOn = {Exception.class})
+  protected void validateProcess(Invoice invoice) throws AxelorException {
     log.debug("Invoice validation");
 
     compute(invoice);
@@ -288,25 +275,43 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
+    ventilateProcess(invoice);
+    if (invoice.getInvoiceAutomaticMail()) {
+      sendMail(invoice, invoice.getInvoiceMessageTemplate());
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void ventilateProcess(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_3),
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
+
     if (invoice.getPaymentMode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_4),
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
+
+    if (CollectionUtils.isNotEmpty(invoice.getPaymentCondition().getPaymentConditionLineList())
+        && invoice.getPaymentCondition().getPaymentConditionLineList().size() > 1
+        && !appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
+    }
+
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       Account account = invoiceLine.getAccount();
 
       if (invoiceLine.getAccount() == null
-          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)) {
+          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
+          && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -338,6 +343,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
     }
 
+    this.computeEstimatedPaymentDate(invoice);
+
     log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
 
     ventilateFactory.getVentilator(invoice).process();
@@ -359,15 +366,24 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Override
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void cancel(Invoice invoice) throws AxelorException {
-
     log.debug("Canceling invoice {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
 
     invoiceRepo.save(invoice);
+  }
+
+  protected void sendMail(Invoice invoice, Template template) {
+    // send message
+    try {
+      templateMessageService.generateAndSendMessage(invoice, template);
+    } catch (Exception e) {
+      TraceBackService.trace(
+          new AxelorMessageException(e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+    }
   }
 
   /**
@@ -665,6 +681,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional
   public void deleteOldInvoices(List<Invoice> invoiceList) {
     for (Invoice invoicetemp : invoiceList) {
+      invoicetemp.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
       invoiceRepo.remove(invoicetemp);
     }
   }
@@ -1004,7 +1021,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
 
@@ -1015,7 +1032,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
-    invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+    invoice.setDecisionPfpTakenDateTime(
+        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoice.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
@@ -1115,18 +1133,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 invoiceTermService.getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validatePfp(Long invoiceId) throws AxelorException {
+  @Transactional
+  public void validatePfp(Long invoiceId) {
     Invoice invoice = invoiceRepo.find(invoiceId);
-    User currentUser = AuthUtils.getUser();
+    User pfpValidatorUser =
+        invoice.getPfpValidatorUser() != null ? invoice.getPfpValidatorUser() : AuthUtils.getUser();
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTermPfpService.validatePfp(invoiceTerm, currentUser);
+      invoiceTermPfpService.validatePfp(invoiceTerm, pfpValidatorUser);
     }
 
-    invoice.setPfpValidatorUser(currentUser);
+    invoice.setPfpValidatorUser(pfpValidatorUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
-    invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+    invoice.setDecisionPfpTakenDateTime(
+        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
   }
 
   @Override
@@ -1165,6 +1185,39 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return;
     }
     invoiceTermList.forEach(
-        it -> invoiceTermService.setParentFields(it, it.getMoveLine(), invoice));
+        it ->
+            invoiceTermService.setParentFields(
+                it,
+                Optional.ofNullable(it.getMoveLine()).map(MoveLine::getMove).orElse(null),
+                it.getMoveLine(),
+                invoice));
+  }
+
+  @Override
+  public Invoice computeEstimatedPaymentDate(Invoice invoice) {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return invoice;
+    }
+    if (invoice.getPartner() != null && invoice.getPartner().getPaymentDelay() != null) {
+
+      int paymentDelay = invoice.getPartner().getPaymentDelay().intValue();
+
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getDueDate() != null && invoiceTerm.getEstimatedPaymentDate() == null) {
+          invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
+        }
+      }
+    } else {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getEstimatedPaymentDate() != null) {
+          continue;
+        }
+
+        LocalDate estimatedPaymentDate = invoiceTerm.getDueDate();
+
+        invoiceTerm.setEstimatedPaymentDate(estimatedPaymentDate);
+      }
+    }
+    return invoice;
   }
 }

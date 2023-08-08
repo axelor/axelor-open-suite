@@ -6,7 +6,7 @@
   <grid name="reconcile-group-grid" title="Reconcile group"
     model="com.axelor.apps.account.db.ReconcileGroup" canNew="false" canDelete="false">
     <field name="code" width="120"/>
-    <field name="dateOfLettering"/>
+    <field name="letteringDateTime"/>
     <field name="statusSelect"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
@@ -27,8 +27,9 @@
     </panel>
     <panel name="companyPanel" showTitle="false" readonly="true">
       <field name="company"/>
-      <field name="dateOfLettering" showIf="statusSelect==2" readonly="true"/>
-      <field name="unletteringDate" showIf="unletteringDate != null"/>
+      <field name="letteringDateTime" showIf="statusSelect==2" readonly="true"/>
+      <field name="unletteringDateTime" showIf="unletteringDateTime != null"/>
+      <field name="isProposal" hidden="true"/>
     </panel>
     <panel name="mainPanel" showIf="company">
       <panel-dashlet name="viewReconcilePanel"
@@ -38,10 +39,13 @@
     </panel>
     <panel name="actionsPanel" sidebar="true">
       <button name="letterBtn" title="Letter" colSpan="12"
-        onClick="action-reconcile-group-method-letter"
-        showIf="statusSelect == 1 || statusSelect == 3"/>
-      <button name="unletterBtn" title="Unletter" hideIf="unletteringDate"
+        onClick="action-reconcile-group-method-letter" showIf="statusSelect == 1"/>
+      <button name="unletterBtn" title="Unletter" hideIf="unletteringDateTime || isProposal"
         onClick="action-reconcile-group-method-unletter" colSpan="12"/>
+      <button name="validateReconcileGroupBtn" title="Validate"
+        onClick="action-reconcile-group-method-validate-proposal" showIf="isProposal"/>
+      <button name="cancelReconcileGroupBtn" title="Cancel" showIf="isProposal"
+        onClick="action-reconcile-group-method-cancel-proposal"/>
     </panel>
   </form>
 
@@ -65,6 +69,15 @@
 
   <action-method name="action-reconcile-group-method-unletter">
     <call class="com.axelor.apps.account.web.ReconcileGroupController" method="unletter"/>
+  </action-method>
+
+  <action-method name="action-reconcile-group-method-validate-proposal">
+    <call class="com.axelor.apps.account.web.ReconcileGroupController"
+      method="validateProposal"/>
+  </action-method>
+
+  <action-method name="action-reconcile-group-method-cancel-proposal">
+    <call class="com.axelor.apps.account.web.ReconcileGroupController" method="cancelProposal"/>
   </action-method>
 
   <search-filters name="reconcile-group-filters"

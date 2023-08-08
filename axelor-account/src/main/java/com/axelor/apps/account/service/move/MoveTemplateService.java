@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.move;
 
@@ -73,6 +74,7 @@ public class MoveTemplateService {
   protected BankDetailsService bankDetailsService;
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
 
   protected List<String> exceptionsList;
 
@@ -88,7 +90,8 @@ public class MoveTemplateService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       BankDetailsService bankDetailsService,
       MoveTemplateRepository moveTemplateRepo,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -101,6 +104,8 @@ public class MoveTemplateService {
     this.bankDetailsService = bankDetailsService;
     this.moveTemplateRepo = moveTemplateRepo;
     this.moveLineTaxService = moveLineTaxService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+
     this.exceptionsList = Lists.newArrayList();
   }
 
@@ -255,7 +260,9 @@ public class MoveTemplateService {
               }
             }
             List<AnalyticMoveLine> analyticMoveLineList =
-                new ArrayList<>(moveLine.getAnalyticMoveLineList());
+                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                    ? new ArrayList<>()
+                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
             moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
@@ -266,11 +273,13 @@ public class MoveTemplateService {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);
             }
 
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
+
             counter++;
           }
         }
 
-        moveLineTaxService.autoTaxLineGenerate(move);
+        moveLineTaxService.autoTaxLineGenerate(move, null, true);
         manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
@@ -370,7 +379,9 @@ public class MoveTemplateService {
             }
 
             List<AnalyticMoveLine> analyticMoveLineList =
-                new ArrayList<>(moveLine.getAnalyticMoveLineList());
+                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                    ? new ArrayList<>()
+                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
             moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
@@ -396,7 +407,7 @@ public class MoveTemplateService {
         }
 
         move.setDescription(taxLineDescription);
-        moveLineTaxService.autoTaxLineGenerate(move);
+        moveLineTaxService.autoTaxLineGenerate(move, null, false);
         manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());

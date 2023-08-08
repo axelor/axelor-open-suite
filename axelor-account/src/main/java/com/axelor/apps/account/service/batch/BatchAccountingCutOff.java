@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.batch;
 
@@ -39,6 +40,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,20 +82,20 @@ public class BatchAccountingCutOff extends BatchStrategy {
   protected void _processMovesByQuery(AccountingBatch accountingBatch) {
     Company company = accountingBatch.getCompany();
     LocalDate moveDate = accountingBatch.getMoveDate();
-    Journal researchJournal = accountingBatch.getResearchJournal();
+    Set<Journal> journalSet = accountingBatch.getJournalSet();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
 
     int offset = 0;
     List<Move> moveList;
     Query<Move> moveQuery =
-        cutOffService.getMoves(company, researchJournal, moveDate, accountingCutOffTypeSelect);
+        cutOffService.getMoves(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
     while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       company = accountingBatch.getCompany();
-      researchJournal = accountingBatch.getResearchJournal();
+      journalSet = accountingBatch.getJournalSet();
 
       for (Move move : moveList) {
         ++offset;
@@ -205,9 +207,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
     comment.append(
         String.format(
-            "\n\t"
-                + I18n.get(
-                    com.axelor.apps.base.exceptions.BaseExceptionMessage.ALARM_ENGINE_BATCH_4),
+            "\n\t" + I18n.get(com.axelor.apps.base.exceptions.BaseExceptionMessage.BASE_BATCH_3),
             batch.getAnomaly()));
 
     super.stop();

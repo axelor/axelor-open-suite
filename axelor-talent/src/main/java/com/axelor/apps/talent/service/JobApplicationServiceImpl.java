@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,18 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.talent.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
-import com.axelor.apps.talent.db.Skill;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
-import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -34,8 +34,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 public class JobApplicationServiceImpl implements JobApplicationService {
 
@@ -46,36 +44,43 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   protected MetaFiles metaFiles;
 
   protected DMSFileRepository dmsFileRepo;
+  protected AppTalentService appTalentService;
+  protected DMSService dmsService;
 
   @Inject
   public JobApplicationServiceImpl(
       JobApplicationRepository jobApplicationRepo,
       AppBaseService appBaseService,
       MetaFiles metaFiles,
-      DMSFileRepository dmsFileRepo) {
+      DMSFileRepository dmsFileRepo,
+      AppTalentService appTalentService,
+      DMSService dmsService) {
     this.jobApplicationRepo = jobApplicationRepo;
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
     this.dmsFileRepo = dmsFileRepo;
+    this.appTalentService = appTalentService;
+    this.dmsService = dmsService;
   }
 
   @Transactional
   @Override
-  public Employee hire(JobApplication jobApplication) {
-
+  public Employee createEmployeeFromJobApplication(JobApplication jobApplication) {
     Employee employee = createEmployee(jobApplication);
-
-    jobApplication.setStatusSelect(JobApplicationRepository.STATUS_HIRED);
     jobApplication.setEmployee(employee);
-    if (jobApplication.getJobPosition() != null) {
+    jobApplicationRepo.save(jobApplication);
+    hireCandidate(jobApplication);
+    return employee;
+  }
+
+  protected void hireCandidate(JobApplication jobApplication) {
+    if (jobApplication.getJobPosition() != null
+        && jobApplication.getHiringStage()
+            == appTalentService.getAppRecruitment().getHiringStatus()) {
       int nbPeopleHired = jobApplication.getJobPosition().getNbPeopleHired();
       nbPeopleHired += 1;
       jobApplication.getJobPosition().setNbPeopleHired(nbPeopleHired);
     }
-
-    jobApplicationRepo.save(jobApplication);
-
-    return employee;
   }
 
   protected Employee createEmployee(JobApplication jobApplication) {
@@ -83,9 +88,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     Employee employee = new Employee();
     employee.setHireDate(appBaseService.getTodayDate(jobApplication.getJobPosition().getCompany()));
     employee.setContactPartner(createContact(jobApplication));
-    Set<Skill> tagSkillSet = new HashSet<Skill>();
-    tagSkillSet.addAll(jobApplication.getSkillSet());
-    employee.setSkillSet(tagSkillSet);
     if (employee.getMainEmploymentContract() != null)
       employee
           .getMainEmploymentContract()
@@ -137,19 +139,23 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setDMSFile(JobApplication jobApplication) {
-    if (jobApplication.getResume() == null) {
-      DMSFile toDelete = dmsFileRepo.find(jobApplication.getResumeId());
-      if (toDelete != null) {
-        metaFiles.delete(toDelete);
-      }
+    MetaFile metaFile = jobApplication.getResume();
+    Long resumeId = jobApplication.getResumeId();
+    Long dmsId = dmsService.setDmsFile(metaFile, resumeId, jobApplication);
+
+    if (metaFile == null) {
       jobApplication.setResumeId(null);
-    } else {
-      MetaFile resume = jobApplication.getResume();
-      DMSFile resumeFile = metaFiles.attach(resume, resume.getFileName(), jobApplication);
-      jobApplication.setResumeId(resumeFile.getId());
     }
+    if (dmsId != null) {
+      jobApplication.setResumeId(dmsId);
+    }
+
     jobApplicationRepo.save(jobApplication);
+  }
+
+  public String getInlineUrl(JobApplication jobApplication) {
+    return dmsService.getInlineUrl(jobApplication.getResumeId());
   }
 }

@@ -8,7 +8,6 @@
   <entity name="Batch" sequential="true">
 
     <!-- NOT DISPLAY -->
-    <many-to-one name="alarmEngineBatch" ref="com.axelor.apps.base.db.AlarmEngineBatch"/>
     <many-to-one name="baseBatch" ref="com.axelor.apps.base.db.BaseBatch"/>
     <many-to-one name="mailBatch" ref="com.axelor.apps.base.db.MailBatch"/>
 
@@ -34,7 +33,6 @@
       // Batch type select
 
 		public static final int BATCH_TYPE_BASE_BATCH = 100;
-		public static final int BATCH_TYPE_ALARM_ENGINE_BATCH = 101;
 		public static final int BATCH_TYPE_MAIL_BATCH = 102;
 		public static final int BATCH_TYPE_IMPORT_BATCH = 103;
 		public static final int BATCH_TYPE_ACCOUNTING_BATCH = 200;
@@ -46,7 +44,7 @@
 		public static final int BATCH_TYPE_PRODUCTION_BATCH = 700;
 		public static final int BATCH_TYPE_SALE_BATCH = 800;
 		public static final int BATCH_TYPE_SUPPLYCHAIN_BATCH = 900;
-		public static final int BATCH_TYPE_PROJECT_INVOICING_ASSISTANT_BATCH = 1000;
+		public static final int BATCH_TYPE_BUSINESS_PROJECT_BATCH = 1000;
 		public static final int BATCH_TYPE_STOCK_BATCH = 1100;
 
 

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
-    canNew="false" orderBy="-sentDate">
+    canNew="true" orderBy="-sentDate">
     <hilite color="danger" if="statusSelect == 4"/>
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
@@ -16,7 +16,7 @@
   </grid>
 
   <grid name="extra-hours-validate-grid" title="Extra Hours"
-    model="com.axelor.apps.hr.db.ExtraHours" canNew="false" orderBy="-sentDate">
+    model="com.axelor.apps.hr.db.ExtraHours" canNew="true" orderBy="-sentDate">
     <toolbar>
       <button name="showSubordinateExtraHoursToValidateBtn"
         title="Show extra hours to be validated by my subordinates"
@@ -86,7 +86,7 @@
   </form>
 
   <form name="popup-extra-hours-form" title="Select the extra hours you want to edit"
-    model="com.axelor.message.db.Wizard" onNew="action-extra-hours-attrs-domain-extra-hours-select">
+    model="com.axelor.utils.db.Wizard" onNew="action-extra-hours-attrs-domain-extra-hours-select">
     <panel name="mainPanel">
       <field name="$extraHoursSelect" title="Select extra hours" type="many-to-one"
         target="com.axelor.apps.hr.db.ExtraHours" widget="SuggestBox"/>

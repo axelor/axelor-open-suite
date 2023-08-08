@@ -5,13 +5,18 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppQuality">
+  <entity name="AppQuality" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <many-to-one name="qualityControlTemplate" title="Model for quality control"
       ref="com.axelor.message.db.Template"/>
     <boolean name="automaticMail" title="Automatic mail by completing quality control"/>
+
+    <track>
+      <field name="qualityControlTemplate" on="UPDATE"/>
+      <field name="automaticMail" on="UPDATE"/>
+    </track>
 
   </entity>
 

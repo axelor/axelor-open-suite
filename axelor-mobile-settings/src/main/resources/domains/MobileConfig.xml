@@ -8,9 +8,9 @@
   <entity name="MobileConfig">
     <string name="sequence" selection="mobilesettings.mobile.config.sequence.select"
       required="true" unique="true" readonly="true" title="App"/>
-    <boolean name="isAppEnable" title="Enable app" default="false"
+    <boolean name="isAppEnabled" title="Enable app" default="false"
       help="Allows you to enable this package on the mobile application."/>
-    <boolean name="customizeMenu" title="Customize menus" default="false"
+    <boolean name="isCustomizeMenuEnabled" title="Customize menus" default="false"
       help="Allows you to customize the active menus for this application. If the menus are not configured then all the menus of the application are available."/>
     <one-to-many name="menus" ref="com.axelor.apps.mobilesettings.db.MobileMenu"
       title="Restricted menus"
@@ -25,12 +25,14 @@
 		public static final String APP_SEQUENCE_STOCK = "app-stock";
 		public static final String APP_SEQUENCE_MANUFACTURING = "app-manufacturing";
 		public static final String APP_SEQUENCE_CRM = "app-crm";
+		public static final String APP_SEQUENCE_HELPDESK = "app-helpdesk";
 
 	]]></extra-code>
 
     <track>
-      <field name="sequence"/>
-      <field name="customizeMenu"/>
+      <field name="sequence" on="UPDATE"/>
+      <field name="isCustomizeMenuEnabled" on="UPDATE"/>
+      <field name="isAppEnabled" on="UPDATE"/>
     </track>
   </entity>
 

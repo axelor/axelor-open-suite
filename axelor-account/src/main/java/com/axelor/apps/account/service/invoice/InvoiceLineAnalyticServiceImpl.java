@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
 
@@ -22,7 +23,6 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -45,7 +45,6 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticService {
 
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AnalyticToolService analyticToolService;
   protected AccountConfigService accountConfigService;
@@ -55,14 +54,12 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   @Inject
   public InvoiceLineAnalyticServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
       ListToolService listToolService,
       AppAccountService appAccountService) {
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
@@ -85,6 +82,7 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
             invoice.getPartner(),
             invoiceLine.getProduct(),
             invoice.getCompany(),
+            invoice.getTradingName(),
             InvoiceToolService.isPurchase(invoice));
     invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

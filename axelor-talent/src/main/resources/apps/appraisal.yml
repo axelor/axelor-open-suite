@@ -2,7 +2,7 @@
 name: Appraisal
 code: appraisal
 typeSelect: standard
-installOrder: 22
+installOrder: 2220
 description: |
     Appraisal
 image: app-appraisal.png

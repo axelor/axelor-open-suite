@@ -1,8 +1,0 @@
----
-title: "App CRM: configurations that were previously required are not required anymore."
-type: change
-description: |
-  The following fields can now be left empty in the configuration. If the related features are used, a message will be shown, informing the user that the configuration must be made.
-  * closedWinOpportunityStatus
-  * closedLostOpportunityStatus
-  * salesPropositionStatus

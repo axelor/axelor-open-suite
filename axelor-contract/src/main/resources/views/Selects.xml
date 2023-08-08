@@ -51,6 +51,7 @@
     <option value="2">Terminate</option>
     <option value="3">Current version activation</option>
     <option value="4">Next version activation</option>
+    <option value="5">Revaluate contracts</option>
   </selection>
 
   <selection name="account.analytic.move.line.type.select"

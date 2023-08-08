@@ -5,9 +5,9 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppProduction">
+  <entity name="AppProduction" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="prodOrderMgtOnSO" title="Production order management from sale order"
       default="false"/>
@@ -72,6 +72,7 @@
       <field name="subtractProdResidualOnCostSheet" on="UPDATE"/>
       <field name="manageBillOfMaterialVersion" on="UPDATE"/>
       <field name="manageProdProcessVersion" on="UPDATE"/>
+      <field name="manageCostSheetGroup" on="UPDATE"/>
 
       <field name="enableConfigurator" on="UPDATE"/>
       <field name="manageWorkshop" on="UPDATE"/>
@@ -80,8 +81,12 @@
 
       <field name="barcodeTypeConfig" on="UPDATE"/>
       <field name="printPlannedDateOnManufOrder" on="UPDATE"/>
+      <field name="mOFilterOnStockDetailStatusSelect" on="UPDATE"/>
       <field name="manageOutsourcing" on="UPDATE"/>
       <field name="manageMpsCharge" on="UPDATE"/>
+      <field name="enableToolManagement" on="UPDATE"/>
+      <field name="isManufOrderPlannedAfterMerge" on="UPDATE"/>
+      <field name="manageWorkCenterGroup" on="UPDATE"/>
 
     </track>
   </entity>

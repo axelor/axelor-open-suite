@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.project;
 
@@ -33,12 +34,12 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Adapter;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -88,7 +89,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       if (plannings != null) {
         totalPlanned =
             plannings.stream()
-                .map(ProjectPlanningTime::getPlannedHours)
+                .map(ProjectPlanningTime::getPlannedTime)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
@@ -112,7 +113,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       if (plannings != null) {
         totalPlanned =
             plannings.stream()
-                .map(ProjectPlanningTime::getPlannedHours)
+                .map(ProjectPlanningTime::getPlannedTime)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
@@ -131,10 +132,12 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return;
     }
 
-    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-
-    LocalDateTime fromDate = LocalDateTime.parse(datas.get("fromDate").toString(), formatter);
-    LocalDateTime toDate = LocalDateTime.parse(datas.get("toDate").toString(), formatter);
+    LocalDateTime fromDate =
+        (LocalDateTime)
+            Adapter.adapt(datas.get("fromDate"), LocalDateTime.class, LocalDateTime.class, null);
+    LocalDateTime toDate =
+        (LocalDateTime)
+            Adapter.adapt(datas.get("toDate"), LocalDateTime.class, LocalDateTime.class, null);
 
     ProjectTask projectTask = null;
 
@@ -169,6 +172,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     while (fromDate.isBefore(toDate)) {
 
       LocalDate date = fromDate.toLocalDate();
+      LocalDateTime taskEndDateTime =
+          fromDate.withHour(toDate.getHour()).withMinute(toDate.getMinute());
 
       LOG.debug("Create Planning for the date: {}", date);
 
@@ -179,28 +184,49 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
       if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
 
-        ProjectPlanningTime planningTime = new ProjectPlanningTime();
-
-        planningTime.setProjectTask(projectTask);
-        planningTime.setProduct(activity);
-        planningTime.setTimepercent(timePercent);
-        planningTime.setEmployee(employee);
-        planningTime.setDate(date);
-        planningTime.setProject(project);
-        planningTime.setIsIncludeInTurnoverForecast(
-            (Boolean) datas.get("isIncludeInTurnoverForecast"));
-
-        BigDecimal totalHours = BigDecimal.ZERO;
-        if (timePercent > 0) {
-          totalHours =
-              dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
-        }
-        planningTime.setPlannedHours(totalHours);
+        ProjectPlanningTime planningTime =
+            createProjectPlanningTime(
+                fromDate,
+                projectTask,
+                project,
+                timePercent,
+                employee,
+                activity,
+                dailyWorkHrs,
+                taskEndDateTime);
         planningTimeRepo.save(planningTime);
       }
 
       fromDate = fromDate.plusDays(1);
     }
+  }
+
+  protected ProjectPlanningTime createProjectPlanningTime(
+      LocalDateTime fromDate,
+      ProjectTask projectTask,
+      Project project,
+      Integer timePercent,
+      Employee employee,
+      Product activity,
+      BigDecimal dailyWorkHrs,
+      LocalDateTime taskEndDateTime)
+      throws AxelorException {
+    ProjectPlanningTime planningTime = new ProjectPlanningTime();
+
+    planningTime.setProjectTask(projectTask);
+    planningTime.setProduct(activity);
+    planningTime.setTimepercent(timePercent);
+    planningTime.setEmployee(employee);
+    planningTime.setStartDateTime(fromDate);
+    planningTime.setEndDateTime(taskEndDateTime);
+    planningTime.setProject(project);
+
+    BigDecimal totalHours = BigDecimal.ZERO;
+    if (timePercent > 0) {
+      totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
+    }
+    planningTime.setPlannedTime(totalHours);
+    return planningTime;
   }
 
   @Override
@@ -212,6 +238,14 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
           planningTimeRepo.find(Long.parseLong(line.get("id").toString()));
       planningTimeRepo.remove(projectPlanningTime);
     }
+  }
+
+  @Override
+  @Transactional
+  public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime) {
+
+    ProjectPlanningTime planningTime = planningTimeRepo.find(projectPlanningTime.getId());
+    planningTimeRepo.remove(planningTime);
   }
 
   @Override

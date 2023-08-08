@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,18 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -64,12 +65,16 @@ public class AccountService {
 
   protected AccountRepository accountRepository;
   protected AccountConfigService accountConfigService;
+  protected AnalyticRulesRepository analyticRulesRepository;
 
   @Inject
   public AccountService(
-      AccountRepository accountRepository, AccountConfigService accountConfigService) {
+      AccountRepository accountRepository,
+      AccountConfigService accountConfigService,
+      AnalyticRulesRepository analyticRulesRepository) {
     this.accountRepository = accountRepository;
     this.accountConfigService = accountConfigService;
+    this.analyticRulesRepository = analyticRulesRepository;
   }
 
   /**
@@ -160,7 +165,10 @@ public class AccountService {
   }
 
   public void checkAnalyticAxis(
-      Account account, AnalyticDistributionTemplate analyticDistributionTemplate)
+      Account account,
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      boolean isRequiredOnMoveLine,
+      boolean isRequiredOnInvoiceLine)
       throws AxelorException {
     if (account != null && account.getAnalyticDistributionAuthorized()) {
       if (analyticDistributionTemplate == null
@@ -168,7 +176,8 @@ public class AccountService {
           && accountConfigService
                   .getAccountConfig(account.getCompany())
                   .getAnalyticDistributionTypeSelect()
-              != AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+              != AccountConfigRepository.DISTRIBUTION_TYPE_FREE
+          && (isRequiredOnInvoiceLine || isRequiredOnMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get("Please put AnalyticDistribution Template"));
@@ -181,21 +190,21 @@ public class AccountService {
                 I18n.get(
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
-            List<Long> rulesAnalyticAccountList = getRulesIds(account);
-            if (CollectionUtils.isEmpty(rulesAnalyticAccountList)) {
-              throw new AxelorException(
-                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                  I18n.get(
-                      AccountExceptionMessage
-                          .ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS));
-            }
+            List<Long> analyticAccountIdList = getAnalyticAccountsIds(account);
 
-            if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
+            if (CollectionUtils.isNotEmpty(analyticAccountIdList)
                 && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
-                    .map(AnalyticDistributionLine::getAnalyticAccount)
+                    .map(
+                        analyticDistributionLine -> {
+                          AnalyticAccount analyticAccount =
+                              analyticDistributionLine.getAnalyticAccount();
+                          if (analyticAccount != null) {
+                            return analyticAccount.getId();
+                          }
+                          return null;
+                        })
                     .filter(Objects::nonNull)
-                    .map(AnalyticAccount::getId)
-                    .anyMatch(it -> !rulesAnalyticAccountList.contains(it))) {
+                    .anyMatch(it -> !analyticAccountIdList.contains(it))) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   I18n.get(
@@ -206,17 +215,6 @@ public class AccountService {
         }
       }
     }
-  }
-
-  public List<Long> getRulesIds(Account account) {
-    Query query =
-        JPA.em()
-            .createQuery(
-                "SELECT analyticAccount.id FROM AnalyticRules "
-                    + "self JOIN self.analyticAccountSet analyticAccount "
-                    + "WHERE self.fromAccount.code <= :account AND self.toAccount.code >= :account");
-    query.setParameter("account", account.getCode());
-    return query.getResultList();
   }
 
   @Transactional
@@ -277,6 +275,20 @@ public class AccountService {
       }
     }
     return account;
+  }
+
+  public List<Long> getAnalyticAccountsIds(Account account) {
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT analyticAccount.id FROM AnalyticRules analyticRules "
+                    + "JOIN analyticRules.analyticAccountSet analyticAccount "
+                    + "WHERE analyticRules.fromAccount.code <= :account "
+                    + "AND analyticRules.toAccount.code >= :account "
+                    + "AND analyticRules.company = :company");
+    query.setParameter("account", account.getCode());
+    query.setParameter("company", account.getCompany());
+    return query.getResultList();
   }
 
   protected Account activate(Account account) {

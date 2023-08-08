@@ -12,7 +12,7 @@
     type="com.axelor.apps.helpdesk.db.TicketType" search="self.importId = :importId"/>
 
   <input file="helpdesk_ticket.csv" separator=";" type="com.axelor.apps.helpdesk.db.Ticket"
-    search="self.ticketSeq = :ticketSeq">
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportTicket:importTicket">
     <bind to="startDateT" column="startDateT" adapter="LocalDateTime"/>
     <bind to="endDateT" column="endDateT" adapter="LocalDateTime"/>
   </input>

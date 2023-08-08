@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppProduction">
+  <entity name="AppProduction" cacheable="true">
 
     <boolean name="manageBusinessProduction" title="Manage business production"/>
     <boolean name="enableTimesheetOnManufOrder" title="Enable timesheet on manuf order"

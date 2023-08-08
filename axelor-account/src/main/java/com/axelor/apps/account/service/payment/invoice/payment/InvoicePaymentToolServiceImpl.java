@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
@@ -181,8 +182,11 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         }
       }
     }
-
-    return invoice.getAmountRemaining().compareTo(pendingAmount) <= 0;
+    BigDecimal remainingAmount =
+        invoice.getFinancialDiscount() != null
+            ? invoice.getRemainingAmountAfterFinDiscount()
+            : invoice.getAmountRemaining();
+    return remainingAmount.compareTo(pendingAmount) <= 0;
   }
 
   /** @inheritDoc */
@@ -248,13 +252,22 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   @Override
   public BigDecimal getPayableAmount(
-      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange) {
+      List<InvoiceTerm> invoiceTermList,
+      LocalDate date,
+      boolean manualChange,
+      Currency paymentCurrency) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return BigDecimal.ZERO;
+    }
+
+    boolean isCompanyCurrency =
+        paymentCurrency.equals(invoiceTermList.get(0).getCompany().getCurrency());
     return invoiceTermList.stream()
         .map(
             it ->
                 manualChange
-                    ? invoiceTermService.getAmountRemaining(it, date)
-                    : it.getAmountRemaining())
+                    ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
+                    : isCompanyCurrency ? it.getCompanyAmountRemaining() : it.getAmountRemaining())
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
@@ -367,7 +380,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           .map(Invoice::getInvoiceTermList)
           .flatMap(Collection::stream)
           .filter(invoiceTermService::isNotAwaitingPayment)
-          .map(it -> invoiceTermService.getAmountRemaining(it, date))
+          .map(it -> invoiceTermService.getAmountRemaining(it, date, false))
           .reduce(BigDecimal::add)
           .orElse(BigDecimal.ZERO);
     } else {

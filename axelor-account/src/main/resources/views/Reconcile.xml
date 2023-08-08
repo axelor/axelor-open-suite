@@ -11,7 +11,7 @@
     <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
     <field name="amount" aggregate="sum"/>
-    <field name="reconciliationDate"/>
+    <field name="reconciliationDateTime"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -21,7 +21,7 @@
     <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="amount" aggregate="sum"/>
-    <field name="reconciliationDate"/>
+    <field name="reconciliationDateTime"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -65,8 +65,9 @@
     <panel sidebar="true" name="infoPanel" title="Info">
       <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
       <field name="statusSelect"/>
-      <field name="reconciliationDate"/>
-      <field name="reconciliationCancelDate" hidden="true" showIf="statusSelect == 3"/>
+      <field name="reconciliationDateTime"/>
+      <field name="effectiveDate"/>
+      <field name="reconciliationCancelDateTime" hidden="true" showIf="statusSelect == 3"/>
       <field name="reconcileSeq" colSpan="12" readonly="true"/>
     </panel>
   </form>

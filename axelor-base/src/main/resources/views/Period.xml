@@ -34,7 +34,7 @@
     <panel name="actionsPanel" sidebar="true">
       <field name="statusSelect" colSpan="6"/>
       <field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
-      <field name="temporarilyCloseDate" colSpan="6" showIf="statusSelect == 4"
+      <field name="temporarilyCloseDateTime" colSpan="6" showIf="statusSelect == 4"
         readonly="true"/>
       <button name="closeBtn" title="Permanently close period"
         onClick="action-period-group-close" hidden="true"

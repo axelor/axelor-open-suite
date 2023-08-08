@@ -5,9 +5,9 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppInvoice">
+  <entity name="AppInvoice" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines"/>
     <boolean name="isVentilationSkipped" title="Skip ventilation"/>

@@ -5,9 +5,9 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppLeave">
+  <entity name="AppLeave" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="allowNegativeLeaveEmployees"
       title="Allow negative values for employee leaves"/>

@@ -5,9 +5,9 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppPortal">
+  <entity name="AppPortal" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="manageSaleOrders" title="Manage sale orders" default="true"/>
     <boolean name="manageInvoices" title="Manage invoices" default="true"/>
@@ -39,6 +39,7 @@
       <field name="canConfirmOnline" on="UPDATE"/>
       <field name="canPayOnline" on="UPDATE"/>
       <field name="portalSelect" on="UPDATE"/>
+      <field name="showCatalog" on="UPDATE"/>
     </track>
   </entity>
 

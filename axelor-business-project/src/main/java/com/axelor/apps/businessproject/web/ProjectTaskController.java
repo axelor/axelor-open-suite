@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,26 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class ProjectTaskController {
 
@@ -54,6 +63,7 @@ public class ProjectTaskController {
       projectTask = Beans.get(ProjectTaskBusinessProjectService.class).compute(projectTask);
       response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
       response.setValue("exTaxTotal", projectTask.getExTaxTotal());
+      response.setValue("totalCosts", projectTask.getTotalCosts());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -94,5 +104,39 @@ public class ProjectTaskController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getProjectTaskTimeFollowUpData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          BusinessProjectExceptionMessage.PROJECT_TASK_REPORT_NO_ID_FOUND);
+    }
+    Map<String, Object> data =
+        Beans.get(ProjectTaskBusinessProjectService.class)
+            .processRequestToDisplayTimeReporting(Long.valueOf(id));
+    response.setData(List.of(data));
+  }
+
+  public void getProjectTaskFinancialReportingData(ActionRequest request, ActionResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("turnover", request.getData().get("turnover"));
+    data.put("initialCosts", request.getData().get("initialCosts"));
+    data.put("initialMargin", request.getData().get("initialMargin"));
+    data.put("initialMarkup", request.getData().get("initialMarkup"));
+    data.put("realTurnover", request.getData().get("realTurnover"));
+    data.put("realCosts", request.getData().get("realCosts"));
+    data.put("realMargin", request.getData().get("realMargin"));
+    data.put("realMarkup", request.getData().get("realMarkup"));
+    data.put("landingCosts", request.getData().get("landingCosts"));
+    data.put("landingMargin", request.getData().get("landingMargin"));
+    data.put("landingMarkup", request.getData().get("landingMarkup"));
+    data.put("forecastCosts", request.getData().get("forecastCosts"));
+    data.put("forecastMargin", request.getData().get("forecastMargin"));
+    data.put("forecastMarkup", request.getData().get("forecastMarkup"));
+    response.setData(List.of(data));
   }
 }

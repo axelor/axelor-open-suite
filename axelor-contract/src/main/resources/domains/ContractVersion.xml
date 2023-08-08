@@ -33,9 +33,9 @@
     <boolean name="isConsumptionManagement" title="Consumption management" default="false"/>
 
     <date name="supposedActivationDate" title="Supposed activation date" copy="false"/>
-    <date name="activationDate" title="Activation date" copy="false"/>
+    <datetime name="activationDateTime" title="Activation date" copy="false"/>
     <date name="supposedEndDate" title="Supposed end date" copy="false"/>
-    <date name="endDate" title="End date" copy="false"/>
+    <datetime name="endDateTime" title="End date" copy="false"/>
 
     <many-to-one name="activatedByUser" ref="com.axelor.auth.db.User"
       title="Activated By" copy="false"/>
@@ -76,6 +76,11 @@
 	  		return fullName;
 	  	]]>
     </string>
+
+    <decimal name="initialExTaxTotalPerYear" title="Initial ex tax total per year"
+      readonly="true" copy="false"/>
+    <decimal name="yearlyExTaxTotalRevalued" title="Yearly ex tax total revalued "
+      readonly="true"/>
 
     <extra-code><![CDATA[
             public static final int DRAFT_VERSION = 1;

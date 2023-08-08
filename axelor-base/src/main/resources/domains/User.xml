@@ -11,7 +11,8 @@
       title="Company"/>
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company"
       title="Active company" massUpdate="true"/>
-    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      unique="true"/>
     <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-many name="teamSet" ref="com.axelor.team.db.Team" title="Teams"
       mappedBy="members"/>
@@ -65,33 +66,40 @@
     <string name="emailSignature" title="Email signature" large="true"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="Trading name"></many-to-one>
+      title="Trading name"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>
 
     <track>
-      <field name="name"/>
-      <field name="code"/>
-      <field name="email"/>
-      <field name="theme"/>
-      <field name="activateOn"/>
-      <field name="expiresOn"/>
-      <field name="activeCompany"/>
-      <field name="partner"/>
-      <field name="todayDateT"/>
-      <field name="activeTeam"/>
-      <field name="fullName"/>
-      <field name="iCalendar"/>
-      <field name="electronicSignature"/>
-      <field name="group"/>
-      <field name="language"/>
-      <field name="singleTab"/>
-      <field name="noHelp"/>
-      <field name="blocked"/>
-      <field name="sendEmailUponPasswordChange"/>
-      <field name="homeAction"/>
-      <field name="receiveEmails"/>
+      <field name="name" on="UPDATE"/>
+      <field name="code" on="UPDATE"/>
+      <field name="email" on="UPDATE"/>
+      <field name="theme" on="UPDATE"/>
+      <field name="activateOn" on="UPDATE"/>
+      <field name="expiresOn" on="UPDATE"/>
+      <field name="activeCompany" on="UPDATE"/>
+      <field name="partner" on="UPDATE"/>
+      <field name="todayDateT" on="UPDATE"/>
+      <field name="activeTeam" on="UPDATE"/>
+      <field name="fullName" on="UPDATE"/>
+      <field name="iCalendar" on="UPDATE"/>
+      <field name="electronicSignature" on="UPDATE"/>
+      <field name="group" on="UPDATE"/>
+      <field name="language" on="UPDATE"/>
+      <field name="singleTab" on="UPDATE"/>
+      <field name="noHelp" on="UPDATE"/>
+      <field name="blocked" on="UPDATE"/>
+      <field name="sendEmailUponPasswordChange" on="UPDATE"/>
+      <field name="homeAction" on="UPDATE"/>
+      <field name="receiveEmails" on="UPDATE"/>
+      <field name="useSignatureForSalesQuotations" on="UPDATE"/>
+      <field name="useSignatureForPurchaseQuotations" on="UPDATE"/>
+      <field name="stepStatusSelect" on="UPDATE"/>
+      <field name="emailSignature" on="UPDATE"/>
+      <field name="tradingName" on="UPDATE"/>
     </track>
 
   </entity>

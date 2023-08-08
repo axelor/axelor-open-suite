@@ -11,6 +11,8 @@
       <field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"/>
       <field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
       <field name="stockUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
+      <field name="isManageStockLocationOnStockMoveLine" widget="boolean-switch" colSpan="4"
+        onChange="action-app-stock-validate-config-error"/>
     </panel>
     <panel name="barCodePanel" title="Barcode">
       <panel name="trackingNumberBarCodePanel" title="Tracking number" colSpan="12">
@@ -58,5 +60,18 @@
     <view type="grid" name="stock-config-grid"/>
     <view type="form" name="stock-config-form"/>
   </action-view>
+
+  <action-validate name="action-app-stock-validate-config-error">
+    <error
+      message="Stock reservation feature cannot be active when we are managing stock locations on stock move line."
+      if="isManageStockLocationOnStockMoveLine &amp;&amp; __config__.app.getApp('supplychain')?.manageStockReservation"
+      action="action-app-stock-record-set-manage-stock-location-in-line-false"/>
+  </action-validate>
+
+  <action-record
+    name="action-app-stock-record-set-manage-stock-location-in-line-false"
+    model="com.axelor.studio.db.AppStock">
+    <field name="isManageStockLocationOnStockMoveLine" expr="eval: false"/>
+  </action-record>
 
 </object-views>

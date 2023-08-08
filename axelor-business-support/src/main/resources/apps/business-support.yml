@@ -2,7 +2,7 @@
 name: Business Support
 code: business-support
 typeSelect: standard
-installOrder: 33
+installOrder: 2310
 description: |
    axelor-business-support
 modules: 

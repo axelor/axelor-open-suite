@@ -59,12 +59,6 @@
     <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
-    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
-    <one-to-many name="budgetDistributionList"
-      ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution"
-      mappedBy="invoiceLine"/>
-    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
-
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account"
       title="Accounting.Account"/>
 

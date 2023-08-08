@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.message;
 
@@ -22,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
@@ -32,6 +34,7 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.AppSettingsMessageService;
 import com.axelor.message.service.SendMailQueueService;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
@@ -46,14 +49,18 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
       SendMailQueueService sendMailQueueService,
+      AppSettingsMessageService appSettingsMessageService,
       UserService userService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      BirtTemplateService birtTemplateService) {
     super(
         metaAttachmentRepository,
         messageRepository,
         sendMailQueueService,
+        appSettingsMessageService,
         userService,
-        appBaseService);
+        appBaseService,
+        birtTemplateService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

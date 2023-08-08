@@ -4,10 +4,10 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="gdpr-root" title="GDPR" icon="fa-gavel" icon-background="#004aad"
-    if="__config__.app.isApp('gdpr')" order="-65"/>
+    if="__config__.app.isApp('gdpr')" order="-200"/>
 
   <menuitem name="gdpr-root-request" parent="gdpr-root" title="Request"
-    action="action.gdpr.view.request" order="1"/>
+    action="action.gdpr.view.request" order="100"/>
 
   <action-view name="action.gdpr.view.request" title="Request"
     model="com.axelor.apps.gdpr.db.GDPRRequest">
@@ -16,7 +16,7 @@
   </action-view>
 
   <menuitem name="gdpr-root-processing-register" parent="gdpr-root"
-    title="Processing register" action="action.gdpr.view.processing.register" order="2"/>
+    title="Processing register" action="action.gdpr.view.processing.register" order="200"/>
 
   <action-view name="action.gdpr.view.processing.register" title="Processing register"
     model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">

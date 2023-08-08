@@ -51,7 +51,7 @@
     <boolean name="isCustomized" title="Is customized" default="false"/>
     <many-to-one ref="com.axelor.apps.base.db.BankDetails" name="bankDetails"/>
 
-    <date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
+    <datetime name="decisionPfpTakenDateTime" readonly="true" title="PFP decision date"/>
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <integer name="pfpValidateStatusSelect" title="PFP Status"
@@ -100,6 +100,9 @@
 	      id]]>
     </integer>
 
+    <boolean name="pfpfPartialValidationOk"/>
+    <decimal name="pfpPartialValidationAmount"/>
+
     <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 
     <extra-code><![CDATA[
@@ -127,12 +130,14 @@
       <field name="financialDiscount"/>
       <field name="invoice"/>
       <field name="moveLine"/>
-      <field name="decisionPfpTakenDate"/>
+      <field name="decisionPfpTakenDateTime"/>
       <field name="paymentSession"/>
       <field name="pfpValidateStatusSelect"/>
       <field name="pfpValidatorUser"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.account.db.repo.InvoiceTermListener"/>
 
   </entity>
 

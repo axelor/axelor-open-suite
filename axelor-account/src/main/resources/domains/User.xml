@@ -10,6 +10,11 @@
       ref="com.axelor.apps.account.db.SubstitutePfpValidator" title="Substitute PFP Validator"/>
     <boolean name="isPfpValidator" title="PFP Validator"/>
     <boolean name="isSuperPfpUser" title="Super User"/>
+
+    <track>
+      <field name="isPfpValidator" on="UPDATE"/>
+      <field name="isSuperPfpUser" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

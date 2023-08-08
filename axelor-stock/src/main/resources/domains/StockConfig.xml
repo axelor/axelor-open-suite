@@ -156,6 +156,16 @@
 
       <field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
       <field name="displayExtRefOnCertificateOfConformityPrinting" on="UPDATE"/>
+      <field name="virtualOutsourcingStockLocation" on="UPDATE"/>
+      <field name="outsourcingReceiptStockLocation" on="UPDATE"/>
+      <field name="logisticalFormAutomaticEmail" on="UPDATE"/>
+      <field name="logisticalFormMessageTemplate" on="UPDATE"/>
+      <field name="isDisplayPurchaseValueInPrinting" on="UPDATE"/>
+      <field name="stockRuleMessageTemplate" on="UPDATE"/>
+      <field name="displayProductCodeOnPrinting" on="UPDATE"/>
+      <field name="displayPriceOnPrinting" on="UPDATE"/>
+      <field name="displayOrderReferenceAndOrderDate" on="UPDATE"/>
+      <field name="percentToleranceForWapChange" on="UPDATE"/>
     </track>
   </entity>
 

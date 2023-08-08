@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
@@ -51,6 +52,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -180,7 +182,11 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
     print = printRepo.save(print);
 
-    printService.attachMetaFiles(print, getMetaFiles(maker, printTemplate));
+    if (StringUtils.notEmpty(model)) {
+      Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(model);
+      Model entity = JPA.find(modelClass, objectId);
+      printService.attachMetaFiles(print, getMetaFiles(Map.of(simpleModel, entity), printTemplate));
+    }
 
     return print;
   }
@@ -301,7 +307,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     return maker;
   }
 
-  public Set<MetaFile> getMetaFiles(TemplateMaker maker, PrintTemplate printTemplate)
+  public Set<MetaFile> getMetaFiles(Map<String, Object> context, PrintTemplate printTemplate)
       throws AxelorException, IOException {
     Set<MetaFile> metaFiles = new HashSet<>();
     if (printTemplate.getBirtTemplateSet() == null) {
@@ -309,8 +315,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
 
     for (BirtTemplate birtTemplate : printTemplate.getBirtTemplateSet()) {
-      metaFiles.add(
-          templateMessageService.createMetaFileUsingBirtTemplate(maker, birtTemplate, null, null));
+      metaFiles.add(templateMessageService.createMetaFileUsingBirtTemplate(birtTemplate, context));
     }
 
     LOG.debug("MetaFile to attach: {}", metaFiles);

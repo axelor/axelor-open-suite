@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,17 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice.workflow.cancel;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -38,12 +37,10 @@ import com.google.inject.persist.Transactional;
 public class CancelState extends WorkflowInvoice {
 
   private WorkflowCancelService workflowService;
-  private BudgetService budgetService;
 
   @Inject
-  CancelState(WorkflowCancelService workflowService, BudgetService budgetService) {
+  CancelState(WorkflowCancelService workflowService) {
     this.workflowService = workflowService;
-    this.budgetService = budgetService;
   }
 
   @Override
@@ -56,11 +53,6 @@ public class CancelState extends WorkflowInvoice {
 
     workflowService.beforeCancel(invoice);
 
-    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
-      cancelMove();
-    }
-
     updateInvoiceFromCancellation();
 
     workflowService.afterCancel(invoice);
@@ -72,12 +64,6 @@ public class CancelState extends WorkflowInvoice {
         .getAccountConfig(invoice.getCompany())
         .getIsManagePassedForPayment()) {
       setPfpStatus();
-    }
-
-    budgetService.updateBudgetLinesFromInvoice(invoice);
-
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      invoiceLine.clearBudgetDistributionList();
     }
   }
 
@@ -104,7 +90,7 @@ public class CancelState extends WorkflowInvoice {
 
   protected void setPfpStatus() throws AxelorException {
     InvoiceToolService.setPfpStatus(invoice);
-    invoice.setDecisionPfpTakenDate(null);
+    invoice.setDecisionPfpTakenDateTime(null);
 
     invoice.getInvoiceTermList().stream()
         .filter(it -> it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_NO_PFP)

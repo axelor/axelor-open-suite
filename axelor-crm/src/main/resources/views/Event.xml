@@ -118,9 +118,9 @@
         <field name="$fullName" showTitle="false" readonly="true" colSpan="12">
           <viewer>
 						<![CDATA[
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.lead == null">{{record.contactPartner.fullName}}</span>
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.contactPartner == null &amp;&amp; record.lead == null">{{record.partner.fullName}}</span>
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.lead != null">{{record.lead.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventLead == null">{{record.contactPartner.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.contactPartner == null &amp;&amp; record.eventLead == null">{{record.partner.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventLead != null">{{record.eventLead.fullName}}</span>
 						]]>
           </viewer>
         </field>
@@ -164,16 +164,16 @@
           <field name="subject" showTitle="true" colSpan="12" height="2px"/>
         </editor>
       </field>
-      <field name="partner" hideIf="lead != null" canEdit="false"
+      <field name="partner" hideIf="eventLead != null" canEdit="false"
         onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="contactPartner" canEdit="false"
-        hideIf="partner.partnerTypeSelect == 2 || lead != null"
+        hideIf="partner.partnerTypeSelect == 2 || eventLead != null"
         onChange="action-group-crm-meeting-contactpartner-onchange"
         onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-      <field name="lead" hideIf="partner != null || contactPartner != null" canEdit="false"
-        onChange="action-meeting-set-location-lead, action-event-method-add-guest"
+      <field name="eventLead" hideIf="partner != null || contactPartner != null"
+        canEdit="false" onChange="action-meeting-set-location-lead, action-event-method-add-guest"
         form-view="lead-form" grid-view="lead-grid"/>
       <spacer/>
       <field name="startDateTime" colSpan="3"
@@ -219,7 +219,11 @@
       hideIf="typeSelect == 5">
       <field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one"
         target="com.axelor.message.db.EmailAddress" canNew="true"
-        onChange="action-event-method-add-email-guest"/>
+        onChange="action-event-method-add-email-guest">
+        <editor x-show-titles="false" x-viewer="true">
+          <field name="address" widget="email" colSpan="12" placeholder="whatever@example.com"/>
+        </editor>
+      </field>
       <field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
         <editor layout="table" x-show-titles="false">
           <field name="name" readonly="true"/>
@@ -385,11 +389,10 @@
     <action name="action-event-view-modifications-recurrence"
       if="recurrenceConfiguration &amp;&amp; id > 0"/>
     <action name="action-event-attrs-show-past-event-text"/>
-    <action name="action-event-method-fill-event-related-dates"/>
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
-    title="Apply modifications" model="com.axelor.message.db.Wizard">
+    title="Apply modifications" model="com.axelor.utils.db.Wizard">
     <view type="form" name="modifications-assistant-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>
@@ -418,7 +421,7 @@
     <context name="_relatedToSelectId" expr="eval: relatedToSelectId"/>
   </action-view>
 
-  <form model="com.axelor.message.db.Wizard" title="Apply modifications"
+  <form model="com.axelor.utils.db.Wizard" title="Apply modifications"
     name="modifications-assistant-form">
     <panel name="wizardPanel">
       <button name="applyToThisBtn" title="Apply changes to this event only" onClick="close"
@@ -441,8 +444,8 @@
     <action name="action-event-method-compute-from-duration" if="endDateTime == null"/>
     <action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
     <action name="action-event-default-record-user"
-      if="_lead == null &amp;&amp; _partner == null"/>
-    <action name="action-event-record-event-from-lead" if="_lead != null"/>
+      if="_eventLead == null &amp;&amp; _partner == null"/>
+    <action name="action-event-record-event-from-lead" if="_eventLead != null"/>
     <action name="action-event-record-event-from-partner" if="_partner != null"/>
     <action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     <action name="action-event-record-event-from-sale-order" if="_saleOrder != null"/>
@@ -546,11 +549,13 @@
 
   <action-record name="action-event-record-event-from-opportunity"
     model="com.axelor.apps.crm.db.Event">
-    <field name="eventLead" expr="eval: _opportunity.eventLead"/>
+    <field name="opportunity" expr="eval: _opportunity"/>
+    <field name="team" expr="eval: _opportunity.team"/>
     <field name="partner" expr="eval: _opportunity.partner"/>
-    <field if="_opportunity.id != null" name="relatedToSelect"
-      expr="eval:'com.axelor.apps.crm.db.Opportunity'"/>
-    <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_EVENT" if="_call"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_MEETING" if="_meeting"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_TASK" if="_task"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_NOTE" if="_note"/>
   </action-record>
 
 
@@ -628,11 +633,6 @@
   </action-record>
 
   <!-- ACTION METHOD -->
-
-  <action-method name="action-event-method-fill-event-related-dates"
-    model="com.axelor.apps.crm.db.Event">
-    <call class="com.axelor.apps.crm.web.EventController" method="fillEventDates"/>
-  </action-method>
 
   <action-method name="action-event-method-compute-from-start-date-time">
     <call class="com.axelor.apps.crm.web.EventController" method="computeFromStartDateTime"/>

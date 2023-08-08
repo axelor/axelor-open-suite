@@ -33,7 +33,7 @@
 
 
   <form name="global-tracking-log-view-wizard-form" title="View global tracking logs"
-    model="com.axelor.message.db.Wizard" canSave="false" canNew="false" canDelete="false"
+    model="com.axelor.utils.db.Wizard" canSave="false" canNew="false" canDelete="false"
     canArchive="false" canCopy="false" canAttach="false" width="large">
     <panel>
       <field name="$metaModel" title="Model" type="many-to-one"
@@ -61,7 +61,7 @@
   </form>
 
   <action-record name="action-record-global-tracking-log-meta-model-on-change"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="$metaField" expr="eval: null"/>
   </action-record>
 

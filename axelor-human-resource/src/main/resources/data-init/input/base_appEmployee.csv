@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Employees Management";"employee";12;"Employees Management";"app-employee.png";"axelor-human-resource";"account";17

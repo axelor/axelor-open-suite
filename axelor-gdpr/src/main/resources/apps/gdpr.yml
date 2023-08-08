@@ -2,7 +2,7 @@
 name: GDPR
 code: gdpr
 typeSelect: standard
-installOrder: 35
+installOrder: 2330
 description: |
   GDPR configuration
 image: RGPDLogo.png

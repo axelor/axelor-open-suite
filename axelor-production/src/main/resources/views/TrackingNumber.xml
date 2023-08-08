@@ -27,55 +27,52 @@
 
     <select model="com.axelor.apps.stock.db.StockMove" title="Stock move"
       form-view="stock-move-form">
-      <field name="stockMoveLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="stockMoveLineList[].product.fullName" as="product"/>
-      <field name="stockMoveLineList[].productName" as="moveLine"/>
-      <field name="stockMoveLineList[].realQty" as="currentQty"/>
-      <field name="stockMoveLineList[].qty" as="futureQty"/>
-      <field name="stockMoveLineList[].stockMove.realDate" as="date"/>
-      <field name="stockMoveLineList[].stockMove.origin" as="origin"/>
+      <field name="stockMoveLineList.trackingNumber" as="trackingNumber"/>
+      <field name="stockMoveLineList.product.fullName" as="product"/>
+      <field name="stockMoveLineList.productName" as="moveLine"/>
+      <field name="stockMoveLineList.realQty" as="currentQty"/>
+      <field name="stockMoveLineList.qty" as="futureQty"/>
+      <field name="stockMoveLineList.stockMove.realDate" as="date"/>
+      <field name="stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
-        <input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
+        <input name="trackingNumber" field="stockMoveLineList.trackingNumber"/>
       </where>
     </select>
     <select model="com.axelor.apps.stock.db.StockLocation" title="Stock location"
       form-view="stock-location-form">
-      <field name="detailsStockLocationLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="detailsStockLocationLineList[].product.name" as="product"/>
-      <field name="detailsStockLocationLineList[].detailsStockLocation.name"
-        as="stockLocation"/>
-      <field name="detailsStockLocationLineList[].currentQty" as="currentQty"/>
-      <field name="detailsStockLocationLineList[].futureQty" as="futureQty"/>
+      <field name="detailsStockLocationLineList.trackingNumber" as="trackingNumber"/>
+      <field name="detailsStockLocationLineList.product.name" as="product"/>
+      <field name="detailsStockLocationLineList.detailsStockLocation.name" as="stockLocation"/>
+      <field name="detailsStockLocationLineList.currentQty" as="currentQty"/>
+      <field name="detailsStockLocationLineList.futureQty" as="futureQty"/>
       <where>
-        <input name="trackingNumber" field="detailsStockLocationLineList[].trackingNumber"/>
+        <input name="trackingNumber" field="detailsStockLocationLineList.trackingNumber"/>
       </where>
     </select>
     <select model="com.axelor.apps.production.db.ManufOrder"
       title="Manufacturing Order (StockMove In)" form-view="manuf-order-form">
-      <field name="inStockMoveList[].stockMoveLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="inStockMoveList[].stockMoveLineList[].product.fullName" as="product"/>
-      <field name="inStockMoveList[].stockMoveLineList[].productName" as="moveLine"/>
-      <field name="inStockMoveList[].stockMoveLineList[].realQty" as="currentQty"/>
-      <field name="inStockMoveList[].stockMoveLineList[].qty" as="futureQty"/>
-      <field name="inStockMoveList[].stockMoveLineList[].stockMove.realDate" as="date"/>
-      <field name="inStockMoveList[].stockMoveLineList[].stockMove.origin" as="origin"/>
+      <field name="inStockMoveList.stockMoveLineList.trackingNumber" as="trackingNumber"/>
+      <field name="inStockMoveList.stockMoveLineList.product.fullName" as="product"/>
+      <field name="inStockMoveList.stockMoveLineList.productName" as="moveLine"/>
+      <field name="inStockMoveList.stockMoveLineList.realQty" as="currentQty"/>
+      <field name="inStockMoveList.stockMoveLineList.qty" as="futureQty"/>
+      <field name="inStockMoveList.stockMoveLineList.stockMove.realDate" as="date"/>
+      <field name="inStockMoveList.stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
-        <input name="trackingNumber"
-          field="inStockMoveList[].stockMoveLineList[].trackingNumber"/>
+        <input name="trackingNumber" field="inStockMoveList.stockMoveLineList.trackingNumber"/>
       </where>
     </select>
     <select model="com.axelor.apps.production.db.ManufOrder"
       title="Manufacturing Order (StockMove Out)" form-view="manuf-order-form">
-      <field name="outStockMoveList[].stockMoveLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="outStockMoveList[].stockMoveLineList[].product.fullName" as="product"/>
-      <field name="outStockMoveList[].stockMoveLineList[].productName" as="moveLine"/>
-      <field name="outStockMoveList[].stockMoveLineList[].realQty" as="currentQty"/>
-      <field name="outStockMoveList[].stockMoveLineList[].qty" as="futureQty"/>
-      <field name="outStockMoveList[].stockMoveLineList[].stockMove.realDate" as="date"/>
-      <field name="outStockMoveList[].stockMoveLineList[].stockMove.origin" as="origin"/>
+      <field name="outStockMoveList.stockMoveLineList.trackingNumber" as="trackingNumber"/>
+      <field name="outStockMoveList.stockMoveLineList.product.fullName" as="product"/>
+      <field name="outStockMoveList.stockMoveLineList.productName" as="moveLine"/>
+      <field name="outStockMoveList.stockMoveLineList.realQty" as="currentQty"/>
+      <field name="outStockMoveList.stockMoveLineList.qty" as="futureQty"/>
+      <field name="outStockMoveList.stockMoveLineList.stockMove.realDate" as="date"/>
+      <field name="outStockMoveList.stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
-        <input name="trackingNumber"
-          field="outStockMoveList[].stockMoveLineList[].trackingNumber"/>
+        <input name="trackingNumber" field="outStockMoveList.stockMoveLineList.trackingNumber"/>
       </where>
     </select>
   </search>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.purchase.web;
 
@@ -317,12 +318,12 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       if (purchaseOrderLine.getIsTitleLine()) {
-        PurchaseOrderLine newPurchaseOrderLine = new PurchaseOrderLine();
-        newPurchaseOrderLine.setIsTitleLine(true);
-        newPurchaseOrderLine.setQty(BigDecimal.ZERO);
-        newPurchaseOrderLine.setId(purchaseOrderLine.getId());
-        newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
-        response.setValues(Mapper.toMap(purchaseOrderLine));
+        Map<String, Object> newPurchaseOrderLine = Mapper.toMap(new PurchaseOrderLine());
+        newPurchaseOrderLine.put("qty", BigDecimal.ZERO);
+        newPurchaseOrderLine.put("id", purchaseOrderLine.getId());
+        newPurchaseOrderLine.put("version", purchaseOrderLine.getVersion());
+        newPurchaseOrderLine.put("isTitleLine", true);
+        response.setValues(newPurchaseOrderLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -334,16 +335,19 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      Company company = purchaseOrder.getCompany();
+      Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
       Beans.get(SupplierCatalogService.class)
           .checkMinQty(
               purchaseOrderLine.getProduct(),
-              purchaseOrder.getSupplierPartner(),
-              purchaseOrder.getCompany(),
+              supplierPartner,
+              company,
               purchaseOrderLine.getQty(),
               request,
               response);
-      Beans.get(PurchaseOrderLineService.class).checkMultipleQty(purchaseOrderLine, response);
+      Beans.get(PurchaseOrderLineService.class)
+          .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

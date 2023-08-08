@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.contract.service;
 
@@ -21,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.AbstractContractVersionRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
@@ -31,12 +33,15 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractVersionServiceImpl extends ContractVersionRepository
     implements ContractVersionService {
@@ -49,6 +54,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void waiting(ContractVersion version) throws AxelorException {
     waiting(
         version,
@@ -92,20 +98,23 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void ongoing(ContractVersion version) throws AxelorException {
     ongoing(
         version,
-        appBaseService.getTodayDate(
-            version.getContract() != null
-                ? version.getContract().getCompany()
-                : Optional.ofNullable(AuthUtils.getUser())
-                    .map(User::getActiveCompany)
-                    .orElse(null)));
+        appBaseService
+            .getTodayDateTime(
+                version.getContract() != null
+                    ? version.getContract().getCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null))
+            .toLocalDateTime());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void ongoing(ContractVersion version, LocalDate date) throws AxelorException {
+  public void ongoing(ContractVersion version, LocalDateTime dateTime) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(AbstractContractVersionRepository.WAITING_VERSION);
     authorizedStatus.add(AbstractContractVersionRepository.DRAFT_VERSION);
@@ -116,7 +125,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
           I18n.get(ContractExceptionMessage.CONTRACT_ONGOING_WRONG_STATUS));
     }
 
-    version.setActivationDate(date);
+    version.setActivationDateTime(dateTime);
     version.setActivatedByUser(AuthUtils.getUser());
     version.setStatusSelect(ONGOING_VERSION);
 
@@ -126,7 +135,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         && version.getEngagementStartFromVersion()) {
       Preconditions.checkNotNull(
           version.getContract(), I18n.get("No contract is associated to version."));
-      version.getContract().setEngagementStartDate(date);
+      version.getContract().setEngagementStartDate(dateTime.toLocalDate());
     }
 
     if (version.getContract().getIsInvoicingManagement()
@@ -142,20 +151,23 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void terminate(ContractVersion version) throws AxelorException {
     terminate(
         version,
-        appBaseService.getTodayDate(
-            version.getContract() != null
-                ? version.getContract().getCompany()
-                : Optional.ofNullable(AuthUtils.getUser())
-                    .map(User::getActiveCompany)
-                    .orElse(null)));
+        appBaseService
+            .getTodayDateTime(
+                version.getContract() != null
+                    ? version.getContract().getCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null))
+            .toLocalDateTime());
   }
 
   @Override
-  @Transactional
-  public void terminate(ContractVersion version, LocalDate date) throws AxelorException {
+  @Transactional(rollbackOn = {Exception.class})
+  public void terminate(ContractVersion version, LocalDateTime dateTime) throws AxelorException {
 
     if (version.getStatusSelect() == null
         || version.getStatusSelect() != AbstractContractVersionRepository.ONGOING_VERSION) {
@@ -164,7 +176,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
           I18n.get(ContractExceptionMessage.CONTRACT_TERMINATE_WRONG_STATUS));
     }
 
-    version.setEndDate(date);
+    version.setEndDateTime(dateTime);
     version.setStatusSelect(TERMINATED_VERSION);
 
     save(version);
@@ -173,5 +185,21 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   @Override
   public ContractVersion newDraft(Contract contract) {
     return copy(contract);
+  }
+
+  public void computeTotals(ContractVersion contractVersion) {
+    List<ContractLine> contractLineList = contractVersion.getContractLineList();
+    if (CollectionUtils.isNotEmpty(contractLineList)) {
+      contractVersion.setInitialExTaxTotalPerYear(
+          contractLineList.stream()
+              .map(ContractLine::getInitialPricePerYear)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+      contractVersion.setYearlyExTaxTotalRevalued(
+          contractLineList.stream()
+              .map(ContractLine::getYearlyPriceRevalued)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+    }
   }
 }

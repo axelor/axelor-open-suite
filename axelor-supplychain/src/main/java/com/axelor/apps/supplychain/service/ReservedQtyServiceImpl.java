@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
@@ -100,8 +101,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             stockMoveLine.getRequestedReservedQty().subtract(stockMoveLine.getReservedQty());
         updateRequestedQuantityInLocations(
             stockMoveLine,
-            stockMove.getFromStockLocation(),
-            stockMove.getToStockLocation(),
+            stockMoveLine.getFromStockLocation(),
+            stockMoveLine.getToStockLocation(),
             stockMoveLine.getProduct(),
             qty,
             requestedReservedQty,
@@ -128,7 +129,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       // update in stock location line
       StockLocationLine stockLocationLine =
           stockLocationLineService.getOrCreateStockLocationLine(
-              stockMoveLine.getStockMove().getFromStockLocation(), product);
+              stockMoveLine.getFromStockLocation(), product);
       BigDecimal diffRequestedQuantityLocation =
           convertUnitWithProduct(
               stockMoveLine.getUnit(), stockLocationLine.getUnit(), diffRequestedQty, product);
@@ -431,7 +432,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         stockMoveLineRepository
             .all()
             .filter(
-                "self.stockMove.fromStockLocation.id = :stockLocationId "
+                "self.fromStockLocation.id = :stockLocationId "
                     + "AND self.product.id = :productId "
                     + "AND self.stockMove.statusSelect = :planned "
                     + "AND self.reservationDateTime IS NOT NULL "
@@ -644,7 +645,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
-            stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+            stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct());
     BigDecimal availableQtyToBeReserved =
         stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
     BigDecimal diffReservedQuantity = newReservedQty.subtract(saleOrderLine.getReservedQty());
@@ -698,7 +699,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
-            stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+            stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct());
 
     Product product = stockMoveLine.getProduct();
     // update in stock location line
@@ -720,7 +721,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
-            stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+            stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct());
     updateReservedQty(stockLocationLine, stockMoveLine, newReservedQty);
   }
 
@@ -771,7 +772,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
-            stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+            stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct());
     updateRequestedReservedQty(stockLocationLine, stockMoveLine, newReservedQty);
   }
 
@@ -852,7 +853,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (stockMoveLine.getStockMove() != null) {
       StockLocationLine stockLocationLine =
           stockLocationLineService.getStockLocationLine(
-              stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+              stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct());
       if (stockLocationLine != null) {
         updateReservedQty(stockLocationLine);
       }
@@ -884,16 +885,21 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   @Override
   public void updateRequestedReservedQty(StockLocationLine stockLocationLine)
       throws AxelorException {
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
+    if (stockLocation == null) {
+      return;
+    }
+
     // compute from stock move lines
     List<StockMoveLine> stockMoveLineList =
         stockMoveLineRepository
             .all()
             .filter(
                 "self.product.id = :productId "
-                    + "AND self.stockMove.fromStockLocation.id = :stockLocationId "
+                    + "AND self.fromStockLocation.id = :stockLocationId "
                     + "AND self.stockMove.statusSelect = :planned")
             .bind("productId", stockLocationLine.getProduct().getId())
-            .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
+            .bind("stockLocationId", stockLocation.getId())
             .bind("planned", StockMoveRepository.STATUS_PLANNED)
             .fetch();
     BigDecimal requestedReservedQty = BigDecimal.ZERO;
@@ -942,7 +948,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             .all()
             .filter(
                 "self.product.id = :productId "
-                    + "AND self.stockMove.fromStockLocation.id = :stockLocationId "
+                    + "AND self.fromStockLocation.id = :stockLocationId "
                     + "AND self.stockMove.statusSelect = :planned")
             .bind("productId", stockLocationLine.getProduct().getId())
             .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
@@ -978,7 +984,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     // search for the maximum quantity that can be allocated.
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
-            stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+            stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct());
     BigDecimal availableQtyToBeReserved =
         stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
     Product product = stockMoveLine.getProduct();
@@ -1009,7 +1015,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       // search for the maximum quantity that can be allocated in the stock move line.
       StockLocationLine stockLocationLine =
           stockLocationLineService.getOrCreateStockLocationLine(
-              stockMoveLine.getStockMove().getFromStockLocation(), stockMoveLine.getProduct());
+              stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct());
       BigDecimal availableQtyToBeReserved =
           stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
       Product product = stockMoveLine.getProduct();

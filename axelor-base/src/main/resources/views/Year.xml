@@ -43,10 +43,10 @@
 
   <action-validate name="action-civil-year-check-date">
     <error
-      message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}."
+      message="Civil year already exist for ${com.axelor.i18n.L10n.getInstance().format(fromDate)} and ${com.axelor.i18n.L10n.getInstance().format(toDate)}."
       if="id == null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
     <error
-      message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}."
+      message="Civil year already exist for ${com.axelor.i18n.L10n.getInstance().format(fromDate)} and ${com.axelor.i18n.L10n.getInstance().format(toDate)}."
       if="id != null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
   </action-validate>
 

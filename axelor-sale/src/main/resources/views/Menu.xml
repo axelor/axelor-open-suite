@@ -4,11 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
-  <menuitem name="sc-root-sale" title="Sales" order="-106"
+  <menuitem name="sc-root-sale" title="Sales" order="-1900"
     if="__config__.app.isApp('sale')" icon="fa-line-chart" icon-background="#e0a83c"/>
 
-  <menuitem name="sc-root-sale-customers" parent="sc-root-sale" order="5" title="Customers"
-    action="sc.root.sale.customers"/>
+  <menuitem name="sc-root-sale-customers" parent="sc-root-sale" order="100"
+    title="Customers" action="sc.root.sale.customers"/>
 
   <action-view name="sc.root.sale.customers" title="Customers"
     model="com.axelor.apps.base.db.Partner">
@@ -24,7 +24,7 @@
     <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
-  <menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="10" title="Contacts"
+  <menuitem name="sc-root-sale-contacts" parent="sc-root-sale" order="200" title="Contacts"
     action="sc.root.sale.contacts"/>
 
   <action-view name="sc.root.sale.contacts" title="Contacts"
@@ -40,7 +40,7 @@
       expr="self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)"/>
   </action-view>
 
-  <menuitem name="sc-root-sale-pack" parent="sc-root-sale" order="12" title="Pack"
+  <menuitem name="sc-root-sale-pack" parent="sc-root-sale" order="300" title="Pack"
     action="sc.root.sale.pack" if="__config__.app.getApp('sale')?.enablePackManagement"/>
 
   <action-view name="sc.root.sale.pack" title="Pack"
@@ -49,7 +49,7 @@
     <view type="form" name="pack-form"/>
   </action-view>
 
-  <menuitem name="sc-root-sale-products" parent="sc-root-sale" order="15"
+  <menuitem name="sc-root-sale-products" parent="sc-root-sale" order="400"
     title="Products &amp; services" action="sc.root.sale.products"/>
 
   <action-view name="sc.root.sale.products" title="Products &amp; services"
@@ -64,11 +64,12 @@
     <context name="_fromSale" expr="eval:true"/>
   </action-view>
 
-  <menuitem name="sc-root-sale-quotations" parent="sc-root-sale" order="20"
+  <menuitem name="sc-root-sale-quotations" parent="sc-root-sale" order="500"
     title="Sale quotations" action="sc.root.sale.quotations"/>
 
-  <menuitem name="sc-crm-root-sale-quotations" parent="crm-root" order="25"
-    title="Sale quotations" action="sc.root.sale.quotations" if="__config__.app.isApp('sale')"/>
+  <menuitem name="sc-crm-root-sale-quotations" parent="crm-root-customer-follow-up"
+    order="300" title="Sale quotations" action="sc.root.sale.quotations"
+    if="__config__.app.isApp('sale')"/>
 
   <action-view name="sc.root.sale.quotations" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder">
@@ -86,8 +87,8 @@
     <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
-  <menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="25" title="Sale orders"
-    action="sc.root.sale.orders"/>
+  <menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="600"
+    title="Sale orders" action="sc.root.sale.orders"/>
 
   <action-view name="sc.root.sale.orders" title="Sale orders"
     model="com.axelor.apps.sale.db.SaleOrder">
@@ -113,7 +114,7 @@
     </filter>
   </search-filters>
 
-  <menuitem name="sc-root-abc-analysis" title="ABC analysis" order="27"
+  <menuitem name="sc-root-abc-analysis" title="ABC analysis" order="1000"
     action="sale.root.abc.analysis" parent="sc-root-sale"/>
 
   <action-view name="sale.root.abc.analysis" title="ABC analysis"
@@ -125,15 +126,16 @@
   </action-view>
 
   <menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale"
-    order="30" action="sc.hist.sale.orders"/>
+    order="1100" action="sc.hist.sale.orders"/>
 
   <action-view name="sc.hist.sale.orders" title="Historical"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="cards" name="sale-order-cards"/>
     <view type="grid" name="sale-order-grid"/>
+    <view type="cards" name="sale-order-cards"/>
     <view type="calendar" name="sale-order-calendar"/>
     <view type="form" name="sale-order-form"/>
     <view-param name="search-filters" value="sale-order-filters"/>
+    <domain>self.template = false</domain>
     <context name="_internalUser" expr="eval: __user__.id"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -141,23 +143,23 @@
     <context name="status" expr="eval: [1,2,3,4,5]"/>
   </action-view>
 
-  <menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings" order="40"
-    icon="fa-bar-chart"/>
+  <menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"
+    order="1300" icon="fa-bar-chart"/>
 
-  <menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="10"/>
+  <menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="500"/>
 
   <menuitem name="sale-maps-partner-customers" parent="sc-root-sale-maps" title="Customers"
-    action="action-show-customers-on-map-page"/>
+    action="action-show-customers-on-map-page" order="100"/>
 
 
   <menuitem name="sale-maps-partner-prospects" parent="sc-root-sale-maps" title="Prospects"
-    action="action-show-prospects-on-map-page"/>
+    action="action-show-prospects-on-map-page" order="200"/>
 
-  <menuitem name="sc-root-sale-conf" parent="sc-root-sale" title="Configuration" order="45"
-    icon="fa-cog"/>
+  <menuitem name="sc-root-sale-conf" parent="sc-root-sale" title="Configuration"
+    order="1400" icon="fa-cog"/>
 
   <menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf" title="Cancel Reasons"
-    action="sale.conf.cancelreason" order="2"/>
+    action="sale.conf.cancelreason" order="200"/>
 
   <action-view name="sale.conf.cancelreason" title="Cancel Reason"
     model="com.axelor.apps.base.db.CancelReason">
@@ -169,7 +171,7 @@
   </action-view>
 
   <menuitem name="sale-conf-duration" parent="sc-root-sale-conf" title="Durations"
-    action="sale.conf.duration" order="4"/>
+    action="sale.conf.duration" order="300"/>
 
   <action-view name="sale.conf.duration" title="Durations"
     model="com.axelor.apps.base.db.Duration">
@@ -180,7 +182,7 @@
   </action-view>
 
   <menuitem name="sale-conf-shipping-costs" parent="sc-root-sale-conf"
-    title="Shipping costs" action="sale.conf.shipping.costs" order="6"/>
+    title="Shipping costs" action="sale.conf.shipping.costs" order="400"/>
 
   <action-view name="sale.conf.shipping.costs" title="Shipping costs"
     model="com.axelor.apps.base.db.Product">
@@ -192,7 +194,7 @@
   </action-view>
 
   <menuitem name="sc-root-sale-conf-partner-price-list" parent="sc-root-sale-conf"
-    title="Partner price lists" action="sc.root.sale.conf.partner.price.list" order="8"/>
+    title="Partner price lists" action="sc.root.sale.conf.partner.price.list" order="500"/>
 
   <action-view name="sc.root.sale.conf.partner.price.list" title="Partner price lists"
     model="com.axelor.apps.base.db.PartnerPriceList">
@@ -202,7 +204,7 @@
   </action-view>
 
   <menuitem name="sc-root-sale-conf-price-list" parent="sc-root-sale-conf"
-    title="Price lists" action="sc.root.sale.conf.price.list" order="10"/>
+    title="Price lists" action="sc.root.sale.conf.price.list" order="600"/>
 
   <action-view name="sc.root.sale.conf.price.list" title="Price lists"
     model="com.axelor.apps.base.db.PriceList">
@@ -212,7 +214,7 @@
   </action-view>
 
   <menuitem name="sc-root-sale-templates" parent="sc-root-sale-conf"
-    title="Quotations template" action="sc.root.sale.templates" order="12"/>
+    title="Quotations template" action="sc.root.sale.templates" order="700"/>
 
   <action-view name="sc.root.sale.templates" model="com.axelor.apps.sale.db.SaleOrder"
     title="Quotations template">
@@ -227,7 +229,7 @@
   </action-view>
 
   <menuitem name="sale.conf.tax" parent="sc-root-sale-conf" title="Taxes"
-    action="sale.conf.financial.tax" order="14"/>
+    action="sale.conf.financial.tax" order="800"/>
 
   <action-view name="sale.conf.financial.tax" title="Taxes"
     model="com.axelor.apps.account.db.Tax">
@@ -236,12 +238,12 @@
     <view-param name="search-filters" value="tax-filters"/>
   </action-view>
 
-  <menuitem name="sale-conf-configurators" parent="sc-root-sale-conf" order="20"
+  <menuitem name="sale-conf-configurators" parent="sc-root-sale-conf" order="900"
     title="Configurators" if="__config__.app.getApp('sale')?.getEnableConfigurator()"/>
 
   <menuitem name="sale-conf-configurators-creator" parent="sale-conf-configurators"
     title="Configurator creators" action="sale.conf.configurator.creator"
-    if="__config__.app.getApp('sale')?.getEnableConfigurator()"/>
+    if="__config__.app.getApp('sale')?.getEnableConfigurator()" order="100"/>
 
   <action-view name="sale.conf.configurator.creator" title="Configurator creators"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
@@ -252,7 +254,7 @@
 
   <menuitem name="sale-conf-configurators-configurators" parent="sale-conf-configurators"
     title="Configurators" action="sale.conf.configurator.configurators"
-    if="__config__.app.getApp('sale')?.getEnableConfigurator()"/>
+    if="__config__.app.getApp('sale')?.getEnableConfigurator()" order="200"/>
 
   <action-view name="sale.conf.configurator.configurators" title="Configurators"
     model="com.axelor.apps.sale.db.Configurator">
@@ -267,7 +269,7 @@
 
   <menuitem name="admin-root-batch-sale" parent="admin-root-batch"
     if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Sale batches"
-    action="admin.root.batch.sale"/>
+    action="admin.root.batch.sale" order="900"/>
 
   <action-view name="admin.root.batch.sale" title="Sale batches"
     model="com.axelor.apps.sale.db.SaleBatch">
@@ -317,7 +319,7 @@
     <context name="status" expr="3"/>
   </action-view>
 
-  <menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="-205"
+  <menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="100"
     title="Salesperson" action="saleman.dashboard.view.sample"/>
 
   <action-view name="saleman.dashboard.view.sample" title="Salesperson Details">
@@ -328,7 +330,7 @@
   </action-view>
 
   <menuitem name="menu-sale-manager-dashboard-sample" parent="sc-root-sale-report"
-    order="-200" title="Sales Manager" action="sale.manager.dashboard.view.sample"/>
+    order="200" title="Sales Manager" action="sale.manager.dashboard.view.sample"/>
 
   <action-view name="sale.manager.dashboard.view.sample" title="Sales Manager Details">
     <view type="dashboard" name="sale.manager.dashboard.sample"/>
@@ -336,7 +338,7 @@
   </action-view>
 
   <menuitem name="menu-sale-dashboard-2" parent="sc-root-sale-report"
-    title="Turnover Study" action="sale.dashboard.2"/>
+    title="Turnover Study" action="sale.dashboard.2" order="300"/>
 
   <action-view name="sale.dashboard.2" title="Turnover Study">
     <view type="dashboard" name="sale.dashboard.view.2"/>
@@ -344,7 +346,7 @@
   </action-view>
 
   <menuitem name="menu-dashboards-customers" parent="sc-root-sale-report"
-    title="Customers / prospects" action="sale.customer.list.dashboard.view"/>
+    title="Customers / prospects" action="sale.customer.list.dashboard.view" order="400"/>
 
   <!-- Add new action-view for change tab color. -->
   <action-view name="sale.customer.list.dashboard.view" title="Customers / prospects">
@@ -353,7 +355,7 @@
 
   <!-- Pricing menus -->
 
-  <menuitem title="Pricing" name="sc-root-sale-pricing" parent="sc-root-sale" order="35"
+  <menuitem title="Pricing" name="sc-root-sale-pricing" parent="sc-root-sale" order="1200"
     action="sc.root.sale.pricing" if="__config__.app.getApp('sale')?.enablePricingScale"/>
 
   <action-view name="sc.root.sale.pricing" title="Pricing"
@@ -363,7 +365,7 @@
   </action-view>
 
   <menuitem title="Pricing rules" name="sc-root-sale-conf-pricing-rule"
-    parent="sc-root-sale-conf" order="25" action="sc.root.sale.conf.pricing.rule"
+    parent="sc-root-sale-conf" order="1000" action="sc.root.sale.conf.pricing.rule"
     if="__config__.app.getApp('sale')?.enablePricingScale"/>
 
   <action-view name="sc.root.sale.conf.pricing.rule" title="Pricing rules"

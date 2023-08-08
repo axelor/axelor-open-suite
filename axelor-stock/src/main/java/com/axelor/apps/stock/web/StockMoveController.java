@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -49,7 +49,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -567,32 +566,6 @@ public class StockMoveController {
   }
 
   /**
-   * Called on printing settings select. Set the the domain for {@link StockMove#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-
-      List<PrintingSettings> printingSettingsList =
-          Beans.get(TradingNameService.class)
-              .getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
-      String domain =
-          String.format(
-              "self.id IN (%s)",
-              !printingSettingsList.isEmpty()
-                  ? StringTool.getIdListString(printingSettingsList)
-                  : "0");
-
-      response.setAttr("printingSettings", "domain", domain);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
    * Called on trading name change. Set the default value for {@link StockMove#printingSettings}
    *
    * @param request
@@ -697,7 +670,7 @@ public class StockMoveController {
 
       Integer percentToleranceForWapChange =
           Beans.get(StockConfigService.class)
-              .getStockConfig(stockMove.getToStockLocation().getCompany())
+              .getStockConfig(stockMove.getCompany())
               .getPercentToleranceForWapChange();
       response.setView(
           ActionView.define(I18n.get("Stock move"))
@@ -716,5 +689,19 @@ public class StockMoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void changeLinesFromStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockLocation fromStockLocation = stockMove.getFromStockLocation();
+    Beans.get(StockMoveService.class).changeLinesFromStockLocation(stockMove, fromStockLocation);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  }
+
+  public void changeLinesToStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockLocation toStockLocation = stockMove.getToStockLocation();
+    Beans.get(StockMoveService.class).changeLinesToStockLocation(stockMove, toStockLocation);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
   }
 }

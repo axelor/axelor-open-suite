@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.auth.service;
 
@@ -27,6 +28,7 @@ import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.auth.db.repo.RoleRepository;
+import com.axelor.common.csv.CSVFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -44,12 +46,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -67,7 +65,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import org.apache.commons.io.output.FileWriterWithEncoding;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,13 +121,10 @@ public class PermissionAssistantService {
     File permFile = new File(Files.createTempDirectory(null).toFile(), getFileName(assistant));
 
     try {
-
-      try (FileWriterWithEncoding fileWriter =
-          new FileWriterWithEncoding(permFile, StandardCharsets.UTF_8)) {
-        CSVWriter csvWriter = new CSVWriter(fileWriter, ';');
-        writeGroup(csvWriter, assistant);
+      CSVFile csvFormat = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll();
+      try (CSVPrinter printer = csvFormat.write(permFile)) {
+        writeGroup(printer, assistant);
       }
-
       createMetaFile(permFile, assistant);
 
     } catch (Exception e) {
@@ -149,9 +146,9 @@ public class PermissionAssistantService {
     return strings.stream().map(bundle::getString).collect(Collectors.toList());
   }
 
-  protected void writeGroup(CSVWriter csvWriter, PermissionAssistant assistant) {
+  protected void writeGroup(CSVPrinter printer, PermissionAssistant assistant) throws IOException {
 
-    String[] groupRow = null;
+    String[] groupRow;
     Integer count = header.size();
     ResourceBundle bundle = I18n.getBundle(new Locale(assistant.getLanguage()));
 
@@ -171,14 +168,16 @@ public class PermissionAssistantService {
         headerRow.addAll(getTranslatedStrings(groupHeader, bundle));
         count += groupHeader.size();
       }
+    } else {
+      groupRow = new String[0];
     }
 
     LOG.debug("Header row created: {}", headerRow);
 
-    csvWriter.writeNext(groupRow);
-    csvWriter.writeNext(headerRow.toArray(groupRow));
+    printer.printRecord(Arrays.asList(groupRow));
+    printer.printRecord(Arrays.asList(headerRow.toArray(groupRow)));
 
-    writeObject(csvWriter, assistant, groupRow.length, bundle);
+    writeObject(printer, assistant, groupRow.length, bundle);
   }
 
   public Comparator<Object> compareField() {
@@ -187,7 +186,8 @@ public class PermissionAssistantService {
   }
 
   protected void writeObject(
-      CSVWriter csvWriter, PermissionAssistant assistant, Integer size, ResourceBundle bundle) {
+      CSVPrinter printer, PermissionAssistant assistant, Integer size, ResourceBundle bundle)
+      throws IOException {
 
     MetaField userField = assistant.getMetaField();
 
@@ -212,7 +212,7 @@ public class PermissionAssistantService {
         }
       }
 
-      csvWriter.writeNext(row);
+      printer.printRecord(Arrays.asList(row));
 
       if (!assistant.getFieldPermission()) {
         continue;
@@ -241,7 +241,7 @@ public class PermissionAssistantService {
             colIndex++;
           }
         }
-        csvWriter.writeNext(row);
+        printer.printRecord(Arrays.asList(row));
       }
     }
   }
@@ -399,33 +399,46 @@ public class PermissionAssistantService {
     try {
       ResourceBundle bundle = I18n.getBundle(new Locale(permissionAssistant.getLanguage()));
       MetaFile metaFile = permissionAssistant.getMetaFile();
+
+      String[] groupRow = null;
+      List<String[]> rows = new ArrayList<>();
+
       File csvFile = MetaFiles.getPath(metaFile).toFile();
+      CSVFile csvFormat = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll();
+      try (CSVParser csvParser = csvFormat.parse(csvFile, StandardCharsets.UTF_8)) {
+        for (CSVRecord record : csvParser.getRecords()) {
 
-      try (CSVReader csvReader =
-          new CSVReader(
-              new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';')) {
+          if (record.getRecordNumber() == 1) {
+            groupRow = CSVFile.values(record);
+            if (groupRow == null || groupRow.length < 11) {
+              errorLog = I18n.get(IMessage.BAD_FILE);
+            }
+            continue;
+          }
 
-        String[] groupRow = csvReader.readNext();
-        if (groupRow == null || groupRow.length < 11) {
-          errorLog = I18n.get(IMessage.BAD_FILE);
-        }
+          if (record.getRecordNumber() == 2) {
+            String[] headerRow = CSVFile.values(record);
+            if (headerRow == null) {
+              errorLog = I18n.get(IMessage.NO_HEADER);
+            }
+            if (!checkHeaderRow(Arrays.asList(headerRow), bundle)) {
+              errorLog = I18n.get(IMessage.BAD_HEADER) + " " + Arrays.asList(headerRow);
+            }
+            continue;
+          }
 
-        String[] headerRow = csvReader.readNext();
-        if (headerRow == null) {
-          errorLog = I18n.get(IMessage.NO_HEADER);
-        }
-        if (!checkHeaderRow(Arrays.asList(headerRow), bundle)) {
-          errorLog = I18n.get(IMessage.BAD_HEADER) + " " + Arrays.asList(headerRow);
-        }
+          if (!errorLog.equals("")) {
+            return errorLog;
+          }
 
-        if (!errorLog.equals("")) {
-          return errorLog;
+          String[] values = CSVFile.values(record);
+          rows.add(values);
         }
 
         if (permissionAssistant.getTypeSelect() == PermissionAssistantRepository.TYPE_GROUPS) {
           Map<String, Group> groupMap = checkBadGroups(groupRow);
           processGroupCSV(
-              csvReader,
+              rows,
               groupRow,
               groupMap,
               permissionAssistant.getMetaField(),
@@ -435,7 +448,7 @@ public class PermissionAssistantService {
             == PermissionAssistantRepository.TYPE_ROLES) {
           Map<String, Role> roleMap = checkBadRoles(groupRow);
           processRoleCSV(
-              csvReader,
+              rows,
               groupRow,
               roleMap,
               permissionAssistant.getMetaField(),
@@ -528,7 +541,7 @@ public class PermissionAssistantService {
   }
 
   protected void processGroupCSV(
-      CSVReader csvReader,
+      List<String[]> rows,
       String[] groupRow,
       Map<String, Group> groupMap,
       MetaField field,
@@ -538,8 +551,7 @@ public class PermissionAssistantService {
     Map<String, MetaPermission> metaPermDict = new HashMap<>();
     String objectName = null;
 
-    String[] row = csvReader.readNext();
-    while (row != null) {
+    for (String[] row : rows) {
       for (Integer groupIndex = header.size() + 1;
           groupIndex < row.length;
           groupIndex += groupHeader.size()) {
@@ -564,13 +576,11 @@ public class PermissionAssistantService {
           updateFieldPermission(metaPermDict.get(groupName), row[1], rowGroup);
         }
       }
-
-      row = csvReader.readNext();
     }
   }
 
   protected void processRoleCSV(
-      CSVReader csvReader,
+      List<String[]> rows,
       String[] roleRow,
       Map<String, Role> roleMap,
       MetaField field,
@@ -580,9 +590,7 @@ public class PermissionAssistantService {
     Map<String, MetaPermission> metaPermDict = new HashMap<>();
     String objectName = null;
 
-    String[] row = csvReader.readNext();
-    while (row != null) {
-
+    for (String[] row : rows) {
       for (Integer groupIndex = header.size() + 1;
           groupIndex < row.length;
           groupIndex += groupHeader.size()) {
@@ -607,8 +615,6 @@ public class PermissionAssistantService {
           updateFieldPermission(metaPermDict.get(roleName), row[1], rowGroup);
         }
       }
-
-      row = csvReader.readNext();
     }
   }
 

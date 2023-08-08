@@ -85,11 +85,12 @@
       canSearch="true" height="800" readonly="true"/>
   </form>
 
-  <form model="com.axelor.message.db.Wizard" title="Select Report Format"
+  <form model="com.axelor.utils.db.Wizard" title="Select Report Format"
     name="abc-analysis-reports-wizard-form">
     <panel name="mainPanel">
       <field name="$reportTypeSelect" title="Report Type"
-        selection="iadministration.export.type.select" colSpan="3"/>
+        selection="iadministration.export.type.select" colSpan="3"
+        selection-in="['pdf','xlsx','ods']"/>
       <button name="printBtn" title="Print" onClick="action-abc-analysis-method-print-report"
         readonlyIf="!$reportTypeSelect" colSpan="3"/>
     </panel>

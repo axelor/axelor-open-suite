@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
@@ -99,6 +100,8 @@ public class IntercoServiceImpl implements IntercoService {
     SaleOrderCreateService saleOrderCreateService = Beans.get(SaleOrderCreateService.class);
     SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
     Company intercoCompany = findIntercoCompany(purchaseOrder.getSupplierPartner());
+    Partner clientPartner = purchaseOrder.getCompany().getPartner();
+
     // create sale order
     SaleOrder saleOrder =
         saleOrderCreateService.createSaleOrder(
@@ -110,10 +113,10 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             null,
             purchaseOrder.getPriceList(),
-            purchaseOrder.getCompany().getPartner(),
+            clientPartner,
             null,
             null,
-            null);
+            clientPartner.getFiscalPosition());
 
     // in ati
     saleOrder.setInAti(purchaseOrder.getInAti());
@@ -134,7 +137,7 @@ public class IntercoServiceImpl implements IntercoService {
     // get stock location
     saleOrder.setStockLocation(
         Beans.get(SaleOrderSupplychainService.class)
-            .getStockLocation(purchaseOrder.getCompany().getPartner(), intercoCompany));
+            .getStockLocation(clientPartner, intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
@@ -191,7 +194,9 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
-    purchaseOrder.setSupplierPartner(saleOrder.getCompany().getPartner());
+    Partner supplierPartner = saleOrder.getCompany().getPartner();
+    purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
 
     // in ati
@@ -206,7 +211,7 @@ public class IntercoServiceImpl implements IntercoService {
     // copy delivery info
     purchaseOrder.setStockLocation(
         Beans.get(PurchaseOrderSupplychainService.class)
-            .getStockLocation(saleOrder.getCompany().getPartner(), intercoCompany));
+            .getStockLocation(supplierPartner, intercoCompany));
     purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
     purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 

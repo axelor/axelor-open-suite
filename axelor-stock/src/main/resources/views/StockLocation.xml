@@ -8,6 +8,8 @@
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="action-stock-location-method-open-print-wizard"/>
+      <button name="treeBtn" title="Stock location tree"
+        onClick="action-stock-location-view-tree"/>
     </toolbar>
     <field name="name"/>
     <field name="parentStockLocation" form-view="stock-location-form"
@@ -126,7 +128,7 @@
 
   </form>
 
-  <form model="com.axelor.message.db.Wizard" title="Select format to Export"
+  <form model="com.axelor.utils.db.Wizard" title="Select format to Export"
     name="stock-location-print-wizard-form"
     onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
     <panel name="mainPanel">
@@ -238,6 +240,11 @@
   <action-attrs name="action-stock-location-attrs-set-default-serial-number-with-name">
     <attribute name="value" for="serialNumber" expr="eval: name" if="eval: id == null"/>
   </action-attrs>
+
+  <action-view name="action-stock-location-view-tree" title="Stock Location Tree"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="tree" name="stock-location-tree"/>
+  </action-view>
 
   <search-filters name="stock-location-filters"
     model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">

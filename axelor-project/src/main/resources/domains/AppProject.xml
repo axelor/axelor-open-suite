@@ -5,9 +5,9 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppProject">
+  <entity name="AppProject" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <string name="projectLabel" title="Project Label"/>
     <boolean name="resourceManagement" title="Resource management"/>
@@ -19,13 +19,18 @@
     <one-to-many name="projectCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
       title="Project fields" orphanRemoval="true"/>
     <many-to-many name="defaultTaskStatusSet" title="Default task status"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <many-to-many name="defaultPrioritySet" title="Default priorities"
       ref="com.axelor.apps.project.db.ProjectPriority"/>
+    <boolean name="generateProjectSequence" title="Generate sequence for project"/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>
       <field name="resourceManagement" on="UPDATE"/>
+      <field name="checkResourceAvailibility" on="UPDATE"/>
+      <field name="isEnableSignature" on="UPDATE"/>
+      <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
+      <field name="generateProjectSequence" on="UPDATE"/>
     </track>
   </entity>
 

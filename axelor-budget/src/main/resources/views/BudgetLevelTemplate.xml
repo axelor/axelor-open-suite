@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Global budget"
+    name="budget-level-template-grid" orderBy="-code">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="parentBudgetLevel"/>
+    <field name="budgetManager"/>
+  </grid>
+
+  <!--Group Grid -->
+  <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Group line"
+    name="budget-level-template-included-grid" orderBy="-code" canNew="false">
+    <button name="showBudgetLinesBtn" icon="fa-bars"
+      onClick="action-budget-budget-level-view-budget-template-lines" hideIf="$popup()"/>
+    <field name="code"/>
+    <field name="name"/>
+    <field name="parentBudgetLevel"/>
+    <field name="typeSelect"/>
+  </grid>
+
+  <!--Section Grid -->
+  <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Section line"
+    name="budget-level-template-node-grid" orderBy="-code" canNew="false">
+    <button name="showBudgetLinesBtn" icon="fa-bars"
+      onClick="action-budget-budget-level-view-budget-template-lines" hideIf="$popup()"/>
+    <field name="code"/>
+    <field name="name"/>
+    <field name="parentBudgetLevel"/>
+    <field name="typeSelect"/>
+  </grid>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget Level"
+    name="budget-level-template-form" width="large">
+    <menubar>
+      <menu title="See detail" name="seeDetailBtn">
+        <item action="action-budget-global-budget-level-template-view-group-lines"
+          title="Groups" showIf="id"/>
+        <item action="action-budget-global-budget-level-template-view-section-lines"
+          title="Sections" showIf="id"/>
+        <item action="action-budget-global-budget-level-view-budget-template-lines"
+          title="Lignes" showIf="id"/>
+      </menu>
+    </menubar>
+    <panel name="overViewPanel">
+      <panel name="mainPanel" colSpan="12">
+        <field name="levelTypeSelect" hidden="true" colSpan="12"/>
+        <panel name="budgetCreationPanel" showTitle="false" colSpan="4">
+          <button name="createGlobalBudgetBtn" title="Create Budget From Template"
+            onClick="save,action-budget-level-method-create-global-budget" colSpan="12"/>
+        </panel>
+      </panel>
+      <panel name="generalPanel" colSpan="12">
+        <field name="fullName" colSpan="12" hidden="true"/>
+        <field name="code" colSpan="2"/>
+        <field name="name" colSpan="2"/>
+        <field name="company" colSpan="2" required="true"/>
+        <field name="budgetTypeSelect" colSpan="2" validIf="budgetTypeSelect"/>
+        <spacer colSpan="2"/>
+        <field name="typeSelect" colSpan="2" required="true" widget="singleSelect"/>
+        <field name="budgetManager" colSpan="3" hidden="true"/>
+      </panel>
+      <field name="commentString" widget="html"/>
+      <field name="parentBudgetLevel.parentBudgetLevel" hidden="true"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Global budget"
+    name="global-budget-template-budget-level-form" width="large"
+    onNew="action-budget-level-group-onnew" onLoad="action-budget-level-group-onload">
+
+    <panel-include view="budget-level-template-form"/>
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red">
+      <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Groups"
+        colSpan="12" form-view="budget-level-template-intermediate-form"
+        grid-view="budget-level-template-included-grid"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget group"
+    name="group-budget-template-budget-level-form" width="large"
+    onNew="action-budget-level-group-onnew" onLoad="action-budget-level-group-onload" canNew="false">
+    <panel name="generalPanel" colSpan="12">
+      <field name="levelTypeSelect" hidden="true" colSpan="12"/>
+      <field name="code" colSpan="2" readonlyIf="!$popup()"/>
+      <field name="name" colSpan="2" readonlyIf="!$popup()"/>
+      <field name="parentBudgetLevel" colSpan="2" readonly="true"
+        onChange="action-budget-level-record-parent-budget-level-onchange"
+        onSelect="action-budget-level-attrs-parent-budget-level-onselect"
+        form-view="global-budget-template-budget-level-form" grid-view="budget-level-template-grid"/>
+      <spacer colSpan="6"/>
+      <field name="typeSelect" colSpan="2" required="true"/>
+    </panel>
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy">
+      <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Sections"
+        colSpan="12" form-view="budget-level-template-node-form"
+        grid-view="budget-level-template-node-grid"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget section"
+    name="section-budget-template-budget-level-form" width="large"
+    onNew="action-budget-level-group-onnew" onLoad="action-budget-level-group-onload" canNew="false">
+
+    <panel name="generalPanel" colSpan="12">
+      <field name="levelTypeSelect" hidden="true" colSpan="12"/>
+      <field name="code" colSpan="2" readonlyIf="!$popup()"/>
+      <field name="name" colSpan="2" readonlyIf="!$popup()"/>
+      <field name="parentBudgetLevel" colSpan="2" readonly="true"
+        onChange="action-budget-level-record-parent-budget-level-onchange"
+        onSelect="action-budget-level-attrs-parent-budget-level-onselect"
+        form-view="group-budget-template-budget-level-form"
+        grid-view="budget-level-template-included-grid"/>
+      <spacer colSpan="6"/>
+      <field name="typeSelect" colSpan="2" required="true"/>
+    </panel>
+
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green">
+      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lignes"
+        colSpan="12" form-view="budget-included-template-form"
+        grid-view="budget-lines-template-grid"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Group line"
+    name="budget-level-template-intermediate-form" width="large"
+    onNew="action-budget-level-defaults-groups-onnew" onLoad="action-budget-level-group-onload">
+
+    <panel name="budgetLevelHiddenPanel">
+      <field name="parentBudgetLevel.statusSelect" hidden="true"/>
+    </panel>
+    <panel name="generalPanel" colSpan="12">
+      <field name="levelTypeSelect" hidden="true" colSpan="12"/>
+      <field name="code" colSpan="2" readonlyIf="!$popup()"/>
+      <field name="name" colSpan="2" readonlyIf="!$popup()"/>
+      <field name="parentBudgetLevel" colSpan="2" readonly="true"
+        onChange="action-budget-level-record-parent-budget-level-onchange"
+        onSelect="action-budget-level-attrs-parent-budget-level-onselect"
+        form-view="group-budget-template-budget-level-form"
+        grid-view="budget-level-template-included-grid"/>
+      <spacer colSpan="6"/>
+      <field name="typeSelect" colSpan="2" required="true" showIf="$popup()"/>
+    </panel>
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy">
+      <field name="budgetLevelList" widget="MasterDetail" canNew="$popup()"
+        summary-view="true" title="Sections" colSpan="12"
+        form-view="budget-level-template-node-form" grid-view="budget-level-template-node-grid"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Section line"
+    name="budget-level-template-node-form" width="large"
+    onNew="action-budget-level-defaults-sections-onnew" onLoad="action-budget-level-group-onload">
+
+    <panel name="budgetLevelHiddenPanel">
+      <field name="parentBudgetLevel.parentBudgetLevel.statusSelect" hidden="true"/>
+      <field name="parentBudgetLevel.parentBudgetLevel" hidden="true"/>
+    </panel>
+    <panel name="generalPanel" colSpan="12">
+      <field name="levelTypeSelect" hidden="true" colSpan="12"/>
+      <field name="code" colSpan="2" readonlyIf="!$popup()"/>
+      <field name="name" colSpan="2" readonlyIf="!$popup()"/>
+      <field name="parentBudgetLevel" colSpan="2" readonly="true"
+        onChange="action-budget-level-record-parent-budget-level-onchange"
+        onSelect="action-budget-level-attrs-parent-budget-level-onselect"
+        form-view="group-budget-template-budget-level-form"
+        grid-view="budget-level-template-included-grid"/>
+
+      <spacer colSpan="6"/>
+      <field name="typeSelect" colSpan="2" required="true" showIf="$popup()"/>
+    </panel>
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green">
+      <field name="budgetList" widget="MasterDetail" summary-view="true" canNew="false"
+        title="Lignes" colSpan="12" form-view="budget-included-template-form"
+        grid-view="budget-lines-template-grid"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget group templates"
+    name="budget-group-template-budget-level-form" width="large"
+    onNew="action-budget-level-group-onnew" onLoad="action-budget-level-group-onload">
+    <panel-include view="group-budget-template-budget-level-form"/>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget section template"
+    name="budget-section-template-budget-level-form" width="large"
+    onNew="action-budget-level-group-onnew" onLoad="action-budget-level-group-onload">
+    <panel-include view="section-budget-template-budget-level-form"/>
+  </form>
+
+  <action-view name="action-budget-global-budget-level-template-view-group-lines"
+    title="Groups" model="com.axelor.apps.budget.db.BudgetLevel">
+    <view type="grid" name="budget-level-template-included-grid"/>
+    <view type="form" name="group-budget-template-budget-level-form"/>
+    <domain>self.parentBudgetLevel.id = :_globalId</domain>
+    <context name="_globalId" expr="eval: id"/>
+    <context name="_isParent" expr="false"/>
+  </action-view>
+
+  <action-view name="action-budget-global-budget-level-template-view-section-lines"
+    title="Sections" model="com.axelor.apps.budget.db.BudgetLevel">
+    <view type="grid" name="budget-level-template-node-grid"/>
+    <view type="form" name="section-budget-template-budget-level-form"/>
+    <domain>self.parentBudgetLevel.parentBudgetLevel.id = :_globalId</domain>
+    <context name="_globalId" expr="eval: id"/>
+    <context name="_isParent" expr="false"/>
+  </action-view>
+
+  <action-view name="action-budget-budget-level-view-budget-template-lines"
+    title="Lignes" model="com.axelor.apps.budget.db.Budget">
+    <view type="grid" name="budget-lines-template-grid"/>
+    <view type="form" name="budget-included-template-form"/>
+    <view-param name="details-view" value="true"/>
+    <domain>
+      (:_sectionId IS NOT NULL AND self.budgetLevel.id = :_sectionId)
+      OR
+      (:_groupId IS NOT NULL
+      AND self.budgetLevel.parentBudgetLevel.id = :_groupId)
+    </domain>
+    <context name="_sectionId" expr="eval: id"
+      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION"/>
+    <context name="_groupId" expr="eval: id"
+      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP"/>
+    <context name="_globalCode" expr="eval:__this__.parentBudgetLevel.code"
+      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP"/>
+    <context name="_globalCode"
+      expr="eval:__this__.parentBudgetLevel.parentBudgetLevel.code"
+      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION"/>
+    <context name="_fromDate" expr="eval: startDate"/>
+    <context name="_toDate" expr="eval: endDate"/>
+  </action-view>
+
+  <action-view name="action-budget-global-budget-level-view-budget-template-lines"
+    title="Lignes" model="com.axelor.apps.budget.db.Budget">
+    <view type="grid" name="budget-lines-template-grid"/>
+    <view type="form" name="budget-included-template-form"/>
+    <view-param name="details-view" value="true"/>
+    <domain>self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = :_globalId</domain>
+    <context name="_globalId" expr="eval: id"/>
+    <context name="_globalCode" expr="eval:__this__.code"/>
+    <context
+      if="__this__.statusSelect != __repo__(BudgetLevel).BUDGET_LEVEL_STATUS_SELECT_DRAFT"
+      name="_isReadOnly" expr="true"/>
+    <context name="_fromDate" expr="eval: startDate"/>
+    <context name="_toDate" expr="eval: endDate"/>
+  </action-view>
+
+</object-views>

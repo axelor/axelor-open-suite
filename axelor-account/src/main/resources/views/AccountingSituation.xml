@@ -79,9 +79,9 @@
       <field name="__parent" hidden="true"/>
     </panel>
     <panel name="vatSystemPanel" title="VAT System"
-      showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier) )|| (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)">
+      showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )|| (partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)">
       <field name="vatSystemSelect"
-        showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier)"/>
+        showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)"/>
     </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>

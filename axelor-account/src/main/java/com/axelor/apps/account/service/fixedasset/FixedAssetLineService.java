@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
@@ -23,6 +24,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface FixedAssetLineService {
@@ -70,13 +72,13 @@ public interface FixedAssetLineService {
    * Return line with smallest depreciation date with statusSelect = status. The method will skip
    * nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
    *
-   * @param fixedAssetLineList
+   * @param fixedAsset
    * @param status
    * @param nbLineToSkip
    * @return {@link Optional} of {@link FixedAssetLine}
    */
   Optional<FixedAssetLine> findOldestFixedAssetLine(
-      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
+      FixedAsset fixedAsset, int status, int nbLineToSkip);
 
   /**
    * Return line with greatest depreciation date with statusSelect = status. The method will skip
@@ -98,6 +100,14 @@ public interface FixedAssetLineService {
   void clear(List<FixedAssetLine> fixedAssetLineList);
 
   /**
+   * This method will remove every linesToRemove from database and from fixedAssetLineList
+   *
+   * @param fixedAssetLineList
+   * @param linesToRemove
+   */
+  void clear(List<FixedAssetLine> fixedAssetLineList, List<FixedAssetLine> linesToRemove);
+
+  /**
    * Call {@link FixedAssetLineRepository#remove(FixedAssetLine)} on line
    *
    * @param line
@@ -112,6 +122,15 @@ public interface FixedAssetLineService {
    * @param status
    */
   void filterListByStatus(List<FixedAssetLine> fixedAssetLineList, int status);
+
+  /**
+   * Filter list with depreciationDate after date. Filtered lines will be remove from database by
+   * calling {@link FixedAssetLineRepository#remove(FixedAssetLine)}
+   *
+   * @param fixedAssetLineList
+   * @param date
+   */
+  void filterListByDate(List<FixedAssetLine> fixedAssetLineList, LocalDate date);
 
   /**
    * This method will compute on cession closest line from realized lines.
@@ -138,4 +157,6 @@ public interface FixedAssetLineService {
    * @param line
    */
   void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  Map<Integer, List<FixedAssetLine>> getFixedAssetLineListByStatus(FixedAsset fixedAsset);
 }

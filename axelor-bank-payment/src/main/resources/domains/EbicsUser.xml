@@ -66,6 +66,27 @@
 
 	]]></extra-code>
 
+    <track>
+      <field name="securityMedium" on="UPDATE"/>
+      <field name="name" on="UPDATE"/>
+      <field name="userId" on="UPDATE"/>
+      <field name="nextOrderId" on="UPDATE"/>
+      <field name="userTypeSelect" on="UPDATE"/>
+      <field name="statusSelect" on="UPDATE"/>
+      <field name="ebicsPartner" on="UPDATE"/>
+      <field name="associatedUser" on="UPDATE"/>
+      <field name="dn" on="UPDATE"/>
+      <field name="a005Certificate" on="UPDATE"/>
+      <field name="e002Certificate" on="UPDATE"/>
+      <field name="x002Certificate" on="UPDATE"/>
+      <field name="testDataFile" on="UPDATE"/>
+      <field name="testSignatureFile" on="UPDATE"/>
+      <field name="testSignatoryEbicsUser" on="UPDATE"/>
+      <field name="testBankStatementFileFormat" on="UPDATE"/>
+      <field name="testBankOrderFileFormat" on="UPDATE"/>
+      <field name="serialNumber" on="UPDATE"/>
+    </track>
+
   </entity>
 
 </domain-models>

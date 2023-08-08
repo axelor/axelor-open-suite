@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.db.repo;
 
@@ -25,6 +26,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -76,6 +78,9 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setInvoice(null);
       copy.setPaymentSession(null);
       copy.setOrigin(origin);
+      copy.setReasonOfRefusalToPay(null);
+      copy.setReasonOfRefusalToPayStr(null);
+      Beans.get(MovePfpService.class).setPfpStatus(copy);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
 
@@ -146,11 +151,10 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setPfpPartialReason(null);
     invoiceTerm.setReasonOfRefusalToPay(null);
     invoiceTerm.setReasonOfRefusalToPayStr(null);
-    invoiceTerm.setPfpValidatorUser(null);
-    invoiceTerm.setDecisionPfpTakenDate(null);
+    invoiceTerm.setDecisionPfpTakenDateTime(null);
     invoiceTerm.setInvoice(null);
 
-    invoiceTermService.setPfpStatus(invoiceTerm);
+    invoiceTermService.setPfpStatus(invoiceTerm, null);
   }
 
   @Override
@@ -185,13 +189,10 @@ public class MoveManagementRepository extends MoveRepository {
           }
           moveLineControlService.controlAccountingAccount(moveLine);
 
-          if (!moveLine.getAccount().getHasInvoiceTerm()
+          if (!moveLine.getAccount().getUseForPartnerBalance()
               && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
             if (moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)
-                && moveLine.getInvoiceTermList().stream()
-                        .filter(invoiceTerm -> invoiceTerm.getIsHoldBack())
-                        .count()
-                    == 0) {
+                && moveLine.getInvoiceTermList().stream().noneMatch(InvoiceTerm::getIsHoldBack)) {
               moveLine.clearInvoiceTermList();
             } else {
               throw new AxelorException(

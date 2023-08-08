@@ -50,7 +50,7 @@
     </panel>
   </form>
 
-  <form model="com.axelor.message.db.Wizard" title="Reports"
+  <form model="com.axelor.utils.db.Wizard" title="Reports"
     name="forecast-recap-print-wizard-form">
     <panel name="mainPanel">
       <field name="$reportTypeSelect" title="Format"

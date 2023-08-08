@@ -10,7 +10,7 @@
     <one-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       mappedBy="employee"/>
     <one-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
-      required="true" title="Contact"/>
+      required="true" title="Contact" unique="true"/>
     <decimal name="hourlyRate" title="Hourly rate" scale="2" precision="20"/>
     <string name="timeLoggingPreferenceSelect" title="Time logging preference"
       selection="hr.time.logging.preference.select" massUpdate="true"/>
@@ -87,6 +87,9 @@
 	       ]]>
 
     </string>
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
     <!-- New employee wizard -->
     <integer name="stepByStepSelect" title="Step by step"
@@ -101,6 +104,7 @@
 
     <string name="maidenName" title="Maiden name"/>
     <string name="maritalName" title="Marital name"/>
+    <integer name="dependentChildren" title="Dependent children"/>
 
     <extra-code>
    		<![CDATA[

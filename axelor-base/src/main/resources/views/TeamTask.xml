@@ -42,6 +42,9 @@
         <field name="doUpdateNextTasks" hidden="true"/>
         <field name="hasDateOrFrequencyChanged" hidden="true"/>
       </panel>
+      <panel name="rolePanel" title="Role">
+        <field name="role"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail>

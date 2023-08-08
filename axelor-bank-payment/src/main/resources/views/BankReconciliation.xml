@@ -35,7 +35,7 @@
       <panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
         <field name="statusSelect" showTitle="false" colSpan="6" widget="NavSelect"/>
         <field name="validatedByUser" colSpan="2"/>
-        <field name="validatedDate" colSpan="2"/>
+        <field name="validateDateTime" colSpan="2"/>
         <button name="validateBtn" title="Validate reconciliation"
           readonlyIf="!(bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0)"
           hideIf="statusSelect == 2" colSpan="2"

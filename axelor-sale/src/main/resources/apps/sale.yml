@@ -3,7 +3,7 @@ importId: 5
 name: Sale
 code: sale
 typeSelect: standard
-installOrder: 4
+installOrder: 2040
 description: |
    Sales configuration
 image: app-sale.png

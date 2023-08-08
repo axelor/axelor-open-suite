@@ -15,7 +15,8 @@
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
       width="120" x-scale="2"/>
-    <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"
+      readonly="true"/>
     <field name="description"/>
     <field name="rack" width="150"/>
     <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product"
@@ -39,7 +40,8 @@
         onChange="action-inventory-line-method-update-current-qty"/>
       <field name="currentQty" readonly="true"/>
       <field name="realQty" onChange="action-inventory-line-method-compute"/>
-      <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
+      <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"
+        readonly="true"/>
       <field name="description"/>
       <field name="rack"/>
       <field name="trackingNumber" canNew="true" domain="self.product = :product"/>

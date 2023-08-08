@@ -5,9 +5,9 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppSale">
+  <entity name="AppSale" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="manageSaleOrderVersion" title="Manage sale order versions"
       default="false"/>
@@ -47,9 +47,16 @@
       <field name="manageMultipleSaleQuantity" on="UPDATE"/>
       <field name="printingConfigPerSaleOrder" on="UPDATE"/>
       <field name="closeOpportunityUponSaleOrderConfirmation" on="UPDATE"/>
+      <field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
       <field name="salespersonSelect" on="UPDATE"/>
       <field name="enableCustomerCatalogMgt" on="UPDATE"/>
+      <field name="enablePackManagement" on="UPDATE"/>
       <field name="isDisplaySaleOrderLineNumber" on="UPDATE"/>
+      <field name="enableSalesProductByTradName" on="UPDATE"/>
+      <field name="saleUnit" on="UPDATE"/>
+      <field name="managePartnerComplementaryProduct" on="UPDATE"/>
+      <field name="isEnableCalculationEntireQuotationUsingPricing" on="UPDATE"/>
+      <field name="enablePricingScale" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
     </track>
   </entity>

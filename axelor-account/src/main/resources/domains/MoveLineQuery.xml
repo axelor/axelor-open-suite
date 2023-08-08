@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLineQuery" lang="java" cacheable="true">
+  <entity name="MoveLineQuery">
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"

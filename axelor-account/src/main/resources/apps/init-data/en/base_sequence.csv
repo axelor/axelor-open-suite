@@ -6,7 +6,7 @@
 104;"invoice";"Supplier Invoice";"NUMBERS";"UPPERCASE";1;4;"SINV_%YY";;1;1
 105;"invoice";"Supplier Refund";"NUMBERS";"UPPERCASE";1;4;"SREF_%YY";;1;1
 106;"debit";"Direct debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"DDINV_%YY_";;1;1
-109;"irrecoverable";"Transfer in irrecoverables";"NUMBERS";"UPPERCASE";1;4;"IRRECOV_%YY_";;1;1
+109;"irrecoverable";"Transfer in irrecoverables";"NUMBERS";"UPPERCASE";1;4;"IRREC_%YY_";;1;1
 110;"move";"Sales move line";"NUMBERS";"UPPERCASE";1;4;"MVSAL_%YY_";;1;1
 111;"move";"Refund move line";"NUMBERS";"UPPERCASE";1;4;"MVREF_%YY_";;1;1
 112;"move";"Purchase move line";"NUMBERS";"UPPERCASE";1;4;"MVPUR_%YY_";;1;1
@@ -22,7 +22,7 @@
 122;"move";"Move line for payments received in Direct Debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"MVDD_%YY_";;1;1
 123;"move";"Move line for payments received in Other means";"NUMBERS";"UPPERCASE";1;4;"MVOTH_%YY_";;1;1
 124;"move";"Move line for payments received but rejected by the bank";"NUMBERS";"UPPERCASE";1;4;"MVREJ_%YY_";;1;1
-125;"move";"Move line for automatic reimbursement";"NUMBERS";"UPPERCASE";1;4;"MVCLTRBT_%YY_";;1;1
+125;"move";"Move line for automatic reimbursement";"NUMBERS";"UPPERCASE";1;4;"MVATRB_%YY_";;1;1
 126;"move";"Move line for payments executed by Cash";"NUMBERS";"UPPERCASE";1;4;"MVCSH_%YY_";;1;1
 127;"move";"Move line for payments executed by Cheque";"NUMBERS";"UPPERCASE";1;4;"MVCHQ_%YY_";;1;1
 128;"move";"Move line for payments executed by Credit Card";"NUMBERS";"UPPERCASE";1;4;"MVCC_%YY_";;1;1
@@ -30,36 +30,36 @@
 130;"move";"Move line for payments executed by Wire Transfer";"NUMBERS";"UPPERCASE";1;4;"MVWT_%YY_";;1;1
 131;"move";"Move line for payments executed by Direct Debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"MVDD_%YY_";;1;1
 132;"move";"Move line for payments executed by Other means";"NUMBERS";"UPPERCASE";1;4;"MVOTH_%YY_";;1;1
-133;"move";"Miscellaneous Operation Automatic";"NUMBERS";"UPPERCASE";1;4;"MVMISCAUTO_%YY_";;1;1
-134;"move";"Miscellaneous Operation Manual";"NUMBERS";"UPPERCASE";1;4;"MVMISCMANU_%YY_";;1;1
+133;"move";"Miscellaneous Operation Automatic";"NUMBERS";"UPPERCASE";1;4;"MISCAUT%YY_";;1;1
+134;"move";"Miscellaneous Operation Manual";"NUMBERS";"UPPERCASE";1;4;"MISCMAN%YY_";;1;1
 135;"move";"Clearance Move Live";"NUMBERS";"UPPERCASE";1;4;"MVCLR_%YY_";;1;1
-136;"move";"Irrecovrable Move Line";"NUMBERS";"UPPERCASE";1;4;"MVIRREC_%YY_";;1;1
+136;"move";"Irrecovrable Move Line";"NUMBERS";"UPPERCASE";1;4;"MVIRREC%YY_";;1;1
 137;"moveLineExport";"Accounting Export";"NUMBERS";"UPPERCASE";1;4;"ACCEXP_%YY_";;1;1
-138;"moveLineReport";"Accounting Report";"NUMBERS";"UPPERCASE";1;4;"ACCREPORT_%YY_";;1;1
+138;"moveLineReport";"Accounting Report";"NUMBERS";"UPPERCASE";1;4;"ACCREP_%YY_";;1;1
 139;"paymentSchedule";"Installment N°";"NUMBERS";"UPPERCASE";1;4;"INSTAL_%YY_";;1;1
-140;"paymentVoucher";"N° for payments received in Cash";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_ESP_%YY_";;1;1
-141;"paymentVoucher";"N° for payments received in Cheque";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_CHQ_%YY_";;1;1
-142;"paymentVoucher";"N° for payments received in Credit Card";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_CC_%YY_";;1;1
-143;"paymentVoucher";"N° for payments received through Internet";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_WEB_%YY_";;1;1
-144;"paymentVoucher";"N° for payments received in IPO";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_TIP_%YY_";;1;1
-145;"paymentVoucher";"N° for payments received in IPOC";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_TEC_%YY_";;1;1
-146;"paymentVoucher";"N° for payments received in Wire Transfer";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_VIR_%YY_";;1;1
-147;"paymentVoucher";"N° for payments received in Direct Debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_PRE_%YY_";;1;1
-148;"paymentVoucher";"N° for payments received by other means";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_OTH_%YY_";;1;1
-149;"paymentVoucher";"N° for payments executed by Cash";"NUMBERS";"UPPERCASE";1;4;"CSH_OUT_ESP_%YY_";;1;1
-150;"paymentVoucher";"N° for payments executed by Cheque";"NUMBERS";"UPPERCASE";1;4;"CSH_OUT_CHQ_%YY_";;1;1
-151;"paymentVoucher";"N° for payments executed by Credit Card";"NUMBERS";"UPPERCASE";1;4;"CSH_OUT_CB_%YY_";;1;1
-152;"paymentVoucher";"N° for payments executed by IPO";"NUMBERS";"UPPERCASE";1;4;"CSH_OUT_TIP_%YY_";;1;1
-153;"paymentVoucher";"N° for payments executed by Wire Transfer";"NUMBERS";"UPPERCASE";1;4;"CSH_OUT_VIR_%YY_";;1;1
-154;"paymentVoucher";"N° for payments executed by Direct Debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"CSH_OUT_PRE_%YY_";;1;1
-155;"paymentVoucher";"N° for payments executed by other means";"NUMBERS";"UPPERCASE";1;4;"CSH_OUT_OTH_%YY_";;1;1
+140;"paymentVoucher";"N° for payments received in Cash";"NUMBERS";"UPPERCASE";1;4;"PI_ESP_%YY_";;1;1
+141;"paymentVoucher";"N° for payments received in Cheque";"NUMBERS";"UPPERCASE";1;4;"PI_CHQ_%YY_";;1;1
+142;"paymentVoucher";"N° for payments received in Credit Card";"NUMBERS";"UPPERCASE";1;4;"PI_CC_%YY_";;1;1
+143;"paymentVoucher";"N° for payments received through Internet";"NUMBERS";"UPPERCASE";1;4;"PI_WEB_%YY_";;1;1
+144;"paymentVoucher";"N° for payments received in IPO";"NUMBERS";"UPPERCASE";1;4;"PI_TIP_%YY_";;1;1
+145;"paymentVoucher";"N° for payments received in IPOC";"NUMBERS";"UPPERCASE";1;4;"PI_TEC_%YY_";;1;1
+146;"paymentVoucher";"N° for payments received in Wire Transfer";"NUMBERS";"UPPERCASE";1;4;"PI_VIR_%YY_";;1;1
+147;"paymentVoucher";"N° for payments received in Direct Debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"PI_PRE_%YY_";;1;1
+148;"paymentVoucher";"N° for payments received by other means";"NUMBERS";"UPPERCASE";1;4;"PI_OTH_%YY_";;1;1
+149;"paymentVoucher";"N° for payments executed by Cash";"NUMBERS";"UPPERCASE";1;4;"PO_ESP_%YY_";;1;1
+150;"paymentVoucher";"N° for payments executed by Cheque";"NUMBERS";"UPPERCASE";1;4;"PO_CHQ_%YY_";;1;1
+151;"paymentVoucher";"N° for payments executed by Credit Card";"NUMBERS";"UPPERCASE";1;4;"PO_CB_%YY_";;1;1
+152;"paymentVoucher";"N° for payments executed by IPO";"NUMBERS";"UPPERCASE";1;4;"PO_TIP_%YY_";;1;1
+153;"paymentVoucher";"N° for payments executed by Wire Transfer";"NUMBERS";"UPPERCASE";1;4;"PO_VIR_%YY_";;1;1
+154;"paymentVoucher";"N° for payments executed by Direct Debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"PO_PRE_%YY_";;1;1
+155;"paymentVoucher";"N° for payments executed by other means";"NUMBERS";"UPPERCASE";1;4;"PO_OTH_%YY_";;1;1
 156;"paymentVoucherReceiptNo";"Voucher Receipt N°";"NUMBERS";"UPPERCASE";1;4;"RECPT_%YY_";;1;1
 157;"purchaseInterface";"Purchase interface";"NUMBERS";"UPPERCASE";1;4;"PURINT_%YY_";;1;1
 158;"refundInterface";"Refund interface";"NUMBERS";"UPPERCASE";1;4;"REFINT_%YY_";;1;1
 159;"reimbursement";"Reimbursement proposals";"NUMBERS";"UPPERCASE";1;4;"REIMB_%YY_";;1;1
 160;"saleInterface";"Sale interface";"NUMBERS";"UPPERCASE";1;4;"SALINT_%YY_";;1;1
-161;"treasuryInterface";"Cash flow interface";"NUMBERS";"UPPERCASE";1;4;"CSHFLWINT_%YY_";;1;1
-162;"reconcile";"Account reconcile";"NUMBERS";"UPPERCASE";1;4;"RECON_%YY_%M_";;1;1
+161;"treasuryInterface";"Cash flow interface";"NUMBERS";"UPPERCASE";1;4;"CFINT_%YY_";;1;1
+162;"reconcile";"Account reconcile";"NUMBERS";"UPPERCASE";1;4;"REC_%YY_%M_";;1;1
 172;"reconcileGroupDraft";"Draft lettering";"LETTERS";"LOWERCASE";1;4;;;1;0
 173;"reconcileGroupFinal";"Final lettering";"LETTERS";"UPPERCASE";1;4;;;1;0
 171;"analyticReport";"Analytic Report";"NUMBERS";"UPPERCASE";1;4;"ANAREP_%YY_";;1;1

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
@@ -29,7 +30,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -64,12 +64,18 @@ public class InvoiceTermController {
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
         BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
-        BigDecimal amount =
-            Beans.get(InvoiceTermService.class).getCustomizedAmount(invoiceTerm, total);
+
+        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+        BigDecimal amount = invoiceTermService.getCustomizedAmount(invoiceTerm, total);
+        invoiceTerm.setAmount(amount);
+        invoiceTerm.setAmountRemaining(amount);
+        invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
 
         if (amount.signum() > 0) {
-          response.setValue("amount", amount);
-          response.setValue("amountRemaining", amount);
+          response.setValue("amount", invoiceTerm.getAmount());
+          response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
+          response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
+          response.setValue("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
         }
       }
     } catch (Exception e) {
@@ -93,8 +99,14 @@ public class InvoiceTermController {
         BigDecimal percentage =
             invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
 
+        invoiceTerm.setPercentage(percentage);
+        invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+        invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
+
         response.setValue("percentage", percentage);
-        response.setValue("amountRemaining", invoiceTerm.getAmount());
+        response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
+        response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
+        response.setValue("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
         response.setValue(
             "isCustomized",
             invoiceTerm.getPaymentConditionLine() == null
@@ -146,7 +158,7 @@ public class InvoiceTermController {
         invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
       }
 
-      invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
+      invoiceTermService.setParentFields(invoiceTerm, move, moveLine, invoice);
       response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -230,11 +242,9 @@ public class InvoiceTermController {
 
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
-      InvoiceTerm invoiceterm =
-          Beans.get(InvoiceTermRepository.class)
-              .find(request.getContext().asType(InvoiceTerm.class).getId());
+      InvoiceTerm invoiceterm = request.getContext().asType(InvoiceTerm.class);
       Beans.get(InvoiceTermPfpService.class).validatePfp(invoiceterm, AuthUtils.getUser());
-      response.setReload(true);
+      response.setValues(invoiceterm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -298,8 +308,10 @@ public class InvoiceTermController {
       }
 
       Beans.get(InvoiceTermPfpService.class)
-          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, grantedAmount, partialReason);
+          .initPftPartialValidation(originalInvoiceTerm, grantedAmount, partialReason);
+
       response.setCanClose(true);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -310,7 +322,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
       Beans.get(InvoiceTermService.class).toggle(invoiceTerm, true);
-      response.setReload(true);
+      response.setValues(invoiceTerm);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -346,7 +358,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
       Beans.get(InvoiceTermService.class).toggle(invoiceTerm, false);
-      response.setReload(true);
+      response.setValues(invoiceTerm);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -371,17 +383,6 @@ public class InvoiceTermController {
           }
         }
       }
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeTotalPaymentSession(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      Beans.get(PaymentSessionService.class)
-          .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -423,7 +424,7 @@ public class InvoiceTermController {
                 .find(Long.valueOf((Integer) request.getContext().get("_moveLineId"))));
       }
 
-      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm);
+      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm, null);
       response.setValue("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -443,10 +444,12 @@ public class InvoiceTermController {
       Invoice invoice = invoiceTerm.getInvoice();
       if (invoice != null
               && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
-          || invoice == null
+          || (invoice == null
+              && moveLine != null
+              && moveLine.getMove() != null
               && !Objects.equals(
                   moveLine.getMove().getCurrency(),
-                  moveLine.getMove().getCompany().getCurrency())) {
+                  moveLine.getMove().getCompany().getCurrency()))) {
         response.setAttr("amount", "title", I18n.get("Amount in currency"));
         response.setAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"));
       }

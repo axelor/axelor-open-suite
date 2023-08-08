@@ -12,7 +12,7 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="true"/>
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
-      title="Tracking Number"/>
+      title="Tracking number"/>
     <decimal name="baseQty" title="Quantity in database" precision="20" scale="10"
       readonly="true"/>
     <decimal name="realQty" title="Real Qty" precision="20" scale="10"/>
@@ -21,6 +21,7 @@
     <integer name="statusSelect" title="Status" selection="stock.correction.status.select"
       readonly="true"/>
     <datetime name="validationDateT" title="Validation Date" readonly="true"/>
+    <string name="comments" large="true" multiline="true" title="Comments"/>
 
     <extra-code><![CDATA[
 

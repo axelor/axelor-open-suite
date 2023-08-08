@@ -2,7 +2,7 @@
 name: Bank payment
 code: bank-payment
 typeSelect: standard
-installOrder: 5
+installOrder: 2050
 description: |
    Bank payment configuration
 image: app-bank-payment.png

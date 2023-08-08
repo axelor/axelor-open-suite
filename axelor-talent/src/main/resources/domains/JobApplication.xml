@@ -10,7 +10,7 @@
     <string name="firstName" title="First name"/>
     <string name="fullName" title="Full name" namecolumn="true"/>
     <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
-      title="Email"/>
+      title="Email" unique="true"/>
     <string name="fixedPhone" title="Fixed phone"/>
     <string name="mobilePhone" title="Mobile phone"/>
     <many-to-one name="educationLevel" ref="EducationLevel" title="Level of education"/>
@@ -27,14 +27,13 @@
     <many-to-one name="jobPosition" ref="JobPosition" title="Applied job"
       required="true"/>
     <many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee"
-      title="Responsible"/>
+      title="Hiring manager"/>
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"
       title="Employee hired"/>
     <string name="expectedSalary" title="Expected salary"/>
     <string name="proposedSalary" title="Proposed salary"/>
     <date name="availabilityFrom" title="Availability from"/>
     <string name="description" title="Description" large="true"/>
-    <integer name="statusSelect" title="Status" selection="job.application.status.select"/>
     <many-to-one name="hiringStage" ref="com.axelor.apps.talent.db.HiringStage"
       title="Hiring stage"/>
     <string name="reasonNotHired" title="Reason not hired" large="true"/>

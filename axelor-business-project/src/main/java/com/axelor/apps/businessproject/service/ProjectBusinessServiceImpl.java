@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
 
@@ -21,18 +22,22 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectHistoryLine;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
-import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -44,12 +49,18 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
@@ -57,7 +68,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected PartnerService partnerService;
   protected AddressService addressService;
   protected AppBusinessProjectService appBusinessProjectService;
-  protected ProjectTemplateRepository projTemplateRepo;
+  protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
+
+  public static final int BIG_DECIMAL_SCALE = 2;
+  public static final String FA_LEVEL_UP = "fa-level-up";
+  public static final String FA_LEVEL_DOWN = "fa-level-down";
+  public static final String ICON_EQUAL = "icon-equal";
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -67,12 +84,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppProjectService appProjectService,
       PartnerService partnerService,
       AddressService addressService,
-      AppBusinessProjectService appBusinessProjectService) {
-    super(projectRepository, projectStatusRepository, appProjectService);
+      AppBusinessProjectService appBusinessProjectService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService) {
+    super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
-    this.projTemplateRepo = projTemplateRepo;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
   }
 
   @Override
@@ -212,20 +232,21 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
     }
+
+    project.setNumberHoursADay(
+        appBusinessProjectService.getAppBusinessProject().getDefaultHoursADay());
+    project.setProjectTimeUnit(appBusinessProjectService.getAppBusinessProject().getDaysUnit());
     return project;
   }
 
   @Override
   public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) {
-    Project project =
-        generateProject(
-            parent,
-            saleOrderLine.getFullName(),
-            saleOrderLine.getSaleOrder().getSalespersonUser(),
-            parent.getCompany(),
-            parent.getClientPartner());
-    saleOrderLine.setProject(project);
-    return project;
+    return generateProject(
+        parent,
+        saleOrderLine.getFullName(),
+        saleOrderLine.getSaleOrder().getSalespersonUser(),
+        parent.getCompany(),
+        parent.getClientPartner());
   }
 
   @Override
@@ -258,29 +279,356 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
-  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
-      throws AxelorException {
-    if (appBusinessProjectService.getAppBusinessProject().getGenerateProjectSequence()
-        && !projectTemplate.getIsBusinessProject()) {
-      projectTemplate = projTemplateRepo.find(projectTemplate.getId());
-      Project project =
-          Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
-      return ActionView.define(I18n.get("Project"))
-          .model(Project.class.getName())
-          .add("form", "project-form")
-          .add("grid", "project-grid")
-          .param("search-filters", "project-filters")
-          .context("_showRecord", project.getId())
-          .map();
-    }
-    return super.createProjectFromTemplateView(projectTemplate);
-  }
-
-  @Override
   public String getTimeZone(Project project) {
     if (project == null || project.getCompany() == null) {
       return null;
     }
     return project.getCompany().getTimezone();
+  }
+
+  @Override
+  public void computeProjectTotals(Project project) throws AxelorException {
+
+    project = projectRepository.find(project.getId());
+    List<ProjectTask> projectTaskList =
+        project.getProjectTaskList().stream()
+            .filter(projectTask -> projectTask.getParentTask() == null)
+            .collect(Collectors.toList());
+    for (ProjectTask projectTask : projectTaskList) {
+      projectTaskReportingValuesComputingService.computeProjectTaskTotals(projectTask);
+    }
+
+    computeProjectReportingValues(project, projectTaskList);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void computeProjectReportingValues(Project project, List<ProjectTask> projectTaskList)
+      throws AxelorException {
+    computeTimeFollowUp(project, projectTaskList);
+    computeFinancialFollowUp(project, projectTaskList);
+    projectRepository.save(project);
+  }
+
+  protected void computeTimeFollowUp(Project project, List<ProjectTask> projectTaskList)
+      throws AxelorException {
+    BigDecimal totalSoldTime = BigDecimal.ZERO;
+    BigDecimal totalUpdatedTime = BigDecimal.ZERO;
+    BigDecimal totalPlannedTime = BigDecimal.ZERO;
+    BigDecimal totalSpentTime = BigDecimal.ZERO;
+
+    Unit projectUnit = project.getProjectTimeUnit();
+    BigDecimal numberHoursADay = project.getNumberHoursADay();
+
+    if (numberHoursADay.signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
+    }
+
+    for (ProjectTask projectTask : projectTaskList) {
+      Unit projectTaskUnit = projectTask.getTimeUnit();
+      if (!projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
+        continue;
+      }
+      totalSoldTime =
+          totalSoldTime
+              .add(
+                  getConvertedTime(
+                      projectTask.getSoldTime(), projectTaskUnit, projectUnit, numberHoursADay))
+              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+      totalUpdatedTime =
+          totalUpdatedTime
+              .add(
+                  getConvertedTime(
+                      projectTask.getUpdatedTime(), projectTaskUnit, projectUnit, numberHoursADay))
+              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+      totalPlannedTime =
+          totalPlannedTime
+              .add(
+                  getConvertedTime(
+                      projectTask.getPlannedTime(), projectTaskUnit, projectUnit, numberHoursADay))
+              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+      totalSpentTime =
+          totalSpentTime
+              .add(
+                  getConvertedTime(
+                      projectTask.getSpentTime(), projectTaskUnit, projectUnit, numberHoursADay))
+              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+    }
+
+    project.setSoldTime(totalSoldTime);
+    project.setUpdatedTime(totalUpdatedTime);
+    project.setPlannedTime(totalPlannedTime);
+    project.setSpentTime(totalSpentTime);
+
+    if (totalUpdatedTime.signum() > 0) {
+      project.setPercentageOfProgress(
+          totalSpentTime
+              .multiply(new BigDecimal("100"))
+              .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
+
+    if (totalSoldTime.signum() > 0) {
+      project.setPercentageOfConsumption(
+          totalSpentTime
+              .multiply(new BigDecimal("100"))
+              .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
+
+    project.setRemainingAmountToDo(
+        totalUpdatedTime
+            .subtract(totalSpentTime)
+            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+  }
+
+  protected void computeFinancialFollowUp(Project project, List<ProjectTask> projectTaskList) {
+
+    BigDecimal initialTurnover =
+        projectTaskList.stream()
+            .map(ProjectTask::getTurnover)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal initialCosts =
+        projectTaskList.stream()
+            .map(ProjectTask::getInitialCosts)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal initialMargin = initialTurnover.subtract(initialCosts);
+
+    project.setTurnover(initialTurnover);
+    project.setInitialCosts(initialCosts);
+
+    project.setInitialMargin(initialMargin);
+    if (initialCosts.signum() != 0) {
+      project.setInitialMarkup(
+          initialMargin
+              .multiply(new BigDecimal("100"))
+              .divide(initialCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
+
+    // forecast
+    BigDecimal forecastCosts =
+        projectTaskList.stream()
+            .map(ProjectTask::getForecastCosts)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    project.setForecastCosts(forecastCosts);
+
+    project.setForecastMargin(project.getTurnover().subtract(forecastCosts));
+    project.setForecastMarkup(
+        project
+            .getForecastMargin()
+            .multiply(new BigDecimal("100"))
+            .divide(forecastCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+
+    BigDecimal realTurnover =
+        projectTaskList.stream()
+            .map(ProjectTask::getRealTurnover)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal realCosts =
+        projectTaskList.stream()
+            .map(ProjectTask::getRealCosts)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal realMargin = realTurnover.subtract(realCosts);
+
+    project.setRealTurnover(realTurnover);
+    project.setRealCosts(realCosts);
+    project.setRealMargin(realMargin);
+
+    if (realCosts.signum() != 0) {
+      project.setRealMarkup(
+          realMargin
+              .multiply(new BigDecimal("100"))
+              .divide(realCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
+
+    BigDecimal landingCosts =
+        projectTaskList.stream()
+            .map(ProjectTask::getLandingCosts)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    project.setLandingCosts(landingCosts);
+    BigDecimal landingMargin = initialTurnover.subtract(landingCosts);
+
+    project.setLandingMargin(landingMargin);
+
+    if (landingCosts.signum() != 0) {
+      project.setLandingMarkup(
+          landingMargin
+              .multiply(new BigDecimal("100"))
+              .divide(landingCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
+  }
+
+  protected BigDecimal getConvertedTime(
+      BigDecimal duration, Unit fromUnit, Unit toUnit, BigDecimal numberHoursADay)
+      throws AxelorException {
+    if (fromUnit.equals(appBusinessProjectService.getDaysUnit())
+        && toUnit.equals(appBusinessProjectService.getHoursUnit())) {
+      return duration.multiply(numberHoursADay);
+    } else if (fromUnit.equals(appBusinessProjectService.getHoursUnit())
+        && toUnit.equals(appBusinessProjectService.getDaysUnit())) {
+      return duration.divide(numberHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+    } else {
+      return duration;
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backupToProjectHistory(Project project) {
+    ProjectHistoryLine projectHistoryLine = new ProjectHistoryLine();
+    projectHistoryLine.setSoldTime(project.getSoldTime());
+    projectHistoryLine.setUpdatedTime(project.getUpdatedTime());
+    projectHistoryLine.setPlannedTime(project.getPlannedTime());
+    projectHistoryLine.setSpentTime(project.getSpentTime());
+    projectHistoryLine.setPercentageOfProgress(project.getPercentageOfProgress());
+    projectHistoryLine.setPercentageOfConsumption(project.getPercentageOfConsumption());
+    projectHistoryLine.setRemainingAmountToDo(project.getRemainingAmountToDo());
+
+    projectHistoryLine.setTurnover(project.getTurnover());
+    projectHistoryLine.setInitialCosts(project.getInitialCosts());
+    projectHistoryLine.setInitialMargin(project.getInitialMargin());
+    projectHistoryLine.setInitialMarkup(project.getInitialMarkup());
+    projectHistoryLine.setRealTurnover(project.getRealTurnover());
+    projectHistoryLine.setRealCosts(project.getRealCosts());
+    projectHistoryLine.setRealMargin(project.getRealMargin());
+    projectHistoryLine.setRealMarkup(project.getRealMarkup());
+    projectHistoryLine.setForecastCosts(project.getForecastCosts());
+    projectHistoryLine.setForecastMargin(project.getForecastMargin());
+    projectHistoryLine.setForecastMarkup(project.getForecastMarkup());
+    projectHistoryLine.setLandingCosts(project.getLandingCosts());
+    projectHistoryLine.setLandingMargin(project.getLandingMargin());
+    projectHistoryLine.setLandingMarkup(project.getLandingMarkup());
+
+    project.addProjectHistoryLineListItem(projectHistoryLine);
+
+    projectRepository.save(project);
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException {
+
+    Project project = projectRepository.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put("soldTime", project.getSoldTime());
+    data.put("updatedTime", project.getUpdatedTime());
+    data.put("plannedTime", project.getPlannedTime());
+    data.put("spentTime", project.getSpentTime());
+    data.put(
+        "unit",
+        Optional.ofNullable(project.getProjectTimeUnit())
+            .map(unit -> unit.getName() + "(s)")
+            .orElse(""));
+    data.put("progress", project.getPercentageOfProgress() + " %");
+    data.put("consumption", project.getPercentageOfConsumption() + " %");
+    data.put("remaining", project.getRemainingAmountToDo());
+
+    return data;
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayFinancialReporting(Long id)
+      throws AxelorException {
+
+    Project project = projectRepository.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    BigDecimal turnover = project.getTurnover();
+    BigDecimal initialCosts = project.getInitialCosts();
+    BigDecimal initialMargin = project.getInitialMargin();
+    BigDecimal initialMarkup = project.getInitialMarkup();
+    BigDecimal realTurnover = project.getRealTurnover();
+    BigDecimal realCosts = project.getRealCosts();
+    BigDecimal realMargin = project.getRealMargin();
+    BigDecimal realMarkup = project.getRealMarkup();
+    BigDecimal forecastCosts = project.getForecastCosts();
+    BigDecimal forecastMargin = project.getForecastMargin();
+    BigDecimal forecastMarkup = project.getForecastMarkup();
+    BigDecimal landingCosts = project.getLandingCosts();
+    BigDecimal landingMargin = project.getLandingMargin();
+    BigDecimal landingMarkup = project.getLandingMarkup();
+
+    data.put("turnover", turnover);
+    data.put("initialCosts", initialCosts);
+    data.put("initialMargin", initialMargin);
+    data.put("initialMarkup", initialMarkup);
+    data.put("realTurnover", realTurnover);
+    data.put("realCosts", realCosts);
+    data.put("realMargin", realMargin);
+    data.put("realMarkup", realMarkup);
+    data.put("forecastCosts", forecastCosts);
+    data.put("forecastMargin", forecastMargin);
+    data.put("forecastMarkup", forecastMarkup);
+    data.put("landingCosts", landingCosts);
+    data.put("landingMargin", landingMargin);
+    data.put("landingMarkup", landingMarkup);
+
+    List<ProjectHistoryLine> projectHistoryLineList = project.getProjectHistoryLineList();
+
+    if (projectHistoryLineList.isEmpty()) {
+      return data;
+    }
+
+    // compare to previous data
+    Comparator<ProjectHistoryLine> projectHistoryLineComparator =
+        Comparator.comparing(ProjectHistoryLine::getCreatedOn);
+
+    ProjectHistoryLine projectHistoryLine =
+        projectHistoryLineList.stream().max(projectHistoryLineComparator).get();
+
+    data.put(
+        "turnoverProgress", getProgressIcon(projectHistoryLine.getTurnover().compareTo(turnover)));
+    data.put(
+        "initialCostsProgress",
+        getProgressIcon(projectHistoryLine.getInitialCosts().compareTo(initialCosts)));
+    data.put(
+        "initialMarginProgress",
+        getProgressIcon(projectHistoryLine.getInitialMargin().compareTo(initialMargin)));
+    data.put(
+        "initialMarkupProgress",
+        getProgressIcon(projectHistoryLine.getInitialMarkup().compareTo(initialMarkup)));
+    data.put(
+        "realTurnoverProgress",
+        getProgressIcon(projectHistoryLine.getRealTurnover().compareTo(realTurnover)));
+    data.put(
+        "realCostsProgress",
+        getProgressIcon(projectHistoryLine.getRealCosts().compareTo(realCosts)));
+    data.put(
+        "realMarginProgress",
+        getProgressIcon(projectHistoryLine.getRealMargin().compareTo(realMargin)));
+    data.put(
+        "realMarkupProgress",
+        getProgressIcon(projectHistoryLine.getRealMarkup().compareTo(realMarkup)));
+    data.put(
+        "forecastCostsProgress",
+        getProgressIcon(projectHistoryLine.getForecastCosts().compareTo(forecastCosts)));
+    data.put(
+        "forecastMarginProgress",
+        getProgressIcon(projectHistoryLine.getForecastMargin().compareTo(forecastMargin)));
+    data.put(
+        "forecastMarkupProgress",
+        getProgressIcon(projectHistoryLine.getForecastMarkup().compareTo(forecastMarkup)));
+    data.put(
+        "landingCostsProgress",
+        getProgressIcon(projectHistoryLine.getLandingCosts().compareTo(landingCosts)));
+    data.put(
+        "landingMarginProgress",
+        getProgressIcon(projectHistoryLine.getLandingMargin().compareTo(landingMargin)));
+    data.put(
+        "landingMarkupProgress",
+        getProgressIcon(projectHistoryLine.getLandingMarkup().compareTo(landingMarkup)));
+
+    return data;
+  }
+
+  protected String getProgressIcon(int comparisonResult) {
+    switch (comparisonResult) {
+      case 0:
+        return ICON_EQUAL;
+      case 1:
+        return FA_LEVEL_DOWN;
+      case -1:
+        return FA_LEVEL_UP;
+      default:
+        return "";
+    }
   }
 }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,16 +14,18 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.crm.db.LostReason;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
@@ -36,24 +39,26 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class OpportunityServiceImpl implements OpportunityService {
 
   protected OpportunityRepository opportunityRepo;
-  protected AddressService addressService;
   protected OpportunityStatusRepository opportunityStatusRepo;
   protected AppCrmService appCrmService;
+  protected PartnerRepository partnerRepository;
 
   @Inject
   public OpportunityServiceImpl(
       OpportunityRepository opportunityRepo,
-      AddressService addressService,
       OpportunityStatusRepository opportunityStatusRepo,
-      AppCrmService appCrmService) {
+      AppCrmService appCrmService,
+      PartnerRepository partnerRepository) {
     this.opportunityRepo = opportunityRepo;
-    this.addressService = addressService;
     this.opportunityStatusRepo = opportunityStatusRepo;
     this.appCrmService = appCrmService;
+    this.partnerRepository = partnerRepository;
   }
 
   @Transactional
@@ -78,29 +83,28 @@ public class OpportunityServiceImpl implements OpportunityService {
   }
 
   @Override
-  public OpportunityStatus getDefaultOpportunityStatus() {
-    return opportunityStatusRepo.getDefaultStatus();
+  public OpportunityStatus getDefaultOpportunityStatus() throws AxelorException {
+    return appCrmService.getOpportunityDefaultStatus();
   }
 
   @Override
-  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
-      throws AxelorException {
-
-    if (isStagedClosedWon) {
-      opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
-    } else {
-      opportunity.setOpportunityStatus(appCrmService.getClosedLostOpportunityStatus());
-    }
-
-    saveOpportunity(opportunity);
+  @Transactional(rollbackOn = {Exception.class})
+  public void setOpportunityStatusStagedClosedWon(Opportunity opportunity) throws AxelorException {
+    opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setOpportunityStatusStagedClosedLost(Opportunity opportunity) throws AxelorException {
+    opportunity.setOpportunityStatus(appCrmService.getClosedLostOpportunityStatus());
+  }
+
+  @Override
+  @Transactional
   public void setOpportunityStatusNextStage(Opportunity opportunity) {
     OpportunityStatus status = opportunity.getOpportunityStatus();
     status = Beans.get(OpportunityStatusRepository.class).findByNextSequence(status.getSequence());
     opportunity.setOpportunityStatus(status);
-    saveOpportunity(opportunity);
   }
 
   @Override
@@ -121,5 +125,73 @@ public class OpportunityServiceImpl implements OpportunityService {
     }
 
     return closedOpportunityStatusIdList;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public List<Opportunity> winningProcess(Opportunity opportunity, Map<String, Boolean> map)
+      throws AxelorException {
+
+    setOpportunityStatusStagedClosedWon(opportunity);
+
+    Partner partner = opportunity.getPartner();
+
+    partner.setIsCustomer(map.get("isCustomer"));
+    partner.setIsProspect(map.get("isProspect"));
+    partner.setIsSupplier(map.get("isSupplier"));
+    partner.setIsEmployee(map.get("isEmployee"));
+    partner.setIsContact(map.get("isContact"));
+    partner.setIsInternal(map.get("isInternal"));
+    partner.setIsPartner(map.get("isPartner"));
+    partnerRepository.save(partner);
+
+    return getOtherOpportunities(opportunity);
+  }
+
+  protected List<Opportunity> getOtherOpportunities(Opportunity opportunity)
+      throws AxelorException {
+    return opportunityRepo
+        .all()
+        .filter(
+            "self.partner = :partner AND self.id != :id AND self.opportunityStatus NOT IN (:closedWon, :closedLost)")
+        .bind("partner", opportunity.getPartner())
+        .bind("id", opportunity.getId())
+        .bind("closedWon", appCrmService.getClosedWinOpportunityStatus())
+        .bind("closedLost", appCrmService.getClosedLostOpportunityStatus())
+        .fetch();
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void lostProcess(
+      List<Opportunity> otherOpportunities, LostReason lostReason, String lostReasonStr)
+      throws AxelorException {
+
+    for (Opportunity opportunity : otherOpportunities) {
+      lostProcess(opportunity, lostReason, lostReasonStr);
+    }
+  }
+
+  protected void lostProcess(Opportunity opportunity, LostReason lostReason, String lostReasonStr)
+      throws AxelorException {
+    setOpportunityStatusStagedClosedLost(opportunity);
+    opportunity.setLostReason(lostReason);
+    opportunity.setLostReasonStr(lostReasonStr);
+    saveOpportunity(opportunity);
+  }
+
+  @Override
+  public void kanbanOpportunityOnMove(Opportunity opportunity) throws AxelorException {
+    OpportunityStatus opportunityStatus = opportunity.getOpportunityStatus();
+    OpportunityStatus closedLostOpportunityStatus = appCrmService.getClosedLostOpportunityStatus();
+
+    if (Objects.isNull(opportunityStatus)) {
+      return;
+    }
+    if (opportunityStatus.equals(closedLostOpportunityStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.OPPORTUNITY_CLOSE_LOST_KANBAN));
+    }
   }
 }

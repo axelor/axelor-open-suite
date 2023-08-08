@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.service;
 
@@ -45,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LeadServiceImpl implements LeadService {
 
@@ -247,7 +249,33 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Override
-  public LeadStatus getDefaultLeadStatus() {
-    return leadStatusRepo.getDefaultStatus();
+  public LeadStatus getDefaultLeadStatus() throws AxelorException {
+    return appCrmService.getLeadDefaultStatus();
+  }
+
+  @Override
+  public boolean computeIsLost(Lead lead) throws AxelorException {
+    return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());
+  }
+
+  @Override
+  public void kanbanLeadOnMove(Lead lead) throws AxelorException {
+    LeadStatus leadStatus = lead.getLeadStatus();
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+
+    if (Objects.isNull(leadStatus)) {
+      return;
+    }
+    if (leadStatus.equals(convertedLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_KANBAN));
+    }
+    if (leadStatus.equals(lostLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
+    }
   }
 }

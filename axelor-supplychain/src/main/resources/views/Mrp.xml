@@ -56,10 +56,10 @@
       <field name="id"/>
       <spacer/>
       <field name="name"/>
-      <field name="createdOn" colSpan="4"/>
-      <field name="startDateTime" colSpan="4" readonly="true"/>
-      <field name="endDateTime" colSpan="4" readonly="true"/>
-      <field name="createdBy"/>
+      <field name="createdOn" colSpan="3"/>
+      <field name="createdBy" colSpan="3"/>
+      <field name="startDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
+      <field name="endDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
       <field name="endDate" colSpan="6" hideIf="mrpTypeSelect == 2"/>
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" colSpan="6"

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.module;
 
@@ -27,8 +28,6 @@ import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
-import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
-import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.db.repo.BankAddressBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.db.repo.BankBaseRepository;
@@ -47,8 +46,6 @@ import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageRepository;
-import com.axelor.apps.base.db.repo.ObjectDataConfigExportManagementRepository;
-import com.axelor.apps.base.db.repo.ObjectDataConfigExportRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -61,6 +58,8 @@ import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.listener.BaseServerStartListener;
+import com.axelor.apps.base.openapi.AosSwagger;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -69,6 +68,10 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
+import com.axelor.apps.base.service.AnonymizerLineService;
+import com.axelor.apps.base.service.AnonymizerLineServiceImpl;
+import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
+import com.axelor.apps.base.service.BankDetailsFullNameComputeServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.BankService;
@@ -76,10 +79,14 @@ import com.axelor.apps.base.service.BankServiceImpl;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.BaseReportGenerator;
+import com.axelor.apps.base.service.BirtTemplateViewService;
+import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
 import com.axelor.apps.base.service.DMSImportWizardServiceImpl;
+import com.axelor.apps.base.service.DMSService;
+import com.axelor.apps.base.service.DMSServiceImpl;
 import com.axelor.apps.base.service.DataBackupAnonymizeService;
 import com.axelor.apps.base.service.DataBackupAnonymizeServiceImpl;
 import com.axelor.apps.base.service.DataBackupService;
@@ -97,10 +104,6 @@ import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
-import com.axelor.apps.base.service.ObjectDataAnonymizeService;
-import com.axelor.apps.base.service.ObjectDataAnonymizeServiceImpl;
-import com.axelor.apps.base.service.ObjectDataExportService;
-import com.axelor.apps.base.service.ObjectDataExportServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -155,6 +158,10 @@ import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.dayplanning.DayPlanningService;
+import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
 import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -172,6 +179,8 @@ import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.pricing.PricingServiceImpl;
+import com.axelor.apps.base.service.research.ResearchRequestService;
+import com.axelor.apps.base.service.research.ResearchRequestServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -193,10 +202,17 @@ import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.TemplateMessageServiceImpl;
 import com.axelor.report.ReportGenerator;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.List;
 
 public class BaseModule extends AxelorModule {
 
@@ -206,6 +222,28 @@ public class BaseModule extends AxelorModule {
         Matchers.any(),
         Matchers.annotatedWith(HandleExceptionResponse.class),
         new HandleExceptionResponseImpl());
+
+    bindInterceptor(
+        new AbstractMatcher<>() {
+          @Override
+          public boolean matches(Class<?> aClass) {
+            return aClass.getSimpleName().endsWith("Controller")
+                && aClass.getPackageName().startsWith("com.axelor.apps")
+                && aClass.getPackageName().endsWith("web");
+          }
+        },
+        new AbstractMatcher<>() {
+          @Override
+          public boolean matches(Method method) {
+            List<Parameter> parameters = Arrays.asList(method.getParameters());
+            return parameters.size() == 2
+                && parameters.stream()
+                    .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
+                && parameters.stream()
+                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()));
+          }
+        },
+        new ControllerMethodInterceptor());
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
@@ -239,7 +277,6 @@ public class BaseModule extends AxelorModule {
     bind(ImportCityService.class).to(ImportCityServiceImpl.class);
     bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
     bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
-    bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
     bind(TradingNameService.class).to(TradingNameServiceImpl.class);
     bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
     bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
@@ -294,15 +331,20 @@ public class BaseModule extends AxelorModule {
     bind(SequenceVersionGeneratorQueryService.class)
         .to(SequenceVersionGeneratorQueryServiceImpl.class);
     bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
-    bind(ObjectDataExportService.class).to(ObjectDataExportServiceImpl.class);
-    bind(ObjectDataAnonymizeService.class).to(ObjectDataAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
-    bind(ObjectDataConfigExportRepository.class)
-        .to(ObjectDataConfigExportManagementRepository.class);
     bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
     bind(FakerService.class).to(FakerServiceImpl.class);
     bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);
     bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
+    bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
+    bind(ResearchRequestService.class).to(ResearchRequestServiceImpl.class);
+    bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
+    bind(BaseServerStartListener.class);
+    bind(AosSwagger.class);
+    bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
+    bind(DayPlanningService.class).to(DayPlanningServiceImpl.class);
+    bind(AnonymizerLineService.class).to(AnonymizerLineServiceImpl.class);
+    bind(DMSService.class).to(DMSServiceImpl.class);
   }
 }

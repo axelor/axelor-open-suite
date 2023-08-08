@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.employee;
 
@@ -33,6 +34,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -43,6 +45,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
@@ -243,5 +246,17 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         TraceBackRepository.CATEGORY_NO_VALUE,
         I18n.get(HumanResourceExceptionMessage.NO_USER_FOR_EMPLOYEE),
         employee.getName());
+  }
+
+  @Override
+  public Employee getConnectedEmployee() throws AxelorException {
+    User user = Optional.ofNullable(AuthUtils.getUser()).get();
+    if (user.getEmployee() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+          user.getName());
+    }
+    return user.getEmployee();
   }
 }

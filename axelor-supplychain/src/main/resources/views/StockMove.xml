@@ -173,8 +173,8 @@
     </panel>
     <panel-related name="stockMoveLineListPanel" field="$stockMoveLines"
       canNew="false" target="com.axelor.apps.stock.db.StockMoveLine" type="one-to-many"
-      editable="true" showIf="operationSelect == 2">
-      <field name="productCode"/>
+      editable="true" showIf="operationSelect == 2" form-view="partial-invoice-stock-move-line-form">
+      <field name="productCode" readonly="true"/>
       <field name="productName" readonly="true"/>
       <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"/>
       <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"/>
@@ -323,16 +323,6 @@
     <attribute name="readonly" for="company" expr="true"/>
   </action-attrs>
 
-  <action-record name="action-stock-move-status-select-invoiced-delayed"
-    model="com.axelor.apps.stock.db.StockMove">
-    <field name="invoicingStatusSelect" expr="3"/>
-  </action-record>
-
-  <action-record name="action-stock-move-status-select-invoiced-validated"
-    model="com.axelor.apps.stock.db.StockMove">
-    <field name="invoicingStatusSelect" expr="4"/>
-  </action-record>
-
   <action-record name="action-supplychain-stock-move-record-invoice-blocking-onchange"
     model="com.axelor.apps.stock.db.StockMove">
     <field name="invoiceBlockedByUser" expr="eval: invoiceBlocking ? __user__ : null"/>
@@ -343,6 +333,21 @@
       if="invoiceBlocking &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"/>
   </action-validate>
 
+  <action-method name="action-supplychain-stock-move-method-check-invoice-status">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="checkInvoiceStatus"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-set-invoicing-status-invoiced-delayed">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="setInvoicingStatusInvoicedDelayed"/>
+  </action-method>
+
+  <action-method
+    name="action-stock-move-method-set-invoicing-status-invoiced-validated">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="setInvoicingStatusInvoicedValidated"/>
+  </action-method>
 
   <search-filters id="supplychain-customer-deliveries-filter"
     name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove"

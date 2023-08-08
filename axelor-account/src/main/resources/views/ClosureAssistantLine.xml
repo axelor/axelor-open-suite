@@ -19,7 +19,7 @@
       <button onClick="account-closure-assistant-line-open-view-link-to-action-group"
         name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute" colSpan="12"
         hideIf="isValidated" readonlyIf="!isPreviousLineValidated"/>
-      <field name="validatedOnDate" title="Validated on" readonly="true" colSpan="6"/>
+      <field name="validatedOnDateTime" colSpan="6"/>
       <field name="validatedByUser" title="Validated by" readonly="true" colSpan="6"/>
       <field name="isValidated" hidden="true" readonly="true"/>
       <field name="isPreviousLineValidated" hidden="true" readonly="true"/>
@@ -33,7 +33,7 @@
     <hilite background="green" if="isValidated"/>
     <field name="sequence" title="Sequence"/>
     <field name="actionSelect" title="Action"/>
-    <field name="validatedOnDate" title="Validated on"/>
+    <field name="validatedOnDateTime"/>
     <field name="validatedByUser" title="Validated by"/>
     <field name="isValidated" title="Validated"/>
     <field name="isPreviousLineValidated" hidden="true"/>
@@ -49,7 +49,7 @@
   </grid>
 
   <form name="closure-assistant-line-outrun-wizard" title="Outrun result"
-    model="com.axelor.message.db.Wizard" onNew="action-closure-assistant-line-method-outrun">
+    model="com.axelor.utils.db.Wizard" onNew="action-closure-assistant-line-method-outrun">
     <panel name="mainPanel" itemSpan="12" readonly="true">
       <field name="year" title="Fiscal year" type="many-to-one"
         target="com.axelor.apps.base.db.Year"/>

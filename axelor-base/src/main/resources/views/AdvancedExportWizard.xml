@@ -9,7 +9,7 @@
     <option value="CSV">CSV</option>
   </selection>
 
-  <form name="advanced-export-wizard-form" model="com.axelor.message.db.Wizard"
+  <form name="advanced-export-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Advanced export" onNew="action-advanced-export-wizard-record-on-new">
     <panel name="mainPanel">
       <field name="_xAdvancedExport" title="Advanced export" widget="SuggestBox"

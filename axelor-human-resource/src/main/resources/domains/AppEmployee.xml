@@ -5,15 +5,17 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppEmployee">
+  <entity name="AppEmployee" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <decimal name="dailyWorkHours" title="Daily work hours"/>
     <boolean name="advanceManagement" default="true"/>
     <boolean name="payrollPreparation" title="Payroll preparation"/>
     <boolean name="lunchVoucher" title="Lunch Voucher"/>
     <boolean name="employeeBonus" title="Employee bonus"/>
+    <boolean name="isMyHrEnabled" title="Enable MyHR" default="true"
+      help="Activate MyHR enables the HR menu entries for employees."/>
 
     <extra-code>
    		<![CDATA[
@@ -28,6 +30,7 @@
       <field name="payrollPreparation" on="UPDATE"/>
       <field name="lunchVoucher" on="UPDATE"/>
       <field name="employeeBonus" on="UPDATE"/>
+      <field name="isMyHrEnabled" on="UPDATE"/>
     </track>
   </entity>
 

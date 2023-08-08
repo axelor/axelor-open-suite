@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Agency" lang="java">
+  <entity name="Agency">
 
     <string name="name" title="agency.name"/>
     <many-to-many name="memberSet" ref="com.axelor.auth.db.User" title="Members"/>

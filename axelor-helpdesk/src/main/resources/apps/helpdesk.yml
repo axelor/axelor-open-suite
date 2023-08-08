@@ -2,7 +2,7 @@
 name: Helpdesk
 code: helpdesk
 typeSelect: standard
-installOrder: 29
+installOrder: 2290
 description: |
    Helpdesk Management
 image: app-helpdesk.png

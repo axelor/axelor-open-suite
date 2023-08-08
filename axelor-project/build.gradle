@@ -1,5 +1,6 @@
 plugins {
 	id 'com.axelor.app'
+	id "com.github.node-gradle.node"
 }
 
 apply from: "../libs.gradle"
@@ -19,3 +20,64 @@ dependencies {
   
   implementation libs.jsoup
 }
+
+
+node {
+	version = '16.17.0'
+	yarnVersion = '1.22.19'
+    download = true
+    distBaseUrl = null
+    nodeModulesDir = file('src/main/task-editor')
+}
+
+task buildFront(type: YarnTask) {
+    group = 'axelor'
+    description = 'Build Front-end'
+
+    inputs.files('src/main/task-editor/package.json', 'src/main/task-editor/yarn.lock', 'src/main/task-editor/package-lock.json' )
+    inputs.dir('src/main/task-editor/src')
+    inputs.dir('src/main/task-editor/public')
+    outputs.dir('src/main/task-editor/build')
+
+	dependsOn 'installFrontDeps'
+    args = ["run", "build"]
+}
+
+task installFrontDeps(type: YarnTask) {
+    group = 'axelor'
+    description = 'Install Front-end dependencies'
+
+    args = ['install']
+}
+
+
+task copyReactWebapp(type: Copy) {
+	destinationDir = file(rootProject.buildDir)
+	into("webapp/project/task-editor") {
+		from "src/main/task-editor/build"
+	}
+	
+	dependsOn 'buildFront'
+}
+
+
+clean {
+    delete "src/main/task-editor/.yarn/cache",
+     "src/main/task-editor/.yarn/unplugged",
+      "src/main/task-editor/.yarn/install-state.gz",
+       "src/main/task-editor/dist",
+        "src/main/task-editor/node_modules",
+        "src/main/task-editor/build"
+}
+
+jar {
+  dependsOn 'buildFront'
+  into('webapp/project/task-editor') {
+    from "src/main/task-editor/build"
+    duplicatesStrategy 'exclude'
+  }
+}
+
+
+build.dependsOn copyReactWebapp
+rootProject.tasks.war.dependsOn copyReactWebapp

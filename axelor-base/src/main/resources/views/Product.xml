@@ -205,7 +205,8 @@
             showIf="sellable" canNew="false" canSelect="true"/>
           <field name="productSynchronizedInPrestashop" colSpan="6"
             if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
-          <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
+          <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"
+            onChange="action-product-record-compute-sale-price"/>
           <field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable"
             colSpan="12"/>
           <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12"
@@ -376,24 +377,6 @@
           action="action-product-view-production-process"
           showIf="id &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"/>
       </panel>
-      <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
-        showIf="productTypeSelect == 'storable'" if-module="axelor-stock"
-        if="__config__.app.isApp('stock')">
-        <panel colSpan="12" name="trackingDetailsPanel">
-          <field name="hasWarranty"/>
-          <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
-          <field name="isPerishable"/>
-          <field name="perishableNbrOfMonths" showIf="isPerishable"/>
-          <field name="checkExpirationDateAtStockMoveRealization"
-            showIf="hasWarranty || isPerishable"/>
-        </panel>
-        <panel colSpan="12" name="trackingConfigPanel">
-          <field name="trackingNumberConfiguration"
-            requiredIf="checkExpirationDateAtStockMoveRealization" canNew="true"
-            form-view="tracking-number-configuration-form"
-            grid-view="tracking-number-configuration-grid"/>
-        </panel>
-      </panel>
       <panel name="variantsPanel" title="Variants" showTitle="false"
         if="__config__.app.getApp('base')?.getManageProductVariants()">
         <panel name="parentVariantPanel" showIf="!parentProduct" colSpan="12">
@@ -488,7 +471,8 @@
       <panel name="taskPanel" title="Task templates"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct"
         if-module="axelor-business-project">
-        <field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
+        <field name="taskTemplateSet" widget="TagSelect" colSpan="12"
+          domain="self.parentTaskTemplate = null or self.parentTaskTemplate in :taskTemplateSet"/>
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-stock"
         if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged"
@@ -583,7 +567,7 @@
   </cards>
 
   <action-view name="action-product-view-create-production-order"
-    title="Create production order (${ name })" model="com.axelor.message.db.Wizard">
+    title="Create production order (${ name })" model="com.axelor.utils.db.Wizard">
     <view type="form" name="production-order-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>
