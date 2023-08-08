@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sop-line-grid" title="Sales and Operations Planning Line"
-    model="com.axelor.apps.production.db.SopLine">
+    model="com.axelor.apps.production.db.SopLine" editable="true">
     <field name="year"/>
     <field name="period"/>
     <field name="sopSalesForecast"/>
