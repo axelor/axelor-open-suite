@@ -1,0 +1,3 @@
+---
+title: "BatchUpdateTaskService: JPA cache is not properly managed"
+type: fix
