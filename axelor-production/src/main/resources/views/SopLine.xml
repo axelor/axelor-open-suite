@@ -12,6 +12,9 @@
     <field name="sopSalesGap"/>
     <field name="sopRealManuf"/>
     <field name="sopRealStock"/>
+    <field name="currency" hidden="true"/>
+    <button name="generateMpsForecastsBtn" icon="fa-gear" title="Generate MPS forecasts"
+      onClick="action-sop-line-view-open-wizard"/>
   </grid>
 
   <form name="sop-line-form" title="Sales and Operations Planning Line"
