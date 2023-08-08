@@ -1,3 +1,42 @@
+## [6.5.14] (2023-08-08)
+
+#### Fixed
+
+* Invoice : fix the way we check the awaiting payment
+* Accounting batch : Improve user feedback on move consistency control when there are no anomalies
+* PLANNING: Planning is now correctly filtered on employee and machine form
+* SaleOrderLine: Description is now copied only if the configuration allows it
+* PARTNER: Fixed a bug where button 'create sale quotation' was always displayed
+* Custom accounting report : Excel sheets are now named after the analytic account
+* Invoice term : Fixed wrong percentage sum check that was blocking move save
+* Move : Fix automatic move line tax generation with reverse charge and multiple vat systems.
+* PurchaseOrder and Invoice: Added widget boolean switch for interco field
+* Invoice : Fix tax being empty on invoice line when it's required on account
+* ManufOrder: Planning a cancelled MO now clears the real dates on operations orders and MO
+* Product/ProductFamily : set analytic distribution template readonly if the config analytic type is not by product
+* Move : Fix currency amount of automatically generated reverse charge move line not being computed
+* Invoice: Fixed french translations
+* INVOICE : fix form view - added blank spaces before the company field and move the originDate field
+* SOP/MPS: Fixed a bug where real datas were never increased
+* Supplychain batch : Fixed bugs that prevented display of processed stock moves
+* SOP/MPS: Fixed SOP/MPS Wrong message on forecast generation
+* PAYMENT SESSION : corrected accounting trigger from payment mode overriding accounting trigger from payment session on bank order generated from payment session.
+* Move : Fix tax computation when we have two financial accounts with the same VAT system
+* Debt Recovery: Fix error message on debt recovery batch to display correctly trading name
+* Move : Fixed a bug that was opening a move in edit mode instead of read only
+* Period : Fixed an issue where a false warning was displayed preventing the user for re-opening a closed period
+* Invoice: Fixed a bug where subscription invoice was linked to unrelated advance payment invoice
+
+When creating an invoice auto complete advance payement invoice with no internal reference to an already existing sale order.
+
+* Analytic distribution template: Fix error when creating a new analytic distribution template without company
+* Invoice : Remove payment voucher access on an advance payment invoice
+* Payment session : Fix session total amount computation
+* Move : Fix invoice term amount at percentage change with unsaved move
+* Product: When changing costTypeSelect to 'last purchase price', the cost price will now be correctly converted.
+* Bank order: Fixed a bug where bank order date was always overridden. Now bank order date is overridden only when it is before the current date and the user is warned.
+* BUSINESS PROJECT BATCH: Fixed invoicing project batch
+
 ## [6.5.13] (2023-07-20)
 
 #### Fixed
@@ -688,6 +727,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.14]: https://github.com/axelor/axelor-open-suite/compare/v6.5.13...v6.5.14
 [6.5.13]: https://github.com/axelor/axelor-open-suite/compare/v6.5.12...v6.5.13
 [6.5.12]: https://github.com/axelor/axelor-open-suite/compare/v6.5.11...v6.5.12
 [6.5.11]: https://github.com/axelor/axelor-open-suite/compare/v6.5.10...v6.5.11
