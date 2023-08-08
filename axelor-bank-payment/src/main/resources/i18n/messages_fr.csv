@@ -149,6 +149,7 @@
 "Are you sure you want merge the selected bank orders ?","Etes-vous sûr de vouloir fusionner les ordres bancaires sélectionnés ?",,
 "Are you sure you want suspend the user ? The whole initialisation process will have to be done again.","Etes vous sûr de vouloir suspendre l'utilisateur ? Il sera nécessaire de réaliver de nouveau complètement le processus d'initialisation",,
 "Arithmetic total","Total arithmétique",,
+"As the date of your order is in the past, it will be updated to today. We advise you to send your order as soon as possible to avoid any errors.","La date de votre ordre étant dans le passé, elle va être mise à jour à aujourd'hui. Nous vous conseillons d'envoyer votre ordre dans la foulée pour éviter toute erreur.",,
 "Assignment or pledge outside Dailly agreement","Cession ou nantissement hors convention Dailly",,
 "Associated MoveLine","Ligne d'Ecr. Associée",,
 "Associated user","Utilisateur associé",,
