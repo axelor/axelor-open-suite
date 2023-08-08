@@ -1,3 +1,35 @@
+## [6.4.20] (2023-08-08)
+
+#### Fixed
+
+* Accounting batch : Improve user feedback on move consistency control when there are no anomalies
+* PLANNING: Planning is now correctly filtered on employee and machine form
+* SaleOrderLine: Description is now copied only if the configuration allows it
+* Move : Fix automatic move line tax generation with reverse charge and multiple vat systems.
+* PurchaseOrder and Invoice: Added widget boolean switch for interco field
+* Invoice : Fix tax being empty on invoice line when it's required on account
+* ManufOrder: Planning a cancelled MO now clears the real dates on operations orders and MO
+* Product/ProductFamily : Analytic distribution template is now on readonly if the config analytic type is not by product
+* Move : Fix currency amount of automatically generated reverse charge move line not being computed
+* Invoice: Fixed french translations
+* SOP/MPS: Fixed a bug where real datas were never increased
+* Supplychain batch : Fixed bugs that prevented display of processed stock moves
+* SOP/MPS: Fixed SOP/MPS Wrong message on forecast generation
+* PAYMENT SESSION : corrected accounting trigger from payment mode overriding accounting trigger from payment session on bank order generated from payment session.
+* Move : Fix tax computation when we have two financial accounts with the same VAT system
+* Debt Recovery: Fix error message on debt recovery batch to display correctly trading name
+* Move : Fixed a bug that was opening a move in edit mode instead of read only
+* Period : Fixed an issue where a false warning was displayed preventing the user for re-opening a closed period
+* Invoice: Fixed a bug where subscription invoice was linked to unrelated advance payment invoice
+
+When creating an invoice auto complete advance payement invoice with no internal reference to an already existing sale order.
+
+* Invoice : Remove payment voucher access on an advance payment invoice
+* Move : Fix invoice term amount at percentage change with unsaved move
+* Product: When changing costTypeSelect to 'last purchase price', the cost price will now be correctly converted.
+* Bank order: Fixed a bug where bank order date was always overridden. Now bank order date is overridden only when it is before the current date and the user is warned.
+* BUSINESS PROJECT BATCH: Fixed invoicing project batch
+
 ## [6.4.19] (2023-07-20)
 
 #### Fixed
@@ -885,6 +917,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.20]: https://github.com/axelor/axelor-open-suite/compare/v6.4.19...v6.4.20
 [6.4.19]: https://github.com/axelor/axelor-open-suite/compare/v6.4.18...v6.4.19
 [6.4.18]: https://github.com/axelor/axelor-open-suite/compare/v6.4.17...v6.4.18
 [6.4.17]: https://github.com/axelor/axelor-open-suite/compare/v6.4.16...v6.4.17
