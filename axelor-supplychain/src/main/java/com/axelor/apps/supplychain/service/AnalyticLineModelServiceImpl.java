@@ -88,9 +88,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AnalyticLineModel analyticLineModel, Company company, AnalyticAccount analyticAccount)
       throws AxelorException {
 
-    AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
-    // TODO add computeAnalytic() into AnalyticMoveLineService
-    //        analyticMoveLine = analyticMoveLineService.computeAnalytic(company, analyticAccount);
+    AnalyticMoveLine analyticMoveLine =
+        analyticMoveLineService.computeAnalytic(company, analyticAccount);
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
     analyticMoveLine.setAmount(analyticLineModel.getExTaxTotal());

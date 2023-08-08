@@ -39,9 +39,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
@@ -117,16 +115,17 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       throws AxelorException {
     List<Long> analyticAccountListByAxis = new ArrayList<>();
 
-    AnalyticAxis analyticAxis = new AnalyticAxis();
-
     if (analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)) {
 
-      for (AnalyticAxisByCompany axis :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-        if (axis.getSequence() + 1 == position) {
-          analyticAxis = axis.getAnalyticAxis();
-        }
-      }
+      AnalyticAxis analyticAxis =
+          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
+              .filter(it -> it.getSequence() + 1 == position)
+              .findFirst()
+              .stream()
+              .map(AnalyticAxisByCompany::getAnalyticAxis)
+              .findFirst()
+              .orElse(null);
+
       analyticAccountListByAxis = getAnalyticAccountsByAxis(line, analyticAxis);
     }
     return analyticAccountListByAxis;
@@ -134,13 +133,12 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
   @Override
   public List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis) {
-    List<Long> analyticAccountListByAxis = new ArrayList<>();
     List<Long> analyticAccountListByRules = new ArrayList<>();
+    List<Long> analyticAccountListByAxis =
+        analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch().stream()
+            .map(AnalyticAccount::getId)
+            .collect(Collectors.toList());
 
-    for (AnalyticAccount analyticAccount :
-        analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
-      analyticAccountListByAxis.add(analyticAccount.getId());
-    }
     if (line.getAccount() != null) {
       List<Long> analyticAccountIdList = accountService.getAnalyticAccountsIds(line.getAccount());
       if (CollectionUtils.isNotEmpty(analyticAccountIdList)) {
@@ -201,7 +199,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   }
 
   @Override
-  public AnalyticLine printAnalyticAccount(AnalyticLine analyticLine, Company company)
+  public AnalyticLine setAnalyticAccount(AnalyticLine analyticLine, Company company)
       throws AxelorException {
     if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
       this.resetAxisAnalyticAccount(analyticLine);
@@ -269,15 +267,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       default:
         break;
     }
-  }
-
-  protected void addAttr(
-      String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
-    if (!attrsMap.containsKey(field)) {
-      attrsMap.put(field, new HashMap<>());
-    }
-
-    attrsMap.get(field).put(attr, value);
   }
 
   protected void resetAxisAnalyticAccount(AnalyticLine analyticLine) {

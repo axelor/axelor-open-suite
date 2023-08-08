@@ -43,7 +43,7 @@ public interface AnalyticLineService {
 
   AnalyticLine checkAnalyticLineForAxis(AnalyticLine line);
 
-  AnalyticLine printAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
+  AnalyticLine setAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
 
   List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis);
 }
