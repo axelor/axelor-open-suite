@@ -1,3 +1,0 @@
----
-title: "Move/MoveLine : empty taxLine when changing the account of a moveLine to an account without tax authorized"
-type: fix

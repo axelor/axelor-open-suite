@@ -94,8 +94,8 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(InvoiceLine invoiceLine) {
-    if (invoiceLine == null || invoiceLine.getInvoice() == null) {
+  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine) {
+    if (invoice == null || invoiceLine == null) {
       return "";
     }
     invoiceLine.clearBudgetDistributionList();
@@ -103,10 +103,10 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
         budgetDistributionService.createBudgetDistribution(
             invoiceLine.getAnalyticMoveLineList(),
             invoiceLine.getAccount(),
-            invoiceLine.getInvoice().getCompany(),
-            invoiceLine.getInvoice().getInvoiceDate() != null
-                ? invoiceLine.getInvoice().getInvoiceDate()
-                : invoiceLine.getInvoice().getCreatedOn().toLocalDate(),
+            invoice.getCompany(),
+            invoice.getInvoiceDate() != null
+                ? invoice.getInvoiceDate()
+                : invoice.getCreatedOn().toLocalDate(),
             invoiceLine.getCompanyExTaxTotal(),
             invoiceLine.getName(),
             invoiceLine);
