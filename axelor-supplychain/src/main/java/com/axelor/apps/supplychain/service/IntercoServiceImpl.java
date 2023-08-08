@@ -17,33 +17,24 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.payment.PaymentModeService;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -80,15 +71,10 @@ import java.util.Set;
 public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
-  protected BankDetailsService bankDetailsService;
-
-  protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
-  public IntercoServiceImpl(
-      PurchaseConfigService purchaseConfigService, BankDetailsService bankDetailsService) {
+  public IntercoServiceImpl(PurchaseConfigService purchaseConfigService) {
     this.purchaseConfigService = purchaseConfigService;
-    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -343,96 +329,65 @@ public class IntercoServiceImpl implements IntercoService {
 
   @Override
   public Invoice generateIntercoInvoice(Invoice invoice) throws AxelorException {
-    PartnerService partnerService = Beans.get(PartnerService.class);
     InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     InvoiceService invoiceService = Beans.get(InvoiceService.class);
 
-    boolean isPurchase;
-    // set the status
-    int generatedOperationTypeSelect;
-    int priceListRepositoryType;
-    switch (invoice.getOperationTypeSelect()) {
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
-        priceListRepositoryType = PriceListRepository.TYPE_SALE;
-        isPurchase = false;
-        break;
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
-        priceListRepositoryType = PriceListRepository.TYPE_SALE;
-        isPurchase = false;
-        break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
-        priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
-        isPurchase = true;
-        break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
-        priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
-        isPurchase = true;
-        break;
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(SupplychainExceptionMessage.INVOICE_MISSING_TYPE),
-            invoice);
-    }
+    int generatedOperationTypeSelect = getIntercoInvoiceOperationTypeSelect(invoice);
     Company intercoCompany = findIntercoCompany(invoice.getPartner());
     Partner intercoPartner = invoice.getCompany().getPartner();
     PaymentMode intercoPaymentMode =
         Beans.get(PaymentModeService.class).reverseInOut(invoice.getPaymentMode());
-    Address intercoAddress = partnerService.getInvoicingAddress(intercoPartner);
-    BankDetails intercoBankDetails = partnerService.getDefaultBankDetails(intercoPartner);
-    AccountingSituation accountingSituation =
-        Beans.get(AccountingSituationService.class)
-            .getAccountingSituation(intercoPartner, intercoCompany);
+    int priceListRepositoryType =
+        InvoiceToolService.isPurchase(invoice)
+            ? PriceListRepository.TYPE_SALE
+            : PriceListRepository.TYPE_PURCHASE;
     PriceList intercoPriceList =
         Beans.get(PartnerPriceListService.class)
             .getDefaultPriceList(intercoPartner, priceListRepositoryType);
 
-    Invoice intercoInvoice = invoiceRepository.copy(invoice, true);
-    intercoInvoice.setOperationTypeSelect(generatedOperationTypeSelect);
-    intercoInvoice.setCompany(intercoCompany);
-    intercoInvoice.setPartner(intercoPartner);
-    intercoInvoice.setAddress(intercoAddress);
-    intercoInvoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(intercoAddress));
-    intercoInvoice.setPaymentMode(intercoPaymentMode);
-    intercoInvoice.setBankDetails(intercoBankDetails);
-    Set<Invoice> invoices = invoiceService.getDefaultAdvancePaymentInvoice(intercoInvoice);
-    intercoInvoice.setAdvancePaymentInvoiceSet(invoices);
-    if (accountingSituation != null) {
-      intercoInvoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
-      intercoInvoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
-      intercoInvoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
-    }
-    intercoInvoice.setPriceList(intercoPriceList);
-    intercoInvoice.setInvoicesCopySelect(
-        (intercoPartner.getInvoicesCopySelect() == 0)
-            ? DEFAULT_INVOICE_COPY
-            : intercoPartner.getInvoicesCopySelect());
-    intercoInvoice.setCreatedByInterco(true);
-    intercoInvoice.setInterco(false);
+    InvoiceGenerator invoiceGenerator =
+        new InvoiceGenerator(
+            generatedOperationTypeSelect,
+            intercoCompany,
+            invoice.getPaymentCondition(),
+            intercoPaymentMode,
+            null,
+            intercoPartner,
+            null,
+            invoice.getCurrency(),
+            intercoPriceList,
+            null,
+            invoice.getInvoiceId(),
+            null,
+            null,
+            invoice.getTradingName(),
+            invoice.getGroupProductsOnPrintings()) {
 
-    if (isPurchase) {
-      intercoInvoice.setOriginDate(invoice.getInvoiceDate());
-      intercoInvoice.setSupplierInvoiceNb(invoice.getInvoiceId());
-    }
+          @Override
+          public Invoice generate() throws AxelorException {
 
-    intercoInvoice.setPrintingSettings(intercoCompany.getPrintingSettings());
+            Invoice intercoInvoice = super.createInvoiceHeader();
+            Set<Invoice> invoices = invoiceService.getDefaultAdvancePaymentInvoice(intercoInvoice);
+            intercoInvoice.setAdvancePaymentInvoiceSet(invoices);
+            intercoInvoice.setCreatedByInterco(true);
 
-    if (intercoInvoice.getInvoiceLineList() != null) {
-      for (InvoiceLine invoiceLine : intercoInvoice.getInvoiceLineList()) {
-        invoiceLine.setInvoice(intercoInvoice);
-        createIntercoInvoiceLine(invoiceLine, isPurchase);
+            if (InvoiceToolService.isPurchase(intercoInvoice)) {
+              intercoInvoice.setOriginDate(invoice.getInvoiceDate());
+              intercoInvoice.setSupplierInvoiceNb(intercoInvoice.getExternalReference());
+            }
+            return intercoInvoice;
+          }
+        };
+    Invoice intercoInvoice = invoiceGenerator.generate();
+
+    List<InvoiceLine> invoiceLineList = new ArrayList<>();
+    if (invoice.getInvoiceLineList() != null) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        invoiceLineList.addAll(createIntercoInvoiceLine(intercoInvoice, invoiceLine));
       }
     }
-
+    intercoInvoice.setInvoiceLineList(invoiceLineList);
     invoiceService.compute(intercoInvoice);
-    intercoInvoice.setExternalReference(invoice.getInvoiceId());
-    intercoInvoice.setCompanyBankDetails(
-        bankDetailsService.getDefaultCompanyBankDetails(
-            intercoCompany, intercoPaymentMode, intercoPartner, generatedOperationTypeSelect));
     intercoInvoice = invoiceRepository.save(intercoInvoice);
 
     // the interco invoice needs to be saved before we can attach files to it
@@ -444,8 +399,31 @@ public class IntercoServiceImpl implements IntercoService {
         .getIntercoInvoiceCreateValidated()) {
       invoiceService.validate(intercoInvoice);
     }
-    invoice.setExternalReference(intercoInvoice.getInvoiceId());
     return intercoInvoice;
+  }
+
+  protected int getIntercoInvoiceOperationTypeSelect(Invoice invoice) throws AxelorException {
+    int generatedOperationTypeSelect;
+    switch (invoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+        break;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+        break;
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(SupplychainExceptionMessage.INVOICE_MISSING_TYPE),
+            invoice);
+    }
+    return generatedOperationTypeSelect;
   }
 
   protected void copyInvoicePdfToIntercoDMS(MetaFile printedPdf, Invoice intercoInvoice)
@@ -461,51 +439,52 @@ public class IntercoServiceImpl implements IntercoService {
     }
   }
 
-  protected InvoiceLine createIntercoInvoiceLine(InvoiceLine invoiceLine, boolean isPurchase)
-      throws AxelorException {
+  protected List<InvoiceLine> createIntercoInvoiceLine(
+      Invoice intercoInvoice, InvoiceLine invoiceLine) throws AxelorException {
     AccountManagementAccountService accountManagementAccountService =
         Beans.get(AccountManagementAccountService.class);
-    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     InvoiceLineAnalyticService invoiceLineAnalyticService =
         Beans.get(InvoiceLineAnalyticService.class);
-    Invoice intercoInvoice = invoiceLine.getInvoice();
-    if (intercoInvoice.getCompany() != null) {
-      FiscalPosition fiscalPosition = intercoInvoice.getFiscalPosition();
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGenerator(
+            intercoInvoice,
+            invoiceLine.getProduct(),
+            invoiceLine.getProductName(),
+            invoiceLine.getPrice(),
+            invoiceLine.getInTaxPrice(),
+            invoiceLine.getPriceDiscounted(),
+            invoiceLine.getDescription(),
+            invoiceLine.getQty(),
+            invoiceLine.getUnit(),
+            null,
+            invoiceLine.getSequence(),
+            invoiceLine.getDiscountAmount(),
+            invoiceLine.getDiscountTypeSelect(),
+            invoiceLine.getExTaxTotal(),
+            invoiceLine.getInTaxTotal(),
+            false) {
 
-      Account account =
-          accountManagementAccountService.getProductAccount(
-              invoiceLine.getProduct(),
-              intercoInvoice.getCompany(),
-              fiscalPosition,
-              isPurchase,
-              false);
-      invoiceLine.setAccount(account);
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
 
-      TaxLine taxLine = invoiceLineService.getTaxLine(intercoInvoice, invoiceLine, isPurchase);
-      invoiceLine.setTaxLine(taxLine);
-      invoiceLine.setTaxRate(taxLine.getValue());
-      invoiceLine.setTaxCode(taxLine.getTax().getCode());
-      TaxEquiv taxEquiv =
-          accountManagementAccountService.getProductTaxEquiv(
-              invoiceLine.getProduct(), intercoInvoice.getCompany(), fiscalPosition, isPurchase);
-      invoiceLine.setTaxEquiv(taxEquiv);
-      invoiceLine.setCompanyExTaxTotal(
-          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), intercoInvoice));
-      invoiceLine.setCompanyInTaxTotal(
-          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), intercoInvoice));
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+            invoiceLine.setAnalyticDistributionTemplate(
+                accountManagementAccountService.getAnalyticDistributionTemplate(
+                    invoiceLine.getProduct(),
+                    intercoInvoice.getCompany(),
+                    InvoiceToolService.isPurchase(intercoInvoice)));
+            if (invoiceLine.getAnalyticDistributionTemplate() != null) {
+              List<AnalyticMoveLine> analyticMoveLineList =
+                  invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
+              analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+            }
+            List<InvoiceLine> invoiceLineList = new ArrayList<>();
+            invoiceLineList.add(invoiceLine);
+            return invoiceLineList;
+          }
+        };
 
-      if (invoiceLine.getAnalyticDistributionTemplate() != null) {
-        invoiceLine.setAnalyticDistributionTemplate(
-            accountManagementAccountService.getAnalyticDistributionTemplate(
-                invoiceLine.getProduct(), intercoInvoice.getCompany(), isPurchase));
-        List<AnalyticMoveLine> analyticMoveLineList =
-            invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
-        analyticMoveLineList.forEach(
-            analyticMoveLine -> analyticMoveLine.setInvoiceLine(invoiceLine));
-        invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
-      }
-    }
-    return invoiceLine;
+    return invoiceLineGenerator.creates();
   }
 
   @Override
