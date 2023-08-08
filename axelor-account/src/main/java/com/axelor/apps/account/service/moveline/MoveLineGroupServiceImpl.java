@@ -124,7 +124,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Map<String, Object>> attrsMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
-    analyticAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
 
@@ -146,7 +146,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
-      analyticAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+      analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), attrsMap);
     }
 
     return attrsMap;
@@ -165,7 +165,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     if (move != null) {
       moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
-      analyticAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+      analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), attrsMap);
       moveLineAttrsService.addValidatePeriod(move, attrsMap);
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
@@ -180,7 +180,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);
     moveLineCheckService.checkAnalyticByTemplate(moveLine);
     moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
-    analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
+    analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
 
     if (moveLine.getAnalyticDistributionTemplate() == null) {
       moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);
@@ -280,7 +280,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
     moveLineAttrsService.addPartnerReadonly(moveLine, move, attrsMap);
-    analyticAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), attrsMap);
     moveLineAttrsService.changeFocus(move, moveLine, attrsMap);
 
     return attrsMap;
@@ -458,7 +458,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   @Override
   public Map<String, Object> getAnalyticMoveLineOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
-    analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
+    analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
 
     return createAnalyticValuesMap(moveLine);
   }
