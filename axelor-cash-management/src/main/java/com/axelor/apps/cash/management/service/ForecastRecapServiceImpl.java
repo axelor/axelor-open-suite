@@ -744,7 +744,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         SaleOrder saleOrder = (SaleOrder) forecastModel;
         return saleOrder.getCompanyBankDetails();
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
-        return null;
+        PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
+        return purchaseOrder.getCompanyBankDetails();
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
         return expense.getBankDetails();
