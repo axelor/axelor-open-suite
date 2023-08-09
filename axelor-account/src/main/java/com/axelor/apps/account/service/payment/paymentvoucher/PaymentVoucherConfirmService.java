@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
@@ -40,6 +41,7 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -89,6 +91,7 @@ public class PaymentVoucherConfirmService {
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected AccountManagementAccountService accountManagementAccountService;
   protected CurrencyService currencyService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -106,7 +109,8 @@ public class PaymentVoucherConfirmService {
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       PaymentVoucherRepository paymentVoucherRepository,
       AccountManagementAccountService accountManagementAccountService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      InvoiceTermService invoiceTermService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -123,6 +127,7 @@ public class PaymentVoucherConfirmService {
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -138,6 +143,7 @@ public class PaymentVoucherConfirmService {
   @Transactional(rollbackOn = {Exception.class})
   public void confirmPaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException {
     log.debug("In confirmPaymentVoucherService ....");
+    this.checkInvoiceTermsPfpStatus(paymentVoucher);
     paymentVoucherSequenceService.setReference(paymentVoucher);
 
     PaymentMode paymentMode = paymentVoucher.getPaymentMode();
@@ -173,6 +179,21 @@ public class PaymentVoucherConfirmService {
 
     paymentVoucherSequenceService.setReceiptNo(paymentVoucher, company, journal);
     paymentVoucherRepository.save(paymentVoucher);
+  }
+
+  protected void checkInvoiceTermsPfpStatus(PaymentVoucher paymentVoucher) throws AxelorException {
+    if (paymentVoucher.getPayVoucherElementToPayList().stream()
+        .map(PayVoucherElementToPay::getInvoiceTerm)
+        .filter(it -> invoiceTermService.getPfpValidatorUserCondition(it.getInvoice()))
+        .anyMatch(
+            it ->
+                it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_VALIDATED
+                    && it.getPfpValidateStatusSelect()
+                        != InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_PFP_NOT_VALIDATED));
+    }
   }
 
   protected void invoiceSetHasPendingPayments(PaymentVoucher paymentVoucher) {

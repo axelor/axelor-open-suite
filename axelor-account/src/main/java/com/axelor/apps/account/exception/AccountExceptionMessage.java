@@ -985,6 +985,9 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_VOUCHER_NOT_GENERATE_ALL = /*$$(*/
       "Some due elements could not be loaded there was no amount left to pay." /*)*/;
 
+  public static final String PAYMENT_VOUCHER_PFP_NOT_VALIDATED = /*$$(*/
+      "Some imported invoice terms are not PFP validated." /*)*/;
+
   /** Payment schedule line service */
   public static final String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
       "Missing direct debit payment mode in the company's account configuration" /*)*/;
