@@ -93,13 +93,6 @@ public interface ContractVersionService {
         return version;
       }
     }
-    ContractVersion version = contract.getCurrentContractVersion();
-    if (DateTool.isBetween(
-        version.getActivationDateTime().toLocalDate(),
-        version.getEndDateTime().toLocalDate(),
-        date)) {
-      return version;
-    }
-    return null;
+    return contract.getCurrentContractVersion();
   }
 }
