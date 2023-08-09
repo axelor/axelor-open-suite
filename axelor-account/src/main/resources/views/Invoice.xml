@@ -700,7 +700,8 @@
         <field name="partner.factorizedCustomer" hidden="true"/>
       </panel>
       <panel name="analyticAccountingPanel" title="Analytic Accounting" showTitle="false">
-        <panel-dashlet action="action-invoice-analytic-lines" colSpan="12"/>
+        <panel-dashlet action="action-invoice-analytic-lines" colSpan="12"
+          readonly="true"/>
       </panel>
       <panel name="advancePaymentPanel" title="Advance payments"
         showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
