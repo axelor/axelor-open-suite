@@ -132,10 +132,6 @@ public class PricingComputer extends AbstractObservablePricing {
     if (context == null || pricing == null || model == null || product == null) {
       throw new IllegalStateException("This instance has not been correctly initialized");
     }
-//    if (pricing.getLinkedPricing() != null) {
-//      throw new IllegalStateException(
-//          "This method can only be called with root pricing (pricing with not previous pricing or next pricing)");
-//    }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
     notifyStarted();
     if (!applyPricing(this.pricing).isPresent()) {
@@ -146,7 +142,7 @@ public class PricingComputer extends AbstractObservablePricing {
     LOG.debug("Treating pricing childs of {}", this.pricing);
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
 
-      Optional<Pricing> optChildPricing = Optional.empty();
+      Optional<Pricing> optChildPricing;
 
       if (pricing.getLinkedPricing() == null) {
         optChildPricing = getPreviousPricing(currentPricing);
