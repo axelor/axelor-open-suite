@@ -224,6 +224,8 @@
                     </h4>
 				]]></viewer>
         </field>
+        <field name="projectTask" title="Project Task" domain="self.project = :project"
+          form-view="project-task-form" grid-view="project-task-grid" canEdit="false"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
         onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
@@ -439,6 +441,8 @@
     <field name="project" expr="eval: __parent__?.project"
       if="__config__.app.isApp('business-project')"/>
     <field name="toInvoice" expr="eval: __parent__?.project?.isInvoicingPurchases"
+      if="__config__.app.isApp('business-project')"/>
+    <field name="projectTask" expr="eval: __parent__?.projectTask"
       if="__config__.app.isApp('business-project')"/>
   </action-record>
 
