@@ -1652,6 +1652,7 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
