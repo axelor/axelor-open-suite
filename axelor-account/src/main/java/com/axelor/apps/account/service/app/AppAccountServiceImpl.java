@@ -27,10 +27,8 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppAccount;
-import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.AppInvoice;
 import com.axelor.studio.db.repo.AppAccountRepository;
-import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.axelor.studio.db.repo.AppInvoiceRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
@@ -43,8 +41,6 @@ import java.util.List;
 public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAccountService {
 
   protected AppAccountRepository appAccountRepo;
-
-  protected AppBudgetRepository appBudgetRepo;
 
   protected AppInvoiceRepository appInvoiceRepo;
 
@@ -60,13 +56,11 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
       MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsStudioService,
       AppAccountRepository appAccountRepo,
-      AppBudgetRepository appBudgetRepo,
       AppInvoiceRepository appInvoiceRepo,
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo) {
     super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appAccountRepo = appAccountRepo;
-    this.appBudgetRepo = appBudgetRepo;
     this.appInvoiceRepo = appInvoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
     this.companyRepo = companyRepo;
@@ -75,11 +69,6 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
   @Override
   public AppAccount getAppAccount() {
     return appAccountRepo.all().fetchOne();
-  }
-
-  @Override
-  public AppBudget getAppBudget() {
-    return appBudgetRepo.all().fetchOne();
   }
 
   @Override

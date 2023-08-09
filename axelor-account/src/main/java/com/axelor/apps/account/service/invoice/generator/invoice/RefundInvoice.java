@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service.invoice.generator.invoice;
 
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -51,7 +50,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
   @Override
   public Invoice generate() throws AxelorException {
 
-    LOG.debug("Creating a refund for invoice {}", invoice.getInvoiceId());
+    LOG.debug("Creating a refund for invoice {} ", invoice.getInvoiceId());
 
     Invoice refund = JPA.copy(invoice, true);
     InvoiceToolService.resetInvoiceStatusOnCopy(refund);
@@ -85,21 +84,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
-    refund.getInvoiceLineList().forEach(this::negateBudget);
-
     return refund;
-  }
-
-  protected void negateBudget(InvoiceLine invoiceLine) {
-    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
-    if (budgetDistributionList == null) {
-      return;
-    }
-    budgetDistributionList.forEach(
-        budgetDistribution ->
-            budgetDistribution.setAmount(budgetDistribution.getAmount().negate()));
-    invoiceLine.setBudgetDistributionSumAmount(
-        invoiceLine.getBudgetDistributionSumAmount().negate());
   }
 
   @Override

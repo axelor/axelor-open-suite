@@ -1,0 +1,4 @@
+"name";"metaModel.name";"language.importId";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Envoi catalogue";"Catalog";"2";"true";;"Catalogue $Catalog.name$";"<p>Bonjour,<br/> 
+Veuillez retrouver notre catalogue $Catalog.name$ en pièce jointe.</p>
+<p>Cordialement.</p>";;;;2

@@ -1,5 +1,0 @@
----
-title: "App configuration: remove YOURS API from Routing Services"
-type: fix
-description: |
-  If using the distance computation with web services in expenses, users should select the OSRM API in App base config.

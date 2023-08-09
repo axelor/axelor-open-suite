@@ -25,7 +25,6 @@
     <boolean name="interco" title="Interco"/>
     <boolean name="createdByInterco" default="false"/>
 
-    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
     <long name="generatedSaleOrderId"/>
     <extra-code>
             <![CDATA[

@@ -71,6 +71,7 @@
       <field name="gdprResponse.sendingDateT" widget="date-time"
         showIf="gdprResponse.sendingDateT"/>
       <field name="gdprResponse.responseMessage" showIf="gdprResponse.responseMessage"/>
+      <field name="gdprResponse.anonymizationResult" colSpan="12"/>
       <field name="gdprResponse.responseErasureLogList" colSpan="12"
         showIf="gdprResponse.responseErasureLogList.length > 0"/>
     </panel>

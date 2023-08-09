@@ -37,11 +37,6 @@ public interface MrpService extends Callable<Mrp> {
 
   public void runCalculation(Mrp mrp) throws AxelorException;
 
-  public void generateSelectedProposals(Mrp mrp, boolean isProposalsPerSupplier)
-      throws AxelorException;
-
-  void generateAllProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException;
-
   public void reset(Mrp mrp);
 
   public void undoManualChanges(Mrp mrp);
@@ -66,8 +61,6 @@ public interface MrpService extends Callable<Mrp> {
    * @param e the exception thrown during the computation
    */
   void saveErrorInMrp(Mrp mrp, Exception e);
-
-  void massUpdateProposalToProcess(Mrp mrp, boolean proposalToProcess);
 
   /**
    * Methods that checks if mrp is currenctly started.

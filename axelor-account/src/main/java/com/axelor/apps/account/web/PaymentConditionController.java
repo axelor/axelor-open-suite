@@ -21,6 +21,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,21 +34,20 @@ public class PaymentConditionController {
     PaymentCondition paymentCondition = request.getContext().asType(PaymentCondition.class);
     try {
       if (paymentCondition.getId() != null) {
-        long linkedObjetsCount =
+        long invoiceCount =
             Beans.get(InvoiceRepository.class)
-                    .all()
-                    .filter("self.paymentCondition.id = ?1", paymentCondition.getId())
-                    .count()
-                + Beans.get(MoveRepository.class)
-                    .all()
-                    .filter("self.paymentCondition.id = ?1", paymentCondition.getId())
-                    .count();
-        if (linkedObjetsCount > 0) {
-          response.setAlert(
-              String.format(
-                  I18n.get(
-                      "%d objects are linked to this payment condition, the modifications will be applied these objects."),
-                  linkedObjetsCount));
+                .all()
+                .filter("self.paymentCondition.id = ?1", paymentCondition.getId())
+                .count();
+
+        long moveCount =
+            Beans.get(MoveRepository.class)
+                .all()
+                .filter("self.paymentCondition.id = ?1", paymentCondition.getId())
+                .count();
+
+        if (invoiceCount > 0 || moveCount > 0) {
+          response.setAlert(I18n.get(AccountExceptionMessage.PAYMENT_CONDITION_LINKED_OBJECTS));
         }
       }
     } catch (Exception e) {

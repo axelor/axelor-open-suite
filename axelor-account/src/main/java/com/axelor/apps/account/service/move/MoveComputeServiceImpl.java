@@ -68,7 +68,8 @@ public class MoveComputeServiceImpl implements MoveComputeService {
         move.getMoveLineList().stream()
             .filter(isDebitCreditFilter)
             .map(MoveLine::getCurrencyAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .abs();
     values.put("$totalCurrency", totalCurrency);
 
     BigDecimal difference = totalDebit.subtract(totalCredit);
@@ -78,9 +79,45 @@ public class MoveComputeServiceImpl implements MoveComputeService {
   }
 
   @Override
+  public boolean checkManageCutOffDates(Move move) {
+    return CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && move.getMoveLineList().stream()
+            .anyMatch(moveLine -> moveLineService.checkManageCutOffDates(moveLine));
+  }
+
+  @Override
   public void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       move.getMoveLineList()
+          .forEach(
+              moveLine ->
+                  moveLineService.applyCutOffDates(moveLine, move, cutOffStartDate, cutOffEndDate));
+    }
+  }
+
+  @Override
+  public void autoApplyCutOffDates(Move move) {
+    move.getMoveLineList().stream()
+        .filter(
+            moveLine ->
+                moveLine.getAccount().getManageCutOffPeriod()
+                    && moveLine.getAccount().getHasAutomaticApplicationAccountingDate()
+                    && moveLine.getCutOffStartDate() == null
+                    && moveLine.getCutOffEndDate() == null)
+        .forEach(
+            moveLine -> {
+              LocalDate cutOffDate = move.getDate();
+              moveLineService.applyCutOffDates(moveLine, move, cutOffDate, cutOffDate);
+              moveLine.setIsCutOffGenerated(true);
+            });
+  }
+
+  @Override
+  public void applyCutOffDatesInEmptyLines(
+      Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      move.getMoveLineList().stream()
+          .filter(ml -> (ml.getCutOffStartDate() == null || ml.getCutOffEndDate() == null))
           .forEach(
               moveLine ->
                   moveLineService.applyCutOffDates(moveLine, move, cutOffStartDate, cutOffEndDate));

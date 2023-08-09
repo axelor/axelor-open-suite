@@ -60,7 +60,7 @@ public class StockLocationLineReservationServiceImpl
             .all()
             .filter(
                 "self.product = :product "
-                    + "AND self.stockMove.fromStockLocation = :stockLocation "
+                    + "AND self.fromStockLocation = :stockLocation "
                     + "AND self.stockMove.statusSelect = :planned "
                     + "AND (self.stockMove.availabilityRequest IS FALSE "
                     + "OR self.stockMove.availabilityRequest IS NULL) "

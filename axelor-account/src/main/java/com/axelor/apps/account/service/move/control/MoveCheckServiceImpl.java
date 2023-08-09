@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -32,12 +33,14 @@ import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +57,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected MoveLineService moveLineService;
   protected JournalCheckPartnerTypeService journalCheckPartnerTypeService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected InvoiceTermService invoiceTermService;
   protected PaymentConditionService paymentConditionService;
 
   @Inject
@@ -66,7 +70,8 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       MoveLineService moveLineService,
       JournalCheckPartnerTypeService journalCheckPartnerTypeService,
       MoveInvoiceTermService moveInvoiceTermService,
-      PaymentConditionService paymentConditionService) {
+      PaymentConditionService paymentConditionService,
+      InvoiceTermService invoiceTermService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
@@ -76,6 +81,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     this.journalCheckPartnerTypeService = journalCheckPartnerTypeService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.paymentConditionService = paymentConditionService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -208,6 +214,16 @@ public class MoveCheckServiceImpl implements MoveCheckService {
             && (move.getStatusSelect() == MoveRepository.STATUS_NEW
                 || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED))) {
       return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
+    } else if (move.getMoveLineList().stream()
+        .anyMatch(
+            ml ->
+                ml.getMove() != null
+                    && invoiceTermService.getPfpValidatorUserCondition(
+                        ml.getMove().getInvoice(), ml)
+                    && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
+                    && ml.getInvoiceTermList().stream()
+                        .anyMatch(it -> it.getPfpValidatorUser() == null))) {
+      return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
     }
 
     return null;
@@ -221,5 +237,37 @@ public class MoveCheckServiceImpl implements MoveCheckService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
     }
+  }
+
+  @Override
+  public void checkCurrencyAmountSum(Move move) throws AxelorException {
+    List<MoveLine> moveLineList = move.getMoveLineList();
+    if (CollectionUtils.isEmpty(moveLineList)
+        || move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+      return;
+    }
+    if (moveLineList.stream()
+            .map(MoveLine::getCurrencyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .compareTo(BigDecimal.ZERO)
+        != 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_CHECK_CURRENCY_AMOUNT_SUM));
+    }
+  }
+
+  @Override
+  public String getPeriodAlert(Move move) {
+    try {
+      if (move.getDate() != null && move.getCompany() != null) {
+        periodService.getActivePeriod(
+            move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+      }
+    } catch (AxelorException axelorException) {
+      return axelorException.getMessage();
+    }
+
+    return null;
   }
 }

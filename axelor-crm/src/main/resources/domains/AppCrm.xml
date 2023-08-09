@@ -18,6 +18,7 @@
     <integer name="defaultRecurringDuration" title="Default recurring duration (in months)"/>
     <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
     <boolean name="agenciesManagement" title="Agencies management"/>
+    <boolean name="crmProcessOnPartner" title="Manage status on prospect" default="false"/>
     <many-to-one name="closedWinOpportunityStatus"
       ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"/>
     <many-to-one name="closedLostOpportunityStatus"
@@ -28,6 +29,19 @@
       title="Converted lead status"/>
     <many-to-one name="lostLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
       title="Lost lead status"/>
+    <many-to-one name="closedWinPartnerStatus"
+      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed win partner status"/>
+    <many-to-one name="closedLostPartnerStatus"
+      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed lost partner status"/>
+    <many-to-one name="leadDefaultStatus" ref="com.axelor.apps.crm.db.LeadStatus"
+      title="Default lead status"/>
+    <many-to-one name="opportunityDefaultStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Default opportunity status"/>
+    <many-to-one name="partnerDefaultStatus" ref="com.axelor.apps.crm.db.PartnerStatus"
+      title="Default partner status"/>
+
+    <string name="emailDomainToIgnore" title="Email domain to ignore"
+      help="In order to make this field working a format is needed, see example: example1.com,example2.fr,example.exemple.com"/>
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>

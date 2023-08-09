@@ -32,8 +32,6 @@ public class StockProductPutRequest extends RequestStructure {
 
   @NotNull private String newLocker;
 
-  public StockProductPutRequest() {}
-
   public Long getStockLocationId() {
     return stockLocationId;
   }

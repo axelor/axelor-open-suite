@@ -11,13 +11,10 @@
     <many-to-one name="outManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
     <many-to-one name="inOperationOrder"
       ref="com.axelor.apps.production.db.OperationOrder"/>
-
-    <extra-code>
-	    <![CDATA[
-			public static final String ORIGIN_MANUF_ORDER = "com.axelor.apps.production.db.ManufOrder";
-			public static final String ORIGIN_OPERATION_ORDER = "com.axelor.apps.production.db.OperationOrder";
-	    ]]>
-    </extra-code>
+    <many-to-one name="manufOrder" title="Manufacturing order"
+      ref="com.axelor.apps.production.db.ManufOrder" copy="false"/>
+    <many-to-one name="operationOrder" title="Operation order"
+      ref="com.axelor.apps.production.db.OperationOrder" copy="false"/>
 
   </entity>
 </domain-models>

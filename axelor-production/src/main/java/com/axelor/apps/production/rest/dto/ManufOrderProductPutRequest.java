@@ -35,8 +35,6 @@ public class ManufOrderProductPutRequest extends RequestStructure {
   @Min(0)
   private BigDecimal prodProductQty;
 
-  public ManufOrderProductPutRequest() {};
-
   public long getStockMoveLineId() {
     return stockMoveLineId;
   }

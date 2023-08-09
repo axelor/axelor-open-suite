@@ -30,6 +30,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -48,7 +49,12 @@ public interface AnalyticMoveLineService {
       LocalDate date);
 
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company, boolean isPurchase) throws AxelorException;
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      boolean isPurchase)
+      throws AxelorException;
 
   public void updateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
@@ -73,5 +79,5 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine generateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
-  String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company);
+  String getAnalyticAxisDomain(Company company) throws AxelorException;
 }

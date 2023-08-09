@@ -125,7 +125,7 @@ public class FECImportServiceImpl implements FECImportService {
 
       if (CollectionUtils.isNotEmpty(reconcileList)
           && reconcileGroupService.isBalanced(reconcileList)) {
-        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
+        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_BALANCED);
       } else {
         if (CollectionUtils.isEmpty(reconcileList)) {
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
@@ -134,7 +134,7 @@ public class FECImportServiceImpl implements FECImportService {
                   .getTodayDateTime(reconcileGroup.getCompany())
                   .toLocalDateTime());
         } else {
-          reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
+          reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PARTIAL);
         }
       }
       reconcileGroupRepo.save(reconcileGroup);

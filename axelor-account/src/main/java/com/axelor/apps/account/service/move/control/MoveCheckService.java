@@ -52,4 +52,8 @@ public interface MoveCheckService {
   String getAccountingAlert(Move move);
 
   void checkManageCutOffDates(Move move) throws AxelorException;
+
+  void checkCurrencyAmountSum(Move move) throws AxelorException;
+
+  String getPeriodAlert(Move move);
 }

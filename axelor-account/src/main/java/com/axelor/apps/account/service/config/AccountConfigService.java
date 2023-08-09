@@ -34,13 +34,19 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Template;
 import com.google.inject.servlet.RequestScoped;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class AccountConfigService {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
 
@@ -342,17 +348,50 @@ public class AccountConfigService {
     return accountConfig.getSupplierAdvancePaymentAccount();
   }
 
-  public Account getCashPositionVariationAccount(AccountConfig accountConfig)
+  public Account getCashPositionVariationDebitAccount(AccountConfig accountConfig)
       throws AxelorException {
 
-    if (accountConfig.getCashPositionVariationAccount() == null) {
+    if (accountConfig.getCashPositionVariationDebitAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_27),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
-    return accountConfig.getCashPositionVariationAccount();
+    return accountConfig.getCashPositionVariationDebitAccount();
+  }
+
+  public Account getCashPositionVariationDebitAccountDontThrow(AccountConfig accountConfig) {
+    try {
+      return getCashPositionVariationDebitAccount(accountConfig);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      log.debug(e.getMessage());
+    }
+    return null;
+  }
+
+  public Account getCashPositionVariationCreditAccount(AccountConfig accountConfig)
+      throws AxelorException {
+
+    if (accountConfig.getCashPositionVariationCreditAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_51),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getCashPositionVariationCreditAccount();
+  }
+
+  public Account getCashPositionVariationCreditAccountDontThrow(AccountConfig accountConfig) {
+    try {
+      return getCashPositionVariationCreditAccount(accountConfig);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      log.debug(e.getMessage());
+    }
+    return null;
   }
 
   public Account getReimbursementAccount(AccountConfig accountConfig) throws AxelorException {

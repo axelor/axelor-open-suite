@@ -35,6 +35,7 @@
       form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
     <field name="statusSelect" width="90"/>
   </grid>
+
   <grid name="move-grid-period" orderBy="date,id" title="Account moves to validate"
     model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">
     <field name="date" width="90"/>
@@ -49,10 +50,31 @@
     <field name="statusSelect" width="90"/>
   </grid>
 
+  <grid name="move-mass-entry-grid" orderBy="-date" canArchive="false" title="Account moves"
+    model="com.axelor.apps.account.db.Move" canDelete="false">
+    <toolbar>
+      <button name="deleteMovesBtn" title="Delete" icon="fa-trash"
+        onClick="action-move-method-delete-multiple-moves"/>
+    </toolbar>
+    <hilite color="info" if="statusSelect == 1"/>
+    <hilite color="danger" if="statusSelect == 4"/>
+    <field name="reference" width="200"/>
+    <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
+    <field name="functionalOriginSelect"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" width="140"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+      form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
+    <field name="massEntryStatusSelect" title="Status"/>
+    <field name="createdOn" title="Created on"/>
+    <field name="createdBy" title="Created by"/>
+  </grid>
+
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-move-method-onnew" onLoad="action-account-move-method-onLoad"
-    onSave="action-account-move-group-onsave" readonlyIf="$simulatedPeriodClosed">
+    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
+    onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>
@@ -64,12 +86,12 @@
         onClick="action-move-method-delete-move"
         showIf="id != null &amp;&amp; !archived &amp;&amp; statusSelect != 3"/>
     </toolbar>
-    <panel name="mainPanel" colSpan="12">
+    <panel name="mainPanel" colSpan="12" readonlyIf="$simulatedPeriodClosed">
       <panel name="moveDetailsPanel" colSpan="9">
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            onChange="action-move-method-company-onchange" form-view="company-form"
+            readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
+            onChange="action-move-group-company-onchange" form-view="company-form"
             grid-view="company-grid" colSpan="2"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
@@ -96,9 +118,7 @@
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
             <field name="date"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-              onChange="action-account-move-method-date-onchange" colSpan="2"/>
-
-
+              onChange="action-move-group-date-onchange" colSpan="2"/>
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
           </panel>
           <field name="partner" readonlyIf="$validatePeriod || moveLineList.length &gt; 0"
@@ -107,8 +127,8 @@
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
           <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
-            form-view="fiscal-position-form" grid-view="fiscal-position-grid"
-            onChange="action-move-method-fiscal-position-onchange"/>
+            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
+            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
@@ -123,7 +143,7 @@
             onSelect="action-move-method-partner-bank-details-onselect"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
-            readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3" colSpan="4"
+            readonlyIf="$validatePeriod || statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
             form-view="payment-condition-form" grid-view="payment-condition-grid"/>
           <field name="dueDate" title="Due date"
@@ -138,16 +158,17 @@
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
+            requiredIf="company.accountConfig.isDescriptionRequired"
             onChange="action-move-group-description-onchange" colSpan="6"/>
         </panel>
       </panel>
       <panel name="otherDetailsPanel" colSpan="3">
         <panel name="tagsPanel" colSpan="12">
           <field name="statusSelect" readonly="true" widget="SingleSelect" showTitle="false"
-            colSpan="4"/>
+            colSpan="6"/>
           <field name="technicalOriginSelect" readonly="true" widget="SingleSelect"
-            showTitle="false" colSpan="4"/>
-          <field name="$functionalOriginTag" showTitle="false" readonly="true" colSpan="4">
+            showTitle="false" colSpan="6"/>
+          <field name="$functionalOriginTag" showTitle="false" readonly="true" colSpan="6">
             <viewer depends="functionalOriginSelect">
                         <![CDATA[
                             <span class="text-left">
@@ -164,6 +185,20 @@
                         ]]>
             </viewer>
           </field>
+
+          <field name="$pfpViewerTags" showTitle="false" readonly="true" colSpan="6"
+            if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
+            <viewer>
+              <![CDATA[
+	                        <h4 class="text-left">
+                                    <span class="label label-warning" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 1" x-translate>Awaiting PFP</span>
+                                    <span class="label label-success" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3)  && record.pfpValidateStatusSelect == 2" x-translate>PFP validated</span>
+                                    <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 3" x-translate>Litigation</span>
+	                        </h4>
+	                    ]]>
+            </viewer>
+          </field>
+
           <field name="reference" showTitle="false" hideIf="reference == null"
             css="label-bold bold" colSpan="5"/>
           <field name="$adjustingMoveTag" showTitle="false" readonly="true" colSpan="8">
@@ -185,19 +220,39 @@
             showIf="(statusSelect == 1 || statusSelect == 5) &amp;&amp; journal.allowAccountingDaybook &amp;&amp; company.accountConfig.accountingDaybook"
             colSpan="12" onClick="action-account-move-group-accounting-click"/>
           <button name="accountingBtn" title="Accounting.toAccount" css="btn-success"
-            showIf="statusSelect == 2 || ((statusSelect == 1 || statusSelect == 5) &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook))"
+            showIf="statusSelect == 2 || ((statusSelect == 1 || statusSelect == 5) &amp;&amp; journal &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook))"
             colSpan="12" onClick="action-account-move-group-accounting-click"/>
         </panel>
+        <panel name="pfpPanel"
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()" showIf="id"
+          colSpan="12">
+          <button name="passedForPaymentValidationBtn" css="btn-success" hidden="true"
+            colSpan="12" title="Passed for payment validation"
+            onClick="action-move-group-pfp-validate"/>
+          <button name="refusalToPayBtn" css="btn-danger" hidden="true"
+            title="Refusal to pay" colSpan="12" onClick="save,action-move-view-refusal-to-pay"/>
+          <field name="pfpValidatorUser" hidden="true"
+            readonlyIf="pfpValidateStatusSelect != 1" colSpan="12"
+            onChange="action-move-method-set-pfp-visibility"
+            onSelect="action-move-method-domain-pfp-validator-user-on-select" canEdit="false"/>
+          <field name="reasonOfRefusalToPayStr" readonly="true"
+            showIf="reasonOfRefusalToPay &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3"
+            colSpan="12" css="red">
+            <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
+          </field>
+          <field name="pfpValidateStatusSelect" hidden="true"/>
+          <field name="reasonOfRefusalToPay" hidden="true"/>
+        </panel>
         <panel name="cutOffPanel" colSpan="12" title="Cut off wizard"
-          hideIf="$periodClosed || cutOffOriginMove!= null || cutOffMoveGenerated"
+          hideIf="$periodClosed || [1,2,6].includes(functionalOriginSelect)"
           if="__config__.app.getApp('account').manageCutOffPeriod" canCollapse="true"
           collapseIf="true">
           <field name="$cutOffStartDate" type="date" title="From date"
-            validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate" colSpan="12"
-            readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
+            validIf="[1,2,6].includes(functionalOriginSelect) || !$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"
+            colSpan="12" readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
           <field name="$cutOffEndDate" type="date" title="To date"
-            validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate" colSpan="12"
-            readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
+            validIf="[1,2,6].includes(functionalOriginSelect) || !$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"
+            colSpan="12" readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
             onClick="action-move-method-apply-cut-off-dates"
             hideIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"
@@ -205,7 +260,8 @@
         </panel>
       </panel>
     </panel>
-    <panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab" hideIf="!journal || $mainPanelTabHidden"
+      readonlyIf="$simulatedPeriodClosed">
       <panel title="Move Lines" readonlyIf="$validatePeriod">
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
@@ -272,8 +328,8 @@
           itemSpan="4" stacked="true"
           hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves">
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
-            form-view="invoice-form" grid-view="invoice-grid"/>
-          <field name="paymentVoucher"
+            readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
+          <field name="paymentVoucher" readonlyIf="$validatePeriod"
             hideIf="!functionOriginSelect || functionalOriginSelect != 5 || !paymentVoucher"
             canNew="false" domain="self.company = :company" form-view="payment-voucher-form"
             grid-view="payment-voucher-grid"/>
@@ -327,6 +383,8 @@
           <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
+          <field name="$mainPanelTabHidden" hidden="true"/>
+          <field name="company.accountConfig.isDescriptionRequired" hidden="true"/>
         </panel>
       </panel>
     </panel-tabs>
@@ -336,180 +394,80 @@
     </panel-mail>
   </form>
 
-  <form name="move-simplified-form" title="Account move"
-    model="com.axelor.apps.account.db.Move" width="large" onLoad="action-account-move-method-onLoad"
-    onSave="action-account-move-group-onsave" onNew="action-account-move-method-onnew"
-    canDelete="false" canArchive="false">
+  <form name="move-mass-entry-form" title="Mass entry" canArchive="false"
+    model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
+    onNew="action-account-move-method-onnew" onLoad="action-account-move-method-onLoad"
+    onSave="action-account-move-group-onsave" readonlyIf="massEntryStatusSelect == 2"
+    canCopy="massEntryStatusSelect != 2">
     <toolbar>
-      <button name="printBtn" title="Print Move" icon="fa-print"
-        onClick="save,action-account-move-method-print-move"/>
-      <button name="reverseBtn" title="Reverse"
-        showIf="id != null &amp;&amp; statusSelect != 5" icon="fa-exchange"
-        onClick="save,action-move-view-open-generate-reverse-wizard"/>
-      <button name="deleteMoveBtn" title="delete" showIf="id != null" icon="fa-trash"
-        onClick="action-move-method-delete-move"/>
+      <button name="controlMassEntryMoves" title="Control moves consistency"
+        onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"
+        css="btn-primary"/>
+      <button name="validateMassEntryMoves" title="Validate" hidden="true"
+        onClick="save,action-move-method-validate-mass-entry-moves" colSpan="12" css="btn-success"/>
     </toolbar>
+
     <panel name="mainPanel" colSpan="12">
-      <panel name="moveDetailsPanel" colSpan="9">
-        <field name="reference" colSpan="12"/>
-        <panel name="moveContentPanel"
-          readonlyIf="moveLineList.length > 0 &amp;&amp; statusSelect == 3" colSpan="12">
-          <field name="company" widget="SuggestBox" canEdit="false"
+      <panel name="moveDetailsPanel" colSpan="12">
+        <field name="reference" colSpan="8" showIf="id != null"/>
+        <field name="massEntryStatusSelect" showTitle="false" readonly="true" colSpan="4">
+          <viewer depends="massEntryStatusSelect">
+            <![CDATA[
+                      <h4 class="text-right">
+	                      <span class="label label-success" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 1" x-translate>Ongoing</span>
+	                      <span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 2" x-translate>Closed</span>
+                      </h4>
+                    ]]>
+          </viewer>
+        </field>
+        <panel name="moveContentPanel" colSpan="12">
+          <field name="company" canEdit="false" widget="SuggestBox"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-method-company-onchange" form-view="company-form"
-            grid-view="company-grid"/>
-          <field name="journal" colSpan="3" canNew="false" canEdit="false"
-            onChange="action-account-move-method-journal-onchange"
-            domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
-            grid-view="journal-grid"/>
-          <field name="functionalOriginSelect"
-            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
-            colSpan="3"
-            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
-          <field name="date" colSpan="3" onChange="action-account-move-method-date-onchange"/>
-          <field hidden="true" name="period" canView="false" canEdit="false"
-            form-view="period-form" grid-view="period-grid"/>
-          <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            name="tradingName" canNew="false" onSelect="action-move-method-trading-name-onselect"
-            form-view="trading-name-form" grid-view="trading-name-grid"/>
-          <field name="paymentMode" colSpan="3"
-            onSelect="action-move-method-payment-mode-onselect"/>
-          <field name="journal.journalType" hidden="true"/>
-          <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
-          <field name="journal.authorizeSimulatedMove" hidden="true"/>
+            grid-view="company-grid" colSpan="3"/>
+          <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+            onChange="action-account-move-method-journal-onchange" colSpan="3"/>
+          <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
+            name="companyBankDetails" colSpan="3" canEdit="false"
+            onSelect="action-move-mass-entry-attrs-set-company-bank-details-domain"
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+            hideIf="(journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect) || (!journal.authorizedFunctionalOriginSelect &amp;&amp; !functionalOriginSelect) || !journal || !journal.authorizedFunctionalOriginSelect.split(',').length"
+            onChange="action-move-mass-entry-method-get-mass-entry-attribute"/>
+          <field name="currency"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
+            colSpan="3" onChange="action-move-method-currency-onchange" required="true"
+            hidden="true"/>
+          <field name="createdOn" title="Created on" readonly="true" colSpan="3"
+            if="createdOn != null"/>
+          <field name="createdBy" title="Created by" readonly="true" colSpan="3"
+            if="createdBy != null"/>
+          <field name="updatedBy" title="Updated by" readonly="true" colSpan="3"
+            if="updatedBy != null"/>
+          <field name="massEntryManageCutOff" colSpan="3" title="Manage Cut off period"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            widget="boolean-switch"
+            onChange="action-move-mass-entry-method-get-mass-entry-attribute"
+            if="__config__.app.getApp('account').manageCutOffPeriod"/>
         </panel>
-        <field name="description" colSpan="6"
-          onChange="action-move-group-description-onchange"/>
-        <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
-          onChange="action-move-group-origin-onchange"/>
-        <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
-        <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
-        <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
-        <field name="companyCurrencyCode" hidden="true"/>
       </panel>
-      <panel name="otherDetailsPanel" readonlyIf="statusSelect == 3" colSpan="3">
-        <field name="$viewerTags" showTitle="false">
-          <viewer><![CDATA[
 
-	                          <h4 class="text-right">
-	                              <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>New</span>
-	                              <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Daybook</span>
-	                              <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Validated</span>
-	                              <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 4" x-translate>Canceled</span>
-	                              <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 5" x-translate>Simulated</span>
-
-	                              <span class="label label-default" style="background-color: #337AB7; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.adjustingMove" x-translate>Adjusting Move</span>
-	                          </h4>
-
-	                  ]]></viewer>
-          <editor>
-            <field name="statusSelect"/>
-            <field name="adjustingMove" readonly="true" showIf="adjustingMove"/>
-          </editor>
-        </field>
-        <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
-          <viewer depends="technicalOriginSelect"><![CDATA[
-
-	                    <h4 class="text-right">
-	                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Entry</span>
-	                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Automatic</span>
-	                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 3" x-translate>Template</span>
-	                     <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 4" x-translate>Import</span>
-	                    </h4>
-
-	                ]]></viewer>
-        </field>
-        <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <field name="journal.allowAccountingDaybook" hidden="true"/>
-        <field name="company.accountConfig" hidden="true"/>
-        <field name="company.accountConfig.accountingDaybook" hidden="true"/>
-        <panel name="actionPanel" readonlyIf="$validatePeriod" itemSpan="12" colSpan="12">
-          <button name="accountingBtn" title="Accounting.toAccount"
-            showIf="statusSelect == 2 || ((statusSelect == 1 || statusSelect == 5) &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook))"
-            colSpan="12" onClick="action-account-move-group-accounting-click"/>
-          <button name="accountingBtn" title="DayBook.button"
-            showIf="(statusSelect == 1 || statusSelect == 5) &amp;&amp; journal.allowAccountingDaybook &amp;&amp; company.accountConfig.accountingDaybook"
-            colSpan="12" onClick="action-account-move-group-accounting-click"/>
-          <button name="simulateBtn" title="Simulate"
-            onClick="action-move-account-group-simulate" colSpan="12"
-            showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
-          <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
-            onClick="action-move-method-generate-tax-lines" colSpan="12"
-            showIf="statusSelect == 1 || statusSelect == 5"/>
-          <button
-            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
-            name="counterpartGenerateBtn" title="Generate counterpart"
-            onClick="action-move-method-generate-counterpart" colSpan="12"/>
-        </panel>
-        <field name="$validatePeriod" hidden="true" type="boolean"/>
+      <panel name="hiddenPanel" hidden="true">
+        <field name="$journalTechnicalTypeSelect" type="integer"/>
+        <field name="journal.authorizedFunctionalOriginSelect"/>
       </panel>
     </panel>
-    <panel>
-      <panel-related name="moveLineListPanel"
-        showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
-        colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
-        grid-view="move-line-move-simplifiee-grid" editable="true"
-        onChange="action-account-move-method-move-line-list-onchange" canNew="true" canRemove="true"/>
-      <panel-related name="moveLineListPanel"
-        showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period"
-        colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
-        grid-view="move-line-move-simplifiee-grid" editable="false"
-        onChange="action-account-move-method-move-line-list-onchange" canNew="false"
-        canRemove="false"/>
-      <field name="$reconcileTags" showTitle="false" hidden="true" readonly="true"
-        colSpan="12">
-        <viewer depends="moveLineList"><![CDATA[
 
-	                          <h4 class="text-left">
-					 		<span class="label label-info" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;"  x-translate>It is not possible to edit the amount of a reconciled and/or lettered accounting move line.</span>
-	                          </h4>
+    <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
+      editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
+      grid-view="move-line-mass-entry-move-grid"
+      onChange="action-account-move-method-move-line-list-onchange" hideIf="!journal"/>
 
-	                  ]]></viewer>
-      </field>
-      <field name="$totalLines" title="Total lines" readonly="true" colSpan="1" type="integer">
-        <viewer><![CDATA[
-
-					<h3>{{$fmt('$totalLines')}}</h3>
-
-			]]></viewer>
-      </field>
-      <field name="$totalCurrency" title="Total Currency" readonly="true"
-        showIf="currency.id != companyCurrency.id" colSpan="3" type="integer">
-        <viewer><![CDATA[
-
-	          <h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
-
-	      ]]></viewer>
-      </field>
-      <field name="$totalDebit" title="Total debit" readonly="true" colSpan="3" type="decimal">
-        <viewer><![CDATA[
-
-					<h3>{{$fmt('$totalDebit')+' '+$fmt('companyCurrencyCode')}}</h3>
-
-			]]></viewer>
-      </field>
-      <field name="$totalCredit" title="Total credit" readonly="true" colSpan="3"
-        type="decimal">
-        <viewer><![CDATA[
-
-					<h3>{{$fmt('$totalCredit')+' '+$fmt('companyCurrencyCode')}}</h3>
-
-			]]></viewer>
-      </field>
-      <field name="$difference" title="Difference" readonly="true" colSpan="2" type="decimal">
-        <viewer><![CDATA[
-
-					<h3>
-						<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('companyCurrencyCode')}}</span>
-						<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('companyCurrencyCode')}}</span>
-					</h3>
-
-			]]></viewer>
-      </field>
+    <panel name="errorPanel" colSpan="12" hideIf="!journal">
+      <field name="massEntryErrors" readonly="true" widget="Text" colSpan="12"/>
     </panel>
-    <panel-mail name="mailPanel">
-      <mail-messages limit="4"/>
-      <mail-followers/>
-    </panel-mail>
   </form>
 
   <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move"
@@ -553,6 +511,20 @@
     </panel>
   </form>
 
+  <form name="move-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Move"
+    title="Move.refuseToPayWizard">
+    <panel name="mainPanel">
+      <field name="reasonOfRefusalToPay"
+        domain="self.applicationType = 'com.axelor.apps.account.db.Invoice'" colOffset="4"
+        colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
+        onChange="action-attrs-move-other-reason"/>
+      <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
+      <button name="cancelConfirmBtn" title="Move.refuseToPayBtn"
+        onClick="action-move-refusal-to-pay-cancel-reason-check,action-move-method-refusal-to-pay"
+        colOffset="4" colSpan="4"/>
+    </panel>
+  </form>
+
   <!-- ACTION GROUP WITH SAVE -->
 
   <action-group name="action-account-move-group-onsave">
@@ -563,13 +535,20 @@
 
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-move-method-check-accounting"/>
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
 
   <action-group name="action-move-account-group-simulate">
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-set-status-simulate"/>
+  </action-group>
+
+  <action-group name="action-move-group-pfp-validate">
+    <action name="save"/>
+    <action name="action-method-account-move-validate-pfp"/>
   </action-group>
 
   <!-- ACTION GROUP WITH ALERT -->
@@ -588,6 +567,26 @@
     <action name="action-move-method-check-origin"/>
     <action name="action-move-method-check-duplicate-origin-move"/>
     <action name="action-account-move-method-origin-onchange"/>
+  </action-group>
+
+  <action-group name="action-move-group-date-onchange">
+    <action name="action-account-move-method-date-onchange"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-account-group-onnew">
+    <action name="action-account-move-method-onnew"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-account-group-onLoad">
+    <action name="action-account-move-method-onLoad"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-move-group-company-onchange">
+    <action name="action-move-method-company-onchange"/>
+    <action name="action-move-method-check-period"/>
   </action-group>
 
   <!-- ACTION METHOD ON CLICK -->
@@ -644,10 +643,6 @@
 
   <action-method name="action-move-method-apply-cut-off-dates">
     <call class="com.axelor.apps.account.web.MoveController" method="onClickApplyCutOffDates"/>
-  </action-method>
-
-  <action-method name="action-move-method-journal-on-change">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
   </action-method>
 
   <action-method name="action-account-move-method-journal-onchange">
@@ -723,10 +718,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onChangePaymentMode"/>
   </action-method>
 
-  <action-method name="action-move-method-currency-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeCurrency"/>
-  </action-method>
-
   <action-method name="action-move-method-fiscal-position-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeFiscalPosition"/>
   </action-method>
@@ -763,6 +754,50 @@
     <call class="com.axelor.apps.account.web.MoveController" method="checkAccounting"/>
   </action-method>
 
+  <action-method name="action-move-method-set-pfp-visibility">
+    <call class="com.axelor.apps.account.web.MoveController" method="setPfpVisibility"/>
+  </action-method>
+
+  <action-method name="action-move-mass-entry-method-get-mass-entry-attribute">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="getMassEntryAttributeValues"/>
+  </action-method>
+
+  <action-method name="action-move-method-control-mass-entry-moves">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="controlMassEntryMoves"/>
+  </action-method>
+
+  <action-method name="action-move-method-validate-mass-entry-moves">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="validateMassEntryMoves"/>
+  </action-method>
+
+  <action-method name="action-move-method-currency-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeCurrency"/>
+  </action-method>
+
+  <action-method name="action-move-method-apply-cut-off-dates-in-empty-lines">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="applyCutOffDatesInEmptyLines"/>
+  </action-method>
+
+  <action-method name="action-method-account-move-validate-pfp">
+    <call class="com.axelor.apps.account.web.MoveController" method="validatePfp"/>
+  </action-method>
+
+  <action-method name="action-move-method-domain-pfp-validator-user-on-select">
+    <call class="com.axelor.apps.account.web.MoveController" method="setPfpValidatorUserDomain"/>
+  </action-method>
+
+  <action-method name="action-move-method-refusal-to-pay">
+    <call class="com.axelor.apps.account.web.MoveController" method="refusalToPay"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-period">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
+  </action-method>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-move-view-open-generate-reverse-wizard"
@@ -789,7 +824,6 @@
     <context name="_moveDate" expr="eval: __date__"/>
   </action-view>
 
-
   <action-view name="action-move-view-related-cut-off-moves"
     title="Related cut off moves" model="com.axelor.apps.account.db.Move">
     <view type="grid" name="move-grid"/>
@@ -797,10 +831,61 @@
     <domain>self.cutOffOriginMove = :id</domain>
   </action-view>
 
+  <action-view name="action-move-view-refusal-to-pay" title="Cancellation"
+    model="com.axelor.apps.account.db.Move">
+    <view type="form" name="move-refusal-to-pay-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: __this__.id"/>
+    <context name="_xApplicationType" expr="eval: _model"/>
+  </action-view>
+
+  <!-- ACTION ATTRS -->
+
+  <action-attrs name="action-move-mass-entry-attrs-set-company-bank-details-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;"
+      for="companyBankDetails" if="!company?.bankDetailsList?.isEmpty()"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true AND self.journal = :journal&quot;"
+      for="companyBankDetails"
+      if="!company?.bankDetailsList?.isEmpty() &amp;&amp; journal?.journalType?.technicalTypeSelect == 4"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;"
+      for="companyBankDetails" if="company?.bankDetailsList?.isEmpty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-move-other-reason">
+    <attribute for="reasonOfRefusalToPayStr" name="hidden"
+      expr="reasonOfRefusalToPay?.freeText == false"/>
+  </action-attrs>
+
+  <!-- ACTION CONDITION -->
+
+  <action-condition name="action-move-refusal-to-pay-cancel-reason-check">
+    <check error="A cancel reason must be selected" field="reasonOfRefusalToPay"
+      if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
+  </action-condition>
+
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="pfpValidateStatusSelect" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="pfpValidatorUser" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="company.accountConfig" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="reasonOfRefusalToPay" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <filter title="Current Period Entries">
       <domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;=
         self.period.toDate)</domain>
@@ -837,5 +922,4 @@
       <domain>self.statusSelect = 5</domain>
     </filter>
   </search-filters>
-
 </object-views>

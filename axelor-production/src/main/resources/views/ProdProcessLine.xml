@@ -42,11 +42,13 @@
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
       <field name="stockLocation"/>
       <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
-        <field name="minCapacityPerCycle" colSpan="3"/>
-        <field name="maxCapacityPerCycle" colSpan="3"/>
-        <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+        <field name="minCapacityPerCycle" colSpan="4"/>
+        <field name="maxCapacityPerCycle" colSpan="4"/>
+        <field name="timingOfImplementation" colSpan="4" widget="duration" x-big="true"
           x-seconds="true"/>
-        <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
+        <field name="durationPerCycle" colSpan="6" widget="duration" x-big="true"
+          x-seconds="true"/>
+        <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
           x-seconds="true"/>
       </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
@@ -115,14 +117,16 @@
       expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
   </action-attrs>
 
-  <action-attrs name="action-prod-process-line-attrs-set-timing-of-implementation">
-    <attribute name="value" for="timingOfImplementation"
-      expr="eval: workCenter?.timingOfImplementation"/>
+  <action-attrs name="action-prod-process-line-attrs-update-from-workcenter">
+    <attribute name="value" for="durationPerCycle"
+      expr="eval: workCenter?.durationPerCycle"/>
+    <attribute name="value" for="humanDuration"
+      expr="eval: workCenter?.hrDurationPerCycle"/>
   </action-attrs>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">
     <action name="action-prod-process-line-method-duration"/>
-    <action name="action-prod-process-line-attrs-set-timing-of-implementation"/>
+    <action name="action-prod-process-line-attrs-update-from-workcenter"/>
     <action name="action-prod-process-line-method-capacity-settings"/>
   </action-group>
 
@@ -137,13 +141,6 @@
     <call class="com.axelor.apps.production.web.ProdProcessLineController"
       method="fillWorkCenter"/>
   </action-method>
-
-  <action-method name="action-prod-process-line-method-duration">
-    <call class="com.axelor.apps.production.web.ProdProcessLineController"
-      method="updateDuration"/>
-  </action-method>
-
-
 
   <action-method name="action-prod-process-line-method-capacity-settings">
     <call class="com.axelor.apps.production.web.ProdProcessLineController"

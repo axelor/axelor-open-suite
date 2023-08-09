@@ -90,4 +90,10 @@ public interface MoveLineGroupService {
   Map<String, Object> getPartnerOnChangeValuesMap(MoveLine moveLine);
 
   Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(MoveLine moveLine);
+
+  Map<String, Object> getAnalyticMoveLineOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException;
+
+  Map<String, Map<String, Object>> getAnalyticMoveLineOnChangeAttrsMap(MoveLine moveLine, Move move)
+      throws AxelorException;
 }
