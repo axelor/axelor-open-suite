@@ -412,8 +412,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     boolean isSameResultResult =
         Objects.equals(column.getResultSelect(), line.getResultSelect())
             && Objects.equals(column.getNegateValue(), line.getNegateValue());
+    boolean isSameSignum = column.getNegateValue() == line.getNegateValue();
 
-    if (isOnlyBasicResultSelect && !isSameResultResult) {
+    if (isOnlyBasicResultSelect && (!isSameResultResult || !isSameSignum)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT));
