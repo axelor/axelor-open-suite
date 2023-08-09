@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProductReservation">
+    <string name="productReservationType" selection="stock.product.reservation.type.select"
+      required="true" title="Type of reservation"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" required="true"
+      title="Product"/>
+    <decimal name="qty" required="true" title="Quantity"/>
+    <string name="requestedReservedType" selection="stock.requested.reservation.type.select"
+      title="Type of reservation"/><!-- TODO traduire -->
+    <datetime name="priorityReservationDateTime" title="Reservation priority date"/><!-- TODO traduire -->
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock Location"/>
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
+      title="Tracking number"/>
+    <many-to-one name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sale order lines"/>
+    <string name="description" title="Description"/>
+    <many-to-one name="originManufOrder" ref="com.axelor.apps.production.db.ManufOrder"
+      title="Manuf order"/>
+    <integer name="productReservationStatus"
+      selection="stock.product.reservation.status.select" readonly="true" required="true"
+      title="Status"/>
+
+    <boolean name="isAllocation">
+      <![CDATA[
+
+      if ((""+ProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION)
+              .equals(this.productReservationType)) {
+        return true;
+      }
+      return false;
+
+  ]]></boolean>
+
+    <boolean name="isReservation">
+      <![CDATA[
+
+      if ((""+ProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION)
+              .equals(this.productReservationType)) {
+        return true;
+      }
+      return false;
+
+  ]]></boolean>
+
+    <finder-method name="findByProductReservationTypeAndStockLocationAndProduct"
+      using="productReservationType,stockLocation,product" all="true" cacheable="true"/>
+
+    <finder-method
+      name="findByProductReservationTypeAndStockLocationAndTrackingNumber"
+      using="productReservationType,stockLocation,trackingNumber" all="true" cacheable="true"/>
+
+    <extra-imports>
+      <![CDATA[
+      import java.util.Optional;
+      import java.util.StringJoiner;
+      import org.apache.commons.lang3.StringUtils;
+      import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+      import com.axelor.i18n.I18n;
+      import com.axelor.apps.production.db.repo.ProductReservationRepository
+
+      ]]>
+    </extra-imports>
+
+    <extra-code><![CDATA[
+
+	   	// RESERVATION TYPE SELECT
+		public static final int TYPE_PRODUCT_RESERVATION_RESERVATION = 1;
+		public static final int TYPE_PRODUCT_RESERVATION_ALLOCATION = 2;
+
+        // REQUESTED RESERVATION TYPE SELECT
+        public static final int TYPE_REQUESTED_RESERVATION_ON_PURCHASE = 1;
+        public static final int TYPE_REQUESTED_RESERVATION_ON_MANUF_ORDER = 2;
+
+        // PRODUCT RESERVATION STATUS
+        public static final int PRODUCT_RESERVATION_STATUS_IN_PROGRESS = 1;
+        public static final int PRODUCT_RESERVATION_STATUS_REALIZED = 2;
+        public static final int PRODUCT_RESERVATION_STATUS_CANCELED = 3;
+
+	]]></extra-code>
+
+
+  </entity>
+</domain-models>

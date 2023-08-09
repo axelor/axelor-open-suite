@@ -406,6 +406,15 @@
     parent="manufacturing-conf-configurators" order="500" title="Configurator production process"
     action="manufacturing.conf.configurator.prod.process"/>
 
+  <menuitem name="stock-root-reservation-allocation" parent="stock-root"
+    title="Product reservation" action="stock.root.product.reservation" order="450"/>
+
+  <action-view name="stock.root.product.reservation" title="Product reservation"
+    model="com.axelor.apps.production.db.ProductReservation">
+    <view type="grid" name="product-reservation-grid"/>
+    <view type="form" name="product-reservation-form"/>
+  </action-view>
+
   <action-view name="manufacturing.conf.configurator.prod.process"
     title="Configurator production process"
     model="com.axelor.apps.production.db.ConfiguratorProdProcess">
