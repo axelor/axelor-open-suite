@@ -1577,7 +1577,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .orElse(null);
 
       if (lastInvoiceTerm != null
-          && moveLine.getAmountRemaining().compareTo(lastInvoiceTerm.getAmountRemaining()) >= 0
+          && moveLine.getAmountRemaining().abs().compareTo(lastInvoiceTerm.getAmountRemaining())
+              >= 0
           && lastInvoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
         return true;
       }
