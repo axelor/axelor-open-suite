@@ -25,37 +25,24 @@
       readonly="true" required="true" title="Status"/>
   </grid>
 
-  <form name="product-reservation-form" title="Reservations / allocations"
-    model="com.axelor.apps.production.db.ProductReservation" width="large"
-    onSave="action-method-product-reservation-update-status">
+  <form name="product-reservation-form" title="Reservations / allocations" model="com.axelor.apps.production.db.ProductReservation" width="large" onSave="save,action-method-product-reservation-update-status">
     <panel name="mainPanel">
-      <panel name="general" showFrame="true" colSpan="12">
-        <field name="productReservationType" title="Request type" required="true"
-          selection="stock.product.reservation.type.select" colSpan="6"/>
+      <panel name="general" colSpan="12">
+        <field name="productReservationType" title="Request type" colSpan="6" required="true" selection="stock.product.reservation.type.select"/>
         <field name="productReservationStatus" title="Status" colSpan="6"/>
-        <field name="product" title="Product"
-          domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'" required="true"
-          ref="com.axelor.apps.base.db.Product" colSpan="6"/>
-        <field name="qty" title="Quantity" required="true" colSpan="6"/>
+        <field name="product" title="Product" colSpan="6" domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'" required="true" ref="com.axelor.apps.base.db.Product"/>
+        <field name="qty" title="Quantity" colSpan="6" required="true"/>
         <field name="description" title="Description" colSpan="12" widget="html" large="true"/>
       </panel>
-      <panel name="reservation" showIf="productReservationType == 1" colSpan="12"
-        title="Reservation">
-        <field name="priorityReservationDateTime" title="Reservation priority date"
-          widget="date-time" colSpan="6"/>
-        <field name="requestedReservedType" title="Type of reservation"
-          showIf="productReservationType == 1" requiredIf="productReservationType == 1"
-          selection="stock.requested.reservation.type.select" colSpan="6"/>
-        <field name="originSaleOrderLine" title="Sale order lines"
-          requiredIf="originManufOrder == null" colSpan="6"/>
-        <field name="originManufOrder" title="Manuf order"
-          requiredIf="originSaleOrderLine == null" colSpan="6"/>
+      <panel name="reservation" colSpan="12">
+        <field name="priorityReservationDateTime" title="Reservation priority date" colSpan="6" widget="date-time" showIf="productReservationType == 1"/>
+        <field name="requestedReservedType" title="Type of reservation" showIf="productReservationType == 1" colSpan="6" requiredIf="productReservationType == 1" selection="stock.requested.reservation.type.select"/>
+        <field name="originSaleOrderLine" title="Sale order lines" colSpan="6" showIf="productReservationType == 1" requiredIf="originManufOrder == null &amp;&amp; productReservationType == 1"/>
+        <field name="originManufOrder" title="Manuf order" colSpan="6" showIf="productReservationType == 1" requiredIf="originSaleOrderLine == null &amp;&amp; productReservationType == 1"/>
       </panel>
-      <panel name="allocation" showIf="productReservationType == 2" colSpan="12"
-        title="Allocation">
-        <field name="stockLocation" title="Stock Location" colSpan="6"/>
-        <field name="trackingNumber" title="Tracking number"
-          showIf="product.trackingNumberConfiguration != null" colSpan="6"/>
+      <panel name="allocation" colSpan="12">
+        <field name="stockLocation" title="Stock Location" colSpan="6" showIf="productReservationType == 2" requiredIf="productReservationType == 2"/>
+        <field name="trackingNumber" title="Tracking number" showIf="productReservationType == 2 &amp;&amp; product.trackingNumberConfiguration != null" requiredIf="productReservationType == 2 &amp;&amp; product.trackingNumberConfiguration != null" colSpan="6"/>
         <field name="product.trackingNumberConfiguration" showIf="false"/>
       </panel>
     </panel>
