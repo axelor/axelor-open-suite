@@ -18,11 +18,9 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.lowagie.text.DocumentException;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.List;
 
 public interface ExpenseLineService {
@@ -37,6 +35,5 @@ public interface ExpenseLineService {
    */
   void completeExpenseLines(Expense expense);
 
-  void convertProofFilesInPdf(Expense expense)
-      throws IOException, DocumentException, GeneralSecurityException;
+  void convertProofFilesInPdf(Expense expense) throws AxelorException;
 }

@@ -1,8 +1,13 @@
 package com.axelor.apps.base.service.pdf;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
+import com.google.inject.persist.Transactional;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.geom.Rectangle;
@@ -30,7 +35,6 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.Certificate;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class PdfServiceImpl implements PdfService {
@@ -49,23 +53,30 @@ public class PdfServiceImpl implements PdfService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public MetaFile convertImageToPdf(MetaFile metaFile) throws IOException {
-    if (metaFile == null) {
-      return null;
-    }
-    File tempPdfFile = File.createTempFile(metaFile.getFileName(), ".pdf");
-    FileOutputStream outStream = new FileOutputStream(tempPdfFile);
-    PdfWriter pdfWriter = new PdfWriter(outStream);
+  public MetaFile convertImageToPdf(MetaFile metaFile) throws AxelorException {
+    try {
+      if (metaFile == null) {
+        return null;
+      }
+      File tempPdfFile = File.createTempFile(metaFile.getFileName(), ".pdf");
+      FileOutputStream outStream = new FileOutputStream(tempPdfFile);
+      PdfWriter pdfWriter = new PdfWriter(outStream);
 
-    PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+      PdfDocument pdfDocument = new PdfDocument(pdfWriter);
 
-    try (Document document = new Document(pdfDocument)) {
-      ImageData data = ImageDataFactory.create(String.valueOf(MetaFiles.getPath(metaFile)));
-      Image image = new Image(data);
-      document.add(image);
+      try (Document document = new Document(pdfDocument)) {
+        ImageData data = ImageDataFactory.create(String.valueOf(MetaFiles.getPath(metaFile)));
+        Image image = new Image(data);
+        document.add(image);
+      }
+      metaFiles.delete(metaFile);
+      return metaFiles.upload(tempPdfFile);
+    } catch (IOException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.CONVERT_IMAGE_TO_PDF_ERROR),
+          e.getMessage());
     }
-    metaFiles.delete(metaFile);
-    return metaFiles.upload(tempPdfFile);
   }
 
   protected void digitalSignature(
@@ -76,31 +87,38 @@ public class PdfServiceImpl implements PdfService {
       MetaFile imageFile,
       String reason,
       String location)
-      throws GeneralSecurityException, IOException {
-    BouncyCastleProvider bouncyCastleProvider = new BouncyCastleProvider();
-    Security.addProvider(bouncyCastleProvider);
+      throws AxelorException {
+    try {
+      BouncyCastleProvider bouncyCastleProvider = new BouncyCastleProvider();
+      Security.addProvider(bouncyCastleProvider);
 
-    try (PdfReader pdfReader = new PdfReader(sourceFile)) {
-      PdfSigner pdfSigner = new PdfSigner(pdfReader, outputStream, new StampingProperties());
+      try (PdfReader pdfReader = new PdfReader(sourceFile)) {
+        PdfSigner pdfSigner = new PdfSigner(pdfReader, outputStream, new StampingProperties());
 
-      // Create the signature appearance
-      fillSignatureAppearance(imageFile, reason, location, pdfSigner);
+        // Create the signature appearance
+        fillSignatureAppearance(imageFile, reason, location, pdfSigner);
 
-      IExternalSignature iExternalSignature =
-          new PrivateKeySignature(
-              privateKey, DigestAlgorithms.SHA256, bouncyCastleProvider.getName());
-      IExternalDigest iExternalDigest = new BouncyCastleDigest();
+        IExternalSignature iExternalSignature =
+            new PrivateKeySignature(
+                privateKey, DigestAlgorithms.SHA256, bouncyCastleProvider.getName());
+        IExternalDigest iExternalDigest = new BouncyCastleDigest();
 
-      // Sign the document using the detached mode, CMS, or CAdES equivalent.
-      pdfSigner.signDetached(
-          iExternalDigest,
-          iExternalSignature,
-          certificateChain,
-          null,
-          null,
-          null,
-          0,
-          PdfSigner.CryptoStandard.CMS);
+        // Sign the document using the detached mode, CMS, or CAdES equivalent.
+        pdfSigner.signDetached(
+            iExternalDigest,
+            iExternalSignature,
+            certificateChain,
+            null,
+            null,
+            null,
+            0,
+            PdfSigner.CryptoStandard.CMS);
+      }
+    } catch (IOException | GeneralSecurityException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.SIGNING_PDF_ERROR),
+          e.getMessage());
     }
   }
 
@@ -132,30 +150,37 @@ public class PdfServiceImpl implements PdfService {
       MetaFile imageFile,
       String reason,
       String location)
-      throws IOException, GeneralSecurityException {
+      throws AxelorException {
 
-    File tempPdfFile = File.createTempFile(metaFile.getFileName(), ".pdf");
+    try {
+      File tempPdfFile = File.createTempFile(metaFile.getFileName(), ".pdf");
 
-    try (FileOutputStream outStream = new FileOutputStream(tempPdfFile)) {
-      KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-      keyStore.load(
-          new FileInputStream(String.valueOf(MetaFiles.getPath(certificate))),
-          certificatePassword.toCharArray());
-      String alias = keyStore.aliases().nextElement();
-      PrivateKey privateKey =
-          (PrivateKey) keyStore.getKey(alias, certificatePassword.toCharArray());
-      Certificate[] certificateChain = keyStore.getCertificateChain(alias);
+      try (FileOutputStream outStream = new FileOutputStream(tempPdfFile)) {
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keyStore.load(
+            new FileInputStream(String.valueOf(MetaFiles.getPath(certificate))),
+            certificatePassword.toCharArray());
+        String alias = keyStore.aliases().nextElement();
+        PrivateKey privateKey =
+            (PrivateKey) keyStore.getKey(alias, certificatePassword.toCharArray());
+        Certificate[] certificateChain = keyStore.getCertificateChain(alias);
 
-      digitalSignature(
-          String.valueOf(MetaFiles.getPath(metaFile.getFilePath())),
-          outStream,
-          certificateChain,
-          privateKey,
-          imageFile,
-          reason,
-          location);
+        digitalSignature(
+            String.valueOf(MetaFiles.getPath(metaFile.getFilePath())),
+            outStream,
+            certificateChain,
+            privateKey,
+            imageFile,
+            reason,
+            location);
+      }
+
+      return metaFiles.upload(tempPdfFile);
+    } catch (AxelorException | IOException | GeneralSecurityException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.SIGNING_PDF_ERROR),
+          e.getMessage());
     }
-
-    return metaFiles.upload(tempPdfFile);
   }
 }

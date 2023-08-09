@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PfxCertificate;
 import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.hr.db.Expense;
@@ -28,11 +29,9 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppExpense;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import javax.transaction.Transactional;
 import org.camunda.bpm.engine.impl.util.CollectionUtil;
 
 @Singleton
@@ -103,7 +102,7 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void convertProofFilesInPdf(Expense expense) throws IOException, GeneralSecurityException {
+  public void convertProofFilesInPdf(Expense expense) throws AxelorException {
     List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
     if (CollectionUtil.isEmpty(expenseLineList)) {
       return;
@@ -114,8 +113,7 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
     }
   }
 
-  protected void convertProofFileToPdf(ExpenseLine expenseLine)
-      throws IOException, GeneralSecurityException {
+  protected void convertProofFileToPdf(ExpenseLine expenseLine) throws AxelorException {
     MetaFile metaFile = expenseLine.getJustificationMetaFile();
     if (metaFile == null || expenseLine.getIsJustificationFileDigitallySigned()) {
       return;
@@ -129,7 +127,7 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
     expenseLine.setIsJustificationFileDigitallySigned(true);
   }
 
-  protected MetaFile convertImageToPdf(MetaFile metaFile) throws IOException {
+  protected MetaFile convertImageToPdf(MetaFile metaFile) throws AxelorException {
     MetaFile pdfToSign = null;
     String fileType = metaFile.getFileType();
 
@@ -143,7 +141,7 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
     return pdfToSign;
   }
 
-  protected MetaFile getSignedPdf(MetaFile pdfToSign) throws IOException, GeneralSecurityException {
+  protected MetaFile getSignedPdf(MetaFile pdfToSign) throws AxelorException {
     AppExpense appExpense = appHumanResourceService.getAppExpense();
     PfxCertificate pfxCertificate = appExpense.getPfxCertificate();
     MetaFile signatureLogo = appExpense.getSignatureLogo();
