@@ -24,4 +24,7 @@ public final class QualityExceptionMessage {
 
   public static final String QUALITY_CONTROL_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on quality control" /*)*/;
+
+  public static final String QUALITY_IMPROVEMENT_SEQUENCE_ERROR = /*$$(*/
+      "The company %s doesn't have any configured sequence for Quality improvement" /*)*/;
 }
