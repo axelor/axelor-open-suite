@@ -21,7 +21,13 @@
 
     </extend>
 
-    <extend target="//field[@name='product']">
+
+    <extend target="//field[@name='product' and @grid-view='product-grid']">
+      <attribute name="onChange"
+        value="action-budget-group-sale-sale-orderline-product-onchange"/>
+    </extend>
+
+    <extend target="//field[@name='product' and @grid-view='stock-move-line-product-grid']">
       <attribute name="onChange"
         value="action-budget-group-sale-sale-orderline-product-onchange"/>
     </extend>
@@ -80,8 +86,7 @@
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
-  <action-group name="action-group-sale-saleorderline-product-onchange"
-    id="action-budget-group-sale-saleorderline-product-onchange">
+  <action-group name="action-budget-group-sale-sale-orderline-product-onchange">
     <action name="action-group-sale-saleorderline-product-onchange"/>
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
