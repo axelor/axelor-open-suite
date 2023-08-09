@@ -17,7 +17,10 @@
     <field name="globalAccountingCashAccount" canEdit="false" form-view="account-form"
       grid-view="account-grid"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
-      if="__config__.app.isApp('account')" canNew="true"/>
+      if="__config__.app.isApp('account')" canNew="true" domain="self.company = :company"
+      readonlyIf="company.accountConfig.analyticDistributionTypeSelect != 3"/>
+    <field name="company.accountConfig" hidden="true"/>
+    <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
   </grid>
 
   <grid name="account-management-product-grid" title="Account managements"
@@ -44,7 +47,10 @@
     <field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
       if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
-      form-view="analytic-distribution-template-form" domain="self.company = :company"/>
+      form-view="analytic-distribution-template-form" domain="self.company = :company"
+      readonlyIf="company.accountConfig.analyticDistributionTypeSelect != 3"/>
+    <field name="company.accountConfig" hidden="true"/>
+    <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
   </grid>
 
 
@@ -164,10 +170,13 @@
         <field name="paymentMode.accountingMethodSelect" hidden="true"/>
       </panel>
 
-      <panel name="analyticsPanel" title="Analytics" colSpan="12" showIf="typeSelect != 2">
+      <panel name="analyticsPanel" title="Analytics" colSpan="12"
+        showIf="typeSelect != 2 &amp;&amp; company.accountConfig.analyticDistributionTypeSelect == 3">
         <field name="analyticDistributionTemplate" if-module="axelor-account"
           if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" domain="self.company = :company"/>
+        <field name="company.accountConfig" hidden="true"/>
+        <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
       </panel>
       <panel name="taxPanel" title="Tax" colSpan="12" hidden="true">
         <field name="tax" form-view="tax-form" grid-view="tax-grid"

@@ -1166,6 +1166,9 @@ public final class AccountExceptionMessage {
   /** MoveLine */
   public static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
 
+  public static final String MOVE_LINE_DESCRIPTION_MISSING = /*$$(*/
+      "Description is missing on move line(s)" /*)*/;
+
   /** User */
   public static final String USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL = /*$$(*/
       "%s has not exaclty the same internal companies as %s." /*)*/;

@@ -290,6 +290,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       this.checkTaxAmount(move);
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
+      this.checkMoveLineDescription(move);
 
       moveControlService.checkDuplicateOrigin(move);
     }
@@ -896,6 +897,18 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           .map(MoveLine::getTaxEquiv)
           .filter(Objects::nonNull)
           .anyMatch(TaxEquiv::getReverseCharge);
+    }
+  }
+
+  protected void checkMoveLineDescription(Move move) throws AxelorException {
+    if (ObjectUtils.notEmpty(move.getMoveLineList())
+        && accountConfigService.getAccountConfig(move.getCompany()).getIsDescriptionRequired()
+        && move.getMoveLineList().stream()
+            .map(MoveLine::getDescription)
+            .anyMatch(ObjectUtils::isEmpty)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_DESCRIPTION_MISSING));
     }
   }
 }

@@ -19,7 +19,7 @@
     </toolbar>
 
     <panel name="mainPanel">
-      <help><![CDATA[You can find classes and methods name <a href="http://dius.github.io/java-faker/apidocs/index.html" target="_blank">here</a>]]></help>
+      <help><![CDATA[You can find classes and methods name <a href="https://javadoc.io/doc/net.datafaker/datafaker/1.6.0/index.html" target="_blank">here</a>]]></help>
       <field name="name" readonly="true" showIf="id!=null" colSpan="12"/>
       <field name="className"/>
       <field name="methodName" title="FakerApiField.methodName"/>

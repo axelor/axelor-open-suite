@@ -67,7 +67,10 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
   public void checkAnalyticAxes(MoveLine moveLine) throws AxelorException {
     if (moveLine.getAccount() != null) {
       accountService.checkAnalyticAxis(
-          moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+          moveLine.getAccount(),
+          moveLine.getAnalyticDistributionTemplate(),
+          moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines(),
+          false);
     }
   }
 
@@ -101,7 +104,10 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
     for (MoveLine moveLine : moveLineList) {
       if (moveLine != null && moveLine.getAccount() != null) {
         accountService.checkAnalyticAxis(
-            moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+            moveLine.getAccount(),
+            moveLine.getAnalyticDistributionTemplate(),
+            moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines(),
+            false);
       }
     }
   }
