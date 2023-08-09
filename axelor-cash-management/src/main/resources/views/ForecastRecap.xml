@@ -44,9 +44,12 @@
         onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
       <panel-dashlet name="forecastRecapLineListPanel" canSearch="true" showIf="id"
         height="500" action="action-forecast-recap-view-show-forecast-recap-line-list" colSpan="12"/>
-      <field name="endingBalance" readonly="true" colSpan="4"/>
-      <field name="currency" readonly="true" colSpan="4"/>
-      <field name="calculationDate" colSpan="4"/>
+      <field name="endingBalance" readonly="true" colSpan="2"/>
+      <field name="currency" readonly="true" colSpan="2"/>
+      <field name="calculationDate" colSpan="2"/>
+      <panel-dashlet name="balanceByBankDetailsPanel" colSpan="6" readonly="true"
+        canSearch="true" if="__config__.app.getApp('base')?.getManageMultiBanks()"
+        action="action-forecast-recap-view-balance-by-bank-details-dashlet"/>
     </panel>
   </form>
 
@@ -194,6 +197,13 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
+    <context name="_forecastRecapId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-forecast-recap-view-balance-by-bank-details-dashlet"
+    title="Balance by bank details">
+    <view type="custom"
+      name="action-forecast-recap-view-balance-by-bank-details-dashlet-custom"/>
     <context name="_forecastRecapId" expr="eval: id"/>
   </action-view>
 
