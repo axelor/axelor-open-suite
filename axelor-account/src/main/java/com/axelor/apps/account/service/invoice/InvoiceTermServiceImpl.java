@@ -334,7 +334,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  protected boolean getPfpValidatorUserCondition(Invoice invoice) {
+  @Override
+  public boolean getPfpValidatorUserCondition(Invoice invoice) {
     return appAccountService.getAppAccount().getActivatePassedForPayment()
         && (invoice.getCompany().getAccountConfig().getIsManagePassedForPayment()
             && (invoice.getOperationTypeSelect()
