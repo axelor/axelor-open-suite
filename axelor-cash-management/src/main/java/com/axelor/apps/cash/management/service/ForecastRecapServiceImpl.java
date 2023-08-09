@@ -744,8 +744,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         SaleOrder saleOrder = (SaleOrder) forecastModel;
         return saleOrder.getCompanyBankDetails();
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
-        PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
-        return purchaseOrder.getCompanyBankDetails();
+        return null;
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
         return expense.getBankDetails();
@@ -983,9 +982,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     forecastRecapLine.setRelatedToSelectId(relatedToSelectId);
     forecastRecapLine.setRelatedToSelectName(relatedToSelectName);
     forecastRecapLine.setRelatedToSelectPaymentMode(
-        Optional.ofNullable(paymentMode.getName()).orElse(""));
+        Optional.ofNullable(paymentMode).map(PaymentMode::getName).orElse(""));
     forecastRecapLine.setRelatedToSelectBankDetails(
-        Optional.ofNullable(bankDetails.getFullName()).orElse(""));
+        Optional.ofNullable(bankDetails).map(BankDetails::getFullName).orElse(""));
 
     forecastRecapLine.setForecastRecapLineType(forecastRecapLineType);
     forecastRecap.addForecastRecapLineListItem(forecastRecapLine);
