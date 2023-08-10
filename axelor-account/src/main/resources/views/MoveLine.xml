@@ -433,7 +433,7 @@
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-related-form"
           grid-view="invoice-term-move-line-grid"
           onChange="action-move-line-method-update-due-dates"/>
       </panel>
@@ -449,7 +449,7 @@
           <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
           </viewer>
         </field>
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-related-form"
           grid-view="invoice-term-move-line-invoice-grid"
           onChange="action-move-line-method-update-due-dates"/>
       </panel>
@@ -679,7 +679,7 @@
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-related-form"
           grid-view="invoice-term-move-line-grid"
           onChange="action-group-moveline-invoice-term-list-onchange"/>
       </panel>
@@ -695,7 +695,7 @@
           <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
           </viewer>
         </field>
-        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
+        <field name="invoiceTermList" colSpan="12" form-view="invoice-term-related-form"
           grid-view="invoice-term-move-line-invoice-grid"
           onChange="action-move-line-method-update-due-dates"/>
       </panel>
@@ -1021,7 +1021,7 @@
   <action-view name="action-move-line-view-show-related-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-grid"/>
-    <view type="form" name="invoice-term-move-line-form"/>
+    <view type="form" name="invoice-term-related-form"/>
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
@@ -1029,7 +1029,7 @@
   <action-view name="action-move-line-view-show-related-invoice-terms-from-invoice"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
-    <view type="form" name="invoice-term-invoice-form"/>
+    <view type="form" name="invoice-term-related-form"/>
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>

@@ -65,7 +65,6 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
     Company company = invoiceTerm.getCompany();
 

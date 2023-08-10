@@ -69,6 +69,7 @@ public class InvoiceTermController {
 
       response.setValues(invoiceTermGroupService.getOnNewValuesMap(invoiceTerm));
       response.setAttrs(invoiceTermGroupService.getOnNewAttrsMap(invoiceTerm));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -185,17 +186,22 @@ public class InvoiceTermController {
     }
   }
 
+  @ErrorException
   public void amountOnChange(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      InvoiceTermGroupService invoiceTermGroupService = Beans.get(InvoiceTermGroupService.class);
+    InvoiceTermGroupService invoiceTermGroupService = Beans.get(InvoiceTermGroupService.class);
 
-      response.setValues(invoiceTermGroupService.getAmountOnChangeValuesMap(invoiceTerm));
-      response.setAttrs(invoiceTermGroupService.getOnNewAttrsMap(invoiceTerm));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
+    response.setValues(invoiceTermGroupService.getAmountOnChangeValuesMap(invoiceTerm));
+  }
+
+  @ErrorException
+  public void percentageOnChange(ActionRequest request, ActionResponse response) {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+    InvoiceTermGroupService invoiceTermGroupService = Beans.get(InvoiceTermGroupService.class);
+
+    response.setValues(invoiceTermGroupService.getPercentageOnChangeValuesMap(invoiceTerm));
   }
 
   protected BigDecimal getCustomizedTotal(Context parentContext, InvoiceTerm invoiceTerm) {
@@ -290,11 +296,11 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      response.setAttr(
-          "pfpValidatorUser",
-          "domain",
-          Beans.get(InvoiceTermService.class)
-              .getPfpValidatorUserDomain(invoiceTerm.getPartner(), invoiceTerm.getCompany()));
+      InvoiceTermGroupService invoiceTermGroupService = Beans.get(InvoiceTermGroupService.class);
+
+      response.setValues(invoiceTermGroupService.setPfpValidatorUserDomainValuesMap(invoiceTerm));
+      response.setAttrs(invoiceTermGroupService.setPfpValidatorUserDomainAttrsMap(invoiceTerm));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -323,7 +329,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceterm = request.getContext().asType(InvoiceTerm.class);
       Beans.get(InvoiceTermPfpService.class).validatePfp(invoiceterm, AuthUtils.getUser());
-      response.setReload(true);
+      response.setValues(invoiceterm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

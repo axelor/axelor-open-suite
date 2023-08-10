@@ -247,7 +247,7 @@
     <option value="com.axelor.apps.account.db.Reimbursement" data-grid="reimbursement-grid"
       data-form="reimbursement-form">Reimbursement</option>
     <option value="com.axelor.apps.account.db.InvoiceTerm"
-      data-grid="invoice-term-move-line-grid" data-form="invoice-term-move-line-form">Invoice term</option>
+      data-grid="invoice-term-move-line-grid" data-form="invoice-term-related-form">Invoice term</option>
     <option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid"
       data-form="expense-form">Expense</option>
   </selection>

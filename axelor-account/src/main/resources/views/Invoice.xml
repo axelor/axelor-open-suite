@@ -613,7 +613,7 @@
           readonlyIf="!invoiceTermList.length"/>
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
           onChange="action-group-account-invoice-invoice-term-list-onchange" colSpan="12"
-          form-view="invoice-term-invoice-form" grid-view="invoice-term-move-line-invoice-grid"/>
+          form-view="invoice-term-related-form" grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()">
@@ -2737,7 +2737,7 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-view-show-related-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
-    <view type="form" name="invoice-term-invoice-form"/>
+    <view type="form" name="invoice-term-related-form"/>
     <domain>self.invoice.id = :_invoiceId</domain>
     <context name="_invoiceId" expr="eval: id"/>
   </action-view>
@@ -2745,7 +2745,7 @@ InvoiceSet.length > 0))"
   <action-view name="action-invoice-view-show-related-invoice-terms-by-reason"
     title="Invoice term in dispute" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
-    <view type="form" name="invoice-term-invoice-form"/>
+    <view type="form" name="invoice-term-related-form"/>
     <domain>self.reasonOfRefusalToPayStr = :_reasonOfRefusalToPayName AND (:_company is null OR
       self.company = :_company)</domain>
     <context name="_reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>

@@ -7,4 +7,7 @@ public interface InvoiceTermAttrsService {
   void hideActionAndPfpPanel(InvoiceTerm invoiceTerm, Map<String, Map<String, Object>> attrsMap);
 
   void changeAmountsTitle(InvoiceTerm invoiceTerm, Map<String, Map<String, Object>> attrsMap);
+
+  void setPfpValidatorUserDomainAttrsMap(
+      InvoiceTerm invoiceTerm, Map<String, Map<String, Object>> attrsMap);
 }

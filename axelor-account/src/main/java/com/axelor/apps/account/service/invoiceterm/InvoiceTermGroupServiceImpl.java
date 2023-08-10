@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.invoiceterm;
 
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -31,8 +32,6 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     invoiceTerm = invoiceTermService.initInvoiceTermWithParents(invoiceTerm);
     invoiceTermService.setPfpStatus(invoiceTerm, null);
 
-    valuesMap.put("invoice", invoiceTerm.getInvoice());
-    valuesMap.put("moveLine", invoiceTerm.getMoveLine());
     valuesMap.put("paymentMode", invoiceTerm.getPaymentMode());
     valuesMap.put("bankDetails", invoiceTerm.getBankDetails());
     valuesMap.put("sequence", invoiceTerm.getSequence());
@@ -52,6 +51,8 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     valuesMap.put("originDate", invoiceTerm.getOriginDate());
     putFinancialDiscountFields(invoiceTerm, valuesMap);
     valuesMap.put("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
+    valuesMap.put(
+        "$isPaymentConditionFree", invoiceTermService.isPaymentConditionFree(invoiceTerm));
 
     return valuesMap;
   }
@@ -65,6 +66,8 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
 
     valuesMap.put(
         "$showFinancialDiscount", invoiceTermService.setShowFinancialDiscount(invoiceTerm));
+    valuesMap.put(
+        "$isPaymentConditionFree", invoiceTermService.isPaymentConditionFree(invoiceTerm));
     valuesMap.put("$invoiceTermMoveFile", invoiceTermService.getLinkedDmsFile(invoiceTerm));
 
     return valuesMap;
@@ -78,6 +81,29 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     invoiceTermService.computeFinancialDiscount(invoiceTerm);
 
     valuesMap.put("percentage", invoiceTerm.getPercentage());
+    valuesMap.put("amountRemaining", invoiceTerm.getAmountRemaining());
+    valuesMap.put("companyAmount", invoiceTerm.getCompanyAmount());
+    valuesMap.put("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
+    putFinancialDiscountFields(invoiceTerm, valuesMap);
+    valuesMap.put(
+        "isCustomized",
+        invoiceTerm.getPaymentConditionLine() == null
+            || invoiceTerm
+                    .getPercentage()
+                    .compareTo(invoiceTerm.getPaymentConditionLine().getPaymentPercentage())
+                != 0);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getPercentageOnChangeValuesMap(InvoiceTerm invoiceTerm) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    invoiceTermService.computeCustomizedAmount(invoiceTerm);
+    invoiceTermService.computeFinancialDiscount(invoiceTerm);
+
+    valuesMap.put("amount", invoiceTerm.getAmount());
     valuesMap.put("amountRemaining", invoiceTerm.getAmountRemaining());
     valuesMap.put("companyAmount", invoiceTerm.getCompanyAmount());
     valuesMap.put("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
@@ -114,6 +140,31 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
         "$isValidPfpValidatorUser",
         invoiceTermPfpService.isPfpValidatorUser(invoiceTerm, AuthUtils.getUser()));
 
+    if (invoiceTerm.getPfpValidatorUser() != null) {
+      valuesMap.put(
+          "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
+          invoiceTerm
+              .getPfpValidatorUser()
+              .equals(
+                  invoiceTermService.getPfpValidatorUser(
+                      invoiceTerm.getPartner(), invoiceTerm.getCompany())));
+    }
+
+    valuesMap.put(
+        "$isPaymentConditionFree", invoiceTermService.isPaymentConditionFree(invoiceTerm));
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> setPfpValidatorUserDomainValuesMap(InvoiceTerm invoiceTerm) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    if (invoiceTerm.getPfpValidatorUser() == null
+        || invoiceTerm.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_AWAITING) {
+      return valuesMap;
+    }
+
     valuesMap.put(
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
         invoiceTerm
@@ -121,9 +172,6 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
             .equals(
                 invoiceTermService.getPfpValidatorUser(
                     invoiceTerm.getPartner(), invoiceTerm.getCompany())));
-
-    valuesMap.put(
-        "$isPaymentConditionFree", invoiceTermService.isPaymentConditionFree(invoiceTerm));
 
     return valuesMap;
   }
@@ -144,6 +192,16 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     invoiceTermAttrsService.changeAmountsTitle(invoiceTerm, attrsMap);
 
     invoiceTermAttrsService.hideActionAndPfpPanel(invoiceTerm, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> setPfpValidatorUserDomainAttrsMap(
+      InvoiceTerm invoiceTerm) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    invoiceTermAttrsService.setPfpValidatorUserDomainAttrsMap(invoiceTerm, attrsMap);
 
     return attrsMap;
   }

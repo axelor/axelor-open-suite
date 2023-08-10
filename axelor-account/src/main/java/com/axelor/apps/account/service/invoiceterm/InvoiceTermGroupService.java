@@ -11,9 +11,15 @@ public interface InvoiceTermGroupService {
 
   Map<String, Object> getAmountOnChangeValuesMap(InvoiceTerm invoiceTerm);
 
+  Map<String, Object> getPercentageOnChangeValuesMap(InvoiceTerm invoiceTerm);
+
   Map<String, Object> checkPfpValidatorUser(InvoiceTerm invoiceTerm);
+
+  Map<String, Object> setPfpValidatorUserDomainValuesMap(InvoiceTerm invoiceTerm);
 
   Map<String, Map<String, Object>> getOnNewAttrsMap(InvoiceTerm invoiceTerm);
 
   Map<String, Map<String, Object>> getOnLoadAttrsMap(InvoiceTerm invoiceTerm);
+
+  Map<String, Map<String, Object>> setPfpValidatorUserDomainAttrsMap(InvoiceTerm invoiceTerm);
 }

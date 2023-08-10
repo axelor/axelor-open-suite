@@ -1677,8 +1677,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return DMSFileRepo.all()
           .filter(
               String.format(
-                  "self.isDirectory = false AND self.relatedId = %d AND self.relatedModel = 'com.axelor.apps.account.db.Move'"),
-              move.getId())
+                  "self.isDirectory = false AND self.relatedId = %d AND self.relatedModel = 'com.axelor.apps.account.db.Move'",
+                  move.getId()))
           .fetch();
     }
     return new ArrayList<>();
@@ -1696,6 +1696,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTerm.setPercentage(percentage);
     invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    this.computeCompanyAmounts(invoiceTerm, true);
+  }
+
+  @Override
+  public void computeCustomizedAmount(InvoiceTerm invoiceTerm) {
+    BigDecimal total = this.getCustomizedTotal(invoiceTerm);
+
+    if (total.compareTo(BigDecimal.ZERO) == 0) {
+      return;
+    }
+
+    BigDecimal amount = this.getCustomizedAmount(invoiceTerm, total);
+    invoiceTerm.setAmount(amount);
+    invoiceTerm.setAmountRemaining(amount);
     this.computeCompanyAmounts(invoiceTerm, true);
   }
 

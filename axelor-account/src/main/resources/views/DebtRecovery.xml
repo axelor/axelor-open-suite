@@ -144,7 +144,7 @@
     model="com.axelor.apps.account.db.InvoiceTerm"
     title="Invoice term concerned by the debt recovery">
     <view name="invoice-term-debt-recovery-grid" type="grid"/>
-    <view name="invoice-term-invoice-form" type="form"/>
+    <view name="invoice-term-related-form" type="form"/>
     <domain>self.debtRecoveryBlockingOk IS NOT TRUE and self.id IN (:_ids)</domain>
     <context name="_ids" expr="eval: invoiceTermDebtRecoverySet.collect{it.id}"/>
   </action-view>

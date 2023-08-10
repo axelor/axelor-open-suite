@@ -7,6 +7,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -18,8 +19,12 @@ import java.util.Optional;
 
 public class InvoiceTermAttrsServiceImpl implements InvoiceTermAttrsService {
 
+  protected InvoiceTermService invoiceTermService;
+
   @Inject
-  public void InvoiceTermAttrsServiceImpl() {}
+  public void InvoiceTermAttrsServiceImpl(InvoiceTermService invoiceTermService) {
+    this.invoiceTermService = invoiceTermService;
+  }
 
   protected void addAttr(
       String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
@@ -96,5 +101,20 @@ public class InvoiceTermAttrsServiceImpl implements InvoiceTermAttrsService {
       this.addAttr("amount", "title", I18n.get("Amount in currency"), attrsMap);
       this.addAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"), attrsMap);
     }
+  }
+
+  @Override
+  public void setPfpValidatorUserDomainAttrsMap(
+      InvoiceTerm invoiceTerm, Map<String, Map<String, Object>> attrsMap) {
+
+    String domain = "self.id in (0)";
+
+    if (invoiceTerm.getCompany() != null) {
+      domain =
+          invoiceTermService.getPfpValidatorUserDomain(
+              invoiceTerm.getPartner(), invoiceTerm.getCompany());
+    }
+
+    this.addAttr("pfpValidatorUser", "domain", domain, attrsMap);
   }
 }

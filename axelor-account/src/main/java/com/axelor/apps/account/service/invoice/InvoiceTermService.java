@@ -346,5 +346,7 @@ public interface InvoiceTermService {
 
   void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
 
+  void computeCustomizedAmount(InvoiceTerm invoiceTerm);
+
   void computeFinancialDiscount(InvoiceTerm invoiceTerm);
 }
