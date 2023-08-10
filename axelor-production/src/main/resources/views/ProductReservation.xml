@@ -6,43 +6,49 @@
   <grid name="product-reservation-grid" title="Product reservation"
     model="com.axelor.apps.production.db.ProductReservation" orderBy="product.code">
     <field name="productReservationType" selection="stock.product.reservation.type.select"
-      required="true" title="Request type"/>
-    <field name="product" ref="com.axelor.apps.base.db.Product" required="true"
-      title="Product"/>
+      required="true"/>
+    <field name="product" required="true"/>
     <field name="qty" required="true" title="Quantity"/>
-    <field name="requestedReservedType" selection="stock.requested.reservation.type.select"
-      title="Type of reservation"/><!-- TODO traduire -->
-    <field name="priorityReservationDateTime" title="Reservation priority date"/><!-- TODO traduire -->
-    <field name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
-      title="Stock Location"/>
-    <field name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
-      title="Tracking number"/>
-    <field name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
-      title="Sale order lines"/>
-    <field name="originManufOrder" ref="com.axelor.apps.production.db.ManufOrder"
-      title="Manuf order"/>
-    <field name="productReservationStatus" selection="stock.product.reservation.status.select"
-      readonly="true" required="true" title="Status"/>
+    <field name="requestedReservedType" selection="stock.requested.reservation.type.select"/>
+    <field name="priorityReservationDateTime"/>
+    <field name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"/>
+    <field name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"/>
+    <field name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <field name="originManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
+    <field name="status" selection="stock.product.reservation.status.select" readonly="true"
+      required="true"/>
   </grid>
 
-  <form name="product-reservation-form" title="Reservations / allocations" model="com.axelor.apps.production.db.ProductReservation" width="large" onSave="save,action-method-product-reservation-update-status">
+  <form name="product-reservation-form" title="Reservations / allocations"
+    model="com.axelor.apps.production.db.ProductReservation" width="large"
+    onSave="save,action-method-product-reservation-update-status">
     <panel name="mainPanel">
       <panel name="general" colSpan="12">
-        <field name="productReservationType" title="Request type" colSpan="6" required="true" selection="stock.product.reservation.type.select"/>
-        <field name="productReservationStatus" title="Status" colSpan="6"/>
-        <field name="product" title="Product" colSpan="6" domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'" required="true" ref="com.axelor.apps.base.db.Product"/>
-        <field name="qty" title="Quantity" colSpan="6" required="true"/>
-        <field name="description" title="Description" colSpan="12" widget="html" large="true"/>
+        <field name="productReservationType" colSpan="6" required="true"/>
+        <field name="status" colSpan="6"/>
+        <field name="product" colSpan="6"
+          domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'" required="true"/>
+        <field name="qty" colSpan="6" required="true"/>
+        <field name="description" colSpan="12" widget="html" large="true"/>
       </panel>
       <panel name="reservation" colSpan="12">
-        <field name="priorityReservationDateTime" title="Reservation priority date" colSpan="6" widget="date-time" showIf="productReservationType == 1"/>
-        <field name="requestedReservedType" title="Type of reservation" showIf="productReservationType == 1" colSpan="6" requiredIf="productReservationType == 1" selection="stock.requested.reservation.type.select"/>
-        <field name="originSaleOrderLine" title="Sale order lines" colSpan="6" showIf="productReservationType == 1" requiredIf="originManufOrder == null &amp;&amp; productReservationType == 1"/>
-        <field name="originManufOrder" title="Manuf order" colSpan="6" showIf="productReservationType == 1" requiredIf="originSaleOrderLine == null &amp;&amp; productReservationType == 1"/>
+        <field name="priorityReservationDateTime" colSpan="6" widget="date-time"
+          showIf="productReservationType == 1"/>
+        <field name="requestedReservedType" showIf="productReservationType == 1" colSpan="6"
+          requiredIf="productReservationType == 1"
+          selection="stock.requested.reservation.type.select"/>
+        <field name="originSaleOrderLine" colSpan="6" showIf="productReservationType == 1"
+          requiredIf="originManufOrder == null &amp;&amp; productReservationType == 1"/>
+        <field name="originManufOrder" colSpan="6" showIf="productReservationType == 1"
+          requiredIf="originSaleOrderLine == null &amp;&amp; productReservationType == 1"/>
       </panel>
       <panel name="allocation" colSpan="12">
-        <field name="stockLocation" title="Stock Location" colSpan="6" showIf="productReservationType == 2" requiredIf="productReservationType == 2"/>
-        <field name="trackingNumber" title="Tracking number" showIf="productReservationType == 2 &amp;&amp; product.trackingNumberConfiguration != null" requiredIf="productReservationType == 2 &amp;&amp; product.trackingNumberConfiguration != null" colSpan="6"/>
+        <field name="stockLocation" colSpan="6" showIf="productReservationType == 2"
+          requiredIf="productReservationType == 2"/>
+        <field name="trackingNumber" title="Tracking number"
+          showIf="productReservationType == 2 &amp;&amp; product.trackingNumberConfiguration != null"
+          requiredIf="productReservationType == 2 &amp;&amp; product.trackingNumberConfiguration != null"
+          colSpan="6"/>
         <field name="product.trackingNumberConfiguration" showIf="false"/>
       </panel>
     </panel>

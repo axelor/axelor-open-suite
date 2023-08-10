@@ -6,14 +6,14 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="ProductReservation">
-    <string name="productReservationType" selection="stock.product.reservation.type.select"
-      required="true" title="Type of reservation"/>
+    <integer name="productReservationType" selection="stock.product.reservation.type.select"
+      required="true" title="Type of request"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" required="true"
       title="Product"/>
     <decimal name="qty" required="true" title="Quantity"/>
     <string name="requestedReservedType" selection="stock.requested.reservation.type.select"
-      title="Type of reservation"/><!-- TODO traduire -->
-    <datetime name="priorityReservationDateTime" title="Reservation priority date"/><!-- TODO traduire -->
+      title="Type of reservation"/>
+    <datetime name="priorityReservationDateTime" title="Reservation priority date"/>
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock Location"/>
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
@@ -23,30 +23,17 @@
     <string name="description" title="Description"/>
     <many-to-one name="originManufOrder" ref="com.axelor.apps.production.db.ManufOrder"
       title="Manuf order"/>
-    <integer name="productReservationStatus"
-      selection="stock.product.reservation.status.select" readonly="true" required="true"
-      title="Status"/>
+    <integer name="status" selection="stock.product.reservation.status.select"
+      readonly="true" required="true" title="Status"/>
 
     <boolean name="isAllocation">
       <![CDATA[
-
-      if ((""+ProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION)
-              .equals(this.productReservationType)) {
-        return true;
-      }
-      return false;
-
+      return ProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION == this.productReservationType;
   ]]></boolean>
 
     <boolean name="isReservation">
       <![CDATA[
-
-      if ((""+ProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION)
-              .equals(this.productReservationType)) {
-        return true;
-      }
-      return false;
-
+      return ProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION == this.productReservationType;
   ]]></boolean>
 
     <finder-method name="findByProductReservationTypeAndStockLocationAndProduct"
@@ -58,13 +45,7 @@
 
     <extra-imports>
       <![CDATA[
-      import java.util.Optional;
-      import java.util.StringJoiner;
-      import org.apache.commons.lang3.StringUtils;
-      import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-      import com.axelor.i18n.I18n;
       import com.axelor.apps.production.db.repo.ProductReservationRepository
-
       ]]>
     </extra-imports>
 

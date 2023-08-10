@@ -155,13 +155,13 @@
   </selection>
 
   <selection name="stock.product.reservation.type.select">
-    <option value="1">Reservation</option><!-- TODO raduire -->
-    <option value="2">Allocation</option><!-- TODO traduire -->
+    <option value="1">Reservation</option>
+    <option value="2">Allocation</option>
   </selection>
 
   <selection name="stock.requested.reservation.type.select">
-    <option value="1">On Purchase</option><!-- TODO traduire -->
-    <option value="2">On Manuf Order</option><!-- TODO traduire -->
+    <option value="1">On Purchase</option>
+    <option value="2">On Manuf Order</option>
   </selection>
 
   <selection name="stock.product.reservation.status.select">

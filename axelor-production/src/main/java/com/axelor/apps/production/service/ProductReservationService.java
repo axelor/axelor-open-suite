@@ -26,7 +26,7 @@ public interface ProductReservationService {
   /**
    * Update status just before save, against availability of stock if it is an allocation
    *
-   * @param productionReservation : we will update its productReservationStatus
+   * @param productionReservation : we will update its status
    */
   void updateStatus(ProductReservation productionReservation) throws AxelorException;
 }

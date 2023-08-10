@@ -6,16 +6,14 @@ import com.axelor.apps.production.db.ProductReservation;
 import com.axelor.apps.production.db.repo.ProductReservationRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.List;
 
 public class ProductReservationServiceImpl implements ProductReservationService {
 
-  public static final String REAL = "real";
   protected ProductReservationRepository productReservationRepository;
 
   @Inject
@@ -24,17 +22,18 @@ public class ProductReservationServiceImpl implements ProductReservationService 
   }
 
   @Override
+  @Transactional
   public void updateStatus(ProductReservation productReservation) throws AxelorException {
     if (Boolean.TRUE.equals(productReservation.getIsReservation())) {
       updateStatusReservation(productReservation);
     } else if (Boolean.TRUE.equals(productReservation.getIsAllocation())) {
       updateStatusAllocation(productReservation);
     }
-    saveProductReservation(productReservation);
+    productReservationRepository.save(productReservation);
   }
 
   protected void updateStatusReservation(ProductReservation productReservation) {
-    productReservation.setProductReservationStatus(
+    productReservation.setStatus(
         ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS);
   }
 
@@ -70,7 +69,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
       throws AxelorException {
 
     if (productReservation.getQty().compareTo(availableQty) <= 0) {
-      productReservation.setProductReservationStatus(
+      productReservation.setStatus(
           ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS);
     } else {
       throw new AxelorException(
@@ -91,17 +90,13 @@ public class ProductReservationServiceImpl implements ProductReservationService 
             .fetchStream()
             .map(ProductReservation::getQty)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    BigDecimal realQty = getRealQty(productReservation);
+    BigDecimal realQty =
+        Beans.get(StockLocationService.class)
+            .getRealQty(
+                productReservation.getProduct().getId(),
+                productReservation.getStockLocation().getId(),
+                productReservation.getStockLocation().getCompany().getId());
     return realQty.subtract(alreadyAllocatedQty);
-  }
-
-  protected BigDecimal getRealQty(ProductReservation productReservation) throws AxelorException {
-    return Beans.get(StockLocationService.class)
-        .getQty(
-            productReservation.getProduct().getId(),
-            productReservation.getStockLocation().getId(),
-            productReservation.getStockLocation().getCompany().getId(),
-            REAL);
   }
 
   protected BigDecimal computeAvailableQuantityForProduct(ProductReservation productReservation) {
@@ -113,42 +108,5 @@ public class ProductReservationServiceImpl implements ProductReservationService 
         .fetchStream()
         .map(ProductReservation::getQty)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
-  }
-
-  protected void saveProductReservation(ProductReservation productReservationSourceModified) {
-    ProductReservation productReservationEntityTarget =
-        findOrInitProductReservationEntityTarget(productReservationSourceModified);
-    update(productReservationSourceModified, productReservationEntityTarget);
-    JPA.runInTransaction(() -> productReservationRepository.save(productReservationEntityTarget));
-  }
-
-  protected ProductReservation findOrInitProductReservationEntityTarget(
-      ProductReservation productReservation) {
-    if ((productReservation == null) || (productReservation.getId() == null)) {
-      return new ProductReservation();
-    }
-    return productReservationRepository.findByIds(List.of(productReservation.getId())).stream()
-        .findFirst()
-        .orElse(new ProductReservation());
-  }
-
-  protected void update(
-      ProductReservation productReservationSource, ProductReservation productReservationTarget) {
-    productReservationTarget.setProduct(productReservationSource.getProduct());
-    productReservationTarget.setQty(productReservationSource.getQty());
-    productReservationTarget.setProductReservationType(
-        productReservationSource.getProductReservationType());
-    productReservationTarget.setDescription(productReservationSource.getDescription());
-    productReservationTarget.setProductReservationStatus(
-        productReservationSource.getProductReservationStatus());
-    productReservationTarget.setOriginManufOrder(productReservationSource.getOriginManufOrder());
-    productReservationTarget.setOriginSaleOrderLine(
-        productReservationSource.getOriginSaleOrderLine());
-    productReservationTarget.setPriorityReservationDateTime(
-        productReservationSource.getPriorityReservationDateTime());
-    productReservationTarget.setTrackingNumber(productReservationSource.getTrackingNumber());
-    productReservationTarget.setRequestedReservedType(
-        productReservationSource.getRequestedReservedType());
-    productReservationTarget.setStockLocation(productReservationSource.getStockLocation());
   }
 }
