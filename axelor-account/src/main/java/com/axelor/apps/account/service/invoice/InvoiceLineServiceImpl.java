@@ -682,10 +682,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             .map(TaxLine::getValue)
             .map(
                 it ->
-                    it.divide(
-                        new BigDecimal(100),
-                        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                        RoundingMode.HALF_UP))
+                    it.multiply(invoiceLine.getPrice())
+                        .divide(
+                            new BigDecimal(100),
+                            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                            RoundingMode.HALF_UP))
             .orElse(BigDecimal.ZERO);
 
     return invoiceLine.getPrice().add(taxValue);
