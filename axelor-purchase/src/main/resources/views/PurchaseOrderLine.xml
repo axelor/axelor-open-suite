@@ -205,7 +205,7 @@
           grid-view="purchase-order-supplier-line-grid"/>
       </panel>
       <panel-dashlet name="orderHistoryPanel" title="Order history"
-                     action="action-purchase-order-line-view-show-order-line-history" colSpan="12"/>
+        action="action-purchase-order-line-view-show-order-line-history" colSpan="12"/>
       <panel name="deliveryPanel" title="Delivery" hidden="true" colSpan="12">
         <panel name="deliveryDatePanel" colSpan="12">
           <field name="desiredReceiptDate"/>
