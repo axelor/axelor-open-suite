@@ -244,10 +244,8 @@
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="employee" expr="eval: true"
-      if="!__user__.employee?.hrManager &amp;&amp; !to_justify_leave_reason"/>
-    <attribute name="readonly" for="employee" expr="eval: statusSelect &gt; 2"
-      if="__user__.employee?.hrManager || to_justify_leave_reason"/>
+    <attribute name="readonly" for="employee"
+      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
   </action-attrs>
 
   <action-attrs name="action-leave-request-attrs-select">
@@ -361,6 +359,7 @@
 
   <action-attrs name="action-leave-request-attrs-set-employee-domain">
     <attribute for="employee" name="domain"
-      expr="eval: &quot; self.user.id = ${__user__.id} OR self.managerUser.id = ${__user__.id} &quot;"/>
+      expr="eval: &quot; self.user.id = ${__user__.id} OR self.managerUser.id = ${__user__.id} &quot;"
+      if="!__user__.employee?.hrManager"/>
   </action-attrs>
 </object-views>
