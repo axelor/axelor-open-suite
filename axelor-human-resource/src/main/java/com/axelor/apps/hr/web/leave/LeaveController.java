@@ -39,7 +39,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -233,10 +232,7 @@ public class LeaveController {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
       Employee employee = leave.getEmployee();
       if (employee == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
-            AuthUtils.getUser().getName());
+        return;
       }
       response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
     } catch (Exception e) {
