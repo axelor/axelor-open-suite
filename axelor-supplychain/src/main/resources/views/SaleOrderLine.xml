@@ -117,8 +117,8 @@
   </action-group>
 
   <action-group name="action-sale-order-line-group-analytic-move-line-list-onchange">
-    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
     <action name="action-sale-order-line-method-print-analytic-account"/>
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
   </action-group>
 
   <action-group
