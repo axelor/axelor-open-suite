@@ -334,7 +334,7 @@
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"
           onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view"
-          if-module="axelor-supplychain"/>
+          if="__config__.app.isApp('supplychain')"/>
         <field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"
           hideIf="product.productTypeSelect == 'service'"/>
