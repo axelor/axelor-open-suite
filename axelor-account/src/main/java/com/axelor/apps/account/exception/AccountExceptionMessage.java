@@ -46,6 +46,10 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Disposal quantity can not be equal to 0" /*)*/;
   public static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
+  public static final String IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND =
+      /*$$(*/ "No implementation of FixedAssetLineComputationService found" /*)*/;
+  public static final String IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND =
+      /*$$(*/ "No implementation of FixedAssetLineService found" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
@@ -100,7 +104,7 @@ public final class AccountExceptionMessage {
   public static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
       "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
-      "Selected move(s) has/have been removed successfully" /*)*/;
+      "Selected move(s) successfully removed" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
       "Error in move deleting or archiving, please check the log" /*)*/;
   public static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
@@ -242,19 +246,22 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNTING_REPORT_ANOMALIES = /*$$(*/ "Anomalies generated" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER = /*$$(*/
-      "Company partner is missing" /*)*/;
+      "DAS2 declarant company %s : Company partner is missing" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS = /*$$(*/
-      "Company partner main address is missing" /*)*/;
+      "DAS2 declarant company %s : Main address of the company partner is missing." /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7 = /*$$(*/
-      "Country is missing in company partner main address" /*)*/;
+      "DAS2 declarant company %s : Country is missing in company partner main address" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE = /*$$(*/
-      "Country alpha2code is missing in company partner main address" /*)*/;
+      "DAS2 declarant company %s : Country alpha2code is missing in company partner main address" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY = /*$$(*/
-      "City is missing in company partner main address" /*)*/;
+      "DAS2 declarant company %s : The city is missing on the main address of the partner associated to the company" /*)*/;
+
+  public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY_ZIP = /*$$(*/
+      "DAS2 declarant company %s : The city zip is missing on the main address of the partner associated to the company" /*)*/;
 
   public static final String ACCOUNTING_REPORT_DAS2_ACTIVE_NORM = /*$$(*/
       "DAS2 active norm is missing" /*)*/;
@@ -275,10 +282,6 @@ public final class AccountExceptionMessage {
           "DAS2 declarant company %s : Registration code is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF = /*$$(*/
       "DAS2 declarant company %s : Activity code is missing" /*)*/;
-  public static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS = /*$$(*/
-      "DAS2 declarant company %s : Address is missing" /*)*/;
-  public static final String ACCOUNTING_REPORT_DAS2_MOVE_LINE_PARTNER_MISSING = /*$$(*/
-      "Partner is missing on the move %s" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING = /*$$(*/
       "DAS2 declared partner %s %s : title is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE = /*$$(*/
@@ -287,12 +290,12 @@ public final class AccountExceptionMessage {
       ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE = /*$$(*/
           "DAS2 declared partner %s %s : Registration code is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS = /*$$(*/
-      "DAS2 declared partner %s %s : address is missing" /*)*/;
+      "DAS2 declared partner %s %s : Main address is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY = /*$$(*/
-      "DAS2 declared partner %s %s : address city is missing" /*)*/;
+      "DAS2 declared partner %s %s : The city associated to its main address is missing." /*)*/;
   public static final String
       ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY_ZIP = /*$$(*/
-          "DAS2 declared partner %s %s : address city zip is missing" /*)*/;
+          "DAS2 declared partner %s %s : The city zip associated to its main address is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE = /*$$(*/
       "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING = /*$$(*/
@@ -378,7 +381,7 @@ public final class AccountExceptionMessage {
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
   public static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
   public static final String MOVE_9 = /*$$(*/
-      "Tax is mandatory for the account %s on the move line %s" /*)*/;
+      "Tax is mandatory for the account %s (%s) on the move line %s" /*)*/;
   public static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   public static final String MOVE_11 = /*$$(*/
@@ -548,6 +551,12 @@ public final class AccountExceptionMessage {
       "%d reimbursements created successfully," /*)*/;
   public static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
   public static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
+  public static final String BATCH_CREDIT_TRANSFER_BANK_DETAILS_MISSING = /*$$(*/
+      "%s : Please, fill bank details in batch %s" /*)*/;
+
+  public static final String BATCH_CREDIT_TRANSFER_PAYMENT_MODE_MISSING = /*$$(*/
+      "%s : Please, fill payment mode in batch %s" /*)*/;
 
   /** Batch strategy */
   public static final String BATCH_STRATEGY_1 = /*$$(*/
@@ -1096,9 +1105,6 @@ public final class AccountExceptionMessage {
   public static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
 
-  /** Budget service */
-  public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
-
   public static final String EMPLOYEE_PARTNER = /*$$(*/
       "You must create a contact for employee %s" /*)*/;
 
@@ -1163,6 +1169,9 @@ public final class AccountExceptionMessage {
 
   /** MoveLine */
   public static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
+
+  public static final String MOVE_LINE_DESCRIPTION_MISSING = /*$$(*/
+      "Description is missing on move line(s)" /*)*/;
 
   /** User */
   public static final String USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL = /*$$(*/
@@ -1247,6 +1256,9 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_CHECK_ACCOUNTING = /*$$(*/
       "By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?" /*)*/;
+
+  public static final String MOVE_CHECK_CURRENCY_AMOUNT_SUM = /*$$(*/
+      "The sum of the currency amounts is not 0" /*)*/;
 
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
@@ -1334,7 +1346,7 @@ public final class AccountExceptionMessage {
       "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
   public static final String COMPANY_PARTNER_NOT_FOUND = /*$$(*/
-      "Tax lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
+      "Please create a partner for the company %s." /*)*/;
 
   public static final String COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
@@ -1363,7 +1375,7 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_SESSION_NO_EMAIL_SENT = /*$$(*/
       "No email have been sent." /*)*/;
 
-  public static final String PAYMENT_SESSION_EMAIL_SENT = /*$$(*/ "%d emails have been sent." /*)*/;
+  public static final String PAYMENT_SESSION_EMAIL_SENT = /*$$(*/ "%d email(s) sent." /*)*/;
 
   public static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
       "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
@@ -1571,7 +1583,16 @@ public final class AccountExceptionMessage {
       "Please create an accounting situation for partner %s and company %s and select a vat system in order to compute it" /*)*/;
 
   public static final String CUSTOM_REPORT_TIMEOUT = /*$$(*/
-      "Custom report %s couldn't be computed (timeout)." /*)*/;
+      "Custom report %s couldn't be computed (timeout). Related anomalies can be viewed in the dedicated tab" /*)*/;
+
+  public static final String CUSTOM_REPORT_ANOMALY_GROUP = /*$$(*/
+      "Group %s | Column %s | Line %s : %s" /*)*/;
+
+  public static final String CUSTOM_REPORT_ANOMALY_NO_GROUP = /*$$(*/
+      "Column %s | Line %s : %s" /*)*/;
+
+  public static final String CUSTOM_REPORT_WRONG_PERCENTAGE_BASE_COLUMN = /*$$(*/
+      "Column to be used for percentage computation is wrong." /*)*/;
 
   public static final String REPORT_TYPE_NOT_CUSTOM = /*$$(*/
       "Report type %s is not of a custom type and thus cannot be computed as such." /*)*/;
@@ -1636,4 +1657,10 @@ public final class AccountExceptionMessage {
 
   public static final String REVERSE_CHARGE_TAX_MISSING_ON_FISCAL_POSITION = /*$$(*/
       "A reverse charge tax is required on the fiscal position %s (From tax : %s - To tax : %s)." /*)*/;
+
+  public static final String FIXED_ASSET_MASS_VALIDATION_EXCEPTION = /*$$(*/
+      "The following error occurred during the validation of fixed asset %d : %s." /*)*/;
+
+  public static final String PAYMENT_CONDITION_LINKED_OBJECTS = /*$$(*/
+      "Changes will be applied on next records." /*)*/;
 }

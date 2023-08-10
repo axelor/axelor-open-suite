@@ -25,11 +25,11 @@
   <form name="tracking-number-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber"
     onNew="action-tracking-number-attrs-set-scale,action-tracking-number-record-product"
-    onLoad="action-tracking-number-attrs-hide-fields,action-tracking-number-attrs-set-scale">
+    onLoad="action-tracking-number-attrs-set-scale,action-tracking-number-attrs-set-product-readonly">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
-      <field name="product" hidden="true" onChange="action-tracking-number-attrs-hide-fields"
-        form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
+      <field name="product" form-view="product-form" grid-view="product-grid"
+        domain="self.dtype = 'Product'"/>
       <field name="warrantyExpirationDate"/>
       <field name="perishableExpirationDate"/>
       <field name="counter"/>
@@ -45,14 +45,12 @@
   </form>
 
   <form name="tracking-number-stock-move-line-form" title="Tracking number"
-    model="com.axelor.apps.stock.db.TrackingNumber"
-    onLoad="action-tracking-number-attrs-hide-fields,action-tracking-number-attrs-set-scale"
+    model="com.axelor.apps.stock.db.TrackingNumber" onLoad="action-tracking-number-attrs-set-scale"
     onNew="action-tracking-number-attrs-product-stock-move-line,action-tracking-number-group-from-stock-move-line,action-tracking-number-attrs-set-scale">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
-      <field name="product" onChange="action-tracking-number-attrs-hide-fields"
-        form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"
-        readonlyIf="$popup() || id != null"/>
+      <field name="product" form-view="product-form" grid-view="product-grid"
+        domain="self.dtype = 'Product'" readonlyIf="$popup() || id != null"/>
       <field name="warrantyExpirationDate" readonly="false"/>
       <field name="perishableExpirationDate" readonly="false"/>
       <field name="counter" hidden="true"/>
@@ -140,6 +138,12 @@
   <action-attrs name="action-tracking-number-attrs-set-scale">
     <attribute name="scale" for="counter"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-tracking-number-attrs-set-product-readonly">
+    <attribute name="readonly" for="product"
+      expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber = ?',id).count() > 0"
+      if="id != null"/>
   </action-attrs>
 
 </object-views>

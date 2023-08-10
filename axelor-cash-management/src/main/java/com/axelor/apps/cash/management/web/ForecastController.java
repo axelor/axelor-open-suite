@@ -41,7 +41,9 @@ public class ForecastController {
     if (forecastGenerator.getId() != null) {
       ForecastGenerator forecastGeneratorDb =
           Beans.get(ForecastGeneratorRepository.class).find(forecastGenerator.getId());
-      if (forecastGenerator.getPeriodicitySelect() != forecastGeneratorDb.getPeriodicitySelect()) {
+      if (!forecastGenerator
+          .getPeriodicitySelect()
+          .equals(forecastGeneratorDb.getPeriodicitySelect())) {
         Beans.get(ForecastService.class).reset(forecastGeneratorDb);
         response.setAttr("generateBtn", "title", I18n.get("Generate"));
         response.setAttr("forecastListPanel", "refresh", true);

@@ -14,6 +14,13 @@
     <bind to="useFakeData" column="useFakeData"/>
   </input>
 
+  <input file="gdpr-anonymizer-lines.csv" separator=";"
+    type="com.axelor.apps.base.db.AnonymizerLine">
+    <bind column="metaModel" to="metaModel" search="self.name = :metaModel"/>
+    <bind column="metaField" to="metaField"
+      search="self.metaModel.name = :metaModel AND self.name = :metaField"/>
+  </input>
+
   <input file="base_appGdpr.csv" separator=";" type="com.axelor.apps.base.db.App"
     search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp">
     <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"

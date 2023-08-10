@@ -38,6 +38,7 @@
   <selection name="sequence.generic.code.select" id="quality.sequence.generic.code.select">
     <option value="qualityAlert">Quality alert</option>
     <option value="qualityControl">Quality control</option>
+    <option value="qualityImprovement">Quality improvement</option>
   </selection>
 
   <selection name="team.type.select" id="quality.team.type.select">
@@ -56,6 +57,17 @@
   <selection name="quality.measuring.point.measuring.type.select">
     <option value="1">Note</option>
     <option value="2">Conformity</option>
+  </selection>
+
+  <selection name="quality.qi.type.select">
+    <option value="1">Product</option>
+    <option value="2">System</option>
+  </selection>
+
+  <selection name="quality.qi.detection.origin.select">
+    <option value="1">Supplier</option>
+    <option value="2">Internal</option>
+    <option value="3">Customer</option>
   </selection>
 
 </object-views>

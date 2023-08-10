@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -342,7 +343,11 @@ public class MoveLineServiceImpl implements MoveLineService {
     if (daysTotal.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
-    BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+
+    BigDecimal prorata = BigDecimal.ONE;
+    if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
+      prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+    }
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
   }
@@ -351,13 +356,13 @@ public class MoveLineServiceImpl implements MoveLineService {
   public void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException {
     Company company = accountingBatch.getCompany();
     LocalDate moveDate = accountingBatch.getMoveDate();
-    Journal researchJournal = accountingBatch.getResearchJournal();
+    Set<Journal> journalSet = accountingBatch.getJournalSet();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
 
     int offset = 0;
     List<MoveLine> moveLineList;
     Query<MoveLine> moveLineQuery =
-        cutOffService.getMoveLines(company, researchJournal, moveDate, accountingCutOffTypeSelect);
+        cutOffService.getMoveLines(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
     while (!(moveLineList = moveLineQuery.fetch(10, offset)).isEmpty()) {
 

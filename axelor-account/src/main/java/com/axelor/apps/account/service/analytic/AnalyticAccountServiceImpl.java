@@ -22,15 +22,18 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.utils.StringTool;
+import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -39,18 +42,18 @@ import org.apache.commons.collections.CollectionUtils;
 public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AccountConfigRepository accountConfigRepository;
   protected AccountConfigService accountConfigService;
+  protected AccountService accountService;
 
   @Inject
   public AnalyticAccountServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      AccountService accountService,
       AccountConfigRepository accountConfigRepository,
       AccountConfigService accountConfigService) {
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
+    this.accountService = accountService;
     this.accountConfigRepository = accountConfigRepository;
     this.accountConfigService = accountConfigService;
   }
@@ -134,16 +137,27 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       }
 
       if (account != null) {
-        List<AnalyticAccount> analyticAccountList =
-            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(account);
-        if (!CollectionUtils.isEmpty(analyticAccountList)) {
-          domain += " AND self.id in (";
-          String idList = StringTool.getIdListString(analyticAccountList);
-          domain += idList + ")";
+        List<Long> analyticAccountList = accountService.getAnalyticAccountsIds(account);
+        if (CollectionUtils.isNotEmpty(analyticAccountList)) {
+          domain += " AND self.id in (" + Joiner.on(",").join(analyticAccountList) + ")";
         }
       }
     }
 
     return domain;
+  }
+
+  @Override
+  public List<Long> getAnalyticAccountIdList(Company company, int position) throws AxelorException {
+    return accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
+        .filter(it -> it.getSequence() + 1 == position)
+        .findFirst()
+        .stream()
+        .map(AnalyticAxisByCompany::getAnalyticAxis)
+        .map(analyticAccountRepository::findByAnalyticAxis)
+        .map(Query::fetch)
+        .flatMap(Collection::stream)
+        .map(AnalyticAccount::getId)
+        .collect(Collectors.toList());
   }
 }

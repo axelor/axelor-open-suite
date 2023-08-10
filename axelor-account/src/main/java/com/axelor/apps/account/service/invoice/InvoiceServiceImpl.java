@@ -343,6 +343,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
     }
 
+    this.computeEstimatedPaymentDate(invoice);
+
     log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
 
     ventilateFactory.getVentilator(invoice).process();
@@ -745,7 +747,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     filter +=
         " AND self.partner = :_partner "
             + "AND self.currency = :_currency "
-            + "AND self.operationTypeSelect = :_operationTypeSelect";
+            + "AND self.operationTypeSelect = :_operationTypeSelect "
+            + "AND self.internalReference IS NULL";
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo
@@ -1189,5 +1192,33 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 Optional.ofNullable(it.getMoveLine()).map(MoveLine::getMove).orElse(null),
                 it.getMoveLine(),
                 invoice));
+  }
+
+  @Override
+  public Invoice computeEstimatedPaymentDate(Invoice invoice) {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return invoice;
+    }
+    if (invoice.getPartner() != null && invoice.getPartner().getPaymentDelay() != null) {
+
+      int paymentDelay = invoice.getPartner().getPaymentDelay().intValue();
+
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getDueDate() != null && invoiceTerm.getEstimatedPaymentDate() == null) {
+          invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
+        }
+      }
+    } else {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getEstimatedPaymentDate() != null) {
+          continue;
+        }
+
+        LocalDate estimatedPaymentDate = invoiceTerm.getDueDate();
+
+        invoiceTerm.setEstimatedPaymentDate(estimatedPaymentDate);
+      }
+    }
+    return invoice;
   }
 }

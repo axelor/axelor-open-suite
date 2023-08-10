@@ -82,6 +82,7 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
     <context name="_projectTask" expr="eval:__self__"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
@@ -141,7 +142,8 @@
   <action-attrs name="action-project-planning-time-attrs-default">
     <attribute name="value" for="projectTask" expr="eval:_projectTask"/>
     <attribute name="value" for="timeUnit" expr="eval:_timeUnit" if="_projectTask"/>
-    <attribute for="timeUnit" name="readonly" expr="eval: true" if="_projectTask"/>
+    <attribute for="timeUnit" name="readonly" expr="eval: true"
+      if="_projectTask &amp;&amp; _timeUnit"/>
     <attribute name="value" for="project" expr="eval:_project"/>
     <attribute name="value" for="userSet" expr="eval:_project.membersUserSet"
       if="_project != null"/>

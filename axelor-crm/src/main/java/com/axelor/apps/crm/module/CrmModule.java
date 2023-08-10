@@ -34,6 +34,8 @@ import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
+import com.axelor.apps.crm.service.CatalogService;
+import com.axelor.apps.crm.service.CatalogServiceImpl;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.ConvertLeadWizardServiceImpl;
 import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
@@ -48,6 +50,8 @@ import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.crm.service.PartnerCrmService;
 import com.axelor.apps.crm.service.PartnerCrmServiceImpl;
+import com.axelor.apps.crm.service.PartnerEmailDomainToolService;
+import com.axelor.apps.crm.service.PartnerEmailDomainToolServiceImpl;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.service.app.AppCrmServiceImpl;
 
@@ -70,5 +74,7 @@ public class CrmModule extends AxelorModule {
     bind(ConvertLeadWizardService.class).to(ConvertLeadWizardServiceImpl.class);
     bind(ConvertWizardOpportunityService.class).to(ConvertWizardOpportunityServiceImpl.class);
     bind(PartnerCrmService.class).to(PartnerCrmServiceImpl.class);
+    bind(CatalogService.class).to(CatalogServiceImpl.class);
+    bind(PartnerEmailDomainToolService.class).to(PartnerEmailDomainToolServiceImpl.class);
   }
 }

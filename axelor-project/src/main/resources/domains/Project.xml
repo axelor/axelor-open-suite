@@ -42,8 +42,6 @@
 
     <decimal name="estimatedTimeHrs" title="Estimated time (in hours)"/>
 
-    <decimal name="timeSpent" title="Time Spent"/>
-
     <decimal name="sequence" title="Sequence"/>
     <integer name="orderByState"/>
 

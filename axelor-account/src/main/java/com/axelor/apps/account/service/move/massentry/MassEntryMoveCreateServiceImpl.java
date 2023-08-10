@@ -1,8 +1,28 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move.massentry;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -12,7 +32,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -25,7 +45,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,11 +57,11 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveValidateService moveValidateService;
   protected PeriodService periodService;
-  protected MassEntryToolService massEntryToolService;
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected MoveLineMassEntryRepository moveLineMassEntryRepository;
   protected MoveSimulateService moveSimulateService;
   protected MoveRepository moveRepository;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public MassEntryMoveCreateServiceImpl(
@@ -52,22 +71,22 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       PeriodServiceAccount periodServiceAccount,
       MoveValidateService moveValidateService,
       PeriodService periodService,
-      MassEntryToolService massEntryToolService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService,
       MoveLineMassEntryRepository moveLineMassEntryRepository,
       MoveSimulateService moveSimulateService,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveValidateService = moveValidateService;
     this.periodService = periodService;
-    this.massEntryToolService = massEntryToolService;
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.moveLineMassEntryRepository = moveLineMassEntryRepository;
     this.moveSimulateService = moveSimulateService;
     this.moveRepository = moveRepository;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -78,18 +97,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     boolean authorizeSimulatedMove = move.getJournal().getAuthorizeSimulatedMove();
 
     if (move.getJournal().getCompany() != null) {
-      int[] functionalOriginTab = new int[0];
-      if (!ObjectUtils.isEmpty(move.getJournal().getAuthorizedFunctionalOriginSelect())) {
-        functionalOriginTab =
-            Arrays.stream(
-                    move.getJournal()
-                        .getAuthorizedFunctionalOriginSelect()
-                        .replace(" ", "")
-                        .split(","))
-                .mapToInt(Integer::parseInt)
-                .toArray();
-      }
-
       newMove =
           moveCreateService.createMove(
               move.getJournal(),
@@ -102,7 +109,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
               move.getPartner() != null ? move.getPartner().getFiscalPosition() : null,
               move.getPartnerBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_MASS_ENTRY,
-              !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
+              move.getFunctionalOriginSelect(),
               false,
               false,
               false,
@@ -115,30 +122,37 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
       int counter = 1;
 
-      for (MoveLine moveLineElement : move.getMoveLineList()) {
-        BigDecimal amount = moveLineElement.getDebit().add(moveLineElement.getCredit());
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        BigDecimal amount = moveLine.getDebit().add(moveLine.getCredit());
 
-        MoveLine moveLine =
+        MoveLine newMoveLine =
             moveLineCreateService.createMoveLine(
                 newMove,
-                moveLineElement.getPartner(),
-                moveLineElement.getAccount(),
+                moveLine.getPartner(),
+                moveLine.getAccount(),
                 amount,
-                moveLineElement.getDebit().compareTo(BigDecimal.ZERO) > 0,
-                moveLineElement.getDate(),
-                moveLineElement.getOriginDate(),
+                moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
+                moveLine.getDate(),
+                moveLine.getOriginDate(),
                 counter,
-                moveLineElement.getOrigin(),
-                moveLineElement.getName());
-        moveLine.setVatSystemSelect(moveLineElement.getVatSystemSelect());
-        moveLine.setCutOffStartDate(moveLineElement.getCutOffStartDate());
-        moveLine.setCutOffEndDate(moveLineElement.getCutOffEndDate());
-        newMove.getMoveLineList().add(moveLine);
+                moveLine.getOrigin(),
+                moveLine.getName());
+        newMoveLine.setVatSystemSelect(moveLine.getVatSystemSelect());
+        newMoveLine.setCutOffStartDate(moveLine.getCutOffStartDate());
+        newMoveLine.setCutOffEndDate(moveLine.getCutOffEndDate());
+        newMove.getMoveLineList().add(newMoveLine);
 
-        moveLine.setTaxLine(moveLineElement.getTaxLine());
+        newMoveLine.setTaxLine(moveLine.getTaxLine());
 
-        moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-        moveLineMassEntryToolService.setAnalyticsFields(moveLine, moveLineElement);
+        moveLineComputeAnalyticService.generateAnalyticMoveLines(newMoveLine);
+        moveLineMassEntryRecordService.setAnalytics(newMoveLine, moveLine);
+        if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
+          newMoveLine.clearAnalyticMoveLineList();
+          for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+            newMoveLine.addAnalyticMoveLineListItem(
+                analyticMoveLineRepository.copy(analyticMoveLine, false));
+          }
+        }
 
         counter++;
       }
@@ -233,6 +247,8 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         }
         massEntryLine.setFieldsErrorList(null);
         MoveLineMassEntry copy = moveLineMassEntryRepository.copy(massEntryLine, false);
+        moveLineMassEntryRecordService.fillAnalyticMoveLineList(massEntryLine, copy);
+
         move.addMoveLineListItem(copy);
         move.addMoveLineMassEntryListItem(copy);
       }

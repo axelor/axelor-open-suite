@@ -19,12 +19,14 @@
 package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface PaymentSessionValidateService {
@@ -52,6 +54,15 @@ public interface PaymentSessionValidateService {
   boolean isEmpty(PaymentSession paymentSession);
 
   public List<InvoiceTerm> getInvoiceTermsWithInActiveBankDetails(PaymentSession paymentSession);
+
+  void createAndReconcileMoveLineFromPair(
+      PaymentSession paymentSession,
+      Move move,
+      InvoiceTerm invoiceTerm,
+      Pair<InvoiceTerm, BigDecimal> pair,
+      boolean out,
+      Map<Move, BigDecimal> paymentAmountMap)
+      throws AxelorException;
 
   public boolean containsCompensativeInvoiceTerm(
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession);

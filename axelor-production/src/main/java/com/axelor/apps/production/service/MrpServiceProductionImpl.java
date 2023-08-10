@@ -514,7 +514,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       for (ProdProcessLine prodProcessLine :
           defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
         totalDuration +=
-            prodProcessLineService.computeEntireCycleDuration(prodProcessLine, reorderQty);
+            prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty);
       }
     }
     // If days should be rounded to a upper value

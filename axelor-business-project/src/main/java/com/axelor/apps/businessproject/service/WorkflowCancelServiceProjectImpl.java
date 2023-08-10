@@ -33,8 +33,7 @@ import com.google.inject.persist.Transactional;
 
 public class WorkflowCancelServiceProjectImpl extends WorkflowCancelServiceContractImpl {
 
-  @Inject InvoicingProjectRepository invoicingProjectRepo;
-
+  protected InvoicingProjectRepository invoicingProjectRepo;
   protected ConsumptionLineRepository consumptionLineRepo;
 
   @Inject
@@ -43,13 +42,15 @@ public class WorkflowCancelServiceProjectImpl extends WorkflowCancelServiceContr
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
-      ConsumptionLineRepository consumptionLineRepo) {
+      ConsumptionLineRepository consumptionLineRepo,
+      InvoicingProjectRepository invoicingProjectRepo) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         saleOrderRepository,
         purchaseOrderRepository,
         consumptionLineRepo);
+    this.invoicingProjectRepo = invoicingProjectRepo;
   }
 
   @Override

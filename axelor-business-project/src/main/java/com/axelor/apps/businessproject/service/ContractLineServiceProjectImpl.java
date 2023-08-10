@@ -20,11 +20,14 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.google.inject.Inject;
@@ -37,8 +40,18 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
       CurrencyService currencyService,
-      ProductCompanyService productCompanyService) {
-    super(appBaseService, accountManagementService, currencyService, productCompanyService);
+      ProductCompanyService productCompanyService,
+      PriceListService priceListService,
+      ContractVersionRepository contractVersionRepo,
+      DurationService durationService) {
+    super(
+        appBaseService,
+        accountManagementService,
+        currencyService,
+        productCompanyService,
+        priceListService,
+        contractVersionRepo,
+        durationService);
   }
 
   @Override

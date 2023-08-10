@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
 
 public interface ContractLineService {
   /**
@@ -40,6 +41,10 @@ public interface ContractLineService {
    * @return ContractLine filled with Product information.
    */
   ContractLine fill(ContractLine contractLine, Product product) throws AxelorException;
+
+  ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion);
+
+  void updateContractLinesFromContractVersion(ContractVersion contractVersion);
 
   /**
    * Compute price and tax of Product to ContractLine.
@@ -71,7 +76,7 @@ public interface ContractLineService {
    * @param contractLine to compute ex/in tax total.
    * @return ContractLine with ex/in tax total computed.
    */
-  ContractLine computeTotal(ContractLine contractLine);
+  ContractLine computeTotal(ContractLine contractLine) throws AxelorException;
 
   /**
    * Create analytic move lines using analytic distribution template
@@ -80,4 +85,7 @@ public interface ContractLineService {
    * @return ContractLine filled with analytic move lines
    */
   ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
+
+  ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
+      throws AxelorException;
 }

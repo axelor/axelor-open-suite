@@ -47,7 +47,7 @@
 
     <!-- From contact -->
     <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
-      title="Email"/>
+      title="Email" unique="true"/>
     <string name="fixedPhone" title="Fixed phone"/>
     <string name="mobilePhone" title="Mobile phone"/>
     <string name="webSite" title="Website"/>

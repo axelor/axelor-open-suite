@@ -17,8 +17,16 @@
     <boolean name="isDoNotCall" title="Do not call"/>
     <boolean name="isDoNotEmail" title="Do not email"/>
     <boolean name="isNurturing" title="Nurturing"/>
-    <datetime name="lastEventDateT" title="Last event date"/>
-    <datetime name="scheduledEventDateT" title="Scheduled event date"/>
+    <datetime name="lastEventDateT" title="Last event date" formula="true">
+      <![CDATA[
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.partner = id AND ICAL_EVENT.end_date_time < NOW() ORDER BY ICAL_EVENT.end_date_time DESC LIMIT 1
+      ]]>
+    </datetime>
+    <datetime name="scheduledEventDateT" title="Next scheduled event date" formula="true">
+      <![CDATA[
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.partner = id AND ICAL_EVENT.start_date_time > NOW() ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
+      ]]>
+    </datetime>
 
     <!-- Change title -->
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
@@ -39,6 +47,7 @@
 
     <integer name="sequence" title="Sequence"/>
     <boolean name="isMainContact" title="Main Contact"/>
+    <boolean name="isAlreadyConvertFromLead"/>
 
     <extra-code>
     <![CDATA[

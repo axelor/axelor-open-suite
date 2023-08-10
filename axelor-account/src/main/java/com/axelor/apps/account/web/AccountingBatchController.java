@@ -38,6 +38,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -198,7 +199,7 @@ public class AccountingBatchController {
       ControllerCallableTool<Batch> batchControllerCallableTool = new ControllerCallableTool<>();
       Batch batch =
           batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
-      if (batch != null) {
+      if (batch != null && ObjectUtils.notEmpty(batch.getComments())) {
         response.setInfo(batch.getComments());
       }
       response.setReload(true);

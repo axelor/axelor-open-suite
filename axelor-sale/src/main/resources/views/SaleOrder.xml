@@ -319,15 +319,16 @@
 	          </div>
 	        ]]></viewer>
         </field>
-        <field name="$invoicingState" showTitle="false" readonly="true"
-          showIf="statusSelect >= 3" css="label-bold bold" colSpan="3">
-          <viewer depends="$invoicingState"><![CDATA[
+        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
+          name="invoicingState" showTitle="false" readonly="true" showIf="statusSelect >= 3"
+          css="label-bold bold" colSpan="3">
+          <viewer depends="invoicingState"><![CDATA[
 	        <div>
 	        <div class="span7">
 	          <h5>
-	          <span class="label label-important" ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
-	          <span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
-	          <span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
+	          <span class="label label-important" ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
+	          <span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
+	          <span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
 	        </h5>
 	        </div>
 	      </div>
@@ -564,7 +565,7 @@
           colSpan="12">
           <field name="$_projectGeneratorType" title="Project generation method"
             x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"
-            help="You can either generate an empty project, a project with sub-projects or a project with tasks. For the last two options, one element will be created for each sale order line with a service-type product that has &quot;Produce&quot; as its supply method (Configuration tab)"/>
+            help="You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has &quot;Produce&quot; as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration."/>
           <panel name="fillOrGenerateProjectPanel" stacked="true">
             <button name="generateProjectBtn" readonlyIf="!$_projectGeneratorType"
               title="Generate Project/Business"
@@ -944,8 +945,7 @@
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" domain="self.typeSelect = 'project'" form-view="project-form"
-          grid-view="project-grid" colSpan="12"/>
+        <field name="project" form-view="project-form" grid-view="project-grid" colSpan="12"/>
       </panel>
 
     </panel-tabs>
@@ -1207,7 +1207,7 @@
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="$invoicingState"/>
+    <field name="invoicingState"/>
     <template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -1231,9 +1231,9 @@
 			  <div>
 				  <div class="span6">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
+						<span class="label label-important"  ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
+						<span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -1285,7 +1285,7 @@
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="$invoicingState"/>
+    <field name="invoicingState"/>
     <template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -1309,9 +1309,9 @@
 			  <div>
 				  <div class="span6">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
+						<span class="label label-important"  ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
+						<span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -1452,6 +1452,7 @@
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-attrs-incoterm-required"/>
+    <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1663,6 +1664,7 @@
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="statusSelect" expr="eval: 1"/>
     <field name="deliveryState" expr="eval: 1"/>
+    <field name="invoicingState" expr="eval: 1"/>
     <field name="versionNumber" expr="eval: versionNumber + 1"/>
   </action-record>
 
@@ -1931,6 +1933,7 @@
     <field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="shipmentDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="invoicingState" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="saleOrderLineList.product.name" title="Product Name"/>
     <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
     <field name="cancelReason" hidden="true"/>
@@ -2187,6 +2190,13 @@
   <action-attrs name="action-sale-order-attrs-set-required">
     <attribute name="required" for="$_projectGeneratorType"
       expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product">
+    <attribute name="selection-in" for="$_projectGeneratorType"
+      if="!__config__.app.getApp('business-project')?.getEnableTaskTemplatesByProduct()"
+      expr="['PROJECT_ALONE', 'SUB_PROJECT_BY_LINE', 'TASK_BY_LINE']"/>
   </action-attrs>
 
   <action-method name="action-sale-order-method-generate-advance-payment">

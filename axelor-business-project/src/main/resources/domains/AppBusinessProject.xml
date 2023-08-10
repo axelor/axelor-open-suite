@@ -7,7 +7,7 @@
 
   <entity name="AppBusinessProject" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <many-to-one name="productInvoicingProject" ref="com.axelor.apps.base.db.Product"
       title="Default Invoicing Product for Projects"/>
@@ -28,7 +28,8 @@
     <boolean name="enableToInvoiceTimesheet" title="Enable to invoice timesheet"/>
     <boolean name="enableToInvoiceExpense" title="Enable to invoice expense"/>
 
-    <boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
+    <boolean name="generateProjectOrder" title="Generate/Select Project for Order"
+      help="This option allows you to link an order to a new or existing project."/>
     <boolean name="automaticProject" title="Automatic Project"/>
 
     <boolean name="projectSaleOrderLines" title="Project in Sale order lines"/>

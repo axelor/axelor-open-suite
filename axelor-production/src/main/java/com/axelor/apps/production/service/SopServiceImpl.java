@@ -35,7 +35,6 @@ import com.axelor.apps.production.db.repo.SopRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -45,8 +44,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class SopServiceImpl implements SopService {
 
@@ -85,7 +82,7 @@ public class SopServiceImpl implements SopService {
         periodRepo
             .all()
             .filter("self.year = :year AND self.statusSelect = :status")
-            .bind("year", sop.getYear())
+            .bind("year", sop.getPeriodYear())
             .bind("status", PeriodRepository.STATUS_OPENED)
             .fetch();
     List<SopLine> sopLineList = new ArrayList<SopLine>();
@@ -120,24 +117,19 @@ public class SopServiceImpl implements SopService {
     for (SopLine sopLine : sop.getSopLineList()) {
       sop = sopRepo.find(sop.getId());
       if (sop.getIsForecastOnHistoric()) {
-        this.setSalesForecast(
-            sopLine, sop.getProductCategory(), sop.getStockLocationSet(), sop.getCompany());
+        this.setSalesForecast(sopLine, sop.getProductCategory(), sop.getCompany());
       }
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void setSalesForecast(
-      SopLine sopLine,
-      ProductCategory category,
-      Set<StockLocation> stockLocationSet,
-      Company company)
+  protected void setSalesForecast(SopLine sopLine, ProductCategory category, Company company)
       throws AxelorException {
 
     sopLine = sopLineRepo.find(sopLine.getId());
     LocalDate fromDate = sopLine.getPeriod().getFromDate();
     LocalDate toDate = sopLine.getPeriod().getToDate();
-    Year year = sopLine.getSop().getYearbasedHistoric();
+    Year year = sopLine.getSop().getHistoricPeriodYear();
     if (year != null) {
       fromDate = fromDate.withYear(year.getFromDate().getYear());
       toDate = toDate.withYear(year.getToDate().getYear());
@@ -147,11 +139,6 @@ public class SopServiceImpl implements SopService {
     statusList.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 
-    List<Long> stockLocationIds =
-        stockLocationSet.stream()
-            .map(stockLocation -> stockLocation.getId())
-            .collect(Collectors.toList());
-
     BigDecimal exTaxSum = BigDecimal.ZERO;
     Query<SaleOrderLine> query =
         saleOrderLineRepo
@@ -159,12 +146,10 @@ public class SopServiceImpl implements SopService {
             .filter(
                 "self.saleOrder.company = ?1 "
                     + "AND self.saleOrder.statusSelect in (?2) "
-                    + "AND self.product.productCategory = ?3 "
-                    + "AND self.saleOrder.stockLocation.id in (?4)",
+                    + "AND self.product.productCategory = ?3",
                 company,
                 statusList,
-                category,
-                stockLocationIds)
+                category)
             .order("id");
     int offset = 0;
     List<SaleOrderLine> saleOrderLineList;

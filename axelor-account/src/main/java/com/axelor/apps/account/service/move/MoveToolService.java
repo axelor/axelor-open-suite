@@ -201,4 +201,6 @@ public interface MoveToolService {
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 
   void setDescriptionOnMoveLineList(Move move);
+
+  BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
 }

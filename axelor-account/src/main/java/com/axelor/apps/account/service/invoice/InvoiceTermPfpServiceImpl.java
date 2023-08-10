@@ -20,8 +20,6 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -41,7 +39,6 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -68,7 +65,6 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
     Company company = invoiceTerm.getCompany();
 
@@ -85,9 +81,6 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       invoiceTerm.setReasonOfRefusalToPay(null);
       invoiceTerm.setReasonOfRefusalToPayStr(null);
     }
-    invoiceTermRepo.save(invoiceTerm);
-
-    this.checkOtherInvoiceTerms(invoiceTerm);
   }
 
   @Override
@@ -187,7 +180,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
@@ -201,10 +194,6 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoiceTerm.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
-
-    invoiceTermRepo.save(invoiceTerm);
-
-    this.checkOtherInvoiceTerms(invoiceTerm);
   }
 
   @Override
@@ -248,7 +237,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     InvoiceTerm invoiceTerm =
         invoiceTermService.createInvoiceTerm(
             invoice,
-            originalInvoiceTerm.getMoveLine().getMove(),
+            originalInvoiceTerm.getMoveLine() != null
+                    && originalInvoiceTerm.getMoveLine().getMove() != null
+                ? originalInvoiceTerm.getMoveLine().getMove()
+                : null,
             originalInvoiceTerm.getMoveLine(),
             originalInvoiceTerm.getBankDetails(),
             originalInvoiceTerm.getPfpValidatorUser(),
@@ -299,63 +291,24 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setPfpPartialReason(partialReason);
     originalInvoiceTerm.setCompanyAmount(
         originalInvoiceTerm.getCompanyAmount().subtract(newInvoiceTerm.getCompanyAmount()));
-    originalInvoiceTerm.setCompanyAmount(
+    originalInvoiceTerm.setCompanyAmountRemaining(
         originalInvoiceTerm
             .getCompanyAmountRemaining()
             .subtract(newInvoiceTerm.getCompanyAmountRemaining()));
   }
 
-  protected void checkOtherInvoiceTerms(InvoiceTerm invoiceTerm) {
-    Invoice invoice = invoiceTerm.getInvoice();
-    checkOtherInvoiceTerms(invoice);
-    MoveLine moveLine = invoiceTerm.getMoveLine();
-    if (moveLine == null) {
-      return;
-    }
-    checkOtherInvoiceTerms(moveLine.getMove());
-  }
-
-  @Transactional
-  protected void checkOtherInvoiceTerms(Invoice invoice) {
-    if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-      return;
-    }
-    InvoiceTerm firstInviceTerm = invoice.getInvoiceTermList().get(0);
-    int pfpStatus = this.getPfpValidateStatusSelect(firstInviceTerm);
-    int otherPfpStatus;
-    for (InvoiceTerm otherInvoiceTerm : invoice.getInvoiceTermList()) {
-      if (!otherInvoiceTerm.getId().equals(firstInviceTerm.getId())) {
-        otherPfpStatus = this.getPfpValidateStatusSelect(otherInvoiceTerm);
-
-        if (otherPfpStatus != pfpStatus) {
-          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
-          break;
-        }
-      }
-    }
-
-    invoice.setPfpValidateStatusSelect(pfpStatus);
-    invoiceRepo.save(invoice);
-  }
-
-  @Transactional
-  protected void checkOtherInvoiceTerms(Move move) {
-    if (move == null) {
-      return;
-    }
-    List<InvoiceTerm> invoiceTermList =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getInvoiceTermList)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
+  @Override
+  public Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
     if (CollectionUtils.isEmpty(invoiceTermList)) {
-      return;
+      return null;
     }
     InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
     int pfpStatus = this.getPfpValidateStatusSelect(firstInvoiceTerm);
     int otherPfpStatus;
     for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
-      if (!otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
+      if (otherInvoiceTerm.getId() != null
+          && firstInvoiceTerm.getId() != null
+          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
         otherPfpStatus = this.getPfpValidateStatusSelect(otherInvoiceTerm);
 
         if (otherPfpStatus != pfpStatus) {
@@ -365,11 +318,11 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       }
     }
 
-    move.setPfpValidateStatusSelect(pfpStatus);
-    moveRepo.save(move);
+    return pfpStatus;
   }
 
-  protected int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm) {
+  @Override
+  public int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getPfpValidateStatusSelect()
         == InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED) {
       return InvoiceTermRepository.PFP_STATUS_VALIDATED;
@@ -431,21 +384,26 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateInvoiceTermsAfterPfpPartial(Invoice originalInvoice) throws AxelorException {
+  public boolean generateInvoiceTermsAfterPfpPartial(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException {
     List<InvoiceTerm> itList =
-        originalInvoice.getInvoiceTermList().stream()
+        invoiceTermList.stream()
             .filter(InvoiceTerm::getPfpfPartialValidationOk)
             .collect(Collectors.toList());
-    if (!CollectionUtils.isEmpty(itList)) {
-      for (InvoiceTerm it : itList) {
-        it = invoiceTermRepo.find(it.getId());
-        BigDecimal amount = it.getAmount();
-        it.setAmount(it.getPfpPartialValidationAmount());
-        generateInvoiceTerm(it, it.getAmount(), amount, it.getPfpPartialReason());
-        it.setPfpfPartialValidationOk(false);
-        it.setPfpPartialValidationAmount(BigDecimal.ZERO);
-        invoiceTermRepo.save(it);
-      }
+
+    if (CollectionUtils.isEmpty(itList)) {
+      return false;
     }
+
+    for (InvoiceTerm it : itList) {
+      it = invoiceTermRepo.find(it.getId());
+      BigDecimal amount = it.getAmount();
+      it.setAmount(it.getPfpPartialValidationAmount());
+      generateInvoiceTerm(it, it.getAmount(), amount, it.getPfpPartialReason());
+      it.setPfpfPartialValidationOk(false);
+      it.setPfpPartialValidationAmount(BigDecimal.ZERO);
+      invoiceTermRepo.save(it);
+    }
+    return true;
   }
 }

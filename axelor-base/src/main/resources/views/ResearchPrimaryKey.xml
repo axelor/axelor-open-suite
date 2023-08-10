@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+
+  <grid name="research-primary-key-grid" title="Primary keys"
+    model="com.axelor.apps.base.db.ResearchPrimaryKey">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="typeSelect"/>
+  </grid>
+
+  <form name="research-primary-key-from" title="Primary key"
+    model="com.axelor.apps.base.db.ResearchPrimaryKey">
+    <panel name="mainPanel">
+      <field name="code" required="true"/>
+      <field name="name"/>
+      <field name="typeSelect"/>
+      <panel-related name="researchParameterListPanel" field="researchParameterList"
+        form-view="research-parameter-form" grid-view="research-parameter-grid" colSpan="12"
+        readonly="true"/>
+    </panel>
+  </form>
+
+</object-views>

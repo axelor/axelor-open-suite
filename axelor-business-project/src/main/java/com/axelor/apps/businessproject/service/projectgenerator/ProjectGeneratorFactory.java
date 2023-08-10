@@ -24,6 +24,7 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryAlone;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactorySubProject;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryTask;
+import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryTaskTemplate;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -64,6 +65,8 @@ public interface ProjectGeneratorFactory {
         return Beans.get(ProjectGeneratorFactoryTask.class);
       case SUB_PROJECT_BY_LINE:
         return Beans.get(ProjectGeneratorFactorySubProject.class);
+      case TASK_TEMPLATE:
+        return Beans.get(ProjectGeneratorFactoryTaskTemplate.class);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

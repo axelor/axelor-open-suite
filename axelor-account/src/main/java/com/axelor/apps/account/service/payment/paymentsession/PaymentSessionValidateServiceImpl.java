@@ -368,12 +368,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
 
-    Partner partner = null;
-    if (!isGlobal) {
-      partner = invoiceTerm.getMoveLine().getPartner();
-    }
+    Partner partner = invoiceTerm.getMoveLine().getPartner();
 
-    Move move = this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap);
+    Move move =
+        this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap, isGlobal);
 
     BigDecimal reconciledAmount = BigDecimal.ZERO;
     if (!CollectionUtils.isEmpty(invoiceTermLinkWithRefundList)) {
@@ -417,7 +415,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       Partner partner,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
-      Map<Move, BigDecimal> paymentAmountMap)
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean isGlobal)
       throws AxelorException {
     LocalDate accountingDate = this.getAccountingDate(paymentSession, invoiceTerm);
     Move move;
@@ -430,7 +429,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     if (paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
-        || !moveMap.containsKey(partner)) {
+        || !moveMap.containsKey(partner)
+        || (isGlobal && !partner.getIsCompensation())) {
       BankDetails partnerBankDetails = null;
       if (paymentSession.getAccountingMethodSelect()
           == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM) {
@@ -617,20 +617,19 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       boolean isGlobal)
       throws AxelorException {
-
     for (LocalDate accountingDate : moveDateMap.keySet()) {
 
       Map<Partner, List<Move>> moveMapIt = moveDateMap.get(accountingDate);
-
       if (!moveMapIt.isEmpty()) {
         this.generateCashMoveLines(paymentSession, moveMapIt, paymentAmountMap, out, isGlobal);
 
-        if (isGlobal
-            && moveDateMap != null
-            && moveDateMap.get(accountingDate) != null
-            && moveDateMap.get(accountingDate).get(null) != null) {
-          BigDecimal paymentAmount =
-              paymentAmountMap.get(moveDateMap.get(accountingDate).get(null).get(0));
+        if (isGlobal && moveDateMap != null && moveDateMap.get(accountingDate) != null) {
+          BigDecimal paymentAmount = BigDecimal.ZERO;
+          for (Move move : paymentAmountMap.keySet()) {
+            if (accountingDate == null || accountingDate.equals(move.getDate())) {
+              paymentAmount = paymentAmount.add(paymentAmountMap.get(move));
+            }
+          }
           this.generateCashMove(paymentSession, accountingDate, paymentAmount, out);
         }
       }
@@ -915,8 +914,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         JPA.em()
             .createQuery(
                 "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
-                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
-                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession",
                 InvoiceTerm.class);
     invoiceTermQuery.setParameter("paymentSession", paymentSession);
 
@@ -1000,7 +998,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         paymentSession, processPaymentSession(paymentSession, invoiceTermLinkWithRefund));
   }
 
-  protected void createAndReconcileMoveLineFromPair(
+  @Override
+  public void createAndReconcileMoveLineFromPair(
       PaymentSession paymentSession,
       Move move,
       InvoiceTerm invoiceTerm,
@@ -1052,11 +1051,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
       creditMoveLine = moveLine;
       debitMoveLine = pair.getLeft().getMoveLine();
-    } else if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+    } else if (pair.getLeft().getMoveLine().getMove().getFunctionalOriginSelect()
         == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
       creditMoveLine = pair.getLeft().getMoveLine();
       debitMoveLine = moveLine;
     }
+
     Reconcile invoiceTermsReconcile =
         reconcileService.createReconcile(debitMoveLine, creditMoveLine, pair.getRight(), true);
 

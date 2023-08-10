@@ -16,6 +16,8 @@
       <field name="requestOriginList" colSpan="12"/>
       <field name="searchConfigList" colSpan="12"/>
       <field name="relationsShipAnonymizer" colSpan="12"/>
+      <field name="dataToExcludeConfig" colSpan="12"
+        grid-view="gdpr-data-to-exclude-config-grid" form-view="gdpr-data-to-exclude-config-form"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

@@ -219,7 +219,11 @@
       hideIf="typeSelect == 5">
       <field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one"
         target="com.axelor.message.db.EmailAddress" canNew="true"
-        onChange="action-event-method-add-email-guest"/>
+        onChange="action-event-method-add-email-guest">
+        <editor x-show-titles="false" x-viewer="true">
+          <field name="address" widget="email" colSpan="12" placeholder="whatever@example.com"/>
+        </editor>
+      </field>
       <field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
         <editor layout="table" x-show-titles="false">
           <field name="name" readonly="true"/>
@@ -385,7 +389,6 @@
     <action name="action-event-view-modifications-recurrence"
       if="recurrenceConfiguration &amp;&amp; id > 0"/>
     <action name="action-event-attrs-show-past-event-text"/>
-    <action name="action-event-method-fill-event-related-dates"/>
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
@@ -630,11 +633,6 @@
   </action-record>
 
   <!-- ACTION METHOD -->
-
-  <action-method name="action-event-method-fill-event-related-dates"
-    model="com.axelor.apps.crm.db.Event">
-    <call class="com.axelor.apps.crm.web.EventController" method="fillEventDates"/>
-  </action-method>
 
   <action-method name="action-event-method-compute-from-start-date-time">
     <call class="com.axelor.apps.crm.web.EventController" method="computeFromStartDateTime"/>

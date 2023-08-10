@@ -6,7 +6,73 @@
   <form name="mrp-manuf-order-form" model="com.axelor.apps.supplychain.db.Mrp" title="MPS"
     width="large" onLoad="action-attrs-mrp-generate-all-proposals"
     onNew="action-mrp-manuf-order-record-onnew">
-    <panel-include view="mrp-form"/>
+    <menubar>
+      <menu title="Tools" showTitle="true" icon="fa-wrench">
+        <item name="runCalculationItem" title="Run calculation" showIf="statusSelect != 1"
+          action="save,action-method-mrp-run-calculation"
+          prompt="Are you sure you want to run the calculation ? Calculation can take a long time."/>
+        <item name="generateProposalsItem" title="Generate proposals"
+          showIf="statusSelect == 2" action="save,action-mrp-view-generate-proposal-wizard"/>
+        <item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes"
+          name="undoManualChangesItem"/>
+      </menu>
+    </menubar>
+
+    <panel name="infoPanel">
+      <field name="mrpSeq" showTitle="false" colSpan="12">
+        <viewer depends="mrpSeq,mrpTypeSelect"><![CDATA[
+					<h3>
+						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 2" x-translate>MPS</span>
+						{{record.mrpSeq}}
+					</h3>
+				]]></viewer>
+      </field>
+    </panel>
+    <panel colSpan="12" name="errorLogPanel" showIf="errorLog"
+      title="Error that happened during the computation">
+      <field colSpan="12" name="errorLog" showTitle="false"/>
+    </panel>
+    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
+      <field name="id"/>
+      <spacer/>
+      <field name="name"/>
+      <field name="createdOn" colSpan="3"/>
+      <field name="createdBy" colSpan="3"/>
+      <field name="startDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
+      <field name="endDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
+      <field name="endDate" colSpan="6" hidden="true"/>
+      <field name="stockLocation" form-view="stock-location-form"
+        grid-view="stock-location-grid" colSpan="6"
+        domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)"
+        canEdit="false"/>
+      <field name="stockLocation.company"/>
+      <field name="displayProductWithoutProposal" widget="boolean-switch"/>
+      <field name="computeWithSubStockLocation" widget="boolean-switch"/>
+      <field name="mrpTypeSelect" hidden="true"/>
+      <panel-related name="productSetPanel" field="productSet" canEdit="false"
+        form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12"
+        domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND self.productSubTypeSelect = 1 AND self.dtype = 'Product'"/>
+      <panel-related name="productCategorySetPanel" field="productCategorySet"
+        canEdit="false" form-view="product-category-form" grid-view="product-category-grid"
+        canNew="false" colSpan="12"/>
+      <field name="takeInAccountSubCategories" colSpan="12" widget="boolean-switch"/>
+      <panel-related name="productFamilySetPanel" field="productFamilySet"
+        canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
+        canNew="false" colSpan="12"/>
+      <panel-related name="saleOrderLineSetPanel" field="saleOrderLineSet"
+        canEdit="false" form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid"
+        canNew="false" colSpan="12" onSelect="action-mrp-method-sale-order-domain"
+        help="A list of sale order lines that will be processed. The lines that can be selected are the ones conforming to the following conditions :\nProduct is storable\nProduct is managed in stock\nProduct is not excluded from mrp\nSale order/quotation has the same stockLocation or a subLocation\nIf MPS, product must be a finished product\nDelivered quantity of the line must be lower than total quantity\nThe line must conform to one or several of the mrp move types"/>
+      <panel-related name="mrpForecastSetPanel" field="mrpForecastSet"
+        form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12"
+        domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true AND self.product.productSubTypeSelect = 1"/>
+    </panel>
+    <panel name="statusPanel" showIf="statusSelect == 1" colSpan="12">
+      <field name="statusSelect" hidden="true"/>
+      <label name="calculationInProgressLabel" title="Calculation in progress" colSpan="12"/>
+    </panel>
+    <panel-dashlet name="mrpLinePanel" action="action-mrp-view-mrp-line" colSpan="12"
+      showIf="statusSelect == 2" canSearch="true" height="800" x-show-bars="true"/>
   </form>
 
   <grid name="mrp-manuf-order-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
