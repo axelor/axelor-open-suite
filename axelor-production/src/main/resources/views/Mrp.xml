@@ -16,12 +16,6 @@
         <item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes"
           name="undoManualChangesItem"/>
       </menu>
-      <menu title="Reports" showTitle="true" icon="fa-files-o">
-        <item name="printWeeksItem" title="Weekly breakdown"
-          action="save,action-method-mrp-print-weeks" showIf="statusSelect == 2"/>
-        <item name="printListItem" title="List" action="save,action-method-mrp-print-list"
-          showIf="statusSelect == 2"/>
-      </menu>
     </menubar>
 
     <panel name="infoPanel">
