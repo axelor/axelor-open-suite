@@ -200,36 +200,42 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   public void checkDateMassEntryMove(Move move, int temporaryMoveNumber) throws AxelorException {
     MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
 
-    boolean hasPeriodError = false;
-    boolean hasDateError = false;
-    boolean hasEmptyDate = false;
+    boolean hasError = this.checkPeriod(move, temporaryMoveNumber);
+    hasError = this.checkEmptyDate(move, temporaryMoveNumber) || hasError;
+    hasError =
+        this.checkDifferentDate(firstMoveLine.getDate(), move, temporaryMoveNumber) || hasError;
 
-    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      if (!hasDateError && moveLine.getDate() == null) {
-        hasDateError = true;
-        hasEmptyDate = true;
-        this.setMassEntryErrorMessage(
-            move,
-            I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE),
-            true,
-            temporaryMoveNumber);
-      } else if (!hasDateError && !firstMoveLine.getDate().equals(moveLine.getDate())) {
-        hasDateError = true;
-        this.setMassEntryErrorMessage(
-            move,
-            I18n.get(AccountExceptionMessage.MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE),
-            true,
-            temporaryMoveNumber);
-      }
-
-      if (!hasEmptyDate) {
-        hasPeriodError = this.checkPeriod(move, temporaryMoveNumber);
-      }
-
-      if (hasDateError || hasPeriodError) {
-        this.setFieldsErrorListMessage(moveLine, "date");
-      }
+    if (hasError) {
+      move.getMoveLineMassEntryList()
+          .forEach(moveLine -> this.setFieldsErrorListMessage(moveLine, "date"));
     }
+  }
+
+  protected boolean checkEmptyDate(Move move, int temporaryMoveNumber) {
+    if (move.getMoveLineMassEntryList().stream().map(MoveLine::getDate).anyMatch(Objects::isNull)) {
+      this.setMassEntryErrorMessage(
+          move,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE),
+          true,
+          temporaryMoveNumber);
+      return true;
+    }
+    return false;
+  }
+
+  protected boolean checkDifferentDate(LocalDate firstDate, Move move, int temporaryMoveNumber) {
+    if (move.getMoveLineMassEntryList().stream()
+        .map(MoveLine::getDate)
+        .anyMatch(
+            localDate -> localDate != null && firstDate != null && !firstDate.equals(localDate))) {
+      this.setMassEntryErrorMessage(
+          move,
+          I18n.get(AccountExceptionMessage.MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE),
+          true,
+          temporaryMoveNumber);
+      return true;
+    }
+    return false;
   }
 
   protected boolean checkPeriod(Move move, int temporaryMoveNumber) throws AxelorException {
