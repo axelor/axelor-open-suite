@@ -1780,6 +1780,7 @@
 "IFRS depreciation",,,
 "IFRS first depreciation date",,,
 "IFRS first depreciation date cannot be before Acquisition date.",,,
+"If activated, then all eligible transactions (deliveries/arrivals) related to this tax number will be taken into account in the declaration of exchanges. If not, transactions will be ignored.",,,
 "If the current line is computed in a percentage type column, the given line will be used to divide the current value.",,,
 "If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls.",,,
 "If this checkbox is ticked, daybook moves will be accounted in payment session",,,
