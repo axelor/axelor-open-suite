@@ -1766,6 +1766,7 @@
 "IFRS depreciation","Amortissement IFRS",,
 "IFRS first depreciation date","Première date d'amortissement IFRS",,
 "IFRS first depreciation date cannot be before Acquisition date.","La date du premier amortissement IFRS ne peut être antérieure à la date d'acquisition",,
+"If activated, then all eligible transactions (deliveries/arrivals) related to this tax number will be taken into account in the declaration of exchanges. If not, transactions will be ignored.","Si cette configuration est activée, toutes les transactions éligibles (entrantes / sortantes) seront prises en compte dans la déclaration d'échanges. Sinon, elles y seront ignorées.",,
 "If the current line is computed in a percentage type column, the given line will be used to divide the current value.","Si la ligne est calculée dans une colonne de type pourcentage, la ligne dont le code est indiqué sera utilisé pour diviser la valeur concernée.",,
 "If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls.","Si cette case est cochée, un nombre de caractères fixe sera imposé pour les comptes comptables non réglementaires. Sinon la définition de la longueur des codes de comptes sera libre avec des contrôles minimums.",,
 "If this checkbox is ticked, daybook moves will be accounted in payment session","Si cette case est cochée, les écritures brouillard seront comptabilisées dans la session de paiement",,
