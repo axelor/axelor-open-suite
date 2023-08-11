@@ -12,7 +12,8 @@
     <panel name="mainPanel">
       <field name="taxNbr"/>
       <field name="company"/>
-      <field name="includeInDEB" widget="boolean-switch"/>
+      <field name="includeInDEB" widget="boolean-switch"
+        help="If activated, then all eligible transactions (deliveries/arrivals) related to this tax number will be taken into account in the declaration of exchanges. If not, transactions will be ignored."/>
       <field name="fiscalPositionSet" colSpan="12" canSelect="true" canNew="false"
         canEdit="false"/>
     </panel>
