@@ -9,6 +9,8 @@
       <insert position="after">
         <field name="expense" showIf="expense" form-view="expense-form"
           grid-view="expense-grid"/>
+        <field name="expensePayment" showIf="expensePayment" form-view="expense-form"
+          grid-view="expense-grid"/>
       </insert>
     </extend>
   </form>

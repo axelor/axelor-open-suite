@@ -7,5 +7,7 @@
 
   <entity name="Move">
     <many-to-one name="expense" title="Expense" ref="com.axelor.apps.hr.db.Expense"/>
+    <many-to-one name="expensePayment" title="Expense payment"
+      ref="com.axelor.apps.hr.db.Expense"/>
   </entity>
 </domain-models>
