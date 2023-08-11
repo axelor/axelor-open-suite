@@ -6,3 +6,4 @@ description: |
   "ALTER TABLE account_move
   ALTER COLUMN date_val
   SET NOT NULL;"
+  Note that there must be no move with an empty date.
