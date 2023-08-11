@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -77,6 +78,7 @@ public class MoveAdjustementService {
     Move move = moveLine.getMove();
     Company company = move.getCompany();
     BigDecimal amountRemaining = moveLine.getAmountRemaining();
+    Currency currency = moveLine.getMove().getCurrency();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
@@ -85,7 +87,7 @@ public class MoveAdjustementService {
         moveCreateService.createMove(
             miscOperationJournal,
             company,
-            null,
+            currency,
             partner,
             null,
             partner != null ? partner.getFiscalPosition() : null,
