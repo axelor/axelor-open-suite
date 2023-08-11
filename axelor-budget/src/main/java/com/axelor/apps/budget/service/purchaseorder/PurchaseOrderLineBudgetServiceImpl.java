@@ -69,8 +69,9 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(PurchaseOrderLine purchaseOrderLine) {
-    if (purchaseOrderLine == null || purchaseOrderLine.getPurchaseOrder() == null) {
+  public String computeBudgetDistribution(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+    if (purchaseOrder == null || purchaseOrderLine == null) {
       return "";
     }
     purchaseOrderLine.clearBudgetDistributionList();
@@ -79,8 +80,8 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
         budgetDistributionService.createBudgetDistribution(
             purchaseOrderLine.getAnalyticMoveLineList(),
             purchaseOrderLine.getAccount(),
-            purchaseOrderLine.getPurchaseOrder().getCompany(),
-            purchaseOrderLine.getPurchaseOrder().getOrderDate(),
+            purchaseOrder.getCompany(),
+            purchaseOrder.getOrderDate(),
             purchaseOrderLine.getCompanyExTaxTotal(),
             purchaseOrderLine.getFullName(),
             purchaseOrderLine);

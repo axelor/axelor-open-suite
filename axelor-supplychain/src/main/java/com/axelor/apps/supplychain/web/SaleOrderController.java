@@ -359,15 +359,14 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     String domain = "self.isContact = false AND self.isSupplier = true";
 
-    String blockedPartnerQuery =
-        Beans.get(BlockingService.class)
-            .listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
-
-    if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
-      domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
-    }
-
     if (saleOrder.getCompany() != null) {
+      String blockedPartnerQuery =
+          Beans.get(BlockingService.class)
+              .listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
+
+      if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+        domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+      }
       domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
     }
     response.setAttr("supplierPartnerSelect", "domain", domain);
