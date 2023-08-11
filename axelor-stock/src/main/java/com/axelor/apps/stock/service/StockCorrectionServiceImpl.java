@@ -128,12 +128,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
           I18n.get(StockExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
     }
 
-    if (stockCorrection.getRealQty().compareTo(stockCorrection.getBaseQty()) == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(StockExceptionMessage.STOCK_CORRECTION_2));
-    }
-
     StockMove stockMove = generateStockMove(stockCorrection);
     if (stockMove != null) {
       stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_VALIDATED);
@@ -164,7 +158,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     StockLocation computedToStockLocation;
 
     if (diff.compareTo(BigDecimal.ZERO) == 0) {
-      return null;
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.STOCK_CORRECTION_2));
     } else if (diff.compareTo(BigDecimal.ZERO) > 0) {
       computedFromStockLocation = fromStockLocation;
       computedToStockLocation = toStockLocation;
