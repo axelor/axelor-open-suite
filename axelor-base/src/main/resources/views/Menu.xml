@@ -658,15 +658,6 @@
   <menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root"
     if="__config__.app.isApp('base')" title="Message" order="800"/>
 
-  <menuitem name="mail-conf-pdf-templates" parent="mail-conf" title="PDF Templates"
-    action="admin.root.templating.pdf.templates" order="300"/>
-
-  <action-view name="admin.root.templating.pdf.templates" title="PDF Templates"
-    model="com.axelor.apps.base.db.BirtTemplate">
-    <view type="grid" name="birt-template-grid"/>
-    <view type="form" name="birt-template-form"/>
-  </action-view>
-
   <menuitem name="mail-conf-template-rules" parent="mail-conf" title="Template Rules"
     action="admin.root.templating.template.rules" order="100"/>
 
@@ -775,7 +766,7 @@
   </action-view>
 
   <menuitem name="admin-root-calendars" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Calendars" order="1200"/>
+    if="__config__.app.isApp('base')" title="Calendars" order="1300"/>
 
   <menuitem name="admin-root-calendars-icalendars" title="iCalendars"
     parent="admin-root-calendars" action="admin.root.calendars.icalendars" order="100"/>
@@ -977,14 +968,14 @@
 
   <menuitem name="admin-root-api-documentation" parent="admin-root"
     if="__config__.app.isApp('base') &amp;&amp; __config__.swagger" title="API Documentation"
-    order="1000" action="admin.root.api.documentation"/>
+    order="1100" action="admin.root.api.documentation"/>
 
   <action-view name="admin.root.api.documentation" title="API Documentation">
     <view type="html" name="swagger/"/>
   </action-view>
 
   <menuitem name="admin-root-maintenance" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Technical maintenance" order="1100"/>
+    if="__config__.app.isApp('base')" title="Technical maintenance" order="1200"/>
 
   <menuitem name="admin-root-data-backup" parent="admin-root-maintenance" title="Backup"
     order="1300"/>
@@ -1031,5 +1022,26 @@
 
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
     icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('studio')"/>
+
+  <menuitem name="birt-print-conf" parent="admin-root" if="__config__.app.isApp('base')"
+    title="BIRT printings" order="1000"/>
+
+  <menuitem name="birt-print-conf-birt-print-wizard" parent="birt-print-conf"
+    title="Birt printing wizard" action="birt.print.conf.birt.print.wizard" order="100"/>
+
+  <action-view name="birt.print.conf.birt.print.wizard" title="Birt printing wizard"
+    model="com.axelor.apps.base.db.BirtPrintingWizard">
+    <view type="grid" name="birt-printing-wizard-grid"/>
+    <view type="form" name="birt-printing-wizard-form"/>
+  </action-view>
+
+  <menuitem name="birt-print-conf-birt-templates" parent="birt-print-conf"
+    title="BIRT templates" action="birt.print.conf.birt.templates" order="200"/>
+
+  <action-view name="birt.print.conf.birt.templates" title="BIRT templates"
+    model="com.axelor.apps.base.db.BirtTemplate">
+    <view type="grid" name="birt-template-grid"/>
+    <view type="form" name="birt-template-form"/>
+  </action-view>
 
 </object-views>
