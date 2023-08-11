@@ -37,7 +37,7 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineServiceImpl
+public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineServiceImpl
     implements PurchaseOrderLineServiceSupplyChain {
 
   protected AnalyticMoveLineService analyticMoveLineService;
@@ -50,7 +50,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
   protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
-  public PurchaseOrderLineServiceSupplychainImpl(
+  public PurchaseOrderLineServiceSupplyChainImpl(
       AnalyticMoveLineService analyticMoveLineService,
       UnitConversionService unitConversionService,
       AppAccountService appAccountService,

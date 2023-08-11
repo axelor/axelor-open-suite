@@ -32,12 +32,12 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
-public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplychainImpl
+public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplyChainImpl
     implements PurchaseOrderLineProjectService {
 
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
