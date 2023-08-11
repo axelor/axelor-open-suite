@@ -1,8 +1,3 @@
 ---
 title: "Move : Fix date not being required"
 type: fix
-description: |
-  The following script must be executed to make the date required in database :
-  "ALTER TABLE account_move
-  ALTER COLUMN date_val
-  SET NOT NULL;"
