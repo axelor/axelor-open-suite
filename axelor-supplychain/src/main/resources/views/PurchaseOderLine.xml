@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="purchase-order-line-form" title="PO line"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine" id="purchase-order-line-supplychain-form"
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="supplychain-action-purchase-order-line-group-onnew"/>
+      <attribute name="onLoad" value="supplychain-action-purchase-order-line-group-onload"/>
+    </extend>
+    <extend target="//field[@name='analyticDistributionTemplate']">
+      <attribute name="onChange"
+        value="action-purchase-order-line-group-analytic-distribution-template-onchange"/>
+      <insert position="after">
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+          onSelect="action-purchase-order-line-method-set-axis-domain"
+          onChange="action-purchase-order-line-method-axis-create-analytic-line"/>
+        <panel name="axisAnalyticAccountPanel" colSpan="12"
+          readonlyIf="analyticDistributionTemplate">
+          <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+            onSelect="action-purchase-order-line-method-set-axis-domain"
+            onChange="action-purchase-order-line-method-axis-create-analytic-line"/>
+          <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+            onSelect="action-purchase-order-line-method-set-axis-domain"
+            onChange="action-purchase-order-line-method-axis-create-analytic-line"/>
+          <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+            onSelect="action-purchase-order-line-method-set-axis-domain"
+            onChange="action-purchase-order-line-method-axis-create-analytic-line"/>
+          <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+            onSelect="action-purchase-order-line-method-set-axis-domain"
+            onChange="action-purchase-order-line-method-axis-create-analytic-line"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="supplychain-action-purchase-order-line-group-onnew">
+    <action name="action-group-purchase-purchase-orderline-onnew"/>
+    <action name="action-purchase-order-line-method-hide-axis-analytic-account"/>
+    <action name="action-purchase-order-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="supplychain-action-purchase-order-line-group-onload">
+    <action name="action-group-purchase-purchase-orderline-onload"/>
+    <action name="action-purchase-order-line-method-hide-axis-analytic-account"/>
+    <action name="action-purchase-order-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group
+    name="action-purchase-order-line-group-analytic-distribution-template-onchange">
+    <action name="action-purchase-order-line-method-create-distribution"/>
+    <action name="action-purchase-order-line-method-print-analytic-account"/>
+    <action name="action-purchase-order-line-method-hide-axis-analytic-account"/>
+  </action-group>
+
+  <action-method name="action-purchase-order-line-method-print-analytic-account">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="printAnalyticAccounts"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-line-method-set-axis-domain">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="setAxisDomains"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-line-method-axis-create-analytic-line">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="createAnalyticAccountLines"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-line-method-hide-axis-analytic-account">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="manageAxis"/>
+  </action-method>
+
+</object-views>

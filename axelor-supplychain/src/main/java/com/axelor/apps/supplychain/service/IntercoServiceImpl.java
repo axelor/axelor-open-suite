@@ -63,6 +63,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -283,9 +284,9 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
 
     // analyticalDistribution
-    purchaseOrderLine =
-        Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
-            .getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
+    // TODO uncomment after merge #66647
+    // analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     return purchaseOrderLine;
