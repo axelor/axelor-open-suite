@@ -20,6 +20,7 @@ package com.axelor.apps.businessproduction.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
@@ -65,7 +66,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
       UnitConversionService unitConversionService,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      PartnerRepository partnerRepository) {
     super(
         sequenceService,
         operationOrderService,
@@ -78,7 +80,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         productCompanyService,
         barcodeGeneratorService,
         unitConversionService,
-        metaFiles);
+        metaFiles,
+        partnerRepository);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 
