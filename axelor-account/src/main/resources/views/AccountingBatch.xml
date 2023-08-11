@@ -255,7 +255,7 @@
         onClick="save,action-accounting-batch-method-moves-consistency-control"/>
       <button name="accountingCutOffBatchBtn" title="Run accounting cut-off"
         showIf="actionSelect == 26" onClick="action-accounting-batch-group-accounting-cut-off"/>
-      <field name="previewRecordsToProcess" colSpan="6" widget="boolean-switch"
+      <field name="previewRecordsToProcess" colSpan="12" widget="boolean-switch"
         showIf="actionSelect == 26"/>
 
     </panel>
