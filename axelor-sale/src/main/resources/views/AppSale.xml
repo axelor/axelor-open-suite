@@ -28,6 +28,7 @@
       <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
         showIf="enablePricingScale"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
+      <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"

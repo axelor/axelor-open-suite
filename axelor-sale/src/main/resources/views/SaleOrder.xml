@@ -469,17 +469,33 @@
       <field name="clientPartner.saleOrderInformation" showTitle="false"
         hideIf="clientPartner == null || clientPartner.saleOrderInformation == null" colSpan="12"
         css="bold red"/>
+
     </panel>
+
     <panel-tabs name="mainPanelTab"
       hideIf="clientPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+
       <panel name="contentPanel" title="Content">
-        <panel-related name="detailLinesPanel"
+
+        <panel-related name="detailLinesPanel" title="Details Lines"
+          readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
+          form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence"
+          onChange="action-sale-order-line-change-group,supplychain-action-create-shipment-cost-line"
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canMove="true" if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+
+        <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
+          height="30" widget="MasterDetail" form-view="sale-order-line-form"
+          tree-view="sale-order-line-tree" grid-view="sale-order-line-grid"
+          summary-view="sale-order-master-details-form" field="saleOrderLineList"
+          target="com.axelor.apps.sale.db.SaleOrderLine"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          title="Details Lines" readonlyIf="clientPartner == null" colSpan="12"
-          field="saleOrderLineList" form-view="sale-order-line-form"
-          grid-view="sale-order-line-grid" orderBy="sequence"
-          onChange="action-sale-order-line-change-group" canMove="true" height="30"/>
+          title="Details Lines" orderBy="sequence" onChange="action-sale-order-line-change-group"
+          onClick="action-orderSaleLine-tree" canMove="true"
+          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
@@ -2242,5 +2258,7 @@
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
           || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
   </action-attrs>
+
+
 
 </object-views>

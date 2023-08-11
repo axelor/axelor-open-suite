@@ -96,6 +96,9 @@
 
     <string name="lineProductionComment" title="Line production commentary" large="true"/>
 
+    <one-to-many name="saleOrderLineTreeList" title="Sale order line trees"
+      ref="com.axelor.apps.sale.db.SaleOrderLineTree" mappedBy="saleOrderLine"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-code>

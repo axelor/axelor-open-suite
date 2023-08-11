@@ -28,6 +28,8 @@
     <boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
     <boolean name="enableSalesProductByTradName" title="Filter products by trading name"
       default="false"/>
+    <boolean name="activateMultiLevelSaleOrderLines"
+      title="Activate multi-level sale order lines" default="false"/>
     <many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
     <boolean name="managePartnerComplementaryProduct"
       title="Manage partner complementary product"/>
