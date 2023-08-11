@@ -22,14 +22,10 @@
     </panel>
     <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
-      form-view="analytic-distribution-line-form"
-      onChange="action-analytic-dist-template-method-validate-tot-percentage"
-      canNew="name &amp;&amp; company"/>
+      form-view="analytic-distribution-line-form" canNew="name &amp;&amp; company"/>
     <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
-      form-view="analytic-distribution-line-personalized-form"
-      onChange="action-analytic-dist-template-method-validate-tot-percentage"
-      canNew="name &amp;&amp; company"/>
+      form-view="analytic-distribution-line-personalized-form" canNew="name &amp;&amp; company"/>
   </form>
 
   <form name="analytic-distribution-template-fixed-asset-form"
