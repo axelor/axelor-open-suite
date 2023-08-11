@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="birt-template-config-line-grid" title="Printings configuration"
+  <grid name="birt-template-config-line-grid" title="BIRT printing settings"
     model="com.axelor.apps.base.db.BirtTemplateConfigLine">
     <field name="metaModel"/>
     <field name="birtTemplate"/>
   </grid>
 
-  <form name="birt-template-config-line-form" title="Printing configuration"
+  <form name="birt-template-config-line-form" title="BIRT printing setting"
     model="com.axelor.apps.base.db.BirtTemplateConfigLine">
     <panel name="mainPanel">
       <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>

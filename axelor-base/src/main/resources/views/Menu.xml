@@ -1026,22 +1026,22 @@
   <menuitem name="birt-print-conf" parent="admin-root" if="__config__.app.isApp('base')"
     title="BIRT printings" order="1000"/>
 
-  <menuitem name="birt-print-conf-birt-templates" parent="birt-print-conf"
-    title="BIRT templates" action="birt.print.conf.birt.templates" order="100"/>
-
-  <action-view name="birt.print.conf.birt.templates" title="BIRT templates"
-    model="com.axelor.apps.base.db.BirtTemplate">
-    <view type="grid" name="birt-template-grid"/>
-    <view type="form" name="birt-template-form"/>
-  </action-view>
-
   <menuitem name="birt-print-conf-birt-print-wizard" parent="birt-print-conf"
-    title="Birt printing wizard" action="birt.print.conf.birt.print.wizard" order="200"/>
+    title="Birt printing wizard" action="birt.print.conf.birt.print.wizard" order="100"/>
 
   <action-view name="birt.print.conf.birt.print.wizard" title="Birt printing wizard"
     model="com.axelor.apps.base.db.BirtPrintingWizard">
     <view type="grid" name="birt-printing-wizard-grid"/>
     <view type="form" name="birt-printing-wizard-form"/>
+  </action-view>
+
+  <menuitem name="birt-print-conf-birt-templates" parent="birt-print-conf"
+    title="BIRT templates" action="birt.print.conf.birt.templates" order="200"/>
+
+  <action-view name="birt.print.conf.birt.templates" title="BIRT templates"
+    model="com.axelor.apps.base.db.BirtTemplate">
+    <view type="grid" name="birt-template-grid"/>
+    <view type="form" name="birt-template-form"/>
   </action-view>
 
 </object-views>
