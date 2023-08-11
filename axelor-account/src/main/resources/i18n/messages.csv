@@ -1493,6 +1493,7 @@
 "IFRS depreciation",,,
 "IFRS first depreciation date",,,
 "IFRS first depreciation date cannot be before Acquisition date.",,,
+"If activated, then all eligible transactions (deliveries/arrivals) related to this tax number will be taken into account in the declaration of exchanges. If not, transactions will be ignored.",,,
 "If this field is activated, the management of cost accounting will be offered at each place where the entry or choice of parameters related to cost accounting is necessary at the same time as the company.",,,
 "If this field is filled, once the move will change from Draft to Accounted, a new fixed asset record will be generated based on this moveLine data and the selected category data",,,
 "If ticked, this means a depreciation move has been generated at the state Simulated.",,,
