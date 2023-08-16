@@ -187,6 +187,8 @@ import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.base.service.pdf.PdfServiceImpl;
+import com.axelor.apps.base.service.pdf.PdfSignatureService;
+import com.axelor.apps.base.service.pdf.PdfSignatureServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.pricing.PricingServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
@@ -361,5 +363,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductUpdateService.class).to(ProductUpdateServiceImpl.class);
     bind(ProductConversionService.class).to(ProductConversionServiceImpl.class);
     bind(PdfService.class).to(PdfServiceImpl.class);
+    bind(PdfSignatureService.class).to(PdfSignatureServiceImpl.class);
   }
 }

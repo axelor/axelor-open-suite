@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import java.util.List;
@@ -34,6 +33,4 @@ public interface ExpenseLineService {
    * @param expense
    */
   void completeExpenseLines(Expense expense);
-
-  void convertProofFilesInPdf(Expense expense) throws AxelorException;
 }

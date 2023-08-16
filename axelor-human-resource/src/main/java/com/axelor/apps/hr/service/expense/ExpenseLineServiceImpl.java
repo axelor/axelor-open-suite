@@ -18,37 +18,22 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.PfxCertificate;
-import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
-import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.db.AppExpense;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import org.camunda.bpm.engine.impl.util.CollectionUtil;
 
 @Singleton
 public class ExpenseLineServiceImpl implements ExpenseLineService {
 
   protected ExpenseLineRepository expenseLineRepository;
-  protected PdfService pdfService;
-  protected AppHumanResourceService appHumanResourceService;
 
   @Inject
-  public ExpenseLineServiceImpl(
-      ExpenseLineRepository expenseLineRepository,
-      PdfService pdfService,
-      AppHumanResourceService appHumanResourceService) {
+  public ExpenseLineServiceImpl(ExpenseLineRepository expenseLineRepository) {
     this.expenseLineRepository = expenseLineRepository;
-    this.pdfService = pdfService;
-    this.appHumanResourceService = appHumanResourceService;
   }
 
   @Override
@@ -98,62 +83,5 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
         }
       }
     }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void convertProofFilesInPdf(Expense expense) throws AxelorException {
-    List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
-    if (CollectionUtil.isEmpty(expenseLineList)) {
-      return;
-    }
-
-    for (ExpenseLine expenseLine : expenseLineList) {
-      convertProofFileToPdf(expenseLine);
-    }
-  }
-
-  protected void convertProofFileToPdf(ExpenseLine expenseLine) throws AxelorException {
-    MetaFile metaFile = expenseLine.getJustificationMetaFile();
-    if (metaFile == null || expenseLine.getIsJustificationFileDigitallySigned()) {
-      return;
-    }
-
-    MetaFile result;
-    MetaFile pdfToSign = convertImageToPdf(metaFile);
-
-    result = getSignedPdf(pdfToSign);
-    expenseLine.setJustificationMetaFile(result);
-    expenseLine.setIsJustificationFileDigitallySigned(true);
-  }
-
-  protected MetaFile convertImageToPdf(MetaFile metaFile) throws AxelorException {
-    MetaFile pdfToSign = null;
-    String fileType = metaFile.getFileType();
-
-    if (fileType.startsWith("image")) {
-      pdfToSign = pdfService.convertImageToPdf(metaFile);
-    }
-
-    if (fileType.contains("pdf")) {
-      pdfToSign = metaFile;
-    }
-    return pdfToSign;
-  }
-
-  protected MetaFile getSignedPdf(MetaFile pdfToSign) throws AxelorException {
-    AppExpense appExpense = appHumanResourceService.getAppExpense();
-    PfxCertificate pfxCertificate = appExpense.getPfxCertificate();
-    MetaFile signatureLogo = appExpense.getSignatureLogo();
-    if (pfxCertificate != null) {
-      return pdfService.digitallySignPdf(
-          pdfToSign,
-          pfxCertificate.getCertificate(),
-          pfxCertificate.getPassword(),
-          signatureLogo,
-          "Expense",
-          "France");
-    }
-    return pdfToSign;
   }
 }
