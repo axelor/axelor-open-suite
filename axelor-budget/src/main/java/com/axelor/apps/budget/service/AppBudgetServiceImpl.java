@@ -59,9 +59,9 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
             .map(AppBudget::getMissingBudgetCheckSelect)
             .orElse(0);
     switch (missingBudgetCheck) {
-      case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_ALERT:
+      case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_OPTIONAL:
         return Boolean.FALSE;
-      case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_ERROR:
+      case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_REQUIRED:
         return Boolean.TRUE;
     }
     return null;

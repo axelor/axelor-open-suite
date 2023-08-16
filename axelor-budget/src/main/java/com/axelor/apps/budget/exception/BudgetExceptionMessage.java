@@ -82,7 +82,7 @@ public final class BudgetExceptionMessage {
       "Data imported successfully" /*)*/;
 
   public static final String NO_BUDGET_VALUES_FOUND_ERROR = /*$$(*/
-      "The budget distribution has not been computed yet. By launching this action, you can no longer compute the budget distribution." /*)*/;
+      "Budget distribution has not been configured. It is required for the rest of the process." /*)*/;
 
   public static final String BUGDET_EXCEED_ERROR = /*$$(*/
       "Warning : There is a budget overrun for %s. The available balance is %.2f %s. If you click OK you will be in excess, do you want to continue ?"; /*)*/

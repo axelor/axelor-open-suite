@@ -11,16 +11,16 @@
 
     <boolean name="checkAvailableBudget" title="Check Available Budget"/>
     <boolean name="manageMultiBudget" title="Manage multi budgets on lines"/>
-    <integer name="missingBudgetCheckSelect" title="Check for missing budget" default="0"
+    <integer name="missingBudgetCheckSelect" title="Missing budget alert" default="0"
       selection="app.budget.check.missing.select"
-      help="Check if errors saying that budget is missing must been throwed : None - No errors must be throwed. Alert - Alternative, errors must be throwed as alerts. Error - Required, errors must be throwed as errors, blocking save"/>
+      help="Depending on the level chosen, the user will receive no alert ('None'), a warning message ('Optional') or will be obliged to fill in the budget information for the rest of the process ('Required')."/>
 
     <extra-code>
       <![CDATA[
       //error check select
         public static final int APP_BUDGET_MISSING_CHECK_SELECT_NO = 0;
-        public static final int APP_BUDGET_MISSING_CHECK_SELECT_ALERT = 1;
-        public static final int APP_BUDGET_MISSING_CHECK_SELECT_ERROR = 2;
+        public static final int APP_BUDGET_MISSING_CHECK_SELECT_OPTIONAL = 1;
+        public static final int APP_BUDGET_MISSING_CHECK_SELECT_REQUIRED = 2;
 		]]>
     </extra-code>
 
