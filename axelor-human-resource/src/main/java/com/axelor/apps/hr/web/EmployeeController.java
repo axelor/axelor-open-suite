@@ -26,7 +26,7 @@ import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.report.IReport;
-import com.axelor.apps.hr.service.MedicalLeaveService;
+import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -177,19 +177,9 @@ public class EmployeeController {
     response.setReload(true);
   }
 
-  public void getMedicalLeaveDates(ActionRequest request, ActionResponse response) {
-    Employee employee = request.getContext().asType(Employee.class);
-    MedicalLeaveService medicalLeaveService = Beans.get(MedicalLeaveService.class);
-
-    response.setValue(
-        "$lastMedicalLeaveDate", medicalLeaveService.getLastMedicalLeaveDate(employee));
-    response.setValue(
-        "$nextMedicalLeaveDate", medicalLeaveService.getNextMedicalLeaveDate(employee));
-  }
-
-  public void updateEmployeeFilesWithMedicalLeave(ActionRequest request, ActionResponse response) {
+  public void updateEmployeeFilesWithMedicalVisit(ActionRequest request, ActionResponse response) {
     Employee employee = request.getContext().asType(Employee.class);
     response.setValue(
-        "employeeFileList", Beans.get(MedicalLeaveService.class).addToEmployeeFiles(employee));
+        "employeeFileList", Beans.get(MedicalVisitService.class).addToEmployeeFiles(employee));
   }
 }

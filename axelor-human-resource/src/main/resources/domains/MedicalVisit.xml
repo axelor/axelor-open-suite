@@ -5,21 +5,26 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="MedicalLeave">
+  <entity name="MedicalVisit">
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"
       required="true"/>
     <integer name="statusSelect" selection="hr.medical.leave.status.select" title="Status"
-      default="1"/>
-    <date name="medicalLeaveDate" title="Date" required="true"/>
-    <string name="leaveReason" title="Medical leave reason"/>
+      default="1" readonly="true"/>
+    <datetime name="medicalVisitStartDateT" title="Start date" required="true"/>
+    <datetime name="medicalVisitEndDateT" title="End date" required="true"/>
+    <many-to-one name="visitReason" title="Medical visit reason"
+      ref="com.axelor.apps.hr.db.MedicalVisitReason" required="true"/>
     <string name="note" title="Note"/>
-    <many-to-one name="medicalLeaveFile" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="medicalVisitFile" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="iCalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent"
+      title="Event"/>
 
     <extra-code>
       <![CDATA[
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_PLANNED = 2;
 		public static final int STATUS_REALIZED = 3;
+        public static final int STATUS_CANCELED = 4;
       ]]>
     </extra-code>
 

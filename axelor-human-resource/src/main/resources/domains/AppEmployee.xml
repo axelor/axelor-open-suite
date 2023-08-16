@@ -16,6 +16,7 @@
     <boolean name="employeeBonus" title="Employee bonus"/>
     <boolean name="isMyHrEnabled" title="Enable MyHR" default="true"
       help="Activate MyHR enables the HR menu entries for employees."/>
+    <boolean name="isMedicalVisitEnabled" title="Medical visit"/>
 
     <extra-code>
    		<![CDATA[

@@ -33,7 +33,7 @@
 
   <form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
     width="large"
-    onLoad="action-employee-method-set-social-network-url,action-attrs-employee-step-by-step-select-selection-in, action-employee-method-get-medical-leave-date"
+    onLoad="action-employee-method-set-social-network-url,action-attrs-employee-step-by-step-select-selection-in"
     onNew="action-employee-record-default,action-attrs-employee-step-by-step-select-selection-in">
 
     <toolbar>
@@ -273,19 +273,20 @@
         <field name="contactPartner.emailAddress.address" hidden="true"/>
       </panel>
 
-      <panel name="medicalLeaveDatePanel" title="Medical leave" showIf="$readonly()"
-        colSpan="12">
-        <field name="$lastMedicalLeaveDate" hidden="true"/>
-        <field name="$nextMedicalLeaveDate" hidden="true"/>
-        <field name="$medicalLeaveDates" showTitle="false" colSpan="12">
-          <viewer depends="$lastMedicalLeaveDate, $nextMedicalLeaveDate">
+      <panel name="medicalVisitDatePanel" title="Medical visit" showIf="$readonly()"
+        colSpan="12"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()">
+        <field name="lastMedicalVisitDate" hidden="true"/>
+        <field name="nextMedicalVisitDate" hidden="true"/>
+        <field name="$medicalVisitDates" showTitle="false" colSpan="12">
+          <viewer depends="lastMedicalVisitDate, nextMedicalVisitDate">
             <![CDATA[
-              <div style="font-weight: bold;" ng-show="!record.$lastMedicalLeaveDate" x-translate>Last medical leave : XX/XX/XXXX</div>
-              <div style="font-weight: bold;" ng-show="record.$lastMedicalLeaveDate" x-translate>Last medical leave :</div>
-              <div style="font-weight: bold;" ng-show="record.$lastMedicalLeaveDate">{{record.$lastMedicalLeaveDate}}</div>
+              <div style="font-weight: bold;" ng-show="!record.lastMedicalVisitDate" x-translate>Last medical visit : XX/XX/XXXX</div>
+              <div style="font-weight: bold;" ng-show="record.lastMedicalVisitDate" x-translate>Last medical visit :</div>
+              <div style="font-weight: bold;" ng-show="record.lastMedicalVisitDate">{{record.lastMedicalVisitDate}}</div>
               </br>
-              <div style="font-weight: bold;" ng-show="record.$nextMedicalLeaveDate" x-translate>Next medical leave :</div>
-              <div style="font-weight: bold;" ng-show="record.$lastMedicalLeaveDate">{{record.$nextMedicalLeaveDate}}</div>
+              <div style="font-weight: bold;" ng-show="record.nextMedicalVisitDate" x-translate>Next medical visit :</div>
+              <div style="font-weight: bold;" ng-show="record.nextMedicalVisitDate">{{record.nextMedicalVisitDate}}</div>
             ]]>
           </viewer>
         </field>
@@ -512,10 +513,12 @@
           grid-view="employee-file-grid" form-view="employee-file-form" colSpan="12"/>
       </panel>
 
-      <panel name="medicalLeavePanel" title="Medical leave" colSpan="12">
-        <panel-related field="medicalLeaveList" showTitle="false"
-          form-view="medical-leave-form" grid-view="medical-leave-grid" colSpan="12"
-          onChange="action-employee-method-update-employee-files-with-medical-leave"/>
+      <panel name="medicalVisitPanel" title="Medical visit" colSpan="12"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()">
+        <panel-related field="medicalVisitList" showTitle="false"
+          form-view="medical-visit-form" grid-view="medical-visit-grid" colSpan="12"
+          onChange="action-employee-method-update-employee-files-with-medical-visit"
+          x-can-copy="true"/>
       </panel>
     </panel-tabs>
 
@@ -790,14 +793,10 @@
       if="contactPartner?.linkedUser != null &amp;&amp; contactPartner?.employee == null"/>
   </action-attrs>
 
-  <action-method name="action-employee-method-get-medical-leave-date">
-    <call class="com.axelor.apps.hr.web.EmployeeController" method="getMedicalLeaveDates"/>
-  </action-method>
-
   <action-method
-    name="action-employee-method-update-employee-files-with-medical-leave">
+    name="action-employee-method-update-employee-files-with-medical-visit">
     <call class="com.axelor.apps.hr.web.EmployeeController"
-      method="updateEmployeeFilesWithMedicalLeave"/>
+      method="updateEmployeeFilesWithMedicalVisit"/>
   </action-method>
 
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
