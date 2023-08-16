@@ -808,13 +808,25 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     copyStockMoveLines(newStockMove, stockMoveLines, split);
 
-    if (ObjectUtils.isEmpty(newStockMove.getStockMoveLineList())) {
+    List<StockMoveLine> newStockMoveLineList = newStockMove.getStockMoveLineList();
+
+    if (ObjectUtils.isEmpty(newStockMoveLineList)) {
       return Optional.empty();
     }
+
+    reverseStockMoveLineStockLocation(stockMove, newStockMoveLineList);
 
     fillNewStockMoveFields(newStockMove, stockMove);
 
     return Optional.of(stockMoveRepo.save(newStockMove));
+  }
+
+  protected void reverseStockMoveLineStockLocation(
+      StockMove stockMove, List<StockMoveLine> newStockMoveLineList) {
+    for (StockMoveLine stockMoveLine : newStockMoveLineList) {
+      stockMoveLine.setFromStockLocation(stockMove.getToStockLocation());
+      stockMoveLine.setToStockLocation(stockMove.getFromStockLocation());
+    }
   }
 
   protected void copyStockMoveLines(

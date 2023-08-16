@@ -21,6 +21,10 @@
       title="Customer referral"/>
     <many-to-one name="saleOrderLine" title="Related sale order line"
       ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <one-to-many name="purchaseOrderList" title="Related purchase orders"
+      ref="com.axelor.apps.purchase.db.PurchaseOrder" mappedBy="projectTask"/>
+    <one-to-many name="purchaseOrderLineList" title="Related purchase order lines"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" mappedBy="projectTask"/>
     <many-to-one name="invoiceLine" title="Related Invoice line"
       ref="com.axelor.apps.account.db.InvoiceLine"/>
     <boolean name="isTaskRefused" title="Refused"/>

@@ -82,6 +82,23 @@
     <field name="estimatedReceiptDate"/>
   </grid>
 
+  <grid name="purchase-order-line-history-grid" title="Order history"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine" edit-icon="false" canNew="false"
+    canDelete="false" canEdit="false" orderBy="-purchaseOrder.orderDate">
+    <field name="purchaseOrder.purchaseOrderSeq"/>
+    <field name="purchaseOrder.company"/>
+    <field name="purchaseOrder.orderDate"/>
+    <field name="purchaseOrder.buyerUser"/>
+    <field name="purchaseOrder.supplierPartner"/>
+    <field name="qty" x-scale="2"/>
+    <field name="unit"/>
+    <field name="price" x-scale="2"/>
+    <field name="discountAmount" x-scale="2"/>
+    <field name="purchaseOrder.currency"/>
+    <field name="exTaxTotal" x-scale="2"/>
+    <field name="estimatedReceiptDate"/>
+  </grid>
+
   <form name="purchase-order-line-project-form" title="PO line"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine"
     onLoad="action-group-purchase-purchase-orderline-onload" readonlyIf="true" canEdit="false">
@@ -187,7 +204,8 @@
           form-view="purchase-order-supplier-line-form"
           grid-view="purchase-order-supplier-line-grid"/>
       </panel>
-
+      <panel-dashlet name="orderHistoryPanel" title="Order history"
+        action="action-purchase-order-line-view-show-order-line-history" colSpan="12"/>
       <panel name="deliveryPanel" title="Delivery" hidden="true" colSpan="12">
         <panel name="deliveryDatePanel" colSpan="12">
           <field name="desiredReceiptDate"/>
@@ -224,6 +242,8 @@
                     </h4>
 				]]></viewer>
         </field>
+        <field name="projectTask" title="Project Task" domain="self.project = :project"
+          form-view="project-task-form" grid-view="project-task-grid" canEdit="false"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
         onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
@@ -309,6 +329,20 @@
     <domain>self.purchaseOrderLine.id = :purchaseOrderLineId</domain>
     <context name="purchaseOrderLineId" expr="eval: id"/>
   </action-view>
+
+  <action-view name="action-purchase-order-line-view-show-order-line-history"
+    title="Order history" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <view type="grid" name="purchase-order-line-history-grid"/>
+    <view type="form" name="purchase-order-line-form"/>
+    <domain>self.product = :product AND self.purchaseOrder.orderDate &lt; :__date__ AND
+      self.purchaseOrder.statusSelect IN (3,4) AND (:purchaseOrder is null OR self.purchaseOrder !=
+      :purchaseOrder)</domain>
+  </action-view>
+
+  <action-attrs name="action-purchase-order-line-attrs-refresh-order-history-dashlet">
+    <attribute for="orderHistoryPanel" name="refresh" expr="true"/>
+  </action-attrs>
+
   <!-- ACTION GROUPs -->
 
   <action-group name="action-group-purchase-purchase-orderline-onnew">
@@ -344,6 +378,7 @@
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
     <action name="action-purchase-order-line-method-check-different-supplier"/>
     <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
+    <action name="action-purchase-order-line-attrs-refresh-order-history-dashlet"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-qty-onchange">
@@ -439,6 +474,8 @@
     <field name="project" expr="eval: __parent__?.project"
       if="__config__.app.isApp('business-project')"/>
     <field name="toInvoice" expr="eval: __parent__?.project?.isInvoicingPurchases"
+      if="__config__.app.isApp('business-project')"/>
+    <field name="projectTask" expr="eval: __parent__?.projectTask"
       if="__config__.app.isApp('business-project')"/>
   </action-record>
 

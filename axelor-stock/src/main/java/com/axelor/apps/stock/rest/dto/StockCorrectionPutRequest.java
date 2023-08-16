@@ -38,6 +38,8 @@ public class StockCorrectionPutRequest extends RequestStructure {
   @Min(0)
   private Long reasonId;
 
+  private String comments;
+
   public Integer getStatus() {
     return status;
   }
@@ -69,5 +71,13 @@ public class StockCorrectionPutRequest extends RequestStructure {
     } else {
       return null;
     }
+  }
+
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
   }
 }

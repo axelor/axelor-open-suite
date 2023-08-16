@@ -20,7 +20,6 @@ package com.axelor.apps.hr.web.leave;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -234,10 +233,7 @@ public class LeaveController {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
       Employee employee = leave.getEmployee();
       if (employee == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
-            AuthUtils.getUser().getName());
+        return;
       }
       response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
     } catch (Exception e) {

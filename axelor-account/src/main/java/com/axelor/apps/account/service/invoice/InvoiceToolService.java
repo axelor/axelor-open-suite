@@ -113,8 +113,11 @@ public class InvoiceToolService {
       Integer periodTypeSelect,
       Integer daySelect,
       LocalDate invoiceDate) {
+    if (invoiceDate == null) {
+      return null;
+    }
 
-    LocalDate nDaysDate = null;
+    LocalDate nDaysDate;
     if (periodTypeSelect.equals(PaymentConditionLineRepository.PERIOD_TYPE_DAYS)) {
       nDaysDate = invoiceDate.plusDays(paymentTime);
     } else {

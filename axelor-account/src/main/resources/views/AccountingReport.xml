@@ -80,12 +80,12 @@
         onSelect="action-accounting-report-attrs-period-domain" form-view="period-form"
         grid-view="period-grid" canView="false"/>
       <field name="dateFrom"
-        readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
+        readonlyIf="(statusSelect == 2 &amp;&amp; [18,19].includes(reportType.typeSelect)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
         onChange="action-move-Live-report-record-set-date-to"
-        requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
+        requiredIf="[12,15,19,20,21,22,23,24].includes(reportType.typeSelect)"/>
       <field name="dateTo"
-        readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
-        requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
+        readonlyIf="(statusSelect == 2 &amp;&amp; [18,19].includes(reportType.typeSelect)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
+        requiredIf="[12,15,19,20,21,22,23,24].includes(reportType.typeSelect)"/>
       <field name="isComparativeBalance" widget="inline-checkbox" colSpan="12"
         showIf="reportType.typeSelect == 2"/>
 
