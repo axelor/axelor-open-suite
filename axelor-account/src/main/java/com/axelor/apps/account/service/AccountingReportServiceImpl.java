@@ -328,7 +328,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)) {
       Account cashPositionVariationAccount =
-          Beans.get((AccountConfigService.class))
+          accountConfigService
               .getAccountConfig(accountingReport.getCompany())
               .getCashPositionVariationAccount();
       if (cashPositionVariationAccount != null) {
@@ -611,7 +611,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
 
     AccountConfig accountConfig =
-        Beans.get(AccountConfigService.class).getAccountConfig(accountingReport.getCompany());
+        accountConfigService.getAccountConfig(accountingReport.getCompany());
     Integer lineMinBeforeLongReportGenerationMessageNumber =
         accountConfig.getLineMinBeforeLongReportGenerationMessageNumber();
     if (lineMinBeforeLongReportGenerationMessageNumber != null
