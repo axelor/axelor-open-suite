@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Blocking;
@@ -42,6 +41,7 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -62,11 +62,12 @@ public class SaleOrderLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      AnalyticLineModelService analyticLineModelService = Beans.get(AnalyticLineModelService.class);
 
-      if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-        AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      if (analyticLineModelService.manageAnalytic(analyticLineModel)) {
 
-        Beans.get(AnalyticLineModelService.class).computeAnalyticDistribution(analyticLineModel);
+        analyticLineModelService.computeAnalyticDistribution(analyticLineModel);
 
         response.setValue(
             "analyticDistributionTemplate", analyticLineModel.getAnalyticDistributionTemplate());
@@ -465,6 +466,27 @@ public class SaleOrderLineController {
               .getAnalyticAccountValueMap(analyticLineModel, saleOrder.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+
+      if (saleOrder == null || saleOrder.getCompany() == null) {
+        return;
+      }
+
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine.setSaleOrder(saleOrder);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      Beans.get(AnalyticAttrsSupplychainService.class)
+          .addAnalyticDistributionPanelHiddenAttrs(analyticLineModel, attrsMap);
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

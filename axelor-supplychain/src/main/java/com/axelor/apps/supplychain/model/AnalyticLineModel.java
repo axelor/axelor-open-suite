@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -37,6 +38,7 @@ public class AnalyticLineModel implements AnalyticLine {
   protected BigDecimal exTaxTotal;
   protected BigDecimal companyExTaxTotal;
   protected BigDecimal lineAmount;
+  protected FiscalPosition fiscalPosition;
 
   protected SaleOrderLine saleOrderLine;
 
@@ -208,6 +210,18 @@ public class AnalyticLineModel implements AnalyticLine {
     }
 
     return this.partner;
+  }
+
+  public boolean isPurchase() {
+    return isPurchase;
+  }
+
+  public FiscalPosition getFiscalPosition() {
+    if (this.saleOrderLine != null && this.saleOrderLine.getSaleOrder() != null) {
+      this.fiscalPosition = this.saleOrderLine.getSaleOrder().getFiscalPosition();
+    }
+
+    return fiscalPosition;
   }
 
   public void copyToModel() {

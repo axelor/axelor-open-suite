@@ -367,40 +367,6 @@
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
           action="action-sale-order-line-view-project-tasks" colSpan="12"/>
       </panel>
-      <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
-        onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines" showIf="product">
-        <field name="analyticDistributionTemplate"
-          grid-view="analytic-distribution-template-grid"
-          form-view="analytic-distribution-template-form" canEdit="false"
-          onChange="action-sale-order-line-method-create-distribution"
-          onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
-        <panel-related name="analyticMoveLineListPanel"
-          readonlyIf="$isReadOnly !== false" field="analyticMoveLineList"
-          grid-view="analytic-move-line-distribution-grid"
-          form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-sale-order-line-group-analytic-move-line-list-onchange"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
-      </panel>
-      <panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration">
-        <field name="saleSupplySelect"
-          onChange="action-group-sale-saleorderline-salesupplyselect-onchange"
-          if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-        <field name="standardDelay" if-module="axelor-supplychain"
-          if="__config__.app.isApp('supplychain')" hidden="true"
-          showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
-        <field name="pricingScaleLogs" colSpan="12"
-          showIf="pricingScaleLogs &amp;&amp; product"/>
-        <field name="supplierPartner" showIf="saleSupplySelect == 2"
-          onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form"
-          grid-view="partner-grid"/>
-        <field name="billOfMaterial"
-          onSelect="action-sale-order-line-attrs-bill-of-material-domain"
-          if-module="axelor-production" form-view="bill-of-material-form"
-          grid-view="bill-of-material-grid" if="__config__.app.isApp('production')" canEdit="true"/>
-        <button name="customizeBOMBtn" title="Customize BOM"
-          onClick="action-production-method-customize-bill-of-material"
-          if-module="axelor-production" if="__config__.app.isApp('production')"/>
-      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -493,40 +459,6 @@
           grid-view="project-grid"/>
         <field name="progress" readonly="true" widget="SelectProgress"/>
       </panel>
-      <panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false"
-        title="Analytics" if-module="axelor-supplychain"
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-        onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
-        <field name="analyticDistributionTemplate"
-          grid-view="analytic-distribution-template-grid"
-          form-view="analytic-distribution-template-form" canEdit="false"
-          onChange="action-sale-order-line-method-create-distribution"
-          onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
-        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
-          grid-view="analytic-move-line-distribution-grid"
-          form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-sale-order-line-group-analytic-move-line-list-onchange"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
-      </panel>
-      <panel name="settingsPanel" title="Settings">
-        <field name="saleSupplySelect"
-          onChange="action-group-sale-saleorderline-salesupplyselect-onchange"
-          if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-        <field name="standardDelay" if-module="axelor-supplychain" hidden="true"
-          showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
-        <field name="pricingScaleLogs" colSpan="12"
-          showIf="pricingScaleLogs &amp;&amp; product"/>
-        <field name="supplierPartner" showIf="saleSupplySelect == 2"
-          onSelect="action-sale-order-line-method-supplier-partner-domain" form-view="partner-form"
-          grid-view="partner-grid"/>
-        <field name="billOfMaterial"
-          onSelect="action-sale-order-line-attrs-bill-of-material-domain"
-          if-module="axelor-production" form-view="bill-of-material-form"
-          grid-view="bill-of-material-grid" if="__config__.app.isApp('production')"/>
-        <button name="customizeBOMBtn" title="Customize BOM"
-          onClick="action-production-method-customize-bill-of-material"
-          if-module="axelor-production" if="__config__.app.isApp('production')"/>
-      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -573,11 +505,6 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="emptyLine"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-method-create-distribution">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
-      method="createAnalyticDistributionWithTemplate"/>
-  </action-method>
-
   <action-method name="action-sale-order-line-method-compute-analytic-distribution"
     if-module="axelor-supplychain">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
@@ -588,11 +515,6 @@
     if-module="axelor-supplychain">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkStocks"/>
   </action-method>
-
-  <action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
-    <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account')  || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
-  </action-attrs>
 
   <action-view name="action-sale-order-line-view-show-invoice-lines"
     title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">
@@ -609,12 +531,6 @@
     <attribute name="domain" for="project"
       expr="eval: &quot; self.clientPartner.id = ${saleOrder.clientPartner?.id} AND self.isBusinessProject = true &quot;"
       if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-sale-order-line-attrs-set-domain-analytic-distribution-template">
-    <attribute name="domain" for="analyticDistributionTemplate"
-      expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
   </action-attrs>
 
   <action-group name="action-group-sale-saleorderline-onnew">
@@ -638,7 +554,6 @@
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
-    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-onload">
@@ -665,7 +580,6 @@
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
-    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -713,18 +627,6 @@
     <action name="action-sale-order-line-method-compute"/>
     <action name="action-sale-order-line-method-compute-analytic-distribution"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
-  </action-group>
-
-  <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange"
-    if-module="axelor-production">
-    <action name="action-sale-order-line-get-production-information"
-      if="__config__.app.isApp('production')"/>
-    <action name="action-sale-order-line-method-supplier-partner-default"
-      if="__config__.app.isApp('production')"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"
-      if="__config__.app.isApp('production')"/>
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
   </action-group>
 
   <action-group name="action-sale-order-line-group-discount-type-select-onchange">
@@ -858,6 +760,7 @@
     <field name="discountAmount"
       expr="eval: discountTypeSelect == __repo__(PriceListLine).AMOUNT_TYPE_FIXED ? discountDerogation * price / 100 : discountDerogation"/>
   </action-record>
+
   <!-- ACTION METHOD -->
 
   <action-method name="action-sale-order-line-method-compute-pricing-scale">
@@ -883,12 +786,6 @@
 
   <action-method name="action-sale-order-line-method-get-discount">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getDiscount"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-supplier-partner-domain"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
-      method="supplierPartnerDomain"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-supplier-partner-default"
@@ -1005,11 +902,6 @@
     <attribute name="hidden" for="deliveryPanel"
       expr="eval: !__user__.getActiveCompany()?.getSupplyChainConfig()?.getHasOutSmForNonStorableProduct()"
       if="product?.productTypeSelect == 'service'"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-line-attrs-hidden-analytic-distribution-panel">
-    <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting()"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-fill-estimated-date">

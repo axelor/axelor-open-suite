@@ -7,12 +7,14 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
@@ -35,6 +37,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AccountConfigService accountConfigService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
@@ -42,12 +45,14 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       AnalyticMoveLineService analyticMoveLineService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AccountManagementAccountService accountManagementAccountService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   @Override
@@ -100,12 +105,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
   public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException {
-    AccountConfig accountConfig =
-        accountConfigService.getAccountConfig(analyticLineModel.getCompany());
-
-    if (!accountConfig.getManageAnalyticAccounting()
-        || accountConfig.getAnalyticDistributionTypeSelect()
-            == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+    if (!manageAnalytic(analyticLineModel)) {
       return analyticLineModel;
     }
 
@@ -128,6 +128,34 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     analyticLineModel.copyToModel();
 
     return analyticLineModel;
+  }
+
+  @Override
+  public boolean manageAnalytic(AnalyticLineModel analyticLineModel) throws AxelorException {
+    AccountConfig accountConfig =
+        accountConfigService.getAccountConfig(analyticLineModel.getCompany());
+
+    return appAccountService.getAppAccount().getManageAnalyticAccounting()
+        && accountConfig.getManageAnalyticAccounting()
+        && accountConfig.getAnalyticDistributionTypeSelect()
+            != AccountConfigRepository.DISTRIBUTION_TYPE_FREE;
+  }
+
+  @Override
+  public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    Product product = analyticLineModel.getProduct();
+    return this.manageAnalytic(analyticLineModel)
+        && product != null
+        && product.getProductFamily() != null
+        && accountManagementAccountService
+            .getProductAccount(
+                product,
+                analyticLineModel.getCompany(),
+                analyticLineModel.getFiscalPosition(),
+                analyticLineModel.getIsPurchase(),
+                false)
+            .getAnalyticDistributionAuthorized();
   }
 
   @Override
