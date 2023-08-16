@@ -251,6 +251,8 @@
 
     <finder-method name="findByMove" using="move"/>
 
+    <finder-method name="findByOldMove" using="oldMove"/>
+
     <extra-code><![CDATA[
 
 	   	static final int NONE = 0;
