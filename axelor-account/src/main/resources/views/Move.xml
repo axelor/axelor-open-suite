@@ -94,7 +94,7 @@
           <panel name="datePanel" showFrame="false" colSpan="12">
             <field name="period" form-view="period-form" grid-view="period-grid"
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
-            <field name="date"
+            <field name="date" required="true"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
               onChange="action-move-group-date-onchange" colSpan="2"/>
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
