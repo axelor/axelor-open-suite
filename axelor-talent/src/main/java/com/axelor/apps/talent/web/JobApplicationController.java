@@ -67,7 +67,7 @@ public class JobApplicationController {
 
       application = Beans.get(JobApplicationRepository.class).find(application.getId());
 
-      if (application.getDmsFile().getId() != null) {
+      if (application.getDmsFile() != null) {
         response.setView(
             ActionView.define(I18n.get("JobApplication.resume"))
                 .model(DMSFile.class.getName())
