@@ -75,6 +75,11 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
         findOldestFixedAssetLine(
                 fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_PLANNED, 0)
             .orElse(null);
+
+    if (firstPlannedLine == null) {
+      return null;
+    }
+
     LocalDate nextPlannedDate = firstPlannedLine.getDepreciationDate();
 
     FixedAssetLine lastRealizedLine =
