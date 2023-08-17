@@ -716,4 +716,12 @@ public class ExpenseController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkTotalAmount(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    response.setAttr(
+        "overAmountLimitText",
+        "hidden",
+        !Beans.get(ExpenseLineService.class).isThereOverAmountLimit(expense));
+  }
 }
