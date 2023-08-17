@@ -158,7 +158,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     StockLocation computedToStockLocation;
 
     if (diff.compareTo(BigDecimal.ZERO) == 0) {
-      return null;
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.STOCK_CORRECTION_2));
     } else if (diff.compareTo(BigDecimal.ZERO) > 0) {
       computedFromStockLocation = fromStockLocation;
       computedToStockLocation = toStockLocation;

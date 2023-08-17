@@ -1,0 +1,3 @@
+---
+title: "Stock API: validating a Stock Correction with a real quantity equal to the database quantity correctly throws an error"
+type: fix

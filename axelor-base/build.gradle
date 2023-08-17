@@ -58,5 +58,10 @@ dependencies {
 
 	implementation libs.logback
 
-	implementation libs.swagger_jaxrs;
+	implementation libs.swagger_jaxrs
+
+	implementation libs.itext7_io
+	implementation libs.itext7_layout
+	implementation libs.itext7_kernel
+	implementation libs.itext7_signatures
 }
