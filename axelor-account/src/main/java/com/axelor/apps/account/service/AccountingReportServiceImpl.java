@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -93,6 +94,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   protected String query = "";
 
   protected AccountRepository accountRepo;
+  protected MoveToolService moveToolService;
 
   protected List<Object> params = new ArrayList<>();
   protected int paramNumber = 1;
@@ -110,7 +112,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       AccountingReportPrintService accountingReportPrintService,
       MoveLineExportService moveLineExportService,
       AccountRepository accountRepo,
-      InvoicePaymentRepository invoicePaymentRepository) {
+      InvoicePaymentRepository invoicePaymentRepository,
+      MoveToolService moveToolService) {
     this.accountingReportRepo = accountingReportRepo;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
@@ -121,6 +124,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.moveLineExportService = moveLineExportService;
     this.accountRepo = accountRepo;
     this.invoicePaymentRepository = invoicePaymentRepository;
+    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -372,18 +376,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
-    List<Integer> statusSelects = new ArrayList<>();
+    List<Integer> statusSelects = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
+
     if (accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
-      statusSelects.add(MoveRepository.STATUS_DAYBOOK);
-    }
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
-    if (accountConfigService
-            .getAccountConfig(accountingReport.getCompany())
-            .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
-      statusSelects.add(MoveRepository.STATUS_SIMULATED);
+      statusSelects =
+          moveToolService.getMoveStatusSelect(
+              accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
     }
 
     this.addParams(
@@ -806,15 +806,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_PAYMENT);
 
-    List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
-    if (accountConfigService
-            .getAccountConfig(accountingReport.getCompany())
-            .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
-      statusSelects.add(MoveRepository.STATUS_SIMULATED);
-    }
+    List<Integer> statusSelects =
+        moveToolService.getMoveStatusSelect(
+            accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
 
     this.addParams(
         String.format(
@@ -860,15 +854,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
-    List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
-    if (accountConfigService
-            .getAccountConfig(accountingReport.getCompany())
-            .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
-      statusSelects.add(MoveRepository.STATUS_SIMULATED);
-    }
+    List<Integer> statusSelects =
+        moveToolService.getMoveStatusSelect(
+            accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
 
     this.addParams(
         String.format(
