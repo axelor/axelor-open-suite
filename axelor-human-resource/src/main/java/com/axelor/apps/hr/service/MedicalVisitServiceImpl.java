@@ -29,10 +29,11 @@ public class MedicalVisitServiceImpl implements MedicalVisitService {
   @Override
   public List<EmployeeFile> addToEmployeeFiles(Employee employee) {
     List<EmployeeFile> employeeFileList = employee.getEmployeeFileList();
-    if (CollectionUtils.isEmpty(employeeFileList)) {
+    List<MedicalVisit> medicalVisitList = employee.getMedicalVisitList();
+    if (CollectionUtils.isEmpty(medicalVisitList)) {
       return Collections.emptyList();
     }
-    MedicalVisit medicalVisit = Iterables.getLast(employee.getMedicalVisitList());
+    MedicalVisit medicalVisit = Iterables.getLast(medicalVisitList);
     MetaFile metaFile = medicalVisit.getMedicalVisitFile();
     if (metaFile != null) {
       if (employee.getEmployeeFileList().stream()

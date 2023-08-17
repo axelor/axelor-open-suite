@@ -37,6 +37,17 @@
     </panel>
   </form>
 
+  <action-view name="action-medical-visit-view-dashboard-manager" title="Medical visit"
+    model="com.axelor.apps.hr.db.MedicalVisit">
+    <view type="grid" name="medical-visit-grid"/>
+    <view type="form" name="medical-visit-form"/>
+    <domain>(:employeeId IS NULL OR self.employee.id = :employeeId) AND self.statusSelect =
+      :medicalVisitPlannedStatus</domain>
+    <context name="employeeId" expr="eval: employee?.id"/>
+    <context name="medicalVisitPlannedStatus"
+      expr="eval: __repo__(MedicalVisit).STATUS_PLANNED"/>
+  </action-view>
+
   <action-attrs name="action-medical-visit-attrs-fill-employee">
     <attribute for="employee" name="value" expr="eval: __parent__" if="eval: __parent__"/>
   </action-attrs>
