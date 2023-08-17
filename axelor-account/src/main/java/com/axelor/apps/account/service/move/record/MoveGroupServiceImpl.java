@@ -239,8 +239,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      moveCheckService.checkPeriodPermission(move);
       moveRecordSetService.setPeriod(move);
+      moveCheckService.checkPeriodPermission(move);
     }
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
