@@ -31,9 +31,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 
 public class MoveAdjustementService {
 
@@ -43,6 +48,8 @@ public class MoveAdjustementService {
   protected MoveRepository moveRepository;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
+  protected CurrencyService currencyService;
+  protected CompanyConfigService companyConfigService;
 
   @Inject
   public MoveAdjustementService(
@@ -51,6 +58,8 @@ public class MoveAdjustementService {
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       AccountConfigService accountConfigService,
+      CurrencyService currencyService,
+      CompanyConfigService companyConfigService,
       MoveRepository moveRepository) {
 
     this.moveLineCreateService = moveLineCreateService;
@@ -59,6 +68,8 @@ public class MoveAdjustementService {
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
+    this.currencyService = currencyService;
+    this.companyConfigService = companyConfigService;
   }
 
   /**
@@ -79,9 +90,18 @@ public class MoveAdjustementService {
     Company company = move.getCompany();
     BigDecimal amountRemaining = moveLine.getAmountRemaining();
     Currency currency = moveLine.getMove().getCurrency();
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    LocalDate date = appAccountService.getTodayDate(company);
 
     Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
+
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(currency, companyCurrency, date);
+
+    BigDecimal amountRemainingInSpecificMoveCurrency =
+        amountRemaining.divide(
+            currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     Move adjustmentMove =
         moveCreateService.createMove(
@@ -102,9 +122,9 @@ public class MoveAdjustementService {
             adjustmentMove,
             partner,
             isDebit ? account : cashPositionVariationAccount,
-            amountRemaining,
+            amountRemainingInSpecificMoveCurrency,
             false,
-            appAccountService.getTodayDate(company),
+            date,
             1,
             null,
             null);
@@ -114,9 +134,9 @@ public class MoveAdjustementService {
             adjustmentMove,
             partner,
             isDebit ? cashPositionVariationAccount : account,
-            amountRemaining,
+            amountRemainingInSpecificMoveCurrency,
             true,
-            appAccountService.getTodayDate(company),
+            date,
             2,
             null,
             null);
