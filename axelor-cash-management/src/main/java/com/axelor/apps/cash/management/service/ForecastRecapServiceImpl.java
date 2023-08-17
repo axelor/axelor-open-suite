@@ -227,19 +227,25 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     if (CollectionUtils.isEmpty(journalIdList)) {
       journalIdList.add((long) 0);
     }
+    List<Long> bankDetailsIdList = new ArrayList<>();
+    if (manageMultiBanks) {
+      bankDetailsIdList =
+          forecastRecap.getBankDetailsSet().stream()
+              .map(BankDetails::getId)
+              .collect(Collectors.toList());
+    }
+    if (CollectionUtils.isEmpty(bankDetailsIdList)) {
+      bankDetailsIdList.add((long) 0);
+    }
 
     Query<? extends Model> modelQuery =
         JPA.all(getModel(forecastRecapLineType))
-            .filter(getFilter(forecastRecapLineType, manageMultiBanks))
+            .filter(getFilter(forecastRecapLineType))
             .bind("company", forecastRecap.getCompany())
             .bind("fromDate", forecastRecap.getFromDate())
             .bind("toDate", forecastRecap.getToDate())
             .bind("statusSelectList", statusSelectList)
-            .bind(
-                "bankDetailsSet",
-                CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
-                    ? null
-                    : forecastRecap.getBankDetailsSet())
+            .bind("bankDetailsId", bankDetailsIdList)
             .bind("operationTypeSelect", forecastRecapLineType.getOperationTypeSelect())
             .bind("forecastRecapLineTypeId", forecastRecapLineType.getId())
             .bind(
@@ -389,12 +395,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
   }
 
-  protected String getFilter(ForecastRecapLineType forecastRecapLineType, boolean manageMultiBanks)
-      throws AxelorException {
+  protected String getFilter(ForecastRecapLineType forecastRecapLineType) throws AxelorException {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         return "self.company = :company "
-            + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+            + "AND (0 in (:bankDetailsId) OR self.companyBankDetails.id in (:bankDetailsId)) "
             + "AND (0 in (:journalIds) OR self.journal.id in (:journalIds)) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
@@ -408,7 +413,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND self.company = :company "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.inTaxTotal != 0 "
-            + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+            + "AND (0 in (:bankDetailsId) OR self.companyBankDetails.id in (:bankDetailsId)) "
             + "AND self.timetableList IS EMPTY";
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
         return "(self.expectedRealisationDate BETWEEN :fromDate AND :toDate "
@@ -417,7 +422,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND self.company = :company "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.inTaxTotal != 0 "
-            + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+            + "AND (0 in (:bankDetailsId) OR self.companyBankDetails.id in (:bankDetailsId)) "
             + "AND self.timetableList IS EMPTY";
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         return "self.validationDate BETWEEN :fromDate AND :toDate "
@@ -425,18 +430,18 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND self.statusSelect = "
             + ExpenseRepository.STATUS_VALIDATED
             + " "
-            + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails)";
+            + "AND (0 in (:bankDetailsId) OR self.bankDetails.id in (:bankDetailsId))";
       case ForecastRecapLineTypeRepository.ELEMENT_FORECAST:
         return "self.estimatedDate BETWEEN :fromDate AND :toDate "
             + "AND self.company = :company "
-            + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails) "
+            + "AND (0 in (:bankDetailsId) OR self.bankDetails.id in (:bankDetailsId)) "
             + "AND self.realizationDate IS NULL "
             + "AND self.forecastRecapLineType.id = :forecastRecapLineTypeId";
       case ForecastRecapLineTypeRepository.ELEMENT_OPPORTUNITY:
         return "self.company = :company "
             + "AND self.expectedCloseDate BETWEEN :fromDate AND :toDate "
             + "AND self.saleOrderList IS EMPTY "
-            + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails) "
+            + "AND (0 in (:bankDetailsId) OR self.bankDetails.id in (:bankDetailsId)) "
             + ((forecastRecapLineType.getStatusSelect() == null
                     || forecastRecapLineType.getStatusSelect().isEmpty())
                 ? ""
@@ -444,7 +449,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         return "self.mainEmploymentContract.payCompany = :company "
             + "AND self.mainEmploymentContract.monthlyGlobalCost != 0 "
-            + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails)";
+            + "AND (0 in (:bankDetailsId) OR self.bankDetails.id in (:bankDetailsId)) ";
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         return "self.company = :company "
             + "AND (0 in (:journalIds) OR self.journal.id in (:journalIds)) "
@@ -453,9 +458,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + (forecastRecapLineType.getTypeSelect() == 1
                 ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
                 : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
-            + (manageMultiBanks
-                ? " AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
-                : "")
+            + " AND (0 in (:bankDetailsId) OR self.companyBankDetails.id in (:bankDetailsId)) "
             + " AND self.statusSelect IN (:statusSelectList) "
             + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move = self.id "
             + "AND Inv.dueDate BETWEEN :fromDate AND :toDate "
@@ -721,6 +724,16 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     if (CollectionUtils.isEmpty(journalIdList)) {
       journalIdList.add((long) 0);
     }
+    List<Long> bankDetailsIdList = new ArrayList<>();
+    if (manageMultiBanks) {
+      bankDetailsIdList =
+          forecastRecap.getBankDetailsSet().stream()
+              .map(BankDetails::getId)
+              .collect(Collectors.toList());
+    }
+    if (CollectionUtils.isEmpty(bankDetailsIdList)) {
+      bankDetailsIdList.add((long) 0);
+    }
     List<Timetable> timetableList = new ArrayList<>();
     if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER) {
@@ -730,19 +743,13 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .filter(
                   "self.estimatedDate BETWEEN :fromDate AND :toDate AND self.saleOrder.company = :company"
                       + " AND self.saleOrder.statusSelect IN (:saleOrderStatusList) AND self.amount != 0"
-                      + (CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
-                          ? " AND self.saleOrder.companyBankDetails IN (:bankDetailsSet) "
-                          : "")
+                      + " AND (0 in (:bankDetailsSet) OR self.saleOrder.companyBankDetails.id in (:bankDetailsSet)) "
                       + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
               .bind("company", forecastRecap.getCompany())
               .bind("saleOrderStatusList", statusList)
-              .bind(
-                  "bankDetailsSet",
-                  CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
-                      ? null
-                      : forecastRecap.getBankDetailsSet())
+              .bind("bankDetailsSet", bankDetailsIdList)
               .bind(
                   "invoiceStatusSelectList",
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
@@ -777,19 +784,13 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .filter(
                   "self.estimatedDate BETWEEN :fromDate AND :toDate AND self.purchaseOrder.company = :company"
                       + " AND self.purchaseOrder.statusSelect IN (:purchaseOrderStatusList) AND self.amount != 0"
-                      + (CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
-                          ? " AND self.purchaseOrder.companyBankDetails IN (:bankDetailsSet) "
-                          : "")
+                      + " AND (0 in (:bankDetailsSet) OR self.purchaseOrder.companyBankDetails.id in (:bankDetailsSet)) "
                       + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
               .bind("company", forecastRecap.getCompany())
               .bind("purchaseOrderStatusList", statusList)
-              .bind(
-                  "bankDetailsSet",
-                  CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
-                      ? null
-                      : forecastRecap.getBankDetailsSet())
+              .bind("bankDetailsSet", bankDetailsIdList)
               .bind(
                   "invoiceStatusSelectList",
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE))
@@ -825,21 +826,14 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                       + " AND self.moveLine.move.journal.journalType.technicalTypeSelect = :journalType"
                       + " AND (0 in (:journalIds) OR self.moveLine.move.journal.id in (:journalIds)) "
                       + " AND (0 in (:functionalOrigin) OR self.moveLine.move.functionalOriginSelect in (:functionalOrigin)) "
+                      + " AND (0 in (:bankDetailsSet) OR self.moveLine.move.companyBankDetails.id in (:bankDetailsSet)) "
                       + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amount != 0"
-                      + ((CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
-                              && manageMultiBanks)
-                          ? " AND self.moveLine.move.companyBankDetails IN (:bankDetailsSet)"
-                          : "")
                       + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
               .bind("company", forecastRecap.getCompany())
               .bind("moveStatusList", statusList)
-              .bind(
-                  "bankDetailsSet",
-                  CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
-                      ? null
-                      : forecastRecap.getBankDetailsSet())
+              .bind("bankDetailsSet", bankDetailsIdList)
               .bind(
                   "invoiceStatusSelectList",
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
