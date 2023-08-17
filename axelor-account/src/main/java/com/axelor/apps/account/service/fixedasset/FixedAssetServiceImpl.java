@@ -48,6 +48,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -162,19 +163,46 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       int transferredReason)
       throws AxelorException {
 
+    Map<Integer, List<FixedAssetLine>> fixedAssetLineMap =
+        fixedAsset.getFixedAssetLineList().stream()
+            .collect(Collectors.groupingBy(FixedAssetLine::getStatusSelect));
+    List<FixedAssetLine> previousPlannedLineList =
+        fixedAssetLineMap.get(FixedAssetLineRepository.STATUS_PLANNED);
+    List<FixedAssetLine> previousRealizedLineList =
+        fixedAssetLineMap.get(FixedAssetLineRepository.STATUS_REALIZED);
+    FixedAssetLine previousPlannedLine =
+        previousPlannedLineList != null && !previousPlannedLineList.isEmpty()
+            ? previousPlannedLineList.get(0)
+            : null;
+    FixedAssetLine previousRealizedLine =
+        previousRealizedLineList != null && !previousRealizedLineList.isEmpty()
+            ? previousRealizedLineList.get(previousRealizedLineList.size() - 1)
+            : null;
+    if (previousPlannedLine != null
+        && disposalDate.isAfter(previousPlannedLine.getDepreciationDate())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_2));
+    }
+
+    if (previousRealizedLine != null
+        && !disposalDate.isAfter(previousRealizedLine.getDepreciationDate())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
+    }
+
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
 
       FixedAssetLine depreciationFixedAssetLine =
-          fixedAssetLineService.generateProrataDepreciationLine(fixedAsset, disposalDate);
-
-      if (depreciationFixedAssetLine != null) {
-        fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true, true);
-        fixedAssetLineMoveService.generateDisposalMove(
-            fixedAsset,
-            depreciationFixedAssetLine,
-            transferredReason,
-            depreciationFixedAssetLine.getDepreciationDate());
-      }
+          fixedAssetLineService.generateProrataDepreciationLine(
+              fixedAsset, disposalDate, previousRealizedLine, previousPlannedLine);
+      fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true, true);
+      fixedAssetLineMoveService.generateDisposalMove(
+          fixedAsset,
+          depreciationFixedAssetLine,
+          transferredReason,
+          depreciationFixedAssetLine.getDepreciationDate());
     } else {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
         return;
@@ -439,7 +467,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
     }
     FixedAssetLine correspondingFixedAssetLine =
-        fixedAssetLineService.generateProrataDepreciationLine(fixedAsset, disposalDate);
+        fixedAssetLineService.computeCessionLine(fixedAsset, disposalDate);
     if (correspondingFixedAssetLine != null) {
       if (fixedAsset
           .getDepreciationPlanSelect()
