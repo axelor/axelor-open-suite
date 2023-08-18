@@ -9,4 +9,4 @@ description: |
   JOIN account_account_type accountType
   ON account.account_type = accountType.id
   WHERE moveLine.account = account.id
-  AND accountType.technical_type_select = 'cash';"
+  AND accountType.technical_type_select <> 'cash';"
