@@ -314,7 +314,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 .divide(
                     BigDecimal.valueOf(100),
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_UP);
+                    RoundingMode.HALF_DOWN);
+    amount = amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     User pfpUser = null;
     if (invoiceTermService.getPfpValidatorUserCondition(move.getInvoice(), moveLine)) {
