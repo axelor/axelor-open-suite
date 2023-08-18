@@ -68,13 +68,15 @@
       title="Analytic account"/>
     <many-to-many name="accountSet" ref="com.axelor.apps.account.db.Account"
       title="Account(s)"/>
-
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
-         <![CDATA[
+      <![CDATA[
             return code + " " + name;
          ]]>
     </string>
-
+    <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
+      title="Global Budget"/>
+    <many-to-one name="budgetVersion" ref="com.axelor.apps.budget.db.BudgetVersion"
+      title="Budget Version"/>
     <unique-constraint columns="code,fromDate,toDate,budgetLevel"/>
 
     <extra-code>
