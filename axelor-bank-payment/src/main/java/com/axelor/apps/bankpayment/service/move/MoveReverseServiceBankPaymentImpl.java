@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -28,6 +29,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -55,8 +57,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
 
     boolean isHiddenMoveLinesInBankReconciliation =
         (boolean) assistantMap.get("isHiddenMoveLinesInBankReconciliation");
-    if (isHiddenMoveLinesInBankReconciliation) {
-      move = this.updateBankAmountReconcile(move);
+    if (!isHiddenMoveLinesInBankReconciliation) {
+      this.updateBankAmountReconcile(newMove);
     }
     return newMove;
   }
@@ -67,17 +69,22 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       throws AxelorException {
     MoveLine reverseMoveLine =
         super.generateReverseMoveLine(reverseMove, orgineMoveLine, dateOfReversion, isDebit);
-    reverseMoveLine.setBankReconciledAmount(
-        reverseMoveLine
-            .getDebit()
-            .add(reverseMoveLine.getCredit().subtract(orgineMoveLine.getBankReconciledAmount())));
+    if (reverseMoveLine
+        .getAccount()
+        .getAccountType()
+        .getTechnicalTypeSelect()
+        .equals(AccountTypeRepository.TYPE_CASH)) {
+      reverseMoveLine.setBankReconciledAmount(
+          reverseMoveLine
+              .getDebit()
+              .add(reverseMoveLine.getCredit().subtract(orgineMoveLine.getBankReconciledAmount())));
+    }
     return reverseMoveLine;
   }
 
-  protected Move updateBankAmountReconcile(Move move) {
+  protected void updateBankAmountReconcile(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setBankReconciledAmount(moveLine.getDebit().add(moveLine.getCredit()));
+      moveLine.setBankReconciledAmount(BigDecimal.ZERO);
     }
-    return move;
   }
 }
