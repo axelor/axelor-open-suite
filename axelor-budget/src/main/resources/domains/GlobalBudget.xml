@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module package="com.axelor.apps.budget.db" name="budget"/>
+
+  <entity name="GlobalBudget">
+
+    <string name="code" title="Code"/>
+    <string name="name" title="Name"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+    <many-to-one name="companyDepartment"
+      ref="com.axelor.apps.base.db.CompanyDepartment" title="Company Department"/>
+    <many-to-one name="budgetManager" ref="com.axelor.auth.db.User"
+      title="Budget manager"/>
+    <string name="comments" title="Comment" large="true"/>
+    <string name="typeSelect" title="Type" selection="budget.budget.type.select"
+      readonly="true"/>
+    <many-to-one name="budgetModel" ref="com.axelor.apps.budget.db.Budget"
+      title="Budget model"/>
+    <long name="finalVersionId" title="Final Version ID"/>
+    <long name="executoryVersionId" title="Executory Version ID"/>
+    <one-to-one name="activeVersion" ref="com.axelor.apps.budget.db.BudgetVersion"
+      title="Active Version"/>
+    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with no order and daybook and accounted moves with no invoice."/>
+    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with an order."/>
+    <decimal name="simulatedAmount" title="Simulated amount" precision="20" scale="2"
+      help="Represents the sum of moves of status simulated."/>
+    <decimal name="totalAmountCommitted" title="Committed amount"
+      help="Represents the sum of orders of status requested, validated or finished and that don't have an invoiced invoice."
+      precision="20" scale="2"/>
+
+    <one-to-many name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"/>
+
+    <one-to-many name="budgetVersion" ref="com.axelor.apps.budget.db.BudgetVersion"
+      title="Budget Version"/>
+
+    <one-to-many name="budgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Budget Level"/>
+
+    <string name="fullName" namecolumn="true" search="code,name" title="Full name">
+      <![CDATA[
+            return code + " " + name;
+         ]]>
+    </string>
+
+    <unique-constraint columns="code,fromDate,toDate"/>
+
+    <extra-code>
+      <![CDATA[
+      //budget type select
+        public static final String BUDGET_TYPE_SELECT_BUDGET = "budget";
+        public static final String BUDGET_TYPE_SELECT_TEMPLATE = "template";
+		]]>
+    </extra-code>
+  </entity>
+
+</domain-models>
