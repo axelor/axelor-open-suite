@@ -636,16 +636,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)
         || (credit.compareTo(BigDecimal.ZERO) > 0
             && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)) {
-      BigDecimal creditTaxLineDiff = moveLine.getCredit().subtract(credit).abs();
-      BigDecimal debitTaxLineDiff = moveLine.getDebit().subtract(debit).abs();
-      BigDecimal taxLineAMount = debitTaxLineDiff.subtract(creditTaxLineDiff);
+      BigDecimal taxLineAmount = debit.subtract(credit);
 
-      if (taxLineAMount.compareTo(BigDecimal.ZERO) > 0) {
-        moveLine.setDebit(taxLineAMount);
+      if (taxLineAmount.compareTo(BigDecimal.ZERO) > 0) {
+        moveLine.setDebit(taxLineAmount);
         moveLine.setCredit(BigDecimal.ZERO);
       } else {
         moveLine.setDebit(BigDecimal.ZERO);
-        moveLine.setCredit(taxLineAMount.abs());
+        moveLine.setCredit(taxLineAmount.abs());
       }
     } else {
       moveLine.setDebit(moveLine.getDebit().add(debit));
