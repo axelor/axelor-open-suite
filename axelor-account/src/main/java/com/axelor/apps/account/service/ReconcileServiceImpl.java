@@ -322,20 +322,14 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if ((reconcile
+    if (reconcile
                 .getAmount()
-                .compareTo(
-                    creditMoveLine
-                        .getCurrencyAmount()
-                        .abs()
-                        .subtract(creditMoveLine.getAmountPaid()))
-            > 0)
-        || (reconcile
+                .compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()))
+            > 0
+        || reconcile
                 .getAmount()
-                .multiply(debitMoveLine.getCurrencyRate())
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
                 .compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()))
-            > 0)) {
+            > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
