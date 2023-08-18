@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -321,6 +322,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     log.debug(
         "Well-balanced move line invoice terms validation on account move {}", move.getReference());
+    BigDecimal financialDiscount = this.getInvoiceTermFinancialDiscount(move);
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
@@ -332,7 +334,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .map(InvoiceTerm::getCompanyAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-      if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
+      if (totalMoveLineInvoiceTerm.compareTo(
+              moveLine.getDebit().max(moveLine.getCredit()).add(financialDiscount))
+          != 0) {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -340,6 +344,21 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             moveLine.getName());
       }
     }
+  }
+
+  protected BigDecimal getInvoiceTermFinancialDiscount(Move move) {
+    // Only on paymentVoucher process
+    BigDecimal financialDiscount = BigDecimal.ZERO;
+
+    if (move.getPaymentVoucher() != null) {
+      financialDiscount =
+          move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+              .filter(PayVoucherElementToPay::getApplyFinancialDiscount)
+              .map(PayVoucherElementToPay::getFinancialDiscountAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return financialDiscount;
   }
 
   protected void checkFunctionalOriginSelect(Move move) throws AxelorException {

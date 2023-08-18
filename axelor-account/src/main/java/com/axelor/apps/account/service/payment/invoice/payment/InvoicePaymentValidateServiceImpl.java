@@ -355,7 +355,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (maxAmount != null) {
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
+
     BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+    companyPaymentAmount =
+        companyPaymentAmount.subtract(
+            invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(

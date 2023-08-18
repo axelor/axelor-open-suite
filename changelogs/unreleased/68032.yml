@@ -1,0 +1,3 @@
+---
+title: "Invoice payment : Fix move line amount error when we generate a payment with financial discount"
+type: fix
