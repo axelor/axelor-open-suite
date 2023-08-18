@@ -1569,19 +1569,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean isThresholdNotOnLastInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
-    if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      InvoiceTerm lastInvoiceTerm =
-          moveLine.getInvoiceTermList().stream()
-              .filter(it -> it.getSequence() == moveLine.getInvoiceTermList().size())
-              .findFirst()
-              .orElse(null);
-
-      if (lastInvoiceTerm != null
-          && moveLine.getAmountRemaining().compareTo(lastInvoiceTerm.getAmountRemaining()) >= 0
-          && lastInvoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
-        return true;
-      }
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      return moveLine.getInvoiceTermList().stream()
+          .filter(it -> it.getSequence() == moveLine.getInvoiceTermList().size())
+          .anyMatch(
+              it ->
+                  this.isThresholdNotOnInvoiceTerm(it, moveLine, thresholdDistanceFromRegulation));
     }
+
     return false;
+  }
+
+  protected boolean isThresholdNotOnInvoiceTerm(
+      InvoiceTerm invoiceTerm, MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
+    return invoiceTerm != null
+        && moveLine.getAmountRemaining().compareTo(invoiceTerm.getAmountRemaining()) >= 0
+        && invoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0;
   }
 }
