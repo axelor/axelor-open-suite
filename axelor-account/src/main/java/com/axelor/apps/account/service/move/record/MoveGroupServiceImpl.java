@@ -240,8 +240,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       throws AxelorException {
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveRecordSetService.setPeriod(move);
-      moveCheckService.checkPeriodPermission(move);
     }
+
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
     moveRecordSetService.setOriginDate(move);
@@ -249,6 +249,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+
+    this.addPeriodDummyFields(move, valuesMap);
 
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("dueDate", move.getDueDate());
