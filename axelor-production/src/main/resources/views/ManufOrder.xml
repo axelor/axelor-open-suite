@@ -229,6 +229,9 @@
           hidden="true"/>
         <button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12"
           showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel" hidden="true"/>
+        <button name="draftBtn" icon="fa-eraser " title="Return to draft status" colSpan="12"
+          showIf="statusSelect == 2" onClick="action-manuf-order-record-set-status-to-draft,save"
+          hidden="true"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
@@ -548,6 +551,11 @@
     <context name="_showRecord" expr="eval: __this__.id"/>
     <context name="_xApplicationType" expr="eval: _model"/>
   </action-view>
+
+  <action-record name="action-manuf-order-record-set-status-to-draft"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <field name="statusSelect" expr="eval: __repo__(ManufOrder).STATUS_DRAFT"/>
+  </action-record>
 
   <action-method name="action-manuf-order-method-update-planned-qty">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="updatePlannedQty"/>
