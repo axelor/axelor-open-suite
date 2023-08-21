@@ -50,6 +50,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -460,5 +461,54 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
     newComplementarySOLines.forEach(saleOrder::addSaleOrderLineListItem);
     saleOrderComputeService.computeSaleOrder(saleOrder);
+  }
+
+  @Override
+  public void createNewVersion(SaleOrder saleOrder) {
+    saleOrder
+        .getSaleOrderLineList()
+        .forEach(
+            saleOrderLine -> {
+              SaleOrderLine oldVersionSaleOrderLine = saleOrderLineRepo.copy(saleOrderLine, true);
+              oldVersionSaleOrderLine.setSaleOrder(null);
+              oldVersionSaleOrderLine.setOldVersionSaleOrder(saleOrder);
+              oldVersionSaleOrderLine.setVersionNumber(saleOrder.getVersionNumber());
+              oldVersionSaleOrderLine.setVersionDateT(
+                  appBaseService.getTodayDateTime(saleOrder.getCompany()).toLocalDateTime());
+              oldVersionSaleOrderLine.setArchived(true);
+              saleOrder.addOldVersionSaleOrderLineListItem(oldVersionSaleOrderLine);
+            });
+    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
+    saleOrder.setVersionNumber(saleOrder.getVersionNumber() + 1);
+  }
+
+  @Override
+  public LocalDateTime getVersionDateTime(SaleOrder saleOrder, Integer versionNumber) {
+    List<SaleOrderLine> versionList =
+        saleOrder.getOldVersionSaleOrderLineList().stream()
+            .filter(saleOrderLine -> saleOrderLine.getVersionNumber().equals(versionNumber))
+            .collect(Collectors.toList());
+    if (!versionList.isEmpty()) {
+      return versionList.get(0).getVersionDateT();
+    }
+    return null;
+  }
+
+  @Override
+  public void recoverVersion(SaleOrder saleOrder, Integer versionNumber) {
+    createNewVersion(saleOrder);
+    saleOrder.clearSaleOrderLineList();
+    saleOrder.getOldVersionSaleOrderLineList().stream()
+        .filter(
+            oldVersionSaleOrderLine ->
+                oldVersionSaleOrderLine.getVersionNumber().equals(versionNumber))
+        .forEach(
+            oldVersionSaleOrderLine -> {
+              SaleOrderLine saleOrderLine = saleOrderLineRepo.copy(oldVersionSaleOrderLine, true);
+              saleOrderLine.setOldVersionSaleOrder(null);
+              saleOrderLine.setSaleOrder(saleOrder);
+              saleOrder.setArchived(null);
+              saleOrder.addSaleOrderLineListItem(saleOrderLine);
+            });
   }
 }

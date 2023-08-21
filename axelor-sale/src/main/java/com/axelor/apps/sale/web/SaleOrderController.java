@@ -647,4 +647,25 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void createNewVersion(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(SaleOrderService.class).createNewVersion(saleOrder);
+    response.setValues(saleOrder);
+  }
+
+  public void getVersionDateTime(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
+    response.setValue(
+        "$versionDateTime",
+        Beans.get(SaleOrderService.class).getVersionDateTime(saleOrder, versionNumber));
+  }
+
+  public void recoverVersion(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
+    Beans.get(SaleOrderService.class).recoverVersion(saleOrder, versionNumber);
+    response.setValues(saleOrder);
+  }
 }

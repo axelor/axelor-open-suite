@@ -471,4 +471,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     return toStockLocation;
   }
+
+  @Override
+  public void createNewVersion(SaleOrder saleOrder) {
+    super.createNewVersion(saleOrder);
+    saleOrder.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED);
+    saleOrder.setInvoicingState(SaleOrderRepository.INVOICING_STATE_NOT_INVOICED);
+  }
 }

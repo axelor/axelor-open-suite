@@ -846,7 +846,7 @@
   <action-attrs name="action-sale-order-line-attrs-hide-panel">
     <attribute name="hidden"
       for="stockMoveLineOfSOPanel,projectTaskListPanel,invoicingFollowUpPanel" expr="true"
-      if="__parent__.statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || __parent__.statusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"/>
+      if="__parent__?.statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || __parent__?.statusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">

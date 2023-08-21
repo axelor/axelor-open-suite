@@ -624,6 +624,23 @@
       <panel-dashlet if="__config__.app.isApp('supplychain')"
         name="generatedPurchaseOrderPanel" title="Generated purchase orders"
         action="action-sale-order-view-show-generated-po" hideIf="statusSelect &lt;= 2"/>
+      <panel if="__config__.app.getApp('sale')?.manageSaleOrderVersion"
+        showIf="versionNumber > 1" name="pastVersionRecoveryPanel" title="Past versions">
+        <button name="lastVersionBtn" title="Last version" icon="fa-arrow-right"
+          css="btn-custom text-left" onClick="action-sale-order-group-last-version-btn" colSpan="4"
+          showIf="statusSelect == 1 || statusSelect == 2"/>
+        <field name="$previousVersionNumber" title="Version number" type="integer" min="1"
+          colSpan="2" onChange="action-sale-order-group-previous-version-number-on-change"/>
+        <field name="$versionDateTime" type="datetime" title="Version date" colSpan="2"
+          readonly="true"/>
+        <button name="versionRecoveryBtn" title="Recover from this version" icon="fa-upload"
+          css="btn-custom text-left" onClick="action-sale-order-group-version-recovery-btn"
+          colSpan="4" if="__config__.app.getApp('sale')?.isPastVersionRecovery"
+          showIf="(statusSelect == 1 || statusSelect == 2) "/>
+        <field name="oldVersionSaleOrderLineList" hidden="true"/>
+        <panel-dashlet name="pastVersionsPanel"
+          action="action-sale-order-view-previous-versions" colSpan="12" readonly="true"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -642,8 +659,8 @@
         prompt="Warning, a completed order can't be changed anymore, do you want to continue?"
         colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
       <button if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
-        name="newVersionBtn" title="New version" showIf="statusSelect == 2" colSpan="12"
-        onClick="save,action-sale-record-newVersion,save"/>
+        name="newVersionBtn" title="New version" showIf="statusSelect == 1 || statusSelect == 2"
+        colSpan="12" onClick="action-sale-order-group-new-version-btn"/>
       <button if="__config__.app.getApp('sale')?.allowPendingOrderModification"
         name="editOrderBtn" title="Edit order"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
@@ -1453,6 +1470,8 @@
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-attrs-incoterm-required"/>
     <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
+    <action name="action-sale-order-attrs-set-previous-version-number"/>
+    <action name="action-sale-order-method-get-version-date-time"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1518,6 +1537,34 @@
     <action name="save"/>
     <action name="action-sale-order-validate-quotation"/>
     <action name="action-sale-order-method-finalize-quotation"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-new-version-btn">
+    <action name="action-sale-order-validate-check-empty-sale-order-on-new-version"/>
+    <action name="action-sale-order-method-new-version"/>
+    <action name="action-sale-order-attrs-set-previous-version-number"/>
+    <action name="action-sale-order-method-get-version-date-time"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-previous-version-number-on-change">
+    <action name="action-sale-order-attrs-previous-version-number-on-change"/>
+    <action name="action-sale-order-method-get-version-date-time"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-last-version-btn">
+    <action name="action-sale-order-attrs-set-previous-version-number"/>
+    <action name="action-sale-order-attrs-previous-version-number-on-change"/>
+    <action name="action-sale-order-method-get-version-date-time"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-version-recovery-btn">
+    <action name="action-sale-order-validate-check-empty-sale-order-on-recovery"/>
+    <action name="action-sale-order-method-version-recovery-btn"/>
+    <action name="action-sale-order-attrs-set-previous-version-number"/>
+    <action name="action-sale-order-method-get-version-date-time"/>
+    <action name="action-sale-order-line-change-group"/>
+    <action name="save"/>
   </action-group>
 
   <action-validate name="action-sale-order-validate-quotation">
@@ -1660,13 +1707,17 @@
       method="updateLinesAfterFiscalPositionChange"/>
   </action-method>
 
-  <action-record name="action-sale-record-newVersion"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="statusSelect" expr="eval: 1"/>
-    <field name="deliveryState" expr="eval: 1"/>
-    <field name="invoicingState" expr="eval: 1"/>
-    <field name="versionNumber" expr="eval: versionNumber + 1"/>
-  </action-record>
+  <action-method name="action-sale-order-method-new-version">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="createNewVersion"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-get-version-date-time">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="getVersionDateTime"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-version-recovery-btn">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="recoverVersion"/>
+  </action-method>
 
   <action-view name="action-open-sale-order-merge-form" title="Merge sale orders"
     model="com.axelor.utils.db.Wizard">
@@ -1858,6 +1909,19 @@
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
 
+  <action-attrs name="action-sale-order-attrs-set-previous-version-number">
+    <attribute for="$previousVersionNumber" name="value" expr="eval: 1"
+      if="eval: versionNumber &lt;= 1"/>
+    <attribute for="$previousVersionNumber" name="value" expr="eval: versionNumber - 1"
+      if="eval: versionNumber > 1"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-previous-version-number-on-change">
+    <attribute for="$previousVersionNumber" name="value" expr="eval: versionNumber - 1"
+      if="eval: previousVersionNumber > versionNumber - 1"/>
+    <attribute name="refresh" for="pastVersionsPanel" expr="eval: true"/>
+  </action-attrs>
+
   <action-record name="action-sale-order-record-set-default-tax-number"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="taxNumber"
@@ -2033,6 +2097,18 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-sale-order-view-previous-versions" title="Lines to recover"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <view type="grid" name="sale-order-line-grid"/>
+    <view type="form" name="sale-order-line-form"/>
+    <view-param name="showArchived" value="true"/>
+    <view-param name="popup" value="reload"/>
+    <domain>self.oldVersionSaleOrder.id = :_parentId AND self.versionNumber =
+      :_previousVersionNumber</domain>
+    <context name="_parentId" expr="eval: __this__.id"/>
+    <context name="_previousVersionNumber" expr="eval: previousVersionNumber"/>
+  </action-view>
+
   <action-validate name="action-validate-sale-order-check-selection">
     <error message="You have to choose at least one sale order"
       if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
@@ -2041,6 +2117,11 @@
   <action-validate name="action-validate-sale-quotation-check-selection">
     <error message="You have to choose at least one sale quotation"
       if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
+  </action-validate>
+
+  <action-validate
+    name="action-sale-order-validate-check-empty-sale-order-on-new-version">
+    <error message="Please enter at least one detail line." if="saleOrderLineList?.isEmpty()"/>
   </action-validate>
 
   <action-record name="action-saleorder-record-template"

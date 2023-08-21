@@ -23,6 +23,7 @@ import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -119,4 +120,10 @@ public interface SaleOrderService {
   SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException;
+
+  public void createNewVersion(SaleOrder saleOrder);
+
+  public LocalDateTime getVersionDateTime(SaleOrder saleOrder, Integer versionNumber);
+
+  public void recoverVersion(SaleOrder saleOrder, Integer versionNumber);
 }
