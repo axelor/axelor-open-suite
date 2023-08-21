@@ -5,13 +5,14 @@
 
   <grid name="sop-line-grid" title="Sales and Operations Planning Line"
     model="com.axelor.apps.production.db.SopLine" editable="true">
-    <field name="year"/>
-    <field name="period"/>
-    <field name="sopSalesForecast"/>
-    <field name="sopRealSales"/>
-    <field name="sopSalesGap"/>
-    <field name="sopRealManuf"/>
-    <field name="sopRealStock"/>
+    <field name="year" required="true" domain="self.typeSelect = 3"/>
+    <field name="period" required="true" domain="self.year = :year"
+      onChange="action-sop-line-record-set-currency"/>
+    <field name="sopSalesForecast" onChange="action-sop-line-record-compute-sop-sales-gap"/>
+    <field name="sopRealSales" onChange="action-sop-line-record-compute-sop-sales-gap"/>
+    <field name="sopSalesGap" readonly="true"/>
+    <field name="sopRealManuf" onChange="action-sop-line-record-compute-sop-manuf-gap"/>
+    <field name="sopRealStock" onChange="action-sop-line-record-compute-sop-stock-gap"/>
     <field name="currency" hidden="true"/>
     <button name="generateMpsForecastsBtn" icon="fa-gear" title="Generate MPS forecasts"
       onClick="action-sop-line-view-open-wizard"/>
