@@ -858,7 +858,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                         .getAccountType()
                         .getTechnicalTypeSelect()
                         .equals(AccountTypeRepository.TYPE_TAX))
-            .map(it -> it.getDebit().add(it.getCredit()))
+            .map(this::getMoveLineSignedValue)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
@@ -876,7 +876,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       return BigDecimal.ZERO;
     }
 
-    BigDecimal lineTotal = moveLine.getCredit().add(moveLine.getDebit());
+    BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
 
     return lineTotal
         .multiply(moveLine.getTaxLine().getValue())
@@ -884,6 +884,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             BigDecimal.valueOf(100),
             AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
             RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getMoveLineSignedValue(MoveLine moveLine) {
+    if (moveLine.getCredit().signum() != 0) {
+      return moveLine.getCredit();
+    } else {
+      return moveLine.getDebit().negate();
+    }
   }
 
   protected boolean isReverseCharge(Move move) {
