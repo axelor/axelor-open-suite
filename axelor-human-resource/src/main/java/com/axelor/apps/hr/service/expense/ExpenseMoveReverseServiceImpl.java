@@ -92,11 +92,22 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       return reverseMove;
     }
 
-    Expense expense = move.getExpense();
-
-    if (expense != null) {
-      expensePaymentService.resetExpensePaymentAfterCancellation(expense);
-    }
+    cancelVentilation(move);
+    cancelPayment(move);
     return reverseMove;
+  }
+
+  protected void cancelPayment(Move move) {
+    Expense expensePayment = move.getExpensePayment();
+    if (expensePayment != null) {
+      expensePaymentService.resetExpensePaymentAfterCancellation(expensePayment);
+    }
+  }
+
+  protected void cancelVentilation(Move move) {
+    Expense expense = move.getExpense();
+    if (expense != null) {
+      expense.setVentilated(false);
+    }
   }
 }
