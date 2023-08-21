@@ -82,6 +82,8 @@ import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseKilometricServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
+import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
@@ -213,5 +215,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestMailService.class).to(LeaveRequestMailServiceImpl.class);
     bind(LeaveRequestManagementService.class).to(LeaveRequestManagementServiceImpl.class);
     bind(LeaveRequestWorkflowService.class).to(LeaveRequestWorkflowServiceImpl.class);
+    bind(ExpenseLineCreateService.class).to(ExpenseLineCreateServiceImpl.class);
   }
 }
