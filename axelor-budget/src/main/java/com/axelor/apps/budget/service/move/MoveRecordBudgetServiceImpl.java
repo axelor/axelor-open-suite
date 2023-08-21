@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
@@ -66,7 +67,8 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
       MassEntryService massEntryService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
-      MoveBudgetService moveBudgetService) {
+      MoveBudgetService moveBudgetService,
+      PfpService pfpService) {
     super(
         moveDefaultService,
         moveAttrsService,
@@ -85,7 +87,8 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
         appAccountService,
         massEntryService,
         massEntryVerificationService,
-        moveLineMassEntryRecordService);
+        moveLineMassEntryRecordService,
+        pfpService);
     this.moveBudgetService = moveBudgetService;
   }
 

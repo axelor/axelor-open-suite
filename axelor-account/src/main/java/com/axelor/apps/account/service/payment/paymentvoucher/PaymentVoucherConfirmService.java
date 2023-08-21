@@ -190,8 +190,14 @@ public class PaymentVoucherConfirmService {
     if (paymentVoucher.getPayVoucherElementToPayList().stream()
         .map(PayVoucherElementToPay::getInvoiceTerm)
         .filter(
-            it ->
-                invoiceTermService.getPfpValidatorUserCondition(it.getInvoice(), it.getMoveLine()))
+            it -> {
+              try {
+                return invoiceTermService.getPfpValidatorUserCondition(
+                    it.getInvoice(), it.getMoveLine());
+              } catch (AxelorException e) {
+                throw new RuntimeException(e);
+              }
+            })
         .anyMatch(
             it ->
                 it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_VALIDATED

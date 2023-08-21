@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -350,7 +351,7 @@ public class InvoiceToolService {
     Company company = invoice.getCompany();
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
 
-    if (accountConfig.getIsManagePassedForPayment()
+    if (Beans.get(PfpService.class).isManagePassedForPayment(company)
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
                 && accountConfig.getIsManagePFPInRefund()))) {

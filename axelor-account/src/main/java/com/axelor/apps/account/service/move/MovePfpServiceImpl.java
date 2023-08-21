@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -51,6 +52,7 @@ public class MovePfpServiceImpl implements MovePfpService {
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
   protected AccountingSituationService accountingSituationService;
+  protected PfpService pfpService;
 
   @Inject
   public MovePfpServiceImpl(
@@ -58,12 +60,14 @@ public class MovePfpServiceImpl implements MovePfpService {
       InvoiceTermPfpService invoiceTermPfpService,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      PfpService pfpService) {
     this.moveRepository = moveRepository;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
     this.accountingSituationService = accountingSituationService;
+    this.pfpService = pfpService;
   }
 
   @Transactional
@@ -133,8 +137,7 @@ public class MovePfpServiceImpl implements MovePfpService {
     Company company = move.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    if (accountConfig.getIsManagePassedForPayment()
-        && this._getJournalTypePurchaseCondition(move)) {
+    if (this._getPfpCondition(move)) {
       AccountingSituation accountingSituation =
           accountingSituationService.getAccountingSituation(move.getPartner(), company);
       if (accountingSituation != null) {
@@ -184,8 +187,7 @@ public class MovePfpServiceImpl implements MovePfpService {
   }
 
   protected boolean _getPfpCondition(Move move) throws AxelorException {
-    return appAccountService.getAppAccount().getActivatePassedForPayment()
-        && invoiceTermPfpService.getManagePfpCondition(move.getCompany())
+    return pfpService.isManagePassedForPayment(move.getCompany())
         && this._getJournalTypePurchaseCondition(move);
   }
 
@@ -200,7 +202,7 @@ public class MovePfpServiceImpl implements MovePfpService {
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    return accountConfig.getIsManagePassedForPayment()
+    return pfpService.isManagePassedForPayment(move.getCompany())
         && (isSupplierPurchase || (isSupplierRefund && accountConfig.getIsManagePFPInRefund()));
   }
 }

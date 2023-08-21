@@ -43,6 +43,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -93,6 +94,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected UserRepository userRepo;
+  protected PfpService pfpService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -104,7 +106,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      UserRepository userRepo) {
+      UserRepository userRepo,
+      PfpService pfpService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -114,6 +117,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.userRepo = userRepo;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -344,10 +348,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) {
+  public boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine)
+      throws AxelorException {
     boolean invoiceCondition =
         invoice != null
-            && invoice.getCompany().getAccountConfig().getIsManagePassedForPayment()
+            && pfpService.isManagePassedForPayment(invoice.getCompany())
             && (invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
                 || (invoice.getCompany().getAccountConfig().getIsManagePFPInRefund()
@@ -358,15 +363,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoice == null
             && moveLine != null
             && moveLine.getMove() != null
-            && moveLine.getMove().getCompany().getAccountConfig().getIsManagePassedForPayment()
+            && pfpService.isManagePassedForPayment(moveLine.getMove().getCompany())
             && (moveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
                     == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
                 || (moveLine.getMove().getCompany().getAccountConfig().getIsManagePFPInRefund()
                     && moveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
                         == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE));
 
-    return appAccountService.getAppAccount().getActivatePassedForPayment()
-        && (invoiceCondition || moveLineCondition);
+    return invoiceCondition || moveLineCondition;
   }
 
   @Override
@@ -1010,7 +1014,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    if (accountConfig.getIsManagePassedForPayment()
+    if (pfpService.isManagePassedForPayment(company)
         && (isSupplierPurchase || (isSupplierRefund && accountConfig.getIsManagePFPInRefund()))) {
       invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
     } else {

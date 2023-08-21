@@ -69,7 +69,7 @@ public interface InvoiceTermService {
       BigDecimal remainingAmountAfterFinDiscount);
 
   @CallMethod
-  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine);
+  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) throws AxelorException;
 
   /**
    * Method that creates a customized invoiceTerm

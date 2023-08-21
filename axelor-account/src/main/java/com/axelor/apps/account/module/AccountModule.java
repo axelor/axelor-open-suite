@@ -682,5 +682,7 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountingReportAnalyticConfigLineService.class)
         .to(AccountingReportAnalyticConfigLineServiceImpl.class);
+
+    bind(PfpService.class).to(PfpServiceImpl.class);
   }
 }
