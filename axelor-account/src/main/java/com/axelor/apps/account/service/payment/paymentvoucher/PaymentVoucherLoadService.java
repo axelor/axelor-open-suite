@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -59,7 +58,6 @@ public class PaymentVoucherLoadService {
 
   protected CurrencyService currencyService;
   protected PaymentVoucherToolService paymentVoucherToolService;
-  protected PayVoucherDueElementRepository payVoucherDueElementRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected PayVoucherDueElementService payVoucherDueElementService;
   protected PayVoucherElementToPayService payVoucherElementToPayService;
@@ -71,7 +69,6 @@ public class PaymentVoucherLoadService {
   public PaymentVoucherLoadService(
       CurrencyService currencyService,
       PaymentVoucherToolService paymentVoucherToolService,
-      PayVoucherDueElementRepository payVoucherDueElementRepo,
       PaymentVoucherRepository paymentVoucherRepository,
       PayVoucherDueElementService payVoucherDueElementService,
       PayVoucherElementToPayService payVoucherElementToPayService,
@@ -80,7 +77,6 @@ public class PaymentVoucherLoadService {
       PfpService pfpService) {
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
-    this.payVoucherDueElementRepo = payVoucherDueElementRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.payVoucherDueElementService = payVoucherDueElementService;
     this.payVoucherElementToPayService = payVoucherElementToPayService;

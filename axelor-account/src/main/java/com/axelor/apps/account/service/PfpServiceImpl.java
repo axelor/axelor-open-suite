@@ -21,8 +21,26 @@ public class PfpServiceImpl implements PfpService {
   @Override
   public boolean isManagePassedForPayment(Company company) throws AxelorException {
     return company != null
-        && appAccountService.getAppAccount() != null
-        && appAccountService.getAppAccount().getActivatePassedForPayment()
+        && this.isActivatePassedForPayment()
         && accountConfigService.getAccountConfig(company).getIsManagePassedForPayment();
+  }
+
+  @Override
+  public boolean isManagePFPInRefund(Company company) throws AxelorException {
+    return company != null
+        && this.isActivatePassedForPayment()
+        && accountConfigService.getAccountConfig(company).getIsManagePFPInRefund();
+  }
+
+  @Override
+  public boolean isManageDaybookInPFP(Company company) throws AxelorException {
+    return company != null
+        && this.isActivatePassedForPayment()
+        && accountConfigService.getAccountConfig(company).getIsManageDaybookInPFP();
+  }
+
+  protected boolean isActivatePassedForPayment() {
+    return appAccountService.getAppAccount() != null
+        && appAccountService.getAppAccount().getActivatePassedForPayment();
   }
 }

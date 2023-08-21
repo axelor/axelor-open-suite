@@ -254,10 +254,8 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
     if (move.getJournal() != null && move.getJournal().getJournalType() != null) {
       JournalType journalType = move.getJournal().getJournalType();
-      if (move.getCompany() != null
-          && move.getCompany().getAccountConfig() != null
-          && pfpService.isManagePassedForPayment(move.getCompany())
-          && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+      if (pfpService.isManagePassedForPayment(move.getCompany())
+          && pfpService.isManagePFPInRefund(move.getCompany())
           && (journalType.getTechnicalTypeSelect()
                   == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
               || journalType.getTechnicalTypeSelect()

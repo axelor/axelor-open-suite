@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -349,12 +348,12 @@ public class InvoiceToolService {
 
   public static void setPfpStatus(Invoice invoice) throws AxelorException {
     Company company = invoice.getCompany();
-    AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+    PfpService pfpService = Beans.get(PfpService.class);
 
-    if (Beans.get(PfpService.class).isManagePassedForPayment(company)
+    if (pfpService.isManagePassedForPayment(company)
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-                && accountConfig.getIsManagePFPInRefund()))) {
+                && pfpService.isManagePFPInRefund(company)))) {
       AccountingSituation accountingSituation =
           Beans.get(AccountingSituationService.class)
               .getAccountingSituation(invoice.getPartner(), company);

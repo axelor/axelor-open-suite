@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.PfpService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -63,7 +62,6 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
       MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      AppAccountService appAccountService,
       MassEntryService massEntryService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
@@ -84,7 +82,6 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
         moveLineTaxService,
         periodService,
         moveRepository,
-        appAccountService,
         massEntryService,
         massEntryVerificationService,
         moveLineMassEntryRecordService,

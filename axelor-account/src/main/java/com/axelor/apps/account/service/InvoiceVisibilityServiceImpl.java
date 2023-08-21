@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -37,21 +36,15 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected InvoiceService invoiceService;
   protected InvoiceTermPfpService invoiceTermPfpService;
-  protected AccountConfigService accountConfigService;
-  protected AppAccountService appAccountService;
   protected PfpService pfpService;
 
   @Inject
   public InvoiceVisibilityServiceImpl(
       InvoiceService invoiceService,
       InvoiceTermPfpService invoiceTermPfpService,
-      AccountConfigService accountConfigService,
-      AppAccountService appAccountService,
       PfpService pfpService) {
     this.invoiceService = invoiceService;
     this.invoiceTermPfpService = invoiceTermPfpService;
-    this.accountConfigService = accountConfigService;
-    this.appAccountService = appAccountService;
     this.pfpService = pfpService;
   }
 
@@ -132,10 +125,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   public boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException {
     return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            && invoice.getCompany() != null
-            && accountConfigService
-                .getAccountConfig(invoice.getCompany())
-                .getIsManagePFPInRefund());
+            && pfpService.isManagePFPInRefund(invoice.getCompany()));
   }
 
   @Override
@@ -158,9 +148,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
         || (this._getInvoiceTermsCondition2(invoice)
             && (invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                || !accountConfigService
-                    .getAccountConfig(invoice.getCompany())
-                    .getIsManagePFPInRefund()
+                || !pfpService.isManagePFPInRefund(invoice.getCompany())
                 || invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
   }
