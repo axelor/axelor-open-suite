@@ -589,4 +589,9 @@ public final class BaseExceptionMessage {
 
   public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
       "The configuration to print this model has not been found" /*)*/;
+
+  public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
+
+  public static final String CONVERT_IMAGE_TO_PDF_ERROR = /*$$(*/
+      "Error while converting image to pdf : %s" /*)*/;
 }

@@ -667,4 +667,29 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
     return moveList;
   }
+
+  @Override
+  public List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company) {
+    List<Integer> statusList = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
+
+    if (ObjectUtils.isEmpty(moveStatusSelect) || company == null) {
+      return statusList;
+    }
+    try {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+      if (accountConfig.getAccountingDaybook()
+          && moveStatusSelect.contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
+        statusList.add(MoveRepository.STATUS_DAYBOOK);
+      }
+      if (accountConfig.getIsActivateSimulatedMove()
+          && moveStatusSelect.contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
+        statusList.add(MoveRepository.STATUS_SIMULATED);
+      }
+    } catch (Exception e) {
+      return statusList;
+    }
+
+    return statusList;
+  }
 }
