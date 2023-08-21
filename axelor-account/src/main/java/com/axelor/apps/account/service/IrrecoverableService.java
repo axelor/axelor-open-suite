@@ -939,13 +939,7 @@ public class IrrecoverableService {
               moveLineCreateService.createMoveLine(
                   move,
                   payerPartner,
-                  taxAccountService.getAccount(
-                      invoiceMoveLine.getTaxLine().getTax(),
-                      company,
-                      move.getJournal(),
-                      invoiceMoveLine.getVatSystemSelect(),
-                      false,
-                      move.getFunctionalOriginSelect()),
+                  invoiceMoveLine.getAccount(),
                   amount,
                   true,
                   invoiceMoveLine.getTaxLine(),
