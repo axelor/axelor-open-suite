@@ -118,7 +118,7 @@
         action="custom:hr-manager-extra-hours-custom-view" height="400"
         if="__config__.app.isApp('exthrs')"/>
       <panel-dashlet name="medicalVisitPanel" title="Medical visits" colSpan="6"
-        action="action-medical-visit-view-dashboard-manager" height="400"
+        action="custom:hr-manager-medical-visits-custom-view" height="400"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()"/>
     </panel>
   </form>

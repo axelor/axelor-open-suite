@@ -8,7 +8,6 @@ import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.hr.db.MedicalVisit;
 import com.axelor.apps.hr.db.repo.MedicalVisitRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -19,17 +18,19 @@ public class MedicalVisitWorkflowServiceImpl implements MedicalVisitWorkflowServ
 
   protected MedicalVisitRepository medicalVisitRepository;
   protected ICalendarService iCalendarService;
-
   protected ICalendarEventRepository iCalendarEventRepository;
+  protected MedicalVisitService medicalVisitService;
 
   @Inject
   public MedicalVisitWorkflowServiceImpl(
       MedicalVisitRepository medicalVisitRepository,
       ICalendarService iCalendarService,
-      ICalendarEventRepository iCalendarEventRepository) {
+      ICalendarEventRepository iCalendarEventRepository,
+      MedicalVisitService medicalVisitService) {
     this.medicalVisitRepository = medicalVisitRepository;
     this.iCalendarService = iCalendarService;
     this.iCalendarEventRepository = iCalendarEventRepository;
+    this.medicalVisitService = medicalVisitService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -73,13 +74,9 @@ public class MedicalVisitWorkflowServiceImpl implements MedicalVisitWorkflowServ
             medicalVisit.getEmployee().getUser(),
             medicalVisit.getNote(),
             ICalendarEventRepository.TYPE_EVENT,
-            computeMedicalVisitEventSubject(medicalVisit));
+            medicalVisitService.getMedicalVisitSubject(medicalVisit));
     iCalendarEventRepository.save(event);
     medicalVisit.setiCalendarEvent(event);
-  }
-
-  protected String computeMedicalVisitEventSubject(MedicalVisit medicalVisit) {
-    return I18n.get(ITranslation.MEDICAL_VISIT) + " - " + medicalVisit.getVisitReason().getName();
   }
 
   protected void checkStatusBeforeCancel(MedicalVisit medicalVisit) throws AxelorException {

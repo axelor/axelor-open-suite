@@ -5,6 +5,8 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeFile;
 import com.axelor.apps.hr.db.MedicalVisit;
 import com.axelor.apps.hr.db.repo.EmployeeFileRepository;
+import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
@@ -47,10 +49,15 @@ public class MedicalVisitServiceImpl implements MedicalVisitService {
     return employee.getEmployeeFileList();
   }
 
+  @Override
+  public String getMedicalVisitSubject(MedicalVisit medicalVisit) {
+    return I18n.get(ITranslation.MEDICAL_VISIT) + " - " + medicalVisit.getVisitReason().getName();
+  }
+
   protected EmployeeFile getEmployeeFile(MedicalVisit medicalVisit, MetaFile metaFile) {
     EmployeeFile employeeFile = new EmployeeFile();
     employeeFile.setMetaFile(metaFile);
-    employeeFile.setFileDescription(medicalVisit.getVisitReason().getName());
+    employeeFile.setFileDescription(getMedicalVisitSubject(medicalVisit));
     employeeFile.setRecordDate(appBaseService.getTodayDate(null));
     return employeeFile;
   }
