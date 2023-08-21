@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="global-budget-grid" title="Global Budget"
+    model="com.axelor.apps.budget.db.GlobalBudget" orderBy="code">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="statusSelect"/>
+    <field name="activeVersion"/>
+    <field name="activeVersion.totalAmountExpected" title="Total Amount Expected"
+      aggregate="sum"/>
+    <field name="typeSelect"/>
+    <field name="totalAmountCommitted"/>
+    <field name="realizedWithNoPo"/>
+    <field name="realizedWithPo"/>
+  </grid>
+
+  <form name="global-budget-form" title="Global Budget"
+    model="com.axelor.apps.budget.db.GlobalBudget" width="large">
+
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        readonly="true" hidden="true"/>
+      <field name="fullName" hidden="true" showTitle="false" colSpan="12"/>
+      <field name="code" required="true" colSpan="2"/>
+      <field name="name" required="true" colSpan="4"/>
+      <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
+        domain="self.parentBudgetLevel.parentBudgetLevel != null"/>
+      <field name="budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"
+        colSpan="3" grid-view="budget-level-grid" form-view="budget-level-form"/>
+      <field name="typeSelect" colSpan="3"/>
+      <field name="sourceSelect" colSpan="3"/>
+      <field name="budgetKey" colSpan="6" readonly="true"/>
+      <panel name="datesPanel" colSpan="12">
+        <field name="fromDate" colSpan="3" readonlyIf="statusSelect == 2" required="true"/>
+        <field name="toDate" colSpan="3" readonlyIf="statusSelect == 2" required="true"/>
+        <field name="company" hidden="true"/>
+        <field name="company.currency" hidden="true"/>
+      </panel>
+    </panel>
+
+    <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" title="Initial"
+      itemSpan="3">
+      <field name="totalAmountExpected"/>
+      <field name="totalAmountCommitted" if-module="axelor-supplychain"
+        if="__config__.app.isApp('supplychain')"/>
+      <field name="realizedWithNoPo"/>
+      <field name="realizedWithPo"/>
+      <field name="simulatedAmount"/>
+      <field name="availableAmount"/>
+      <field name="availableAmountWithSimulated"/>
+      <field name="totalFirmGap"/>
+      <field name="totalAmountPaid"/>
+      <field name="totalAmountRealized" hidden="true"/>
+      <separator colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>

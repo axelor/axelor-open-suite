@@ -157,4 +157,21 @@
     <context name="_canNew" expr="eval: false"/>
   </action-view>
 
+  <menuitem title="Global Budget" name="budget-root-budget-management-global-budget"
+    parent="budget-root-budget-management" action="budget.root.management.global-budget" order="23"/>
+  <action-view name="budget.root.management.global-budget" title="Global Budget"
+    model="com.axelor.apps.budget.db.GlobalBudget">
+    <view type="grid" name="global-budget-grid"/>
+    <view type="form" name="global-budget-form"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
+  <menuitem title="Budget Version" name="budget-root-budget-management-budget-version"
+    parent="budget-root-budget-management" action="budget.root.management.budget-version" order="23"/>
+  <action-view name="budget.root.management.budget-version" title="Budget Version"
+    model="com.axelor.apps.budget.db.BudgetVersion">
+    <view type="grid" name="budget-version-grid"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
 </object-views>
