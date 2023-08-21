@@ -29,17 +29,15 @@ public class BudgetManagementRepository extends BudgetRepository {
   public Budget save(Budget entity) {
     entity.setAvailableAmount(
         (entity
-                        .getBudgetVersion()
                         .getTotalAmountExpected()
-                        .subtract(entity.getGlobalBudget().getRealizedWithPo())
-                        .subtract(entity.getGlobalBudget().getRealizedWithNoPo()))
+                        .subtract(entity.getRealizedWithPo())
+                        .subtract(entity.getRealizedWithNoPo()))
                     .compareTo(BigDecimal.ZERO)
                 > 0
             ? entity
-                .getBudgetVersion()
                 .getTotalAmountExpected()
-                .subtract(entity.getGlobalBudget().getRealizedWithPo())
-                .subtract(entity.getGlobalBudget().getRealizedWithNoPo())
+                .subtract(entity.getRealizedWithPo())
+                .subtract(entity.getRealizedWithNoPo())
             : BigDecimal.ZERO);
 
     BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
