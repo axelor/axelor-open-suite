@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionLcrValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
@@ -393,8 +394,13 @@ public class BankOrderServiceImpl implements BankOrderService {
         paymentSessionValidateService.reconciledInvoiceTermMoves(
             paymentSession, invoiceTermLinkWithRefund);
 
-        paymentSessionValidateService.processPaymentSession(
-            paymentSession, invoiceTermLinkWithRefund, isLcr);
+        if (isLcr) {
+          Beans.get(PaymentSessionLcrValidateService.class)
+              .processPaymentSession(paymentSession, invoiceTermLinkWithRefund);
+        } else {
+          paymentSessionValidateService.processPaymentSession(
+              paymentSession, invoiceTermLinkWithRefund);
+        }
 
         bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
