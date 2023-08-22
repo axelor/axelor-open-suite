@@ -1540,6 +1540,7 @@
   </action-group>
 
   <action-group name="action-sale-order-group-new-version-btn">
+    <action name="save"/>
     <action name="action-sale-order-validate-check-empty-sale-order-on-new-version"/>
     <action name="action-sale-order-method-new-version"/>
     <action name="action-sale-order-attrs-set-previous-version-number"/>
