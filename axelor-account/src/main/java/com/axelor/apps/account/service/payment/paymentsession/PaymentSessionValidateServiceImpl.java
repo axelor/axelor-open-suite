@@ -69,7 +69,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
@@ -560,8 +559,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     this.reconcile(paymentSession, invoiceTerm, moveLine);
 
-    recomputeAmountPaid(invoiceTerm.getMoveLine());
-
     return move;
   }
 
@@ -714,9 +711,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     for (Partner partner : moveMap.keySet()) {
       for (Move move : moveMap.get(partner)) {
         amount = paymentAmountMap.get(move);
-
-        this.generateCashMoveLine(
-            move, partner, cashAccount, amount, this.getMoveLineDescription(paymentSession), out);
+        if (amount.signum() > 0) {
+          this.generateCashMoveLine(
+              move, partner, cashAccount, amount, this.getMoveLineDescription(paymentSession), out);
+        }
       }
     }
   }
@@ -1142,17 +1140,5 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
     return false;
-  }
-
-  protected void recomputeAmountPaid(MoveLine moveLine) {
-    if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      Optional<BigDecimal> amountPaid =
-          moveLine.getInvoiceTermList().stream()
-              .map(it -> it.getPaymentAmount())
-              .reduce(BigDecimal::add);
-      if (amountPaid.isPresent()) {
-        moveLine.setAmountPaid(amountPaid.get());
-      }
-    }
   }
 }
