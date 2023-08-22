@@ -1,0 +1,4 @@
+---
+title: "Stock move line: improve performance when selecting a tracking number if there is a large number of stock location lines"
+type: fix
+
