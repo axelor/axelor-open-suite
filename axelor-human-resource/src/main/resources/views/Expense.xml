@@ -124,7 +124,7 @@
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"
             onClick="save,action-expense-add-payment-form"
-            showIf="statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+            showIf="ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
           <button name="cancelPaymentBtn" title="Cancel payment"
             showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
             onClick="save,action-expense-method-cancel-payment"/>
