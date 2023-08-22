@@ -74,23 +74,7 @@ public class AnalyticDistributionLineController {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
 
-      Context parentContext = request.getContext().getParent();
-      AnalyticLine parent = null;
-      if (parentContext != null) {
-        Class<?> parentClass = request.getContext().getParent().getContextClass();
-        if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-          parent = request.getContext().getParent().asType(AnalyticLine.class);
-        }
-      } else {
-        if (analyticMoveLine.getMoveLine() != null) {
-          parent = analyticMoveLine.getMoveLine();
-        } else if (analyticMoveLine.getInvoiceLine() != null) {
-          parent = analyticMoveLine.getInvoiceLine();
-        } else if (request.getContext().get("invoiceId") != null) {
-          Long invoiceId = Long.valueOf((Integer) request.getContext().get("invoiceId"));
-          parent = Beans.get(InvoiceLineRepository.class).find(invoiceId);
-        }
-      }
+      AnalyticLine parent = getParentWithContext(request, response, analyticMoveLine);
 
       if (parent != null) {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
@@ -108,20 +92,7 @@ public class AnalyticDistributionLineController {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
 
-      Context parentContext = request.getContext().getParent();
-      AnalyticLine parent = null;
-      if (parentContext != null) {
-        Class<?> parentClass = request.getContext().getParent().getContextClass();
-        if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-          parent = request.getContext().getParent().asType(AnalyticLine.class);
-        }
-      } else {
-        if (analyticMoveLine.getMoveLine() != null) {
-          parent = analyticMoveLine.getMoveLine();
-        } else if (analyticMoveLine.getInvoiceLine() != null) {
-          parent = analyticMoveLine.getInvoiceLine();
-        }
-      }
+      AnalyticLine parent = getParentWithContext(request, response, analyticMoveLine);
       response.setValue(
           "amount",
           Beans.get(AnalyticLineService.class)
@@ -194,5 +165,27 @@ public class AnalyticDistributionLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public AnalyticLine getParentWithContext(
+      ActionRequest request, ActionResponse response, AnalyticMoveLine analyticMoveLine) {
+    Context parentContext = request.getContext().getParent();
+    AnalyticLine parent = null;
+    if (parentContext != null) {
+      Class<?> parentClass = request.getContext().getParent().getContextClass();
+      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
+        parent = request.getContext().getParent().asType(AnalyticLine.class);
+      }
+    } else {
+      if (analyticMoveLine.getMoveLine() != null) {
+        parent = analyticMoveLine.getMoveLine();
+      } else if (analyticMoveLine.getInvoiceLine() != null) {
+        parent = analyticMoveLine.getInvoiceLine();
+      } else if (request.getContext().get("invoiceId") != null) {
+        Long invoiceId = Long.valueOf((Integer) request.getContext().get("invoiceId"));
+        parent = Beans.get(InvoiceLineRepository.class).find(invoiceId);
+      }
+    }
+    return parent;
   }
 }
