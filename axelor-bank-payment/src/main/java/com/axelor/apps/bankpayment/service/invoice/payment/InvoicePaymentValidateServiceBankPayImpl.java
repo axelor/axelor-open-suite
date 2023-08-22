@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -74,7 +75,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService) {
+      BankOrderService bankOrderService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
     super(
         paymentModeService,
         moveCreateService,
@@ -86,7 +88,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         reconcileService,
         appAccountService,
         accountManagementAccountService,
-        invoicePaymentToolService);
+        invoicePaymentToolService,
+        moveLineInvoiceTermService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
     this.invoiceTermService = invoiceTermService;
