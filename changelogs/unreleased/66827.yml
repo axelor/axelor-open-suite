@@ -1,0 +1,3 @@
+---
+title: "SaleOrderLine : Fixed a bug where project not emptied on copy"
+type: fix
