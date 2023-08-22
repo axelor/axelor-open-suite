@@ -173,14 +173,14 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       query =
           query.concat(
               String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
+                  " AND self.budgetLevel.parentBudgetLevel.globalBudget.company.id = %d",
                   purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getId() : 0));
-      if (purchaseOrder.getBudgetLevel() != null) {
+      if (purchaseOrder.getGlobalBudget() != null) {
         query =
             query.concat(
                 String.format(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = %d",
-                    purchaseOrder.getBudgetLevel().getId()));
+                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.id = %d",
+                    purchaseOrder.getGlobalBudget().getId()));
       } else if (purchaseOrder.getCompanyDepartment() != null) {
         query =
             query.concat(

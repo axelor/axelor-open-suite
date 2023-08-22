@@ -544,12 +544,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       if (groupBudgetLevel != null) {
         computeTotals(groupBudgetLevel);
         budgetLevelRepository.save(groupBudgetLevel);
-
-        BudgetLevel globalBudgetLevel = groupBudgetLevel.getParentBudgetLevel();
-        if (globalBudgetLevel != null) {
-          computeTotals(globalBudgetLevel);
-          budgetLevelRepository.save(groupBudgetLevel);
-        }
       }
     }
   }

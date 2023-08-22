@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module package="com.axelor.apps.budget.db" name="budget"/>
+
+  <entity name="GlobalBudget">
+
+    <string name="code" title="Code"/>
+    <string name="name" title="Name"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <integer name="statusSelect" title="Status" selection="global.budget.status.select"
+      default="0"/>
+
+    <integer name="budgetTypeSelect" selection="global.budget.budget.type.select"
+      default="4" title="Budget type select"/>
+
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+    <many-to-one name="companyDepartment"
+      ref="com.axelor.apps.base.db.CompanyDepartment" title="Company Department"/>
+    <many-to-one name="budgetManager" ref="com.axelor.auth.db.User"
+      title="Budget manager"/>
+    <string name="comments" title="Comment" large="true"/>
+
+    <decimal name="totalAmountExpected" title="Expected amount"
+      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."/>
+    <decimal name="totalAmountCommitted" title="Committed amount"
+      help="Represents the sum of orders of status requested, validated or finished and that don't have a invoiced invoice."/>
+    <decimal name="totalAmountRealized" title="Realized total amount"/>
+    <decimal name="totalAmountPaid" title="Paid total amount"/>
+    <decimal name="totalAmountAvailable" title="Available amount"
+      help="Represents the expected amount minus the sum of realized amounts."/>
+    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with no order and daybook and accounted moves with no invoice."/>
+    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with an order."/>
+    <decimal name="totalFirmGap" title="Firm gap" precision="20" scale="2"
+      help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
+    <decimal name="simulatedAmount" title="Simulated amount"
+      help="Represents the sum of moves of status simulated."/>
+    <decimal name="availableAmountWithSimulated"
+      title="Available amount with simulated moves"
+      help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
+    </decimal>
+
+    <one-to-many name="budgetList" ref="com.axelor.apps.budget.db.Budget" title="Budget"
+      mappedBy="globalBudget"/>
+
+    <one-to-many name="budgetLevelList" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Budget Level" mappedBy="globalBudget"/>
+
+    <integer name="checkAvailableSelect" title="Check available amount"
+      selection="budget.budget.level.check.available"/>
+
+    <string name="fullName" namecolumn="true" search="code,name" title="Full name">
+            <![CDATA[
+            return code + " " + name;
+         ]]>
+    </string>
+
+    <unique-constraint columns="code,fromDate,toDate"/>
+
+    <extra-code>
+            <![CDATA[
+
+            //budget level budget type select
+				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE = 1;
+				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE = 2;
+				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT = 3;
+				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT = 4;
+
+				//budget level status select
+				public static final int GLOBAL_BUDGET_STATUS_SELECT_DRAFT = 0;
+				public static final int GLOBAL_BUDGET_STATUS_SELECT_VALID_STRUCTURE = 1;
+				public static final int GLOBAL_BUDGET_STATUS_SELECT_VALID = 2;
+				public static final int GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED = 3;
+
+				//budget control type select
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET = 2;
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION = 3;
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP = 4;
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_GLOBAL_BUDGET = 5;
+	      ]]>
+    </extra-code>
+
+  </entity>
+
+</domain-models>

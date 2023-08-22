@@ -52,6 +52,8 @@ import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetServiceImpl;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
+import com.axelor.apps.budget.service.GlobalBudgetService;
+import com.axelor.apps.budget.service.GlobalBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
@@ -108,6 +110,7 @@ public class BudgetModule extends AxelorModule {
     bind(MoveBankPaymentRepository.class).to(MoveBudgetManagementRepository.class);
     bind(BudgetAccountService.class).to(BudgetAccountServiceImpl.class);
     bind(BudgetService.class).to(BudgetServiceImpl.class);
+    bind(GlobalBudgetService.class).to(GlobalBudgetServiceImpl.class);
     bind(BudgetLevelService.class).to(BudgetLevelServiceImpl.class);
     bind(BudgetDistributionService.class).to(BudgetDistributionServiceImpl.class);
 

@@ -45,4 +45,18 @@
     <option value="3">Investment</option>
     <option value="4">Purchase and investment</option>
   </selection>
+
+  <selection name="global.budget.budget.type.select">
+    <option value="1">Budget.Purchase</option>
+    <option value="2">Budget.Sale</option>
+    <option value="3">Investment</option>
+    <option value="4">Purchase and investment</option>
+  </selection>
+
+  <selection name="global.budget.status.select">
+    <option value="0">Draft</option>
+    <option value="1">Valid structure</option>
+    <option value="2">Valid</option>
+    <option value="3">Archived</option>
+  </selection>
 </object-views>

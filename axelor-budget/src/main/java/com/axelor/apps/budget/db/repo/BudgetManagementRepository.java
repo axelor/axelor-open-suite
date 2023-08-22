@@ -19,7 +19,7 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 
@@ -40,11 +40,11 @@ public class BudgetManagementRepository extends BudgetRepository {
                 .subtract(entity.getRealizedWithNoPo())
             : BigDecimal.ZERO);
 
-    BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
+    GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
 
     entity = super.save(entity);
 
-    budgetLevelService.computeBudgetLevelTotals(entity);
+    globalBudgetService.computeBudgetLevelTotals(entity);
 
     return entity;
   }

@@ -36,6 +36,9 @@
     <many-to-one name="budgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Parent Level"/>
 
+    <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
+      title="Global Level"/>
+
     <string name="typeSelect" title="Type" selection="budget.budget.type.select"
       readonly="true"/>
     <string name="sourceSelect" title="Source" selection="budget.budget.source.select"

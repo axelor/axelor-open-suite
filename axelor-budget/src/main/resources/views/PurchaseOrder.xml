@@ -40,7 +40,7 @@
           <field name="companyDepartment" colSpan="3"
             onChange="action-budget-purchase-order-attrs-company-dept-onchange"
             requiredIf="$enableBudgetKey"/>
-          <field name="budgetLevel" if="__config__.app.isApp('budget')"
+          <field name="globalBudget" if="__config__.app.isApp('budget')"
             onSelect="action-budget-purchase-order-attrs-budget-level-domain"
             requiredIf="companyDepartment &amp;&amp; $enableBudgetKey" colSpan="3"
             showIf="companyDepartment &amp;&amp; $enableBudgetKey"
