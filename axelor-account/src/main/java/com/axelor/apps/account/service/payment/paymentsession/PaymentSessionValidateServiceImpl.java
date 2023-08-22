@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -89,6 +90,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected AccountConfigService accountConfigService;
   protected PartnerService partnerService;
   protected PaymentModeService paymentModeService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected int counter = 0;
 
   @Inject
@@ -109,7 +111,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoicePaymentRepository invoicePaymentRepo,
       AccountConfigService accountConfigService,
       PartnerService partnerService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -127,6 +130,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.accountConfigService = accountConfigService;
     this.partnerService = partnerService;
     this.paymentModeService = paymentModeService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
   }
 
   @Override
@@ -421,6 +425,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     move.setPaymentSession(paymentSession);
     move.setPartnerBankDetails(partnerBankDetails);
+    move.setPaymentCondition(null);
 
     return move;
   }
@@ -477,6 +482,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             description);
 
     move.addMoveLineListItem(moveLine);
+
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, move.getDate(), false);
 
     return moveLine;
   }
