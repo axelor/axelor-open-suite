@@ -30,10 +30,11 @@ public interface BudgetInvoiceLineService {
    * an automatic budget distribution with the company ex tax total and save the invoice line.
    * Return an error message if a budget distribution is not generated
    *
+   * @param invoice
    * @param invoiceLine
    * @return String
    */
-  public String computeBudgetDistribution(InvoiceLine invoiceLine);
+  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine);
 
   /**
    * Take all budget distribution and throw an error if the total amount of budget distribution is

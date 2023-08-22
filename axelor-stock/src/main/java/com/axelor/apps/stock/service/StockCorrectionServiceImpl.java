@@ -158,7 +158,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     StockLocation computedToStockLocation;
 
     if (diff.compareTo(BigDecimal.ZERO) == 0) {
-      return null;
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.STOCK_CORRECTION_2));
     } else if (diff.compareTo(BigDecimal.ZERO) > 0) {
       computedFromStockLocation = fromStockLocation;
       computedToStockLocation = toStockLocation;
@@ -285,11 +287,12 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       Product product,
       TrackingNumber trackingNumber,
       BigDecimal realQty,
-      StockCorrectionReason reason) {
+      StockCorrectionReason reason,
+      String comments) {
 
     StockCorrection stockCorrection = new StockCorrection();
     setNewStockCorrectionInformation(
-        stockLocation, product, trackingNumber, realQty, reason, stockCorrection);
+        stockLocation, product, trackingNumber, realQty, reason, stockCorrection, comments);
     this.stockCorrectionRepository.save(stockCorrection);
 
     return stockCorrection;
@@ -301,7 +304,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       TrackingNumber trackingNumber,
       BigDecimal realQty,
       StockCorrectionReason reason,
-      StockCorrection stockCorrection) {
+      StockCorrection stockCorrection,
+      String comments) {
     stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_DRAFT);
     stockCorrection.setStockLocation(stockLocation);
     stockCorrection.setProduct(product);
@@ -312,6 +316,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     stockCorrection.setStockCorrectionReason(reason);
 
     stockCorrection.setBaseQty(getProductBaseQty(stockCorrection));
+    stockCorrection.setComments(comments);
   }
 
   protected BigDecimal getProductBaseQty(StockCorrection stockCorrection) {
@@ -334,6 +339,15 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
       stockCorrection.setStockCorrectionReason(reason);
       this.stockCorrectionRepository.save(stockCorrection);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateComments(StockCorrection stockCorrection, String comments) {
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
+      stockCorrection.setComments(comments);
+      stockCorrectionRepository.save(stockCorrection);
     }
   }
 }

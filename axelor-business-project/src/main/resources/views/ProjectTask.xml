@@ -70,66 +70,72 @@
     <extend target="//panel[@name='internalDescriptionPanel']">
       <insert position="before">
         <panel name="timeFollowUpPanel" title="Time follow-up"
-          if="__config__.app.isApp('business-project')">
+          if="__config__.app.isApp('business-project')" showIf="timeUnit">
           <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
-            onChange="action-project-task-record-fill-updated-time"/>
-          <field name="updatedTime" hidden="true" showIf="!parentTask"/>
-          <field name="plannedTime" readonly="true"/>
-          <field name="spentTime" readonly="true"/>
+            onChange="action-project-task-record-fill-updated-time" colSpan="3"/>
+          <field name="updatedTime" hidden="true" showIf="!parentTask" colSpan="3"/>
+          <spacer/>
+          <field name="plannedTime" readonly="true" colSpan="3"/>
+          <field name="spentTime" readonly="true" colSpan="3"/>
+          <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
+            <panel-dashlet
+              action="action-project-task-view-percentage-progress-custom" colSpan="3"
+              showTitle="false"/>
+            <panel-dashlet
+              action="action-project-task-view-percentage-consumption-custom" colSpan="3"
+              showTitle="false"/>
+            <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
+              colSpan="3" showTitle="false"/>
+          </panel>
         </panel>
       </insert>
     </extend>
     <extend target="//panel[@name='treeViewPanel']">
       <insert position="after">
-        <panel name="invoicingPanel" title="Invoicing" colSpan="12"
+        <panel name="purchasePanel" title="Purchase" colSpan="12"
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-          <field name="invoicingType" colspan="6"
-            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-            onChange="action-project-task-attrs-onchange-invoice-type"/>
-          <field name="toInvoice" colSpan="2" readonly="true"
-            if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"
-            if-module="axelor-business-project"/>
-          <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
-            if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
-            if-module="axelor-business-project"/>
-          <field name="isPaid" showIf="project.invoicingSequenceSelect == 1"
-            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-            colSpan="1"/>
-          <field name="isTaskRefused" if="__config__.app.isApp('business-project')"
-            if-module="axelor-business-project" colSpan="1"/>
-          <field if="__config__.app.isApp('business-project')"
-            if-module="axelor-business-project" name="invoiced"
-            showIf="id &amp;&amp; !($readonly())" colSpan="1"/>
-          <field if="__config__.app.isApp('business-project')"
-            if-module="axelor-business-project" name="invoiced" showIf="id &amp;&amp; $readonly()"
-            showTitle="false" colSpan="1">
-            <viewer><![CDATA[
-                     <h4 class="text-right">
-                         <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
-                         <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                     </h4>
-					]]></viewer>
-          </field>
-          <field name="project.invoicingSequenceSelect" hidden="true"
-            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-          <field name="invoiceLine" readonly="true" showIf="invoiceLine"
-            form-view="invoice-line-form" grid-view="invoice-line-grid"/>
+          <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
+            onClick="action-project-task-generate-purchase-order"/>
+          <field name="purchaseOrderList" colSpan="12" canNew="false"/>
+          <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
         </panel>
         <panel name="financialDataPanel" title="Financial Data" colSpan="12"
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-          <panel name="contentPanel" title="Content" colSpan="12">
-            <field name="product" colSpan="6" canEdit="false"
+          <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
+            <field name="product" colSpan="3" canEdit="false"
               onChange="action-project-task-group-product-onchange"
               domain="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'"
               form-view="product-form" grid-view="product-grid" readonlyIf="saleOrderLine"/>
             <field name="quantity" colSpan="3"
               onChange="action-project-task-group-qty-onchange" readonlyIf="saleOrderLine"/>
-            <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
-              form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"/>
             <field name="unitPrice" colSpan="3"
               onChange="action-project-task-group-unit-price-onchange" readonlyIf="saleOrderLine"/>
+            <field name="unitCost" colSpan="3" readonlyIf="saleOrderLine"/>
+            <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
+              form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"/>
             <field name="currency" colSpan="3" grid-view="currency-grid"
               form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
+            <field name="exTaxTotal" readonly="true" colSpan="3"/>
+            <field name="totalCosts" colSpan="3"/>
+            <field name="invoicingType" colSpan="3"
+              onChange="action-project-task-attrs-onchange-invoice-type"/>
+            <field name="toInvoice" colSpan="2" readonly="true"
+              if="__config__.app.getApp('business-project').automaticInvoicing"/>
+            <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
+              if="!__config__.app.getApp('business-project').automaticInvoicing"/>
+            <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/>
+            <field name="isTaskRefused" colSpan="2"/>
+            <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())"
+              colSpan="1"/>
+            <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()"
+              showTitle="false" colSpan="1">
+              <viewer><![CDATA[
+                     <h4 class="text-right">
+                         <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
+                         <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                     </h4>
+					]]></viewer>
+            </field>
             <panel name="discountPanel" readonly="true" colSpan="12"
               hideIf="discountTypeSelect == 3 || discountTypeSelect == 0"
               if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
@@ -138,12 +144,14 @@
               <field name="discountAmount" colSpan="3"/>
               <field name="priceDiscounted" colSpan="3"/>
             </panel>
-            <field name="exTaxTotal" readonly="true" colSpan="3"/>
+            <field name="project.invoicingSequenceSelect" hidden="true"
+              if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+            <field name="invoiceLine" readonly="true" showIf="invoiceLine"
+              form-view="invoice-line-form" grid-view="invoice-line-grid"/>
           </panel>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>
-          <panel name="initialPanel" title="ProjectTask.Initial" colSpan="12"
-            showIf="!parentTask">
+          <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
             <panel-dashlet action="action-project-task-view-turnover-custom"
               colSpan="3"/>
             <panel-dashlet action="action-project-task-view-initial-costs-custom"
@@ -156,11 +164,22 @@
             <field name="initialCosts" hidden="true"/>
             <field name="initialMargin" hidden="true"/>
             <field name="initialMarkup" hidden="true"/>
-            <field name="unitCost" hidden="true"/>
           </panel>
-          <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
-            <panel-dashlet action="action-project-task-view-real-turnover-custom"
+          <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+            <panel-dashlet action="action-project-task-view-forecast-costs-custom"
               colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-forecast-margin-custom"
+              colSpan="3" hidden="true" showIf="!parentTask"/>
+            <panel-dashlet action="action-project-task-view-forecast-markup-custom"
+              colSpan="3" hidden="true" showIf="!parentTask"/>
+            <field name="forecastCosts" hidden="true"/>
+            <field name="forecastMargin" hidden="true"/>
+            <field name="forecastMarkup" hidden="true"/>
+          </panel>
+          <panel name="realPanel" title="ProjectTask.Real" colSpan="12" hidden="true"
+            showIf="!parentTask">
+            <panel-dashlet action="action-project-task-view-real-turnover-custom"
+              colSpan="3" showIf="timeUnit"/>
             <panel-dashlet action="action-project-task-view-real-costs-custom"
               colSpan="3"/>
             <panel-dashlet action="action-project-task-view-real-margin-custom"
@@ -171,40 +190,60 @@
             <field name="realCosts" hidden="true"/>
             <field name="realMargin" hidden="true"/>
             <field name="realMarkup" hidden="true"/>
-            <field name="forecastUnitCost" hidden="true"/>
           </panel>
-          <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
-            <panel-dashlet action="action-project-task-view-forecast-costs-custom"
-              colSpan="3"/>
-            <panel-dashlet action="action-project-task-view-forecast-margin-custom"
-              colSpan="3"/>
-            <panel-dashlet action="action-project-task-view-forecast-markup-custom"
-              colSpan="3"/>
-            <field name="forecastCosts" hidden="true"/>
-            <field name="forecastMargin" hidden="true"/>
-            <field name="forecastMarkup" hidden="true"/>
+          <panel name="realCostPanel" title="" colSpan="12" hidden="true" showIf="parentTask">
+            <panel-dashlet action="action-project-task-view-real-costs-custom"
+              title="Real costs" colSpan="3"/>
+            <field name="realCosts" hidden="true"/>
           </panel>
-        </panel>
-      </insert>
-    </extend>
-    <extend target="//panel[@name='financialDataPanel']">
-      <insert position="before">
-        <panel name="reportingPanel" title="Reporting" showIf="!parentTask"
-          if="__config__.app.isApp('business-project')">
-          <panel-dashlet action="action-project-task-view-percentage-progress-custom"
-            colSpan="4" showTitle="false"/>
-          <panel-dashlet
-            action="action-project-task-view-percentage-consumption-custom" colSpan="4"
-            showTitle="false"/>
-          <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
-            colSpan="4" showTitle="false" showIf="$displayRemaining"/>
-          <field name="$displayProgress" hidden="true"/>
-          <field name="$displayConsumption" hidden="true"/>
-          <field name="$displayRemaining" hidden="true"/>
+          <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
+            <panel-dashlet action="action-project-task-view-landing-costs-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-landing-margin-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-landing-markup-custom"
+              colSpan="3"/>
+            <field name="landingCosts" hidden="true"/>
+            <field name="landingMargin" hidden="true"/>
+            <field name="landingMarkup" hidden="true"/>
+          </panel>
         </panel>
       </insert>
     </extend>
   </form>
+
+  <tree id="business-project-project-task-tree" name="project-project-task-tree" title="Task">
+    <column name="name" type="string"/>
+    <column name="taskDate" type="date"/>
+    <column name="assignedTo" type="reference"/>
+    <column name="openTaskBtn" type="button"/>
+    <column name="generatePurchaseOrderBtn" type="button"/>
+    <column name="deleteTaskBtn" type="button"/>
+    <node model="com.axelor.apps.project.db.ProjectTask"
+      onClick="action-project-task-view-task" domain="self.project.id = :_id" orderBy="taskDate">
+      <field name="name" as="name"/>
+      <field name="taskDate" as="taskDate"/>
+      <field name="assignedTo" as="assignedTo"/>
+      <field name="progressSelect" as="progress"/>
+      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
+        onClick="save, action-project-task-method-generate-purchase-order"/>
+      <button name="deleteTaskBtn" icon="fa-times-circle"
+        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+    </node>
+    <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask"
+      onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
+      <field name="name" as="name"/>
+      <field name="taskDate" as="taskDate"/>
+      <field name="assignedTo" as="assignedTo"/>
+      <field name="progressSelect" as="progress"/>
+      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
+        onClick="save, action-project-task-method-generate-purchase-order"/>
+      <button name="deleteTaskBtn" icon="fa-times-circle"
+        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+    </node>
+  </tree>
 
   <action-view name="action-project-task-view-percentage-progress-custom"
     title="% of progress">
@@ -274,6 +313,11 @@
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController" method="compute"/>
   </action-method>
 
+  <action-method name="action-project-task-method-generate-purchase-order">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="generatePurchaseOrder"/>
+  </action-method>
+
   <action-attrs name="action-project-task-attrs-scale-and-precision">
     <attribute name="scale" for="priceDiscounted"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
@@ -284,12 +328,10 @@
   <action-group name="action-business-project-project-task-group-on-new">
     <action name="action-project-task-group-onnew"/>
     <action name="action-project-task-attrs-set-time-unit-default"/>
-    <action name="action-project-task-attrs-set-reporting-values-display"/>
   </action-group>
 
   <action-group name="action-business-project-project-task-group-on-load">
     <action name="action-project-task-group-timer-process"/>
-    <action name="action-project-task-attrs-set-reporting-values-display"/>
   </action-group>
 
   <!-- get timeUnit value from configuration -->
@@ -315,15 +357,5 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
   </action-record>
-
-  <action-attrs name="action-project-task-attrs-set-reporting-values-display">
-    <attribute for="$displayProgress" name="value"
-      expr="eval: percentageOfProgress + ' %'"/>
-    <attribute for="$displayConsumption" name="value"
-      expr="eval: percentageOfConsumption + ' %'"/>
-    <attribute for="$displayRemaining" name="value"
-      expr="eval: remainingAmountToDo + ' ' + timeUnit.name + '(s)'"
-      if="remainingAmountToDo &amp;&amp; timeUnit"/>
-  </action-attrs>
 
 </object-views>

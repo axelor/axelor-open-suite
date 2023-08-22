@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -38,6 +37,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ContextTool;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -113,8 +113,7 @@ public class AnalyticDistributionLineController {
       company = analyticDistributionTemplate.getCompany();
     } else {
       company =
-          Beans.get(AnalyticToolService.class)
-              .getFieldFromContextParent(request.getContext(), "company", Company.class);
+          ContextTool.getFieldFromContextParent(request.getContext(), "company", Company.class);
     }
     if (company != null) {
       response.setAttr(

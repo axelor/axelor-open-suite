@@ -74,8 +74,18 @@
     <domain>self.statusSelect &gt; 2</domain>
   </action-view>
 
+  <menuitem name="quality-improvements" parent="menu-quality-root"
+    title="Quality improvements" action="quality.improvements" order="400"/>
+
+  <action-view name="quality.improvements" title="Quality improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="grid" name="quality-improvement-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <view type="kanban" name="quality-improvement-kanban"/>
+  </action-view>
+
   <menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings"
-    icon="fa-bar-chart" order="400"/>
+    icon="fa-bar-chart" order="500"/>
 
   <menuitem name="quality-reportings-dashboard" parent="quality-reportings"
     title="Quality Dashboard" action="quality.dashboard.view" order="100"/>
@@ -85,7 +95,7 @@
   </action-view>
 
   <menuitem name="quality-configurations" parent="menu-quality-root" title="Configuration"
-    icon="fa-cog" order="500"/>
+    icon="fa-cog" order="600"/>
 
   <menuitem name="quality-teams" parent="quality-configurations" title="Quality teams"
     action="quality.teams" order="100"/>
@@ -123,6 +133,24 @@
     model="com.axelor.apps.quality.db.ControlPointType">
     <view type="grid" name="quality-control-point-type-grid"/>
     <view type="form" name="quality-control-point-type-form"/>
+  </action-view>
+
+  <menuitem name="qi-detection" parent="quality-configurations" title="QI Detections"
+    action="qi.detection" order="500"/>
+
+  <action-view name="qi.detection" title="QI Detections"
+    model="com.axelor.apps.quality.db.QIDetection">
+    <view type="grid" name="qi-detection-grid"/>
+    <view type="form" name="qi-detection-form"/>
+  </action-view>
+
+  <menuitem name="qi.status" parent="quality-configurations" title="QI Status"
+    action="qi.status" order="600"/>
+
+  <action-view name="qi.status" title="QI Status"
+    model="com.axelor.apps.quality.db.QIStatus">
+    <view type="grid" name="qi-status-grid"/>
+    <view type="form" name="qi-status-form"/>
   </action-view>
 
 </object-views>

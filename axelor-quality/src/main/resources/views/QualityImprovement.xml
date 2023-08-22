@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="quality-improvement-grid" title="Quality improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" orderBy="sequence">
+    <field name="sequence"/>
+    <field name="company"/>
+    <field name="type"/>
+    <field name="qiStatus"/>
+  </grid>
+
+  <form name="quality-improvement-form" title="Quality improvement"
+    model="com.axelor.apps.quality.db.QualityImprovement"
+    onNew="action-quality-improvement-record-on-new" width="large">
+    <panel name="mainPanel">
+      <field name="sequence"/>
+      <field name="qiStatus" grid-view="qi-status-grid" form-view="qi-status-form"/>
+      <field name="company" grid-view="company-grid" form-view="company-form"/>
+      <field name="type"/>
+      <field name="qiDetection" grid-view="qi-detection-grid" form-view="qi-detection-form"
+        onSelect="action-quality-improvement-attrs-set-qi-detection-domain"/>
+    </panel>
+    <panel-tabs name="mainPanelTab" hidden="true" showIf="id">
+      <panel name="identificationPanel" title="Common"/>
+    </panel-tabs>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <kanban name="quality-improvement-kanban" sequenceBy="technicalSeq"
+    model="com.axelor.apps.quality.db.QualityImprovement" columnBy="qiStatus"
+    title="Quality improvement" limit="10">
+    <field name="sequence"/>
+    <field name="company.name"/>
+    <field name="type"/>
+    <template>
+	    <![CDATA[
+            <div class="card-body">
+				<span x-translate>{{sequence}}</span><br/>
+            	<span x-translate>{{company.name}}</span><br/>
+            	<span ng-if="type == 1" x-translate>Product</span>
+            	<span ng-if="type == 2" x-translate>System</span>
+        	</div>
+	    ]]>
+    </template>
+  </kanban>
+
+  <action-record name="action-quality-improvement-record-on-new"
+    model="com.axelor.apps.quality.db.QualityImprovement">
+    <field name="qiStatus" expr="eval: __repo__(QIStatus).findDefaultStatus()"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+  </action-record>
+
+  <action-attrs name="action-quality-improvement-attrs-set-qi-detection-domain">
+    <attribute name="domain" for="qiDetection"
+      expr="eval: &quot; self.origin = ${qiDetection?.origin} &quot;" if="id != null"/>
+    <attribute name="domain" for="qiDetection" expr="eval: null" if="id == null"/>
+  </action-attrs>
+
+</object-views>

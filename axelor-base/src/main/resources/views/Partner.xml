@@ -550,7 +550,7 @@
           if-module="axelor-sale">
           <button name="createSaleOrderBtn" title="Create sale quotation" colSpan="4"
             onClick="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1"
-            showIf="isProspect || isCustomer"/>
+            showIf="isCustomer"/>
           <panel-include view="incl-sales-partner-form"/>
         </panel>
       </panel>
@@ -700,7 +700,7 @@
         </field>
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
-            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
+            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet AND p.partnerTypeSelect = 1)"
             form-view="partner-form" grid-view="partner-grid"/>
         </panel>
         <field name="isContact" hidden="true" colSpan="12"/>
@@ -1115,7 +1115,7 @@
           <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
-            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
+            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet AND p.partnerTypeSelect = 1)"
             form-view="partner-form" grid-view="partner-grid"/>
         </panel>
         <field name="isContact" hidden="true" colSpan="12"/>

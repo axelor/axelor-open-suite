@@ -57,6 +57,8 @@ public interface InvoiceTermService {
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
 
+  void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate);
+
   void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
 
   void computeFinancialDiscount(

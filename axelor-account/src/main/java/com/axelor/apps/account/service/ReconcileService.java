@@ -74,8 +74,6 @@ public interface ReconcileService {
 
   public void unreconcile(Reconcile reconcile) throws AxelorException;
 
-  // public void canBeZeroBalance(Reconcile reconcile) throws AxelorException;
-
   /**
    * Procédure permettant de gérer les écarts de règlement, check sur la case à cocher 'Peut être
    * soldé' Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte

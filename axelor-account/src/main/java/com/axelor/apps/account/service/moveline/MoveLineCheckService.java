@@ -33,4 +33,6 @@ public interface MoveLineCheckService {
   void checkDates(Move move) throws AxelorException;
 
   void checkAnalyticAccount(List<MoveLine> moveLineList) throws AxelorException;
+
+  void checkAnalyticMoveLinesPercentage(MoveLine moveLine) throws AxelorException;
 }

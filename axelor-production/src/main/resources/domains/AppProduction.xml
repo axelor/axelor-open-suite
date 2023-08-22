@@ -48,6 +48,8 @@
     <string name="mOFilterOnStockDetailStatusSelect"
       title="Status considered to filter a manuf order"
       selection="production.manuf.order.status.select" default="4,5"/>
+    <integer name="operationContinuitySelect" title="Operation Continuity"
+      selection="production.manuf.operation.continuity.select"/>
     <boolean name="manageOutsourcing" title="Manage outsourcing"/>
     <boolean name="manageMpsCharge" title="Manage Master Production Scheduling Charge"/>
     <boolean name="enableToolManagement" title="Enable Tool Management"/>
@@ -56,6 +58,12 @@
 
     <boolean name="manageWorkCenterGroup" title="Manage work center group"/>
 
+    <extra-code><![CDATA[
+		// OPERATION_CONTINUITY_SELECT
+        public static final int OPERATION_CONTINUITY_SELECT_NO_CONTINUITY =0;
+        public static final int OPERATION_CONTINUITY_SELECT_OPTIONAL_CONTINUITY = 1;
+        public static final int OPERATION_CONTINUITY_SELECT_CONTINUITY_BY_DEFAULT = 2;
+    ]]></extra-code>
     <track>
       <field name="prodOrderMgtOnSO" on="UPDATE"/>
       <field name="productionOrderGenerationAuto" on="UPDATE"/>
