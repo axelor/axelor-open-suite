@@ -36,7 +36,7 @@
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
     search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
 
-  <input file="account_taxAccount.csv" separator=";"
+  <input file="account_accountManagement.csv" separator=";"
     type="com.axelor.apps.account.db.AccountManagement">
     <bind to="company" search="self.id = :_companyId" update="true"/>
     <bind to="tax" search="self.code = :tax_code" update="true"/>

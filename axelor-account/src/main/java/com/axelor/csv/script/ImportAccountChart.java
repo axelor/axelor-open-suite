@@ -58,7 +58,7 @@ public class ImportAccountChart {
           "account_accountType.csv",
           "account_fiscalPosition.csv",
           "account_tax.csv",
-          "account_taxAccount.csv",
+          "account_accountManagement.csv",
           "account_taxEquiv.csv",
           "account_taxLine.csv"
         };
