@@ -29,8 +29,7 @@
     search="self.code = :code"/>
 
   <input file="account_taxLine.csv" separator=";" type="com.axelor.apps.account.db.TaxLine"
-    search="self.importId = :importId and self.tax.code = :tax_code">
-    <bind to="tax" search="self.code = :tax_code"/>
+    search="self.importId = :importId and self.tax.code = :tax_code" update="true">
   </input>
 
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
