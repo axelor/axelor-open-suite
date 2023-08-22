@@ -1019,10 +1019,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     Move pairMove = pairMoveLine.getMove();
-    if (accountConfig != null && pairMove.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-      if (accountConfig.getAccountingDaybook() && accountConfig.getAccountAtPayment()) {
-        moveValidateService.accounting(pairMove);
-      }
+    if (accountConfig != null
+        && pairMove.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        && accountConfig.getAccountingDaybook()
+        && accountConfig.getAccountAtPayment()) {
+      moveValidateService.accounting(pairMove);
     }
 
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
