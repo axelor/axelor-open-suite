@@ -123,10 +123,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       totalAmount = totalAmount.add(invoiceTerm.getAmount());
     }
-    if (invoice.getInTaxTotal().compareTo(totalAmount) != 0) {
-      return false;
-    }
-    return true;
+    return invoice.getInTaxTotal().compareTo(totalAmount) == 0;
   }
 
   @Override
@@ -146,7 +143,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 invoiceTerm.getAmount().divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP));
       }
     }
-    return sum.multiply(BigDecimal.valueOf(100));
+    return sum.multiply(BigDecimal.valueOf(100))
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -207,7 +205,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
-        this.computeCompanyAmounts(invoiceTerm);
+        this.computeCompanyAmounts(invoiceTerm, false);
         this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       } else {
         total = total.add(invoiceTerm.getAmount());
@@ -256,22 +254,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return invoiceTerm;
   }
 
-  protected void computeCompanyAmounts(InvoiceTerm invoiceTerm) {
+  public void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate) {
     BigDecimal invoiceTermAmount = invoiceTerm.getAmount();
     BigDecimal invoiceTermAmountRemaining = invoiceTerm.getAmountRemaining();
     BigDecimal companyAmount = invoiceTermAmount;
     BigDecimal companyAmountRemaining = invoiceTermAmountRemaining;
     MoveLine moveLine = invoiceTerm.getMoveLine();
     Invoice invoice = invoiceTerm.getInvoice();
+    BigDecimal ratioPaid = BigDecimal.ONE;
 
     if (invoiceTermAmount.signum() != 0 && this.isMultiCurrency(invoiceTerm)) {
       BigDecimal companyTotal =
           invoice != null
               ? invoice.getCompanyInTaxTotal()
               : moveLine.getDebit().max(moveLine.getCredit());
-      BigDecimal ratioPaid =
-          invoiceTermAmountRemaining.divide(invoiceTermAmount, 10, RoundingMode.HALF_UP);
 
+      if (!isUpdate) {
+        ratioPaid = invoiceTermAmountRemaining.divide(invoiceTermAmount, 10, RoundingMode.HALF_UP);
+      }
       companyAmount =
           companyTotal
               .multiply(invoiceTerm.getPercentage())
@@ -395,7 +395,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-    this.computeCompanyAmounts(invoiceTerm);
+    this.computeCompanyAmounts(invoiceTerm, false);
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
@@ -442,7 +442,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-    this.computeCompanyAmounts(invoiceTerm);
+    this.computeCompanyAmounts(invoiceTerm, false);
 
     if (move != null
         && move.getPaymentCondition() != null
@@ -976,7 +976,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     this.setPfpStatus(newInvoiceTerm, move);
-    this.computeCompanyAmounts(newInvoiceTerm);
+    this.computeCompanyAmounts(newInvoiceTerm, false);
 
     return newInvoiceTerm;
   }
@@ -1198,7 +1198,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
     }
 
-    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm, paymentSession, isRefund);
+    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm, isRefund);
 
     return invoiceTerm;
   }
@@ -1226,21 +1226,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 < 0;
       }
     }
+
+    if (invoiceTerm.getPaymentSession() != null
+        && invoiceTerm.getMoveLine() != null
+        && invoiceTerm.getMoveLine().getMove() != null
+        && ((invoiceTerm.getPaymentSession().getPartnerTypeSelect()
+                    == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+                && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                    == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
+            || (invoiceTerm.getPaymentSession().getPartnerTypeSelect()
+                    == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER
+                && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                    == MoveRepository.FUNCTIONAL_ORIGIN_SALE))) {
+      isSignedNegative = !isSignedNegative;
+    }
     return isSignedNegative;
   }
 
   protected InvoiceTerm updateInvoiceTermsAmountsSessiontPart(
-      InvoiceTerm invoiceTerm, PaymentSession paymentSession, boolean isRefund) {
+      InvoiceTerm invoiceTerm, boolean isRefund) {
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
-
-    if ((paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
-            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
-                == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
-        || (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER
-            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
-                == MoveRepository.FUNCTIONAL_ORIGIN_SALE)) {
-      isSignedNegative = !isSignedNegative;
-    }
 
     BigDecimal paymentAmount = invoiceTerm.getPaymentAmount();
 
@@ -1432,17 +1437,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal getTotalInvoiceTermsAmount(
       MoveLine moveLine, Account holdbackAccount, boolean holdback) {
     Move move = moveLine.getMove();
-    BigDecimal total = moveLine.getCurrencyAmount();
+    BigDecimal total = moveLine.getCurrencyAmount().abs();
 
     if (move != null && move.getMoveLineList() != null) {
       for (MoveLine moveLineIt : move.getMoveLineList()) {
-        if (!moveLineIt.equals(moveLine)
+        if (!moveLineIt.getCounter().equals(moveLine.getCounter())
             && moveLineIt.getCredit().signum() == moveLine.getCredit().signum()
             && moveLineIt.getAccount() != null
             && moveLineIt.getAccount().getUseForPartnerBalance()
             && (holdback
                 || (holdbackAccount != null && !moveLineIt.getAccount().equals(holdbackAccount)))) {
-          total = total.add(moveLineIt.getCurrencyAmount());
+          total = total.add(moveLineIt.getCurrencyAmount().abs());
         }
       }
     }
@@ -1564,19 +1569,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean isThresholdNotOnLastInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
-    if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      InvoiceTerm lastInvoiceTerm =
-          moveLine.getInvoiceTermList().stream()
-              .filter(it -> it.getSequence() == moveLine.getInvoiceTermList().size())
-              .findFirst()
-              .orElse(null);
-
-      if (lastInvoiceTerm != null
-          && moveLine.getAmountRemaining().compareTo(lastInvoiceTerm.getAmountRemaining()) >= 0
-          && lastInvoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
-        return true;
-      }
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      return moveLine.getInvoiceTermList().stream()
+          .filter(it -> it.getSequence() == moveLine.getInvoiceTermList().size())
+          .anyMatch(
+              it ->
+                  this.isThresholdNotOnInvoiceTerm(it, moveLine, thresholdDistanceFromRegulation));
     }
+
     return false;
+  }
+
+  protected boolean isThresholdNotOnInvoiceTerm(
+      InvoiceTerm invoiceTerm, MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
+    return invoiceTerm != null
+        && moveLine.getAmountRemaining().compareTo(invoiceTerm.getAmountRemaining()) >= 0
+        && invoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0;
   }
 }

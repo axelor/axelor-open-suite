@@ -747,7 +747,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     filter +=
         " AND self.partner = :_partner "
             + "AND self.currency = :_currency "
-            + "AND self.operationTypeSelect = :_operationTypeSelect";
+            + "AND self.operationTypeSelect = :_operationTypeSelect "
+            + "AND self.internalReference IS NULL";
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo
