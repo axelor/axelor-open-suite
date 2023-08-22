@@ -355,6 +355,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             description,
             companyBankDetails);
     move.setPaymentVoucher(paymentVoucher);
+    move.setPaymentCondition(null);
     return move;
   }
 
