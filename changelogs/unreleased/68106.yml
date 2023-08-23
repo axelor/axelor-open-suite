@@ -1,0 +1,3 @@
+---
+title: "Reconcile : Fix payment adjustment when the last invoice term paid is not the one with the latest date"
+type: fix
