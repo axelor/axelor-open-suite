@@ -153,4 +153,22 @@
     <view type="form" name="qi-status-form"/>
   </action-view>
 
+  <menuitem name="qi.default" parent="quality-configurations" title="Defaults"
+    action="qi.default" order="700"/>
+
+  <action-view name="qi.default" title="Defaults"
+    model="com.axelor.apps.quality.db.QIDefault">
+    <view type="grid" name="qi-default-grid"/>
+    <view type="form" name="qi-default-form"/>
+  </action-view>
+
+  <menuitem name="qi.decision" parent="quality-configurations" title="Decisions"
+    action="qi.decision" order="800"/>
+
+  <action-view name="qi.decision" title="Decisions"
+    model="com.axelor.apps.quality.db.QIDecision">
+    <view type="grid" name="qi-decision-grid"/>
+    <view type="form" name="qi-decision-form"/>
+  </action-view>
+
 </object-views>
