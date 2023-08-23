@@ -495,7 +495,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  public void recoverVersion(SaleOrder saleOrder, Integer versionNumber) {
+  public boolean recoverVersion(SaleOrder saleOrder, Integer versionNumber) {
+    boolean isNewVersion = !saleOrder.getSaleOrderLineList().isEmpty();
     createNewVersion(saleOrder);
     saleOrder.clearSaleOrderLineList();
     saleOrder.getOldVersionSaleOrderLineList().stream()
@@ -510,5 +511,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
               saleOrder.setArchived(null);
               saleOrder.addSaleOrderLineListItem(saleOrderLine);
             });
+    if (!isNewVersion) {
+      saleOrder.setVersionNumber(saleOrder.getVersionNumber() - 1);
+    }
+    return isNewVersion;
   }
 }

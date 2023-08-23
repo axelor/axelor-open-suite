@@ -104,4 +104,10 @@ public final class SaleExceptionMessage {
 
   public static final String OPPORTUNITY_PARTNER_MISSING = /*$$(*/
       "You must fill a partner for the opportunity %s." /*)*/;
+
+  public static final String SALE_ORDER_NEW_VERSION = /*$$(*/
+      "Actual version saved, past version recovered." /*)*/;
+
+  public static final String SALE_ORDER_NO_NEW_VERSION = /*$$(*/
+      "Actual version overwritten since the sale order had no lines." /*)*/;
 }

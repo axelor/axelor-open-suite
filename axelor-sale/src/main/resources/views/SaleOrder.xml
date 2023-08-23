@@ -1431,6 +1431,7 @@
       if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.crm.db.Opportunity'"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-record-set-group-product-on-printing"/>
+    <action name="action-sale-order-attrs-set-previous-version-number"/>
   </action-group>
 
   <action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -1560,7 +1561,6 @@
   </action-group>
 
   <action-group name="action-sale-order-group-version-recovery-btn">
-    <action name="action-sale-order-validate-check-empty-sale-order-on-recovery"/>
     <action name="action-sale-order-method-version-recovery-btn"/>
     <action name="action-sale-order-attrs-set-previous-version-number"/>
     <action name="action-sale-order-method-get-version-date-time"/>
