@@ -676,11 +676,11 @@
           <field name="realStockMoveAutomaticMail"/>
         </panel>
         <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false"
-          domain="self.company = :company AND self.typeSelect IN (2, 3)"
+          domain="self.company = :company AND self.typeSelect = 3 AND self.usableOnPurchaseOrder = true"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
         <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false"
-          domain="self.company = :company AND self.typeSelect IN (2, 3)"
+          domain="self.company = :company AND self.typeSelect = 3 AND self.usableOnSaleOrder = true"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
         <panel name="realStockMovePanel" colSpan="12" showIf="typeSelect == 2">
