@@ -134,6 +134,29 @@
           </editor>
         </field>
       </panel>
+
+      <panel name="resolutionPanel" title="Resolution">
+        <field name="qiResolution" showTitle="false" colSpan="12" canSelect="false"
+          canView="false" canRemove="false">
+          <editor>
+            <field name="qi.qiIdentification.nonConformingQuantity" readonly="true"/>
+            <panel name="defaultPanel" title="QI Resolution Defaults" colSpan="12">
+              <field name="defaultWrittenBy" form-view="user-form" grid-view="user-grid"
+                onChange="action-quality-improvement-record-set-default-written-on"/>
+              <field name="defaultWrittenOn"/>
+              <field name="qiResolutionDefaultsList" showTitle="false" colSpan="12"
+                form-view="qi-resolution-default-form" grid-view="qi-resolution-default-grid"/>
+            </panel>
+            <panel name="decisionPanel" title="QI Resolution Decisions" colSpan="12">
+              <field name="decisionsWrittenBy" form-view="user-form" grid-view="user-grid"
+                onChange="action-quality-improvement-record-set-decisions-written-on"/>
+              <field name="decisionsWrittenOn"/>
+              <field name="qiResolutionDecisionsList" showTitle="false" colSpan="12"
+                form-view="qi-resolution-decision-form" grid-view="qi-resolution-decision-grid"/>
+            </panel>
+          </editor>
+        </field>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -522,5 +545,17 @@
     <call class="com.axelor.apps.quality.web.QIIdentificationController"
       method="updateQIIdentification"/>
   </action-method>
+
+  <action-record name="action-quality-improvement-record-set-default-written-on"
+    model="com.axelor.apps.quality.db.QIResolution">
+    <field name="defaultWrittenOn" expr="eval: __time__"
+      if="!defaultWrittenOn &amp;&amp; defaultWrittenBy"/>
+  </action-record>
+
+  <action-record name="action-quality-improvement-record-set-decisions-written-on"
+    model="com.axelor.apps.quality.db.QIResolution">
+    <field name="decisionsWrittenOn" expr="eval: __time__"
+      if="!decisionsWrittenOn &amp;&amp; decisionsWrittenBy"/>
+  </action-record>
 
 </object-views>
