@@ -45,4 +45,10 @@
     <option value="3">Investment</option>
     <option value="4">Purchase and investment</option>
   </selection>
+
+  <selection name="app.budget.check.missing.select">
+    <option value="0">None</option>
+    <option value="1">Optional</option>
+    <option value="2">Required</option>
+  </selection>
 </object-views>
