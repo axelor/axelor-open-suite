@@ -15,7 +15,13 @@
 
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"
-    search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromAccount.code = :fromAccount_code AND self.toAccount.code = :toAccount_code"/>
+    search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromAccount.code = :fromAccount_code AND self.toAccount.code = :toAccount_code AND self.fromAccount.company.id = :_companyId AND self.toAccount.company.id = :_companyId">
+    <bind to="fiscalPosition" search="self.code = :fiscalPosition_code" update="true"/>
+    <bind to="fromAccount"
+      search="self.code = :fromAccount_code and self.company.id = :_companyId" update="true"/>
+    <bind to="toAccount" search="self.code = :toAccount_code and self.company.id = :_companyId"
+      update="true"/>
+  </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
     search="self.code = :code AND self.company.id = :_companyId " update="true"
