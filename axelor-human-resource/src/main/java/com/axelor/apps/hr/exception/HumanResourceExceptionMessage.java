@@ -245,4 +245,21 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_CAN_NOT_DELETE_VENTILATED = /*$$(*/
       "Ventilated expense can not be deleted. %s can not be deleted." /*)*/;
+
+  public static final String EXPENSE_LINE_DATE_ERROR = /*$$(*/ "Date can't be in the future" /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_EXPENSE_PRODUCT = /*$$(*/
+      "Please provide an expense product." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_KILOMETRIC_ALLOWANCE_PARAM = /*$$(*/
+      "Please provide a kilometric allowance parameter." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_KILOMETRIC_TYPE = /*$$(*/
+      "Please provide a kilometric type." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_CITIES = /*$$(*/
+      "Please provide starting and arriving cities." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_COMPANY = /*$$(*/
+      "Please provide a company." /*)*/;
 }
