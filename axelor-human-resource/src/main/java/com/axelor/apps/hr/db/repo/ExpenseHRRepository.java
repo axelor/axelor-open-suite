@@ -78,7 +78,6 @@ public class ExpenseHRRepository extends ExpenseRepository {
     expense.setValidationDateTime(null);
     expense.setPeriod(expenseFetchPeriodService.getPeriod(expense));
     expense.setExpenseSeq(null);
-    expense.setMove(null);
     expense.setMoveDate(null);
     expense.setVentilated(false);
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
