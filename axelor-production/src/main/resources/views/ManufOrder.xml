@@ -117,7 +117,8 @@
   <form name="manuf-order-form" title="Manufacturing order"
     model="com.axelor.apps.production.db.ManufOrder"
     onNew="action-attrs-production-manuf-order-set-default-plan-if-missing-on-new,action-manuf-order-group-onnew"
-    onLoad="action-manuf-order-group-onload" width="large">
+    onLoad="action-manuf-order-group-onload" width="large"
+    onSave="action-manuf-order-record-client-partner">
     <!-- TODO avec propagation -->
     <menubar>
       <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -190,7 +191,7 @@
           onChange="action-manuf-order-attrs-sale-order-onchange-client-partner" canEdit="false"/>
         <field name="saleOrderSet" widget="TagSelect" form-view="sale-order-form"
           grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect"
-          canEdit="false" onChange="action-manuf-order-record-client-partner"/>
+          canEdit="false"/>
         <field name="manufOrderMergeResult" showIf="manufOrderMergeResult"
           form-view="manuf-order-form" grid-view="manuf-order-grid" canNew="false" canEdit="false"
           canView="true"/>
@@ -228,6 +229,9 @@
           hidden="true"/>
         <button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12"
           showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel" hidden="true"/>
+        <button name="draftBtn" icon="fa-eraser " title="Return to draft status" colSpan="12"
+          showIf="statusSelect == 2" onClick="action-manuf-order-record-set-status-to-draft,save"
+          hidden="true"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
@@ -548,6 +552,11 @@
     <context name="_xApplicationType" expr="eval: _model"/>
   </action-view>
 
+  <action-record name="action-manuf-order-record-set-status-to-draft"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <field name="statusSelect" expr="eval: __repo__(ManufOrder).STATUS_DRAFT"/>
+  </action-record>
+
   <action-method name="action-manuf-order-method-update-planned-qty">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="updatePlannedQty"/>
   </action-method>
@@ -601,8 +610,9 @@
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-sale-order-onchange-client-partner">
-    <attribute name="value" expr="eval:null" for="saleOrderSet"
-      if="saleOrderSet?.any{it.clientPartner != clientPartner}"/>
+    <attribute name="value"
+      expr="eval: __repo__(SaleOrder).all().filter('self.clientPartner.id = ?1 AND self.id IN (?2)',clientPartner.id, saleOrderSet?.collect{it?.id}).fetch()"
+      for="saleOrderSet" if="clientPartner"/>
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-scale-and-precision">
