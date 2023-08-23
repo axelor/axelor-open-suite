@@ -419,6 +419,8 @@
           if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher()"
           canCollapse="true" collapseIf="true">
           <field name="lunchVoucherFormatSelect" colSpan="3"/>
+          <field name="lunchVoucherDistribution" showIf="lunchVoucherFormatSelect == 3"
+            colSpan="3"/>
 
           <panel-dashlet name="lunchVouchersDashletPanel" title="Lunch vouchers"
             action="action-employee-view-show-lunch-voucher" colSpan="12"/>
