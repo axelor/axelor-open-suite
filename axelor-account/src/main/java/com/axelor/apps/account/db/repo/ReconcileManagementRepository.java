@@ -74,7 +74,6 @@ public class ReconcileManagementRepository extends ReconcileRepository {
     copy.setAmount(debitAmountRemaining.min(creditAmountRemaining));
     copy.setReconciliationDateTime(null);
     copy.setReconciliationCancelDateTime(null);
-    copy.setEffectiveDate(null);
     copy.setReconcileGroup(null);
     copy.setInvoicePayment(null);
 
