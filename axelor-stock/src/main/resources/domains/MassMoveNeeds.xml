@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="MassMoveNeeds" lang="java">
+    <many-to-one name="massMove" title="Mass move"
+      ref="com.axelor.apps.stock.db.MassMove"/>
+    <many-to-one name="productToMove" title="Product"
+      ref="com.axelor.apps.base.db.Product"/>
+    <decimal name="qtyToMove" title="Quantity" min="0"/>
+  </entity>
+
+</domain-models>

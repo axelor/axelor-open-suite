@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="picked-products-mass-move-grid" title="Picked products"
+    model="com.axelor.apps.stock.db.PickedProducts" groupBy="pickedProduct"
+    onNew="action-picked-products-group-onnew">
+    <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
+      onChange="action-picked-products-group-product-onchange" required="true"/>
+    <field name="fromStockLocation" required="true"
+      domain="self.company = (SELECT company FROM MassMove WHERE id = :massMove) AND self.typeSelect != 3"
+      onChange="action-picked-products-record-set-tracking-number,action-picked-products-record-set-currentqty"/>
+    <field name="trackingNumber" title="Tracking no."
+      onSelect="action-picked-products-attrs-tracking-number-domain"
+      onChange="action-picked-products-record-set-currentqty"/>
+    <field name="currentQty" readonly="true"/>
+    <field name="unit" readonly="true"/>
+    <field name="pickedQty" required="true"/>
+    <button name="realizePickingBtn" icon="fa-play"
+      onClick="save,action-method-stock-picked-product-create-stock-move"/>
+    <button name="cancelPickingBtn" icon="fa-undo"
+      onClick="action-method-stock-picked-product-cancel-picking"/>
+  </grid>
+
+
+
+
+
+
+  <form name="picked-products-form" title="Picked products"
+    model="com.axelor.apps.stock.db.PickedProducts" onNew="action-picked-products-group-onnew">
+    <panel name="mainPanel">
+      <field name="massMove" required="true" readonly="true"/>
+      <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
+        onChange="action-picked-products-group-product-onchange" required="true"/>
+      <field name="fromStockLocation" required="true"
+        domain="self.company = (SELECT company FROM MassMove WHERE id = :massMove) AND self.typeSelect != 3"
+        onChange="action-picked-products-record-set-tracking-number,action-picked-products-record-set-currentqty"/>
+      <field name="trackingNumber"
+        onSelect="action-picked-products-attrs-tracking-number-domain"/>
+      <field name="currentQty" readonly="true"/>
+      <field name="unit" readonly="true"/>
+      <field name="pickedQty" required="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-method-stock-picked-product-cancel-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductsController" method="cancelPicking"/>
+  </action-method>
+
+  <action-method name="action-method-stock-picked-product-create-stock-move">
+    <call class="com.axelor.apps.stock.web.PickedProductsController" method="realizePicking"/>
+  </action-method>
+
+  <action-group name="action-picked-products-group-onnew">
+    <action name="action-picked-products-record-set-massmove"/>
+    <action name="action-picked-products-record-default-location"/>
+  </action-group>
+
+  <action-record name="action-picked-products-record-set-massmove"
+    model="com.axelor.apps.stock.db.PickedProducts">
+    <field name="massMove" expr="eval: __parent__"/>
+  </action-record>
+
+  <action-group name="action-picked-products-group-product-onchange">
+    <action name="action-picked-products-record-set-unit"/>
+    <action name="action-picked-products-attrs-tracking-number-required"/>
+    <action name="action-picked-products-record-set-tracking-number"/>
+    <action name="action-picked-products-record-set-currentqty"/>
+  </action-group>
+
+  <action-record name="action-picked-products-record-default-location"
+    model="com.axelor.apps.stock.db.PickedProducts">
+    <field name="fromStockLocation" expr="eval: __parent__?.commonFromStockLocation"/>
+  </action-record>
+
+  <action-record name="action-picked-products-record-set-currentqty"
+    model="com.axelor.apps.stock.db.PickedProducts">
+    <field if="fromStockLocation != null" name="currentQty"
+      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.stockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.currentQty"/>
+    <field if="fromStockLocation != null &amp;&amp; trackingNumber != null" name="currentQty"
+      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2 AND self.trackingNumber = ?3', pickedProduct, fromStockLocation, trackingNumber)?.fetchOne()?.currentQty"/>
+  </action-record>
+
+  <action-record name="action-picked-products-record-set-tracking-number"
+    model="com.axelor.apps.stock.db.PickedProducts">
+    <field name="trackingNumber" expr="eval: null"
+      if="!(__repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.trackingNumber)"/>
+    <field name="trackingNumber"
+      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.trackingNumber"
+      if="fromStockLocation != null &amp;&amp; pickedProduct.trackingNumberConfiguration != null"/>
+  </action-record>
+
+  <action-record name="action-picked-products-record-set-unit"
+    model="com.axelor.apps.stock.db.PickedProducts">
+    <field name="unit" expr="eval: pickedProduct?.unit"/>
+  </action-record>
+
+  <action-attrs name="action-picked-products-attrs-tracking-number-required">
+    <attribute name="required" for="trackingNumber"
+      expr="eval: pickedProduct?.trackingNumberConfiguration != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-picked-products-attrs-tracking-number-domain">
+    <attribute name="domain"
+      expr="eval: &quot; self.product = :pickedProduct AND (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine
+	WHERE stockLocationLine.detailsStockLocation = :fromStockLocation))&quot;"
+      for="trackingNumber"/>
+  </action-attrs>
+
+</object-views>
