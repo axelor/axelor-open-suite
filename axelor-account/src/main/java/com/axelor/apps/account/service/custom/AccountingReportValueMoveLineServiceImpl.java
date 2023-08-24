@@ -66,8 +66,8 @@ import org.apache.commons.lang3.tuple.Pair;
 public class AccountingReportValueMoveLineServiceImpl extends AccountingReportValueAbstractService
     implements AccountingReportValueMoveLineService {
   protected MoveLineRepository moveLineRepo;
-  protected Set<AnalyticAccount> groupColumnAnalyticAccountSet;
-  protected Set<AnalyticAccount> columnAnalyticAccountSet;
+  protected Set<AnalyticAccount> analyticAccountSetForGroupColumn;
+  protected Set<AnalyticAccount> analyticAccountSetForColumn;
   protected Set<AnalyticAccount> analyticAccountSetForLine;
 
   @Inject
@@ -749,11 +749,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         groupColumn != null ? groupColumn.getAnalyticAccountCode() : null;
     String columnAnalyticAccountCode = column.getAnalyticAccountCode();
     String lineAnalyticAccountCode = line.getAnalyticAccountCode();
-    groupColumnAnalyticAccountSet =
+    analyticAccountSetForGroupColumn =
         groupColumn != null && StringUtils.notEmpty(groupColumnAnalyticAccountCode)
             ? this.fetchAnalyticAccountsFromCode(groupColumnAnalyticAccountCode)
             : new HashSet<>();
-    columnAnalyticAccountSet =
+    analyticAccountSetForColumn =
         StringUtils.notEmpty(columnAnalyticAccountCode)
             ? this.fetchAnalyticAccountsFromCode(columnAnalyticAccountCode)
             : new HashSet<>();
@@ -867,8 +867,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AnalyticAccount analyticAccount, Set<AnalyticAccount> analyticAccountSet) {
     return (CollectionUtils.isNotEmpty(analyticAccountSet)
             && analyticAccountSet.contains(analyticAccount))
-        || groupColumnAnalyticAccountSet.contains(analyticAccount)
-        || columnAnalyticAccountSet.contains(analyticAccount)
+        || analyticAccountSetForGroupColumn.contains(analyticAccount)
+        || analyticAccountSetForColumn.contains(analyticAccount)
         || analyticAccountSetForLine.contains(analyticAccount);
   }
 }
