@@ -583,9 +583,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         && stockMove.getPartner().getId() != null) {
       Partner partner = Beans.get(PartnerRepository.class).find(stockMove.getPartner().getId());
       if (partner != null) {
-        if (!CollectionUtils.isEmpty(partner.getPartner1SupplychainLinkList())) {
+        if (!CollectionUtils.isEmpty(partner.getManagedByPartnerLinkList())) {
           List<PartnerSupplychainLink> partnerSupplychainLinkList =
-              partner.getPartner1SupplychainLinkList();
+              partner.getManagedByPartnerLinkList();
           // Retrieve all Invoiced by Type
           List<PartnerSupplychainLink> partnerSupplychainLinkInvoicedByList =
               partnerSupplychainLinkList.stream()

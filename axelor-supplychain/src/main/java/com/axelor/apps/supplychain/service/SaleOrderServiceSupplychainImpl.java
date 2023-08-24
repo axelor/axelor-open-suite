@@ -393,9 +393,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   protected void setDefaultInvoicedAndDeliveredPartners(
       SaleOrder saleOrder, Partner clientPartner) {
-    if (!CollectionUtils.isEmpty(clientPartner.getPartner1SupplychainLinkList())) {
+    if (!CollectionUtils.isEmpty(clientPartner.getManagedByPartnerLinkList())) {
       List<PartnerSupplychainLink> partnerSupplychainLinkList =
-          clientPartner.getPartner1SupplychainLinkList();
+          clientPartner.getManagedByPartnerLinkList();
       // Retrieve all Invoiced by Type
       List<PartnerSupplychainLink> partnerSupplychainLinkInvoicedByList =
           partnerSupplychainLinkList.stream()
