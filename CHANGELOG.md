@@ -1,3 +1,56 @@
+## [6.4.21] (2023-08-24)
+
+#### Fixed
+
+* Webapp: update Axelor Open Platform dependency to 5.4.22.
+* Move: fixed reverse process to fill bank reconciled amount only if 'Hide move lines in bank reconciliation' is ticked and if the account type is 'cash'
+
+To fix existing records, the following script must be executed:
+
+```sql
+UPDATE account_move_line moveLine
+SET bank_reconciled_amount = 0
+FROM account_account account
+JOIN account_account_type accountType
+ON account.account_type = accountType.id
+WHERE moveLine.account = account.id
+AND accountType.technical_type_select <> 'cash';
+```
+
+* Payment voucher: fixed remaining amount not being recomputed on reset.
+* Payment voucher: fixed being able to pay PFP refused invoice terms.
+* Stock details: in stock details by product, fixed production indicators visibility.
+* Business project batch: fixed "id to load is required for loading" error when generating invoicing projects.
+* Period: fixed adjusting button not being displayed when adjusting the year.
+* Fixed asset: fixed wrong depreciation value for degressive method.
+* Payment session: filter invoice terms from accounted or daybook moves.
+* Employee: fixed employees having their status set to 'active' while their hire and leave date were empty.
+* Bank reconciliation: merge same bank statement lines to fix wrong ongoing balance due to auto reconcile.
+* Invoice: fixed anomaly causing payment not being generated
+
+Correct anomaly causing payment not being generated on invoice when a new reconciliation is validated  
+and the invoice's move has been reconciled with a shift to another account (LCR excluding Doubtful process).
+
+* Payment voucher / Invoice payment: fixed generated payment move payment condition.
+* Payment voucher: fixed excess payment.
+* Invoice payment: add missing translation for field "total amount with financial discount".
+* Invoice: fixed financial discount deadline date computation.
+* Sale order line: fixed a bug where project not emptied on copy.
+* Stock move printing: fixed an issue where lines with different prices were wrongly grouped.
+* Stock details: fixed "see stock details" button in product and sale order line form views.
+* Accounting batch: corrected cut off accounting batch preview record field title cut in half.
+* Invoice: fixed invoice term due date not being set before saving.
+* Reconcile: fixed inconsistencies when copying reconciles.
+* Tax number: translated and added an helper for 'Include in DEB' configuration.
+* Leave request: fixed employee filter
+
+A HR manager can now create a leave request for every employee.
+Else, if an employee is not a manager, he can only create leave request for himself or for employees he is responsible of.
+
+* Stock API: validating a Stock Correction with a real quantity equal to the database quantity now correctly throws an error.
+* Manufacturing order: fixed a bug where sale order set was emptied on change of client partner and any change on saleOrderSet filled the partner.
+* Contact: the filter on mainPartner now allows to select a company partner only, not an individual.
+
 ## [6.4.20] (2023-08-08)
 
 #### Fixed
@@ -917,6 +970,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.21]: https://github.com/axelor/axelor-open-suite/compare/v6.4.20...v6.4.21
 [6.4.20]: https://github.com/axelor/axelor-open-suite/compare/v6.4.19...v6.4.20
 [6.4.19]: https://github.com/axelor/axelor-open-suite/compare/v6.4.18...v6.4.19
 [6.4.18]: https://github.com/axelor/axelor-open-suite/compare/v6.4.17...v6.4.18
