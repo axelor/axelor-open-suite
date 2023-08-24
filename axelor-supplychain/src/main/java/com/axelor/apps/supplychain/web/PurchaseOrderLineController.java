@@ -146,4 +146,27 @@ public class PurchaseOrderLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+
+      if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
+        return;
+      }
+
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      purchaseOrderLine.setPurchaseOrder(purchaseOrder);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      // TODO uncomment after merge #66647
+      //  Beans.get(AnalyticAttrsSupplychainService.class)
+      //  .addAnalyticDistributionPanelHiddenAttrs(analyticLineModel, attrsMap);
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

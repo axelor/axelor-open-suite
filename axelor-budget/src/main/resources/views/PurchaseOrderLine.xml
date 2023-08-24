@@ -108,14 +108,13 @@
   </form>
 
   <action-group name="action-budget-group-purchase-purchase-orderline-product-onchange">
-    <action name="action-group-purchase-purchase-orderline-product-onchange"/>
-    <action name="action-purchase-order-line-method-hide-axis-analytic-account"/>
+    <action name="action-supplychain-group-purchase-purchaseorderline-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onnew">
-    <action name="action-group-purchase-purchase-orderline-onnew"/>
+    <action name="supplychain-action-purchase-order-line-group-onnew"/>
     <action name="action-budget-purchase-orderline-record-set-global-budget"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
@@ -135,9 +134,7 @@
   </action-record>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onload">
-    <action name="action-group-purchase-purchase-orderline-onload"/>
-    <action name="action-purchase-order-line-method-hide-axis-analytic-account"/>
-    <action name="action-purchase-order-line-method-print-analytic-account"/>
+    <action name="supplychain-action-purchase-order-line-group-onload"/>
     <action name="action-budget-purchase-order-line-record-set-budget-level"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
