@@ -191,9 +191,6 @@
             onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati"/>
           <field name="productName" colSpan="12"/>
           <field name="oldQty"/>
-          <field name="product.isUnrenewed" hidden="true"/>
-          <field name="product.isPrototype" hidden="true"/>
-          <field name="saleOrder" hidden="true"/>
         </panel>
         <panel name="productDetailPanel" colSpan="12">
           <field name="qty" colSpan="3"
@@ -403,12 +400,12 @@
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
-    <panel name="statusPanel" hidden="true">
+    <panel name="hiddenPanel" hidden="true">
       <field name="saleOrder.statusSelect"/>
       <field name="saleOrder.orderBeingEdited"/>
-      <field name="product.isUnrenewed" hidden="true"/>
-      <field name="product.isPrototype" hidden="true"/>
-      <field name="saleOrder" hidden="true"/>
+      <field name="product.isUnrenewed"/>
+      <field name="product.isPrototype"/>
+      <field name="saleOrder"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>
