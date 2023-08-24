@@ -37,6 +37,9 @@ public final class BaseExceptionMessage {
   public static final String CURRENCY_1 = /*$$(*/
       "No currency conversion found from '%s' to '%s' for date %s" /*)*/;
 
+  public static final String SEQUENCE_PREFIX = /*$$(*/
+      "Sequence prefix cannot start with the draft prefix '%s'." /*)*/;
+
   public static final String CURRENCY_2 = /*$$(*/
       "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/;
   public static final String CURRENCY_3 = /*$$(*/
@@ -583,4 +586,15 @@ public final class BaseExceptionMessage {
 
   public static final String UNKNOWN_DURATION = /*$$(*/
       "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
+
+  public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
+      "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
+
+  public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+      "The configuration to print this model has not been found" /*)*/;
+
+  public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
+
+  public static final String CONVERT_IMAGE_TO_PDF_ERROR = /*$$(*/
+      "Error while converting image to pdf : %s" /*)*/;
 }

@@ -1,3 +1,62 @@
+## [7.1.2] (2023-08-08)
+
+#### Fixed
+
+* Invoice : fix the way we check the awaiting payment
+* Accounting batch : Improve user feedback on move consistency control when there are no anomalies
+* PLANNING: Planning is now correctly filtered on employee and machine form
+* SaleOrderLine: Description is now copied only if the configuration allows it
+* PARTNER: Fixed a bug where button 'create sale quotation' was always displayed
+* Custom accounting report : Excel sheets are now named after the analytic account
+* Move : Fix automatic move line tax generation with reverse charge and multiple vat systems.
+* Stock move: reversed stock move now correctly reverses stock locations
+* Mass entry : Fix fill of payment condition when journal isn't type 'other'
+* Move : Fix invoice terms amount at percentage change with negative currency amount
+* PurchaseOrder and Invoice: Added widget boolean switch for interco field 
+* Employee dashboard: added condition on app
+* Invoice : Fix tax being empty on invoice line when it's required on account
+* ManufOrder: Planning a cancelled MO now clears the real dates on operations orders and MO
+* Move : Fix display of analytic axis accounts when we change it on analytic move lines
+* Product/ProductFamily : set analytic distribution template readonly if the config analytic type is not by product
+* Move : Fix currency amount of automatically generated reverse charge move line not being computed
+* Invoice: Fixed french translations
+* INVOICE : fix form view - added blank spaces before the company field and move the originDate field
+* SOP/MPS: Fixed a bug where real datas were never increased
+* Supplychain batch : Fixed bugs that prevented display of processed stock moves
+* SOP/MPS: Fixed SOP/MPS Wrong message on forecast generation
+* MOVE/INVOICE/ORDERS : Compute budget distribution when object are not saved
+* PAYMENT SESSION : corrected accounting trigger from payment mode overriding accounting trigger from payment session on bank order generated from payment session.
+* Move : Fix tax computation when we have two financial accounts with the same VAT system
+* Debt Recovery: Fix error message on debt recovery batch to display correctly trading name
+* Move : Fixed a bug that was opening a move in edit mode instead of read only
+* Period : Fixed an issue where a false warning was displayed preventing the user for re-opening a closed period
+* Invoice: Fixed a bug where subscription invoice was linked to unrelated advance payment invoice
+
+When creating an invoice auto complete advance payement invoice with no internal reference to an already existing sale order.
+
+* Move/MoveLine : empty taxLine when changing the account of a moveLine to an account without tax authorized
+* Invoice : Remove payment voucher access on an advance payment invoice
+* Payment session : Fix session total amount computation
+
+The following script can be executed to clean old actions
+```sql
+DELETE FROM meta_action
+WHERE name IN (
+  'action-invoice-term-method-compute-total-payment-session',
+  'action-payment-session-record-set-session-total-amount-btn',
+  'action-method-payment-session-compute-total'
+);
+```
+
+* Move : Fix invoice term amount at percentage change with unsaved move
+* Project: fix real costs computing in tasks and subtasks
+* Accounting report: Fixed a bug where unreconcilied move lines were not displayed
+* Product: When changing costTypeSelect to 'last purchase price', the cost price will now be correctly converted.
+* Move : Set readonly move form when period is closed or doesn't exist
+* Bank order: Fixed a bug where bank order date was always overridden. Now bank order date is overridden only when it is before the current date and the user is warned.
+* PaymentSession : Fix compensation invoice terms amount when select using buttons
+* BUSINESS PROJECT BATCH: Fixed invoicing project batch
+
 ## [7.1.1] (2023-07-20)
 
 #### Fixed
@@ -251,5 +310,6 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.2]: https://github.com/axelor/axelor-open-suite/compare/v7.1.1...v7.1.2
 [7.1.1]: https://github.com/axelor/axelor-open-suite/compare/v7.1.0...v7.1.1
 [7.1.0]: https://github.com/axelor/axelor-open-suite/compare/v7.0.5...v7.1.0

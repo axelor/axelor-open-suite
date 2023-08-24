@@ -69,4 +69,6 @@ public interface ManufOrderWorkflowService {
    * @param manufOrder
    */
   void updatePlannedDates(ManufOrder manufOrder);
+
+  void setOperationOrderMaxPriority(ManufOrder manufOrder);
 }
