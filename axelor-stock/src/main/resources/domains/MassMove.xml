@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="MassMove" lang="java" cacheable="true">
+    <string name="sequence" title="Sequence"/>
+    <integer name="statusSelect" selection="stock.mass.move.status.select" title="Status"
+      default="1"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Transition location (cart)"/>
+    <many-to-one name="commonFromStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Common source location"/>
+    <many-to-one name="commonToStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Common destination location"/>
+    <one-to-many name="productsToMoveList" ref="com.axelor.apps.stock.db.MassMoveNeeds"
+      title="Products to move" mappedBy="massMove"/>
+    <one-to-many name="pickedProductsList" ref="com.axelor.apps.stock.db.PickedProducts"
+      title="Picked products" mappedBy="massMove"/>
+    <one-to-many name="storedProductsList" ref="com.axelor.apps.stock.db.StoredProducts"
+      title="Stored products" mappedBy="massMove"/>
+  </entity>
+
+</domain-models>

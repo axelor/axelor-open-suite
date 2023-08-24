@@ -277,4 +277,49 @@ public final class StockExceptionMessage {
       "Error: %s field is required and can not be null" /*)*/;
   public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
       "Error: %s and %s fields are required and can not be null" /*)*/;
+
+  public static final String MASS_MOVE_EMPTY_FIELD = /*$$(*/
+      "One of these values is missing : product ; tracking number, to stock location ; unit." /*)*/;
+  public static final String MASS_MOVE_EMPTY_FIELD_WITHOUT_TN = /*$$(*/
+      "One of these values is missing : to stock location ; unit." /*)*/;
+  public static final String MASS_MOVE_EMPTY_TRACKING_NUMBER = /*$$(*/
+      "Tracking number is missing." /*)*/;
+  public static final String MASS_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for stock's mass moves for the company %s" /*)*/;
+
+  public static final String PICKED_QUANTITY_IS_ZERO = /*$$(*/
+      "Picked quantity is equal to 0" /*)*/;
+
+  public static final String PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Picked quantity is greater than current quantity" /*)*/;
+
+  public static final String ALREADY_PICKED_PRODUCT = /*$$(*/
+      "These products have already been picked" /*)*/;
+
+  public static final String ALREADY_STORED_PRODUCT = /*$$(*/
+      "These products have already been stored" /*)*/;
+
+  public static final String AT_LEAST_ONE_PICKED_QUANTITY_IS_ZERO = /*$$(*/
+      "At least one line has a picked quantity is equal to 0" /*)*/;
+
+  public static final String AT_LEAST_ONE_STORED_QUANTITY_IS_ZERO = /*$$(*/
+      "At least one line has a stored quantity is equal to 0" /*)*/;
+
+  public static final String PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE = /*$$(*/
+      "The product is not available in the stock location source indicated" /*)*/;
+
+  public static final String MANY_PRODUCTS_HAVE_NOT_BEEN_PICKED = /*$$(*/
+      "Many products have not been picked due to stock mismatch" /*)*/;
+
+  public static final String AT_LEAST_ONE_PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "At least one line has a picked quantity  greater than current quantity" /*)*/;
+
+  public static final String AT_LEAST_ONE_STORED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "At least one line has a stored quantity  greater than current quantity" /*)*/;
+
+  public static final String STORED_QUANTITY_IS_ZERO = /*$$(*/
+      "Stored quantity is equal to 0" /*)*/;
+
+  public static final String STORED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Stored quantity is greater than current quantity" /*)*/;
 }
