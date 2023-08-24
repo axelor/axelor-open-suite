@@ -52,7 +52,7 @@
         <field name="checkRegistrationCode" widget="boolean-switch"/>
         <field name="manageProductVariants" widget="boolean-switch"/>
         <field name="activatePartnerRelations" widget="boolean-switch"
-          if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('account')"/>
+          if="['sale', 'purchase', 'account'].any{module -> __config__.app.isApp(module)}"/>
         <panel name="productSequenceManagement" colSpan="12" itemSpan="4">
           <field name="generateProductSequence" widget="boolean-switch"/>
           <field name="productSequenceTypeSelect" showIf="generateProductSequence"/>
