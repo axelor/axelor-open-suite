@@ -109,5 +109,5 @@ public final class SaleExceptionMessage {
       "Actual version saved, past version recovered." /*)*/;
 
   public static final String SALE_ORDER_NO_NEW_VERSION = /*$$(*/
-      "Actual version overwritten since the sale order had no lines." /*)*/;
+      "Actual version overwritten." /*)*/;
 }

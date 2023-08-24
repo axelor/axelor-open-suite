@@ -125,5 +125,6 @@ public interface SaleOrderService {
 
   public LocalDateTime getVersionDateTime(SaleOrder saleOrder, Integer versionNumber);
 
-  public boolean recoverVersion(SaleOrder saleOrder, Integer versionNumber);
+  public boolean recoverVersion(
+      SaleOrder saleOrder, Integer versionNumber, boolean saveActualVersion);
 }

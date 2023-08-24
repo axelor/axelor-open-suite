@@ -467,19 +467,20 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   public void createNewVersion(SaleOrder saleOrder) {
     saleOrder
         .getSaleOrderLineList()
-        .forEach(
-            saleOrderLine -> {
-              SaleOrderLine oldVersionSaleOrderLine = saleOrderLineRepo.copy(saleOrderLine, true);
-              oldVersionSaleOrderLine.setSaleOrder(null);
-              oldVersionSaleOrderLine.setOldVersionSaleOrder(saleOrder);
-              oldVersionSaleOrderLine.setVersionNumber(saleOrder.getVersionNumber());
-              oldVersionSaleOrderLine.setVersionDateT(
-                  appBaseService.getTodayDateTime(saleOrder.getCompany()).toLocalDateTime());
-              oldVersionSaleOrderLine.setArchived(true);
-              saleOrder.addOldVersionSaleOrderLineListItem(oldVersionSaleOrderLine);
-            });
+        .forEach(saleOrderLine -> historizeSaleOrderLine(saleOrder, saleOrderLine));
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrder.setVersionNumber(saleOrder.getVersionNumber() + 1);
+  }
+
+  protected void historizeSaleOrderLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    SaleOrderLine oldVersionSaleOrderLine = saleOrderLineRepo.copy(saleOrderLine, true);
+    oldVersionSaleOrderLine.setSaleOrder(null);
+    oldVersionSaleOrderLine.setOldVersionSaleOrder(saleOrder);
+    oldVersionSaleOrderLine.setVersionNumber(saleOrder.getVersionNumber());
+    oldVersionSaleOrderLine.setVersionDateT(
+        appBaseService.getTodayDateTime(saleOrder.getCompany()).toLocalDateTime());
+    oldVersionSaleOrderLine.setArchived(true);
+    saleOrder.addOldVersionSaleOrderLineListItem(oldVersionSaleOrderLine);
   }
 
   @Override
@@ -495,8 +496,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  public boolean recoverVersion(SaleOrder saleOrder, Integer versionNumber) {
-    boolean isNewVersion = !saleOrder.getSaleOrderLineList().isEmpty();
+  public boolean recoverVersion(
+      SaleOrder saleOrder, Integer versionNumber, boolean saveActualVersion) {
+    boolean isNewVersion = !saleOrder.getSaleOrderLineList().isEmpty() && saveActualVersion;
+    if (!saveActualVersion) {
+      saleOrder.getSaleOrderLineList().clear();
+    }
     createNewVersion(saleOrder);
     saleOrder.clearSaleOrderLineList();
     saleOrder.getOldVersionSaleOrderLineList().stream()
@@ -504,16 +509,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             oldVersionSaleOrderLine ->
                 oldVersionSaleOrderLine.getVersionNumber().equals(versionNumber))
         .forEach(
-            oldVersionSaleOrderLine -> {
-              SaleOrderLine saleOrderLine = saleOrderLineRepo.copy(oldVersionSaleOrderLine, true);
-              saleOrderLine.setOldVersionSaleOrder(null);
-              saleOrderLine.setSaleOrder(saleOrder);
-              saleOrder.setArchived(null);
-              saleOrder.addSaleOrderLineListItem(saleOrderLine);
-            });
+            oldVersionSaleOrderLine -> recoverSaleOrderLine(saleOrder, oldVersionSaleOrderLine));
     if (!isNewVersion) {
       saleOrder.setVersionNumber(saleOrder.getVersionNumber() - 1);
     }
     return isNewVersion;
+  }
+
+  protected void recoverSaleOrderLine(SaleOrder saleOrder, SaleOrderLine oldVersionSaleOrderLine) {
+    SaleOrderLine saleOrderLine = saleOrderLineRepo.copy(oldVersionSaleOrderLine, true);
+    saleOrderLine.setOldVersionSaleOrder(null);
+    saleOrderLine.setSaleOrder(saleOrder);
+    saleOrder.setArchived(null);
+    saleOrder.addSaleOrderLineListItem(saleOrderLine);
   }
 }

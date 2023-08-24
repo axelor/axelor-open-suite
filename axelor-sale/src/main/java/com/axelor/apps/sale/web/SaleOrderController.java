@@ -665,7 +665,9 @@ public class SaleOrderController {
   public void recoverVersion(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
-    if (Beans.get(SaleOrderService.class).recoverVersion(saleOrder, versionNumber)) {
+    boolean saveActualVersion = (Boolean) request.getContext().get("saveActualVersion");
+    if (Beans.get(SaleOrderService.class)
+        .recoverVersion(saleOrder, versionNumber, saveActualVersion)) {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NEW_VERSION));
     } else {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));

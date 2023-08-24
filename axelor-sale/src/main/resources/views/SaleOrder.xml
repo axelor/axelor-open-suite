@@ -626,17 +626,22 @@
         action="action-sale-order-view-show-generated-po" hideIf="statusSelect &lt;= 2"/>
       <panel if="__config__.app.getApp('sale')?.manageSaleOrderVersion"
         showIf="versionNumber > 1" name="pastVersionRecoveryPanel" title="Past versions">
-        <button name="lastVersionBtn" title="Last version" icon="fa-arrow-right"
-          css="btn-custom text-left" onClick="action-sale-order-group-last-version-btn" colSpan="4"
-          showIf="statusSelect == 1 || statusSelect == 2"/>
         <field name="$previousVersionNumber" title="Version number" type="integer" min="1"
           colSpan="2" onChange="action-sale-order-group-previous-version-number-on-change"/>
-        <field name="$versionDateTime" type="datetime" title="Version date" colSpan="2"
+        <field name="$versionDateTime" type="datetime" title="Version date" colSpan="6"
           readonly="true"/>
+        <field name="$saveActualVersion" type="boolean" title="Save actual version"
+          colSpan="4" widget="boolean-switch" if="__config__.app.getApp('sale')?.isPastVersionRecovery"/>
+        <button name="lastVersionBtn" title="Go to last version" icon="fa-arrow-right"
+                css="btn-custom text-left" onClick="action-sale-order-group-last-version-btn" colSpan="4"
+                showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; $previousVersionNumber != versionNumber - 1"/>
+        <spacer colSpan="4"/>
         <button name="versionRecoveryBtn" title="Recover from this version" icon="fa-upload"
           css="btn-custom text-left" onClick="action-sale-order-group-version-recovery-btn"
           colSpan="4" if="__config__.app.getApp('sale')?.isPastVersionRecovery"
           showIf="(statusSelect == 1 || statusSelect == 2) "/>
+        <spacer colSpan="6" if="!__config__.app.getApp('sale')?.isPastVersionRecovery"/>
+
         <field name="oldVersionSaleOrderLineList" hidden="true"/>
         <panel-dashlet name="pastVersionsPanel"
           action="action-sale-order-view-previous-versions" colSpan="12" readonly="true"/>
@@ -659,8 +664,9 @@
         prompt="Warning, a completed order can't be changed anymore, do you want to continue?"
         colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
       <button if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
-        name="newVersionBtn" title="New version" showIf="statusSelect == 1 || statusSelect == 2"
-        colSpan="12" onClick="action-sale-order-group-new-version-btn"/>
+        name="newVersionBtn" title="New version"
+        showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; id" colSpan="12"
+        onClick="action-sale-order-group-new-version-btn"/>
       <button if="__config__.app.getApp('sale')?.allowPendingOrderModification"
         name="editOrderBtn" title="Edit order"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
@@ -1432,6 +1438,7 @@
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-record-set-group-product-on-printing"/>
     <action name="action-sale-order-attrs-set-previous-version-number"/>
+    <action name="action-sale-order-attrs-set-save-actual-version"/>
   </action-group>
 
   <action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -1473,6 +1480,7 @@
     <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
     <action name="action-sale-order-attrs-set-previous-version-number"/>
     <action name="action-sale-order-method-get-version-date-time"/>
+    <action name="action-sale-order-attrs-set-save-actual-version"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1921,6 +1929,10 @@
     <attribute for="$previousVersionNumber" name="value" expr="eval: versionNumber - 1"
       if="eval: previousVersionNumber > versionNumber - 1"/>
     <attribute name="refresh" for="pastVersionsPanel" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-set-save-actual-version">
+    <attribute for="$saveActualVersion" name="value" expr="eval: true"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-set-default-tax-number"
