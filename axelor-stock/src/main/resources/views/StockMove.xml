@@ -466,7 +466,7 @@
           onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain"
           grid-view="partner-grid" form-view="partner-form"/>
         <field name="fromStockLocation" canEdit="false"
-          domain="self.company = :company and self.typeSelect = 1 and self.usableOnSaleOrder = true"
+          domain="self.company = :company and self.typeSelect = 1 and (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
@@ -522,7 +522,7 @@
           readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
           grid-view="partner-grid" form-view="partner-form"/>
         <field name="toStockLocation" canEdit="false"
-          domain="self.company = :company and self.typeSelect = 1 and self.usableOnPurchaseOrder = true"
+          domain="self.company = :company and self.typeSelect = 1 and (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
@@ -676,11 +676,11 @@
           <field name="realStockMoveAutomaticMail"/>
         </panel>
         <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false"
-          domain="self.company = :company AND self.typeSelect = 3 AND self.usableOnPurchaseOrder = true"
+          domain="self.company = :company and self.typeSelect = 3 and (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
         <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false"
-          domain="self.company = :company AND self.typeSelect = 3 AND self.usableOnSaleOrder = true"
+          domain="self.company = :company and self.typeSelect = 3 and (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
         <panel name="realStockMovePanel" colSpan="12" showIf="typeSelect == 2">
