@@ -18,11 +18,16 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -57,6 +62,19 @@ public class TimesheetLineController {
       BigDecimal hoursDuration =
           Beans.get(TimesheetLineService.class)
               .computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
+
+      Integer dailyLimit =
+          Beans.get(AppHumanResourceService.class).getAppTimesheet().getDailyLimit();
+      if (timesheetLine != null
+          && Boolean.TRUE.equals(
+              Beans.get(TimesheetLineService.class).checkDailyLimit(hoursDuration, dailyLimit))) {
+        response.setReload(true);
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINES_EXCEED_DAILY_LIMIT),
+                dailyLimit));
+      }
 
       response.setValue(HOURS_DURATION_FIELD, hoursDuration);
 

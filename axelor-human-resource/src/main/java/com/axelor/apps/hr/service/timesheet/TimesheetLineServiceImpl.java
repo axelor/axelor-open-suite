@@ -263,4 +263,9 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
     return projectTimeSpentMap;
   }
+
+  @Override
+  public Boolean checkDailyLimit(BigDecimal hoursDuration, Integer dailyLimit) {
+    return (hoursDuration.compareTo(new BigDecimal(dailyLimit)) > 0);
+  }
 }

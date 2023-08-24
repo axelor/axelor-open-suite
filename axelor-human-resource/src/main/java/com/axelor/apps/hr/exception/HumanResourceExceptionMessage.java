@@ -262,4 +262,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_MISSING_COMPANY = /*$$(*/
       "Please provide a company." /*)*/;
+
+  public static final String TIMESHEET_LINES_EXCEED_DAILY_LIMIT = /*$$(*/
+      "You can't exceed the daily limit of %s hours." /*)*/;
 }

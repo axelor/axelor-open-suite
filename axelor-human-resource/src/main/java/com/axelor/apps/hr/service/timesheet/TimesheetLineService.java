@@ -120,4 +120,6 @@ public interface TimesheetLineService {
    * @return {@link Map}
    */
   Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList);
+
+  public Boolean checkDailyLimit(BigDecimal hoursDuration, Integer dailyLimit);
 }
