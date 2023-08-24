@@ -152,6 +152,12 @@
           grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true"
           x-can-copy="true"/>
       </panel>
+      <panel name="printingsPanel" title="Printings" colSpan="12">
+        <field name="clientSituationBirtTemplate"/>
+        <field name="companyPhoneBookBirtTemplate"/>
+        <field name="contactPhoneBookBirtTemplate"/>
+        <field name="productCatalogPGQLBirtTemplate"/>
+      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
