@@ -32,7 +32,7 @@ public interface SaleOrderLineBudgetService {
 
   String searchAndFillBudgetStr(SaleOrderLine saleOrderLine, boolean multiBudget);
 
-  String computeBudgetDistribution(SaleOrderLine saleOrderLine);
+  String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
   String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 

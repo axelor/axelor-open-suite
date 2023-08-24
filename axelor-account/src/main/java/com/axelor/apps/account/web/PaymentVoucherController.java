@@ -113,9 +113,11 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherLoadService.class).resetImputation(paymentVoucher);
+
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+      response.setValue("remainingAmount", paymentVoucher.getPaidAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

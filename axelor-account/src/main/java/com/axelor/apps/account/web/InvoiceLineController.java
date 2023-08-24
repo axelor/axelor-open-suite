@@ -46,6 +46,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
@@ -264,32 +265,11 @@ public class InvoiceLineController {
     }
   }
 
+  @ErrorException
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
-    Context context = request.getContext();
-
-    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-    Invoice invoice = this.getInvoice(context);
-
-    if (invoice == null
-        || invoiceLine.getProduct() == null
-        || invoiceLine.getPrice() == null
-        || invoiceLine.getInTaxPrice() == null) {
-      return;
-    }
-
-    try {
-      BigDecimal price = invoiceLine.getPrice();
-      BigDecimal inTaxPrice =
-          price.add(
-              price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))));
-
-      response.setValue("inTaxPrice", inTaxPrice);
-
-    } catch (Exception e) {
-      response.setInfo(e.getMessage());
-    }
+    response.setValue("inTaxPrice", Beans.get(InvoiceLineService.class).getInTaxPrice(invoiceLine));
   }
 
   public void emptyLine(ActionRequest request, ActionResponse response) {

@@ -1,0 +1,3 @@
+---
+title: "Mass entry: Fix error when we control duplicate origins in a journal where the origin is not required"
+type: fix

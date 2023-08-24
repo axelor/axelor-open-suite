@@ -159,4 +159,6 @@ public interface OperationOrderWorkflowService {
 
   long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException;
+
+  boolean canStartOperationOrder(OperationOrder operationOrder);
 }

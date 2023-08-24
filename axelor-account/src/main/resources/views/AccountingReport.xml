@@ -27,9 +27,8 @@
   </grid>
 
   <form name="accounting-report-form" title="Accounting report"
-    model="com.axelor.apps.account.db.AccountingReport"
-    onNew="action-accounting-report-record-default"
-    onLoad="action-accounting-report-attrs-display-anomalies">
+    model="com.axelor.apps.account.db.AccountingReport" onNew="action-group-account-report-on-new"
+    onLoad="action-attrs-accounting-report-attrs-move-status-domain,action-accounting-report-attrs-display-anomalies">
     <panel name="mainPanel"
       readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 19 || reportType.typeSelect == 20)">
       <field name="ref" showTitle="false"
@@ -80,12 +79,12 @@
         onSelect="action-accounting-report-attrs-period-domain" form-view="period-form"
         grid-view="period-grid" canView="false"/>
       <field name="dateFrom"
-        readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
+        readonlyIf="(statusSelect == 2 &amp;&amp; [18,19].includes(reportType.typeSelect)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
         onChange="action-move-Live-report-record-set-date-to"
-        requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
+        requiredIf="[12,15,19,20,21,22,23,24].includes(reportType.typeSelect)"/>
       <field name="dateTo"
-        readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
-        requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
+        readonlyIf="(statusSelect == 2 &amp;&amp; [18,19].includes(reportType.typeSelect)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
+        requiredIf="[12,15,19,20,21,22,23,24].includes(reportType.typeSelect)"/>
       <field name="isComparativeBalance" widget="inline-checkbox" colSpan="12"
         showIf="reportType.typeSelect == 2"/>
 
@@ -107,6 +106,7 @@
           <field name="otherDateFrom" colSpan="6"/>
           <field name="otherDateTo" colSpan="6"/>
         </panel>
+
         <panel name="accountingPanel" title="Accounting" colSpan="12" canCollapse="true">
           <field name="currency"/>
           <field name="minAmountExcl"
@@ -125,7 +125,9 @@
           <field name="paymentMode" grid-view="payment-mode-grid"
             form-view="payment-mode-form"
             hideIf="[1,2,3,4,5,7,10,11,12,13,14,15,16,17,19,20,21,22,23,24,2000,2001].indexOf(reportType.typeSelect) != -1"/>
-
+          <field name="moveStatusSelect" widget="MultiSelect"
+            onSelect="action-attrs-accounting-report-attrs-move-status-domain" selection-in="[2,5]"
+            hideIf="[1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,20,21,22,2000,2001,3000].indexOf(reportType.typeSelect) == -1"/>
           <field name="accountSet" requiredIf="reportType.typeSelect == 18"
             hideIf="[12,15,16,19,20,21,22,23,24,2000,2001].indexOf(reportType.typeSelect) != -1"
             colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect"
@@ -206,8 +208,6 @@
               showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"/>
             <field name="displayDeltaYearPercentage"
               showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"/>
-            <field name="displaySimulatedMove"
-              showIf="company.accountConfig.isActivateSimulatedMove &amp;&amp; (journal == null || journal.authorizeSimulatedMove)"/>
           </panel>
           <panel name="accountingMovesPanel" title="Moves" colSpan="12" canCollapse="true"
             hideIf="[17,23,24].indexOf(reportType.typeSelect) != -1">
@@ -280,7 +280,7 @@
 
   <form name="accounting-report-export-form" title="Accounting export"
     model="com.axelor.apps.account.db.AccountingReport"
-    onNew="action-accounting-report-record-default">
+    onNew="action-accounting-report-record-default,action-attrs-accounting-report-attrs-move-status-domain">
 
     <panel name="searchPanel">
       <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
@@ -341,6 +341,10 @@
 
 
   <!-- ACTION GROUPs -->
+  <action-group name="action-group-account-report-on-new">
+    <action name="action-accounting-report-record-default"/>
+    <action name="action-attrs-accounting-report-attrs-move-status-domain"/>
+  </action-group>
 
   <action-group name="action-group-account-accounting-report-reporttype-onchange">
     <action name="action-accounting-report-record-reset"/>
@@ -364,9 +368,21 @@
   <action-group name="action-group-account-accounting-report-company-onchange">
     <action name="action-accounting-report-method-get-account"/>
     <action name="action-accounting-report-record-reset"/>
+    <action name="action-attrs-accounting-report-attrs-move-status-domain"/>
   </action-group>
 
   <!-- ACTION ATTRS -->
+
+  <action-attrs name="action-attrs-accounting-report-attrs-move-status-domain">
+    <attribute name="selection-in" expr="[2,5]" for="moveStatusSelect"
+      if="company?.accountConfig?.accountingDaybook &amp;&amp; company?.accountConfig?.isActivateSimulatedMove"/>
+    <attribute name="selection-in" expr="[2]" for="moveStatusSelect"
+      if="company?.accountConfig?.accountingDaybook &amp;&amp; !company?.accountConfig?.isActivateSimulatedMove"/>
+    <attribute name="selection-in" expr="[5]" for="moveStatusSelect"
+      if="!company?.accountConfig?.accountingDaybook &amp;&amp; company?.accountConfig?.isActivateSimulatedMove"/>
+    <attribute name="hidden" expr="true" for="moveStatusSelect"
+      if="!company?.accountConfig?.accountingDaybook &amp;&amp; !company?.accountConfig?.isActivateSimulatedMove"/>
+  </action-attrs>
 
   <action-attrs name="action-accounting-report-attrs-period-domain">
     <attribute if="eval: year != null" name="domain"
@@ -519,12 +535,6 @@
   <action-record name="action-move-Live-report-record-set-date-to"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="dateTo" expr="eval: dateFrom" if="dateFrom &amp;&amp; !dateTo"/>
-  </action-record>
-
-  <action-record name="action-accounting-report-record-reset-display-simulated-move"
-    model="com.axelor.apps.account.db.AccountingReport">
-    <field name="displaySimulatedMove" expr="eval: false"
-      if="!journal?.authorizeSimulatedMove"/>
   </action-record>
 
   <!-- ACTION METHOD -->

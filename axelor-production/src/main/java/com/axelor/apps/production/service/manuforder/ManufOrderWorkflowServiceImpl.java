@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -727,5 +728,45 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     manufOrder.setPurchaseOrder(purchaseOrder);
 
     manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setOperationOrderMaxPriority(ManufOrder manufOrder) {
+
+    if (manufOrder == null
+        || Boolean.FALSE.equals(manufOrder.getProdProcess().getOperationContinuity())) {
+      return;
+    }
+
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+
+    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+    int optionalOperationOrderLargestPriority =
+        operationOrderList.stream()
+            .filter(order -> isValidOperationOrder(order, true))
+            .mapToInt(OperationOrder::getPriority)
+            .max()
+            .orElse(-1);
+
+    int operationOrderMaxPriority =
+        operationOrderList.stream()
+            .filter(order -> isValidOperationOrder(order, false))
+            .mapToInt(OperationOrder::getPriority)
+            .findFirst()
+            .orElse(optionalOperationOrderLargestPriority + 1);
+
+    manufOrder.setOperationOrderMaxPriority(operationOrderMaxPriority);
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  protected boolean isValidOperationOrder(OperationOrder order, boolean optional) {
+    Integer statusSelect = order.getStatusSelect();
+    ProdProcessLine prodProcessLine = order.getProdProcessLine();
+    return !statusSelect.equals(ManufOrderRepository.STATUS_FINISHED)
+        && !statusSelect.equals(ManufOrderRepository.STATUS_CANCELED)
+        && ObjectUtils.notEmpty(prodProcessLine)
+        && prodProcessLine.getOptional() == optional;
   }
 }

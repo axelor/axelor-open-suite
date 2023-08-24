@@ -37,7 +37,10 @@
         <field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
         <field name="teamManagement" widget="boolean-switch"/>
         <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
-        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch"/>
+        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch" colSpan="3"/>
+        <field name="draftPrefix" colSpan="3"/>
+
+
         <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"
@@ -93,6 +96,9 @@
         </panel>
         <field name="emailLinkList" colSpan="12"
           onChange="action-base-method-model-email-link-onsave"/>
+        <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
+          field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"
+          form-view="birt-template-config-line-form"/>
         <panel name="stylePanel" title="Style" colSpan="12">
           <field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
         </panel>
