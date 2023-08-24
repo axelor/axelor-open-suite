@@ -65,7 +65,7 @@ public class SaleOrderLineController {
       AnalyticLineModelService analyticLineModelService = Beans.get(AnalyticLineModelService.class);
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
-      if (analyticLineModelService.manageAnalytic(analyticLineModel)) {
+      if (analyticLineModelService.productAccountManageAnalytic(analyticLineModel)) {
 
         analyticLineModelService.computeAnalyticDistribution(analyticLineModel);
 

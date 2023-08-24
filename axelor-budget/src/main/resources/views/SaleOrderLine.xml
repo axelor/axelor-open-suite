@@ -88,10 +88,6 @@
 
   <action-group name="action-budget-group-sale-sale-orderline-product-onchange">
     <action name="action-supplychain-group-sale-saleorderline-product-onchange"/>
-    <action name="action-sale-order-line-method-compute-analytic-distribution"/>
-    <action name="action-sale-order-line-method-print-analytic-account"/>
-    <action name="action-sale-order-line-method-set-analytic-distribution-panel-hidden"/>
-
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
   </action-group>
@@ -151,12 +147,5 @@
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccountDomain"
       if="__config__.app.isApp('budget')"/>
   </action-method>
-
-  <!-- Transform to method -->
-  <action-attrs name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"
-    id="action-budget-sale-order-line-attrs-hidden-analytic-distribution-panel">
-    <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; !account?.analyticDistributionAuthorized)"/>
-  </action-attrs>
 
 </object-views>

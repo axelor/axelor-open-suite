@@ -105,7 +105,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
   public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException {
-    if (!manageAnalytic(analyticLineModel)) {
+    if (!productAccountManageAnalytic(analyticLineModel)) {
       return analyticLineModel;
     }
 
