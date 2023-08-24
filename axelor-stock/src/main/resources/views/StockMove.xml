@@ -938,7 +938,7 @@
     <action name="action-stock-move-record-set-address-from-partner"/>
     <action name="action-stock-move-method-set-addresses-str"/>
     <action name="action-stock-move-supplychain-group-partner-on-change"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
   </action-group>
 
   <action-group name="action-stock-move-group-onchange-company">

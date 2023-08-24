@@ -352,8 +352,7 @@
       </panel>
     </panel>
     <panel colSpan="12" itemSpan="6" name="partnerSupplyChainLinkListPanel"
-      showIf="isProspect || isCustomer"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.activatePartnerRelations"
+      showIf="isProspect || isCustomer" if="__config__.app.getApp('base')?.activatePartnerRelations"
       if-module="axelor-supplychain">
       <panel-related field="partner1SupplychainLinkList"
         grid-view="partner-supplychain-link-partner-1-grid"

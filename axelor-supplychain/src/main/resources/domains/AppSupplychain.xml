@@ -84,7 +84,6 @@
       title="Purchase order without incoming stock move"/>
     <boolean name="manageAdvancePaymentsFromPaymentConditions"
       title="Manage advance payments from payment conditions" default="false"/>
-    <boolean name="activatePartnerRelations" title="Activate partner delegations"/>
 
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
@@ -125,7 +124,6 @@
       <field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
       <field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
       <field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
-      <field name="activatePartnerRelations" on="UPDATE"/>
     </track>
   </entity>
 

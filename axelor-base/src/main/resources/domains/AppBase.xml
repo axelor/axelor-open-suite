@@ -112,6 +112,9 @@
     <boolean name="enableMultiCompany" title="Enable multi-company management"
       default="true"/>
 
+    <boolean name="activatePartnerRelations" title="Activate partner delegations"
+      default="false"/>
+
     <many-to-one name="passwordChangedTemplate" ref="com.axelor.message.db.Template"
       title="Template for changed password"/>
 
@@ -237,7 +240,8 @@
       <field name="manageCcBccRelatedTo" on="UPDATE"/>
       <field name="customAppStyle" on="UPDATE"/>
       <field name="processTimeout" on="UPDATE"/>
-      <!-- 31 fields -->
+      <field name="activatePartnerRelations" on="UPDATE"/>
+      <!-- 32 fields -->
     </track>
 
   </entity>
