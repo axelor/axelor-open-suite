@@ -1536,6 +1536,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     compute(line, stockMove);
     line.setRealQty(realQty);
     line.setConformitySelect(conformitySelect);
+    line.setIsRealQtyModifiedByUser(true);
     stockMoveLineRepository.save(line);
     return line;
   }
