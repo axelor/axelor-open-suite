@@ -1021,6 +1021,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public void setParentFields(
       InvoiceTerm invoiceTerm, Move move, MoveLine moveLine, Invoice invoice) {
+    if (invoiceTerm == null) return;
+
     if (invoice != null) {
       invoiceTerm.setCompany(invoice.getCompany());
       invoiceTerm.setPartner(invoice.getPartner());
@@ -1045,13 +1047,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       if (moveLine.getPartner() != null) {
         invoiceTerm.setPartner(moveLine.getPartner());
-      } else {
-        if (move != null)
-          invoiceTerm.setPartner(move.getPartner());
+      } else if (move != null) {
+        invoiceTerm.setPartner(move.getPartner());
       }
     }
 
-    if (move != null && moveLine != null && invoiceTerm != null && invoiceTerm.getOriginDate() == null) {
+    if (move != null && moveLine != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
     }
   }
