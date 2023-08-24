@@ -45,6 +45,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.date.DateTool;
@@ -55,7 +56,9 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -346,6 +349,21 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrderRepo.save(operationOrder);
   }
 
+  @Override
+  @Transactional
+  public void pause(OperationOrder operationOrder, User user) {
+
+    stopOperationOrderDuration(operationOrder, AuthUtils.getUser());
+
+    // All operations orders duration are stopped
+    if (operationOrder.getOperationOrderDurationList().stream()
+        .allMatch(oo -> oo.getStoppingDateTime() != null)) {
+      operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
+    }
+
+    operationOrderRepo.save(operationOrder);
+  }
+
   /**
    * Resumes the given {@link OperationOrder} and sets its resuming time
    *
@@ -378,6 +396,33 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrderStockMoveService.finish(operationOrder);
     operationOrderRepo.save(operationOrder);
     calculateHoursOfUse(operationOrder);
+  }
+
+  /**
+   * Ends the given {@link OperationOrder} and sets its stopping time<br>
+   * Realizes the linked stock moves
+   *
+   * @param operationOrder An operation order
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void finish(OperationOrder operationOrder, User user) throws AxelorException {
+
+    stopOperationOrderDuration(operationOrder, user);
+
+    // All operations orders duration are stopped
+    if (operationOrder.getOperationOrderDurationList().stream()
+        .allMatch(oo -> oo.getStoppingDateTime() != null)) {
+
+      operationOrder.setStatusSelect(OperationOrderRepository.STATUS_FINISHED);
+      operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
+      operationOrderStockMoveService.finish(operationOrder);
+      operationOrderRepo.save(operationOrder);
+      calculateHoursOfUse(operationOrder);
+      return;
+    }
+
+    operationOrderRepo.save(operationOrder);
   }
 
   @Override
@@ -433,12 +478,29 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    */
   @Override
   public void stopOperationOrderDuration(OperationOrder operationOrder) {
+
+    stopOperationOrderDuration(operationOrder, null);
+  }
+
+  @Override
+  public void stopOperationOrderDuration(OperationOrder operationOrder, User user) {
+
+    Map<String, Object> bindingMap = new HashMap<>();
+    StringBuilder operationOrderFilter =
+        new StringBuilder(
+            "self.operationOrder.id = :operationOrderId AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL");
+    bindingMap.put("operationOrderId", operationOrder.getId());
+
+    if (user != null) {
+      operationOrderFilter.append(" AND self.startedBy = :currentUser");
+      bindingMap.put("currentUser", user);
+    }
+
     OperationOrderDuration duration =
         operationOrderDurationRepo
             .all()
-            .filter(
-                "self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL",
-                operationOrder.getId())
+            .filter(operationOrderFilter.toString())
+            .bind(bindingMap)
             .fetchOne();
 
     if (duration != null) {

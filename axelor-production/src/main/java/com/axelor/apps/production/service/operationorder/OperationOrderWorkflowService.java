@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -159,4 +160,32 @@ public interface OperationOrderWorkflowService {
 
   long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException;
+
+  /**
+   * Mostly work the same as pause method. Except this one will not set operation order status to
+   * standBy if somes operations are still being working on. But, it will surely pause the
+   * operationOrderDuration of the user.
+   *
+   * @param operationOrder
+   */
+  void pause(OperationOrder operationOrder, User user);
+
+  /**
+   * Ends the last {@link OperationOrderDuration} started by User and sets the real duration of
+   * {@code operationOrder}<br>
+   * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
+   *
+   * @param operationOrder An operation order @Param user
+   */
+  void stopOperationOrderDuration(OperationOrder operationOrder, User user);
+
+  /**
+   * Mostly work the same as finish method. But it will only finish (by stopping) operation order
+   * duration of user. If then there is no operation order duration in progress, then it will finish
+   * the operation order. Else, the status of operation order will not be changed.
+   *
+   * @param operationOrder
+   * @param user
+   */
+  void finish(OperationOrder operationOrder, User user) throws AxelorException;
 }
