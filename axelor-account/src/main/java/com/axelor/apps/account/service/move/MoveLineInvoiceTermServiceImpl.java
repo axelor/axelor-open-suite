@@ -225,9 +225,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             .divide(
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_DOWN);
-    holdbackAmount =
-        holdbackAmount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+                RoundingMode.HALF_UP);
 
     if (holdbackMoveLine == null) {
       if (!canCreateHolbackMoveLine) {
@@ -312,14 +310,13 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
-            ? total
+            ? total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
             : total
                 .multiply(percentage)
                 .divide(
                     BigDecimal.valueOf(100),
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_DOWN);
-    amount = amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+                    RoundingMode.HALF_UP);
 
     User pfpUser = null;
     if (invoiceTermService.getPfpValidatorUserCondition(move.getInvoice(), moveLine)) {
@@ -418,18 +415,16 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     if (totalAmount.compareTo(sumOfInvoiceTerm) != 0) {
-      InvoiceTerm lastElement =
-          invoiceTermList.stream().reduce((first, second) -> second).orElse(null);
-      if (lastElement == null) {
-        return;
-      }
+      InvoiceTerm lastElement = invoiceTermList.get(invoiceTermList.size() - 1);
 
       BigDecimal difference = totalAmount.subtract(sumOfInvoiceTerm);
       BigDecimal amount = lastElement.getAmount().add(difference);
-      lastElement.setAmount(amount);
-      lastElement.setAmountRemaining(amount);
+      BigDecimal amountRemaining = lastElement.getAmountRemaining().add(difference);
 
-      invoiceTermList.set(invoiceTermList.size() - 1, lastElement);
+      lastElement.setAmount(amount);
+      lastElement.setAmountRemaining(amountRemaining);
+
+      invoiceTermService.computeCompanyAmounts(lastElement, true);
     }
   }
 }
