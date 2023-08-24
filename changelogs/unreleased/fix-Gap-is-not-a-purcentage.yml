@@ -1,3 +1,9 @@
-title: "[axelor-production]: fixed SOP/PMS Gap is not a purcentage"
+title: "SOP/PMS Gap is now really a percentage"
 type: fix
-description: Changed computation of traditional "Gap" fields to compute percentages to align with title of fields.
+description: 
+  Changed computation of "Gap" fields so the result will be percentage (e.g. 13% instead of 0.13). The following script can be used to fix existing SOP/PMS.
+  ```sql
+  UPDATE production_sop_line SET sop_manuf_gap = sop_manuf_gap*100;
+  UPDATE production_sop_line SET sop_sales_gap = sop_sales_gap*100;
+  UPDATE production_sop_line SET sop_stock_gap = sop_stock_gap*100;
+  ```
