@@ -1,3 +1,46 @@
+## [6.3.26] (2023-08-24)
+
+#### Fixed
+
+* Webapp: update Axelor Open Platform dependency to 5.4.22.
+* Move: fixed reverse process to fill bank reconciled amount only if 'Hide move lines in bank reconciliation' is ticked and if the account type is 'cash'
+
+To fix existing records, the following script must be executed:
+
+```sql
+UPDATE account_move_line moveLine
+SET bank_reconciled_amount = 0
+FROM account_account account
+JOIN account_account_type accountType
+ON account.account_type = accountType.id
+WHERE moveLine.account = account.id
+AND accountType.technical_type_select <> 'cash';
+```
+
+* Payment voucher: fixed remaining amount not being recomputed on reset.
+* Stock details: in stock details by product, fixed production indicators visibility.
+* Business project batch: fixed "id to load is required for loading" error when generating invoicing projects.
+* Period: fixed adjusting button not being displayed when adjusting the year.
+* Fixed asset: fixed wrong depreciation value for degressive method.
+* Employee: value of statusSelect with hire and leave date empty.
+* Bank reconciliation: merge same bank statement lines to fix wrong ongoing balance due to auto reconcile.
+* Invoice: fixed anomaly causing payment not being generated
+
+Correct anomaly causing payment not being generated on invoice when a new reconciliation is validated  
+and the invoice's move has been reconciled with a shift to another account (LCR excluding Doubtful process).
+
+* Sale order line: fixed a bug where project not emptied on copy.
+* Stock move printing: fixed an issue where lines with different prices were wrongly grouped.
+* Stock details: fixed "see stock details" button in product and sale order line form views.
+* Tax number: translated and added an helper for 'Include in DEB' configuration.
+* Leave request: fixed employee filter
+
+A HR manager can now create a leave request for every employee.
+Else, if an employee is not a manager, he can only create leave request for himself or for employees he is responsible of.
+
+* Manufacturing order: fixed a bug where sale order set was emptied on change of client partner and any change on saleOrderSet filled the partner.
+* Contact: the filter on mainPartner now allows to select a company partner only, not an individual.
+
 ## [6.3.25] (2023-08-08)
 
 #### Fixed
@@ -786,6 +829,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.26]: https://github.com/axelor/axelor-open-suite/compare/v6.3.25...v6.3.26
 [6.3.25]: https://github.com/axelor/axelor-open-suite/compare/v6.3.24...v6.3.25
 [6.3.24]: https://github.com/axelor/axelor-open-suite/compare/v6.3.23...v6.3.24
 [6.3.23]: https://github.com/axelor/axelor-open-suite/compare/v6.3.22...v6.3.23
