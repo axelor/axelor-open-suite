@@ -12,6 +12,7 @@
     <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
       title="Default Partner language"/>
+
     <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
     <boolean name="emailAccountByCompany" title="Manage mail account by company"
       default="false"/>
@@ -19,6 +20,10 @@
 
     <!-- Interfaces QAS et SVI -->
     <string name="qasWsdlUrl" title="URL to QAS WSDL"/>
+
+
+    <string name="draftPrefix" title="Draft prefix for sequences" default="#"
+      help="The default value is #"/>
 
     <!-- Mapping API -->
     <integer name="mapApiSelect" title="Mapping service provider"
