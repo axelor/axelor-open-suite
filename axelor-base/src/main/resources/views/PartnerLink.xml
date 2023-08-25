@@ -6,11 +6,11 @@
   <grid name="partner-link-grid" title="Partner relations"
     model="com.axelor.apps.base.db.PartnerLink" editable="true">
     <field name="partner1" form-view="partner-form" grid-view="partner-grid"
-      domain="self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE)"/>
-    <field name="partnerLinkType" form-view="partner-link-type-form"
-      grid-view="partner-link-type-grid"/>
-    <field name="partner2" form-view="partner-form" grid-view="partner-grid"
-      domain="self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE)"/>
+      onSelect="action-partner-link-attrs-set-partners-domain"/>
+      <field name="partnerLinkType" form-view="partner-link-type-form"
+        grid-view="partner-link-type-grid"/>
+      <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+        onSelect="action-partner-link-attrs-set-partners-domain"/>
   </grid>
 
   <grid name="partner-link-partner-1-grid" title="Partner relations"
@@ -18,7 +18,7 @@
     <field name="partnerLinkType" form-view="partner-link-type-form"
       grid-view="partner-link-type-grid" target-name="link2Name"/>
     <field name="partner2" form-view="partner-form" grid-view="partner-grid"
-      domain="self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE)"/>
+      onSelect="action-partner-link-attrs-set-partners-domain"/>
   </grid>
 
   <grid name="partner-link-partner-2-grid" title="Partner relations"
@@ -26,19 +26,26 @@
     <field name="partnerLinkType" form-view="partner-link-type-form"
       grid-view="partner-link-type-grid" target-name="link1Name"/>
     <field name="partner1" form-view="partner-form" grid-view="partner-grid"
-      domain="self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE)"/>
+      onSelect="action-partner-link-attrs-set-partners-domain"/>
   </grid>
 
   <form title="Partner relation" name="partner-link-form"
     model="com.axelor.apps.base.db.PartnerLink">
     <panel name="mainPanel" itemSpan="4">
       <field name="partner1" form-view="partner-form" grid-view="partner-grid"
-        domain="self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE)"/>
-      <field name="partnerLinkType" form-view="partner-link-type-form"
-        grid-view="partner-link-type-grid"/>
-      <field name="partner2" form-view="partner-form" grid-view="partner-grid"
-        domain="self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE)"/>
+        onSelect="action-partner-link-attrs-set-partners-domain"/>
+        <field name="partnerLinkType" form-view="partner-link-type-form"
+          grid-view="partner-link-type-grid"/>
+        <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+          onSelect="action-partner-link-attrs-set-partners-domain"/>
     </panel>
   </form>
+
+  <action-attrs name="action-partner-link-attrs-set-partners-domain">
+    <attribute name="domain" for="partner1"
+      expr="eval: &quot; self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE) AND NOT self.id = ${__parent__?.id} &quot;"/>
+    <attribute name="domain" for="partner2"
+      expr="eval: &quot; self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE) AND NOT self.id = ${__parent__?.id} &quot;"/>
+  </action-attrs>
 
 </object-views>
