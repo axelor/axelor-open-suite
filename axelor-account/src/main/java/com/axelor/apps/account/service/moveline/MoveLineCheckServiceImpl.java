@@ -56,11 +56,7 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
       analyticMoveLineService.validateLines(
           moveLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
 
-      if (!analyticMoveLineService.validateAnalyticMoveLines(moveLine.getAnalyticMoveLineList())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
-      }
+      checkAnalyticMoveLinesPercentage(moveLine);
 
       analyticDistributionTemplateService.validateTemplatePercentages(
           moveLine.getAnalyticDistributionTemplate());
@@ -113,6 +109,15 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
             moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines(),
             false);
       }
+    }
+  }
+
+  @Override
+  public void checkAnalyticMoveLinesPercentage(MoveLine moveLine) throws AxelorException {
+    if (!analyticMoveLineService.validateAnalyticMoveLines(moveLine.getAnalyticMoveLineList())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
     }
   }
 }

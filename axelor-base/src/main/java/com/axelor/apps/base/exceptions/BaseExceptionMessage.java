@@ -37,6 +37,9 @@ public final class BaseExceptionMessage {
   public static final String CURRENCY_1 = /*$$(*/
       "No currency conversion found from '%s' to '%s' for date %s" /*)*/;
 
+  public static final String SEQUENCE_PREFIX = /*$$(*/
+      "Sequence prefix cannot start with the draft prefix '%s'." /*)*/;
+
   public static final String CURRENCY_2 = /*$$(*/
       "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/;
   public static final String CURRENCY_3 = /*$$(*/
@@ -244,8 +247,6 @@ public final class BaseExceptionMessage {
   public static final String MESSAGE_1 = /*$$(*/
       "Error in print. Please check report configuration and print setting." /*)*/;
 
-  public static final String MESSAGE_2 = /*$$(*/ "Please select the Message(s) to print." /*)*/;
-
   /** Partner controller */
   public static final String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
 
@@ -374,8 +375,6 @@ public final class BaseExceptionMessage {
       "Invalid data format. Please check log for more details." /*)*/;
 
   /* ABC Analysis */
-  public static final String ABC_CLASSES_INVALID_STATE_FOR_REPORTING = /*$$(*/
-      "The analysis must be completed before the report can be printed." /*)*/;
   public static final String ABC_CLASSES_INVALID_QTY_OR_WORTH = /*$$(*/
       "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
@@ -586,4 +585,12 @@ public final class BaseExceptionMessage {
 
   public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
       "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
+
+  public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+      "The configuration to print this model has not been found" /*)*/;
+
+  public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
+
+  public static final String CONVERT_IMAGE_TO_PDF_ERROR = /*$$(*/
+      "Error while converting image to pdf : %s" /*)*/;
 }

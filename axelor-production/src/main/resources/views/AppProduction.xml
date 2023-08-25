@@ -39,6 +39,7 @@
           widget="boolean-switch"/>
         <field name="enableTimesheetOnManufOrder" widget="boolean-switch"
           if-module="axelor-business-production" showIf="manageBusinessProduction"/>
+        <field name="operationContinuitySelect"/>
       </panel>
       <panel name="barcodeTypeConfigPanel">
         <field name="barcodeTypeConfig" title="Barcode Type"/>
