@@ -262,4 +262,13 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_MISSING_COMPANY = /*$$(*/
       "Please provide a company." /*)*/;
+
+  public static final String MEDICAL_VISIT_PLAN_WRONG_STATUS = /*$$(*/
+      "Can only plan draft medical visit." /*)*/;
+
+  public static final String MEDICAL_VISIT_REALIZE_WRONG_STATUS = /*$$(*/
+      "Can only realize planned medical visit." /*)*/;
+
+  public static final String MEDICAL_VISIT_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel planned or realized medical visit." /*)*/;
 }

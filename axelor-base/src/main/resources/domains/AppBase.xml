@@ -143,7 +143,8 @@
       title="Email links"/>
 
     <one-to-many name="birtTemplateConfigLineList"
-      ref="com.axelor.apps.base.db.BirtTemplateConfigLine" title="BIRT printing settings"/>
+      ref="com.axelor.apps.base.db.BirtTemplateConfigLine" title="BIRT printing settings"
+      mappedBy="appBase"/>
 
     <string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
     <string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
@@ -158,6 +159,15 @@
     <integer name="processTimeout" default="10" title="Timeout for processes (seconds)"
       help="Maximum time before a process called by an user starts running in the background"
       min="1"/>
+
+    <many-to-one name="clientSituationBirtTemplate"
+      ref="com.axelor.apps.base.db.BirtTemplate" title="Client situation template"/>
+    <many-to-one name="companyPhoneBookBirtTemplate"
+      ref="com.axelor.apps.base.db.BirtTemplate" title="Company phone book template"/>
+    <many-to-one name="contactPhoneBookBirtTemplate"
+      ref="com.axelor.apps.base.db.BirtTemplate" title="Contact phone book template"/>
+    <many-to-one name="productCatalogPGQLBirtTemplate"
+      ref="com.axelor.apps.base.db.BirtTemplate" title="Product catalog PGQL template"/>
 
     <extra-code>
 	   		<![CDATA[

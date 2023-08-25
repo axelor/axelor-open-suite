@@ -66,4 +66,6 @@ public interface ITranslation {
 
   public static final String EDITOR_TEAM_TASK = /*$$(*/ "TeamTask"; /*)*/
   public static final String EDITOR_ADD_A_LINE = /*$$(*/ "ADD A LINE"; /*)*/
+
+  String MEDICAL_VISIT = /*$$(*/ "Medical visit"; /*)*/
 }

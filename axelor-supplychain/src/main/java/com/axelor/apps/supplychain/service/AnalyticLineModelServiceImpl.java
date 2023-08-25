@@ -9,8 +9,6 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -33,9 +31,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
   protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
-  protected AccountConfigService accountConfigService;
   protected AnalyticMoveLineService analyticMoveLineService;
-  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected AnalyticToolService analyticToolService;
 
@@ -43,16 +39,12 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   public AnalyticLineModelServiceImpl(
       AppBaseService appBaseService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
       AnalyticMoveLineService analyticMoveLineService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AccountManagementAccountService accountManagementAccountService,
       AnalyticToolService analyticToolService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
-    this.accountConfigService = accountConfigService;
     this.analyticMoveLineService = analyticMoveLineService;
-    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.analyticToolService = analyticToolService;
   }
