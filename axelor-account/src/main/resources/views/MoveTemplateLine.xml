@@ -120,10 +120,10 @@
 
   <action-attrs name="action-move-template-line-set-account-domain">
     <attribute name="domain" for="account"
-      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;"
+      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"
       if="__parent__ != null"/>
     <attribute name="domain" for="account"
-      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${moveTemplate?.company?.id} &quot;"
+      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${moveTemplate?.company?.id} AND (self.accountType.id IN (${(moveTemplate?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(moveTemplate?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"
       if="moveTemplate != null"/>
   </action-attrs>
 
