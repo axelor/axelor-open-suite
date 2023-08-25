@@ -44,7 +44,7 @@ public class MedicalVisitServiceImpl implements MedicalVisitService {
                   employeeFile.getMetaFile().getFileName().equals(metaFile.getFileName()))) {
         return employeeFileList;
       }
-      employee.addEmployeeFileListItem(getEmployeeFile(medicalVisit, metaFile));
+      employee.addEmployeeFileListItem(createEmployeeFile(medicalVisit, metaFile));
     }
     return employee.getEmployeeFileList();
   }
@@ -54,7 +54,7 @@ public class MedicalVisitServiceImpl implements MedicalVisitService {
     return I18n.get(ITranslation.MEDICAL_VISIT) + " - " + medicalVisit.getVisitReason().getName();
   }
 
-  protected EmployeeFile getEmployeeFile(MedicalVisit medicalVisit, MetaFile metaFile) {
+  protected EmployeeFile createEmployeeFile(MedicalVisit medicalVisit, MetaFile metaFile) {
     EmployeeFile employeeFile = new EmployeeFile();
     employeeFile.setMetaFile(metaFile);
     employeeFile.setFileDescription(getMedicalVisitSubject(medicalVisit));
