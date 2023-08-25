@@ -23,7 +23,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -34,17 +36,20 @@ import javax.persistence.PersistenceException;
 public class QualityImprovementManagementRepository extends QualityImprovementRepository {
 
   protected SequenceService sequenceService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public QualityImprovementManagementRepository(SequenceService sequenceService) {
+  public QualityImprovementManagementRepository(
+      SequenceService sequenceService, AppBaseService appBaseService) {
     this.sequenceService = sequenceService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public QualityImprovement save(QualityImprovement qualityImprovement) {
     try {
+      Company company = qualityImprovement.getCompany();
       if (Strings.isNullOrEmpty(qualityImprovement.getSequence())) {
-        Company company = qualityImprovement.getCompany();
         String sequence =
             sequenceService.getSequenceNumber(
                 SequenceRepository.QUALITY_IMPROVEMENT,
@@ -62,11 +67,23 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
           qualityImprovement.setSequence(sequence);
         }
       }
+
+      getOrCreateQIIdentification(qualityImprovement);
+
       return super.save(qualityImprovement);
 
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  protected QIIdentification getOrCreateQIIdentification(QualityImprovement qualityImprovement) {
+    QIIdentification qiIdentification = qualityImprovement.getQiIdentification();
+    if (qiIdentification == null) {
+      qiIdentification = new QIIdentification();
+      qiIdentification.setQi(qualityImprovement);
+    }
+    return qiIdentification;
   }
 }
