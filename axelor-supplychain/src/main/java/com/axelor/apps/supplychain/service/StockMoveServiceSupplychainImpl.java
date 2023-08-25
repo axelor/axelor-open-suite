@@ -590,8 +590,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
               partnerLinkList.stream()
                   .filter(
                       partnerLink ->
-                          PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
-                              partnerLink.getPartnerLinkType().getTypeSelect()))
+                          partnerLink.getPartnerLinkType().getTypeSelect()
+                              == PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY)
                   .collect(Collectors.toList());
 
           // If there is only one, then it is the default one

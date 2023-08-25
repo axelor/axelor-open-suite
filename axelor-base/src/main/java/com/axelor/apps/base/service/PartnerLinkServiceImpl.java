@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class PartnerLinkServiceImpl implements PartnerLinkService {
   @Override
-  public String computePartnerFilter(Partner partner, String strFilter) {
+  public String computePartnerFilter(Partner partner, int typeSelect) {
     List<Long> partnerIds = new ArrayList<>();
     // manage the case where nothing is found
     partnerIds.add(0L);
@@ -22,7 +22,7 @@ public class PartnerLinkServiceImpl implements PartnerLinkService {
               .filter(
                   partnerLink ->
                       partnerLink.getPartnerLinkType() != null
-                          && strFilter.equals(partnerLink.getPartnerLinkType().getTypeSelect())
+                          && typeSelect == partnerLink.getPartnerLinkType().getTypeSelect()
                           && partnerLink.getPartner2() != null)
               .map(PartnerLink::getPartner2)
               .map(Partner::getId)

@@ -163,4 +163,9 @@
     <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
   </selection>
 
+  <selection name="base.partner.link.type.type.select"
+    id="stock.partner.link.type.type.select">
+    <option value="301">Delivered by</option>
+  </selection>
+
 </object-views>

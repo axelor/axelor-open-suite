@@ -6,11 +6,12 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="PartnerLinkType">
+    <extra-code><![CDATA[
 
-    <string name="name"/>
-    <integer name="typeSelect" title="Type" selection="base.partner.link.type.type.select"/>
-    <string name="link1Name" title="Relation 1" translatable="true"/>
-    <string name="link2Name" title="Relation 2" translatable="true"/>
+	    // TYPE SELECT
+	    public static final int TYPE_SELECT_INVOICED_BY = 101;
+
+	]]></extra-code>
   </entity>
 
 </domain-models>

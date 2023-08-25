@@ -747,4 +747,8 @@
     <option value="Boolean">Boolean</option>
   </selection>
 
+  <selection name="base.partner.link.type.type.select">
+    <option value="0"/>
+  </selection>
+
 </object-views>

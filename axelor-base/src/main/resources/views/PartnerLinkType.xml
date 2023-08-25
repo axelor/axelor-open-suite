@@ -5,6 +5,7 @@
 
   <grid name="partner-link-type-grid" title="Partner relation type"
     model="com.axelor.apps.base.db.PartnerLinkType" editable="true">
+    <field name="name"/>
     <field name="typeSelect"/>
     <field name="link1Name"/>
     <field name="link2Name"/>
@@ -13,6 +14,7 @@
   <form name="partner-link-type-form" title="Partner relation type"
     model="com.axelor.apps.base.db.PartnerLinkType">
     <panel name="mainPanel">
+      <field name="name"/>
       <field name="typeSelect"/>
       <field name="link1Name"/>
       <field name="link2Name"/>
