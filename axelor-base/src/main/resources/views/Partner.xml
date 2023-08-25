@@ -354,11 +354,9 @@
     <panel colSpan="12" name="partnerLinkPanel" showIf="isProspect || isCustomer"
       if="__config__.app.getApp('base')?.activatePartnerRelations">
       <panel-related field="managedByPartnerLinkList"
-        grid-view="partner-supplychain-link-partner-1-grid"
-        form-view="partner-supplychain-link-form" colSpan="6"/>
+        grid-view="partner-link-partner-1-grid" form-view="partner-link-form"/>
       <panel-related field="managedForPartnerLinkList"
-        grid-view="partner-supplychain-link-partner-2-grid"
-        form-view="partner-supplychain-link-form" colSpan="6"/>
+        grid-view="partner-link-partner-2-grid" form-view="partner-link-form"/>
     </panel>
     <panel-dashlet action="action-partner-view-subsidiary-partners"
       name="subsidiaryPartners" showIf="partnerTypeSelect == 1"
