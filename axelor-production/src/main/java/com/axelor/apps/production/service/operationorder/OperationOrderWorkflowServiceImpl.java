@@ -512,8 +512,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
   protected void stopAllOperationOrderDuration(OperationOrder operationOrder) {
     if (operationOrder.getOperationOrderDurationList() != null) {
-      operationOrder
-          .getOperationOrderDurationList()
+      operationOrder.getOperationOrderDurationList().stream()
+          .filter(ood -> ood.getStoppingDateTime() == null)
           .forEach(
               ood -> {
                 stopOperationOrderDuration(ood);

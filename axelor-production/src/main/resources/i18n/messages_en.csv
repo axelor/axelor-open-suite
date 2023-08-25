@@ -774,6 +774,7 @@
 "There's no configured sequence for production's orders",,,
 "This bill of materials already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?",,,
 "This production process already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?",,,
+"This workflow is not supported for operation order status.",,,
 "Thursday hours",,,
 "Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle.",,,
 "Time between two operations (hhh:mm:ss)",,,

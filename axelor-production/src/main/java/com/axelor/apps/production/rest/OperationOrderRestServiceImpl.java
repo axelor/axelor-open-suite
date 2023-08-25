@@ -74,7 +74,7 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          "This workflow is not supported for operation order status.");
+          I18n.get(ITranslation.OPERATION_ORDER_WORKFLOW_NOT_SUPPORTED));
     }
 
     return ResponseConstructor.build(
