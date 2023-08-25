@@ -22,6 +22,7 @@
 "Cancel","Annuler",,
 "Canceled","Annulé",,
 "Cancelled Status","Statut annulé",,
+
 "Cancelled status already exists.","Un statut annulé existe déjà.",,
 "Changing this value will change value of product, continue ?","Changer cette valeur changera la valeur de produit. Continuer ?",,
 "Choose quality process","Choisir un processus de qualité",,
@@ -62,7 +63,7 @@
 "Deadline","Date limite",,
 "Decision","Décision",,
 "Decisions","Décisions",,
-"Decisions written by","Décisions rédigées par	",,
+"Decisions written by","Décisions rédigées par",,
 "Decisions written on","Décisions rédigées le",,
 "Default","Défaut",,
 "Default written by","Défauts rédigés par",,

@@ -40,7 +40,7 @@ public class QIResolutionDecisionServiceImpl implements QIResolutionDecisionServ
     }
     List<QIResolutionDecision> qiResolutionDecisionList =
         qiResolution.getQiResolutionDecisionsList().stream()
-            .filter(it -> it.getQiResolutionDefault() == qiResolutionDefault)
+            .filter(it -> qiResolutionDefault.equals(it.getQiResolutionDefault()))
             .collect(Collectors.toList());
     if (CollectionUtils.isEmpty(qiResolutionDecisionList)) {
       return true;
@@ -50,9 +50,6 @@ public class QIResolutionDecisionServiceImpl implements QIResolutionDecisionServ
             .map(QIResolutionDecision::getQuantity)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    if (sumOfQuantites.compareTo(qiResolutionDefault.getQuantity()) > 0) {
-      return false;
-    }
-    return true;
+    return sumOfQuantites.compareTo(qiResolutionDefault.getQuantity()) <= 0;
   }
 }
