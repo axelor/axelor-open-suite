@@ -22,7 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerLink;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -48,9 +50,7 @@ import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
-import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.Timetable;
-import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
@@ -394,40 +394,37 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected void setDefaultInvoicedAndDeliveredPartners(
       SaleOrder saleOrder, Partner clientPartner) {
     if (!CollectionUtils.isEmpty(clientPartner.getManagedByPartnerLinkList())) {
-      List<PartnerSupplychainLink> partnerSupplychainLinkList =
-          clientPartner.getManagedByPartnerLinkList();
+      List<PartnerLink> partnerLinkList = clientPartner.getManagedByPartnerLinkList();
       // Retrieve all Invoiced by Type
-      List<PartnerSupplychainLink> partnerSupplychainLinkInvoicedByList =
-          partnerSupplychainLinkList.stream()
+      List<PartnerLink> partnerLinkInvoicedByList =
+          partnerLinkList.stream()
               .filter(
-                  partnerSupplychainLink ->
-                      PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
-                          partnerSupplychainLink.getPartnerSupplychainLinkType().getTypeSelect()))
+                  partnerLink ->
+                      PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
+                          partnerLink.getPartnerLinkType().getTypeSelect()))
               .collect(Collectors.toList());
       // Retrieve all Delivered by Type
-      List<PartnerSupplychainLink> partnerSupplychainLinkDeliveredByList =
-          partnerSupplychainLinkList.stream()
+      List<PartnerLink> partnerLinkDeliveredByList =
+          partnerLinkList.stream()
               .filter(
-                  partnerSupplychainLink ->
-                      PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY.equals(
-                          partnerSupplychainLink.getPartnerSupplychainLinkType().getTypeSelect()))
+                  partnerLink ->
+                      PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY.equals(
+                          partnerLink.getPartnerLinkType().getTypeSelect()))
               .collect(Collectors.toList());
 
       // If there is only one, then it is the default one
-      if (partnerSupplychainLinkInvoicedByList.size() == 1) {
-        PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
-            partnerSupplychainLinkInvoicedByList.get(0);
-        saleOrder.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
-      } else if (partnerSupplychainLinkInvoicedByList.isEmpty()) {
+      if (partnerLinkInvoicedByList.size() == 1) {
+        PartnerLink partnerLinkInvoicedBy = partnerLinkInvoicedByList.get(0);
+        saleOrder.setInvoicedPartner(partnerLinkInvoicedBy.getPartner2());
+      } else if (partnerLinkInvoicedByList.isEmpty()) {
         saleOrder.setInvoicedPartner(clientPartner);
       } else {
         saleOrder.setInvoicedPartner(null);
       }
-      if (partnerSupplychainLinkDeliveredByList.size() == 1) {
-        PartnerSupplychainLink partnerSupplychainLinkDeliveredBy =
-            partnerSupplychainLinkDeliveredByList.get(0);
-        saleOrder.setDeliveredPartner(partnerSupplychainLinkDeliveredBy.getPartner2());
-      } else if (partnerSupplychainLinkDeliveredByList.isEmpty()) {
+      if (partnerLinkDeliveredByList.size() == 1) {
+        PartnerLink partnerLinkDeliveredBy = partnerLinkDeliveredByList.get(0);
+        saleOrder.setDeliveredPartner(partnerLinkDeliveredBy.getPartner2());
+      } else if (partnerLinkDeliveredByList.isEmpty()) {
         saleOrder.setDeliveredPartner(clientPartner);
       } else {
         saleOrder.setDeliveredPartner(null);

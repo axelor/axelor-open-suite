@@ -3,9 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PartnerSupplychainLinkType">
+  <entity name="PartnerLinkType">
 
     <string namecolumn="true" name="typeSelect" title="Type"
       selection="base.base.partner.supply.chain.link.type.select"/>

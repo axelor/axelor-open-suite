@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="partner-link-grid" title="Partner relations"
+    model="com.axelor.apps.base.db.PartnerLink" editable="true">
+    <field name="partner1" form-view="partner-form" grid-view="partner-grid"
+      domain="!self.isContact AND (self.isCustomer OR self.isProspect)"/>
+    <field name="partnerLinkType" form-view="partner-link-type-form"
+      grid-view="partner-link-type-grid"/>
+    <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+      domain="!self.isContact AND (self.isCustomer OR self.isProspect)"/>
+  </grid>
+
+  <grid name="partner-link-partner-1-grid" title="Partner relations"
+    model="com.axelor.apps.base.db.PartnerLink" editable="true">
+    <field name="partnerLinkType" form-view="partner-link-type-form"
+      grid-view="partner-link-type-grid" target-name="link2Name"/>
+    <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+      domain="self.isContact AND (self.isCustomer OR self.isProspect)"/>
+  </grid>
+
+  <grid name="partner-link-partner-2-grid" title="Partner relations"
+    model="com.axelor.apps.base.db.PartnerLink" editable="true">
+    <field name="partnerLinkType" form-view="partner-link-type-form"
+      grid-view="partner-link-type-grid" target-name="link1Name"/>
+    <field name="partner1" form-view="partner-form" grid-view="partner-grid"
+      domain="!self.isContact AND (self.isCustomer OR self.isProspect)"/>
+  </grid>
+
+  <form title="Partner relation" name="partner-link-form"
+    model="com.axelor.apps.base.db.PartnerLink">
+    <panel name="mainPanel" itemSpan="4">
+      <field name="partner1" form-view="partner-form" grid-view="partner-grid"
+        domain="!self.isContact AND (self.isCustomer OR self.isProspect)"/>
+      <field name="partnerLinkType" form-view="partner-link-type-form"
+        grid-view="partner-link-type-grid"/>
+      <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+        domain="!self.isContact AND (self.isCustomer OR self.isProspect)"/>
+    </panel>
+  </form>
+
+</object-views>
