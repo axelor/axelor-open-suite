@@ -32,7 +32,7 @@
   </input>
 
   <input file="base_partner_link_type.csv" separator=";"
-         type="com.axelor.apps.base.db.PartnerLinkType" search="self.importId = :importId">
+    type="com.axelor.apps.base.db.PartnerLinkType" search="self.importId = :importId">
     <bind to="typeSelect" column="type"/>
     <bind to="link1Name" column="relation1"/>
     <bind to="link2Name" column="relation2"/>
