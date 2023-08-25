@@ -369,8 +369,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     stopOperationOrderDuration(operationOrder, AuthUtils.getUser());
 
     // All operations orders duration are stopped
-    if (operationOrder.getOperationOrderDurationList().stream()
-        .allMatch(oo -> oo.getStoppingDateTime() != null)) {
+    if (allOperationDurationAreStopped(operationOrder)) {
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
     }
 
@@ -424,10 +423,10 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     stopOperationOrderDuration(operationOrder, user);
 
     // All operations orders duration are stopped
-    if (operationOrder.getOperationOrderDurationList().stream()
-        .allMatch(oo -> oo.getStoppingDateTime() != null)) {
+    if (allOperationDurationAreStopped(operationOrder)) {
 
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_FINISHED);
+      computeFinishDuration(operationOrder);
       operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
       operationOrderStockMoveService.finish(operationOrder);
       operationOrderRepo.save(operationOrder);
@@ -436,6 +435,11 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     }
 
     operationOrderRepo.save(operationOrder);
+  }
+
+  protected boolean allOperationDurationAreStopped(OperationOrder operationOrder) {
+    return operationOrder.getOperationOrderDurationList().stream()
+        .allMatch(oo -> oo.getStoppingDateTime() != null);
   }
 
   @Override
@@ -493,16 +497,28 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   }
 
   /**
-   * Ends the last {@link OperationOrderDuration} and sets the real duration of {@code
+   * Ends every operationDuration of operation order and sets the real duration of {@code
    * operationOrder}<br>
    * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
    *
    * @param operationOrder An operation order
    */
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void stopOperationOrderDuration(OperationOrder operationOrder) {
 
-    stopOperationOrderDuration(operationOrder, null);
+    stopAllOperationOrderDuration(operationOrder);
+  }
+
+  protected void stopAllOperationOrderDuration(OperationOrder operationOrder) {
+    if (operationOrder.getOperationOrderDurationList() != null) {
+      operationOrder
+          .getOperationOrderDurationList()
+          .forEach(
+              ood -> {
+                stopOperationOrderDuration(ood);
+              });
+    }
   }
 
   @Override
@@ -526,11 +542,20 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
             .bind(bindingMap)
             .fetchOne();
 
+    stopOperationOrderDuration(duration);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void stopOperationOrderDuration(OperationOrderDuration duration) {
     if (duration != null) {
       duration.setStoppedBy(AuthUtils.getUser());
       duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
+      operationOrderDurationRepo.save(duration);
     }
+  }
 
+  protected void computeFinishDuration(OperationOrder operationOrder) {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
@@ -538,10 +563,6 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }
-    }
-
-    if (duration != null) {
-      operationOrderDurationRepo.save(duration);
     }
   }
 

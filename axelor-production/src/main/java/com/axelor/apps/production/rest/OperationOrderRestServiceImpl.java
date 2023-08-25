@@ -24,7 +24,9 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.rest.dto.OperationOrderResponse;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.utils.api.ResponseConstructor;
 import com.google.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -52,7 +54,7 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
       if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
         return ResponseConstructor.build(
             Response.Status.OK,
-            "Your time on this operation is paused. The status of the operation has not been updated as someone is still working on it.",
+            I18n.get(ITranslation.OPERATION_ORDER_DURATION_PAUSED_200),
             new OperationOrderResponse((operationOrder)));
       }
     } else if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY
@@ -66,7 +68,7 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
       if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
         return ResponseConstructor.build(
             Response.Status.FORBIDDEN,
-            "Your time on this operation is paused. This operation cannot be stopped because other operators are still working on it. You can go to the web instance to force stop the operation.",
+            I18n.get(ITranslation.OPERATION_ORDER_DURATION_PAUSED_403),
             new OperationOrderResponse((operationOrder)));
       }
     } else {

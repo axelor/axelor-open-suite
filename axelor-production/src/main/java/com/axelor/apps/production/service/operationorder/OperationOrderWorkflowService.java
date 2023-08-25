@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -190,4 +191,6 @@ public interface OperationOrderWorkflowService {
   void finish(OperationOrder operationOrder, User user) throws AxelorException;
 
   void start(OperationOrder operationOrder, User user) throws AxelorException;
+
+  void stopOperationOrderDuration(OperationOrderDuration duration);
 }
