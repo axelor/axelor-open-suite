@@ -71,9 +71,8 @@
       title="Analytic account"/>
     <many-to-many name="accountSet" ref="com.axelor.apps.account.db.Account"
       title="Account(s)"/>
-
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
-         <![CDATA[
+      <![CDATA[
             return code + " " + name;
          ]]>
     </string>

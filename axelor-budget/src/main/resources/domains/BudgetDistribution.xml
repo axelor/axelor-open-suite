@@ -10,7 +10,11 @@
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"
       required="true"/>
 
+    <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
+      title="Global Budget"/>
+
     <decimal name="amount" title="Amount" precision="20" scale="2"/>
+    <date name="dateCreated" title="Date"/>
     <decimal name="assignedAmount" title="Assigned amount"/>
     <decimal name="budgetAmountAvailable"/>
 

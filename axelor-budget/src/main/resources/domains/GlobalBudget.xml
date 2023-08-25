@@ -15,7 +15,6 @@
 
     <integer name="budgetTypeSelect" selection="global.budget.budget.type.select"
       default="4" title="Budget type select"/>
-
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
     <many-to-one name="companyDepartment"
