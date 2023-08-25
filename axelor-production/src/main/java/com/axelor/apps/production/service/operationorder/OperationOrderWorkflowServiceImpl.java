@@ -303,11 +303,24 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder) throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
+      startOperationOrderDuration(operationOrder, AuthUtils.getUser());
+    } else {
+      start(operationOrder, AuthUtils.getUser());
+    }
+    operationOrderRepo.save(operationOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void start(OperationOrder operationOrder, User user) throws AxelorException {
+
     if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
       operationOrder.setRealStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
-      startOperationOrderDuration(operationOrder);
+      startOperationOrderDuration(operationOrder, user);
 
       if (operationOrder.getManufOrder() != null) {
         int beforeOrAfterConfig =
@@ -340,7 +353,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param operationOrder An operation order
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void pause(OperationOrder operationOrder) {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
 
@@ -374,7 +387,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   public void resume(OperationOrder operationOrder) {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 
-    startOperationOrderDuration(operationOrder);
+    startOperationOrderDuration(operationOrder, AuthUtils.getUser());
 
     operationOrderRepo.save(operationOrder);
   }
@@ -463,10 +476,20 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    */
   @Override
   public void startOperationOrderDuration(OperationOrder operationOrder) {
-    OperationOrderDuration duration = new OperationOrderDuration();
-    duration.setStartedBy(AuthUtils.getUser());
-    duration.setStartingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
-    operationOrder.addOperationOrderDurationListItem(duration);
+    startOperationOrderDuration(operationOrder, AuthUtils.getUser());
+  }
+
+  protected void startOperationOrderDuration(OperationOrder operationOrder, User user) {
+
+    if (operationOrder.getOperationOrderDurationList() != null
+        && operationOrder.getOperationOrderDurationList().stream()
+            .noneMatch(
+                ood -> ood.getStartedBy().equals(user) && ood.getStoppingDateTime() == null)) {
+      OperationOrderDuration duration = new OperationOrderDuration();
+      duration.setStartedBy(user);
+      duration.setStartingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
+      operationOrder.addOperationOrderDurationListItem(duration);
+    }
   }
 
   /**

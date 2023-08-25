@@ -41,7 +41,8 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
 
   public Response updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
       throws AxelorException {
-    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED
+    if ((operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED
+            || operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS)
         && targetStatus == OperationOrderRepository.STATUS_IN_PROGRESS) {
       operationOrderWorkflowService.start(operationOrder);
     } else if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS

@@ -188,4 +188,6 @@ public interface OperationOrderWorkflowService {
    * @param user
    */
   void finish(OperationOrder operationOrder, User user) throws AxelorException;
+
+  void start(OperationOrder operationOrder, User user) throws AxelorException;
 }
