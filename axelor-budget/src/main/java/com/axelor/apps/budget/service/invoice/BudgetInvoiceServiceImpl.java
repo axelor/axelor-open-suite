@@ -139,7 +139,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     List<String> alertMessageTokenList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        String alertMessage = budgetInvoiceLineService.computeBudgetDistribution(invoiceLine);
+        String alertMessage =
+            budgetInvoiceLineService.computeBudgetDistribution(invoice, invoiceLine);
         if (Strings.isNullOrEmpty(alertMessage)) {
           invoice.setBudgetDistributionGenerated(true);
         } else {

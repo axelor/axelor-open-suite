@@ -29,7 +29,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -44,15 +43,18 @@ public class PurchaseOrderFromSaleOrderLinesServiceImpl
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected StockConfigService stockConfigService;
   protected SaleOrderPurchaseService saleOrderPurchaseService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public PurchaseOrderFromSaleOrderLinesServiceImpl(
       SaleOrderLineRepository saleOrderLineRepository,
       StockConfigService stockConfigService,
-      SaleOrderPurchaseService saleOrderPurchaseService) {
+      SaleOrderPurchaseService saleOrderPurchaseService,
+      SaleOrderRepository saleOrderRepository) {
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.stockConfigService = stockConfigService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -84,9 +86,19 @@ public class PurchaseOrderFromSaleOrderLinesServiceImpl
     }
 
     if (supplierPartner == null) {
-      return selectSupplierPartner(saleOrderLines);
+      supplierPartner =
+          saleOrderLines.stream()
+              .filter(saleOrderLine -> saleOrderLine.getSupplierPartner() != null)
+              .findFirst()
+              .map(SaleOrderLine::getSupplierPartner)
+              .orElse(null);
+
+      return selectSupplierPartner(saleOrder, saleOrderLines, supplierPartner);
     } else {
-      return showPurchaseOrderForm(saleOrderLines, supplierPartner);
+      PurchaseOrder purchaseOrder =
+          saleOrderPurchaseService.createPurchaseOrder(
+              supplierPartner, saleOrderLines, saleOrderRepository.find(saleOrder.getId()));
+      return showPurchaseOrderForm(purchaseOrder);
     }
   }
 
@@ -98,17 +110,9 @@ public class PurchaseOrderFromSaleOrderLinesServiceImpl
         && saleOrder.getStockLocation().getPartner().getIsSupplier();
   }
 
-  public Map<String, Object> selectSupplierPartner(List<SaleOrderLine> saleOrderLines)
-      throws AxelorException {
-    Partner supplierPartner =
-        saleOrderLines.stream()
-            .filter(saleOrderLine -> saleOrderLine.getSupplierPartner() != null)
-            .findFirst()
-            .map(SaleOrderLine::getSupplierPartner)
-            .orElse(null);
-
-    SaleOrder saleOrder = saleOrderLines.get(0).getSaleOrder();
-
+  @Override
+  public Map<String, Object> selectSupplierPartner(
+      SaleOrder saleOrder, List<SaleOrderLine> saleOrderLines, Partner supplierPartner) {
     return ActionView.define(I18n.get("SaleOrder"))
         .model(SaleOrder.class.getName())
         .add("form", "sale-order-generate-po-select-supplierpartner-form")
@@ -117,25 +121,22 @@ public class PurchaseOrderFromSaleOrderLinesServiceImpl
         .param("show-confirm", "false")
         .param("popup-save", "false")
         .param("forceEdit", "true")
-        .context("_showRecord", String.valueOf(saleOrder.getId()))
+        .context("_showRecord", ((saleOrder != null) ? String.valueOf(saleOrder.getId()) : 0L))
         .context("supplierPartnerId", ((supplierPartner != null) ? supplierPartner.getId() : 0L))
         .context(
             "saleOrderLineIdSelected",
-            Joiner.on(",")
-                .join(
-                    saleOrderLines.stream().map(SaleOrderLine::getId).collect(Collectors.toList())))
+            ((saleOrderLines != null)
+                ? Joiner.on(",")
+                    .join(
+                        saleOrderLines.stream()
+                            .map(SaleOrderLine::getId)
+                            .collect(Collectors.toList()))
+                : null))
         .map();
   }
 
-  public Map<String, Object> showPurchaseOrderForm(
-      List<SaleOrderLine> saleOrderLines, Partner supplierPartner) throws AxelorException {
-    SaleOrder saleOrder = saleOrderLines.get(0).getSaleOrder();
-
-    PurchaseOrder purchaseOrder =
-        saleOrderPurchaseService.createPurchaseOrder(
-            supplierPartner,
-            saleOrderLines,
-            Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+  @Override
+  public Map<String, Object> showPurchaseOrderForm(PurchaseOrder purchaseOrder) {
     return ActionView.define(I18n.get("Purchase order"))
         .model(PurchaseOrder.class.getName())
         .add("form", "purchase-order-form")

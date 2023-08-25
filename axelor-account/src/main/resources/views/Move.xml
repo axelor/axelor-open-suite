@@ -73,7 +73,7 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-move-method-onnew" onLoad="action-account-move-method-onLoad"
+    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
@@ -90,8 +90,8 @@
       <panel name="moveDetailsPanel" colSpan="9">
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            onChange="action-move-method-company-onchange" form-view="company-form"
+            readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
+            onChange="action-move-group-company-onchange" form-view="company-form"
             grid-view="company-grid" colSpan="2"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
@@ -116,9 +116,9 @@
           <panel name="datePanel" showFrame="false" colSpan="12">
             <field name="period" form-view="period-form" grid-view="period-grid"
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
-            <field name="date"
+            <field name="date" required="true"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-              onChange="action-account-move-method-date-onchange" colSpan="2"/>
+              onChange="action-move-group-date-onchange" colSpan="2"/>
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
           </panel>
           <field name="partner" readonlyIf="$validatePeriod || moveLineList.length &gt; 0"
@@ -127,8 +127,8 @@
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
           <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
-            form-view="fiscal-position-form" grid-view="fiscal-position-grid"
-            onChange="action-move-method-fiscal-position-onchange"/>
+            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
+            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
@@ -143,7 +143,7 @@
             onSelect="action-move-method-partner-bank-details-onselect"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
-            readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3" colSpan="4"
+            readonlyIf="$validatePeriod || statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
             form-view="payment-condition-form" grid-view="payment-condition-grid"/>
           <field name="dueDate" title="Due date"
@@ -327,7 +327,7 @@
       <panel name="detailsPanel" title="Details">
         <panel name="relatedToPanel" title="Related to" readonly="true" colSpan="12"
           itemSpan="4" stacked="true"
-          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves">
+          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment">
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
             readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher" readonlyIf="$validatePeriod"
@@ -572,6 +572,26 @@
     <action name="action-account-move-method-origin-onchange"/>
   </action-group>
 
+  <action-group name="action-move-group-date-onchange">
+    <action name="action-account-move-method-date-onchange"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-account-group-onnew">
+    <action name="action-account-move-method-onnew"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-account-group-onLoad">
+    <action name="action-account-move-method-onLoad"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-move-group-company-onchange">
+    <action name="action-move-method-company-onchange"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
   <!-- ACTION METHOD ON CLICK -->
 
   <action-method name="action-move-method-accounting">
@@ -775,6 +795,10 @@
 
   <action-method name="action-move-method-refusal-to-pay">
     <call class="com.axelor.apps.account.web.MoveController" method="refusalToPay"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-period">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
   </action-method>
 
   <!-- ACTION VIEW -->

@@ -43,6 +43,7 @@ import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -102,6 +103,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveControlService moveControlService;
   protected MoveComputeService moveComputeService;
+  protected MoveLineCheckService moveLineCheckService;
   protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
@@ -123,8 +125,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       PeriodServiceAccount periodServiceAccount,
       MoveControlService moveControlService,
       MoveComputeService moveComputeService,
+      MoveLineCheckService moveLineCheckService,
       ScaleServiceAccount scaleServiceAccount) {
-
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -142,6 +144,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.periodServiceAccount = periodServiceAccount;
     this.moveControlService = moveControlService;
     this.moveComputeService = moveComputeService;
+    this.moveLineCheckService = moveLineCheckService;
     this.scaleServiceAccount = scaleServiceAccount;
   }
 
@@ -279,6 +282,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               moveLine.getName());
         }
         moveLineControlService.checkAccountAnalytic(move, moveLine, account);
+        moveLineCheckService.checkAnalyticMoveLinesPercentage(moveLine);
         moveLineControlService.validateMoveLine(moveLine);
         moveLineControlService.checkAccountCompany(moveLine);
         moveLineControlService.checkJournalCompany(moveLine);
@@ -858,7 +862,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                         .getAccountType()
                         .getTechnicalTypeSelect()
                         .equals(AccountTypeRepository.TYPE_TAX))
-            .map(it -> it.getDebit().add(it.getCredit()))
+            .map(this::getMoveLineSignedValue)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
@@ -876,7 +880,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       return BigDecimal.ZERO;
     }
 
-    BigDecimal lineTotal = moveLine.getCredit().add(moveLine.getDebit());
+    BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
 
     return lineTotal
         .multiply(moveLine.getTaxLine().getValue())
@@ -884,6 +888,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             BigDecimal.valueOf(100),
             scaleServiceAccount.getScale(moveLine, true),
             RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getMoveLineSignedValue(MoveLine moveLine) {
+    if (moveLine.getCredit().signum() != 0) {
+      return moveLine.getCredit();
+    } else {
+      return moveLine.getDebit().negate();
+    }
   }
 
   protected boolean isReverseCharge(Move move) {

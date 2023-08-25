@@ -1,3 +1,0 @@
----
-title: "PAYMENT SESSION : corrected accouting triger from payment mode overriding accouting triger from payment session on bank order generated from payment session."
-type: fix
