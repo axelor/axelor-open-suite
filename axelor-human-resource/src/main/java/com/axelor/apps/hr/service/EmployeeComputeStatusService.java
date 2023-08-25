@@ -16,17 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.report;
+package com.axelor.apps.hr.service;
 
-public interface IReport {
+import com.axelor.apps.hr.db.Employee;
 
-  public static final String PRODUCT_CATALOG = "ProductCatalog_PGQL.rptdesign";
-  public static final String PRODUCT_SHEET = "ProductSheet.rptdesign";
-  public static final String PARTNER = "Partner.rptdesign";
-  public static final String PHONE_BOOK = "ContactPhoneBook.rptdesign";
-  public static final String COMPANY_PHONE_BOOK = "CompanyPhoneBook.rptdesign";
-  public static final String CLIENT_SITUATION = "ClientSituation.rptdesign";
-  public static final String MESSAGE_PDF = "MessagePDF.rptdesign";
-  public static final String ABC_ANALYSIS = "AbcAnalysis.rptdesign";
-  public static final String TRACEBACK = "Traceback.rptdesign";
+public interface EmployeeComputeStatusService {
+
+  public String getEmployeeStatus(Employee employee);
 }
