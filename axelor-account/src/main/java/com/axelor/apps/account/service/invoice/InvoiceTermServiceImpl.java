@@ -1021,7 +1021,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public void setParentFields(
       InvoiceTerm invoiceTerm, Move move, MoveLine moveLine, Invoice invoice) {
-    if (invoiceTerm == null) return;
+    if (invoiceTerm == null) {
+      return;
+    }
 
     if (invoice != null) {
       invoiceTerm.setCompany(invoice.getCompany());
