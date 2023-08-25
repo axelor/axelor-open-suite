@@ -96,7 +96,20 @@
 
     </string>
 
-    <unique-constraint columns="code,parentId,company,fromDate,toDate"/>
+    <string name="globalId" search="globalBudget">
+      <![CDATA[
+         if (globalBudget != null && globalBudget.getId() != null){
+
+            return globalBudget.getId().toString();
+         }
+         else {
+         	return "0";
+         }
+         ]]>
+
+    </string>
+
+    <unique-constraint columns="code,parentId,globalId,company,fromDate,toDate"/>
 
     <extra-code>
 	      <![CDATA[

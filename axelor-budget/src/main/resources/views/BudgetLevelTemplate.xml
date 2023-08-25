@@ -130,7 +130,7 @@
     onNew="action-budget-level-defaults-groups-onnew" onLoad="action-budget-level-group-onload">
 
     <panel name="budgetLevelHiddenPanel">
-      <field name="parentBudgetLevel.statusSelect" hidden="true"/>
+      <field name="globalBudget.statusSelect" hidden="true"/>
     </panel>
     <panel name="generalPanel" colSpan="12">
       <field name="levelTypeSelect" hidden="true" colSpan="12"/>
@@ -156,8 +156,8 @@
     onNew="action-budget-level-defaults-sections-onnew" onLoad="action-budget-level-group-onload">
 
     <panel name="budgetLevelHiddenPanel">
-      <field name="parentBudgetLevel.parentBudgetLevel.statusSelect" hidden="true"/>
-      <field name="parentBudgetLevel.parentBudgetLevel" hidden="true"/>
+      <field name="parentBudgetLevel.globalBudget.statusSelect" hidden="true"/>
+      <field name="parentBudgetLevel.globalBudget" hidden="true"/>
     </panel>
     <panel name="generalPanel" colSpan="12">
       <field name="levelTypeSelect" hidden="true" colSpan="12"/>
@@ -195,7 +195,7 @@
     title="Groups" model="com.axelor.apps.budget.db.BudgetLevel">
     <view type="grid" name="budget-level-template-included-grid"/>
     <view type="form" name="group-budget-template-budget-level-form"/>
-    <domain>self.parentBudgetLevel.id = :_globalId</domain>
+    <domain>self.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_isParent" expr="false"/>
   </action-view>
@@ -204,7 +204,7 @@
     title="Sections" model="com.axelor.apps.budget.db.BudgetLevel">
     <view type="grid" name="budget-level-template-node-grid"/>
     <view type="form" name="section-budget-template-budget-level-form"/>
-    <domain>self.parentBudgetLevel.parentBudgetLevel.id = :_globalId</domain>
+    <domain>self.parentBudgetLevel.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_isParent" expr="false"/>
   </action-view>

@@ -12,4 +12,13 @@ public interface GlobalBudgetService {
   void computeBudgetLevelTotals(Budget budget);
 
   void computeTotals(GlobalBudget globalBudget);
+
+  void validateChildren(GlobalBudget globalBudget) throws AxelorException;
+
+  void archiveChildren(GlobalBudget globalBudget) throws AxelorException;
+
+  void draftChildren(GlobalBudget globalBudget) throws AxelorException;
+
+  @Transactional(rollbackOn = {RuntimeException.class})
+  void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
 }

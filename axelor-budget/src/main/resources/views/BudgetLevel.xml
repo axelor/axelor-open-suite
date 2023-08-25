@@ -183,7 +183,7 @@
     onNew="action-budget-level-defaults-groups-onnew" onLoad="action-budget-level-group-onload">
     <panel name="overViewPanel" title="Overview" canCollapse="true" collapseIf="!$popup()">
       <panel name="budgetLevelHiddenPanel" hidden="true" colSpan="12">
-        <field name="parentBudgetLevel.statusSelect"/>
+        <field name="globalBudget.statusSelect"/>
         <field name="levelTypeSelect"/>
       </panel>
 
@@ -553,6 +553,8 @@
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <field name="globalBudget" expr="eval: __parent__"
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
+    <field name="globalBudget" expr="eval: __parent__?.globalBudget"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <field name="typeSelect" expr="eval: _typeSelect"/>
     <field name="typeSelect" expr="eval: __parent__.typeSelect" if="__parent__"/>
     <field name="sourceSelect" expr="eval: __parent__.sourceSelect" if="__parent__"/>
@@ -576,7 +578,6 @@
   </action-record>
 
   <action-group name="action-budget-level-group-valid-btn-onClick">
-    <action name="save"/>
     <action name="action-budget-level-method-check-budget-dates"/>
     <action name="action-budget-level-method-recompute-budget-keys"/>
     <action name="action-budget-level-method-validate-children"/>

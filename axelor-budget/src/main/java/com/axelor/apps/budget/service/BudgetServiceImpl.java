@@ -42,6 +42,7 @@ import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -532,9 +533,9 @@ public class BudgetServiceImpl implements BudgetService {
           budgetRepository
               .all()
               .filter(
-                  "self.budgetKey != null and self.id != ?1 AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect != ?2",
+                  "self.budgetKey != null and self.id != ?1 AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect != ?2",
                   budget.getId() != null ? budget.getId() : new Long(0),
-                  BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED)
+                  GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED)
               .fetch();
 
       if (CollectionUtils.isEmpty(repoBudgetKeys)) {
@@ -562,10 +563,10 @@ public class BudgetServiceImpl implements BudgetService {
         budgetRepository
             .all()
             .filter(
-                "self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = :statusSelect AND self.budgetKey LIKE '%"
+                "self.globalBudget.statusSelect = :statusSelect AND self.budgetKey LIKE '%"
                     + key
                     + "%'")
-            .bind("statusSelect", BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID)
+            .bind("statusSelect", GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID)
             .fetch();
     if (!CollectionUtils.isEmpty(budgetList)) {
       for (Budget budget : budgetList) {
@@ -682,11 +683,8 @@ public class BudgetServiceImpl implements BudgetService {
 
   @Override
   public void createBudgetKey(Budget budget) throws AxelorException {
-    if (budget.getBudgetLevel() != null
-        && budget.getBudgetLevel().getParentBudgetLevel() != null
-        && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel() != null) {
-      Company company =
-          budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany();
+    if (budget.getGlobalBudget() != null) {
+      Company company = budget.getGlobalBudget().getCompany();
 
       if (this.checkBudgetKeyInConfig(company)) {
         String errorMessage = this.checkPreconditions(budget, company);

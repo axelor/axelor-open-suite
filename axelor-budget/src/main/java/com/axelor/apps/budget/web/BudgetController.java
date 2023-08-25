@@ -126,7 +126,9 @@ public class BudgetController {
 
       Budget budget = request.getContext().asType(Budget.class);
       Company company = null;
-      if (budget.getBudgetLevel() != null && budget.getBudgetLevel().getCompany() != null) {
+      if (budget.getGlobalBudget() != null && budget.getGlobalBudget().getCompany() != null) {
+        company = budget.getGlobalBudget().getCompany();
+      } else if (budget.getBudgetLevel() != null && budget.getBudgetLevel().getCompany() != null) {
         company = budget.getBudgetLevel().getCompany();
       } else if (budget.getBudgetLevel() != null
           && budget.getBudgetLevel().getParentBudgetLevel() != null
