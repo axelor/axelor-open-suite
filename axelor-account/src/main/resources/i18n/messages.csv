@@ -2238,6 +2238,7 @@
 "No comparison",,,
 "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line.",,,
 "No debt recovery history attachments found.",,,
+"No depreciation account found in fixed asset category %s.",,,
 "No email address in debt recovery %s. Please set one.",,,
 "No email have been sent.",,,
 "No invoice to pay",,,
