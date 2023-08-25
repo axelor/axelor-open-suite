@@ -13,7 +13,7 @@ public interface AnalyticLineModelService {
   AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException;
 
-  boolean manageAnalytic(AnalyticLineModel analyticLineModel) throws AxelorException;
+  boolean isFreeAnalyticDistribution(AnalyticLineModel analyticLineModel) throws AxelorException;
 
   boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel) throws AxelorException;
 

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -34,15 +35,18 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   protected AppAccountService appAccountService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AnalyticToolService analyticToolService;
 
   @Inject
   public MoveLineDefaultServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AnalyticToolService analyticToolService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.analyticToolService = analyticToolService;
   }
 
   @Override
@@ -139,7 +143,7 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
       return;
     }
 
-    if (moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
+    if (analyticToolService.isManageAnalytic(move.getCompany())) {
       moveLineComputeAnalyticService.selectDefaultDistributionTemplate(moveLine, move);
     } else {
       moveLine.setAnalyticDistributionTemplate(null);

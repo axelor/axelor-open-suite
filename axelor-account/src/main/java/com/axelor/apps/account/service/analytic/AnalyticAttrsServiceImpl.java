@@ -53,7 +53,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
   @Override
   public void addAnalyticAxisAttrs(Company company, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
-    if (moveLineComputeAnalyticService.checkManageAnalytic(company)) {
+    if (analyticToolService.isManageAnalytic(company)) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
       AnalyticAxis analyticAxis = null;
 

@@ -1,14 +1,13 @@
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -38,6 +37,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AccountManagementAccountService accountManagementAccountService;
+  protected AnalyticToolService analyticToolService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
@@ -46,19 +46,21 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AccountConfigService accountConfigService,
       AnalyticMoveLineService analyticMoveLineService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      AnalyticToolService analyticToolService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.accountManagementAccountService = accountManagementAccountService;
+    this.analyticToolService = analyticToolService;
   }
 
   @Override
   public boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel, Company company)
       throws AxelorException {
-    if (!moveLineComputeAnalyticService.checkManageAnalytic(company) || analyticLineModel == null) {
+    if (!analyticToolService.isManageAnalytic(company) || analyticLineModel == null) {
       return false;
     }
 
@@ -105,7 +107,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
   public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException {
-    if (!productAccountManageAnalytic(analyticLineModel)) {
+    if (!productAccountManageAnalytic(analyticLineModel)
+        || isFreeAnalyticDistribution(analyticLineModel)) {
       return analyticLineModel;
     }
 
@@ -131,21 +134,16 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   }
 
   @Override
-  public boolean manageAnalytic(AnalyticLineModel analyticLineModel) throws AxelorException {
-    AccountConfig accountConfig =
-        accountConfigService.getAccountConfig(analyticLineModel.getCompany());
-
-    return appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfig.getManageAnalyticAccounting()
-        && accountConfig.getAnalyticDistributionTypeSelect()
-            != AccountConfigRepository.DISTRIBUTION_TYPE_FREE;
+  public boolean isFreeAnalyticDistribution(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    return analyticToolService.isFreeAnalyticDistribution(analyticLineModel.getCompany());
   }
 
   @Override
   public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
       throws AxelorException {
     Product product = analyticLineModel.getProduct();
-    return this.manageAnalytic(analyticLineModel)
+    return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
         && product != null
         && product.getProductFamily() != null
         && accountManagementAccountService

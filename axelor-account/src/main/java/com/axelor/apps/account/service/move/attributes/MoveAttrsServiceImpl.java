@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -51,6 +52,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveViewHelperService moveViewHelperService;
   protected MovePfpService movePfpService;
+  protected AnalyticToolService analyticToolService;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -58,12 +60,14 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveViewHelperService moveViewHelperService,
-      MovePfpService movePfpService) {
+      MovePfpService movePfpService,
+      AnalyticToolService analyticToolService) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveViewHelperService = moveViewHelperService;
     this.movePfpService = movePfpService;
+    this.analyticToolService = analyticToolService;
   }
 
   protected void addAttr(
@@ -134,42 +138,37 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       fieldNameToSet = "moveLineMassEntryList";
     }
 
-    if (move.getCompany() != null) {
+    if (analyticToolService.isManageAnalytic(move.getCompany())) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
+      AnalyticAxis analyticAxis = null;
 
-      if (accountConfig != null
-          && appAccountService.getAppAccount().getManageAnalyticAccounting()
-          && accountConfig.getManageAnalyticAccounting()) {
-        AnalyticAxis analyticAxis = null;
+      for (int i = 1; i <= 5; i++) {
+        String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
+        this.addAttr(
+            analyticAxisKey,
+            "hidden",
+            !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
+            attrsMap);
 
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-          this.addAttr(
-              analyticAxisKey,
-              "hidden",
-              !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
-              attrsMap);
-
-          for (AnalyticAxisByCompany analyticAxisByCompany :
-              accountConfig.getAnalyticAxisByCompanyList()) {
-            if (analyticAxisByCompany.getSequence() + 1 == i) {
-              analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-            }
-          }
-
-          if (analyticAxis != null) {
-            this.addAttr(analyticAxisKey, "title", analyticAxis.getName(), attrsMap);
-            analyticAxis = null;
+        for (AnalyticAxisByCompany analyticAxisByCompany :
+            accountConfig.getAnalyticAxisByCompanyList()) {
+          if (analyticAxisByCompany.getSequence() + 1 == i) {
+            analyticAxis = analyticAxisByCompany.getAnalyticAxis();
           }
         }
-      } else {
-        this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);
-        this.addAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true, attrsMap);
 
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-          this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
+        if (analyticAxis != null) {
+          this.addAttr(analyticAxisKey, "title", analyticAxis.getName(), attrsMap);
+          analyticAxis = null;
         }
+      }
+    } else {
+      this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);
+      this.addAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true, attrsMap);
+
+      for (int i = 1; i <= 5; i++) {
+        String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
+        this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
       }
     }
   }

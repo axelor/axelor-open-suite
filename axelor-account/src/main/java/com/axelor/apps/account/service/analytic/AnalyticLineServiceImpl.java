@@ -157,8 +157,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   @Override
   public boolean isAxisRequired(AnalyticLine line, Company company, int position)
       throws AxelorException {
-    if (company != null
-        && moveLineComputeAnalyticService.checkManageAnalytic(company)
+    if (analyticToolService.isManageAnalytic(company)
         && line != null
         && line.getAccount() != null
         && line.getAccount().getCompany() != null) {
