@@ -38,7 +38,7 @@
     <datetime name="nextScheduledEventDateT" title="Next scheduled event date"
       formula="true">
       <![CDATA[
-      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.opportunity = id AND ICAL_EVENT.start_date_time > NOW() ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.opportunity = id AND ICAL_EVENT.start_date_time > NOW() AND ICAL_EVENT.status_select = 1 ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
       ]]>
     </datetime>
     <one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events"

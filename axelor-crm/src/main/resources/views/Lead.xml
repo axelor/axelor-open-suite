@@ -232,6 +232,10 @@
           onClick="save,action-lead-view-task-event" colSpan="3"/>
         <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
           onClick="save,action-lead-view-note-event" colSpan="3"/>
+        <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
+          icon="fa-tasks" onClick="action-lead-view-all-events" readonlyIf="id == null"/>
+        <field name="lastEventDateT" readonly="true" colSpan="3"/>
+        <field name="nextScheduledEventDateT" readonly="true" colSpan="3"/>
         <panel-dashlet name="eventPanelDashlet" action="action-lead-view-events"
           title="Events" height="550" colSpan="12"/>
       </panel>
@@ -274,8 +278,6 @@
       <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
         if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
-      <field name="lastEventDateT" readonly="true" hideIf="!lastEventDateT"/>
-      <field name="nextScheduledEventDateT" readonly="true" hideIf="!nextScheduledEventDateT"/>
       <field name="lostReason" hidden="true" colSpan="6"/>
       <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
       <field name="lostReason.freeText" hidden="true"/>
@@ -602,6 +604,15 @@
   </action-view>
 
   <action-view name="action-lead-view-events" title="Events"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="cards" name="event-cards"/>
+    <view type="grid" name="list-event-grid"/>
+    <view type="form" name="event-form"/>
+    <domain>self.eventLead.id = :_leadId </domain>
+    <context name="_leadId" expr="eval: __id__"/>
+  </action-view>
+
+  <action-view name="action-lead-view-all-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
