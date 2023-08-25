@@ -310,6 +310,56 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   }
 
   /**
+   * Creating accounting move line method using company currency when using other currency. Ex:
+   * Invoice in Dollar, but some methods try to create move line in euros
+   *
+   * @param move
+   * @param partner
+   * @param account
+   * @param isDebit <code>true = debit</code>, <code>false = credit</code>
+   * @param date
+   * @param dueDate
+   * @param counter
+   * @param origin
+   * @param amountInCompanyCurrency
+   * @return
+   * @throws AxelorException
+   */
+  @Override
+  public MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      boolean isDebit,
+      LocalDate date,
+      int counter,
+      String origin,
+      String description,
+      BigDecimal currencyRate,
+      BigDecimal amountInCompanyCurrency)
+      throws AxelorException {
+
+    BigDecimal amountConvertedInMoveCurrency =
+        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+            amountInCompanyCurrency, currencyRate);
+
+    return this.createMoveLine(
+        move,
+        partner,
+        account,
+        amountConvertedInMoveCurrency,
+        amountInCompanyCurrency,
+        currencyRate,
+        isDebit,
+        date,
+        date,
+        date,
+        counter,
+        origin,
+        description);
+  }
+
+  /**
    * Créer une ligne d'écriture comptable
    *
    * @param move

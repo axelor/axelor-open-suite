@@ -34,6 +34,7 @@ public interface DoubtfulCustomerInvoiceTermService {
       List<MoveLine> creditMoveLines,
       MoveLine debitMoveLine,
       LocalDate todayDate,
-      BigDecimal amountRemaining)
+      BigDecimal amountRemaining,
+      BigDecimal currencyRate)
       throws AxelorException;
 }

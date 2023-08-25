@@ -46,6 +46,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -188,8 +189,10 @@ public class DoubtfulCustomerService {
     String origin = "";
     BigDecimal amountRemaining = BigDecimal.ZERO;
     List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
+    BigDecimal currencyRate = BigDecimal.ONE;
     if (invoicePartnerMoveLines != null) {
       for (MoveLine moveLine : invoicePartnerMoveLines) {
+        currencyRate = BigDecimal.ONE.divide(moveLine.getCurrencyRate(), 10, RoundingMode.HALF_UP);
         amountRemaining = amountRemaining.add(moveLine.getAmountRemaining());
         // Credit move line on partner account
         MoveLine creditMoveLine =
@@ -197,12 +200,13 @@ public class DoubtfulCustomerService {
                 newMove,
                 partner,
                 moveLine.getAccount(),
-                moveLine.getAmountRemaining(),
                 false,
                 todayDate,
                 1,
                 move.getOrigin(),
-                debtPassReason);
+                debtPassReason,
+                currencyRate,
+                moveLine.getAmountRemaining());
 
         origin = creditMoveLine.getOrigin();
         creditMoveLines.add(creditMoveLine);
@@ -215,12 +219,13 @@ public class DoubtfulCustomerService {
             newMove,
             partner,
             doubtfulCustomerAccount,
-            amountRemaining,
             true,
             todayDate,
             2,
             origin,
-            debtPassReason);
+            debtPassReason,
+            currencyRate,
+            amountRemaining);
     debitMoveLine.setPassageReason(debtPassReason);
 
     doubtfulCustomerInvoiceTermService.createOrUpdateInvoiceTerms(
@@ -230,7 +235,8 @@ public class DoubtfulCustomerService {
         creditMoveLines,
         debitMoveLine,
         todayDate,
-        amountRemaining);
+        amountRemaining,
+        currencyRate);
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
   }
