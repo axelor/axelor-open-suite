@@ -631,10 +631,12 @@
         <field name="$versionDateTime" type="datetime" title="Version date" colSpan="6"
           readonly="true"/>
         <field name="$saveActualVersion" type="boolean" title="Save actual version"
-          colSpan="4" widget="boolean-switch" if="__config__.app.getApp('sale')?.isPastVersionRecovery"/>
+          colSpan="4" widget="boolean-switch"
+          if="__config__.app.getApp('sale')?.isPastVersionRecovery"/>
+        <spacer colSpan="4" if="!__config__.app.getApp('sale')?.isPastVersionRecovery"/>
         <button name="lastVersionBtn" title="Go to last version" icon="fa-arrow-right"
-                css="btn-custom text-left" onClick="action-sale-order-group-last-version-btn" colSpan="4"
-                showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; $previousVersionNumber != versionNumber - 1"/>
+          css="btn-custom text-left" onClick="action-sale-order-group-last-version-btn" colSpan="4"
+          showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; $previousVersionNumber != versionNumber - 1"/>
         <spacer colSpan="4"/>
         <button name="versionRecoveryBtn" title="Recover from this version" icon="fa-upload"
           css="btn-custom text-left" onClick="action-sale-order-group-version-recovery-btn"
