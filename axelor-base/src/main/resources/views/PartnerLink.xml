@@ -7,10 +7,10 @@
     model="com.axelor.apps.base.db.PartnerLink" editable="true">
     <field name="partner1" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-partner-link-attrs-set-partners-domain"/>
-      <field name="partnerLinkType" form-view="partner-link-type-form"
-        grid-view="partner-link-type-grid"/>
-      <field name="partner2" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-partner-link-attrs-set-partners-domain"/>
+    <field name="partnerLinkType" form-view="partner-link-type-form"
+      grid-view="partner-link-type-grid"/>
+    <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+      onSelect="action-partner-link-attrs-set-partners-domain"/>
   </grid>
 
   <grid name="partner-link-partner-1-grid" title="Partner relations"
@@ -34,10 +34,10 @@
     <panel name="mainPanel" itemSpan="4">
       <field name="partner1" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-partner-link-attrs-set-partners-domain"/>
-        <field name="partnerLinkType" form-view="partner-link-type-form"
-          grid-view="partner-link-type-grid"/>
-        <field name="partner2" form-view="partner-form" grid-view="partner-grid"
-          onSelect="action-partner-link-attrs-set-partners-domain"/>
+      <field name="partnerLinkType" form-view="partner-link-type-form"
+        grid-view="partner-link-type-grid"/>
+      <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+        onSelect="action-partner-link-attrs-set-partners-domain"/>
     </panel>
   </form>
 
