@@ -16,18 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.quality.exception;
+package com.axelor.apps.quality.service;
 
-public final class QualityExceptionMessage {
+import com.axelor.apps.quality.db.QIResolution;
+import com.axelor.apps.quality.db.QIResolutionDecision;
 
-  private QualityExceptionMessage() {}
+public interface QIResolutionDecisionService {
 
-  public static final String QUALITY_CONTROL_MISSING_PRINTING_SETTINGS = /*$$(*/
-      "Please fill printing settings on quality control" /*)*/;
-
-  public static final String QUALITY_IMPROVEMENT_SEQUENCE_ERROR = /*$$(*/
-      "The company %s doesn't have any configured sequence for Quality improvement" /*)*/;
-
-  public static final String QI_RESOLUTION_DECISION_INVALID_SUM_OF_QUANTITIES = /*$$(*/
-      "Sum of quantities of the decisions for a default must not be greater than the default's quantity" /*)*/;
+  boolean checkQuantity(QIResolutionDecision qiResolutionDecision, QIResolution qiResolution);
 }
