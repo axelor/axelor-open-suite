@@ -38,6 +38,8 @@ import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
+import com.axelor.apps.hr.db.repo.MedicalVisitHRRepository;
+import com.axelor.apps.hr.db.repo.MedicalVisitRepository;
 import com.axelor.apps.hr.db.repo.PartnerHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
@@ -55,6 +57,10 @@ import com.axelor.apps.hr.service.EmployeeFileDMSService;
 import com.axelor.apps.hr.service.EmployeeFileDMSServiceImpl;
 import com.axelor.apps.hr.service.HRDashboardService;
 import com.axelor.apps.hr.service.HRDashboardServiceImpl;
+import com.axelor.apps.hr.service.MedicalVisitService;
+import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
+import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
+import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -222,5 +228,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseFetchMoveService.class).to(ExpenseFetchMoveServiceImpl.class);
     bind(ExpenseLineCreateService.class).to(ExpenseLineCreateServiceImpl.class);
     bind(EmployeeComputeStatusService.class).to(EmployeeComputeStatusServiceImpl.class);
+    bind(MedicalVisitService.class).to(MedicalVisitServiceImpl.class);
+    bind(MedicalVisitWorkflowService.class).to(MedicalVisitWorkflowServiceImpl.class);
+    bind(MedicalVisitRepository.class).to(MedicalVisitHRRepository.class);
   }
 }
