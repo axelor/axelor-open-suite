@@ -9,7 +9,7 @@
     <extra-code><![CDATA[
 
 	    // TYPE SELECT
-	    public static final int TYPE_SELECT_ORDERED_BY = 201;
+	    public static final int TYPE_SELECT_PURCHASE_ORDERED_BY = 201;
 
 	]]></extra-code>
   </entity>
