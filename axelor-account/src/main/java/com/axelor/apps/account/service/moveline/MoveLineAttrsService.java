@@ -58,8 +58,4 @@ public interface MoveLineAttrsService {
   void addAnalyticDistributionTemplateDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
-
-  void addNumberOfDecimals(Move move, Map<String, Map<String, Object>> attrsMap);
-
-  void addCompanyCurrencyNumberOfDecimals(Move move, Map<String, Map<String, Object>> attrsMap);
 }

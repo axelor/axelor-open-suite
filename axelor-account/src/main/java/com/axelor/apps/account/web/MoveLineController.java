@@ -497,7 +497,10 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
 
-      response.setAttrs(Beans.get(MoveLineGroupService.class).getOnLoadAttrsMap(moveLine, move));
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getOnLoadValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getOnLoadAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -515,8 +518,10 @@ public class MoveLineController {
         move = parentContext.asType(Move.class);
       }
 
-      response.setAttrs(
-          Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getOnLoadValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getOnLoadMoveAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

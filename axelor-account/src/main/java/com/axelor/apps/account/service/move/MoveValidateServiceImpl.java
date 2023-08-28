@@ -628,7 +628,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveLine.setJournalName(journal.getName());
     moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
     moveLine.setCurrencyCode(move.getCurrencyCode());
+    moveLine.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
     moveLine.setCompanyCurrencyCode(company.getCurrency().getCode());
+    moveLine.setCompanyCurrencyDecimals(company.getCurrency().getNumberOfDecimals());
     moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 

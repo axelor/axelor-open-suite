@@ -141,8 +141,9 @@
     onNew="action-move-template-wizard-line-set-move-template">
     <field name="date" type="date" title="Date" required="true"
       onChange="action-move-template-wizard-check-value"/>
-    <field name="moveBalance" type="decimal" precision="20" scale="2" min="0" required="true"
-      title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
+    <field name="moveBalance" type="decimal" precision="20"
+      scale="company.currency.numberOfDecimals" min="0" required="true" title="MoveLine Amount"
+      onChange="action-move-template-wizard-check-value"/>
     <field name="debitPartner" target-name="fullName" title="Partner to Debit"
       onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
       target="com.axelor.apps.base.db.Partner"/>
@@ -151,6 +152,7 @@
       target="com.axelor.apps.base.db.Partner"/>
     <field name="moveTemplate" type="many-to-one"
       target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
+    <field name="company"/>
   </grid>
 
   <form name="wizard-custom-in-percentage-form" title="MoveLines content data input"
@@ -159,8 +161,9 @@
     <panel name="mainPanel">
       <field name="date" type="date" title="Date" required="true"
         onChange="action-move-template-wizard-check-value"/>
-      <field name="moveBalance" type="decimal" precision="20" scale="2" min="0"
-        required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
+      <field name="moveBalance" type="decimal" precision="20"
+        scale="company.currency.numberOfDecimals" min="0" required="true" title="MoveLine Amount"
+        onChange="action-move-template-wizard-check-value"/>
       <field name="debitPartner" target-name="fullName" title="Partner to Debit"
         onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"/>
@@ -169,6 +172,7 @@
         target="com.axelor.apps.base.db.Partner"/>
       <field name="moveTemplate" type="many-to-one"
         target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
+      <field name="company"/>
     </panel>
   </form>
 
@@ -254,6 +258,7 @@
     <field name="date" expr="eval:__config__.date" if="date == null"/>
     <field name="moveTemplate"
       expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>
+    <field name="company" expr="eval: __repo__(Company).find(__parent__.company.id)"/>
   </action-record>
 
 </object-views>

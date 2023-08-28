@@ -89,6 +89,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineService.balanceCreditDebit(moveLine, move);
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
+    moveLineRecordService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
     moveLineService.computeFinancialDiscount(moveLine);
 
@@ -114,6 +115,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
     valuesMap.put("remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
 
     return valuesMap;
   }
@@ -127,10 +130,20 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     analyticAttrsService.addAnalyticAxisAttrs(move, attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
-    moveLineAttrsService.addNumberOfDecimals(move, attrsMap);
-    moveLineAttrsService.addCompanyCurrencyNumberOfDecimals(move, attrsMap);
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLineRecordService.setDecimals(moveLine, move);
+
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
+
+    return valuesMap;
   }
 
   @Override
@@ -149,8 +162,6 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       analyticAttrsService.addAnalyticAxisAttrs(move, attrsMap);
-      moveLineAttrsService.addNumberOfDecimals(move, attrsMap);
-      moveLineAttrsService.addCompanyCurrencyNumberOfDecimals(move, attrsMap);
     }
 
     return attrsMap;
@@ -173,8 +184,6 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addValidatePeriod(move, attrsMap);
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
-      moveLineAttrsService.addNumberOfDecimals(move, attrsMap);
-      moveLineAttrsService.addCompanyCurrencyNumberOfDecimals(move, attrsMap);
     }
 
     return attrsMap;

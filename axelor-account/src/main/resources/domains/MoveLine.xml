@@ -177,7 +177,9 @@
     <string name="journalCode"/>
     <string name="journalName"/>
     <string name="currencyCode"/>
+    <integer name="currencyDecimals"/>
     <string name="companyCurrencyCode"/>
+    <integer name="companyCurrencyDecimals"/>
     <string name="fiscalYearCode"/>
     <date name="accountingDate"/>
     <boolean name="adjustingMove"/>
