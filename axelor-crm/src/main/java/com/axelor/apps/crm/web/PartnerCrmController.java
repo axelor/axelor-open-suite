@@ -25,8 +25,8 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
-import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.CrmActivityService;
+import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.PartnerCrmService;
 import com.axelor.apps.crm.service.PartnerEmailDomainToolService;
 import com.axelor.common.StringUtils;
@@ -35,12 +35,12 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class PartnerCrmController {
