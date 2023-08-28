@@ -7,10 +7,11 @@ import java.util.Map;
 
 public interface AnalyticAttrsService {
 
-  void addAnalyticAxisAttrs(Company company, Map<String, Map<String, Object>> attrsMap)
+  void addAnalyticAxisAttrs(
+      Company company, String parentField, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
 
-  void addAxisDomains(
+  void addAnalyticAxisDomains(
       AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
 }

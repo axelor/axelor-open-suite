@@ -24,7 +24,7 @@ public class AnalyticGroupServiceImpl implements AnalyticGroupService {
       AnalyticLine analyticLineModel, Company company) throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    analyticAttrsService.addAxisDomains(analyticLineModel, company, attrsMap);
+    analyticAttrsService.addAnalyticAxisDomains(analyticLineModel, company, attrsMap);
 
     return attrsMap;
   }

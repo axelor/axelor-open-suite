@@ -7,8 +7,8 @@
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
 
     <extend target="/">
-      <attribute name="onNew" value="action-supplychain-group-sale-saleorderline-onnew"/>
-      <attribute name="onLoad" value="action-supplychain-group-sale-saleorderline-onload"/>
+      <attribute name="onNew" value="supplychain-action-sale-order-line-group-onnew"/>
+      <attribute name="onLoad" value="supplychain-action-sale-order-line-group-onload"/>
     </extend>
 
     <extend target="//panel[@name='statusPanel']">
@@ -19,12 +19,12 @@
 
     <extend target="//field[@name='product' and @grid-view='product-grid']">
       <attribute name="onChange"
-        value="action-supplychain-group-sale-saleorderline-product-onchange"/>
+        value="supplychain-action-sale-order-line-group-product-onchange"/>
     </extend>
 
     <extend target="//field[@name='product' and @grid-view='stock-move-line-product-grid']">
       <attribute name="onChange"
-        value="action-supplychain-group-sale-saleorderline-product-onchange"/>
+        value="supplychain-action-sale-order-line-group-product-onchange"/>
     </extend>
 
     <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
@@ -71,9 +71,8 @@
       <insert position="after">
         <panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration">
           <field name="saleSupplySelect"
-            onChange="action-group-sale-saleorderline-salesupplyselect-onchange"
-            if="__config__.app.isApp('supplychain')"/>
-          <field name="standardDelay" if="__config__.app.isApp('supplychain')" hidden="true"
+            onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
+          <field name="standardDelay" hidden="true"
             showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
           <field name="pricingScaleLogs" colSpan="12"
             showIf="pricingScaleLogs &amp;&amp; product"/>
@@ -97,8 +96,7 @@
     <extend target="//panel-tabs[@name='allPanelTab']/*[last()]">
       <insert position="after">
         <panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false"
-          title="Analytics"
-          if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+          title="Analytics" if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
           onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
@@ -116,8 +114,7 @@
       <insert position="after">
         <panel name="settingsPanel" title="Settings">
           <field name="saleSupplySelect"
-            onChange="action-group-sale-saleorderline-salesupplyselect-onchange"
-            if="__config__.app.isApp('supplychain')"/>
+            onChange="supplychain-action-sale-order-line-group-sale-supply-select-onchange"/>
           <field name="standardDelay" hidden="true"
             showIf="saleSupplySelect == 2 || saleSupplySelect ==3"/>
           <field name="pricingScaleLogs" colSpan="12"
@@ -189,7 +186,7 @@
 
   <!-- ACTION GROUP -->
 
-  <action-group name="action-supplychain-group-sale-saleorderline-onnew">
+  <action-group name="supplychain-action-sale-order-line-group-onnew">
     <action name="action-group-sale-saleorderline-onnew"/>
     <action name="action-record-sale-order-line-fill-request-qty"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
@@ -201,14 +198,14 @@
     <action name="action-sale-order-line-attrs-fill-ctx"/>
   </action-group>
 
-  <action-group name="action-supplychain-group-sale-saleorderline-onload">
+  <action-group name="supplychain-action-sale-order-line-group-onload">
     <action name="action-group-sale-saleorderline-onload"/>
     <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
     <action name="action-sale-order-line-group-manage-analytic"/>
   </action-group>
 
-  <action-group name="action-supplychain-group-sale-saleorderline-product-onchange">
+  <action-group name="supplychain-action-sale-order-line-group-product-onchange">
     <action name="action-group-sale-saleorderline-product-onchange"/>
     <action name="action-sale-order-line-group-manage-analytic"/>
   </action-group>
@@ -230,7 +227,8 @@
     <action name="action-sale-order-line-method-print-analytic-account"/>
   </action-group>
 
-  <action-group name="action-group-sale-saleorderline-salesupplyselect-onchange"
+  <action-group
+    name="supplychain-action-sale-order-line-group-sale-supply-select-onchange"
     if-module="axelor-production">
     <action name="action-sale-order-line-get-production-information"
       if="__config__.app.isApp('production')"/>

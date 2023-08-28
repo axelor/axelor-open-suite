@@ -427,7 +427,7 @@ public class InvoiceLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParent() != null) {
+      if (request.getContext().getParent() == null) {
         return;
       }
 
@@ -552,7 +552,8 @@ public class InvoiceLineController {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
 
         Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-        Beans.get(AnalyticAttrsService.class).addAnalyticAxisAttrs(invoice.getCompany(), attrsMap);
+        Beans.get(AnalyticAttrsService.class)
+            .addAnalyticAxisAttrs(invoice.getCompany(), null, attrsMap);
 
         response.setAttrs(attrsMap);
       }

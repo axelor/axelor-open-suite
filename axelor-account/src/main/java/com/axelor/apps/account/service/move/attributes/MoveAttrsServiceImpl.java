@@ -18,13 +18,11 @@
  */
 package com.axelor.apps.account.service.move.attributes;
 
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -53,6 +51,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected MoveViewHelperService moveViewHelperService;
   protected MovePfpService movePfpService;
   protected AnalyticToolService analyticToolService;
+  protected AnalyticAttrsService analyticAttrsService;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -61,13 +60,15 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       MoveInvoiceTermService moveInvoiceTermService,
       MoveViewHelperService moveViewHelperService,
       MovePfpService movePfpService,
-      AnalyticToolService analyticToolService) {
+      AnalyticToolService analyticToolService,
+      AnalyticAttrsService analyticAttrsService) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveViewHelperService = moveViewHelperService;
     this.movePfpService = movePfpService;
     this.analyticToolService = analyticToolService;
+    this.analyticAttrsService = analyticAttrsService;
   }
 
   protected void addAttr(
@@ -138,39 +139,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       fieldNameToSet = "moveLineMassEntryList";
     }
 
-    if (analyticToolService.isManageAnalytic(move.getCompany())) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
-      AnalyticAxis analyticAxis = null;
-
-      for (int i = 1; i <= 5; i++) {
-        String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-        this.addAttr(
-            analyticAxisKey,
-            "hidden",
-            !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
-            attrsMap);
-
-        for (AnalyticAxisByCompany analyticAxisByCompany :
-            accountConfig.getAnalyticAxisByCompanyList()) {
-          if (analyticAxisByCompany.getSequence() + 1 == i) {
-            analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-          }
-        }
-
-        if (analyticAxis != null) {
-          this.addAttr(analyticAxisKey, "title", analyticAxis.getName(), attrsMap);
-          analyticAxis = null;
-        }
-      }
-    } else {
-      this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);
-      this.addAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true, attrsMap);
-
-      for (int i = 1; i <= 5; i++) {
-        String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-        this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
-      }
-    }
+    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), fieldNameToSet, attrsMap);
   }
 
   @Override

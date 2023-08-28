@@ -228,7 +228,7 @@ public class MoveLineController {
       }
 
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-      Beans.get(AnalyticAttrsService.class).addAnalyticAxisAttrs(move.getCompany(), attrsMap);
+      Beans.get(AnalyticAttrsService.class).addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
 
       response.setAttrs(attrsMap);
     } catch (Exception e) {

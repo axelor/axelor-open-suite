@@ -51,18 +51,18 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
   }
 
   @Override
-  public void addAnalyticAxisAttrs(Company company, Map<String, Map<String, Object>> attrsMap)
+  public void addAnalyticAxisAttrs(
+      Company company, String parentField, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     if (analyticToolService.isManageAnalytic(company)) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
       AnalyticAxis analyticAxis = null;
 
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        String axisFieldName = getAxisFieldName(i, parentField);
+
         this.addAttr(
-            String.format("axis%dAnalyticAccount", i),
-            "hidden",
-            !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
-            attrsMap);
+            axisFieldName, "hidden", !(i <= accountConfig.getNbrOfAnalyticAxisSelect()), attrsMap);
 
         for (AnalyticAxisByCompany analyticAxisByCompany :
             accountConfig.getAnalyticAxisByCompanyList()) {
@@ -72,8 +72,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
         }
 
         if (analyticAxis != null) {
-          this.addAttr(
-              String.format("axis%dAnalyticAccount", i), "title", analyticAxis.getName(), attrsMap);
+          this.addAttr(axisFieldName, "title", analyticAxis.getName(), attrsMap);
 
           analyticAxis = null;
         }
@@ -83,13 +82,18 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
       this.addAttr("analyticMoveLineList", "hidden", true, attrsMap);
 
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        this.addAttr(
-            "axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "hidden", true, attrsMap);
+        this.addAttr(getAxisFieldName(i, parentField), "hidden", true, attrsMap);
       }
     }
   }
 
-  public void addAxisDomains(
+  protected String getAxisFieldName(int axisPosition, String parentField) {
+    String result = String.format("axis%dAnalyticAccount", axisPosition);
+
+    return parentField != null ? parentField + "." + result : result;
+  }
+
+  public void addAnalyticAxisDomains(
       AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     List<Long> analyticAccountList;

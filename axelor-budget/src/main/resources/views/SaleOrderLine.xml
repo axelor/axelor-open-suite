@@ -24,12 +24,12 @@
 
     <extend target="//field[@name='product' and @grid-view='product-grid']">
       <attribute name="onChange"
-        value="action-budget-group-sale-sale-orderline-product-onchange"/>
+        value="budget-action-sale-order-line-group-product-onchange"/>
     </extend>
 
     <extend target="//field[@name='product' and @grid-view='stock-move-line-product-grid']">
       <attribute name="onChange"
-        value="action-budget-group-sale-sale-orderline-product-onchange"/>
+        value="budget-action-sale-order-line-group-product-onchange"/>
     </extend>
 
     <extend target="//panel[@name='analyticDistributionPanel']">
@@ -75,19 +75,19 @@
   </form>
 
   <action-group name="action-budget-group-sale-saleorderline-onnew">
-    <action name="action-supplychain-group-sale-saleorderline-onnew"/>
+    <action name="supplychain-action-sale-order-line-group-onnew"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-sale-order-line-group-onload">
-    <action name="action-supplychain-group-sale-saleorderline-onload"/>
+    <action name="supplychain-action-sale-order-line-group-onload"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
-  <action-group name="action-budget-group-sale-sale-orderline-product-onchange">
-    <action name="action-supplychain-group-sale-saleorderline-product-onchange"/>
+  <action-group name="budget-action-sale-order-line-group-product-onchange">
+    <action name="supplychain-action-sale-order-line-group-product-onchange"/>
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
   </action-group>
