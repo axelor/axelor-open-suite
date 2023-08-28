@@ -12,6 +12,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -41,11 +42,13 @@ public class AnalyticLineModel implements AnalyticLine {
   protected FiscalPosition fiscalPosition;
 
   protected SaleOrderLine saleOrderLine;
+  protected SaleOrder saleOrder;
 
   public AnalyticLineModel() {}
 
-  public AnalyticLineModel(SaleOrderLine saleOrderLine) {
+  public AnalyticLineModel(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     this.saleOrderLine = saleOrderLine;
+    this.saleOrder = saleOrder != null ? saleOrder : saleOrderLine.getSaleOrder();
 
     this.axis1AnalyticAccount = saleOrderLine.getAxis1AnalyticAccount();
     this.axis2AnalyticAccount = saleOrderLine.getAxis2AnalyticAccount();
@@ -189,24 +192,24 @@ public class AnalyticLineModel implements AnalyticLine {
   }
 
   public TradingName getTradingName() {
-    if (this.saleOrderLine != null && this.saleOrderLine.getSaleOrder() != null) {
-      this.tradingName = this.saleOrderLine.getSaleOrder().getTradingName();
+    if (this.saleOrder != null) {
+      this.tradingName = this.saleOrder.getTradingName();
     }
 
     return this.tradingName;
   }
 
   public Company getCompany() {
-    if (this.saleOrderLine != null && this.saleOrderLine.getSaleOrder() != null) {
-      this.company = this.saleOrderLine.getSaleOrder().getCompany();
+    if (this.saleOrder != null) {
+      this.company = this.saleOrder.getCompany();
     }
 
     return this.company;
   }
 
   public Partner getPartner() {
-    if (this.saleOrderLine != null && this.saleOrderLine.getSaleOrder() != null) {
-      this.partner = this.saleOrderLine.getSaleOrder().getClientPartner();
+    if (this.saleOrder != null) {
+      this.partner = this.saleOrder.getClientPartner();
     }
 
     return this.partner;
@@ -217,8 +220,8 @@ public class AnalyticLineModel implements AnalyticLine {
   }
 
   public FiscalPosition getFiscalPosition() {
-    if (this.saleOrderLine != null && this.saleOrderLine.getSaleOrder() != null) {
-      this.fiscalPosition = this.saleOrderLine.getSaleOrder().getFiscalPosition();
+    if (this.saleOrder != null) {
+      this.fiscalPosition = this.saleOrder.getFiscalPosition();
     }
 
     return fiscalPosition;

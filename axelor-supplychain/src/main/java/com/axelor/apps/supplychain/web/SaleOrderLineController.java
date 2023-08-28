@@ -62,9 +62,10 @@ public class SaleOrderLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
       AnalyticLineModelService analyticLineModelService = Beans.get(AnalyticLineModelService.class);
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
       if (analyticLineModelService.productAccountManageAnalytic(analyticLineModel)) {
 
         analyticLineModelService.computeAnalyticDistribution(analyticLineModel);
@@ -82,7 +83,9 @@ public class SaleOrderLineController {
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
 
       Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineModel);
@@ -404,7 +407,7 @@ public class SaleOrderLineController {
         return;
       }
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
       response.setAttrs(
           Beans.get(AnalyticGroupService.class)
               .getAnalyticAxisDomainAttrsMap(analyticLineModel, saleOrder.getCompany()));
@@ -422,7 +425,7 @@ public class SaleOrderLineController {
       }
 
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
 
       if (Beans.get(AnalyticLineModelService.class)
           .analyzeAnalyticLineModel(analyticLineModel, saleOrder.getCompany())) {
@@ -460,7 +463,7 @@ public class SaleOrderLineController {
       }
 
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
 
       response.setValues(
           Beans.get(AnalyticGroupService.class)
@@ -480,7 +483,7 @@ public class SaleOrderLineController {
 
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
       saleOrderLine.setSaleOrder(saleOrder);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
       Beans.get(AnalyticAttrsSupplychainService.class)

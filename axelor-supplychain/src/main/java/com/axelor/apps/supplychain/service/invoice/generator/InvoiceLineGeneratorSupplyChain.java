@@ -210,7 +210,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
           case SaleOrderLineRepository.TYPE_NORMAL:
             invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
-                invoiceLine, invoice, new AnalyticLineModel(saleOrderLine));
+                invoiceLine, invoice, new AnalyticLineModel(saleOrderLine, null));
             break;
 
           default:
@@ -356,7 +356,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     AnalyticLineModel analyticLineModel = null;
 
     if (saleOrderLine != null) {
-      analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      analyticLineModel = new AnalyticLineModel(saleOrderLine, null);
     }
 
     return analyticLineModel != null
