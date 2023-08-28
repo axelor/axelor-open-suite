@@ -1,0 +1,4 @@
+"importId";"birtTemplate.importId";"name";"value";"type"
+251;35;"ForecastRecapId";"$ForecastRecap.id";"decimal"
+252;35;"Timezone";"$ForecastRecap?.company?.timezone";"string"
+253;35;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
