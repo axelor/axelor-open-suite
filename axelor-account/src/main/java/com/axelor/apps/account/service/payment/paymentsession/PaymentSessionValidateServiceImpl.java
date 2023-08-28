@@ -483,7 +483,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     move.addMoveLineListItem(moveLine);
 
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, move.getDate(), false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, move.getDate(), false);
 
     return moveLine;
   }
