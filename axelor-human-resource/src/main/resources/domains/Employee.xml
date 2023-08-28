@@ -106,8 +106,7 @@
     <string name="maritalName" title="Marital name"/>
     <integer name="dependentChildren" title="Dependent children"/>
 
-    <integer name="lunchVoucherDistribution" default="100"
-      title="Percentage of lunch voucher in paper format"
+    <integer name="lunchVoucherDistribution" default="100" title="% in paper format"
       help="Percentage of lunch voucher in paper format, the rest will be in electronic card."
       min="0" max="100"/>
 
