@@ -59,4 +59,18 @@
     <option value="2">Valid</option>
     <option value="3">Archived</option>
   </selection>
+
+
+  <selection name="budget.scenario.entry.method.select">
+    <option value="0">Manual</option>
+    <option value="1">Formula</option>
+  </selection>
+
+  <selection name="budget.scenario.category.select">
+    <option value="1">Revenue</option>
+    <option value="2">RH</option>
+    <option value="3">Production</option>
+    <option value="4">Results</option>
+    <option value="5">Current Expenses</option>
+  </selection>
 </object-views>

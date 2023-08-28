@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="budget-scenario-line-grid" title="Budget Scenario Line"
+    model="com.axelor.apps.budget.db.BudgetScenarioLine" orderBy="code">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="entryMethod"/>
+    <field name="formula"/>
+    <field name="category"/>
+  </grid>
+
+  <form model="com.axelor.apps.budget.db.BudgetScenarioLine" title="Budget Scenario Line"
+    name="budget-scenario-line-form" width="large"
+    onNew="action-budget-scenario-line-record-set-defaults">
+    <panel name="mainPanel" colSpan="12">
+
+      <field name="name" title="Name"/>
+      <field name="code" title="Code"/>
+      <field name="entryMethod" colSpan="8" widget="NavSelect"/>
+      <field name="formula" title="Formula"/>
+      <field name="category" colSpan="8" widget="NavSelect"/>
+
+    </panel>
+  </form>
+
+  <action-record name="action-budget-scenario-line-record-set-defaults"
+    model="com.axelor.apps.budget.db.BudgetScenarioLine">
+    <field name="entryMethod"
+      expr="eval: com.axelor.apps.budget.db.repo.BudgetScenarioRepository.BUDGET_SCENARIO_ENTRY_METHOD_TYPE_SELECT_MANUAL"/>
+    <field name="category"
+      expr="eval: com.axelor.apps.budget.db.repo.BudgetScenarioRepository.BUDGET_SCENARIO_CATEGORY_TYPE_SELECT_REVENUE"/>
+  </action-record>
+</object-views>
