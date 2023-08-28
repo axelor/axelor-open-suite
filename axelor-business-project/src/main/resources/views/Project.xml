@@ -112,6 +112,20 @@
               <field name="landingMargin" hidden="true"/>
               <field name="landingMarkup" hidden="true"/>
             </panel>
+            <panel name="invoicingPanel" title="Invoicing" colSpan="12">
+              <panel-dashlet action="action-project-view-total-invoiced-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-invoiced-this-month-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-invoiced-last-month-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-total-paid-custom"
+                colSpan="3"/>
+              <field name="totalInvoiced" hidden="true"/>
+              <field name="invoicedThisMonth" hidden="true"/>
+              <field name="invoicedLastMonth" hidden="true"/>
+              <field name="totalPaid" hidden="true"/>
+            </panel>
           </panel>
           <panel name="projectHistoryPanel" title="Project history" colSpan="12">
             <field name="projectHistoryLineList" colSpan="12" canNew="false" canEdit="false"

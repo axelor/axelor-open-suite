@@ -310,6 +310,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       throws AxelorException {
     computeTimeFollowUp(project, projectTaskList);
     computeFinancialFollowUp(project, projectTaskList);
+    compute
     projectRepository.save(project);
   }
 
@@ -551,6 +552,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal landingCosts = project.getLandingCosts();
     BigDecimal landingMargin = project.getLandingMargin();
     BigDecimal landingMarkup = project.getLandingMarkup();
+    BigDecimal totalInvoiced = project.getTotalInvoiced();
+    BigDecimal invoicedThisMonth = project.getInvoicedThisMonth();
+    BigDecimal invoicedLastMonth = project.getInvoicedLastMonth();
+    BigDecimal totalPaid = project.getTotalPaid();
 
     data.put("turnover", turnover);
     data.put("initialCosts", initialCosts);
@@ -566,6 +571,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     data.put("landingCosts", landingCosts);
     data.put("landingMargin", landingMargin);
     data.put("landingMarkup", landingMarkup);
+    data.put("totalInvoiced", totalInvoiced);
+    data.put("invoicedThisMonth", invoicedThisMonth);
+    data.put("invoicedLastMonth", invoicedLastMonth);
+    data.put("totalPaid", totalPaid);
 
     List<ProjectHistoryLine> projectHistoryLineList = project.getProjectHistoryLineList();
 
@@ -621,6 +630,18 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     data.put(
         "landingMarkupProgress",
         getProgressIcon(projectHistoryLine.getLandingMarkup().compareTo(landingMarkup)));
+    data.put(
+        "totalInvoicedProgress",
+        getProgressIcon(projectHistoryLine.getTotalInvoiced().compareTo(totalInvoiced)));
+    data.put(
+        "invoicedThisMonthProgress",
+        getProgressIcon(projectHistoryLine.getInvoicedThisMonth().compareTo(invoicedThisMonth)));
+    data.put(
+        "invoicedLastMonthProgress",
+        getProgressIcon(projectHistoryLine.getInvoicedLastMonth().compareTo(invoicedLastMonth)));
+    data.put(
+        "totalPaidProgress",
+        getProgressIcon(projectHistoryLine.getTotalPaid().compareTo(totalPaid)));
 
     return data;
   }
