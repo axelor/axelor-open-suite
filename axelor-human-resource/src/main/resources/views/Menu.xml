@@ -353,6 +353,16 @@
     <view type="form" name="health-mutual-rejection-reason-form"/>
   </action-view>
 
+  <menuitem name="hr-root-configuration-medical-visit-reason" parent="hr-root-emp-mgt-conf"
+    title="Medical visit reason" order="1400" action="hr.root.configuration.medical.visit.reason"
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()"/>
+
+  <action-view name="hr.root.configuration.medical.visit.reason"
+    title="Medical visit reason" model="com.axelor.apps.hr.db.MedicalVisitReason">
+    <view type="grid" name="medical-visit-reason-grid"/>
+    <view type="form" name="medical-visit-reason-form"/>
+  </action-view>
+
   <!-- Leave App -->
   <menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')"
     icon="fa-plane" icon-background="#84429f" title="Leave Requests" order="500"/>
