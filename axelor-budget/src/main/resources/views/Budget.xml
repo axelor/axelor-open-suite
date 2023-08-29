@@ -175,7 +175,6 @@
           domain="self.parentBudgetLevel != null AND self.parentBudgetLevel.globalBudget.id = :globalId"/>
         <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
           colSpan="3" grid-view="budget-level-grid" form-view="budget-level-form"/>
-        <field name="globalBudget"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
         <panel name="datesPanel" colSpan="12">
           <field name="fromDate" colSpan="6" readonlyIf="statusSelect == 2"

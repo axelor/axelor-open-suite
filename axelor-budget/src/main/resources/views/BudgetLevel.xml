@@ -348,7 +348,7 @@
     onLoad="action-budget-level-group-onload" canNew="false">
 
     <panel name="budgetLevelHiddenPanel" hidden="true" colSpan="12">
-      <field name="parentBudgetLevel.statusSelect"/>
+      <field name="globalBudget.statusSelect"/>
       <field name="levelTypeSelect"/>
     </panel>
 
@@ -359,10 +359,8 @@
           readonlyIf="globalBudget.statusSelect != 0 || !$popup()"/>
         <field name="name" colSpan="2"
           readonlyIf="globalBudget.statusSelect != 0 || !$popup()"/>
-        <field name="parentBudgetLevel" colSpan="2" readonly="true"
-          onChange="action-budget-level-record-parent-budget-level-onchange"
-          onSelect="action-budget-level-attrs-parent-budget-level-onselect"
-          form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
+        <field name="globalBudget" colSpan="2" readonly="true" form-view="global-budget-form"
+          grid-view="global-budget-grid"/>
         <spacer colSpan="7"/>
         <field name="typeSelect" colSpan="1" required="true"/>
       </panel>
@@ -411,7 +409,8 @@
         title="Display simulated moves" colSpan="12"/>
     </panel>
 
-    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy">
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy"
+      readonlyIf="globalBudget.statusSelect &gt;= 1">
       <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Sections"
         colSpan="12" form-view="budget-level-node-form" grid-view="budget-level-node-grid"/>
     </panel>
@@ -486,7 +485,8 @@
         title="Display simulated moves" colSpan="12"/>
     </panel>
 
-    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green">
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green"
+      readonlyIf="parentBudgetLevel.globalBudget.statusSelect &gt;= 1">
       <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lignes"
         colSpan="12" form-view="budget-included-form" grid-view="budget-lines-grid"
         onChange="action-budget-level-method-compute-children-key"/>
@@ -553,8 +553,6 @@
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <field name="globalBudget" expr="eval: __parent__"
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
-    <field name="globalBudget" expr="eval: __parent__?.globalBudget"
-      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <field name="typeSelect" expr="eval: _typeSelect"/>
     <field name="typeSelect" expr="eval: __parent__.typeSelect" if="__parent__"/>
     <field name="sourceSelect" expr="eval: __parent__.sourceSelect" if="__parent__"/>
