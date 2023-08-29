@@ -230,7 +230,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       throws AxelorException {
 
     if (amountInSpecificMoveCurrency != null) {
-      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+      amountInSpecificMoveCurrency =
+          scaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.abs(), false);
     }
 
     log.debug(
@@ -262,9 +263,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (isDebit) {
-      debit = amountInCompanyCurrency;
+      debit = scaleServiceAccount.getScaledValue(move, amountInCompanyCurrency, true);
     } else {
-      credit = amountInCompanyCurrency;
+      credit = scaleServiceAccount.getScaledValue(move, amountInCompanyCurrency, true);
     }
 
     if (currencyRate == null) {
@@ -282,7 +283,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (!isDebit) {
-      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.negate();
+      amountInSpecificMoveCurrency =
+          scaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.negate(), false);
     }
 
     MoveLine moveLine =
