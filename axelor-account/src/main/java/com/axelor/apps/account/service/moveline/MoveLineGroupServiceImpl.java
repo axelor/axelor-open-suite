@@ -89,7 +89,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineService.balanceCreditDebit(moveLine, move);
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
-    moveLineRecordService.setDecimals(moveLine, move);
+    moveLineToolService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
     moveLineService.computeFinancialDiscount(moveLine);
 
@@ -138,7 +138,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   public Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move) {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    moveLineRecordService.setDecimals(moveLine, move);
+    moveLineToolService.setDecimals(moveLine, move);
 
     valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
     valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());

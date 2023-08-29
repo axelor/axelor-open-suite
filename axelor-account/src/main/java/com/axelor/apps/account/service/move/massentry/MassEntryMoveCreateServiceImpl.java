@@ -32,7 +32,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.account.service.moveline.MoveLineRecordService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -63,7 +63,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected MoveRepository moveRepository;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
-  protected MoveLineRecordService moveLineRecordService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public MassEntryMoveCreateServiceImpl(
@@ -78,7 +78,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       MoveRepository moveRepository,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
-      MoveLineRecordService moveLineRecordService) {
+      MoveLineToolService moveLineToolService) {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
@@ -90,7 +90,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     this.moveRepository = moveRepository;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
-    this.moveLineRecordService = moveLineRecordService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -255,7 +255,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         }
         massEntryLine.setFieldsErrorList(null);
         MoveLineMassEntry copy = moveLineMassEntryRepository.copy(massEntryLine, false);
-        moveLineRecordService.setDecimals(copy, move);
+        moveLineToolService.setDecimals(copy, move);
         moveLineMassEntryRecordService.fillAnalyticMoveLineList(massEntryLine, copy);
 
         move.addMoveLineListItem(copy);

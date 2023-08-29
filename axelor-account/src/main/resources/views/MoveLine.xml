@@ -652,7 +652,7 @@
         css="label-bold bold" colSpan="3" x-scale="companyCurrencyDecimals"/>
       <field name="amountRemaining" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4 || move.statusSelect == 5"
-        x-scale="$companyCurrencyNumberOfDecimals || move.company.currency.numberOfDecimals"/>
+        x-scale="companyCurrencyDecimals"/>
       <field name="amountPaid" colSpan="3"
         hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"
         x-scale="companyCurrencyDecimals"/>

@@ -259,6 +259,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
       moveLineToolService.setCurrencyAmount(moveLine);
       moveLineToolService.setCurrencyAmount(holdbackMoveLine);
+      moveLineToolService.setDecimals(holdbackMoveLine, move);
 
       move.addMoveLineListItem(holdbackMoveLine);
     }

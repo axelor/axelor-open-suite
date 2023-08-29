@@ -43,6 +43,4 @@ public interface MoveLineRecordService {
   void resetDebit(MoveLine moveLine);
 
   void resetPartnerFields(MoveLine moveLine);
-
-  void setDecimals(MoveLine moveLine, Move move);
 }

@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -411,5 +412,16 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     return moveLine.getCutOffStartDate() != null
         && moveLine.getCutOffEndDate() != null
         && !functionalOriginList.contains(moveLine.getMove().getFunctionalOriginSelect());
+  }
+
+  @Override
+  public void setDecimals(MoveLine moveLine, Move move) {
+    Currency currency = move.getCurrency();
+    Currency companyCurrency = move.getCompanyCurrency();
+
+    if (currency != null && companyCurrency != null) {
+      moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
+      moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
+    }
   }
 }

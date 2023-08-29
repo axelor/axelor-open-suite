@@ -860,6 +860,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         StringTool.cutTooLongString(
             moveLineToolService.determineDescriptionMoveLine(
                 move.getJournal(), move.getOrigin(), move.getDescription())));
+    moveLineToolService.setDecimals(newOrUpdatedMoveLine, move);
 
     BigDecimal taxLineValue =
         taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
@@ -908,6 +909,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
       newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
       newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
+      moveLineToolService.setDecimals(newOrUpdatedMoveLineRC, move);
 
       newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
 
