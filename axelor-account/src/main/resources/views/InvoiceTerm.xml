@@ -201,6 +201,11 @@
         <field name="isPaid"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
+          showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
+          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
+          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+        <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -353,6 +358,11 @@
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
+        <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
+          showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
+          readonlyIf="amountRemaining != inTaxTotal" form-view="partner-form"
+          grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+        <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -521,6 +531,11 @@
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
+        <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
+          showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
+          readonlyIf="amountRemaining != inTaxTotal" form-view="partner-form"
+          grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+        <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
