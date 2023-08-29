@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -119,4 +120,8 @@ public interface SaleOrderService {
   SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException;
+
+  void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException;
+
+  BirtTemplate getSaleOrderBirtTemplate(SaleOrder saleOrder) throws AxelorException;
 }
