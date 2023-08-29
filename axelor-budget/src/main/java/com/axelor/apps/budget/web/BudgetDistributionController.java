@@ -129,7 +129,7 @@ public class BudgetDistributionController {
           query =
               query.concat(
                   String.format(
-                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
+                      " AND self.budgetLevel.parentBudgetLevel.globalBudget.company.id = %d",
                       move.getCompany() != null ? move.getCompany().getId() : 0));
           if (move.getDate() != null) {
             query =
@@ -144,13 +144,13 @@ public class BudgetDistributionController {
               moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
             query =
                 query.concat(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = "
+                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect = "
                         + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE);
           } else if (AccountTypeRepository.TYPE_CHARGE.equals(
               moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
             query =
                 query.concat(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
+                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in ("
                         + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
                         + ","
                         + BudgetLevelRepository
@@ -160,7 +160,7 @@ public class BudgetDistributionController {
               moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
             query =
                 query.concat(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
+                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in ("
                         + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
                         + ","
                         + BudgetLevelRepository
@@ -178,12 +178,12 @@ public class BudgetDistributionController {
           query =
               query.concat(
                   String.format(
-                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d ",
+                      " AND self.budgetLevel.parentBudgetLevel.globalBudget.company.id = %d ",
                       invoice.getCompany() != null ? invoice.getCompany().getId() : 0));
           if (invoice.getOperationTypeSelect() >= InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
             query =
                 query.concat(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = "
+                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect = "
                         + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE);
           } else {
             InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
@@ -191,7 +191,7 @@ public class BudgetDistributionController {
                 invoiceLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
               query =
                   query.concat(
-                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
+                      " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in ("
                           + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
                           + ","
                           + BudgetLevelRepository
@@ -201,7 +201,7 @@ public class BudgetDistributionController {
                 invoiceLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
               query =
                   query.concat(
-                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
+                      " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in ("
                           + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
                           + ","
                           + BudgetLevelRepository

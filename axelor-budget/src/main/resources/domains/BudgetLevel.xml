@@ -19,6 +19,9 @@
     <many-to-one name="parentBudgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Parent Level"/>
 
+    <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
+      title="Global Level"/>
+
     <string name="statusSelect" title="Status" selection="budget.level.status.select"
       default="draft"/>
     <string name="typeSelect" readonly="true" title="Type"
@@ -93,7 +96,20 @@
 
     </string>
 
-    <unique-constraint columns="code,parentId,company,fromDate,toDate"/>
+    <string name="globalId" search="globalBudget">
+      <![CDATA[
+         if (globalBudget != null && globalBudget.getId() != null){
+
+            return globalBudget.getId().toString();
+         }
+         else {
+         	return "0";
+         }
+         ]]>
+
+    </string>
+
+    <unique-constraint columns="code,parentId,globalId,company,fromDate,toDate"/>
 
     <extra-code>
 	      <![CDATA[

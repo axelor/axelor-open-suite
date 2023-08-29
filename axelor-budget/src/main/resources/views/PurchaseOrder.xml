@@ -40,14 +40,14 @@
           <field name="companyDepartment" colSpan="3"
             onChange="action-budget-purchase-order-attrs-company-dept-onchange"
             requiredIf="$enableBudgetKey"/>
-          <field name="budgetLevel" if="__config__.app.isApp('budget')"
+          <field name="globalBudget" if="__config__.app.isApp('budget')"
             onSelect="action-budget-purchase-order-attrs-budget-level-domain"
             requiredIf="companyDepartment &amp;&amp; $enableBudgetKey" colSpan="3"
             showIf="companyDepartment &amp;&amp; $enableBudgetKey"
             onChange="action-budget-purchase-order-group-budget-level-onchange"
             form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
           <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"
-            domain="self.company = :company AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect LIKE 'valid' AND (:budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel = :budgetLevel ) OR (:budgetLevel IS NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((:companyDepartment IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL))"/>
+            domain="self.company = :company AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect = 2 AND (:budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget = :budgetLevel ) OR (:budgetLevel IS NULL AND self.budgetLevel.parentBudgetLevel.globalBudget IS NOT NULL AND ((:companyDepartment IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL))"/>
           <button name="applyToAllBtn" title="Apply to all"
             onClick="action-budget-btn-apply-to-all-group" readonlyIf="!budget"
             showIf="statusSelect &lt;= 2"/>
@@ -173,23 +173,23 @@
   </action-record>
 
   <action-attrs name="action-budget-purchase-order-attrs-budget-level-domain">
-    <attribute name="domain" for="budgetLevel"
-      expr="eval: &quot;self.companyDepartment IS NOT NULL AND self.companyDepartment = ${companyDepartment?.id} AND self.company = :company AND self.statusSelect = 'valid' AND self.typeSelect = 'budget'&quot;"/>
+    <attribute name="domain" for="globalBudget"
+      expr="eval: &quot;self.companyDepartment IS NOT NULL AND self.companyDepartment = ${companyDepartment?.id} AND self.company = :company AND self.statusSelect = 2&quot;"/>
   </action-attrs>
 
   <action-record name="action-budget-purchase-order-record-budget-level-onchange"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="company" expr="eval: budgetLevel?.company"/>
+    <field name="company" expr="eval: globalBudget?.company"/>
   </action-record>
 
   <action-attrs name="action-budget-purchase-order-attrs-company-dept-onchange">
-    <attribute name="value" for="budgetLevel" expr="eval:null"
+    <attribute name="value" for="globalBudget" expr="eval:null"
       if="__config__.app.isApp('budget')"/>
   </action-attrs>
 
   <action-record name="budget-action-purchase-order-record-project-onchange"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="budgetLevel" expr="eval: project ? project.budget : budgetLevel"
+    <field name="globalBudget" expr="eval: project ? project.budget : globalBudget"
       if="__config__.app.isApp('budget') &amp;&amp; (_project == null || id != null)"/>
     <field name="company" expr="eval: project ? project.company : null"/>
   </action-record>

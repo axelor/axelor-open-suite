@@ -7,12 +7,12 @@
     icon="fa-pie-chart" order="-850" if="__config__.app.isApp('budget')"/>
 
   <menuitem title="Budgets" name="budget-root-budget-management-budgets"
-    parent="budget-root-budget-management" order="10"/>
+    parent="budget-root-budget-management" order="10" hidden="true"/>
 
   <!-- Budget Level -->
 
   <menuitem title="Sale budgets" name="budget-root-budget-management-budgets-sale"
-    parent="budget-root-budget-management-budgets"
+    parent="budget-root-budget-management-budgets" hidden="true"
     action="budget.root.budget.management.budgets.sale" order="10"/>
 
   <action-view name="budget.root.budget.management.budgets.sale" title="Sale budget"
@@ -30,7 +30,7 @@
   </action-view>
 
   <menuitem title="Purchase budgets" name="budget-root-budget-management-budgets-purchase"
-    parent="budget-root-budget-management-budgets"
+    parent="budget-root-budget-management-budgets" hidden="true"
     action="budget.root.budget.management.budgets.purchase" order="20"/>
 
   <action-view name="budget.root.budget.management.budgets.purchase"
@@ -49,7 +49,7 @@
 
   <menuitem title="Investment budgets"
     name="budget-root-budget-management-budgets-investment"
-    parent="budget-root-budget-management-budgets"
+    parent="budget-root-budget-management-budgets" hidden="true"
     action="budget.root.budget.management.budgets.investment" order="30"/>
 
   <action-view name="budget.root.budget.management.budgets.investment"
@@ -69,7 +69,7 @@
   <menuitem title="Purchase and investment budgets"
     name="budget-root-budget-management-budgets-purchase-and-investment"
     parent="budget-root-budget-management-budgets"
-    action="budget.root.budget.management.budgets.purchase.and.investment" order="40"/>
+    action="budget.root.budget.management.budgets.purchase.and.investment" order="40" hidden="true"/>
 
   <action-view name="budget.root.budget.management.budgets.purchase.and.investment"
     title="Purchase and investment budget" model="com.axelor.apps.budget.db.BudgetLevel">
@@ -98,7 +98,7 @@
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET"/>
     <context name="_domain"
-      expr="eval: &quot;self.typeSelect = com.axelor.apps.account.db.repo.BudgetRepository.BUDGET_TYPE_SELECT_BUDGET and self.budgetLevel.parentBudgetLevel.parentBudgetLevel.parentBudgetLevel == null&quot;"/>
+      expr="eval: &quot;self.typeSelect = com.axelor.apps.account.db.repo.BudgetRepository.BUDGET_TYPE_SELECT_BUDGET and self.budgetLevel.parentBudgetLevel.parentBudgetLevel == null&quot;"/>
   </action-view>
 
   <!-- Budget Level Templates -->
@@ -156,5 +156,14 @@
       expr="eval: __repo__(AdvancedImport).all().filter('self.importId = ?','101').fetchOne()?.getId()"/>
     <context name="_canNew" expr="eval: false"/>
   </action-view>
+
+  <menuitem title="Global Budget" name="budget-root-budget-management-global-budget"
+    parent="budget-root-budget-management" action="budget.root.management.global-budget" order="23"/>
+  <action-view name="budget.root.management.global-budget" title="Global Budget"
+    model="com.axelor.apps.budget.db.GlobalBudget">
+    <view type="grid" name="global-budget-grid"/>
+    <view type="form" name="global-budget-form"/>
+  </action-view>
+
 
 </object-views>

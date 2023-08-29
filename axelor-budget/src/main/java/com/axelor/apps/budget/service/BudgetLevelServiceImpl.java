@@ -285,8 +285,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
         budgetRepository
             .all()
             .filter(
-                "self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = ?",
-                globalBudgetLevel.getId())
+                "self.budgetLevel.parentBudgetLevel.globalBudget.id = ?", globalBudgetLevel.getId())
             .fetch();
 
     for (Budget budget : budgetList) {
@@ -404,8 +403,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
         boolean checkBudgetKey = false;
         if (budgetLevel.getParentBudgetLevel() != null
-            && budgetLevel.getParentBudgetLevel().getParentBudgetLevel() != null) {
-          Company company = budgetLevel.getParentBudgetLevel().getParentBudgetLevel().getCompany();
+            && budgetLevel.getParentBudgetLevel().getGlobalBudget() != null) {
+          Company company = budgetLevel.getParentBudgetLevel().getGlobalBudget().getCompany();
           checkBudgetKey = budgetService.checkBudgetKeyInConfig(company);
         }
         for (Budget budget : budgetLevel.getBudgetList()) {
@@ -487,6 +486,9 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   @Override
   @Transactional
   public void computeChildrenKey(BudgetLevel section) throws AxelorException {
+    if (section.getId() == null) {
+      return;
+    }
     if (!CollectionUtils.isEmpty(section.getBudgetList())) {
       for (Budget budget : section.getBudgetList()) {
         budgetService.createBudgetKey(budget);
@@ -544,12 +546,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       if (groupBudgetLevel != null) {
         computeTotals(groupBudgetLevel);
         budgetLevelRepository.save(groupBudgetLevel);
-
-        BudgetLevel globalBudgetLevel = groupBudgetLevel.getParentBudgetLevel();
-        if (globalBudgetLevel != null) {
-          computeTotals(globalBudgetLevel);
-          budgetLevelRepository.save(groupBudgetLevel);
-        }
       }
     }
   }

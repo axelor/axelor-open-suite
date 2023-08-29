@@ -167,10 +167,6 @@ public class BudgetLevelController {
     BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
 
     switch (levelTypeSelect) {
-      case "global":
-        budgetLevelService.getUpdatedGroupBudgetLevelList(budgetLevelList, fromDate, toDate);
-        response.setReload(true);
-        break;
       case "group":
         budgetLevelService.getUpdatedSectionBudgetList(budgetLevelList, fromDate, toDate);
         response.setReload(true);
