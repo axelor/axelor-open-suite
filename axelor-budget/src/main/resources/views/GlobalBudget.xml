@@ -21,7 +21,7 @@
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
     name="global-budget-form" width="large" onNew="action-global-budget-record-set-defaults"
-    onSave="action-global-budget-group-onsave">
+    onSave="action-global-budget-group-onsave" canCopy="false">
 
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
@@ -52,7 +52,8 @@
           <button name="updateDatesBtn" colSpan="2" title="Update dates"
             onClick="save,action-global-budget-method-set-dates"
             readonlyIf="fromDate == null || toDate == null"/>
-          <field name="budgetTypeSelect" required="true"/>
+          <field name="budgetTypeSelect" requiredIf="statusSelect == 0" colSpan="4"
+            readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0"/>
           <field name="companyDepartment" colSpan="4" showIf="company"
             domain="self.company = :company OR self.company IS NULL"/>
           <field name="budgetManager" colSpan="4" showIf="company"
@@ -60,16 +61,15 @@
           <field name="checkAvailableSelect" readonlyIf="statusSelect == 'valid'"
             hideIf="budgetTypeSelect == 2"
             if="__config__.app.getApp('budget').getCheckAvailableBudget()" colSpan="2"/>
-          <field name="budgetTypeSelect" hidden="true" widget="boolean-switch" colSpan="4"/>
           <field name="sourceSelect" colSpan="4" hidden="true"/>
           <field name="fullName" colSpan="4" hidden="true"/>
         </panel>
 
         <panel name="versionPanel" itemSpan="4" colSpan="12" hideIf="statusSelect == 0">
-          <field name="activeVersion"/>
-          <button name="new-budget-version" title="Create New Version"
+          <field name="activeVersion" readonly="true"/>
+          <button name="new-budget-version" title="Create New version"
             onClick="action-view-global-budget-budget-version-new"/>
-          <button name="change-budget-version" title="Change Budget Version"
+          <button name="change-budget-version" title="Change budget version"
             onClick="action-view-global-budget-budget-version-change"/>
         </panel>
 
@@ -123,7 +123,8 @@
       </panel>
     </panel>
 
-    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red">
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
+      showIf="code &amp;&amp; name &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; budgetTypeSelect">
       <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Groups"
         colSpan="12" form-view="budget-level-intermediate-form"
         grid-view="budget-level-included-grid" canEdit="statusSelect == 0"
@@ -140,7 +141,7 @@
     </panel>
   </form>
 
-  <form title="Change Budget Version" name="global-budget-budget-version-change-wizard-form"
+  <form title="Change budget version" name="global-budget-budget-version-change-wizard-form"
     model="com.axelor.utils.db.Wizard">
     <panel>
       <field name="$budgetVersion" title="Budget Version" type="many-to-one"
@@ -165,7 +166,7 @@
   </action-view>
 
   <action-view name="action-view-global-budget-budget-version-change"
-    title="Change Budget version" model="com.axelor.utils.db.Wizard">
+    title="Change budget version" model="com.axelor.utils.db.Wizard">
     <view type="form" name="global-budget-budget-version-change-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="false"/>

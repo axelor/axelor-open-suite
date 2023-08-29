@@ -42,7 +42,7 @@
         <item action="action-budget-global-budget-level-template-view-section-lines"
           title="Sections" showIf="id"/>
         <item action="action-budget-global-budget-level-view-budget-template-lines"
-          title="Lignes" showIf="id"/>
+          title="Lines" showIf="id"/>
       </menu>
     </menubar>
     <panel name="overViewPanel">
@@ -119,7 +119,7 @@
     </panel>
 
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green">
-      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lignes"
+      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lines"
         colSpan="12" form-view="budget-included-template-form"
         grid-view="budget-lines-template-grid"/>
     </panel>
@@ -174,7 +174,7 @@
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green">
       <field name="budgetList" widget="MasterDetail" summary-view="true" canNew="false"
-        title="Lignes" colSpan="12" form-view="budget-included-template-form"
+        title="Lines" colSpan="12" form-view="budget-included-template-form"
         grid-view="budget-lines-template-grid"/>
     </panel>
   </form>
@@ -210,7 +210,7 @@
   </action-view>
 
   <action-view name="action-budget-budget-level-view-budget-template-lines"
-    title="Lignes" model="com.axelor.apps.budget.db.Budget">
+    title="Lines" model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-template-grid"/>
     <view type="form" name="budget-included-template-form"/>
     <view-param name="details-view" value="true"/>
@@ -234,7 +234,7 @@
   </action-view>
 
   <action-view name="action-budget-global-budget-level-view-budget-template-lines"
-    title="Lignes" model="com.axelor.apps.budget.db.Budget">
+    title="Lines" model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-template-grid"/>
     <view type="form" name="budget-included-template-form"/>
     <view-param name="details-view" value="true"/>

@@ -20,7 +20,7 @@
       title="Parent Level"/>
 
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
-      title="Global Level"/>
+      title="Global budget"/>
 
     <string name="statusSelect" title="Status" selection="budget.level.status.select"
       default="draft"/>

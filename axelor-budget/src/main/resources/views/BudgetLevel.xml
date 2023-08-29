@@ -73,7 +73,7 @@
           showIf="id"/>
         <item action="action-budget-global-budget-level-view-section-lines" title="Sections"
           showIf="id"/>
-        <item action="action-budget-global-budget-level-view-budget-lines" title="Lignes"
+        <item action="action-budget-global-budget-level-view-budget-lines" title="Lines"
           showIf="id"/>
       </menu>
     </menubar>
@@ -317,7 +317,7 @@
 
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green">
-      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lignes"
+      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lines"
         colSpan="12" form-view="budget-included-form" grid-view="budget-lines-grid"
         canNew="parentBudgetLevel.globalBudget.statusSelect == 0"
         canEdit="parentBudgetLevel.globalBudget.statusSelect == 0"
@@ -487,7 +487,7 @@
 
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green"
       readonlyIf="parentBudgetLevel.globalBudget.statusSelect &gt;= 1">
-      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lignes"
+      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lines"
         colSpan="12" form-view="budget-included-form" grid-view="budget-lines-grid"
         onChange="action-budget-level-method-compute-children-key"/>
     </panel>
@@ -629,7 +629,7 @@
     <field name="endDate" expr="eval: null"/>
   </action-record>
 
-  <action-view name="action-budget-budget-level-view-budget-lines" title="Lignes"
+  <action-view name="action-budget-budget-level-view-budget-lines" title="Lines"
     model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-grid"/>
     <view type="form" name="budget-included-form"/>
@@ -668,7 +668,7 @@
     <context name="_isParent" expr="false"/>
   </action-view>
 
-  <action-view name="action-budget-global-budget-level-view-budget-lines" title="Lignes"
+  <action-view name="action-budget-global-budget-level-view-budget-lines" title="Lines"
     model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-grid"/>
     <view type="form" name="budget-included-form"/>
