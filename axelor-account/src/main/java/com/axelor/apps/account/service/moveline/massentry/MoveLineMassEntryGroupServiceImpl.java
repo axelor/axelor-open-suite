@@ -102,6 +102,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
     moveLineDefaultService.setFinancialDiscount(moveLine);
     moveLineService.computeFinancialDiscount(moveLine);
+    moveLineRecordService.setDecimals(moveLine, move);
 
     valuesMap.put("inputAction", moveLine.getInputAction());
     valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
@@ -136,6 +137,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("deliveryDate", moveLine.getDeliveryDate());
     valuesMap.put("isEdited", moveLine.getIsEdited());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
 
     return valuesMap;
   }
@@ -409,6 +412,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
     valuesMap.put("isEdited", moveLine.getIsEdited());
     valuesMap.put("fieldsErrorList", moveLine.getFieldsErrorList());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
