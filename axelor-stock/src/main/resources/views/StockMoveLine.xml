@@ -763,28 +763,34 @@
   <action-attrs name="action-stock-move-line-attrs-tracking-number-domain">
     <attribute name="domain" for="trackingNumber"
       expr="eval: &quot;
-	                self.product = :product AND
-	                (self in
-	                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-	                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
-	                    WHERE sl.id = ${__parent__.fromStockLocation?.id}) OR
-                     self not in
-                        (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-                        join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation))
-	                &quot;"
+              self.product = :product AND (
+               EXISTS (
+                  SELECT sll.id FROM StockLocationLine sll
+                    WHERE sll.trackingNumber.id = self.id
+                    AND sll.detailsStockLocation.id = ${__parent__.fromStockLocation?.id}
+               )
+               OR NOT EXISTS (
+                 SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
+                   WHERE stockLocationLine.trackingNumber.id = self.id
+               )
+             )
+          &quot;"
       if="__parent__"/>
 
     <attribute name="domain" for="trackingNumber"
       expr="eval: &quot;
-	                self.product = :product AND
-	                (self in
-	                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-	                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
-	                    WHERE sl.id = ${__self__.fromStockLocation?.id}) OR
-                     self not in
-                        (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-                        join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation))
-	                &quot;"
+              self.product = :product AND (
+               EXISTS (
+                  SELECT sll.id FROM StockLocationLine sll
+                    WHERE sll.trackingNumber.id = self.id
+                    AND sll.detailsStockLocation.id = ${stockMove.fromStockLocation?.id}
+               )
+               OR NOT EXISTS (
+                 SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
+                   WHERE stockLocationLine.trackingNumber.id = self.id
+               )
+             )
+          &quot;"
       if="!__parent__ &amp;&amp; stockMove != null"/>
   </action-attrs>
 
