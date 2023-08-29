@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -55,6 +57,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,6 +75,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
   protected AppBaseService appBaseService;
+  protected InvoiceRepository invoiceRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "fa-level-up";
@@ -89,7 +93,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppBusinessProjectService appBusinessProjectService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      InvoiceRepository invoiceRepository) {
     super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
     this.partnerService = partnerService;
     this.addressService = addressService;
@@ -97,6 +102,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
     this.appBaseService = appBaseService;
+    this.invoiceRepository = invoiceRepository;
   }
 
   @Override
@@ -310,7 +316,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       throws AxelorException {
     computeTimeFollowUp(project, projectTaskList);
     computeFinancialFollowUp(project, projectTaskList);
-    compute
+    computeInvoicingFollowUp(project);
     projectRepository.save(project);
   }
 
@@ -417,7 +423,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     project.setForecastCosts(forecastCosts);
 
     project.setForecastMargin(project.getTurnover().subtract(forecastCosts));
-    if (!forecastCosts.equals(BigDecimal.ZERO)) {
+    if (forecastCosts.compareTo(BigDecimal.ZERO) != 0) {
       project.setForecastMarkup(
           project
               .getForecastMargin()
@@ -463,6 +469,62 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     }
   }
 
+  protected void computeInvoicingFollowUp(Project project) {
+    List<Invoice> ventilatedInvoices =
+        invoiceRepository
+            .all()
+            .filter("self.project.id = :projectId AND self.statusSelect = :invoiceStatusVentilated")
+            .bind("projectId", project.getId())
+            .bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED)
+            .fetch();
+
+    BigDecimal totalInvoiced =
+        ventilatedInvoices.stream()
+            .map(Invoice::getExTaxTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    BigDecimal invoicedThisMonth =
+        ventilatedInvoices.stream()
+            .filter(
+                invoice ->
+                    isThisMonth(
+                        invoice.getInvoiceDate(),
+                        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDate()))
+            .map(Invoice::getExTaxTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    BigDecimal invoicedLastMonth =
+        ventilatedInvoices.stream()
+            .filter(
+                invoice ->
+                    isLastMonth(
+                        invoice.getInvoiceDate(),
+                        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDate()))
+            .map(Invoice::getExTaxTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    BigDecimal totalPaid =
+        ventilatedInvoices.stream()
+            .map(Invoice::getAmountPaid)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    project.setTotalInvoiced(totalInvoiced);
+    project.setInvoicedThisMonth(invoicedThisMonth);
+    project.setInvoicedLastMonth(invoicedLastMonth);
+    project.setTotalPaid(totalPaid);
+  }
+
+  protected boolean isThisMonth(LocalDate date, LocalDate today) {
+    return date.getMonthValue() == today.getMonthValue() && date.getYear() == today.getYear();
+  }
+
+  protected boolean isLastMonth(LocalDate date, LocalDate today) {
+    if (today.getMonthValue() > 1) {
+      return date.getMonthValue() == today.getMonthValue() - 1 && date.getYear() == today.getYear();
+    }
+    return date.getMonthValue() == 12 && date.getYear() == today.getYear() - 1;
+  }
+
   protected BigDecimal getConvertedTime(
       BigDecimal duration, Unit fromUnit, Unit toUnit, BigDecimal numberHoursADay)
       throws AxelorException {
@@ -503,6 +565,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setLandingCosts(project.getLandingCosts());
     projectHistoryLine.setLandingMargin(project.getLandingMargin());
     projectHistoryLine.setLandingMarkup(project.getLandingMarkup());
+
+    projectHistoryLine.setTotalInvoiced(project.getTotalInvoiced());
+    projectHistoryLine.setInvoicedThisMonth(project.getInvoicedThisMonth());
+    projectHistoryLine.setInvoicedLastMonth(project.getInvoicedLastMonth());
+    projectHistoryLine.setTotalPaid(project.getTotalPaid());
 
     project.addProjectHistoryLineListItem(projectHistoryLine);
 
