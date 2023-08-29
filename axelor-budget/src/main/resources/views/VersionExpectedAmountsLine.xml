@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="version-expected-amounts-line-grid" title="Version expected amounts lines"
+    editable="true" model="com.axelor.apps.budget.db.VersionExpectedAmountsLine"
+    orderBy="budget.budgetLevel.parentBudgetLevel.globalBudget,budget.budgetLevel.parentBudgetLevel,budget.budgetLevel"
+    groupBy="budget.budgetLevel.parentBudgetLevel.globalBudget,budget.budgetLevel.parentBudgetLevel,budget.budgetLevel">
+    <field name="budget.budgetLevel.parentBudgetLevel" readonly="true"/>
+    <field name="budget.budgetLevel" readonly="true"/>
+    <field name="budget" readonly="true"/>
+    <field name="expectedAmount"
+      validIf="expectedAmount &gt; 0 &amp;&amp; expectedAmount &gt;= budget.totalAmountRealized"/>
+    <field name="budget.totalAmountRealized"/>
+    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" hidden="true"/>
+  </grid>
+
+  <form title="Version expected amounts line" name="version-expected-amounts-line-form"
+    model="com.axelor.apps.budget.db.VersionExpectedAmountsLine">
+    <panel itemSpan="4">
+      <field name="budget"/>
+      <field name="expectedAmount"
+        validIf="expectedAmount &gt; 0 &amp;&amp; expectedAmount &gt;= budget.totalAmountRealized"/>
+      <field name="budget.totalAmountRealized" hidden="true"/>
+    </panel>
+  </form>
+
+</object-views>

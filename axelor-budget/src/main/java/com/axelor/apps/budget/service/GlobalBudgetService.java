@@ -2,6 +2,7 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.google.inject.persist.Transactional;
 
@@ -21,4 +22,8 @@ public interface GlobalBudgetService {
 
   @Transactional(rollbackOn = {RuntimeException.class})
   void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
+
+  @Transactional(rollbackOn = {RuntimeException.class})
+  GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
+      throws AxelorException;
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="budget-version-grid" title="Budget versions"
+    model="com.axelor.apps.budget.db.BudgetVersion" orderBy="name">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="globalBudget"/>
+    <field name="isActive"/>
+  </grid>
+
+  <form title="Budget version" name="budget-version-form"
+    model="com.axelor.apps.budget.db.BudgetVersion">
+    <panel readonlyIf="isActive">
+      <field name="name" colSpan="5"/>
+      <field name="code" colSpan="5"/>
+      <field name="isActive" readonly="true" colSpan="2"/>
+      <field name="versionExpectedAmountsLineList" title="Version expected amounts lines"
+        colSpan="12" form-view="version-expected-amounts-line-form"
+        grid-view="version-expected-amounts-line-grid" canEdit="!isActive" canNew="false"
+        canRemove="false" height="20"/>
+
+    </panel>
+  </form>
+
+</object-views>
