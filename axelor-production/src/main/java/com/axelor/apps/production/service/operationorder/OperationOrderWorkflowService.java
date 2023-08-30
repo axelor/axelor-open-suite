@@ -398,12 +398,12 @@ public class OperationOrderWorkflowService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder) throws AxelorException {
-	    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
-	        startOperationOrderDuration(operationOrder, AuthUtils.getUser());
-	      } else {
-	        start(operationOrder, AuthUtils.getUser());
-	      }
-	      operationOrderRepo.save(operationOrder);
+    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
+      startOperationOrderDuration(operationOrder, AuthUtils.getUser());
+    } else {
+      start(operationOrder, AuthUtils.getUser());
+    }
+    operationOrderRepo.save(operationOrder);
   }
 
   @Transactional(rollbackOn = {Exception.class})
