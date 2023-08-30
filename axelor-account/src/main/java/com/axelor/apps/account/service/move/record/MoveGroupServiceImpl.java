@@ -331,6 +331,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentMode(move);
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
+    moveRecordSetService.setSubrogationPartner(move);
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
 
     if (appAccountService.getAppAccount().getActivatePassedForPayment()
@@ -347,6 +348,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
     valuesMap.put("dueDate", move.getDueDate());
     valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
+    valuesMap.put("subrogationPartner", move.getSubrogationPartner());
 
     return valuesMap;
   }

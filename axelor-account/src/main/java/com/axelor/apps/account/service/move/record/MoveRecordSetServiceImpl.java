@@ -33,17 +33,22 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerLink;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
@@ -52,6 +57,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected PeriodService periodService;
   protected PaymentConditionService paymentConditionService;
   protected InvoiceTermService invoiceTermService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MoveRecordSetServiceImpl(
@@ -59,12 +65,14 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       BankDetailsService bankDetailsService,
       PeriodService periodService,
       PaymentConditionService paymentConditionService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      AppBaseService appBaseService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.periodService = periodService;
     this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -245,6 +253,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     }
   }
 
+  @Override
   public void setPfpStatus(Move move) {
     Objects.requireNonNull(move);
 
@@ -263,10 +272,43 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     }
   }
 
+  @Override
   public void setPfpValidatorUser(Move move) {
     Objects.requireNonNull(move);
 
     move.setPfpValidatorUser(
         invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
+  }
+
+  @Override
+  public void setSubrogationPartner(Move move) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
+      return;
+    }
+
+    List<Integer> journalTypeList =
+        Arrays.asList(
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER);
+
+    if (move.getPartner() == null
+        || move.getJournal() == null
+        || !journalTypeList.contains(move.getJournal().getJournalType().getTechnicalTypeSelect())
+        || CollectionUtils.isEmpty(move.getPartner().getManagedByPartnerLinkList())) {
+      move.setSubrogationPartner(null);
+    } else {
+      Partner subrogationPartner =
+          move.getPartner().getManagedByPartnerLinkList().stream()
+              .filter(
+                  it ->
+                      it.getPartnerLinkType().getTypeSelect()
+                          == PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY)
+              .map(PartnerLink::getPartner2)
+              .findFirst()
+              .orElse(null);
+
+      move.setSubrogationPartner(subrogationPartner);
+    }
   }
 }
