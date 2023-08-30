@@ -600,7 +600,7 @@
     </panel>
   </form>
 
-  <form name="move-licd ne-move-form" title="Move line"
+  <form name="move-line-move-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" onNew="action-move-line-method-onnew"
     onLoad="action-move-line-method-onload-move" width="large">
     <panel name="informationsPanel" title="Information" colSpan="12" canArchive="false">
