@@ -20,7 +20,7 @@
       <field name="name" title="Name"/>
       <field name="code" title="Code"/>
       <field name="entryMethod"/>
-      <field name="formula" title="Formula"/>
+      <field name="formula" title="Formula" showIf="entryMethod =='1'"/>
       <field name="category" colSpan="8"/>
 
     </panel>
