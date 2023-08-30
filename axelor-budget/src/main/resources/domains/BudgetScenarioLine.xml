@@ -9,12 +9,12 @@
     <many-to-one name="budgetScenario" ref="com.axelor.apps.budget.db.BudgetScenario"/>
     <many-to-one name="budgetScenarioVariable"
       ref="com.axelor.apps.budget.db.BudgetScenarioVariable"/>
-    <integer name="year1Value" title="Starting Year"/>
-    <integer name="year2Value" title="Year 2"/>
-    <integer name="year3Value" title="Year 3"/>
-    <integer name="year4Value" title="Year 4"/>
-    <integer name="year5Value" title="Year 5"/>
-    <integer name="year6Value" title="Year 6"/>
+    <decimal name="year1Value" title="Starting Year"/>
+    <decimal name="year2Value" title="Year 2"/>
+    <decimal name="year3Value" title="Year 3"/>
+    <decimal name="year4Value" title="Year 4"/>
+    <decimal name="year5Value" title="Year 5"/>
+    <decimal name="year6Value" title="Year 6"/>
 
   </entity>
 

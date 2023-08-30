@@ -10,7 +10,7 @@
     <string name="code" title="Code"/>
     <string name="name" title="Name"/>
     <integer name="entryMethod" title="Method"
-      selection="budget.scenario.entry.method.select"/>
+      selection="budget.scenario.entry.method.select" default="0"/>
     <string name="formula" title="Formula"/>
     <integer name="category" selection="budget.scenario.category.select" default="1"/>
     <extra-code>
