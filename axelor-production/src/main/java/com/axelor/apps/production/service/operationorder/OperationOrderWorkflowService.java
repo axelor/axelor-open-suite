@@ -398,35 +398,12 @@ public class OperationOrderWorkflowService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder) throws AxelorException {
-    if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
-      operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
-      operationOrder.setRealStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
-
-      startOperationOrderDuration(operationOrder);
-
-      if (operationOrder.getManufOrder() != null) {
-        int beforeOrAfterConfig =
-            operationOrder.getManufOrder().getProdProcess().getStockMoveRealizeOrderSelect();
-        if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-          for (StockMove stockMove : operationOrder.getInStockMoveList()) {
-            Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
-          }
-
-          StockMove newStockMove =
-              operationOrderStockMoveService._createToConsumeStockMove(
-                  operationOrder, operationOrder.getManufOrder().getCompany());
-          newStockMove.setStockMoveLineList(new ArrayList<>());
-          Beans.get(StockMoveService.class).plan(newStockMove);
-          operationOrder.addInStockMoveListItem(newStockMove);
-        }
-      }
-      operationOrderRepo.save(operationOrder);
-    }
-
-    if (operationOrder.getManufOrder().getStatusSelect()
-        != ManufOrderRepository.STATUS_IN_PROGRESS) {
-      Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
-    }
+	    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
+	        startOperationOrderDuration(operationOrder, AuthUtils.getUser());
+	      } else {
+	        start(operationOrder, AuthUtils.getUser());
+	      }
+	      operationOrderRepo.save(operationOrder);
   }
 
   @Transactional(rollbackOn = {Exception.class})
