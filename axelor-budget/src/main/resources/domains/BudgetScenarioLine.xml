@@ -7,28 +7,13 @@
 
   <entity name="BudgetScenarioLine">
     <many-to-one name="budgetScenario" ref="com.axelor.apps.budget.db.BudgetScenario"/>
+    <integer name="year1Value" title="Starting Year"/>
+    <integer name="year2Value" title="Year 2"/>
+    <integer name="year3Value" title="Year 3"/>
+    <integer name="year4Value" title="Year 4"/>
+    <integer name="year5Value" title="Year 5"/>
+    <integer name="year6Value" title="Year 6"/>
 
-    <string name="code" title="Code"/>
-    <string name="name" title="Name"/>
-    <integer name="entryMethod" title="Method"
-      selection="budget.scenario.entry.method.select"/>
-    <string name="formula" title="Formula"/>
-    <integer name="category" selection="budget.scenario.category.select" default="1"/>
-    <extra-code>
-      <![CDATA[
-      //budget scenario entry method type
-        public static final int BUDGET_SCENARIO_ENTRY_METHOD_TYPE_SELECT_MANUAL = 1;
-        public static final int BUDGET_SCENARIO_ENTRY_METHOD_TYPE_SELECT_FORMULA = 2;
-
-
-      //budget scenario category type
-        public static final int BUDGET_SCENARIO_CATEGORY_TYPE_SELECT_REVENUE = 1;
-        public static final int BUDGET_SCENARIO_CATEGORY_TYPE_SELECT_RH = 2;
-        public static final int BUDGET_SCENARIO_CATEGORY_TYPE_SELECT_PRODUCTION = 3;
-        public static final int BUDGET_SCENARIO_CATEGORY_TYPE_SELECT_RESULTS = 4;
-        public static final int BUDGET_SCENARIO_CATEGORY_TYPE_SELECT_CURRENT_EXPENSES = 5;
-		]]>
-    </extra-code>
   </entity>
 
 </domain-models>

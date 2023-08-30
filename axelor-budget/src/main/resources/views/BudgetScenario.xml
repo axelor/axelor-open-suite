@@ -6,13 +6,13 @@
   <grid name="budget-scenario-grid" title="Budget Scenario"
     model="com.axelor.apps.budget.db.BudgetScenario" orderBy="code">
     <field name="code"/>
-    <field name="name"/>
-    <field name="budgetScenarioLines" grid-view="budget-scenario-line-grid"
+    <field name="name" required="true"/>
+    <field name="budgetScenarioValueLines" grid-view="budget-scenario-line-grid"
       form-view="budget-scenario-line-form" domain="com.axelor.apps.budget.db.BudgetScenarioLine"/>
   </grid>
 
   <form model="com.axelor.apps.budget.db.BudgetScenario" title="Budget Scenario"
-    name="budget-scenario-form" width="large" onNew="action-global-budget-record-set-defaults">
+    name="budget-scenario-form" width="large">
     <panel name="mainPanel" colSpan="12">
 
       <field name="name" title="Name"/>
