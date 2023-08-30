@@ -2241,6 +2241,7 @@
 "No comparison","Aucune comparaison",,
 "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line.","Aucune période de Cut off n'a pu être appliquée. Veuillez vérifier que vous avez saisi des lignes et que le paramétrage du Cut off est bien activé sur le compte comptable associé à chaque ligne.",,
 "No debt recovery history attachments found.","Pas de pièces jointes pour ces éléments.",,
+"No depreciation account found in fixed asset category %s.","Aucun compte d'amortissement trouvé dans la catégorie d'immobilisation %s.",,
 "No email address in debt recovery %s. Please set one.","La méthode de recouvrement %s n'a pas d'adresse email à qui envoyer le message. Veuillez en configurer une.",,
 "No email have been sent.","Aucun email n'a été envoyé.",,
 "No implementation of FixedAssetLineComputationService found","Erreur lors de la récupération du FixedAssetLineComputationService",,
