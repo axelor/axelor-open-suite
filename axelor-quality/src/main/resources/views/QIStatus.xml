@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="qi-status-grid" title="QI Status" model="com.axelor.apps.quality.db.QIStatus"
+  <grid name="qi-status-grid" title="Statuses" model="com.axelor.apps.quality.db.QIStatus"
     orderBy="priority">
     <field name="name"/>
     <field name="priority"/>
@@ -11,7 +11,7 @@
     <field name="isCancelledStatus"/>
   </grid>
 
-  <form name="qi-status-form" title="QI Status" model="com.axelor.apps.quality.db.QIStatus"
+  <form name="qi-status-form" title="Status" model="com.axelor.apps.quality.db.QIStatus"
     onSave="action-qi-status-validate-on-save">
     <panel name="mainPanel">
       <field name="name"/>

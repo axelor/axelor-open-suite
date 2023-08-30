@@ -31,8 +31,8 @@ import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
@@ -66,6 +66,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class AccountingReportValueMoveLineServiceImpl extends AccountingReportValueAbstractService
     implements AccountingReportValueMoveLineService {
   protected MoveLineRepository moveLineRepo;
+  protected MoveToolService moveToolService;
   protected Set<AnalyticAccount> groupColumnAnalyticAccountSet;
   protected Set<AnalyticAccount> columnAnalyticAccountSet;
   protected Set<AnalyticAccount> lineAnalyticAccountSet;
@@ -76,9 +77,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo,
       MoveLineRepository moveLineRepo,
-      DateService dateService) {
+      DateService dateService,
+      MoveToolService moveToolService) {
     super(accountRepository, accountingReportValueRepo, analyticAccountRepo, dateService);
     this.moveLineRepo = moveLineRepo;
+    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -644,7 +647,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             .bind("paymentMode", accountingReport.getPaymentMode())
             .bind("currency", accountingReport.getCurrency())
             .bind("company", accountingReport.getCompany())
-            .bind("statusList", this.getMoveLineStatusList(accountingReport))
+            .bind(
+                "statusList",
+                moveToolService.getMoveStatusSelect(
+                    accountingReport.getMoveStatusSelect(), accountingReport.getCompany()))
             .bind("accountSet", accountSet)
             .bind(
                 "groupColumnAnalyticAccountFilter",
@@ -776,18 +782,6 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
                     resultSelect))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
-  }
-
-  protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
-    List<Integer> statusList =
-        new ArrayList<>(
-            Arrays.asList(MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED));
-
-    if (accountingReport.getDisplaySimulatedMove()) {
-      statusList.add(MoveRepository.STATUS_SIMULATED);
-    }
-
-    return statusList;
   }
 
   protected BigDecimal getMoveLineAmount(

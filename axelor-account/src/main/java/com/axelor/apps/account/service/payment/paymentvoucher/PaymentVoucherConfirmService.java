@@ -516,6 +516,13 @@ public class PaymentVoucherConfirmService {
               .orElse(BigDecimal.ZERO)
               .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
+      if (paymentVoucher.getRemainingAmount().signum() > 0) {
+        companyPaidAmount =
+            companyPaidAmount.add(
+                currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+                    paymentVoucher.getRemainingAmount(), currencyRate));
+      }
+
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =
             moveLineCreateService.createMoveLine(
@@ -870,7 +877,8 @@ public class PaymentVoucherConfirmService {
 
     paymentMove.addMoveLineListItem(moveLine);
     payVoucherElementToPay.setMoveLineGenerated(moveLine);
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(paymentMove, moveLine, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(
+        paymentMove, moveLine, paymentDate, false);
 
     BigDecimal amountInCompanyCurrency = moveLine.getDebit().add(moveLine.getCredit());
 
