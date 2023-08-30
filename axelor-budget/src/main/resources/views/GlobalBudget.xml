@@ -90,22 +90,23 @@
           onClick="action-global-budget-group-valid-btn-onClick"/>
         <button name="archivedBtn" title="archiveBtn" showIf="statusSelect == 2" colSpan="12"
           onClick="action-global-budget-method-archived-btn-onClick, save"/>
-        <panel name="showBudgetDistributionPanel" hidden="true">
+
+        <panel name="showBudgetDistributionPanel">
           <button name="showGlobalOrderLineBtn" hidden="true"
-            onClick="action-global-budget-group-view-global-order-line"
-            title="Global budget committed lines" colSpan="4"
+            onClick="action-global-budget-group-view-global-order-line" colSpan="12"
+            title="Global budget committed lines"
             showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
-          <button name="seeBudgetDistributionLines" hidden="true"
+          <button name="seeBudgetDistributionLines" hidden="true" colSpan="12"
             onClick="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-            title="Display distribution lines" colSpan="4"
+            title="Display distribution lines"
             showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
-          <button name="seeRealizedWithNoPo" hidden="true"
+          <button name="seeRealizedWithNoPo"
             onClick="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
-            title="Display realized with no po" colSpan="6"
+            title="Display realized with no po" colSpan="12"
             showIf="statusSelect == 2 &amp;&amp; realizedWithNoPo != 0"/>
           <button name="seeRealizedWithPo" hidden="true"
             onClick="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-with-po"
-            title="Display realized with po" colSpan="6"
+            title="Display realized with po" colSpan="12"
             showIf="statusSelect == 2 &amp;&amp; realizedWithPo != 0"/>
           <button name="seeSimulatedMoves" hidden="true"
             onClick="action-global-budget-line-distribution-view-show-simulated-moves-lines"
@@ -135,7 +136,7 @@
         canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
     </panel>
   </form>
-
+  
   <form title="New Budget Version" name="global-budget-budget-version-new-wizard-form"
     model="com.axelor.utils.db.Wizard">
     <panel>
@@ -199,7 +200,89 @@
     <call class="com.axelor.apps.budget.web.GlobalBudgetController"
       method="setBudgetVersionDomain"/>
   </action-method>
+  
+  <action-view
+          name="action-global-budget-line-distribution-view-show-simulated-moves-lines"
+          title="Simulated Moves" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="budget-distribution-simulated-moves"/>
+    <view type="form" name="budget-distribution-line-form"/>
+    <view-param name="show-toolbar" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId and
+      self.moveLine.move.statusSelect = 5</domain>
+    <context name="_globalBudgetId" expr="eval: id"/>
+  </action-view>
+  
+  <action-view
+          name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-with-po"
+          title="Display realized with po" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="budget-distribution-realized-with-po-line-grid"/>
+    <view type="form" name="budget-distribution-line-form"/>
+    <view-param name="show-toolbar" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId AND
+      (self.invoiceLine.invoice.purchaseOrder is not null OR self.invoiceLine.invoice.saleOrder is
+      not null) AND self.invoiceLine.invoice.statusSelect =
+      3
+    </domain>
+    <context name="_globalBudgetId" expr="eval: id"/>
+  </action-view>
+  
+  <action-view
+          name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
+          title="Display realized with no po" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="budget-distribution-realized-without-po-line-grid"/>
+    <view type="form" name="budget-distribution-line-form"/>
+    <view-param name="show-toolbar" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId AND
+      (self.invoiceLine.invoice.purchaseOrder is null AND self.invoiceLine.invoice.saleOrder is null
+      AND self.invoiceLine.invoice.statusSelect = 3)
+      OR (self.moveLine IS NOT NULL AND
+      self.moveLine.move.statusSelect in (2,3) AND
+      self.moveLine.move.invoice IS NULL)
+    </domain>
+    <context name="_globalBudgetId" expr="eval: id"/>
+  </action-view>
+  
+  <action-view
+          name="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
+          title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="budget-distribution-line-grid"/>
+    <view type="form" name="budget-distribution-line-form"/>
+    <view-param name="show-toolbar" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId</domain>
+    <context name="_globalBudgetId" expr="eval: id"/>
+  </action-view>
+  
+  <action-group name="action-global-budget-group-view-global-order-line">
+    <action name="action-global-budget-view-global-purchase-order-line"
+            if="__this__?.budgetTypeSelect != 2"/>
+    <action name="action-global-budget-view-global-sale-order-line"
+            if="__this__?.budgetTypeSelect == 2"/>
+  </action-group>
 
+  <action-view name="action-global-budget-view-global-purchase-order-line"
+               title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="budget-budget-distribution-purchase-order-line-global-dashlet-grid"/>
+    <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
+    <domain>self.purchaseOrderLine != null and
+      self.purchaseOrderLine.purchaseOrder.statusSelect in
+      (2,3,4) and
+      self.budget.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId</domain>
+    <context name="_globalId" expr="eval:__this__.id"/>
+  </action-view>
+
+  <action-view name="action-global-budget-view-global-sale-order-line"
+               title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
+    <view type="form" name="sale-order-budget-distribution-form"/>
+    <domain>self.saleOrderLine != null and
+      self.saleOrderLine.saleOrder.statusSelect in (3,4) and
+      self.budget.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId</domain>
+    <context name="_globalId" expr="eval:__this__.id"/>
+  </action-view>
 
   <action-group name="action-global-budget-group-onsave">
     <action name="action-global-budget-validate-from-to-dates"/>

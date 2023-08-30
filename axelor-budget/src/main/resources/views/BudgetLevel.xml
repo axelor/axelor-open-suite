@@ -162,7 +162,7 @@
           title="Global budget committed lines" colSpan="4"
           showIf="statusSelect == 'valid' &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
         <button name="seeBudgetDistributionLines"
-          onClick="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
+          onClick="action-budget-distribution-view-show-budget-level-budget-distibution-lines"
           title="Display distribution lines" colSpan="4"
           showIf="statusSelect == 'valid' &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
         <button name="seeRealizedWithNoPo"
@@ -1015,7 +1015,7 @@
     <context name="_groupId" expr="eval: id"/>
   </action-view>
   <action-view
-    name="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
+    name="action-budget-distribution-view-show-budget-level-budget-distibution-lines"
     title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
