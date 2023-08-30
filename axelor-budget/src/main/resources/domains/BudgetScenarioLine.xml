@@ -7,6 +7,8 @@
 
   <entity name="BudgetScenarioLine">
     <many-to-one name="budgetScenario" ref="com.axelor.apps.budget.db.BudgetScenario"/>
+    <many-to-one name="budgetScenarioVariable"
+      ref="com.axelor.apps.budget.db.BudgetScenarioVariable"/>
     <integer name="year1Value" title="Starting Year"/>
     <integer name="year2Value" title="Year 2"/>
     <integer name="year3Value" title="Year 3"/>

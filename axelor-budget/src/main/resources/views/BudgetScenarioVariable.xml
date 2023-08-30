@@ -17,8 +17,8 @@
     onNew="action-global-budget-record-set-defaults">
     <panel name="mainPanel" colSpan="12">
 
-      <field name="name" title="Name"/>
-      <field name="code" title="Code"/>
+      <field name="name" title="Name" required="true"/>
+      <field name="code" title="Code" required="true"/>
       <field name="entryMethod"/>
       <field name="formula" title="Formula" showIf="entryMethod =='1'"/>
       <field name="category" colSpan="8"/>
