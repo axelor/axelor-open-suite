@@ -19,9 +19,10 @@ package com.axelor.apps.production.rest;
 
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.exception.AxelorException;
+import javax.ws.rs.core.Response;
 
 public interface OperationOrderRestService {
 
-  void updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
+  Response updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
       throws AxelorException;
 }
