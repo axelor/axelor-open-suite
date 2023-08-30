@@ -132,7 +132,8 @@
         <panel title="Notes" stacked="true" name="notesPanel">
           <field name="note" showTitle="false"/>
         </panel>
-        <panel name="pricesPerYear" title="Prices per year">
+        <panel name="pricesPerYearPanel" title="Prices per year"
+          showIf="currentContractVersion.isPeriodicInvoicing">
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false" readonly="true">
             <viewer
