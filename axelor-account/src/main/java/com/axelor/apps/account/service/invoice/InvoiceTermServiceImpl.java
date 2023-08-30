@@ -1034,6 +1034,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());
 
+      invoiceTerm.setSubrogationPartner(
+          partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
+
       if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
         invoiceTerm.setOrigin(invoice.getInvoiceId());
       } else {
