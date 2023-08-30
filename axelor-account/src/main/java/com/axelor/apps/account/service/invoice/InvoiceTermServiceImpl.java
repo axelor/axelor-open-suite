@@ -43,6 +43,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -92,6 +94,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected JournalService journalService;
+  protected PartnerAccountService partnerAccountService;
   protected UserRepository userRepo;
 
   @Inject
@@ -104,7 +108,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      UserRepository userRepo) {
+      UserRepository userRepo,
+      JournalService journalService,
+      PartnerAccountService partnerAccountService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -114,6 +120,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.userRepo = userRepo;
+    this.journalService = journalService;
+    this.partnerAccountService = partnerAccountService;
   }
 
   @Override
@@ -1038,19 +1046,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     } else if (moveLine != null) {
       invoiceTerm.setOrigin(moveLine.getOrigin());
 
+      if (moveLine.getPartner() != null) {
+        invoiceTerm.setPartner(moveLine.getPartner());
+      }
+
       if (move != null) {
         invoiceTerm.setCompany(move.getCompany());
         invoiceTerm.setCurrency(move.getCurrency());
-      }
 
-      if (moveLine.getPartner() != null) {
-        invoiceTerm.setPartner(moveLine.getPartner());
-      } else {
-        invoiceTerm.setPartner(move.getPartner());
+        if (invoiceTerm.getPartner() == null) {
+          invoiceTerm.setPartner(move.getPartner());
+        }
+
+        if (journalService.isSubrogationOk(move.getJournal())) {
+          invoiceTerm.setSubrogationPartner(
+              partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
+        }
       }
     }
 
-    if (moveLine != null && invoiceTerm.getOriginDate() == null) {
+    if (moveLine != null && move != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
     }
   }

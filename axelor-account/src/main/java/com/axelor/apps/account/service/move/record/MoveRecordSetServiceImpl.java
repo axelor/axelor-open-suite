@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -43,7 +44,6 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,6 +57,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected InvoiceTermService invoiceTermService;
   protected AppBaseService appBaseService;
   protected PartnerAccountService partnerAccountService;
+  protected JournalService journalService;
 
   @Inject
   public MoveRecordSetServiceImpl(
@@ -66,7 +67,8 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       PaymentConditionService paymentConditionService,
       InvoiceTermService invoiceTermService,
       AppBaseService appBaseService,
-      PartnerAccountService partnerAccountService) {
+      PartnerAccountService partnerAccountService,
+      JournalService journalService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.periodService = periodService;
@@ -74,6 +76,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     this.invoiceTermService = invoiceTermService;
     this.appBaseService = appBaseService;
     this.partnerAccountService = partnerAccountService;
+    this.journalService = journalService;
   }
 
   @Override
@@ -287,17 +290,10 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       return;
     }
 
-    List<Integer> journalTypeList =
-        Arrays.asList(
-            JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
-            JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
-            JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER);
-
-    if (move.getJournal() == null
-        || !journalTypeList.contains(move.getJournal().getJournalType().getTechnicalTypeSelect())) {
-      move.setSubrogationPartner(null);
-    } else {
+    if (journalService.isSubrogationOk(move.getJournal())) {
       move.setSubrogationPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
+    } else {
+      move.setSubrogationPartner(null);
     }
   }
 }
