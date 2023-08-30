@@ -61,7 +61,6 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -261,19 +260,17 @@ public class DebtRecoveryService {
       List<Long> idList) {
     javax.persistence.Query moveLineWithoutInvoiceTermQuery =
         JPA.em()
-            .createNativeQuery(computeQuery(tradingName, false))
+            .createQuery(computeQuery(tradingName, false))
             .setParameter("partner", partner)
             .setParameter("company", company)
             .setParameter("todayDate", todayDate)
             .setParameter("cancelStatus", MoveRepository.STATUS_CANCELED)
-            .setParameter("mailTransitTime", mailTransitTime);
+            .setParameter("todayDateMinusTransitTime", todayDate.minusDays(mailTransitTime));
 
     moveLineWithoutInvoiceTermQuery =
         addTradingNameBinding(tradingName, moveLineWithoutInvoiceTermQuery);
 
-    List<BigInteger> idIntegerList = moveLineWithoutInvoiceTermQuery.getResultList();
-
-    convertListBigIntegerToLong(idList, idIntegerList);
+    idList.addAll(moveLineWithoutInvoiceTermQuery.getResultList());
   }
 
   protected void addInvoiceTermsFromMoveLine(
@@ -286,7 +283,7 @@ public class DebtRecoveryService {
 
       javax.persistence.Query moveLineWithInvoiceTermQuery =
           JPA.em()
-              .createNativeQuery(computeQuery(tradingName, true))
+              .createQuery(computeQuery(tradingName, true))
               .setParameter("partner", partner)
               .setParameter("company", company)
               .setParameter("todayDate", todayDate)
@@ -295,15 +292,7 @@ public class DebtRecoveryService {
       moveLineWithInvoiceTermQuery =
           addTradingNameBinding(tradingName, moveLineWithInvoiceTermQuery);
 
-      List<BigInteger> idIntegerList = moveLineWithInvoiceTermQuery.getResultList();
-
-      convertListBigIntegerToLong(idList, idIntegerList);
-    }
-  }
-
-  protected void convertListBigIntegerToLong(List<Long> idList, List<BigInteger> idIntegerList) {
-    for (BigInteger integer : idIntegerList) {
-      idList.add(integer.longValue());
+      idList.addAll(moveLineWithInvoiceTermQuery.getResultList());
     }
   }
 
@@ -330,39 +319,38 @@ public class DebtRecoveryService {
     query.append("AND move.id IS NOT NULL ");
     query.append("AND move.company = :company ");
     query.append("AND ml.debit > 0 ");
-    query.append("AND ml.due_date IS NOT NULL ");
-    query.append("AND (ml.due_date <= :todayDate) ");
-    query.append("AND account.use_for_partner_balance IS TRUE ");
-    query.append("AND ml.amount_remaining > 0 ");
-    query.append("AND move.ignore_in_debt_recovery_ok IS FALSE ");
-    query.append("AND move.status_select != :cancelStatus ");
+    query.append("AND ml.dueDate IS NOT NULL ");
+    query.append("AND (ml.dueDate <= :todayDate) ");
+    query.append("AND account.useForPartnerBalance IS TRUE ");
+    query.append("AND ml.amountRemaining > 0 ");
+    query.append("AND move.ignoreInDebtRecoveryOk IS FALSE ");
+    query.append("AND move.statusSelect != :cancelStatus ");
 
     if (tradingName != null) {
-      query.append("AND move.trading_name = :tradingName ");
+      query.append("AND move.tradingName = :tradingName ");
     }
 
     if (!allowMultiInvoiceTerms) {
       query.append("AND invoice.id IS NOT NULL ");
-      query.append("AND invoice.debt_recovery_blocking_ok IS FALSE ");
-      query.append("AND invoice.schedule_payment_ok IS FALSE ");
-      query.append("AND (invoice.invoice_date + :mailTransitTime) < :todayDate");
+      query.append("AND invoice.debtRecoveryBlockingOk IS FALSE ");
+      query.append("AND invoice.schedulePaymentOk IS FALSE ");
+      query.append("AND invoice.invoiceDate < :todayDateMinusTransitTime");
     } else {
       query.append("OR invoice.id IS NULL ");
       query.append("OR invoiceterm.id IS NOT NULL ");
-      query.append("OR ml.payment_schedule_line IS NOT NULL");
+      query.append("OR ml.paymentScheduleLine IS NOT NULL");
     }
   }
 
   protected void computeQueryJoins(boolean allowMultiInvoiceTerms, StringBuilder query) {
     query.append("SELECT DISTINCT ml.id ");
-    query.append("FROM account_move_line as ml ");
-    query.append("LEFT JOIN account_move as move ON (ml.move = move.id) ");
-    query.append("LEFT JOIN account_account as account ON (ml.account = account.id) ");
-    query.append("LEFT JOIN account_invoice as invoice ON (move.invoice = invoice.id) ");
+    query.append("FROM MoveLine ml ");
+    query.append("LEFT JOIN Move move ON (ml.move = move.id) ");
+    query.append("LEFT JOIN Account account ON (ml.account = account.id) ");
+    query.append("LEFT JOIN Invoice invoice ON (move.invoice = invoice.id) ");
 
     if (allowMultiInvoiceTerms) {
-      query.append(
-          "LEFT JOIN account_invoice_term as invoiceterm ON (invoiceterm.move_line = ml.id) ");
+      query.append("LEFT JOIN InvoiceTerm invoiceterm ON (invoiceterm.moveLine = ml.id) ");
     }
   }
 
