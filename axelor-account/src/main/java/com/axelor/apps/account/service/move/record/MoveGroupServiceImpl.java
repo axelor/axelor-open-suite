@@ -283,6 +283,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
     moveRecordSetService.setOriginDate(move);
+    moveRecordSetService.setSubrogationPartner(move);
 
     if (move.getJournal() != null
         && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -301,6 +302,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("paymentCondition", move.getPaymentCondition());
     valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
     valuesMap.put("originDate", move.getOriginDate());
+    valuesMap.put("subrogationPartner", move.getSubrogationPartner());
 
     return valuesMap;
   }

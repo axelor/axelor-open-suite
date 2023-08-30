@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -33,8 +34,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerLink;
-import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -48,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.apache.commons.collections.CollectionUtils;
 
 public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
@@ -58,6 +56,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected PaymentConditionService paymentConditionService;
   protected InvoiceTermService invoiceTermService;
   protected AppBaseService appBaseService;
+  protected PartnerAccountService partnerAccountService;
 
   @Inject
   public MoveRecordSetServiceImpl(
@@ -66,13 +65,15 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       PeriodService periodService,
       PaymentConditionService paymentConditionService,
       InvoiceTermService invoiceTermService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      PartnerAccountService partnerAccountService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.periodService = periodService;
     this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
     this.appBaseService = appBaseService;
+    this.partnerAccountService = partnerAccountService;
   }
 
   @Override
@@ -292,23 +293,11 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
             JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
             JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER);
 
-    if (move.getPartner() == null
-        || move.getJournal() == null
-        || !journalTypeList.contains(move.getJournal().getJournalType().getTechnicalTypeSelect())
-        || CollectionUtils.isEmpty(move.getPartner().getManagedByPartnerLinkList())) {
+    if (move.getJournal() == null
+        || !journalTypeList.contains(move.getJournal().getJournalType().getTechnicalTypeSelect())) {
       move.setSubrogationPartner(null);
     } else {
-      Partner subrogationPartner =
-          move.getPartner().getManagedByPartnerLinkList().stream()
-              .filter(
-                  it ->
-                      it.getPartnerLinkType().getTypeSelect()
-                          == PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY)
-              .map(PartnerLink::getPartner2)
-              .findFirst()
-              .orElse(null);
-
-      move.setSubrogationPartner(subrogationPartner);
+      move.setSubrogationPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
     }
   }
 }
