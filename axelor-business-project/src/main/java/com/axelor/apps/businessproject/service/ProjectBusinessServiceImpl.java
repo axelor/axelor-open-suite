@@ -478,40 +478,62 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED)
             .fetch();
 
-    BigDecimal totalInvoiced =
-        ventilatedInvoices.stream()
-            .map(Invoice::getExTaxTotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal totalInvoiced = BigDecimal.ZERO;
+    BigDecimal invoicedThisMonth = BigDecimal.ZERO;
+    BigDecimal invoicedLastMonth = BigDecimal.ZERO;
+    BigDecimal totalPaid = BigDecimal.ZERO;
 
-    BigDecimal invoicedThisMonth =
-        ventilatedInvoices.stream()
-            .filter(
-                invoice ->
-                    isThisMonth(
-                        invoice.getInvoiceDate(),
-                        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDate()))
-            .map(Invoice::getExTaxTotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    BigDecimal invoicedLastMonth =
-        ventilatedInvoices.stream()
-            .filter(
-                invoice ->
-                    isLastMonth(
-                        invoice.getInvoiceDate(),
-                        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDate()))
-            .map(Invoice::getExTaxTotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    BigDecimal totalPaid =
-        ventilatedInvoices.stream()
-            .map(Invoice::getAmountPaid)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    for (Invoice ventilatedInvoice : ventilatedInvoices) {
+      totalInvoiced = totalInvoiced.add(processTotalInvoiced(ventilatedInvoice));
+      invoicedThisMonth = invoicedThisMonth.add(processInvoicedThisMonth(ventilatedInvoice));
+      invoicedLastMonth = invoicedLastMonth.add(processInvoicedLastMonth(ventilatedInvoice));
+      totalPaid = totalPaid.add(processTotalPaid(ventilatedInvoice));
+    }
 
     project.setTotalInvoiced(totalInvoiced);
     project.setInvoicedThisMonth(invoicedThisMonth);
     project.setInvoicedLastMonth(invoicedLastMonth);
     project.setTotalPaid(totalPaid);
+  }
+
+  protected BigDecimal processTotalInvoiced(Invoice ventilatedInvoice) {
+    switch (ventilatedInvoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        return ventilatedInvoice.getExTaxTotal();
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        return ventilatedInvoice.getExTaxTotal().negate();
+      default:
+        return BigDecimal.ZERO;
+    }
+  }
+
+  protected BigDecimal processInvoicedThisMonth(Invoice ventilatedInvoice) {
+    if (isThisMonth(
+        ventilatedInvoice.getInvoiceDate(),
+        appBaseService.getTodayDateTime(ventilatedInvoice.getCompany()).toLocalDate())) {
+      return processTotalInvoiced(ventilatedInvoice);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal processInvoicedLastMonth(Invoice ventilatedInvoice) {
+    if (isLastMonth(
+        ventilatedInvoice.getInvoiceDate(),
+        appBaseService.getTodayDateTime(ventilatedInvoice.getCompany()).toLocalDate())) {
+      return processTotalInvoiced(ventilatedInvoice);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal processTotalPaid(Invoice ventilatedInvoice) {
+    switch (ventilatedInvoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        return ventilatedInvoice.getAmountPaid();
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        return ventilatedInvoice.getAmountPaid().negate();
+      default:
+        return BigDecimal.ZERO;
+    }
   }
 
   protected boolean isThisMonth(LocalDate date, LocalDate today) {
