@@ -516,6 +516,7 @@
       <field name="subrogationPartner" colSpan="4" domain="self.isSubrogation IS TRUE"
         showIf="[1,3].includes(operationTypeSelect)" readonlyIf="amountRemaining != inTaxTotal"
         form-view="partner-form" grid-view="partner-grid"
+        onChange="action-invoice-method-update-subrogation-partner"
         if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       <field name="paymentMode" colSpan="4" canEdit="false" widget="SuggestBox"
         onSelect="action-set-payment-mode-domain"
@@ -2391,6 +2392,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-manage-pfp-status">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="managePfpStatusOnInvoiceTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-update-subrogation-partner">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateSubrogationPartner"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

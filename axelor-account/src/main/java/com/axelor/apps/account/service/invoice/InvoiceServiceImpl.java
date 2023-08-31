@@ -1221,4 +1221,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
     return invoice;
   }
+
+  @Override
+  public void updateSubrogationPartner(Invoice invoice) {
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      invoice
+          .getInvoiceTermList()
+          .forEach(it -> it.setSubrogationPartner(invoice.getSubrogationPartner()));
+    }
+  }
 }

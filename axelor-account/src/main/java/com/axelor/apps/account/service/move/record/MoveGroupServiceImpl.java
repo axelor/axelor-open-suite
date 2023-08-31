@@ -704,4 +704,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Object> getSubrogationPartnerOnChangeValuesMap(Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveRecordUpdateService.updateSubrogationPartner(move);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    return valuesMap;
+  }
 }

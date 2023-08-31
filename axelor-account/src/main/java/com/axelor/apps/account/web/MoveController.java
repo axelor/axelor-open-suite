@@ -892,4 +892,16 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void onChangeSubrogationPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
+
+      response.setValues(
+          Beans.get(MoveGroupService.class).getSubrogationPartnerOnChangeValuesMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
