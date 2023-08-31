@@ -55,7 +55,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -140,20 +139,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
-  @Transactional
-  public void computeTotalPaymentSession(PaymentSession paymentSession) {
-    BigDecimal sessionTotalAmount =
-        (BigDecimal)
-            JPA.em()
-                .createQuery(
-                    "select SUM(self.amountPaid) FROM InvoiceTerm as self WHERE self.paymentSession = ?1 AND self.isSelectedOnPaymentSession = TRUE")
-                .setParameter(1, paymentSession)
-                .getSingleResult();
-    paymentSession.setSessionTotalAmount(sessionTotalAmount);
-    paymentSessionRepository.save(paymentSession);
-  }
-
-  @Override
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession) {
     return getTermsBySession(paymentSession, false).count() > 0;
   }
@@ -219,7 +204,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void selectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, false).fetch();
     invoiceTermService.toggle(invoiceTermList, true);
-    computeTotalPaymentSession(paymentSession);
   }
 
   @Override
@@ -227,7 +211,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, true).fetch();
     invoiceTermService.toggle(invoiceTermList, false);
-    computeTotalPaymentSession(paymentSession);
   }
 
   protected Query<InvoiceTerm> getTermsBySession(
@@ -283,8 +266,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .order("id");
 
     this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
-    paymentSession = paymentSessionRepository.find(paymentSession.getId());
-    computeTotalPaymentSession(paymentSession);
   }
 
   protected String retrieveEligibleTermsQuery(Company company) throws AxelorException {
@@ -293,15 +274,16 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.dueDate <= :paymentDatePlusMargin "
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "
-            + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
+            + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE "
+            + " AND (self.moveLine.move.statusSelect = "
+            + MoveRepository.STATUS_ACCOUNTED;
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    if (!accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
-      generalCondition +=
-          " AND self.moveLine.move.statusSelect != " + MoveRepository.STATUS_DAYBOOK + " ";
+    if (accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
+      generalCondition += " OR self.moveLine.move.statusSelect = " + MoveRepository.STATUS_DAYBOOK;
     }
 
     String termsMoveLineCondition =
-        " AND (0 in (:partnerIds) OR self.moveLine.move.partner.id in (:partnerIds))"
+        ") AND (0 in (:partnerIds) OR self.moveLine.move.partner.id in (:partnerIds))"
             + " AND ((self.moveLine.partner.isCustomer = TRUE "
             + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND :partnerTypeSelect = :partnerTypeClient"
@@ -484,9 +466,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       offset += invoiceTermList.size();
       JPA.clear();
     }
-
-    paymentSession = paymentSessionRepository.find(paymentSession.getId());
-    this.computeTotalPaymentSession(paymentSession);
   }
 
   protected Query<InvoiceTerm> getNegativeBalanceInvoiceTermQuery(PaymentSession paymentSession) {

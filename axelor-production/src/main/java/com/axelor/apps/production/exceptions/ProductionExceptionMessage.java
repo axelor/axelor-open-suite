@@ -308,4 +308,10 @@ public final class ProductionExceptionMessage {
   public static final String OPERATION_ORDER_ALREADY_FINISHED =
       /*$$(*/
       "The operation order is already finished and cannot be moved." /*)*/;
+
+  public static final String GENERATE_MANUF_ORDER_BOM_MISSING_UNIT =
+      /*$$(*/ "The unit of the bill of material %s is missing. Please correct it." /*)*/;
+
+  public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
+      /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
 }

@@ -180,7 +180,7 @@
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati"
             readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"/>
           <field name="interco" hidden="true" if-module="axelor-supplychain"
-            if="__config__.app.isApp('supplychain')"/>
+            if="__config__.app.isApp('supplychain')" widget="boolean-switch"/>
           <field name="createdByInterco" showIf="createdByInterco" readonly="true"
             if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
@@ -243,6 +243,8 @@
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
+        <field name="projectTask" domain="self.project = :project"
+          form-view="project-task-form" grid-view="project-task-grid" colSpan="6"/>
       </panel>
       <panel name="POManagementPanel" title="PO Management"
         if-module="axelor-supplier-management" colSpan="12"

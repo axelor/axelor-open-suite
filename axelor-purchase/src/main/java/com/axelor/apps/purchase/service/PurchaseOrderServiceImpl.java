@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -86,6 +87,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected CurrencyService currencyService;
 
   @Inject protected PurchaseConfigService purchaseConfigService;
+
+  @Inject protected ProductConversionService productConversionService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -494,7 +497,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                   productCompanyService.get(product, "costTypeSelect", purchaseOrder.getCompany())
               == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
             productCompanyService.set(
-                product, "costPrice", lastPurchasePrice, purchaseOrder.getCompany());
+                product,
+                "costPrice",
+                productConversionService.convertFromPurchaseToStockUnitPrice(
+                    product, lastPurchasePrice),
+                purchaseOrder.getCompany());
             if ((Boolean)
                 productCompanyService.get(
                     product, "autoUpdateSalePrice", purchaseOrder.getCompany())) {

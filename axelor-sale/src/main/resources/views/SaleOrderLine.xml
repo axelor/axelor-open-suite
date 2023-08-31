@@ -193,9 +193,6 @@
             onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati"/>
           <field name="productName" colSpan="12"/>
           <field name="oldQty"/>
-          <field name="product.isUnrenewed" hidden="true"/>
-          <field name="product.isPrototype" hidden="true"/>
-          <field name="saleOrder" hidden="true"/>
         </panel>
         <panel name="productDetailPanel" colSpan="12">
           <field name="qty" colSpan="3"
@@ -337,7 +334,7 @@
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"
           onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view"
-          if-module="axelor-supplychain"/>
+          if="__config__.app.isApp('supplychain')"/>
         <field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"
           hideIf="product.productTypeSelect == 'service'"/>
@@ -405,12 +402,12 @@
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
-    <panel name="statusPanel" hidden="true">
+    <panel name="hiddenPanel" hidden="true">
       <field name="saleOrder.statusSelect"/>
       <field name="saleOrder.orderBeingEdited"/>
-      <field name="product.isUnrenewed" hidden="true"/>
-      <field name="product.isPrototype" hidden="true"/>
-      <field name="saleOrder" hidden="true"/>
+      <field name="product.isUnrenewed"/>
+      <field name="product.isPrototype"/>
+      <field name="saleOrder"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>

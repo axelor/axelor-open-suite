@@ -45,6 +45,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.date.DateTool;
@@ -55,7 +56,9 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -70,6 +73,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected ProdProcessLineService prodProcessLineService;
   protected MachineService machineService;
   protected ManufOrderService manufOrderService;
+  protected ManufOrderWorkflowService manufOrderWorkflowService;
 
   @Inject
   public OperationOrderWorkflowServiceImpl(
@@ -81,7 +85,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       WeeklyPlanningService weeklyPlanningService,
       ProdProcessLineService prodProcessLineService,
       MachineService machineService,
-      ManufOrderService manufOrderService) {
+      ManufOrderService manufOrderService,
+      ManufOrderWorkflowService manufOrderWorkflowService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -91,6 +96,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     this.prodProcessLineService = prodProcessLineService;
     this.machineService = machineService;
     this.manufOrderService = manufOrderService;
+    this.manufOrderWorkflowService = manufOrderWorkflowService;
   }
 
   /**
@@ -118,6 +124,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     }
 
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
+    manufOrderWorkflowService.setOperationOrderMaxPriority(manufOrder);
 
     return operationOrderRepo.save(operationOrder);
   }
@@ -297,30 +304,46 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder) throws AxelorException {
-    if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
-      operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
-      operationOrder.setRealStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
-      startOperationOrderDuration(operationOrder);
-
-      if (operationOrder.getManufOrder() != null) {
-        int beforeOrAfterConfig =
-            operationOrder.getManufOrder().getProdProcess().getStockMoveRealizeOrderSelect();
-        if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
-          for (StockMove stockMove : operationOrder.getInStockMoveList()) {
-            Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
-          }
-
-          StockMove newStockMove =
-              operationOrderStockMoveService._createToConsumeStockMove(
-                  operationOrder, operationOrder.getManufOrder().getCompany());
-          newStockMove.setStockMoveLineList(new ArrayList<>());
-          Beans.get(StockMoveService.class).plan(newStockMove);
-          operationOrder.addInStockMoveListItem(newStockMove);
-        }
-      }
-      operationOrderRepo.save(operationOrder);
+    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
+      startOperationOrderDuration(operationOrder, AuthUtils.getUser());
+    } else {
+      start(operationOrder, AuthUtils.getUser());
     }
+    operationOrderRepo.save(operationOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void start(OperationOrder operationOrder, User user) throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS
+        || !canStartOperationOrder(operationOrder)) {
+      return;
+    }
+
+    operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
+    operationOrder.setRealStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
+
+    startOperationOrderDuration(operationOrder, user);
+
+    if (operationOrder.getManufOrder() != null) {
+      int beforeOrAfterConfig =
+          operationOrder.getManufOrder().getProdProcess().getStockMoveRealizeOrderSelect();
+      if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
+        for (StockMove stockMove : operationOrder.getInStockMoveList()) {
+          Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
+        }
+
+        StockMove newStockMove =
+            operationOrderStockMoveService._createToConsumeStockMove(
+                operationOrder, operationOrder.getManufOrder().getCompany());
+        newStockMove.setStockMoveLineList(new ArrayList<>());
+        Beans.get(StockMoveService.class).plan(newStockMove);
+        operationOrder.addInStockMoveListItem(newStockMove);
+      }
+    }
+    operationOrderRepo.save(operationOrder);
 
     if (operationOrder.getManufOrder().getStatusSelect()
         != ManufOrderRepository.STATUS_IN_PROGRESS) {
@@ -334,11 +357,25 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param operationOrder An operation order
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void pause(OperationOrder operationOrder) {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
 
     stopOperationOrderDuration(operationOrder);
+
+    operationOrderRepo.save(operationOrder);
+  }
+
+  @Override
+  @Transactional
+  public void pause(OperationOrder operationOrder, User user) {
+
+    stopOperationOrderDuration(operationOrder, AuthUtils.getUser());
+
+    // All operations orders duration are stopped
+    if (allOperationDurationAreStopped(operationOrder)) {
+      operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
+    }
 
     operationOrderRepo.save(operationOrder);
   }
@@ -353,7 +390,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   public void resume(OperationOrder operationOrder) {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 
-    startOperationOrderDuration(operationOrder);
+    startOperationOrderDuration(operationOrder, AuthUtils.getUser());
 
     operationOrderRepo.save(operationOrder);
   }
@@ -375,6 +412,39 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrderStockMoveService.finish(operationOrder);
     operationOrderRepo.save(operationOrder);
     calculateHoursOfUse(operationOrder);
+    manufOrderWorkflowService.setOperationOrderMaxPriority(operationOrder.getManufOrder());
+  }
+
+  /**
+   * Ends the given {@link OperationOrder} and sets its stopping time<br>
+   * Realizes the linked stock moves
+   *
+   * @param operationOrder An operation order
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void finish(OperationOrder operationOrder, User user) throws AxelorException {
+
+    stopOperationOrderDuration(operationOrder, user);
+
+    // All operations orders duration are stopped
+    if (allOperationDurationAreStopped(operationOrder)) {
+
+      operationOrder.setStatusSelect(OperationOrderRepository.STATUS_FINISHED);
+      computeFinishDuration(operationOrder);
+      operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
+      operationOrderStockMoveService.finish(operationOrder);
+      operationOrderRepo.save(operationOrder);
+      calculateHoursOfUse(operationOrder);
+      return;
+    }
+
+    operationOrderRepo.save(operationOrder);
+  }
+
+  protected boolean allOperationDurationAreStopped(OperationOrder operationOrder) {
+    return operationOrder.getOperationOrderDurationList().stream()
+        .allMatch(oo -> oo.getStoppingDateTime() != null);
   }
 
   @Override
@@ -406,6 +476,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrderStockMoveService.cancel(operationOrder);
 
     operationOrderRepo.save(operationOrder);
+    manufOrderWorkflowService.setOperationOrderMaxPriority(operationOrder.getManufOrder());
   }
 
   /**
@@ -415,34 +486,82 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    */
   @Override
   public void startOperationOrderDuration(OperationOrder operationOrder) {
-    OperationOrderDuration duration = new OperationOrderDuration();
-    duration.setStartedBy(AuthUtils.getUser());
-    duration.setStartingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
-    operationOrder.addOperationOrderDurationListItem(duration);
+    startOperationOrderDuration(operationOrder, AuthUtils.getUser());
+  }
+
+  protected void startOperationOrderDuration(OperationOrder operationOrder, User user) {
+
+    if (operationOrder.getOperationOrderDurationList() != null
+        && operationOrder.getOperationOrderDurationList().stream()
+            .noneMatch(
+                ood -> ood.getStartedBy().equals(user) && ood.getStoppingDateTime() == null)) {
+      OperationOrderDuration duration = new OperationOrderDuration();
+      duration.setStartedBy(user);
+      duration.setStartingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
+      operationOrder.addOperationOrderDurationListItem(duration);
+    }
   }
 
   /**
-   * Ends the last {@link OperationOrderDuration} and sets the real duration of {@code
+   * Ends every operationDuration of operation order and sets the real duration of {@code
    * operationOrder}<br>
    * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
    *
    * @param operationOrder An operation order
    */
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void stopOperationOrderDuration(OperationOrder operationOrder) {
+
+    stopAllOperationOrderDuration(operationOrder);
+  }
+
+  protected void stopAllOperationOrderDuration(OperationOrder operationOrder) {
+    if (operationOrder.getOperationOrderDurationList() != null) {
+      operationOrder.getOperationOrderDurationList().stream()
+          .filter(ood -> ood.getStoppingDateTime() == null)
+          .forEach(
+              ood -> {
+                stopOperationOrderDuration(ood);
+              });
+    }
+  }
+
+  @Override
+  public void stopOperationOrderDuration(OperationOrder operationOrder, User user) {
+
+    Map<String, Object> bindingMap = new HashMap<>();
+    StringBuilder operationOrderFilter =
+        new StringBuilder(
+            "self.operationOrder.id = :operationOrderId AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL");
+    bindingMap.put("operationOrderId", operationOrder.getId());
+
+    if (user != null) {
+      operationOrderFilter.append(" AND self.startedBy = :currentUser");
+      bindingMap.put("currentUser", user);
+    }
+
     OperationOrderDuration duration =
         operationOrderDurationRepo
             .all()
-            .filter(
-                "self.operationOrder.id = ? AND self.stoppedBy IS NULL AND self.stoppingDateTime IS NULL",
-                operationOrder.getId())
+            .filter(operationOrderFilter.toString())
+            .bind(bindingMap)
             .fetchOne();
 
+    stopOperationOrderDuration(duration);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void stopOperationOrderDuration(OperationOrderDuration duration) {
     if (duration != null) {
       duration.setStoppedBy(AuthUtils.getUser());
       duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
+      operationOrderDurationRepo.save(duration);
     }
+  }
 
+  protected void computeFinishDuration(OperationOrder operationOrder) {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
@@ -450,10 +569,6 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }
-    }
-
-    if (duration != null) {
-      operationOrderDurationRepo.save(duration);
     }
   }
 
@@ -614,5 +729,17 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     MachineTool machineTool = machineToolRepo.find(operationOrder.getMachineTool().getId());
     machineTool.setHoursOfUse(hoursOfUse);
     machineToolRepo.save(machineTool);
+  }
+
+  @Override
+  public boolean canStartOperationOrder(OperationOrder operationOrder) {
+    Integer priority = operationOrder.getPriority();
+    Boolean isOptional = operationOrder.getProdProcessLine().getOptional();
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    Integer operationOrderMaxPriority = manufOrder.getOperationOrderMaxPriority();
+
+    return Boolean.FALSE.equals(manufOrder.getProdProcess().getOperationContinuity())
+        || (!isOptional && priority.equals(operationOrderMaxPriority))
+        || (isOptional && priority.compareTo(operationOrderMaxPriority) < 0);
   }
 }

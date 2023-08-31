@@ -16,6 +16,11 @@
     <option value="7">Merged</option>
   </selection>
 
+  <selection name="production.manuf.operation.continuity.select">
+    <option value="0">No continuity</option>
+    <option value="1">Optional continuity</option>
+    <option value="2">Continuity by default</option>
+  </selection>
   <selection name="production.bill.of.material.status.select">
     <option value="1">Draft</option>
     <option value="2">Validated</option>
@@ -130,11 +135,6 @@
   <selection name="production.weekly.planning.type.select">
     <option value="1">Human resources</option>
     <option value="2">Machine</option>
-  </selection>
-
-  <selection name="production.sop.line.status">
-    <option value="1">Draft</option>
-    <option value="2">Confirmed</option>
   </selection>
 
   <selection name="production.cost.calculations.status.select">

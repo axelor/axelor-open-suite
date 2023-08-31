@@ -20,7 +20,6 @@ package com.axelor.apps.hr.web.leave;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -35,7 +34,11 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.LeaveLineService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -183,7 +186,7 @@ public class LeaveController {
               .add("grid", "leave-request-grid")
               .add("form", "leave-request-form");
 
-      actionView.domain(Beans.get(LeaveService.class).getLeaveCalendarDomain(user));
+      actionView.domain(Beans.get(LeaveRequestService.class).getLeaveCalendarDomain(user));
       actionView.context("userId", user.getId());
       response.setView(actionView.map());
     } catch (Exception e) {
@@ -234,12 +237,10 @@ public class LeaveController {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
       Employee employee = leave.getEmployee();
       if (employee == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
-            AuthUtils.getUser().getName());
+        return;
       }
-      response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
+      response.setValue(
+          "duration", Beans.get(LeaveRequestComputeDurationService.class).computeDuration(leave));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -249,7 +250,8 @@ public class LeaveController {
   public void send(ActionRequest request, ActionResponse response) {
 
     try {
-      LeaveService leaveService = Beans.get(LeaveService.class);
+      LeaveRequestService leaveRequestService = Beans.get(LeaveRequestService.class);
+      LeaveLineService leaveLineService = Beans.get(LeaveLineService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
@@ -261,11 +263,11 @@ public class LeaveController {
         return;
       }
 
-      LeaveLine leaveLine = leaveService.getLeaveLine(leaveRequest);
+      LeaveLine leaveLine = leaveLineService.getLeaveLine(leaveRequest);
       if (leaveLine != null
           && leaveLine.getQuantity().subtract(leaveRequest.getDuration()).signum() < 0) {
         if (!leaveRequest.getLeaveReason().getAllowNegativeValue()
-            && !leaveService.willHaveEnoughDays(leaveRequest)) {
+            && !leaveRequestService.willHaveEnoughDays(leaveRequest)) {
           String instruction = leaveRequest.getLeaveReason().getInstruction();
           if (instruction == null) {
             instruction = "";
@@ -285,9 +287,10 @@ public class LeaveController {
         }
       }
 
-      leaveService.confirm(leaveRequest);
+      Beans.get(LeaveRequestWorkflowService.class).confirm(leaveRequest);
 
-      Message message = leaveService.sendConfirmationEmail(leaveRequest);
+      Message message =
+          Beans.get(LeaveRequestMailService.class).sendConfirmationEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -312,13 +315,12 @@ public class LeaveController {
   public void validate(ActionRequest request, ActionResponse response) {
 
     try {
-      LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
-      leaveService.validate(leaveRequest);
+      Beans.get(LeaveRequestWorkflowService.class).validate(leaveRequest);
 
-      Message message = leaveService.sendValidationEmail(leaveRequest);
+      Message message = Beans.get(LeaveRequestMailService.class).sendValidationEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -348,13 +350,12 @@ public class LeaveController {
   public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
-      LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
-      leaveService.refuse(leaveRequest);
+      Beans.get(LeaveRequestWorkflowService.class).refuse(leaveRequest);
 
-      Message message = leaveService.sendRefusalEmail(leaveRequest);
+      Message message = Beans.get(LeaveRequestMailService.class).sendRefusalEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -373,11 +374,9 @@ public class LeaveController {
     try {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
       leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-      LeaveService leaveService = Beans.get(LeaveService.class);
+      Beans.get(LeaveRequestWorkflowService.class).cancel(leave);
 
-      leaveService.cancel(leave);
-
-      Message message = leaveService.sendCancellationEmail(leave);
+      Message message = Beans.get(LeaveRequestMailService.class).sendCancellationEmail(leave);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -424,7 +423,8 @@ public class LeaveController {
 
       if (employee != null) {
         employee = Beans.get(EmployeeRepository.class).find(employee.getId());
-        leaveLine = Beans.get(LeaveService.class).addLeaveReasonOrCreateIt(employee, leaveReason);
+        leaveLine =
+            Beans.get(LeaveLineService.class).addLeaveReasonOrCreateIt(employee, leaveReason);
         response.setValue("leaveLine", leaveLine);
       }
     } catch (AxelorException e) {

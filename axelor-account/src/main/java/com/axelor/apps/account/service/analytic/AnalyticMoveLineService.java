@@ -71,6 +71,9 @@ public interface AnalyticMoveLineService {
       InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
       throws AxelorException;
 
+  AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
+      throws AxelorException;
+
   AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
   AnalyticMoveLine reverseAndPersist(
@@ -79,5 +82,5 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine generateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
-  String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company);
+  String getAnalyticAxisDomain(Company company) throws AxelorException;
 }
