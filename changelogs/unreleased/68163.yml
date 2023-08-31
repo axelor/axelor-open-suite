@@ -1,0 +1,3 @@
+---
+title: "Payment session : Fix generated payment move lines on a partner balance account not having an invoice term"
+type: fix

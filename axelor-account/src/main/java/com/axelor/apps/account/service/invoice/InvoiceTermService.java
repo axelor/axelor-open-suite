@@ -330,6 +330,6 @@ public interface InvoiceTermService {
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
-  boolean isThresholdNotOnLastInvoiceTerm(
+  boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
 }

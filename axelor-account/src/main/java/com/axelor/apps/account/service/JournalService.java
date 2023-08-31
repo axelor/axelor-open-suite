@@ -64,7 +64,7 @@ public class JournalService {
         "debit", resultArr[0] != null ? new BigDecimal(resultArr[0].toString()) : BigDecimal.ZERO);
     resultMap.put(
         "credit", resultArr[1] != null ? new BigDecimal(resultArr[1].toString()) : BigDecimal.ZERO);
-    resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")));
+    resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")).abs());
 
     return resultMap;
   }

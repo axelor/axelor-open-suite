@@ -883,7 +883,8 @@ public class PaymentVoucherConfirmService {
 
     paymentMove.addMoveLineListItem(moveLine);
     payVoucherElementToPay.setMoveLineGenerated(moveLine);
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(paymentMove, moveLine, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(
+        paymentMove, moveLine, paymentDate, false);
 
     BigDecimal amountInCompanyCurrency = moveLine.getDebit().add(moveLine.getCredit());
 

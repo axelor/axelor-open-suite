@@ -21,12 +21,10 @@ package com.axelor.apps.production.rest;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.rest.dto.OperationOrderPutRequest;
-import com.axelor.apps.production.rest.dto.OperationOrderResponse;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
-import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
@@ -57,12 +55,7 @@ public class OperationOrderRestController {
     OperationOrder operationOrder =
         ObjectFinder.find(OperationOrder.class, operationOrderId, requestBody.getVersion());
 
-    Beans.get(OperationOrderRestService.class)
+    return Beans.get(OperationOrderRestService.class)
         .updateStatusOfOperationOrder(operationOrder, requestBody.getStatus());
-
-    return ResponseConstructor.build(
-        Response.Status.OK,
-        "Operation order status successfully updated.",
-        new OperationOrderResponse((operationOrder)));
   }
 }
