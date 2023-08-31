@@ -61,6 +61,20 @@
     <field name="availableAmountWithSimulated"/>
   </grid>
 
+  <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
+    name="budget-level-template-grid" orderBy="code">
+    <field name="globalBudgetTemplate"/>
+    <field name="code"/>
+    <field name="name"/>
+  </grid>
+
+  <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
+    name="budget-level-children-template-grid" orderBy="code">
+    <field name="parentBudgetLevel"/>
+    <field name="code"/>
+    <field name="name"/>
+  </grid>
+
   <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget Level"
     name="budget-level-form" width="large">
     <menubar>
@@ -493,9 +507,38 @@
     </panel>
   </form>
 
+  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
+    name="budget-level-template-form" onNew="action-budget-level-template-group-onnew">
+    <panel name="generalPanel" colSpan="12">
+      <field name="fullName" colSpan="12" hidden="true"/>
+      <field name="code" colSpan="4"/>
+      <field name="name" colSpan="4"/>
+      <field name="globalBudgetTemplate" colSpan="2" readonly="true"
+        showIf="globalBudgetTemplate" form-view="global-budget-template-form"
+        grid-view="global-budget-template-grid"/>
+      <field name="parentBudgetLevel" colSpan="2" readonly="true" showIf="parentBudgetLevel"
+        form-view="budget-level-template-form" grid-view="budget-level-template-grid"/>
+      <field name="fromDate" onChange="action-budget-level-validate-from-to-dates"/>
+      <field name="toDate" onChange="action-budget-level-validate-from-to-dates"/>
+    </panel>
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red">
+      <field name="budgetLevelList" title="Sections" showIf="globalBudgetTemplate"
+        colSpan="12" form-view="budget-level-template-form"
+        grid-view="budget-level-children-template-grid"/>
+      <field name="budgetList" title="Lines" showIf="parentBudgetLevel" colSpan="12"
+        form-view="budget-included-template-form" grid-view="budget-lines-template-grid"/>
+    </panel>
+  </form>
+
+
   <action-group name="action-budget-level-group-onnew">
     <action name="action-budget-level-record-set-defaults"/>
     <action name="action-budget-level-attrs-set-attrs"/>
+  </action-group>
+
+  <action-group name="action-budget-level-template-group-onnew">
+    <action name="action-budget-level-group-onnew"/>
+    <action name="action-budget-level-template-record-onnew"/>
   </action-group>
 
   <action-group name="action-budget-level-group-onload">
@@ -553,8 +596,6 @@
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <field name="globalBudget" expr="eval: __parent__"
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
-    <field name="globalBudget" expr="eval: __parent__?.globalBudget"
-      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <field name="typeSelect" expr="eval: _typeSelect"/>
     <field name="typeSelect" expr="eval: __parent__.typeSelect" if="__parent__"/>
     <field name="sourceSelect" expr="eval: __parent__.sourceSelect" if="__parent__"/>
@@ -570,6 +611,21 @@
       expr="eval: levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_GLOBAL &amp;&amp; _typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_TEMPLATE ? __user__ : null"/>
     <field name="company" expr="eval: __parent__?.company"/>
     <field name="budgetTypeSelect" expr="eval: __parent__?.budgetTypeSelect"/>
+  </action-record>
+
+  <action-record name="action-budget-level-template-record-onnew"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <field name="levelTypeSelect"
+      expr="eval: __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudgetTemplate'"/>
+    <field name="levelTypeSelect"
+      expr="eval: __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
+
+    <field name="globalBudgetTemplate" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudgetTemplate'"/>
+    <field name="fromDate" expr="eval: fromDate == null ? __parent__?.fromDate : fromDate"/>
+    <field name="toDate" expr="eval: toDate == null ? __parent__?.toDate : toDate"/>
   </action-record>
 
   <action-record name="action-budget-level-record-project-onchange"

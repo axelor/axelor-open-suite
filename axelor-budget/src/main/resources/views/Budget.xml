@@ -21,8 +21,6 @@
 
   <grid name="budget-lines-template-grid" title="Budgets"
     model="com.axelor.apps.budget.db.Budget" edit-icon="true" canNew="false" orderBy="code">
-    <button name="showBudgetBtn" icon="fa-bars"
-      onClick="action-budget-budget-view-budget-template"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
@@ -273,17 +271,21 @@
       <field name="typeSelect" colSpan="12" hidden="true"/>
       <field name="code" required="true" colSpan="2"/>
       <field name="name" required="true" colSpan="4"/>
-      <field name="budgetLevel" readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
-        domain="self.parentBudgetLevel.parentBudgetLevel != null AND self.parentBudgetLevel.parentBudgetLevel.id = :globalId"/>
-      <field name="budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"
-        colSpan="3" form-view="budget-level-template-form" grid-view="budget-level-template-grid"/>
-      <field name="$globalId" hidden="true"/>
+      <field name="budgetLevel" readonly="true" requiredIf="!$popup()" colSpan="3"/>
     </panel>
-    <panel-related name="accountsPanel" field="accountSet" form-view="account-form"
-      grid-view="account-grid" colSpan="12" canSelect="true" canNew="false" canEdit="false"/>
-    <panel-related name="accountModelSetPanel" field="accountModelSet"
-      form-view="account-model-form" grid-view="account-model-grid" colSpan="12" hidden="true"
-      canNew="false" canEdit="false"/>
+    <panel colSpan="12" name="keyPanel">
+      <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
+        canEdit="false" colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
+      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onChange="action-axis-change-remove-account"
+        onSelect="action-method-budget-analytic-axis-set-domain"/>
+      <field name="analyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
+        onSelect="action-method-budget-analytic-account-set-domain"/>
+      <panel-related name="accountModelSetPanel" field="accountModelSet"
+        form-view="account-model-form" grid-view="account-model-grid" colSpan="12" hidden="true"
+        canNew="false" canEdit="false"/>
+    </panel>
 
     <panel name="followUpPanel" title="Follow-up" canCollapse="true" collapseIf="true">
       <field name="inChargeUser" canNew="false" canView="false" canEdit="false" colSpan="12"/>
@@ -330,9 +332,9 @@
       expr="eval: !(typeSelect == com.axelor.apps.budget.db.repo.BudgetRepository.BUDGET_TYPE_SELECT_BUDGET)"/>
     <attribute name="hidden" for="accountModelSet"
       expr="eval: !(typeSelect == com.axelor.apps.budget.db.repo.BudgetRepository.BUDGET_TYPE_SELECT_TEMPLATE)"/>
-    <attribute name="title" for="availableAmont"
+    <attribute name="title" for="availableAmount"
       expr="eval: com.axelor.i18n.I18n.get('Remains for sale')"
-      if="budgetLevel?.parentBudgetLevel?.parentBudgetLevel?.budgetTypeSelect == 2"/>
+      if="budgetLevel?.parentBudgetLevel?.globalBudget?.budgetTypeSelect == 2"/>
     <attribute for="code" name="focus" expr="true"/>
   </action-attrs>
 

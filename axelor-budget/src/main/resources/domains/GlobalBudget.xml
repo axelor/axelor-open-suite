@@ -59,8 +59,6 @@
          ]]>
     </string>
 
-    <unique-constraint columns="code,fromDate,toDate"/>
-
     <extra-code>
             <![CDATA[
 
