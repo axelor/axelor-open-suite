@@ -15,7 +15,6 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -95,7 +94,7 @@ public class BatchContractInvoicing extends AbstractBatch {
   }
 
   @Override
-  protected void process() throws SQLException {
+  protected void process() {
     for (List<Long> idList : getIdsGroupedBy()) {
       try {
         invoiceContracts(findContractsInList(idList));
