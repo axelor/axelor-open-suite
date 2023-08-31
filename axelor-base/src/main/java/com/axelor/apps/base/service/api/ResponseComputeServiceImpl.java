@@ -33,7 +33,7 @@ public class ResponseComputeServiceImpl implements ResponseComputeService {
     result.append(" ");
     result.append(namecolumn);
     result.append(" ");
-    result.append(I18n.get("has been created."));
+    result.append(I18n.get("has been created"));
   }
 
   protected void computeWithId(Model model, StringBuilder result, Mapper mapper) {
