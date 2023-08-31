@@ -83,6 +83,8 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionLineService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -690,5 +692,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveTemplateRepository.class).to(MoveTemplateManagementRepository.class);
 
     bind(AnalyticAttrsService.class).to(AnalyticAttrsServiceImpl.class);
+
+    bind(AnalyticGroupService.class).to(AnalyticGroupServiceImpl.class);
   }
 }
