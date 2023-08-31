@@ -165,7 +165,7 @@
 
   <selection name="base.partner.link.type.type.select"
     id="stock.partner.link.type.type.select">
-    <option value="301">Delivered by</option>
+    <option value="Delivered by">Delivered by</option>
   </selection>
 
 </object-views>

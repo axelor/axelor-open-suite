@@ -9,7 +9,7 @@
     <extra-code><![CDATA[
 
 	    // TYPE SELECT
-	    public static final int TYPE_SELECT_DELIVERED_BY = 301;
+	    public static final String TYPE_SELECT_DELIVERED_BY = "Delivered by";
 
 	]]></extra-code>
   </entity>

@@ -868,6 +868,6 @@
 
   <selection name="base.partner.link.type.type.select"
     id="account.partner.link.type.type.select">
-    <option value="101">Invoiced by</option>
+    <option value="Invoiced by">Invoiced by</option>
   </selection>
 </object-views>

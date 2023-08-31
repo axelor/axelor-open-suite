@@ -102,6 +102,6 @@
 
   <selection name="base.partner.link.type.type.select"
     id="sale.partner.link.type.type.select">
-    <option value="201">Ordered by</option>
+    <option value="Ordered by">Ordered by</option>
   </selection>
 </object-views>

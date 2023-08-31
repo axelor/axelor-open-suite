@@ -9,7 +9,7 @@
     <extra-code><![CDATA[
 
 	    // TYPE SELECT
-	    public static final int TYPE_SELECT_INVOICED_BY = 101;
+	    public static final String TYPE_SELECT_INVOICED_BY = "Invoiced by";
 
 	]]></extra-code>
   </entity>

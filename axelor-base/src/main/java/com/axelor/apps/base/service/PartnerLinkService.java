@@ -10,5 +10,5 @@ public interface PartnerLinkService {
    * @param strFilter the type of the filter needed
    * @return the computed filter to be used as a JPQL domain attribute
    */
-  String computePartnerFilter(Partner partner, int typeSelect);
+  String computePartnerFilter(Partner partner, String typeSelect);
 }
