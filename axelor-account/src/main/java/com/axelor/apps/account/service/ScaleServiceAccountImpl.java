@@ -6,30 +6,19 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.ScaleService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import com.axelor.apps.base.service.ScaleServiceImpl;
 import java.math.BigDecimal;
 
-public class ScaleServiceAccountImpl implements ScaleServiceAccount {
-
-  private static final int DEFAULT_SCALE = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
-
-  protected ScaleService scaleService;
-
-  @Inject
-  public ScaleServiceAccountImpl(ScaleService scaleService) {
-    this.scaleService = scaleService;
-  }
+public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleServiceAccount {
 
   @Override
   public BigDecimal getScaledValue(BigDecimal value) {
-    return scaleService.getScaledValue(value);
+    return super.getScaledValue(value);
   }
 
   @Override
   public BigDecimal getScaledValue(BigDecimal value, int customizedScale) {
-    return scaleService.getScaledValue(value, customizedScale);
+    return super.getScaledValue(value, customizedScale);
   }
 
   @Override
@@ -60,7 +49,7 @@ public class ScaleServiceAccountImpl implements ScaleServiceAccount {
   }
 
   public int getScale() {
-    return scaleService.getScale();
+    return super.getScale();
   }
 
   public int getScale(Move move, boolean isCompanyAmount) {
@@ -70,7 +59,7 @@ public class ScaleServiceAccountImpl implements ScaleServiceAccount {
   public int getScale(MoveLine moveLine, boolean isCompanyAmount) {
     return moveLine.getMove() != null
         ? this.getScale(moveLine.getMove(), isCompanyAmount)
-        : DEFAULT_SCALE;
+        : super.getScale();
   }
 
   public int getScale(Invoice invoice, boolean isCompanyAmount) {
@@ -90,10 +79,10 @@ public class ScaleServiceAccountImpl implements ScaleServiceAccount {
   protected int getCompanyCurrencyScale(Company company) {
     return company != null && company.getCurrency() != null
         ? this.getCurrencyScale(company.getCurrency())
-        : DEFAULT_SCALE;
+        : super.getScale();
   }
 
   protected int getCurrencyScale(Currency currency) {
-    return currency != null ? currency.getNumberOfDecimals() : DEFAULT_SCALE;
+    return currency != null ? currency.getNumberOfDecimals() : super.getScale();
   }
 }
