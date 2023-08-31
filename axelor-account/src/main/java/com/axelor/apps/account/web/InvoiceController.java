@@ -1198,27 +1198,6 @@ public class InvoiceController {
     }
   }
 
-  public void emptyFinancialDiscountWhenManageFinancialDiscountIsDisabled(
-      ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      invoice.setFinancialDiscount(null);
-      Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
-      Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
-      List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
-      response.setValue("invoiceTermList", invoiceTermList);
-      response.setValue("financialDiscount", invoice.getFinancialDiscount());
-      response.setValue(
-          "financialDiscountDeadlineDate", invoice.getFinancialDiscountDeadlineDate());
-      response.setValue("financialDiscountRate", invoice.getFinancialDiscountRate());
-      response.setValue("financialDiscountTotalAmount", invoice.getFinancialDiscountTotalAmount());
-      response.setValue(
-          "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);

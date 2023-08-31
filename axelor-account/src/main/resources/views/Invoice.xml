@@ -1531,18 +1531,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-payment-visibility"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
-    <action name="action-invoice-group-empty-financial-discount"
-      if="!__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-  </action-group>
-
-  <action-method name="action-method-empty-financial-discount">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="emptyFinancialDiscountWhenManageFinancialDiscountIsDisabled"/>
-  </action-method>
-
-  <action-group name="action-invoice-group-empty-financial-discount">
-    <action name="action-method-empty-financial-discount"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">

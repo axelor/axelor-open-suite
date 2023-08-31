@@ -13,7 +13,8 @@
       <field name="paymentVouchersOnSupplierInvoice" widget="boolean-switch"/>
       <field name="paymentVouchersOnCustomerInvoice" widget="boolean-switch"/>
       <field name="activatePassedForPayment" widget="boolean-switch"/>
-      <field name="manageFinancialDiscount" widget="boolean-switch"/>
+      <field name="manageFinancialDiscount" widget="boolean-switch"
+        onChange="action-app-account-validate-check-no-invoice-with-discount"/>
       <field name="manageCutOffPeriod" widget="boolean-switch"/>
       <field name="allowMultiInvoiceTerms" widget="boolean-switch"/>
       <field name="partnerBalConfigSelect"/>
@@ -65,6 +66,16 @@
   <action-method name="action-app-account-method-payer-quality-process">
     <call class="com.axelor.apps.account.web.AppAccountController" method="payerQualityProcess"/>
   </action-method>
+
+  <action-validate name="action-app-account-validate-check-no-invoice-with-discount">
+    <error  if="eval: __repo__(Invoice).all().filter('(self.statusSelect = ?1 OR (self.statusSelect = ?2 AND self.companyInTaxTotalRemaining != 0)) AND self.financialDiscount != null', __repo__(Invoice).STATUS_VALIDATED, __repo__(Invoice).STATUS_VENTILATED).count() &gt; 0"
+            action="action-app-account-record-set-manage-financial-discount"
+            message="Before disabling Financial discount, please remove discount on invoices !"/>
+  </action-validate>
+
+  <action-record name="action-app-account-record-set-manage-financial-discount" model="com.axelor.studio.db.AppAccount">
+    <field name="manageFinancialDiscount" expr="true"/>
+  </action-record>
 
   <action-view name="admin.root.conf.account.config" title="Account configurations"
     model="com.axelor.apps.account.db.AccountConfig">
