@@ -11,7 +11,7 @@ public class ResponseComputeServiceImpl implements ResponseComputeService {
   public String compute(Model model) throws AxelorException {
     Mapper mapper = Mapper.of(model.getClass());
     StringBuilder result =
-        new StringBuilder(I18n.get("The creation of") + " " + model.getClass().getSimpleName());
+        new StringBuilder(I18n.get("The object") + " " + model.getClass().getSimpleName());
     try {
       for (Property property : mapper.getProperties()) {
         if (property.isNameColumn()) {
@@ -33,7 +33,7 @@ public class ResponseComputeServiceImpl implements ResponseComputeService {
     result.append(" ");
     result.append(namecolumn);
     result.append(" ");
-    result.append(I18n.get("has been correctly created."));
+    result.append(I18n.get("has been created."));
   }
 
   protected void computeWithId(Model model, StringBuilder result, Mapper mapper) {
