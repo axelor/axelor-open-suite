@@ -12,16 +12,6 @@ import java.math.BigDecimal;
 public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleServiceAccount {
 
   @Override
-  public BigDecimal getScaledValue(BigDecimal value) {
-    return super.getScaledValue(value);
-  }
-
-  @Override
-  public BigDecimal getScaledValue(BigDecimal value, int customizedScale) {
-    return super.getScaledValue(value, customizedScale);
-  }
-
-  @Override
   public BigDecimal getScaledValue(Move move, BigDecimal amount, boolean isCompanyAmount) {
     return this.getScaledValue(
         amount, this.getScale(move.getCompany(), move.getCurrency(), isCompanyAmount));
@@ -48,28 +38,29 @@ public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleSe
         amount, this.getScale(invoice.getCompany(), invoice.getCurrency(), isCompanyAmount));
   }
 
-  public int getScale() {
-    return super.getScale();
-  }
-
+  @Override
   public int getScale(Move move, boolean isCompanyAmount) {
     return this.getScale(move.getCompany(), move.getCurrency(), isCompanyAmount);
   }
 
+  @Override
   public int getScale(MoveLine moveLine, boolean isCompanyAmount) {
     return moveLine.getMove() != null
         ? this.getScale(moveLine.getMove(), isCompanyAmount)
-        : super.getScale();
+        : this.getScale();
   }
 
+  @Override
   public int getScale(Invoice invoice, boolean isCompanyAmount) {
     return this.getScale(invoice.getCompany(), invoice.getCurrency(), isCompanyAmount);
   }
 
+  @Override
   public int getScale(InvoiceTerm invoiceTerm, boolean isCompanyAmount) {
     return this.getScale(invoiceTerm.getCompany(), invoiceTerm.getCurrency(), isCompanyAmount);
   }
 
+  @Override
   public int getScale(Company company, Currency currency, boolean isCompanyAmount) {
     return isCompanyAmount
         ? this.getCompanyCurrencyScale(company)
@@ -79,10 +70,10 @@ public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleSe
   protected int getCompanyCurrencyScale(Company company) {
     return company != null && company.getCurrency() != null
         ? this.getCurrencyScale(company.getCurrency())
-        : super.getScale();
+        : this.getScale();
   }
 
   protected int getCurrencyScale(Currency currency) {
-    return currency != null ? currency.getNumberOfDecimals() : super.getScale();
+    return currency != null ? currency.getNumberOfDecimals() : this.getScale();
   }
 }

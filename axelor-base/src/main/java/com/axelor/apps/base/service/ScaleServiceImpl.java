@@ -6,8 +6,8 @@ import java.math.RoundingMode;
 
 public class ScaleServiceImpl implements ScaleService {
 
-  private static final int DEFAULT_SCALE = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
-  private static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
+  protected static final int DEFAULT_SCALE = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
+  protected static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
 
   @Override
   public BigDecimal getScaledValue(BigDecimal value) {

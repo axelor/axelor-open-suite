@@ -10,10 +10,6 @@ import java.math.BigDecimal;
 
 public interface ScaleServiceAccount {
 
-  BigDecimal getScaledValue(BigDecimal value);
-
-  BigDecimal getScaledValue(BigDecimal value, int customizedScale);
-
   BigDecimal getScaledValue(Move move, BigDecimal amount, boolean isCompanyAmount);
 
   BigDecimal getScaledValue(MoveLine moveLine, BigDecimal amount, boolean isCompanyAmount);
@@ -21,8 +17,6 @@ public interface ScaleServiceAccount {
   BigDecimal getScaledValue(InvoiceTerm invoiceTerm, BigDecimal amount, boolean isCompanyAmount);
 
   BigDecimal getScaledValue(Invoice invoice, BigDecimal amount, boolean isCompanyAmount);
-
-  int getScale();
 
   int getScale(Move move, boolean isCompanyAmount);
 

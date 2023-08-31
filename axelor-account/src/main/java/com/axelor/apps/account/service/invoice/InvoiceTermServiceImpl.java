@@ -95,7 +95,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected UserRepository userRepo;
   protected ScaleServiceAccount scaleServiceAccount;
-  private static final int COMPUTATION_SCALING = AppBaseService.COMPUTATION_SCALING;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -147,7 +146,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             sum.add(
                 invoiceTerm
                     .getAmount()
-                    .divide(invoice.getInTaxTotal(), COMPUTATION_SCALING, RoundingMode.HALF_UP));
+                    .divide(
+                        invoice.getInTaxTotal(),
+                        AppBaseService.COMPUTATION_SCALING,
+                        RoundingMode.HALF_UP));
       }
     }
     return sum.multiply(BigDecimal.valueOf(100))
@@ -279,12 +281,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (!isUpdate) {
         ratioPaid =
             invoiceTermAmountRemaining.divide(
-                invoiceTermAmount, COMPUTATION_SCALING, RoundingMode.HALF_UP);
+                invoiceTermAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       }
       companyAmount =
           companyTotal
               .multiply(invoiceTerm.getPercentage())
-              .divide(BigDecimal.valueOf(100), COMPUTATION_SCALING, RoundingMode.HALF_UP);
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
       companyAmountRemaining =
           scaleServiceAccount.getScaledValue(invoiceTerm, companyAmount.multiply(ratioPaid), true);
       companyAmount = scaleServiceAccount.getScaledValue(invoiceTerm, companyAmount, true);
@@ -315,7 +320,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         && financialDiscount != null) {
       BigDecimal percentage =
           this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
-              .divide(BigDecimal.valueOf(100), COMPUTATION_SCALING, RoundingMode.HALF_UP);
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
 
       invoiceTerm.setApplyFinancialDiscount(true);
       invoiceTerm.setFinancialDiscount(financialDiscount);
@@ -850,7 +858,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 BigDecimal.ONE
                     .add(
                         taxRate.divide(
-                            BigDecimal.valueOf(100), COMPUTATION_SCALING, RoundingMode.HALF_UP))
+                            BigDecimal.valueOf(100),
+                            AppBaseService.COMPUTATION_SCALING,
+                            RoundingMode.HALF_UP))
                     .multiply(BigDecimal.valueOf(100)),
                 scaleServiceAccount.getScale(invoiceTerm, true),
                 RoundingMode.HALF_UP);
