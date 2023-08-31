@@ -30,7 +30,6 @@
       search="self.code = :parent_code AND self.company.id = :_companyId" update="true"/>
   </input>
 
-  <!-- TO DO Remplir le M2O activeTaxLine par un update en utilisant le code Tax -->
   <input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax"
     search="self.code = :code"/>
 
