@@ -24,7 +24,6 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.AppAccount;
 import com.google.inject.Singleton;
 
 @Singleton

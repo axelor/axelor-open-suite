@@ -36,9 +36,7 @@ import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAccountService {

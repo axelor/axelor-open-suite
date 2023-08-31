@@ -68,12 +68,14 @@
   </action-method>
 
   <action-validate name="action-app-account-validate-check-no-invoice-with-discount">
-    <error  if="eval: __repo__(Invoice).all().filter('(self.statusSelect = ?1 OR (self.statusSelect = ?2 AND self.companyInTaxTotalRemaining != 0)) AND self.financialDiscount != null', __repo__(Invoice).STATUS_VALIDATED, __repo__(Invoice).STATUS_VENTILATED).count() &gt; 0"
-            action="action-app-account-record-set-manage-financial-discount"
-            message="Before disabling Financial discount, please remove discount on invoices !"/>
+    <error
+      if="eval: __repo__(Invoice).all().filter('(self.statusSelect = ?1 OR (self.statusSelect = ?2 AND self.companyInTaxTotalRemaining != 0)) AND self.financialDiscount != null', __repo__(Invoice).STATUS_VALIDATED, __repo__(Invoice).STATUS_VENTILATED).count() &gt; 0"
+      action="action-app-account-record-set-manage-financial-discount"
+      message="Before disabling Financial discount, please remove discount on invoices !"/>
   </action-validate>
 
-  <action-record name="action-app-account-record-set-manage-financial-discount" model="com.axelor.studio.db.AppAccount">
+  <action-record name="action-app-account-record-set-manage-financial-discount"
+    model="com.axelor.studio.db.AppAccount">
     <field name="manageFinancialDiscount" expr="true"/>
   </action-record>
 
