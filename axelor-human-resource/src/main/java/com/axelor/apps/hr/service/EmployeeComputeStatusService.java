@@ -16,14 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.rest;
+package com.axelor.apps.hr.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.production.db.OperationOrder;
-import javax.ws.rs.core.Response;
+import com.axelor.apps.hr.db.Employee;
 
-public interface OperationOrderRestService {
+public interface EmployeeComputeStatusService {
 
-  Response updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
-      throws AxelorException;
+  public String getEmployeeStatus(Employee employee);
 }

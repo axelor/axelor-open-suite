@@ -1662,4 +1662,7 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_CONDITION_LINKED_OBJECTS = /*$$(*/
       "Changes will be applied on next records." /*)*/;
+
+  public static final String NO_DEPRECIATION_ACCOUNT_FOUND_IN_FIXED_ASSET_CATEGORY = /*$$(*/
+      "No depreciation account found in fixed asset category %s." /*)*/;
 }
