@@ -288,9 +288,8 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
 
     // analyticalDistribution
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
-    // TODO uncomment after merge #66647
-    // analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     return purchaseOrderLine;

@@ -12,6 +12,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -46,6 +47,7 @@ public class AnalyticLineModel implements AnalyticLine {
   protected SaleOrder saleOrder;
 
   protected PurchaseOrderLine purchaseOrderLine;
+  protected PurchaseOrder purchaseOrder;
 
   public AnalyticLineModel() {}
 
@@ -67,8 +69,10 @@ public class AnalyticLineModel implements AnalyticLine {
     this.companyExTaxTotal = saleOrderLine.getCompanyExTaxTotal();
   }
 
-  public AnalyticLineModel(PurchaseOrderLine purchaseOrderLine) {
+  public AnalyticLineModel(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
     this.purchaseOrderLine = purchaseOrderLine;
+    this.purchaseOrder =
+        purchaseOrder != null ? purchaseOrder : purchaseOrderLine.getPurchaseOrder();
 
     this.axis1AnalyticAccount = purchaseOrderLine.getAxis1AnalyticAccount();
     this.axis2AnalyticAccount = purchaseOrderLine.getAxis2AnalyticAccount();
@@ -221,21 +225,18 @@ public class AnalyticLineModel implements AnalyticLine {
   public TradingName getTradingName() {
     if (this.saleOrder != null) {
       this.tradingName = this.saleOrder.getTradingName();
+    } else if (this.purchaseOrder != null) {
+      this.tradingName = this.purchaseOrder.getTradingName();
     }
 
-    if (this.purchaseOrderLine != null && this.purchaseOrderLine.getPurchaseOrder() != null) {
-      this.tradingName = this.purchaseOrderLine.getPurchaseOrder().getTradingName();
-    }
     return this.tradingName;
   }
 
   public Company getCompany() {
     if (this.saleOrder != null) {
       this.company = this.saleOrder.getCompany();
-    }
-
-    if (this.purchaseOrderLine != null && this.purchaseOrderLine.getPurchaseOrder() != null) {
-      this.company = this.purchaseOrderLine.getPurchaseOrder().getCompany();
+    } else if (this.purchaseOrder != null) {
+      this.company = this.purchaseOrder.getCompany();
     }
 
     return this.company;
@@ -244,10 +245,8 @@ public class AnalyticLineModel implements AnalyticLine {
   public Partner getPartner() {
     if (this.saleOrder != null) {
       this.partner = this.saleOrder.getClientPartner();
-    }
-
-    if (this.purchaseOrderLine != null && this.purchaseOrderLine.getPurchaseOrder() != null) {
-      this.partner = this.purchaseOrderLine.getPurchaseOrder().getSupplierPartner();
+    } else if (this.purchaseOrder != null) {
+      this.partner = this.purchaseOrder.getSupplierPartner();
     }
 
     return this.partner;
@@ -260,6 +259,8 @@ public class AnalyticLineModel implements AnalyticLine {
   public FiscalPosition getFiscalPosition() {
     if (this.saleOrder != null) {
       this.fiscalPosition = this.saleOrder.getFiscalPosition();
+    } else if (this.purchaseOrder != null) {
+      this.fiscalPosition = this.purchaseOrder.getFiscalPosition();
     }
 
     return fiscalPosition;
@@ -268,9 +269,7 @@ public class AnalyticLineModel implements AnalyticLine {
   public void copyToModel() {
     if (this.saleOrderLine != null) {
       this.copyToSaleOrder();
-    }
-
-    if (this.purchaseOrderLine != null) {
+    } else if (this.purchaseOrderLine != null) {
       this.copyToPurchaseOrder();
     }
   }

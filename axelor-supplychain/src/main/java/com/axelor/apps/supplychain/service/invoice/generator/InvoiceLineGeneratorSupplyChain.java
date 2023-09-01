@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -215,26 +214,25 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           default:
             return invoiceLine;
         }
+      } else if (purchaseOrderLine != null) {
+        if (purchaseOrderLine.getIsTitleLine()) {
+          return invoiceLine;
+        }
+
+        invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
+            invoiceLine, invoice, new AnalyticLineModel(purchaseOrderLine, null));
+
+        invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
+
+        if (product != null && purchaseOrderLine.getFixedAssets()) {
+          FixedAssetCategory fixedAssetCategory =
+              accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
+          invoiceLine.setFixedAssetCategory(fixedAssetCategory);
+        }
       }
     }
 
-    if (purchaseOrderLine != null) {
-      if (purchaseOrderLine.getIsTitleLine()) {
-        return invoiceLine;
-      }
-
-      invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
-          invoiceLine, invoice, new AnalyticLineModel(purchaseOrderLine));
-
-      invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
-
-      if (product != null && purchaseOrderLine.getFixedAssets()) {
-        FixedAssetCategory fixedAssetCategory =
-            accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
-        invoiceLine.setFixedAssetCategory(fixedAssetCategory);
-      }
-    } else if (stockMoveLine != null) {
-
+    if (stockMoveLine != null) {
       this.price = stockMoveLine.getUnitPriceUntaxed();
       this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
 
@@ -309,25 +307,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
     if (purchaseOrderLine != null) {
       invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
-    }
-  }
-
-  // TODO Delete unused method
-  public void copyAnalyticMoveLines(
-      List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine) {
-
-    if (originalAnalyticMoveLineList == null) {
-      return;
-    }
-
-    for (AnalyticMoveLine originalAnalyticMoveLine : originalAnalyticMoveLineList) {
-
-      AnalyticMoveLine analyticMoveLine =
-          Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
-
-      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
-
-      invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
   }
 
