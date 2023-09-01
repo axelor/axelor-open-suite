@@ -77,6 +77,22 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//panel[@name='outgoingMovePanel']/field[@name='fromStockLocation']">
+      <attribute name="domain"
+        value="self.company = :company AND self.typeSelect = 1 AND (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"/>
+    </extend>
+    <extend target="//panel[@name='incomingMovePanel']/field[@name='toStockLocation']">
+      <attribute name="domain"
+        value="self.company = :company AND self.typeSelect = 1 AND (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"/>
+    </extend>
+    <extend target="//panel[@name='configPanel']/field[@name='fromStockLocation']">
+      <attribute name="domain"
+        value="self.company = :company AND self.typeSelect = 3 AND (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"/>
+    </extend>
+    <extend target="//panel[@name='configPanel']/field[@name='toStockLocation']">
+      <attribute name="domain"
+        value="self.company = :company AND self.typeSelect = 3 AND (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"/>
+    </extend>
   </form>
 
   <action-attrs name="action-stock-move-attrs-fill-ctx">
