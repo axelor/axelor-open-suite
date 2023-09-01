@@ -13,8 +13,7 @@
   </grid>
 
   <form model="com.axelor.apps.budget.db.BudgetScenarioVariable"
-    title="Budget Scenario Variable" name="budget-scenario-variable-form" width="large"
-    onNew="action-global-budget-record-set-defaults">
+    title="Budget Scenario Variable" name="budget-scenario-variable-form" width="large">
     <panel name="mainPanel" colSpan="12">
 
       <field name="name" title="Name" required="true"/>

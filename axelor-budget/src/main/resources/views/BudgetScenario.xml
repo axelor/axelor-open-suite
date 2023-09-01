@@ -1,36 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="budget-scenario-grid" title="Budget Scenario"
-    model="com.axelor.apps.budget.db.BudgetScenario" orderBy="code">
-    <field name="code"/>
-    <field name="name" required="true"/>
-    <field name="budgetScenarioValueLines" grid-view="budget-scenario-line-grid"
-      form-view="budget-scenario-line-form" domain="com.axelor.apps.budget.db.BudgetScenarioLine"/>
-  </grid>
+	<grid name="budget-scenario-grid" title="Budget Scenario"
+		model="com.axelor.apps.budget.db.BudgetScenario" orderBy="code">
+		<field name="code" />
+		<field name="name" required="true" />
+		<field name="budgetScenarioLineList"
+			grid-view="budget-scenario-line-grid"
+			form-view="budget-scenario-line-form"
+			domain="com.axelor.apps.budget.db.BudgetScenarioLine" />
+	</grid>
 
-  <form model="com.axelor.apps.budget.db.BudgetScenario" title="Budget Scenario"
-    name="budget-scenario-form" width="large" onLoad="action-method-yearset-readonly,action-change-column-names">
-    <panel name="mainPanel" colSpan="12">
+	<form model="com.axelor.apps.budget.db.BudgetScenario"
+		title="Budget Scenario" name="budget-scenario-form" width="large"
+		onLoad="action-budget-scenario-method-change-column-names">
+		<panel name="mainPanel" colSpan="12">
 
-      <field name="name" title="Name" required="true"/>
-      <field name="code" title="Code" required="true"/>
-      <field name="company"/>
-      <field name="yearSet" widget="TagSelect"
-        domain="self.company = :company AND self.typeSelect = 1"
-        onChange="save,action-change-column-names" canNew="false"/>
-      <field name="budgetScenarioLines" grid-view="budget-scenario-line-grid"
-        form-view="budget-scenario-line-form" colSpan="12" onChange="save,action-method-yearset-readonly,action-change-column-names"/>
-    </panel>
-  </form>
-  <action-method name="action-change-column-names">
-    <call class="com.axelor.apps.budget.web.BudgetScenarioLineController"
-      method="changeColumnsNames"/>
-  </action-method>
-  <action-method name="action-method-yearset-readonly">
-    <call class="com.axelor.apps.budget.web.BudgetScenarioLineController"
-      method="yearSetReadOnly"/>
-  </action-method>
+			<field name="name" title="Name" required="true" />
+			<field name="code" title="Code" required="true" />
+			<field name="company" />
+			<field name="yearSet" widget="TagSelect"
+				domain="self.company = :company AND self.typeSelect = 1"
+				readonlyIf="budgetScenarioLineList.length > 0"
+				onChange="save,action-budget-scenario-method-change-column-names"
+				canNew="false" />
+			<field name="budgetScenarioLineList"
+				title="Budget Scenario Lines" grid-view="budget-scenario-line-grid"
+				form-view="budget-scenario-line-form" colSpan="12" />
+		</panel>
+	</form>
+
+
+	<action-method
+		name="action-budget-scenario-method-change-column-names">
+		<call
+			class="com.axelor.apps.budget.web.BudgetScenarioLineController"
+			method="changeColumnsNames" />
+	</action-method>
+
+
 </object-views>

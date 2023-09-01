@@ -13,7 +13,7 @@
     <many-to-many ref="com.axelor.apps.base.db.Year" name="yearSet" title="Years"/>
 
 
-    <one-to-many name="budgetScenarioLines" mappedBy="budgetScenario"
+    <one-to-many name="budgetScenarioLineList" mappedBy="budgetScenario"
       ref="com.axelor.apps.budget.db.BudgetScenarioLine"/>
     <unique-constraint columns="code"/>
 

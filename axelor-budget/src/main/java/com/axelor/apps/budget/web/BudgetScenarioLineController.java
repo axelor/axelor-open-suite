@@ -17,25 +17,10 @@ public class BudgetScenarioLineController {
 
     for (int i = 0; i < Math.min(yearsList.size(), 6); i++) {
       if (yearsList.contains(yearsList.get(i))) {
-        String fieldName = "budgetScenarioLines.year" + (i + 1) + "Value";
+        String fieldName = "budgetScenarioLineList.year" + (i + 1) + "Value";
         response.setAttr(fieldName, "hidden", false);
         response.setAttr(fieldName, "title", Integer.toString(yearsList.get(i)));
       }
-    }
-  }
-
-  public void yearSetReadOnly(ActionRequest request, ActionResponse response) {
-
-    BudgetScenario budgetScenario = request.getContext().asType(BudgetScenario.class);
-    budgetScenario = Beans.get(BudgetScenarioRepository.class).find(budgetScenario.getId());
-
-    boolean line =
-        Beans.get(BudgetScenarioLineService.class).countBudgetScenarioLines(budgetScenario);
-
-    if (line) {
-      response.setAttr("yearSet", "readonly", true);
-    } else {
-      response.setAttr("yearSet", "readonly", false);
     }
   }
 }
