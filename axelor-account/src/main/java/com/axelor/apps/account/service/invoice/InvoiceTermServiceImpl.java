@@ -1447,7 +1447,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             && moveLineIt.getAccount().getUseForPartnerBalance()
             && (holdback
                 || (holdbackAccount != null && !moveLineIt.getAccount().equals(holdbackAccount)))) {
-          total = total.add(moveLineIt.getCurrencyAmount());
+          total = total.add(moveLineIt.getCurrencyAmount().abs());
         }
       }
     }
@@ -1567,21 +1567,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public boolean isThresholdNotOnLastInvoiceTerm(
+  public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
-    if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      InvoiceTerm lastInvoiceTerm =
-          moveLine.getInvoiceTermList().stream()
-              .filter(it -> it.getSequence() == moveLine.getInvoiceTermList().size())
-              .findFirst()
-              .orElse(null);
-
-      if (lastInvoiceTerm != null
-          && moveLine.getAmountRemaining().compareTo(lastInvoiceTerm.getAmountRemaining()) >= 0
-          && lastInvoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
-        return true;
-      }
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      return moveLine.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) >= 0
+          || moveLine.getInvoiceTermList().stream()
+                  .filter(it -> it.getAmountRemaining().signum() > 0)
+                  .count()
+              != 1;
     }
+
     return false;
   }
 }

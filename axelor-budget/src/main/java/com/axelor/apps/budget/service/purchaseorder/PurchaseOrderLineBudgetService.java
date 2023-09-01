@@ -33,10 +33,12 @@ public interface PurchaseOrderLineBudgetService {
    * automatic budget distribution with the company ex tax total and save the purchase order line.
    * Return an error message if a budget distribution is not generated
    *
+   * @param purchaseOrder
    * @param purchaseOrderLine
    * @return String
    */
-  public String computeBudgetDistribution(PurchaseOrderLine purchaseOrderLine);
+  public String computeBudgetDistribution(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
   /**
    * If multi budget, compute budget distribution line's budget name to fill budget name string

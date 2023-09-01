@@ -478,7 +478,7 @@ Move.company = AccountingReport.company AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 (Move.functional_origin_select = 3 or Move.functional_origin_select = 4) and
 Account.reconcile_ok = true AND InvoiceTerm.amount_remaining != 0
-AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -546,12 +546,6 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <text-property name="heading">display_simulated_move</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">ref</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ref</text-property>
@@ -615,11 +609,6 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -685,13 +674,6 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
@@ -700,7 +682,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as comapny_name, Period.name as period_name, AccountingReport.detailed , 
 AccountingReport.date_to, AccountingReport.date_from, AccountingReport.date_val as "date", AccountingReport.publication_date_time as "ReportDateEdition" ,
-Currency.code as currency, AccountingReport.display_simulated_move as display_simulated_move, AccountingReport.ref
+Currency.code as currency, AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
 left outer join public.base_period as Period on (AccountingReport.period = Period.id)
@@ -1133,13 +1115,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">currency</text-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="491">

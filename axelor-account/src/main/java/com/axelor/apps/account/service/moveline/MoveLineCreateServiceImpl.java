@@ -498,7 +498,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setAnalyticMoveLineList(analyticMoveLineList);
         }
 
-        analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
+        analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
 
         TaxLine taxLine = invoiceLine.getTaxLine();
         if (taxLine != null) {
@@ -927,6 +927,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           || newOrUpdatedMoveLineRC.getCredit().signum() != 0) {
         newMap.put(newSourceTaxLineRCKey, newOrUpdatedMoveLineRC);
       }
+
+      moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
     }
     return newOrUpdatedMoveLine;
   }

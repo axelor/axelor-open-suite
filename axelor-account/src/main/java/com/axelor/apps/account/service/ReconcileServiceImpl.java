@@ -446,7 +446,17 @@ public class ReconcileServiceImpl implements ReconcileService {
     Move debitMove = debitMoveLine.getMove();
     Move creditMove = creditMoveLine.getMove();
     Invoice debitInvoice = invoiceRepository.findByMove(debitMove);
+    if (debitInvoice == null) {
+      debitInvoice = invoiceRepository.findByOldMove(debitMove);
+      debitInvoice =
+          debitInvoice != null ? (debitInvoice.getLcrAccounted() ? debitInvoice : null) : null;
+    }
     Invoice creditInvoice = invoiceRepository.findByMove(creditMove);
+    if (creditInvoice == null) {
+      creditInvoice = invoiceRepository.findByOldMove(creditMove);
+      creditInvoice =
+          creditInvoice != null ? (creditInvoice.getLcrAccounted() ? creditInvoice : null) : null;
+    }
     BigDecimal amount = reconcile.getAmount();
 
     this.checkCurrencies(debitMoveLine, creditMoveLine);
@@ -976,7 +986,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           Account creditAccount =
               accountConfigService.getCashPositionVariationCreditAccountDontThrow(accountConfig);
 
-          if (invoiceTermService.isThresholdNotOnLastInvoiceTerm(
+          if (invoiceTermService.isThresholdNotOnLastUnpaidInvoiceTerm(
                   creditMoveLine, accountConfig.getThresholdDistanceFromRegulation())
               || creditAccount == null) {
             return;
@@ -1026,7 +1036,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           Account debitAccount =
               accountConfigService.getCashPositionVariationDebitAccountDontThrow(accountConfig);
 
-          if (invoiceTermService.isThresholdNotOnLastInvoiceTerm(
+          if (invoiceTermService.isThresholdNotOnLastUnpaidInvoiceTerm(
                   debitMoveLine, accountConfig.getThresholdDistanceFromRegulation())
               || debitAccount == null) {
             return;

@@ -201,7 +201,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         String alertMessage =
-            purchaseOrderLineBudgetService.computeBudgetDistribution(purchaseOrderLine);
+            purchaseOrderLineBudgetService.computeBudgetDistribution(
+                purchaseOrder, purchaseOrderLine);
         if (Strings.isNullOrEmpty(alertMessage)) {
           purchaseOrder.setBudgetDistributionGenerated(true);
         } else {

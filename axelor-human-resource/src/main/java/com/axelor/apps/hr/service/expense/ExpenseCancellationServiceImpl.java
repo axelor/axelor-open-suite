@@ -44,6 +44,7 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
   protected TemplateMessageService templateMessageService;
   protected ExpenseRepository expenseRepository;
   protected MoveRepository moveRepository;
+  protected ExpenseFetchMoveService expenseFetchMoveService;
 
   @Inject
   public ExpenseCancellationServiceImpl(
@@ -51,18 +52,20 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       ExpenseRepository expenseRepository,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      ExpenseFetchMoveService expenseFetchMoveService) {
     this.periodService = periodService;
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.expenseRepository = expenseRepository;
     this.moveRepository = moveRepository;
+    this.expenseFetchMoveService = expenseFetchMoveService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(Expense expense) throws AxelorException {
-    Move move = expense.getMove();
+    Move move = expenseFetchMoveService.getExpenseMove(expense);
     if (move == null) {
       expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
       expenseRepository.save(expense);
@@ -71,7 +74,6 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
     periodService.testOpenPeriod(move.getPeriod());
     try {
       moveRepository.remove(move);
-      expense.setMove(null);
       expense.setVentilated(false);
       expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
     } catch (Exception e) {

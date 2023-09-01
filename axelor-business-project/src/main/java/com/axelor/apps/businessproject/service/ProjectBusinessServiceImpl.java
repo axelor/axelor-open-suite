@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
@@ -70,6 +71,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected AppBusinessProjectService appBusinessProjectService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
+  protected AppBaseService appBaseService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "fa-level-up";
@@ -86,13 +88,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AddressService addressService,
       AppBusinessProjectService appBusinessProjectService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
-      ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService) {
+      ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
+      AppBaseService appBaseService) {
     super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -178,7 +182,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       order.setInterco(interco);
 
       // Automatic invoiced and delivered partners set in case of partner delegations
-      if (appSupplychain.getActivatePartnerRelations()) {
+      if (appBaseService.getAppBase().getActivatePartnerRelations()) {
         Beans.get(SaleOrderSupplychainService.class)
             .setDefaultInvoicedAndDeliveredPartnersAndAddresses(order);
       }
@@ -412,11 +416,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     project.setForecastCosts(forecastCosts);
 
     project.setForecastMargin(project.getTurnover().subtract(forecastCosts));
-    project.setForecastMarkup(
-        project
-            .getForecastMargin()
-            .multiply(new BigDecimal("100"))
-            .divide(forecastCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    if (!forecastCosts.equals(BigDecimal.ZERO)) {
+      project.setForecastMarkup(
+          project
+              .getForecastMargin()
+              .multiply(new BigDecimal("100"))
+              .divide(forecastCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+    }
 
     BigDecimal realTurnover =
         projectTaskList.stream()

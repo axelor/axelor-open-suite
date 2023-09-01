@@ -138,7 +138,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     List<String> alertMessageTokenList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        String alertMessage = saleOrderLineBudgetService.computeBudgetDistribution(saleOrderLine);
+        String alertMessage =
+            saleOrderLineBudgetService.computeBudgetDistribution(saleOrder, saleOrderLine);
         if (!Strings.isNullOrEmpty(alertMessage)) {
           alertMessageTokenList.add(alertMessage);
         }

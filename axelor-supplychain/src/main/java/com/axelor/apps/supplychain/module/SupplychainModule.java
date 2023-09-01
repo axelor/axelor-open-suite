@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
+import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -92,6 +93,8 @@ import com.axelor.apps.supplychain.service.AccountingSituationInitSupplychainSer
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
@@ -116,8 +119,8 @@ import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleServiceImpl;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.OpportunitySaleOrderSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
-import com.axelor.apps.supplychain.service.PartnerSupplychainLinkServiceImpl;
+import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
+import com.axelor.apps.supplychain.service.PartnerLinkSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
@@ -183,6 +186,8 @@ import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigServiceImpl;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.TimetableServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
@@ -191,6 +196,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesServiceImpl;
 import com.axelor.apps.supplychain.service.fixedasset.FixedAssetServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
@@ -280,7 +286,6 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderSupplychainService.class).to(PurchaseOrderServiceSupplychainImpl.class);
     bind(SaleOrderSupplychainService.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
-    bind(PartnerSupplychainLinkService.class).to(PartnerSupplychainLinkServiceImpl.class);
     bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
     bind(StockMoveReservedQtyService.class).to(StockMoveReservedQtyServiceImpl.class);
     bind(PurchaseOrderLineServiceSupplyChain.class)
@@ -308,11 +313,17 @@ public class SupplychainModule extends AxelorModule {
     bind(StockProductRestServiceImpl.class).to(StockProductRestServiceSupplychainImpl.class);
     bind(AnalyticMoveLineServiceImpl.class).to(AnalyticMoveLineSupplychainServiceImpl.class);
     bind(InvoiceLineAnalyticServiceImpl.class).to(InvoiceLineAnalyticSupplychainServiceImpl.class);
+    bind(InvoiceLineAnalyticSupplychainService.class)
+        .to(InvoiceLineAnalyticSupplychainServiceImpl.class);
     bind(InvoiceLineOrderService.class).to(InvoiceLineOrderServiceImpl.class);
     bind(MrpProposalService.class).to(MrpProposalServiceImpl.class);
     bind(SaleInvoicingStateService.class).to(SaleInvoicingStateServiceImpl.class);
     bind(BaseConvertLeadWizardService.class).to(SupplyChainConvertLeadWizardServiceImpl.class);
     bind(PurchaseOrderFromSaleOrderLinesService.class)
         .to(PurchaseOrderFromSaleOrderLinesServiceImpl.class);
+    bind(AnalyticLineModelService.class).to(AnalyticLineModelServiceImpl.class);
+    bind(AnalyticAttrsSupplychainService.class).to(AnalyticAttrsSupplychainServiceImpl.class);
+    bind(PartnerLinkSupplychainService.class).to(PartnerLinkSupplychainServiceImpl.class);
+    bind(PartnerLinkServiceImpl.class).to(PartnerLinkSupplychainServiceImpl.class);
   }
 }

@@ -23,8 +23,12 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -32,6 +36,9 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
@@ -70,7 +77,14 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetlineRepo,
       TimesheetRepository timeSheetRepository,
-      ProjectService projectService) {
+      ProjectService projectService,
+      LeaveRequestService leaveRequestService,
+      PublicHolidayHrService publicHolidayHrService,
+      PublicHolidayService publicHolidayService,
+      PartnerPriceListService partnerPriceListService,
+      UnitConversionService unitConversionService,
+      WeeklyPlanningService weeklyPlanningService,
+      LeaveRequestComputeDurationService leaveRequestComputeDurationService) {
     super(
         priceListService,
         appHumanResourceService,
@@ -85,7 +99,14 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         productCompanyService,
         timesheetlineRepo,
         timeSheetRepository,
-        projectService);
+        projectService,
+        leaveRequestService,
+        publicHolidayHrService,
+        publicHolidayService,
+        partnerPriceListService,
+        unitConversionService,
+        weeklyPlanningService,
+        leaveRequestComputeDurationService);
   }
 
   @Override

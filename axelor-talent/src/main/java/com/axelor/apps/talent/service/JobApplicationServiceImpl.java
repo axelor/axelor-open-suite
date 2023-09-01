@@ -142,20 +142,11 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   @Transactional
   public void setDMSFile(JobApplication jobApplication) {
     MetaFile metaFile = jobApplication.getResume();
-    Long resumeId = jobApplication.getResumeId();
-    Long dmsId = dmsService.setDmsFile(metaFile, resumeId, jobApplication);
-
-    if (metaFile == null) {
-      jobApplication.setResumeId(null);
-    }
-    if (dmsId != null) {
-      jobApplication.setResumeId(dmsId);
-    }
-
+    dmsService.setDmsFile(metaFile, jobApplication);
     jobApplicationRepo.save(jobApplication);
   }
 
   public String getInlineUrl(JobApplication jobApplication) {
-    return dmsService.getInlineUrl(jobApplication.getResumeId());
+    return dmsService.getInlineUrl(jobApplication.getDmsFile());
   }
 }

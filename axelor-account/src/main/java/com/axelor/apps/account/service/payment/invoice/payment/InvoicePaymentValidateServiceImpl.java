@@ -43,6 +43,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -82,6 +83,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AccountManagementAccountService accountManagementAccountService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected DateService dateService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -96,7 +98,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
       InvoicePaymentToolService invoicePaymentToolService,
-      DateService dateService) {
+      DateService dateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -110,6 +113,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.accountManagementAccountService = accountManagementAccountService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.dateService = dateService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
   }
 
   /**
@@ -250,6 +254,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             getOriginFromInvoicePayment(invoicePayment),
             description,
             invoice.getCompanyBankDetails());
+    move.setPaymentCondition(null);
 
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
@@ -470,6 +475,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, paymentDate, false);
+    }
+
     return move;
   }
 

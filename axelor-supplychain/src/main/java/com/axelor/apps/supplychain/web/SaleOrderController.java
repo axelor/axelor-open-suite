@@ -24,7 +24,9 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -33,9 +35,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
@@ -359,15 +359,14 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     String domain = "self.isContact = false AND self.isSupplier = true";
 
-    String blockedPartnerQuery =
-        Beans.get(BlockingService.class)
-            .listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
-
-    if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
-      domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
-    }
-
     if (saleOrder.getCompany() != null) {
+      String blockedPartnerQuery =
+          Beans.get(BlockingService.class)
+              .listOfBlockedPartner(saleOrder.getCompany(), BlockingRepository.PURCHASE_BLOCKING);
+
+      if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+        domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+      }
       domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
     }
     response.setAttr("supplierPartnerSelect", "domain", domain);
@@ -619,7 +618,7 @@ public class SaleOrderController {
   }
   /**
    * Called from sale order form view, on invoiced partner select. Call {@link
-   * PartnerSupplychainLinkService#computePartnerFilter}
+   * PartnerLinkService#computePartnerFilter}
    *
    * @param request
    * @param response
@@ -628,10 +627,9 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       String strFilter =
-          Beans.get(PartnerSupplychainLinkService.class)
+          Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(),
-                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -641,7 +639,7 @@ public class SaleOrderController {
 
   /**
    * Called from sale order form view, on delivered partner select. Call {@link
-   * PartnerSupplychainLinkService#computePartnerFilter}
+   * PartnerLinkService#computePartnerFilter}
    *
    * @param request
    * @param response
@@ -650,10 +648,9 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       String strFilter =
-          Beans.get(PartnerSupplychainLinkService.class)
+          Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(),
-                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
 
       response.setAttr("deliveredPartner", "domain", strFilter);
     } catch (Exception e) {
