@@ -594,6 +594,6 @@ public final class BaseExceptionMessage {
   public static final String CONVERT_IMAGE_TO_PDF_ERROR = /*$$(*/
       "Error while converting image to pdf : %s" /*)*/;
 
-  public static final String NO_RECORD_SELECTD_TO_PRINT = /*$$(*/
+  public static final String NO_RECORD_SELECTED_TO_PRINT = /*$$(*/
       "Please select records to print" /*)*/;
 }

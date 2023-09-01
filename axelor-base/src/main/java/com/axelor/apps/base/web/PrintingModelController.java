@@ -149,7 +149,7 @@ public class PrintingModelController {
       if (ObjectUtils.isEmpty(idList)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.NO_RECORD_SELECTD_TO_PRINT));
+            I18n.get(BaseExceptionMessage.NO_RECORD_SELECTED_TO_PRINT));
       }
 
       String modelName = request.getModel();
