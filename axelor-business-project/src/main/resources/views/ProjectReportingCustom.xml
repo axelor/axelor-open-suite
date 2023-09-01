@@ -427,7 +427,8 @@
     title="Invoiced last month">
     <view type="custom" name="project-invoiced-last-month-custom"/>
   </action-view>
-  <action-view name="action-project-view-total-paid-custom" title="Total paid">
+  <action-view name="action-project-view-total-paid-custom"
+    title="Total paid (incl. VAT)">
     <view type="custom" name="project-total-paid-custom"/>
   </action-view>
 

@@ -112,7 +112,7 @@
               <field name="landingMargin" hidden="true"/>
               <field name="landingMarkup" hidden="true"/>
             </panel>
-            <panel name="invoicingPanel" title="Invoicing" colSpan="12">
+            <panel name="invoicingPanel" title="Invoicing (excl. VAT)" colSpan="12">
               <panel-dashlet action="action-project-view-total-invoiced-custom"
                 colSpan="3"/>
               <panel-dashlet action="action-project-view-invoiced-this-month-custom"
