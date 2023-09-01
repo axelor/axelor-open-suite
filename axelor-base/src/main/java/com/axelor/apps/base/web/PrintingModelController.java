@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BirtTemplateConfigLineService;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
@@ -88,8 +89,10 @@ public class PrintingModelController {
     }
   }
 
+  @ErrorException
   @SuppressWarnings("unchecked")
-  public void printFromWizard(ActionRequest request, ActionResponse response) {
+  public void printFromWizard(ActionRequest request, ActionResponse response)
+      throws ClassNotFoundException, AxelorException, IOException {
     Context context = request.getContext();
     Object birtTemplateObj = context.get("birtTemplate");
 
@@ -97,26 +100,25 @@ public class PrintingModelController {
       return;
     }
 
-    try {
-      Long birtTemplateId =
-          Long.valueOf(((LinkedHashMap<String, Object>) birtTemplateObj).get("id").toString());
-      BirtTemplate birtTemplate = Beans.get(BirtTemplateRepository.class).find(birtTemplateId);
+    Long birtTemplateId =
+        Long.valueOf(((LinkedHashMap<String, Object>) birtTemplateObj).get("id").toString());
+    BirtTemplate birtTemplate = Beans.get(BirtTemplateRepository.class).find(birtTemplateId);
 
-      Class<?> klass = Class.forName(context.get(CONTEXT_MODEL_CLASS).toString());
-      if (context.get(CONTEXT_MODEL_ID) != null) {
-        Long id = Long.valueOf(context.get(CONTEXT_MODEL_ID).toString());
-        printTemplate(response, birtTemplate, klass, id);
+    Class<?> klass = Class.forName(context.get(CONTEXT_MODEL_CLASS).toString());
+    if (context.get(CONTEXT_MODEL_ID) != null) {
+      Long id = Long.valueOf(context.get(CONTEXT_MODEL_ID).toString());
+      printTemplate(response, birtTemplate, klass, id);
+    } else {
+      List<Integer> idList = (List<Integer>) context.get(CONTEXT_ID_LIST);
+      if (idList != null && idList.size() == 1) {
+        printTemplate(response, birtTemplate, klass, Long.valueOf(idList.get(0)));
       } else {
-        List<Integer> idList = (List<Integer>) context.get(CONTEXT_ID_LIST);
         print(response, birtTemplate, klass, idList);
       }
-
-    } catch (ClassNotFoundException | AxelorException | IOException e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
-  private Map<String, Object> getModelAndId(ActionRequest request) {
+  protected Map<String, Object> getModelAndId(ActionRequest request) {
     String model = request.getModel();
     Context context = request.getContext();
     Long id = Long.valueOf(context.get("id").toString());
@@ -129,7 +131,7 @@ public class PrintingModelController {
   }
 
   @SuppressWarnings("unchecked")
-  private <T extends Model> void printTemplate(
+  protected <T extends Model> void printTemplate(
       ActionResponse response, BirtTemplate birtTemplate, Class<?> modelClass, Long modelId)
       throws AxelorException {
     Model model = JPA.find((Class<T>) modelClass, modelId);
@@ -180,9 +182,9 @@ public class PrintingModelController {
   }
 
   @SuppressWarnings("unchecked")
-  private void print(
+  protected void print(
       ActionResponse response, BirtTemplate birtTemplate, Class<?> klass, List<Integer> idList)
-      throws IOException {
+      throws IOException, AxelorException {
     String fileLink =
         Beans.get(PrintFromBirtTemplateService.class)
             .getPrintFileLink(idList, (Class<? extends Model>) klass, birtTemplate);

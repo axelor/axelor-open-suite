@@ -29,5 +29,6 @@ public interface PrintFromBirtTemplateService {
   String print(BirtTemplate template, Model model) throws AxelorException;
 
   public <T extends Model> String getPrintFileLink(
-      List<Integer> idList, Class<T> contextClass, BirtTemplate birtTemplate) throws IOException;
+      List<Integer> idList, Class<T> contextClass, BirtTemplate birtTemplate)
+      throws IOException, AxelorException;
 }
