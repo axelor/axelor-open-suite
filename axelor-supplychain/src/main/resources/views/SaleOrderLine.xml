@@ -10,9 +10,9 @@
         value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs"/>
       <attribute name="onLoad" value="action-sale-order-line-supplychain-group-onload"/>
     </extend>
-    <extend target="//panel[@name='statusPanel']">
+    <extend target="//panel[@name='hiddenPanel']">
       <insert position="inside">
-        <field name="$_xFillProductAvailableQty" hidden="true" type="boolean" readonly="true"/>
+        <field name="$_xFillProductAvailableQty" type="boolean" readonly="true"/>
       </insert>
     </extend>
   </form>
