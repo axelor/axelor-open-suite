@@ -46,7 +46,8 @@
           action="action-partner-view-show-customer-debt-recovery"
           if="__config__.app.isApp('account')"/>
         <item title="Create sale quotation" name="createSaleQuotationItem"
-          action="save,action-partner-view-create-order" if="__config__.app.isApp('sale')"/>
+          action="save,action-partner-view-create-order" if="__config__.app.isApp('sale')"
+          showIf="isCustomer"/>
         <item title="Create purchase quotation" name="createPurchaseQuotationItem"
           action="save,action-partner-view-create-purchase-quotation"
           if="__config__.app.isApp('purchase')" showIf="isSupplier"/>
@@ -178,10 +179,10 @@
     <extend target="//panel[@name='imagePanel']">
       <insert position="before">
         <button name="validateConversionFromLeadBtn" title="Validate"
-          onClick="action-partner-group-validate-conversion-from-lead"
+          onClick="action-partner-group-validate-conversion-from-lead" hidden="true"
           showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
         <button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"
-          showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+          hidden="true" showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
         <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
           x-order="sequence" onChange="action-partner-group-partner-status-onchange"
           showIf="$isFromCrm " if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
@@ -205,28 +206,6 @@
           </editor>
         </field>
       </replace>
-    </extend>
-    <extend target="//panel[@name='marketingCampaignPanel']">
-      <insert position="after">
-        <panel name="mainInformationPanel" title="General information" showIf="isCollaborator">
-          <panel-related name="collaboratorDomainListPanel"
-            field="collaboratorDomainList" form-view="collaborator-domain-form"
-            grid-view="collaborator-domain-grid"/>
-          <panel-related name="workAreaSetPanel" field="workAreaSet"
-            form-view="country-form" grid-view="country-grid" canNew="false" canEdit="false"/>
-          <field name="fidelity" form-view="fidelity-form" grid-view="fidelity-grid"/>
-          <field name="collaboratorSince"/>
-        </panel>
-      </insert>
-    </extend>
-    <extend target="/">
-      <insert position="after">
-        <panel name="followUpPanel" title="Partner follow up" showIf="isCollaborator"
-          sidebar="true" colSpan="12">
-          <field name="takenOpportunities"/>
-          <field name="wonOpportunities"/>
-        </panel>
-      </insert>
     </extend>
   </form>
 
@@ -286,9 +265,9 @@
     <extend target="//field[@name='jobTitleFunction']">
       <attribute name="x-create" value="function"/>
       <insert position="before">
+        <field name="isMainContact" colSpan="4"/>
         <field name="isDoNotCall" colSpan="4" hideIf="$readonly()"/>
         <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
-        <field name="isMainContact" colSpan="4"/>
         <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
           <viewer><![CDATA[
 			<h4>
@@ -330,7 +309,7 @@
 
   <kanban columnBy="partnerStatus" model="com.axelor.apps.base.db.Partner"
     sequenceBy="sequence" title="Prospects" name="partner-prospect-kanban" limit="10"
-    draggable="true">
+    draggable="true" onMove="action-partner-method-kanban-onmove">
     <field name="name"/>
     <field name="leadScoringSelect"/>
     <field name="sizeSelect"/>
@@ -655,6 +634,10 @@
       method="getSubsidiaryPartnersCount"/>
   </action-method>
 
+  <action-method name="action-partner-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="kanbanPartnerOnMove"/>
+  </action-method>
+
   <action-group name="crm-action-group-partner-onload">
     <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
     <action name="action-partner-method-get-subsidiary-partners-count"/>
@@ -755,6 +738,7 @@
       == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
     <action name="action-partner-record-win"
       if="eval: __this__?.partnerStatus?.id == __config__.app.getApp('crm')?.closedWinPartnerStatus?.id"/>
+    <action name="save"/>
   </action-group>
 
   <action-view name="action-partner-view-partner-popup-view"

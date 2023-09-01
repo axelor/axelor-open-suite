@@ -15,8 +15,8 @@
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
-            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-            hidden="false">
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            readonly="true" hidden="false">
             <viewer depends="companyExTaxTotal,$currencySymbol">
               <![CDATA[
                               <dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
@@ -24,13 +24,15 @@
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
-            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"/>
-          <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            readonly="true"/>
+          <field name="budget"
+            if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
           <panel-related name="budgetDistributionListPanel"
             field="budgetDistributionList" grid-view="reduce-budget-distribution-grid"
             form-view="invoice-budget-distribution-form" editable="true" colSpan="12"
-            if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             onChange="action-group-budget-invoice-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
         </panel>
@@ -61,13 +63,17 @@
 
   <action-group name="action-group-budget-invoice-line-onload">
     <action name="action-group-account-invoice-line-onload"/>
-    <action name="action-budget-distribution-attrs-budget-amount-available"/>
-    <action name="action-method-invoice-line-budget-check-budget-key-roles"/>
+    <action name="action-budget-distribution-attrs-budget-amount-available"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-invoice-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-group-budget-invoice-line-onnew">
     <action name="action-account-invoice-line-onnew-group"/>
-    <action name="action-budget-distribution-attrs-budget-amount-available"/>
-    <action name="action-method-invoice-line-budget-check-budget-key-roles"/>
+    <action name="action-budget-distribution-attrs-budget-amount-available"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-invoice-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 </object-views>

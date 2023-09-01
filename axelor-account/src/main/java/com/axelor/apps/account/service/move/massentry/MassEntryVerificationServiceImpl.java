@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Journal;
@@ -97,11 +115,11 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     // Check move line mass entry date
     LocalDate newDate = newMoveLine.getDate();
     Company company = parentMove.getCompany();
-    if (!moveLine.getDate().equals(newDate)) {
+    if (newDate != null && !newDate.equals(moveLine.getDate())) {
       moveLine.setDate(newDate);
 
       Period period;
-      if (newDate != null && company != null) {
+      if (company != null) {
         period = periodService.getActivePeriod(newDate, company, YearRepository.TYPE_FISCAL);
         parentMove.setPeriod(period);
       }
@@ -182,22 +200,42 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   public void checkDateMassEntryMove(Move move, int temporaryMoveNumber) throws AxelorException {
     MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
 
-    boolean hasPeriodError = this.checkPeriod(move, temporaryMoveNumber);
-    boolean hasDateError = false;
-    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      if (!firstMoveLine.getDate().equals(moveLine.getDate()) && !hasDateError) {
-        hasDateError = true;
-        this.setMassEntryErrorMessage(
-            move,
-            I18n.get(AccountExceptionMessage.MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE),
-            true,
-            temporaryMoveNumber);
-      }
+    boolean hasError = this.checkPeriod(move, temporaryMoveNumber);
+    hasError = this.checkEmptyDate(move, temporaryMoveNumber) || hasError;
+    hasError =
+        this.checkDifferentDate(firstMoveLine.getDate(), move, temporaryMoveNumber) || hasError;
 
-      if (hasDateError || hasPeriodError) {
-        this.setFieldsErrorListMessage(moveLine, "date");
-      }
+    if (hasError) {
+      move.getMoveLineMassEntryList()
+          .forEach(moveLine -> this.setFieldsErrorListMessage(moveLine, "date"));
     }
+  }
+
+  protected boolean checkEmptyDate(Move move, int temporaryMoveNumber) {
+    if (move.getMoveLineMassEntryList().stream().map(MoveLine::getDate).anyMatch(Objects::isNull)) {
+      this.setMassEntryErrorMessage(
+          move,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE),
+          true,
+          temporaryMoveNumber);
+      return true;
+    }
+    return false;
+  }
+
+  protected boolean checkDifferentDate(LocalDate firstDate, Move move, int temporaryMoveNumber) {
+    if (move.getMoveLineMassEntryList().stream()
+        .map(MoveLine::getDate)
+        .anyMatch(
+            localDate -> localDate != null && firstDate != null && !firstDate.equals(localDate))) {
+      this.setMassEntryErrorMessage(
+          move,
+          I18n.get(AccountExceptionMessage.MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE),
+          true,
+          temporaryMoveNumber);
+      return true;
+    }
+    return false;
   }
 
   protected boolean checkPeriod(Move move, int temporaryMoveNumber) throws AxelorException {
@@ -283,6 +321,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
                       ObjectUtils.notEmpty(ml.getMoveLineMassEntryList())
                           && ml.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber()
                               != temporaryMoveNumber
+                          && ml.getOrigin() != null
+                          && move.getOrigin() != null
                           && ml.getOrigin().equals(move.getOrigin()))
               .map(Move::getReference)
               .collect(Collectors.joining(","));
@@ -384,7 +424,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
     switch (fieldName) {
       case "date":
-        message.append(moveLine.getDate().toString());
+        message.append(moveLine.getDate() != null ? moveLine.getDate().toString() : "");
         break;
       case "currencyRate":
         message.append(moveLine.getCurrencyRate().toString());

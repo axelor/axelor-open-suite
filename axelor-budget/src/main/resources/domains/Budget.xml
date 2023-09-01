@@ -56,9 +56,6 @@
       help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
     </decimal>
 
-    <!-- This field is used for the temporary fix. It should be removed after RM#24881 -->
-    <string name="rootParentBudgetLevel" title="Root parent budget level"/>
-
     <many-to-one name="budgetModel" ref="com.axelor.apps.budget.db.Budget"
       title="Budget model"/>
     <many-to-many name="accountModelSet" ref="com.axelor.apps.budget.db.AccountModel"

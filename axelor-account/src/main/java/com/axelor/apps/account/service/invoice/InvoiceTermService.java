@@ -57,6 +57,8 @@ public interface InvoiceTermService {
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
 
+  void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate);
+
   void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
 
   void computeFinancialDiscount(
@@ -328,6 +330,6 @@ public interface InvoiceTermService {
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
-  boolean isThresholdNotOnLastInvoiceTerm(
+  boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
 }

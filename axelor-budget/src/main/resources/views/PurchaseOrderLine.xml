@@ -109,13 +109,16 @@
 
   <action-group name="action-budget-group-purchase-purchase-orderline-product-onchange">
     <action name="action-group-purchase-purchase-orderline-product-onchange"/>
-    <action name="action-method-budget-purchase-orderline-set-product-account"/>
+    <action name="action-method-budget-purchase-orderline-set-product-account"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onnew">
     <action name="action-group-purchase-purchase-orderline-onnew"/>
-    <action name="action-budget-purchase-orderline-record-set-global-budget"/>
-    <action name="action-method-purchase-order-line-budget-check-budget-key-roles"/>
+    <action name="action-budget-purchase-orderline-record-set-global-budget"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-attrs
@@ -132,16 +135,20 @@
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onload">
     <action name="action-group-purchase-purchase-orderline-onload"/>
-    <action name="action-budget-purchase-order-line-record-set-budget-level"/>
-    <action name="action-method-purchase-order-line-budget-check-budget-key-roles"/>
+    <action name="action-budget-purchase-order-line-record-set-budget-level"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-record name="action-budget-purchase-order-line-record-set-budget-level"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    <field name="$global" expr="eval: _parent?.budgetLevel" if="_parent"/>
+    <field name="$global" expr="eval: _parent?.budgetLevel"
+      if="__config__.app.isApp('budget') &amp;&amp; _parent"/>
     <field name="$group" expr="eval: budget?.budgetLevel?.parentBudgetLevel"
-      if="budget != null"/>
-    <field name="$section" expr="eval: budget?.budgetLevel" if="budget != null"/>
+      if="__config__.app.isApp('budget') &amp;&amp; budget != null"/>
+    <field name="$section" expr="eval: budget?.budgetLevel"
+      if="__config__.app.isApp('budget') &amp;&amp; budget != null"/>
   </action-record>
 
   <action-method name="action-budget-purchase-order-line-method-group-domain">

@@ -139,7 +139,8 @@
           <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
         </editor>
       </field>
-      <field name="name" showTitle="false" colSpan="8" readonly="true">
+      <field name="name" showTitle="false" placeholder="Name" colSpan="8"
+        css="label-bold bold large">
         <viewer depends="name">
                     <![CDATA[
 						<span style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
@@ -237,13 +238,11 @@
         <field name="partner" canEdit="false" requiredIf="contact == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = false AND :company member of self.companySet"
-          form-view="partner-form" grid-view="partner-grid"
-          onChange="action-opportunity-record-set-name"/>
+          form-view="partner-form" grid-view="partner-grid"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = true AND :company member of self.companySet"
-          form-view="partner-contact-form" grid-view="partner-contact-grid"
-          onChange="action-opportunity-record-set-name"/>
+          form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       </panel>
       <panel name="postitPanel" title="Memo" canCollapse="true">
         <field name="memo" showTitle="false" colSpan="12"/>
@@ -261,7 +260,7 @@
 
   <kanban columnBy="opportunityStatus" sequenceBy="orderByState" limit="10"
     name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
-    onMove="action-opportunity-method-cancel-saleorders">
+    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove">
     <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="description"/>
@@ -467,7 +466,6 @@
     <action name="action-opportunity-record-currency"/>
     <action name="action-opportunity-record-default" if="_partner == null"/>
     <action name="action-opportunity-record-from-partner" if="_partner != null"/>
-    <action name="action-opportunity-record-set-name" if="_partner != null"/>
     <action name="action-opportunity-attrs-set-attrs-on-load"/>
     <action name="action-opportunity-method-set-fields-from-partner"
       if="_isGeneratedFromPartner"/>
@@ -479,13 +477,6 @@
     <view type="grid" name="event-grid"/>
     <context name="_opportunity" expr="eval: __this__"/>
   </action-view>
-
-  <action-record name="action-opportunity-record-set-name"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="name" expr="eval: partner.fullName" if="partner != null"/>
-    <field name="name" expr="eval: contact.fullName"
-      if="contact != null &amp;&amp; partner == null"/>
-  </action-record>
 
   <action-record name="action-opportunity-record-new"
     model="com.axelor.apps.crm.db.Opportunity">
@@ -671,6 +662,11 @@
 
   <action-method name="action-opportunity-method-lost-process">
     <call method="lostProcess" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-opportunity-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.OpportunityController"
+      method="kanbanOpportunityOnMove"/>
   </action-method>
 
 </object-views>

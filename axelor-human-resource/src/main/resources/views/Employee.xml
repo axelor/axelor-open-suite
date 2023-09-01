@@ -134,7 +134,8 @@
 
       <panel colSpan="12">
         <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-          form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
+          form-view="weekly-planning-form" grid-view="weekly-planning-grid"
+          domain="self.typeSelect = 1"/>
         <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
           form-view="events-planning-form" grid-view="events-planning-grid"/>
         <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
@@ -338,7 +339,8 @@
 
           <panel colSpan="12">
             <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-              form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
+              form-view="weekly-planning-form" grid-view="weekly-planning-grid"
+              domain="self.typeSelect = 1"/>
             <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
               form-view="events-planning-form" grid-view="events-planning-grid"/>
             <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
@@ -771,8 +773,13 @@
       <domain>self.leavingDate IS NULL AND self.hireDate &gt; CURRENT_DATE - 30</domain>
     </filter>
     <filter title="Active employees">
-      <domain>(self.leavingDate IS NULL OR self.leavingDate &gt; CURRENT_DATE) AND (self.hireDate IS
-        NULL OR self.hireDate &lt; CURRENT_DATE)</domain>
+      <domain>(self.hireDate IS NULL AND self.leavingDate &gt;= CURRENT_DATE)
+        OR (self.leavingDate IS
+        NULL AND (self.hireDate + 30) &lt;= CURRENT_DATE)
+        OR (self.hireDate IS NOT NULL AND
+        self.leavingDate IS NOT NULL
+        AND (self.hireDate + 30) &lt;= CURRENT_DATE AND self.leavingDate
+        &gt;= CURRENT_DATE)</domain>
     </filter>
     <filter title="Former employees">
       <domain>self.leavingDate &lt; CURRENT_DATE</domain>

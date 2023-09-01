@@ -73,8 +73,8 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-move-method-onnew" onLoad="action-account-move-method-onLoad"
-    onSave="action-account-move-group-onsave" readonlyIf="$simulatedPeriodClosed">
+    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
+    onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>
@@ -86,12 +86,12 @@
         onClick="action-move-method-delete-move"
         showIf="id != null &amp;&amp; !archived &amp;&amp; statusSelect != 3"/>
     </toolbar>
-    <panel name="mainPanel" colSpan="12">
+    <panel name="mainPanel" colSpan="12" readonlyIf="$simulatedPeriodClosed">
       <panel name="moveDetailsPanel" colSpan="9">
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            onChange="action-move-method-company-onchange" form-view="company-form"
+            readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
+            onChange="action-move-group-company-onchange" form-view="company-form"
             grid-view="company-grid" colSpan="2"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
@@ -116,9 +116,9 @@
           <panel name="datePanel" showFrame="false" colSpan="12">
             <field name="period" form-view="period-form" grid-view="period-grid"
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
-            <field name="date"
+            <field name="date" required="true"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-              onChange="action-account-move-method-date-onchange" colSpan="2"/>
+              onChange="action-move-group-date-onchange" colSpan="2"/>
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
           </panel>
           <field name="partner" readonlyIf="$validatePeriod || moveLineList.length &gt; 0"
@@ -127,8 +127,8 @@
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
           <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
-            form-view="fiscal-position-form" grid-view="fiscal-position-grid"
-            onChange="action-move-method-fiscal-position-onchange"/>
+            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
+            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
@@ -143,7 +143,7 @@
             onSelect="action-move-method-partner-bank-details-onselect"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
-            readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3" colSpan="4"
+            readonlyIf="$validatePeriod || statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
             form-view="payment-condition-form" grid-view="payment-condition-grid"/>
           <field name="dueDate" title="Due date"
@@ -158,6 +158,7 @@
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
+            requiredIf="company.accountConfig.isDescriptionRequired"
             onChange="action-move-group-description-onchange" colSpan="6"/>
         </panel>
       </panel>
@@ -259,14 +260,15 @@
         </panel>
       </panel>
     </panel>
-    <panel-tabs name="mainPanelTab" hideIf="!journal || $mainPanelTabHidden">
+    <panel-tabs name="mainPanelTab" hideIf="!journal || $mainPanelTabHidden"
+      readonlyIf="$simulatedPeriodClosed">
       <panel title="Move Lines" readonlyIf="$validatePeriod">
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
           onClick="action-move-method-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
-          icon="fa-plus" title="Generate tax lines" showIf="statusSelect == 1 || statusSelect == 5"
+          icon="fa-plus" title="Generate tax lines" showIf="[1,2,5].includes(statusSelect)"
           onClick="action-move-method-generate-tax-lines"/>
         <panel-related name="moveLineListPanel"
           showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
@@ -382,6 +384,7 @@
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
           <field name="$mainPanelTabHidden" hidden="true"/>
+          <field name="company.accountConfig.isDescriptionRequired" hidden="true"/>
         </panel>
       </panel>
     </panel-tabs>
@@ -564,6 +567,26 @@
     <action name="action-move-method-check-origin"/>
     <action name="action-move-method-check-duplicate-origin-move"/>
     <action name="action-account-move-method-origin-onchange"/>
+  </action-group>
+
+  <action-group name="action-move-group-date-onchange">
+    <action name="action-account-move-method-date-onchange"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-account-group-onnew">
+    <action name="action-account-move-method-onnew"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-account-group-onLoad">
+    <action name="action-account-move-method-onLoad"/>
+    <action name="action-move-method-check-period"/>
+  </action-group>
+
+  <action-group name="action-move-group-company-onchange">
+    <action name="action-move-method-company-onchange"/>
+    <action name="action-move-method-check-period"/>
   </action-group>
 
   <!-- ACTION METHOD ON CLICK -->
@@ -769,6 +792,10 @@
 
   <action-method name="action-move-method-refusal-to-pay">
     <call class="com.axelor.apps.account.web.MoveController" method="refusalToPay"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-period">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
   </action-method>
 
   <!-- ACTION VIEW -->

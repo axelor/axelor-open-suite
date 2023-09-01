@@ -384,11 +384,13 @@
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
           name="delayedInvoice" title="Facturation ultérieure"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3"
-          css="btn-warning" onClick="save,action-stock-move-status-select-invoiced-delayed,save"/>
+          css="btn-warning"
+          onClick="save,action-stock-move-method-set-invoicing-status-invoiced-delayed"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
           name="validatedInvoice" title="Validé pour facturation"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4"
-          css="btn-success" onClick="save,action-stock-move-status-select-invoiced-validated,save"/>
+          css="btn-success"
+          onClick="save,action-stock-move-method-set-invoicing-status-invoiced-validated"/>
         <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
           showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4"
           onClick="action-group-stock-stockmove-cancel-click"/>
@@ -410,7 +412,7 @@
           form-view="stock-location-form"/>
         <field name="toStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form"/>
+          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
         <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
           onChange="action-stock-move-method-update-stock-move-line"/>
         <field name="estimatedDate"
@@ -1487,7 +1489,7 @@
 
   <action-attrs name="action-stock-move-attrs-display-generate-invoice-btn">
     <attribute for="generateInvoiceBtn" name="hidden"
-      expr="statusSelect != 3 || typeSelect == 1 || (__config__.app.getApp('supplychain')?.getValidStepForInvOutSM() &amp;&amp; invoicingStatusSelect != 4)"/>
+      expr="eval: statusSelect != 3 || typeSelect == 1 || (__config__.app.getApp('supplychain')?.getValidStepForInvOutSM() &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 4)"/>
   </action-attrs>
 
   <action-group name="action-stock-move-group-type-select-onchange">

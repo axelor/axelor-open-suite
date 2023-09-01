@@ -291,7 +291,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setPfpPartialReason(partialReason);
     originalInvoiceTerm.setCompanyAmount(
         originalInvoiceTerm.getCompanyAmount().subtract(newInvoiceTerm.getCompanyAmount()));
-    originalInvoiceTerm.setCompanyAmount(
+    originalInvoiceTerm.setCompanyAmountRemaining(
         originalInvoiceTerm
             .getCompanyAmountRemaining()
             .subtract(newInvoiceTerm.getCompanyAmountRemaining()));

@@ -83,13 +83,6 @@
       expr="eval: !__parent__?.isConsumptionManagement"/>
   </action-attrs>
 
-  <action-attrs name="action-contract-line-attrs-hide-is-to-revaluate"
-    model="com.axelor.apps.contract.db.ContractLine">
-    <attribute name="hidden" for="isToRevaluate"
-      expr="eval: !__parent__?.contract?.isToRevaluate"/>
-  </action-attrs>
-
-
   <action-attrs
     name="action-contract-line-attrs-set-analytic-distribution-template-domain">
     <attribute name="domain" for="analyticDistributionTemplate"
@@ -246,11 +239,16 @@
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-attrs-scale-and-precision"/>
     <action name="action-contract-line-method-hide-date-panel"/>
-    <action name="action-contract-line-attrs-hide-is-to-revaluate"/>
+    <action name="action-contract-line-method-hide-is-to-revaluate"/>
   </action-group>
 
   <action-method name="action-contract-line-method-hide-date-panel">
     <call class="com.axelor.apps.contract.web.ContractLineController" method="hideDatePanel"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-hide-is-to-revaluate">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="hideIsToRevaluate"/>
   </action-method>
 
   <action-group name="action-contract-line-group-product-onchange">

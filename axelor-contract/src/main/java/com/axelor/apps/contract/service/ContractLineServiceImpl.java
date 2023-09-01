@@ -238,7 +238,10 @@ public class ContractLineServiceImpl implements ContractLineService {
       BigDecimal ratio =
           durationService
               .getFactor(durationType)
-              .divide(BigDecimal.valueOf(durationValue), RoundingMode.HALF_UP);
+              .divide(
+                  BigDecimal.valueOf(durationValue),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
       if (initialUnitPrice != null && qty != null) {
         contractLine.setInitialPricePerYear(
             initialUnitPrice

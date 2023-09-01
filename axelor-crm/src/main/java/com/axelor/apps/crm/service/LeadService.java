@@ -85,4 +85,8 @@ public interface LeadService {
   public String processFullName(String enterpriseName, String name, String firstName);
 
   public LeadStatus getDefaultLeadStatus() throws AxelorException;
+
+  public boolean computeIsLost(Lead lead) throws AxelorException;
+
+  public void kanbanLeadOnMove(Lead lead) throws AxelorException;
 }

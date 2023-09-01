@@ -74,6 +74,7 @@
       <field name="$difference" readonly="true" title="Difference" type="decimal"/>
       <field name="$currency" hidden="true" type="many-to-one"
         target="com.axelor.apps.base.db.Currency" colSpan="12"/>
+      <field name="$currency.symbol" hidden="true" colSpan="12"/>
       <button name="computeTotalForecastBtn" title="Compute total forecast"
         onClick="action-mrp-forecast-method-compute-total-forecast"/>
       <button name="confirmForecastsBtn" readonlyIf="$stockLocation==null"
@@ -105,21 +106,24 @@
 
   <action-record name="action-sop-line-record-compute-sop-sales-gap"
     model="com.axelor.apps.production.db.SopLine">
-    <field name="sopSalesGap" expr="eval: (sopRealSales - sopSalesForecast)/sopSalesForecast"
+    <field name="sopSalesGap"
+      expr="eval: ((sopRealSales - sopSalesForecast)/sopSalesForecast)*100"
       if="sopSalesForecast &amp;&amp; sopRealSales"/>
     <field name="sopSalesGap" expr="eval: null" if="!sopSalesForecast || !sopRealSales"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-sop-manuf-gap"
     model="com.axelor.apps.production.db.SopLine">
-    <field name="sopManufGap" expr="eval: (sopRealManuf - sopManufForecast)/sopManufForecast"
+    <field name="sopManufGap"
+      expr="eval: ((sopRealManuf - sopManufForecast)/sopManufForecast)*100"
       if="sopManufForecast &amp;&amp; sopRealManuf"/>
     <field name="sopManufGap" expr="eval: null" if="!sopManufForecast || !sopRealManuf"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-sop-stock-gap"
     model="com.axelor.apps.production.db.SopLine">
-    <field name="sopStockGap" expr="eval: (sopRealStock - sopStockForecast)/sopStockForecast"
+    <field name="sopStockGap"
+      expr="eval: ((sopRealStock - sopStockForecast)/sopStockForecast)*100"
       if="sopStockForecast &amp;&amp; sopRealStock"/>
     <field name="sopStockGap" expr="eval: null" if="!sopStockForecast || !sopRealStock"/>
   </action-record>
@@ -171,7 +175,7 @@
 
   <action-validate name="action-mrp-forecast-validate-check-difference">
     <alert
-      message="There currently is a ${difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?"
+      message="There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&amp;OP forecast. Proceed?"
       if="difference != 0"/>
   </action-validate>
 

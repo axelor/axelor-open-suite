@@ -114,7 +114,7 @@
   <custom name="my-leave-request-custom-view" title="Leave Requests"
     css="dashlet-no-dropdown">
     <dataset type="rpc">
-      com.axelor.apps.hr.web.EmployeeDashboardController:getLeaveData
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeLeaveData
     </dataset>
     <template><![CDATA[
     	<style>
@@ -248,7 +248,7 @@
 
   <custom name="my-expenses-custom-view" title="Expenses" css="dashlet-no-dropdown">
     <dataset type="rpc">
-      com.axelor.apps.hr.web.EmployeeDashboardController:getExpenseData
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeExpenseData
     </dataset>
     <template><![CDATA[
     <style>
@@ -306,14 +306,13 @@
 	    	background-color: #1a5cbd; /* Blue lines */
 	    }
     </style>
-    <div  id="emp-dashboard-expense-line-custom-view" ng-repeat = "item in data" style="margin:10px; padding:0 0 10px 0px;border:2px solid #D3D3D3;border-radius:5px;background-color:#E8E8E8;">
+    <div  id="emp-dashboard-expense-line-custom-view" ng-repeat = "item in data" style="margin:10px; padding:0 0 10px 0px;border:2px solid #D3D3D3;border-radius:5px;background-color:#E8E8E8;cursor:pointer;" ng-click="$root.openTabByName('expense.all',{'mode':'edit','state':item.expenseId})">
 	   <div style="display:flex;max-height:30px; align-items:center; justify-content:space-around; padding:0.5rem;">
 	  		<span><b>{{ item.date | date:'YYYY MMM ddd' }}</b></span>
 	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
 	  		<span><b> {{ item.inTaxTotal }} €</b></span>
 	  		<span>{{ item.description }}</span>
 	  		<span<{{item.status}}</span>
-	  		<a href="#/ds/expense.all/edit/{{item.expenseId}}"><i class="fa fa-arrow-right"/></a>
 		</div>
 		  <div style="position: relative; height: 10px; margin:5px 20px; padding: 5px">
 		    <div class="circle-container" data-a={{item.status}}>
@@ -336,7 +335,7 @@
 
   <custom name="my-timesheets-custom-view" title="Time Sheet" css="dashlet-no-dropdown">
     <dataset type="rpc">
-      com.axelor.apps.hr.web.EmployeeDashboardController:getTimesheetData
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeTimesheetData
     </dataset>
     <template><![CDATA[
     	<style>
@@ -426,18 +425,171 @@
     ]]></template>
   </custom>
 
-  <custom name="my-extra-hours-custom-view" title="Extra Hours"
-    css="report-box dashlet-no-dropdown">
+  <custom name="my-extra-hours-custom-view" title="Extra Hours" css="dashlet-no-dropdown">
     <dataset type="rpc">
-      com.axelor.apps.hr.web.EmployeeDashboardController:getExtraHrsData
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeExtraHrsData
     </dataset>
     <template><![CDATA[
-	   <div ng-repeat = "item in data" style="display:flex; align-items:center; margin-block:1rem; justify-content:space-around; padding:0.5rem;border:2px solid #D3D3D3;border-radius:5px;background-color:#E8E8E8;">
+	   <div ng-repeat = "item in data" style="display:flex; align-items:center; margin-block:1rem; justify-content:space-around; padding:0.5rem;border:2px solid #D3D3D3;border-radius:5px;background-color:#E8E8E8;cursor:pointer;"  ng-click="$root.openTabByName('extra.hours.all',{'mode':'edit','state':item.extraHrId})">
 	  		<span><b>{{ item.date | date:'YYYY MMM ddd' }}</b></span>
 	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
 	  		<span><b>+ {{ item.duration }} h</b></span>
 	  		<span>{{ item.description }}</span>
-	  		<a href="#/ds/extra.hours.all/edit/{{item.extraHrId}}"><i class="fa fa-arrow-right"/></a>
+		</div>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-leave-requests-custom-view" title="Leave Requests"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeLeaveData
+    </dataset>
+    <template><![CDATA[
+	<div ng-repeat="item in data">
+		<div style="display:flex; width:95%; margin:8px; padding:2px 20px; border-radius:5px; border:2px solid #cecfce; background-color:#E8E8E8; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('leave.all',{'mode':'edit','state':item.leaveRequestId})">
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<p style="padding:0; margin:0; font-weight:600; font-size:14px">{{item.fullName}}</p>
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.fromDate | date:'L'}} - {{item.toDate | date:'L'}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+				<p style="padding:2px; margin:0; font-size:12px; color:#1d1e22">{{item.leaveReason}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<a style="text-decoration:none; background-color:#2584fe; color:white; font-size:12px; padding:5px 20px; border-radius:4px; min-width:150px; text-align:center;">{{item.statusSelect}}</a>
+			</div>
+		</div>
+	</div>
+    ]]></template>
+  </custom>
+
+  <custom name="hr-manager-expenses-custom-view" title="Expenses" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeExpenseData
+    </dataset>
+    <template><![CDATA[
+	<div ng-repeat="item in data" style="max-height:100px;">
+		<div style="display:flex; width:95%; margin:8px; padding:2px 20px; border-radius:5px; border:2px solid #cecfce; background-color:#E8E8E8; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('expense.all',{'mode':'edit','state':item.expenseId})">
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<p style="padding:0; margin:0; font-weight:600; font-size:14px">{{item.fullName}}</p>
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.date | date:'L'}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+				<p style="padding:2px; margin:0; font-size:12px; color:#1d1e22">{{item.expenseType}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<a style="text-decoration:none; background-color:#2584fe; color:white; font-size:12px; padding:5px 20px; border-radius:4px; min-width:150px; text-align:center;">{{item.statusSelect}}</a>
+			</div>
+		</div>
+	</div>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-timesheets-custom-view" title="Timesheets"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeTimesheetData
+    </dataset>
+    <template><![CDATA[
+    	<style>
+    	   #manager-dashboard-timesheet-custom-card{
+	        max-width: 80%;
+	        max-height: 80%;
+	        position: relative;
+	        padding:30px;
+	        flex-direction: column;
+	      }
+	      #manager-dashboard-timesheet-custom-card .inner-circle {
+	        position: absolute;
+	        width: 140px;
+	        height: 140px;
+	        border-radius: 50%;
+	        display:flex;
+	        flex-wrap:wrap;
+	      }
+	      #manager-dashboard-timesheet-custom-card .innter_holder{
+	        display:flex;
+	        width: 100%;
+	        align-items:center;
+	        justify-content: space-around;
+	        display:flex;
+	        flex-wrap:wrap;
+	      }
+	      #manager-dashboard-timesheet-custom-card .tagcolor{
+		      margin: auto 5px;
+		      max-height: 5px;
+		      display: inline-block;
+		      padding:5px;
+	      }
+	      #manager-dashboard-timesheet-custom-card .tag1{
+	      	background-color: green
+	      }
+	      #manager-dashboard-timesheet-custom-card .tag2{
+	      	background-color:red
+	      }
+	      #manager-dashboard-timesheet-custom-card .tag{
+	        display:flex;
+			align-items: center;
+	      }
+	      #manager-dashboard-timesheet-custom-card .tag p{
+	        font-size: 14px;
+	        margin:0;
+	      }
+		  #manager-dashboard-timesheet-custom-card .x-box2{
+		    --total-present : {{first.atWork+first.notAtWork}};
+			border-radius: 50%;
+			background:repeating-conic-gradient(
+			from 0deg,
+			green 0deg calc(3.6deg *  calc(({{first.atWork}}*100)/var(--total-present))),
+			red calc(3.6deg * calc(({{first.atWork}}*100)/var(--total-present))) calc(3.6deg * 100)
+			);
+		  }
+		  #manager-dashboard-timesheet-custom-card .innerCircle{
+				width:80%;
+				height:80%;
+				background-color: white;
+				position:absolute;
+				top:50%;
+				left:50%;
+				border-radius:50%;
+				transform: translate(-50%, -50%);
+			}
+    </style>
+    <div id="manager-dashboard-timesheet-custom-card" ng-show="first">
+    	<div class="innter_holder">
+        	<div style="position:relative;">
+            	<div class="x-box2" style="width: 160px; height: 160px;"></div>
+            		<div class="innerCircle"></div>
+        		</div>
+	        <div>
+	            <div class="tag">
+	                <div class="tag1 tagcolor"></div>
+	                <p x-translate>Present</p><span style="padding-left:10px">({{first.atWork}})</span>
+	            </div>
+	            <div class="tag">
+	                <div class="tag2 tagcolor"></div>
+	                <p>Absent</p><span style="padding-left:10px"> ({{first.notAtWork}})</span>
+	            </div>
+	            <a style="color: white; display: inline-block; margin-top: 20px; background-color: #159983; padding: 8px 10px; border-radius: 20px; color: white; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer;" x-translate>I am at work</a>
+	        </div>
+	    </div>
+	</div>
+    ]]></template>
+  </custom>
+
+  <custom name="hr-manager-extra-hours-custom-view" title="Extra Hours"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeExtraHrsData
+    </dataset>
+    <template><![CDATA[
+	   <div ng-repeat = "item in data" style="display:flex; align-items:center; margin-block:1rem; justify-content:space-around; padding:2px 20px; border:2px solid #D3D3D3; border-radius:5px; background-color:#E8E8E8; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('extra.hours.all',{'mode':'edit','state':item.extraHrId})">
+	  		<div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+				<p style="padding:0; margin:0; font-weight:600; font-size:14px">{{item.fullName}}</p>
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.date | date:'L'}}</p>
+			</div>
+	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
+	  		<span><b>+ {{item.duration}} h</b></span>
+	  		<span>{{item.description}}</span>
 		</div>
 	  ]]></template>
   </custom>

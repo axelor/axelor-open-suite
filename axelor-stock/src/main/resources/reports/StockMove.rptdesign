@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202203150031</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -4072,7 +4072,7 @@ row["first_name"]
                         </header>
                         <group id="5340">
                             <property name="groupName">ProductGroup</property>
-                            <expression name="keyExpr" type="javascript">row["product_code"]+row["product_name"]+row["unit_code"]</expression>
+                            <expression name="keyExpr" type="javascript">row["product_code"]+row["product_name"]+row["unit_code"]+row["unit_price_untaxed"]</expression>
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>

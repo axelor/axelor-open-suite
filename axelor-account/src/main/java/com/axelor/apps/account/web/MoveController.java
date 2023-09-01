@@ -608,7 +608,7 @@ public class MoveController {
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       response.setValues(moveGroupService.getPaymentModeOnChangeValuesMap(move));
-      response.setAttrs(moveGroupService.getPaymentModeOnChangeAttrsMap());
+      response.setAttrs(moveGroupService.getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -708,7 +708,7 @@ public class MoveController {
 
   public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttrs(Beans.get(MoveGroupService.class).getPartnerBankDetailsOnChangeAttrsMap());
+      response.setAttrs(Beans.get(MoveGroupService.class).getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -771,6 +771,20 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
 
       String alert = Beans.get(MoveCheckService.class).getAccountingAlert(move);
+
+      if (StringUtils.notEmpty(alert)) {
+        response.setAlert(alert);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkPeriod(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      String alert = Beans.get(MoveCheckService.class).getPeriodAlert(move);
 
       if (StringUtils.notEmpty(alert)) {
         response.setAlert(alert);

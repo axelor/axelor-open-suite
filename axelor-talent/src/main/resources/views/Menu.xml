@@ -166,8 +166,8 @@
 
   <!-- MyHR -->
 
-  <menuitem name="my-hr-appraisal-all-appraisals" title="All my Appraisals"
+  <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals"
     action="appraisal.all.appraisals" parent="my-hr-root" order="600"
-    if="__config__.app.isApp('appraisal')"/>
+    if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"/>
 
 </object-views>

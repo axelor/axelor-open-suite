@@ -8,7 +8,7 @@
     <extend target="//item[@name='seeSupplInvoicesLinesItem']">
       <insert position="after">
         <item title="See budget distribution lines"
-          action="action-invoice-see-budget-distribution-lines"/>
+          action="action-invoice-see-budget-distribution-lines" if="__config__.app.isApp('budget')"/>
       </insert>
     </extend>
   </grid>
@@ -18,7 +18,7 @@
     <extend target="//item[@name='seeSupplInvoicesLinesItem']">
       <insert position="after">
         <item title="See budget distribution lines"
-          action="action-invoice-see-budget-distribution-lines"/>
+          action="action-invoice-see-budget-distribution-lines" if="__config__.app.isApp('budget')"/>
       </insert>
     </extend>
   </grid>
@@ -35,7 +35,7 @@
           showIf="(statusSelect >= 2 &amp;&amp; statusSelect &lt; 4) || budgetDistributionGenerated">
           <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
             action="action-budget-distribution-view-budget-distribution" colSpan="12"
-            readonly="true"/>
+            readonly="true" if="__config__.app.isApp('budget')"/>
         </panel>
       </insert>
     </extend>
@@ -46,7 +46,7 @@
       <insert position="after">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-compute-budget-distribution" hidden="true"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"/>
       </insert>
     </extend>
@@ -62,9 +62,12 @@
   </form>
 
   <action-group name="action-budget-invoice-group-ventilate-button">
-    <action name="action-method-invoice-budget-no-compute-budget-distribution"/>
-    <action name="action-budget-invoice-record-get-budget-balance"/>
-    <action name="action-budget-invoice-validate-budget-balance"/>
+    <action name="action-method-invoice-budget-no-compute-budget-distribution"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-invoice-record-get-budget-balance"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-invoice-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-group-ventilate-button"/>
   </action-group>
 
@@ -100,9 +103,9 @@
   <action-group name="action-budget-invoice-onsave-group">
     <action name="action-invoice-onsave-group"/>
     <action name="action-budget-invoice-record-get-budget-balance"
-      if="operationTypeSelect == 1 || operationTypeSelect == 3"/>
+      if="__config__.app.isApp('budget') &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
     <action name="action-budget-invoice-validate-budget-balance"
-      if="operationTypeSelect == 1 || operationTypeSelect == 3"/>
+      if="__config__.app.isApp('budget') &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
   </action-group>
 
   <action-record name="action-budget-invoice-record-get-budget-balance"

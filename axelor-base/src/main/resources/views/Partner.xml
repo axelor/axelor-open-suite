@@ -266,12 +266,10 @@
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
           if-module="axelor-account"
           onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
-        <field name="isCollaborator" colSpan="2" widget="InlineCheckbox" hideIf="$readonly()"
-          if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
           colSpan="12">
           <viewer
-            depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier,isCollaborator">
+            depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier">
             <![CDATA[
 							<h4 style="text-align: right;">
 								<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
@@ -281,7 +279,6 @@
 								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
 								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
 								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-								<span class="label label-default" style="background-color: #BC3772; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCollaborator" x-translate>Collaborator</span>
 							</h4>
                         ]]>
           </viewer>
@@ -553,7 +550,7 @@
           if-module="axelor-sale">
           <button name="createSaleOrderBtn" title="Create sale quotation" colSpan="4"
             onClick="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1"
-            showIf="isProspect || isCustomer"/>
+            showIf="isCustomer"/>
           <panel-include view="incl-sales-partner-form"/>
         </panel>
       </panel>
@@ -703,7 +700,7 @@
         </field>
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
-            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
+            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet AND p.partnerTypeSelect = 1)"
             form-view="partner-form" grid-view="partner-grid"/>
         </panel>
         <field name="isContact" hidden="true" colSpan="12"/>
@@ -1118,7 +1115,7 @@
           <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
-            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
+            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet AND p.partnerTypeSelect = 1)"
             form-view="partner-form" grid-view="partner-grid"/>
         </panel>
         <field name="isContact" hidden="true" colSpan="12"/>

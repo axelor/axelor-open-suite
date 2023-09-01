@@ -238,8 +238,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
-    moveCheckService.checkPeriodPermission(move);
-    moveRecordSetService.setPeriod(move);
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveCheckService.checkPeriodPermission(move);
+      moveRecordSetService.setPeriod(move);
+    }
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
     moveRecordSetService.setOriginDate(move);
@@ -461,6 +463,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     }
 
     valuesMap.put("flash", moveRecordUpdateService.updateInvoiceTerms(move, true, headerChange));
+    moveRecordUpdateService.resetDueDate(move);
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
     moveRecordUpdateService.updateDueDate(move, true, dateChange);
 
@@ -516,7 +519,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
-    valuesMap.put("partner", null);
+
+    if (move.getPartner() != null
+        && move.getCompany() != null
+        && move.getPartner().getCompanySet() != null
+        && !move.getPartner().getCompanySet().contains(move.getCompany())) {
+      valuesMap.put("partner", null);
+      valuesMap.put("currency", move.getCompany().getCurrency());
+      valuesMap.put("companyBankDetails", null);
+    }
 
     return valuesMap;
   }
@@ -549,7 +560,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPaymentModeOnChangeAttrsMap() {
+  public Map<String, Map<String, Object>> getHeaderChangeAttrsMap() {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addHeaderChangeValue(true, attrsMap);
@@ -605,15 +616,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
         moveRecordUpdateService.getDateOfReversion(moveDate, dateOfReversionSelect));
 
     return valuesMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getPartnerBankDetailsOnChangeAttrsMap() {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addHeaderChangeValue(true, attrsMap);
-
-    return attrsMap;
   }
 
   @Override

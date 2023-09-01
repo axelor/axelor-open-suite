@@ -9,7 +9,8 @@
     <extend target="//panel[@name='datePanel']">
       <insert position="after">
         <panel name="budgetPanel" title="budget" colSpan="12" sidebar="true"
-          canCollapse="true" hideIf="budget &amp;&amp; budget.statusSelect != 'valid'">
+          if="__config__.app.isApp('budget')" canCollapse="true"
+          hideIf="budget &amp;&amp; budget.statusSelect != 'valid'">
           <field name="budget" canSelect="true" canNew="false"
             canEdit="budget.statusSelect == 'valid'" form-view="global-budget-budget-level-form"
             grid-view="budget-level-grid" colSpan="12" showTitle="false"
@@ -38,7 +39,7 @@
 
     <extend target="//panel[@name='purchasesPanel']">
       <insert position="before">
-        <panel name="budgetPanelTab" title="budget"
+        <panel name="budgetPanelTab" title="budget" if="__config__.app.isApp('budget')"
           showIf="budget &amp;&amp; budget.statusSelect == 'valid'">
           <field name="budget" colSpan="12" showTitle="false" canEdit="true" canSelect="false">
             <editor x-viewer="true" readonly="true">
@@ -50,10 +51,10 @@
                 <panel name="generalPanel" colSpan="12">
                   <field name="code" colSpan="1"/>
                   <field name="name" colSpan="2"/>
-                  <field name="companySet" widget="TagSelect" colSpan="3"/>
+                  <field name="company" colSpan="3"/>
                   <field name="companyDepartment" colSpan="2"/>
                   <spacer colSpan="4"/>
-                  <field name="typeSelect" colSpan="1"/>
+                  <field name="typeSelect" colSpan="1" hidden="true"/>
                   <field name="budgetManager" colSpan="2"/>
                 </panel>
                 <panel name="projectPanel" colSpan="12">
@@ -78,7 +79,8 @@
             </editor>
           </field>
           <field name="budget.statusSelect" hidden="true"/>
-          <panel name="budgetLevelCommittedLineBtnPanel" colSpan="12">
+          <panel name="budgetLevelCommittedLineBtnPanel" colSpan="12"
+            if="__config__.app.isApp('budget')">
             <button name="openBudgetBtn" title="Open budget"
               onClick="action-budget-project-view-budget-level"/>
             <button name="budgetLevelCommittedLineBtn"

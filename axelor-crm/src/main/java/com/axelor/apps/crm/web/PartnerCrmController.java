@@ -22,6 +22,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.PartnerCrmService;
 import com.axelor.apps.crm.service.PartnerEmailDomainToolService;
@@ -95,5 +96,19 @@ public class PartnerCrmController {
       actionViewBuilder.context(entry.getKey(), entry.getValue());
     }
     response.setView(actionViewBuilder.map());
+  }
+
+  public void kanbanPartnerOnMove(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    try {
+      Beans.get(PartnerCrmService.class).kanbanPartnerOnMove(partner);
+    } catch (Exception e) {
+      if (e.getMessage().equals(I18n.get(CrmExceptionMessage.PROSPECT_CLOSE_WIN_KANBAN))) {
+        TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+        response.setReload(true);
+        return;
+      }
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

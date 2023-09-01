@@ -34,7 +34,6 @@
       <field name="workCenterTypeSelect" required="true"
         onChange="action-work-center-record-type-select-onchange"/>
       <field name="machine"
-        domain="self.id NOT IN (SELECT w.machine.id FROM WorkCenter w where w.machine is not null)"
         requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
         showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form"
         grid-view="machine-grid"/>

@@ -27,6 +27,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
@@ -194,5 +195,21 @@ public class ProductController {
       }
     }
     return displayedProductIdList;
+  }
+
+  public void updateCostPrice(ActionRequest request, ActionResponse response) {
+    try {
+
+      Product product = request.getContext().asType(Product.class);
+      // Set anomaly when a product exists in list Price
+      if (product.getId() != null) {
+        Beans.get(ProductUpdateService.class).updateCostPriceFromView(product);
+        response.setValue("costPrice", product.getCostPrice());
+        response.setValue("productCompanyList", product.getProductCompanyList());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

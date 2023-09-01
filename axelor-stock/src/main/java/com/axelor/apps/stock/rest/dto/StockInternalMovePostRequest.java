@@ -42,8 +42,6 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
 
   private List<StockInternalMoveStockMoveLinePostRequest> lineList;
 
-  public StockInternalMovePostRequest() {}
-
   public Long getCompanyId() {
     return companyId;
   }

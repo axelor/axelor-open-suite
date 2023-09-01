@@ -32,7 +32,7 @@
     <many-to-one name="justificationMetaFile" ref="com.axelor.meta.db.MetaFile"
       title="Justification"/>
     <boolean name="isAloneMeal" title="Alone meal"/>
-    <many-to-many name="invitedCollaboratorSet" title="Invited partners"
+    <many-to-many name="invitedCollaboratorSet" title="Invited collaborators"
       ref="com.axelor.apps.hr.db.Employee"/>
 
     <!-- integration of KilometricAllowance -->

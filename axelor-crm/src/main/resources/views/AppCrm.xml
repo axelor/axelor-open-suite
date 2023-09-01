@@ -29,7 +29,8 @@
       <field name="convertedLeadStatus"/>
       <field name="lostLeadStatus"/>
     </panel>
-    <panel name="prospectStatusMgtPanel" title="Prospects status managment">
+    <panel name="prospectStatusMgtPanel" title="Prospects status managment"
+      hideIf="!crmProcessOnPartner">
       <field name="partnerDefaultStatus"/>
       <field name="closedWinPartnerStatus"/>
       <field name="closedLostPartnerStatus"/>

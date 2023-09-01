@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
@@ -43,8 +61,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(SaleOrderLine saleOrderLine) {
-    if (saleOrderLine == null || saleOrderLine.getSaleOrder() == null) {
+  public String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    if (saleOrder == null || saleOrderLine == null) {
       return "";
     }
     saleOrderLine.clearBudgetDistributionList();
@@ -53,10 +71,10 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
         budgetDistributionService.createBudgetDistribution(
             saleOrderLine.getAnalyticMoveLineList(),
             saleOrderLine.getAccount(),
-            saleOrderLine.getSaleOrder().getCompany(),
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate(),
+            saleOrder.getCompany(),
+            saleOrder.getOrderDate() != null
+                ? saleOrder.getOrderDate()
+                : saleOrder.getCreationDate(),
             saleOrderLine.getCompanyExTaxTotal(),
             saleOrderLine.getFullName(),
             saleOrderLine);

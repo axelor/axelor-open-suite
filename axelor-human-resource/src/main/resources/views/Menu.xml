@@ -9,15 +9,17 @@
     if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.isMyHrEnabled"
     icon-background="#84429f"/>
 
-  <menuitem name="my-hr-dashboard" parent="my-hr-root" title="MyHR"
-    action="my.hr.dashboard.view" order="100"/>
+  <menuitem name="my-hr-dashboard" parent="my-hr-root" title="Employee dashboard"
+    action="my.hr.dashboard.view" order="100" icon="fa-address-card-o" icon-background="#84429f"/>
 
-  <action-view name="my.hr.dashboard.view" title="MyHR">
+  <action-view name="my.hr.dashboard.view" title="Employee dashboard">
+
     <view type="dashboard" name="my.hr.dashboard"/>
   </action-view>
 
-  <menuitem name="all-leave-request" parent="my-hr-root" title="All my Leave Requests"
-    action="leave.all" order="200" if="__config__.app.isApp('leave')"/>
+  <menuitem name="all-leave-request" parent="my-hr-root" title="Leave Requests"
+    action="leave.all" order="200" if="__config__.app.isApp('leave')" icon="fa-plane"
+    icon-background="#84429f"/>
 
   <action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
     title="My Leave Requests">
@@ -30,8 +32,8 @@
     <context name="to_justify_leave_reason" expr="eval: false"/>
   </action-view>
 
-  <menuitem name="all-expense" parent="my-hr-root" title="All my Expenses"
-    action="expense.all" order="300" if="__config__.app.isApp('expense')"/>
+  <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
+    order="300" if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f"/>
 
   <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
     title="My Expenses">
@@ -44,8 +46,9 @@
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-view>
 
-  <menuitem name="all-my-timesheet" parent="my-hr-root" title="All my Timesheets"
-    action="action.timesheet.view.my.timesheet" order="400" if="__config__.app.isApp('timesheet')"/>
+  <menuitem name="all-my-timesheet" parent="my-hr-root" title="Timesheets"
+    action="action.timesheet.view.my.timesheet" order="400" if="__config__.app.isApp('timesheet')"
+    icon="fa-clock-o" icon-background="#84429f"/>
 
   <action-view name="action.timesheet.view.my.timesheet"
     model="com.axelor.apps.hr.db.Timesheet" title="My Timesheets">
@@ -56,8 +59,9 @@
     <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
-  <menuitem name="all-extra-hours" parent="my-hr-root" title="All my Extra hours"
-    action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')"/>
+  <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
+    action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="fa-hourglass-end"
+    icon-background="#84429f"/>
 
   <action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
     title="My Extra Hours">
@@ -469,8 +473,7 @@
   <menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')"
     title="Timesheets" icon="fa-clock-o" icon-background="#84429f" order="700"/>
 
-  <menuitem title="Timesheets" name="all-timesheet" parent="timesheet-root"
-    if="(__user__.employee != null &amp;&amp; __user__.employee.hrManager) || __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() &gt; 0"
+  <menuitem title="All timesheets" name="all-timesheet" parent="timesheet-root"
     action="action.timesheet.method.all.timesheet" order="100"/>
 
   <action-method name="action.timesheet.method.all.timesheet">
@@ -489,14 +492,6 @@
   <action-method name="timesheet.validate">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="validateTimesheet"/>
-  </action-method>
-
-  <menuitem name="historic-timesheet" parent="timesheet-root"
-    title="Historic team timesheets" action="timesheet.historic" order="300"/>
-
-  <action-method name="timesheet.historic">
-    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
-      method="historicTimesheet"/>
   </action-method>
 
   <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root"
@@ -604,6 +599,15 @@
 
   <action-view name="hr.user.dashboard.view" title="Human Resources Employee">
     <view type="dashboard" name="hr.user.dashboard.sample"/>
+  </action-view>
+
+  <menuitem name="menu-hr-manager-dashboard1" parent="hr-report-root"
+    title="Manager dashboard" action="hr.manager.dashboard.view1" order="300"/>
+
+  <action-view name="hr.manager.dashboard.view1" title="Manager dashboard"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="hr-manager-dashboard-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <menuitem name="project-spent-time" parent="project-current-project" title="Spent time"

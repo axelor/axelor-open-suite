@@ -236,7 +236,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public StockMove createStockMoveMobility(
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
@@ -244,6 +243,23 @@ public class StockMoveServiceImpl implements StockMoveService {
       List<StockMoveLine> stockMoveLines)
       throws AxelorException {
 
+    StockMove stockMove = createStockMoveMobility(fromStockLocation, toStockLocation, company);
+    this.plan(stockMove);
+    if (stockMoveLines != null) {
+      for (StockMoveLine stockMoveLine : stockMoveLines) {
+        // This method will already set sml.stockMove = stockMove so no need to add in list.
+        createStockMoveLine(stockMove, stockMoveLine);
+      }
+    }
+
+    this.realize(stockMove);
+
+    return stockMove;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected StockMove createStockMoveMobility(
+      StockLocation fromStockLocation, StockLocation toStockLocation, Company company) {
     StockMove stockMove = new StockMove();
     stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
     stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
@@ -256,21 +272,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setPickingOrderComments(""); // comment to display on picking order
     stockMove.setRealDate(LocalDate.now());
     stockMove.setEstimatedDate(LocalDate.now());
-    stockMoveRepo.save(stockMove);
-
-    ArrayList<StockMoveLine> stockMoveLineList = new ArrayList<>();
-    if (stockMoveLines != null) {
-      for (StockMoveLine stockMoveLine : stockMoveLines) {
-        stockMoveLineList.add(createStockMoveLine(stockMove, stockMoveLine));
-      }
-    }
-
-    stockMove.setStockMoveLineList(stockMoveLineList);
-    stockMoveRepo.save(stockMove);
-
-    this.validate(stockMove);
-
-    return stockMove;
+    return stockMoveRepo.save(stockMove);
   }
 
   /**
@@ -280,9 +282,10 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param stockMoveLine
    * @throws AxelorException
    */
+  @Transactional(rollbackOn = {Exception.class})
   protected StockMoveLine createStockMoveLine(StockMove stockMove, StockMoveLine stockMoveLine)
       throws AxelorException {
-    stockMoveLine.setStockMove(stockMove);
+
     Product product = stockMoveLine.getProduct();
     stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
 
@@ -299,6 +302,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLine.setIsRealQtyModifiedByUser(true);
     stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
+    stockMove.addStockMoveLineListItem(stockMoveLine);
     stockMoveLineRepo.save(stockMoveLine);
     stockMoveLineService.setAvailableStatus(stockMoveLine);
     stockMoveLineService.compute(stockMoveLine, stockMove);
@@ -804,13 +808,25 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     copyStockMoveLines(newStockMove, stockMoveLines, split);
 
-    if (ObjectUtils.isEmpty(newStockMove.getStockMoveLineList())) {
+    List<StockMoveLine> newStockMoveLineList = newStockMove.getStockMoveLineList();
+
+    if (ObjectUtils.isEmpty(newStockMoveLineList)) {
       return Optional.empty();
     }
+
+    reverseStockMoveLineStockLocation(stockMove, newStockMoveLineList);
 
     fillNewStockMoveFields(newStockMove, stockMove);
 
     return Optional.of(stockMoveRepo.save(newStockMove));
+  }
+
+  protected void reverseStockMoveLineStockLocation(
+      StockMove stockMove, List<StockMoveLine> newStockMoveLineList) {
+    for (StockMoveLine stockMoveLine : newStockMoveLineList) {
+      stockMoveLine.setFromStockLocation(stockMove.getToStockLocation());
+      stockMoveLine.setToStockLocation(stockMove.getFromStockLocation());
+    }
   }
 
   protected void copyStockMoveLines(

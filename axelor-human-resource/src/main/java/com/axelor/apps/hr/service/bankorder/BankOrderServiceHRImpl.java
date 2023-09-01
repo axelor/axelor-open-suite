@@ -37,7 +37,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
@@ -46,7 +46,7 @@ import java.util.List;
 
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
 
-  protected ExpenseService expenseService;
+  protected ExpensePaymentService expensePaymentService;
 
   @Inject
   public BankOrderServiceHRImpl(
@@ -64,7 +64,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       PaymentSessionRepository paymentSessionRepo,
       MoveCancelBankPaymentService moveCancelBankPaymentService,
       MoveRepository moveRepo,
-      ExpenseService expenseService) {
+      ExpensePaymentService expensePaymentService) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
@@ -80,7 +80,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         paymentSessionRepo,
         moveCancelBankPaymentService,
         moveRepo);
-    this.expenseService = expenseService;
+    this.expensePaymentService = expensePaymentService;
   }
 
   @Override
@@ -99,7 +99,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
         expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
         expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expenseService.createMoveForExpensePayment(expense);
+        expensePaymentService.createMoveForExpensePayment(expense);
       }
     }
   }
@@ -119,7 +119,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
     for (Expense expense : expenseList) {
       if (expense != null
           && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
-        expenseService.cancelPayment(expense);
+        expensePaymentService.cancelPayment(expense);
       }
     }
 

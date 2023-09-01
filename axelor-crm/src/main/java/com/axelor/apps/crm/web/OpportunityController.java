@@ -194,4 +194,13 @@ public class OpportunityController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void kanbanOpportunityOnMove(ActionRequest request, ActionResponse response) {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    try {
+      Beans.get(OpportunityService.class).kanbanOpportunityOnMove(opportunity);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

@@ -1,5 +1,0 @@
----
-title: "[GDPR] - Processing register - option to not archive"
-type: feature
-description: |
-  In GDPRProcessingRegister, add a boolean to enable/disable archiving data during the data processing.
