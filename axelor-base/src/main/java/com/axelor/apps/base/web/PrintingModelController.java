@@ -125,7 +125,8 @@ public class PrintingModelController {
     Model model = JPA.find((Class<T>) modelClass, modelId);
     String outputLink = Beans.get(PrintFromBirtTemplateService.class).print(birtTemplate, model);
     if (outputLink != null) {
-      response.setView(ActionView.define(birtTemplate.getName()).add("html", outputLink).map());
+      response.setView(
+          ActionView.define(I18n.get(birtTemplate.getName())).add("html", outputLink).map());
     }
   }
 }

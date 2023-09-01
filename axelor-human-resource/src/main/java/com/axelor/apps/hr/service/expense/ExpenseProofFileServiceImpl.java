@@ -43,7 +43,8 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
     }
   }
 
-  protected void convertProofFileToPdf(ExpenseLine expenseLine) throws AxelorException {
+  @Override
+  public void convertProofFileToPdf(ExpenseLine expenseLine) throws AxelorException {
     MetaFile metaFile = expenseLine.getJustificationMetaFile();
     if (metaFile == null || expenseLine.getIsJustificationFileDigitallySigned()) {
       return;

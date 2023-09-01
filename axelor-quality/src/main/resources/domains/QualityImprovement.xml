@@ -18,6 +18,10 @@
       ref="com.axelor.apps.quality.db.QIDetection" required="true"/>
     <many-to-one name="qiStatus" title="Status"
       ref="com.axelor.apps.quality.db.QIStatus" required="true"/>
+    <one-to-one name="qiIdentification" ref="com.axelor.apps.quality.db.QIIdentification"
+      title="Identification" orphanRemoval="true"/>
+    <one-to-one name="qiResolution" ref="com.axelor.apps.quality.db.QIResolution"
+      title="Resolution" orphanRemoval="true"/>
 
     <extra-code><![CDATA[
 	    public static final int TYPE_PRODUCT = 1;
@@ -31,6 +35,7 @@
       <field name="company"/>
       <field name="qiDetection"/>
       <field name="qiStatus"/>
+      <field name="qiResolution"/>
     </track>
 
   </entity>

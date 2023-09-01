@@ -59,4 +59,11 @@
     <option value="2">Valid</option>
     <option value="3">Archived</option>
   </selection>
+
+  <selection name="app.budget.check.missing.select">
+    <option value="0">None</option>
+    <option value="1">Optional</option>
+    <option value="2">Required</option>
+  </selection>
+
 </object-views>

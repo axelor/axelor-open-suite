@@ -106,6 +106,21 @@
     <string name="maritalName" title="Marital name"/>
     <integer name="dependentChildren" title="Dependent children"/>
 
+    <one-to-many name="medicalVisitList" ref="com.axelor.apps.hr.db.MedicalVisit"
+      mappedBy="employee"/>
+
+    <date name="lastMedicalVisitDate" title="Last medical visit date" formula="true">
+      <![CDATA[
+      SELECT hr_medical_visit.medical_visit_start_dateT FROM hr_medical_visit WHERE hr_medical_visit.employee = id AND hr_medical_visit.status_select = 3 ORDER BY hr_medical_visit.medical_visit_start_dateT DESC LIMIT 1
+      ]]>
+    </date>
+
+    <date name="nextMedicalVisitDate" title="Next medical visit date" formula="true">
+      <![CDATA[
+      SELECT hr_medical_visit.medical_visit_start_dateT FROM hr_medical_visit WHERE hr_medical_visit.employee = id AND hr_medical_visit.status_select = 2 AND hr_medical_visit.medical_visit_start_dateT > NOW() ORDER BY hr_medical_visit.medical_visit_start_dateT ASC LIMIT 1
+      ]]>
+    </date>
+
     <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";

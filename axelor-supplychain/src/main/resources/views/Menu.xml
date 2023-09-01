@@ -219,18 +219,6 @@
     <view-param name="search-filters" value="sale-batch-filters"/>
   </action-view>
 
-  <menuitem name="referential-conf-partner" parent="referential-conf"
-    if="__config__.app.isApp('supplychain')" title="Partner relations type"
-    action="supplychain.referential.conf.partner" order="400"/>
-
-  <action-view name="supplychain.referential.conf.partner"
-    title="Partner relations types"
-    model="com.axelor.apps.supplychain.db.PartnerSupplychainLinkType">
-    <view type="grid" name="partner-supplychain-link-type-grid"/>
-    <view type="form" name="partner-supplychain-link-type-form"/>
-  </action-view>
-
-
   <menuitem name="stock-root-custdeliveries-invoicing-block" parent="stock-root-deliveries"
     tag-count="true" title="Invoicing blocked customer deliveries"
     action="stock.root.custdeliveries.invoicing.block" order="400"/>
