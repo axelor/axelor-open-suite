@@ -265,6 +265,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                 "pfpValidateStatusPartiallyValidated",
                 InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
             .bind("pfpValidateStatusNoPfp", InvoiceTermRepository.PFP_STATUS_NO_PFP)
+            .bind("pfpValidateStatusLitigation", InvoiceTermRepository.PFP_STATUS_LITIGATION)
             .bind("partnerIds", partnerIdList)
             .bind("accountingMethodSelect", paymentSession.getAccountingMethodSelect())
             .order("id");
@@ -302,7 +303,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     String pfpCondition =
         pfpService.isManagePassedForPayment(company)
             ? " AND (self.pfpValidateStatusSelect IN (:pfpValidateStatusNoPfp,:pfpValidateStatusValidated,:pfpValidateStatusPartiallyValidated))"
-            : "";
+            : "AND self.pfpValidateStatusSelect != :pfpValidateStatusLitigation";
 
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
