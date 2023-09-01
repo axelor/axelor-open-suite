@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
     edit-icon="false" onNew="action-move-line-mass-entry-method-onnew">
     <field name="temporaryMoveNumber" width="50"
-      onChange="action-move-line-mass-entry-method-get-first-move-line-informations"/>
+      onChange="action-move-line-mass-entry-method-temporary-move-number-onchange"/>
     <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50" selection-in="[1,2,3]"/>
-    <field name="date" onChange="account-move-line-method-date-onchange">
+    <field name="date" onChange="action-move-line-mass-entry-group-on-change-date">
       <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
     </field>
     <field name="originDate"
-      onChange="action-move-line-mass-entry-method-set-currencyRate,action-move-line-mass-entry-attrs-set-cut-off-dates">
+      onChange="action-move-line-mass-entry-group-on-change-origin-date">
       <hilite if="$contains(fieldsErrorList,'originDate:'+originDate.toString())"
         background="danger"/>
     </field>
@@ -56,11 +56,11 @@
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="debit" onChange="action-move-line-mass-entry-method-debit-onchange"
-      width="90" readonlyIf="isOtherCurrency">
+      width="90" readonlyIf="isOtherCurrency || inputAction == 2">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="credit" onChange="action-move-line-mass-entry-method-credit-onchange"
-      width="90" readonlyIf="isOtherCurrency">
+      width="90" readonlyIf="isOtherCurrency || inputAction == 2">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="description"
@@ -88,8 +88,8 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
-      onChange="action-move-line-method-analytic-distribution-template-onchange"
-      onSelect="action-move-line-group-set-analytic-distribution-template-onselect"
+      onChange="action-move-line-mass-entry-method-analytic-distribution-template-onchange"
+      onSelect="action-move-line-method-analytic-distribution-template-onselect"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
@@ -99,7 +99,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
@@ -107,7 +107,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
@@ -115,7 +115,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
@@ -123,7 +123,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
@@ -131,13 +131,14 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
-    <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
+    <field name="analyticMoveLineMassEntryList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onChange="action-move-line-method-analytic-distribution-template-onchange-light,action-move-line-method-set-required-analytic-accounts">
+      onChange="action-move-line-mass-entry-method-analytic-distribution-template-onchange-light,action-move-line-method-set-required-analytic-accounts"
+      readonlyIf="!account || !account.analyticDistributionAuthorized">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="vatSystemSelect"
@@ -160,6 +161,16 @@
 
   <action-group name="action-move-line-mass-entry-group-on-change-payment-mode">
     <action name="action-move-line-mass-entry-attrs-set-partner-bank-details-readonly"/>
+    <action name="action-move-line-mass-entry-record-set-is-edited"/>
+  </action-group>
+
+  <action-group name="action-move-line-mass-entry-group-on-change-origin-date">
+    <action name="action-move-line-mass-entry-method-origin-date-onchange"/>
+    <action name="action-move-line-mass-entry-attrs-set-cut-off-dates"/>
+  </action-group>
+
+  <action-group name="action-move-line-mass-entry-group-on-change-date">
+    <action name="account-move-line-method-date-onchange"/>
     <action name="action-move-line-mass-entry-record-set-is-edited"/>
   </action-group>
 
@@ -210,25 +221,25 @@
 
   <!-- Action method -->
   <action-method
-    name="action-move-line-mass-entry-method-get-first-move-line-informations">
+    name="action-move-line-mass-entry-method-temporary-move-number-onchange">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="getFirstMoveLineMassEntryInformations"/>
+      method="temporaryMoveNumberOnChange"/>
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-on-change-partner">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="changePartnerOnMoveLineMassEntry"/>
+      method="partnerOnChange"/>
   </action-method>
 
-  <action-method name="action-move-line-mass-entry-method-set-currencyRate"
+  <action-method name="action-move-line-mass-entry-method-origin-date-onchange"
     model="com.axelor.apps.account.db.MoveLine">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="computeCurrentRate"/>
+      method="originDateOnChange"/>
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-input-action-onchange">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="setAttrsAndFieldsOnInputActionChanges"/>
+      method="inputActionOnChange"/>
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-onnew">
@@ -248,7 +259,24 @@
   <action-method
     name="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="setMovePfpValidatorUserDomain"/>
+      method="pfpValidatorUserOnSelect"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-mass-entry-method-analytic-distribution-template-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticDistributionTemplateOnChange"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-mass-entry-method-analytic-distribution-template-onchange-light">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticDistributionTemplateOnChangeLight"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-analytic-axis-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticAxisOnChange"/>
   </action-method>
 
 </object-views>

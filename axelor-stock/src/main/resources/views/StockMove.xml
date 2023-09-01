@@ -384,11 +384,13 @@
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
           name="delayedInvoice" title="Facturation ultérieure"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3"
-          css="btn-warning" onClick="save,action-stock-move-status-select-invoiced-delayed,save"/>
+          css="btn-warning"
+          onClick="save,action-stock-move-method-set-invoicing-status-invoiced-delayed"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
           name="validatedInvoice" title="Validé pour facturation"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4"
-          css="btn-success" onClick="save,action-stock-move-status-select-invoiced-validated,save"/>
+          css="btn-success"
+          onClick="save,action-stock-move-method-set-invoicing-status-invoiced-validated"/>
         <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
           showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4"
           onClick="action-group-stock-stockmove-cancel-click"/>
@@ -407,10 +409,10 @@
           grid-view="trading-name-grid"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          form-view="stock-location-form"/>
         <field name="toStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          form-view="stock-location-form"/>
         <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
           onChange="action-stock-move-method-update-stock-move-line"/>
         <field name="estimatedDate"
@@ -464,8 +466,8 @@
           onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain"
           grid-view="partner-grid" form-view="partner-form"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
-          onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1"
-          grid-view="stock-location-grid" form-view="stock-location-form"/>
+          onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
+          form-view="stock-location-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
           readonlyIf="statusSelect == 3 || statusSelect == 4"
@@ -519,8 +521,8 @@
           readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
           grid-view="partner-grid" form-view="partner-form"/>
         <field name="toStockLocation" canEdit="false" domain="self.company = :company"
-          onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1"
-          grid-view="stock-location-grid" form-view="stock-location-form"/>
+          onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
+          form-view="stock-location-form"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str"
           readonlyIf="statusSelect == 3 || statusSelect == 4"
@@ -555,9 +557,9 @@
     <panel-tabs name="mainPanelTab">
       <panel-related name="stockMoveLineListPanel" field="stockMoveLineList"
         title="Stock move lines" height="12"
-        readonlyIf="company == null || fromStockLocation == null || statusSelect == 3"
+        readonlyIf="company == null || fromStockLocation == null || toStockLocation == null || statusSelect == 3"
         onChange="action-stock-move-line-change-group"
-        onNew="action-stock-move-line-record-filter-on-available-products"
+        onNew="action-stock-move-line-record-filter-on-available-products, action-stock-move-line-record-fill-stock-location"
         grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
         orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true"/>
       <panel name="freightCarrierPanel" title="Freight Carrier" itemSpan="12">
@@ -581,7 +583,7 @@
           <field name="trackingNumber"/>
           <field name="modeOfTransport"/>
           <field name="deliveryCondition" height="3"
-            showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
+            showIf="typeSelect == 2 &amp;&amp; saleOrder != null"/>
         </panel>
 
         <panel itemSpan="3">
@@ -623,9 +625,17 @@
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')" showIf="id">
-        <panel name="OriginPanel" itemSpan="3" colSpan="12">
-          <field name="originTypeSelect" title="Origin" widget="RefSelect"
-            x-related="originId" readonly="true"/>
+        <panel name="OriginPanel" colSpan="12">
+          <panel colSpan="3" itemSpan="3" stacked="true" readonly="true">
+            <field name="inventory" hidden="true" showIf="inventory != null"/>
+            <field name="saleOrder" hidden="true" showIf="saleOrder != null"/>
+            <field name="purchaseOrder" hidden="true" showIf="purchaseOrder != null"/>
+            <field name="manufOrder" hidden="true" showIf="manufOrder != null"
+              if-module="axelor-production"/>
+            <field name="operationOrder" hidden="true" showIf="operationOrder != null"
+              if-module="axelor-production"/>
+            <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
+          </panel>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"
             form-view="stock-move-form" showIf="reversionOriginStockMove"/>
           <field name="invoiceSet" readonly="true" grid-view="invoice-grid"
@@ -666,11 +676,11 @@
         <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false"
           domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          form-view="stock-location-form"/>
         <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false"
           domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          form-view="stock-location-form"/>
         <panel name="realStockMovePanel" colSpan="12" showIf="typeSelect == 2">
           <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3"
             requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail"
@@ -847,6 +857,8 @@
     <action name="action-stock-move-record-set-group-product-on-printing"/>
     <action name="action-stock-move-record-set-pfp-status"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <action name="action-stock-move-attrs-show-stock-location"/>
+    <action name="action-stock-move-attrs-stock-location-readonly"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmove-onload">
@@ -859,6 +871,8 @@
     <action name="action-stock-move-attrs-filter-on-available-products"/>
     <action name="action-stock-move-attrs-check-delivery-address"
       if="partner?.partnerAddressList?.size() > 1"/>
+    <action name="action-stock-move-attrs-show-stock-location"/>
+    <action name="action-stock-move-attrs-stock-location-readonly"/>
   </action-group>
 
   <action-group name="action-stock-move-line-change-group">
@@ -868,6 +882,7 @@
     <action name="action-stock-move-line-method-change-conformity"/>
     <action name="action-stock-move-method-set-available-status"/>
     <action name="action-stock-move-method-is-allocated-stock-move-line-removed"/>
+    <action name="action-stock-move-attrs-stock-location-readonly"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmove-plan-click">
@@ -900,12 +915,14 @@
   <action-group name="action-stock-move-group-to-location-onchange">
     <action name="action-stock-move-set-to-address"/>
     <action name="action-stock-move-method-set-addresses-str"/>
+    <action name="action-stock-move-method-change-lines-to-stock-location"/>
   </action-group>
 
   <action-group name="action-stock-move-group-from-location-onchange">
     <action name="action-stock-move-set-from-address"/>
     <action name="action-stock-move-method-set-addresses-str"/>
     <action name="action-stock-move-hide-reserved-qty"/>
+    <action name="action-stock-move-method-change-lines-from-stock-location"/>
   </action-group>
 
   <action-group name="action-stock-move-group-partner-onchange">
@@ -921,7 +938,7 @@
     <action name="action-stock-move-record-set-address-from-partner"/>
     <action name="action-stock-move-method-set-addresses-str"/>
     <action name="action-stock-move-supplychain-group-partner-on-change"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
   </action-group>
 
   <action-group name="action-stock-move-group-onchange-company">
@@ -1280,7 +1297,6 @@
       if="!__config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
     <field name="pfpValidateStatusSelect" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
-    <field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="reversionOriginStockMove" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -1311,7 +1327,6 @@
       if="!__config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
     <field name="pfpValidateStatusSelect" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
-    <field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="reversionOriginStockMove" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -1342,7 +1357,6 @@
       if="!__config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
     <field name="pfpValidateStatusSelect" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
-    <field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="reversionOriginStockMove" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -1475,7 +1489,7 @@
 
   <action-attrs name="action-stock-move-attrs-display-generate-invoice-btn">
     <attribute for="generateInvoiceBtn" name="hidden"
-      expr="statusSelect != 3 || typeSelect == 1 || (__config__.app.getApp('supplychain')?.getValidStepForInvOutSM() &amp;&amp; invoicingStatusSelect != 4)"/>
+      expr="eval: statusSelect != 3 || typeSelect == 1 || (__config__.app.getApp('supplychain')?.getValidStepForInvOutSM() &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 4)"/>
   </action-attrs>
 
   <action-group name="action-stock-move-group-type-select-onchange">
@@ -1502,5 +1516,29 @@
   <action-method name="action-stock-move-method-check-wap">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="checkWap"/>
   </action-method>
+
+  <action-attrs name="action-stock-move-attrs-show-stock-location">
+    <attribute for="stockMoveLineList.fromStockLocation" name="hidden"
+      expr="eval: typeSelect == __repo__(StockMove).TYPE_INCOMING || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
+    <attribute for="stockMoveLineList.toStockLocation" name="hidden"
+      expr="eval: typeSelect == __repo__(StockMove).TYPE_OUTGOING || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
+  </action-attrs>
+
+  <action-method name="action-stock-move-method-change-lines-from-stock-location">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="changeLinesFromStockLocation"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-change-lines-to-stock-location">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="changeLinesToStockLocation"/>
+  </action-method>
+
+  <action-attrs name="action-stock-move-attrs-stock-location-readonly">
+    <attribute for="fromStockLocation" name="readonly"
+      expr="eval: statusSelect != 1 || (stockMoveLineList?.size() > 0 &amp;&amp; __config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine)"/>
+    <attribute for="toStockLocation" name="readonly"
+      expr="eval: statusSelect != 1 || (stockMoveLineList?.size() > 0 &amp;&amp; __config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine)"/>
+  </action-attrs>
 
 </object-views>

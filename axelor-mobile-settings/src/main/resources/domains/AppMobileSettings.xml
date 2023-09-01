@@ -7,11 +7,13 @@
 
   <entity name="AppMobileSettings" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="isStockAppEnabled" title="Stock" default="false"/>
     <boolean name="isProductionAppEnabled" title="Manufacturing" default="false"/>
     <boolean name="isCrmAppEnabled" title="CRM" default="false"/>
+    <boolean name="isHelpdeskAppEnabled" title="Helpdesk" default="false"/>
+    <boolean name="isHRAppEnabled" title="HR" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -52,6 +54,8 @@
       <field name="isStockAppEnabled" on="UPDATE"/>
       <field name="isProductionAppEnabled" on="UPDATE"/>
       <field name="isCrmAppEnabled" on="UPDATE"/>
+      <field name="isHelpdeskAppEnabled" on="UPDATE"/>
+      <field name="isHRAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>

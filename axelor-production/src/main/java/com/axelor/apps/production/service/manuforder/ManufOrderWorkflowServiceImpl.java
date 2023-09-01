@@ -40,8 +40,9 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProductionConfig;
+import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -59,6 +60,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -169,6 +171,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
         manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
       }
+      manufOrder.setRealStartDateT(null);
+      manufOrder.setRealEndDateT(null);
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -531,6 +535,22 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updatePlannedDates(ManufOrder manufOrder) {
+
+    manufOrder.setPlannedStartDateT(computePlannedStartDateT(manufOrder));
+    ;
+    manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+  }
+
+  /**
    * Get a list of operation orders sorted by priority and id from the specified manufacturing
    * order.
    *
@@ -586,12 +606,15 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     Unit startUnit =
         Beans.get(UnitRepository.class)
             .all()
-            .filter("self.name = 'Hour' AND self.unitTypeSelect = 3")
+            .filter("self.name = 'Hour' AND self.unitTypeSelect = :unitType")
+            .bind("unitType", UnitRepository.UNIT_TYPE_TIME)
             .fetchOne();
 
-    for (ProdHumanResource humanResource : operationOrder.getProdHumanResourceList()) {
+    WorkCenter workCenter = operationOrder.getWorkCenter();
 
-      Product product = humanResource.getProduct();
+    if (ObjectUtils.notEmpty(workCenter) && ObjectUtils.notEmpty(workCenter.getHrProduct())) {
+
+      Product product = workCenter.getHrProduct();
       Unit purchaseUnit = product.getPurchasesUnit();
 
       if (purchaseUnit != null) {
@@ -599,9 +622,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             unitConversionService.convert(
                 startUnit,
                 purchaseUnit,
-                new BigDecimal(humanResource.getDuration() / 3600),
+                new BigDecimal(workCenter.getHrDurationPerCycle() / 3600),
                 0,
-                humanResource.getProduct());
+                product);
       }
 
       purchaseOrderLine =
@@ -705,5 +728,45 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     manufOrder.setPurchaseOrder(purchaseOrder);
 
     manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setOperationOrderMaxPriority(ManufOrder manufOrder) {
+
+    if (manufOrder == null
+        || Boolean.FALSE.equals(manufOrder.getProdProcess().getOperationContinuity())) {
+      return;
+    }
+
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+
+    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+    int optionalOperationOrderLargestPriority =
+        operationOrderList.stream()
+            .filter(order -> isValidOperationOrder(order, true))
+            .mapToInt(OperationOrder::getPriority)
+            .max()
+            .orElse(-1);
+
+    int operationOrderMaxPriority =
+        operationOrderList.stream()
+            .filter(order -> isValidOperationOrder(order, false))
+            .mapToInt(OperationOrder::getPriority)
+            .findFirst()
+            .orElse(optionalOperationOrderLargestPriority + 1);
+
+    manufOrder.setOperationOrderMaxPriority(operationOrderMaxPriority);
+
+    manufOrderRepo.save(manufOrder);
+  }
+
+  protected boolean isValidOperationOrder(OperationOrder order, boolean optional) {
+    Integer statusSelect = order.getStatusSelect();
+    ProdProcessLine prodProcessLine = order.getProdProcessLine();
+    return !statusSelect.equals(ManufOrderRepository.STATUS_FINISHED)
+        && !statusSelect.equals(ManufOrderRepository.STATUS_CANCELED)
+        && ObjectUtils.notEmpty(prodProcessLine)
+        && prodProcessLine.getOptional() == optional;
   }
 }

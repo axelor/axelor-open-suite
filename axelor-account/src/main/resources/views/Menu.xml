@@ -166,18 +166,6 @@
       expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
-  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
-    title="Simplified Moves" action="account.root.move.move.simplifed" order="200"/>
-
-  <action-view name="account.root.move.move.simplifed"
-    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
-    <view name="move-grid" type="grid"/>
-    <view name="move-simplified-form" type="form"/>
-    <view-param name="search-filters" value="move-filters"/>
-    <context name="_isActivateSimulatedMoves"
-      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
-  </action-view>
-
   <menuitem name="account-root-move-move-line" parent="account-root-move"
     title="Move lines" action="account.root.move.move.line" order="300"/>
 
@@ -527,34 +515,6 @@
     <context name="_reportExportTypeSelect" expr="2"/>
   </action-view>
 
-  <menuitem name="account-root-budget-management" parent="account-root"
-    if="__config__.app.isApp('budget')" title="Budget Preparation" order="800"/>
-
-  <menuitem name="account-root-budget-management-my-budgets"
-    parent="account-root-budget-management" title="My budgets"
-    action="account.root.budget.management.my.budgets" order="100"/>
-
-  <action-view name="account.root.budget.management.my.budgets" title="My budgets"
-    model="com.axelor.apps.account.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="search-filters" value="budget-filters"/>
-    <domain>self.inChargeUser.id = :_id</domain>
-    <context name="_id" expr="eval: __user__.id"/>
-  </action-view>
-
-  <menuitem name="account-root-budget-management-all-budgets"
-    parent="account-root-budget-management" title="All budgets"
-    action="account.root.budget.management.all.budgets" order="200"/>
-
-  <action-view name="account.root.budget.management.all.budgets" title="All budgets"
-    model="com.axelor.apps.account.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="search-filters" value="budget-filters"/>
-  </action-view>
-
-
   <menuitem title="Fixed assets" name="account-root-asset-management" parent="account-root"
     order="1100"/>
 
@@ -798,6 +758,8 @@
     <view type="grid" name="analytic-move-line-grid"/>
     <view type="form" name="analytic-move-line-form"/>
     <view-param name="search-filters" value="analytic-move-line-filters"/>
+    <view-param name="default-search-filters"
+      value="analytic-move-line-filters-type-select"/>
   </action-view>
 
   <menuitem name="account-conf-analytic-distribution-template"

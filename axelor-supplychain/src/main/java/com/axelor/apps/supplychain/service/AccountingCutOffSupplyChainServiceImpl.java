@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service;
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Journal;
@@ -68,6 +69,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -298,9 +300,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       String prefixOrigin)
       throws AxelorException {
 
-    if (moveDate == null
-        || stockMove.getOriginTypeSelect() == null
-        || stockMove.getOriginId() == null) {
+    if (moveDate == null) {
       return null;
     }
 
@@ -311,9 +311,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     Account partnerAccount = null;
 
     Currency currency = null;
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
-        && stockMove.getOriginId() != null) {
-      SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
+    if (stockMove.getSaleOrder() != null) {
+      SaleOrder saleOrder = stockMove.getSaleOrder();
       currency = saleOrder.getCurrency();
       if (partner == null) {
         partner = saleOrder.getClientPartner();
@@ -326,9 +325,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
       }
     }
-    if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
-        && stockMove.getOriginId() != null) {
-      PurchaseOrder purchaseOrder = purchaseOrderRepository.find(stockMove.getOriginId());
+    if (stockMove.getPurchaseOrder() != null) {
+      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
       currency = purchaseOrder.getCurrency();
       if (partner == null) {
         partner = purchaseOrder.getSupplierPartner();
@@ -540,11 +538,6 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
   public List<Long> getStockMoveLines(Batch batch) {
     int offset = 0;
-    Boolean includeNotStockManagedProduct =
-        batch.getAccountingBatch().getIncludeNotStockManagedProduct();
-
-    List<StockMoveLine> stockMoveLineList;
-    List<Long> stockMoveLineIdList = new ArrayList<>();
 
     Query<StockMove> stockMoveQuery =
         stockMoverepository.all().filter(":batch MEMBER OF self.batchSet").bind("batch", batch);
@@ -553,28 +546,35 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
 
+    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    Boolean includeNotStockManagedProduct =
+        accountingBatch != null && accountingBatch.getIncludeNotStockManagedProduct();
+    SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
+
     if (stockMoveIdList.isEmpty()) {
-      stockMoveLineIdList.add(0L);
-    } else {
-      Query<StockMoveLine> stockMoveLineQuery =
-          stockMoveLineRepository
-              .all()
-              .filter("self.stockMove.id IN :stockMoveIdList")
-              .bind("stockMoveIdList", stockMoveIdList)
-              .order("id");
+      return List.of(0L);
+    }
 
-      while (!(stockMoveLineList = stockMoveLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-        offset += stockMoveLineList.size();
+    List<Long> stockMoveLineIdList = new ArrayList<>();
+    Query<StockMoveLine> stockMoveLineQuery =
+        stockMoveLineRepository
+            .all()
+            .filter("self.stockMove.id IN :stockMoveIdList")
+            .bind("stockMoveIdList", stockMoveIdList)
+            .order("id");
 
-        for (StockMoveLine stockMoveLine : stockMoveLineList) {
-          Product product = stockMoveLine.getProduct();
-          if (!checkStockMoveLine(stockMoveLine, product, includeNotStockManagedProduct)) {
-            stockMoveLineIdList.add(stockMoveLine.getId());
-          }
+    List<StockMoveLine> stockMoveLineList;
+    while (!(stockMoveLineList = stockMoveLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+      offset += stockMoveLineList.size();
+
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        Product product = stockMoveLine.getProduct();
+        if (supplychainBatch != null
+            || !checkStockMoveLine(stockMoveLine, product, includeNotStockManagedProduct)) {
+          stockMoveLineIdList.add(stockMoveLine.getId());
         }
-
-        JPA.clear();
       }
+      JPA.clear();
     }
     return stockMoveLineIdList;
   }

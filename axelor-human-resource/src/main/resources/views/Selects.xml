@@ -143,6 +143,7 @@
   <selection name="hr.lunch.voucher.line.status.select">
     <option value="1">Calculated</option>
     <option value="2">Anomaly</option>
+    <option value="3">To calculate</option>
   </selection>
 
   <selection name="hr.batch.payroll.preparation.export.type.select">
@@ -224,6 +225,13 @@
 
   <selection name="batch.batch.type.select" id="hr.batch.batch.type.select">
     <option value="600">HR Batch</option>
+  </selection>
+
+  <selection name="hr.medical.leave.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Planned</option>
+    <option value="3">Realized</option>
+    <option value="4">Canceled</option>
   </selection>
 
 </object-views>

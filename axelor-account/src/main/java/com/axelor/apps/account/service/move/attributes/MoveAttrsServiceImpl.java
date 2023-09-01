@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.account.service.move.attributes;
 
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -34,7 +34,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -51,6 +50,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveViewHelperService moveViewHelperService;
   protected MovePfpService movePfpService;
+  protected AnalyticToolService analyticToolService;
+  protected AnalyticAttrsService analyticAttrsService;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -58,12 +59,16 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveViewHelperService moveViewHelperService,
-      MovePfpService movePfpService) {
+      MovePfpService movePfpService,
+      AnalyticToolService analyticToolService,
+      AnalyticAttrsService analyticAttrsService) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveViewHelperService = moveViewHelperService;
     this.movePfpService = movePfpService;
+    this.analyticToolService = analyticToolService;
+    this.analyticAttrsService = analyticAttrsService;
   }
 
   protected void addAttr(
@@ -134,44 +139,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       fieldNameToSet = "moveLineMassEntryList";
     }
 
-    if (move.getCompany() != null) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
-
-      if (accountConfig != null
-          && appAccountService.getAppAccount().getManageAnalyticAccounting()
-          && accountConfig.getManageAnalyticAccounting()) {
-        AnalyticAxis analyticAxis = null;
-
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-          this.addAttr(
-              analyticAxisKey,
-              "hidden",
-              !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
-              attrsMap);
-
-          for (AnalyticAxisByCompany analyticAxisByCompany :
-              accountConfig.getAnalyticAxisByCompanyList()) {
-            if (analyticAxisByCompany.getSequence() + 1 == i) {
-              analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-            }
-          }
-
-          if (analyticAxis != null) {
-            this.addAttr(analyticAxisKey, "title", analyticAxis.getName(), attrsMap);
-            analyticAxis = null;
-          }
-        }
-      } else {
-        this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);
-        this.addAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true, attrsMap);
-
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-          this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
-        }
-      }
-    }
+    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), fieldNameToSet, attrsMap);
   }
 
   @Override
@@ -196,7 +164,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
             "self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
             move.getCompany().getId());
 
-    this.addAttr("partner", "domain", domain, attrsMap);
+    this.addAttr("paymentMode", "domain", domain, attrsMap);
   }
 
   @Override
@@ -216,7 +184,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       domain = String.format("self.id IN (%s) AND self.active IS TRUE", bankDetailsIds);
     }
 
-    this.addAttr("partner", "domain", domain, attrsMap);
+    this.addAttr("partnerBankDetails", "domain", domain, attrsMap);
   }
 
   @Override
@@ -235,7 +203,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
 
     String domain = String.format("self.id IN (%s)", tradingNameIds);
 
-    this.addAttr("partner", "domain", domain, attrsMap);
+    this.addAttr("tradingName", "domain", domain, attrsMap);
   }
 
   @Override
@@ -304,9 +272,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   @Override
   public void addMassEntryHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
     Objects.requireNonNull(move);
-    boolean journalIsNull = ObjectUtils.isEmpty(move.getJournal());
 
-    if (!journalIsNull) {
+    if (move.getJournal() != null) {
       boolean technicalTypeSelectIsNotNull =
           move.getJournal().getJournalType() != null
               && move.getJournal().getJournalType().getTechnicalTypeSelect() != null;
@@ -368,7 +335,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
                       == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER),
           attrsMap);
     }
-    this.addAttr("moveLineMassEntryList", "hidden", journalIsNull, attrsMap);
   }
 
   @Override
@@ -397,5 +363,32 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_VALIDATED,
         attrsMap);
     this.addAttr("validateMassEntryMoves", "hidden", true, attrsMap);
+  }
+
+  @Override
+  public void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+    this.addAttr("partner", "required", isPartnerRequired(move.getJournal()), attrsMap);
+  }
+
+  @Override
+  public void addMainPanelTabHiddenValue(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+
+    this.addAttr(
+        "$mainPanelTabHidden",
+        "value",
+        move.getJournal() == null
+            || (isPartnerRequired(move.getJournal()) && move.getPartner() == null),
+        attrsMap);
+  }
+
+  protected boolean isPartnerRequired(Journal journal) {
+    return journal != null
+        && journal.getJournalType() != null
+        && (journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
   }
 }

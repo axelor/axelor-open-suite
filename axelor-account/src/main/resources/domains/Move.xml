@@ -88,6 +88,7 @@
     <unique-constraint columns="reference,company"/>
 
     <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>
+    <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 
     <extra-code><![CDATA[
 
@@ -103,6 +104,7 @@
 		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
 		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
 		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
+		public static final int TECHNICAL_ORIGIN_MASS_ENTRY = 5;
 
 		// REVERSE DATE OF REVERSION
 		public static final int DATE_OF_REVERSION_TODAY = 1;

@@ -45,7 +45,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -59,9 +59,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -479,7 +476,7 @@ Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = MoveLineAccount.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 MoveLineAccount.reconcile_ok = true 
-AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -549,12 +546,6 @@ InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_f
                     <text-property name="heading">ReportDateEdition</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <text-property name="heading">display_simulated_move</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">currency</property>
                     <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
@@ -620,16 +611,11 @@ InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_f
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -688,20 +674,13 @@ InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_f
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
@@ -709,8 +688,7 @@ InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_f
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, AccountingReport.global_by_partner , 
-AccountingReport.date_to, AccountingReport.date_from, AccountingReport.date_val as "ReportDate", AccountingReport.publication_date_time as "ReportDateEdition",
-AccountingReport.display_simulated_move as display_simulated_move, Currency.code as currency, AccountingReport.ref
+AccountingReport.date_to, AccountingReport.date_from, AccountingReport.date_val as "ReportDate", AccountingReport.publication_date_time as "ReportDateEdition", Currency.code as currency, AccountingReport.ref
 from   public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
 left outer join public.base_period as Period on (AccountingReport.period = Period.id)
@@ -1142,13 +1120,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">currency</text-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="491">

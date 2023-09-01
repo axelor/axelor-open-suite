@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppBusinessProject;
+import java.math.BigDecimal;
 
 public interface AppBusinessProjectService extends AppBaseService {
 
@@ -30,4 +31,6 @@ public interface AppBusinessProjectService extends AppBaseService {
   public Unit getDaysUnit() throws AxelorException;
 
   public Unit getHoursUnit() throws AxelorException;
+
+  BigDecimal getDefaultHoursADay() throws AxelorException;
 }

@@ -201,6 +201,7 @@
     <domain>self.isContact != true</domain>
     <context name="json-enhance" expr="eval:true"/>
     <context name="_domain" expr="self.isContact != true"/>
+    <context name="_showIsEmployee" expr="eval: true"/>
   </action-view>
 
   <menuitem name="referential-root-contacts" parent="referential-root" title="Contacts"
@@ -409,6 +410,16 @@
     model="com.axelor.apps.base.db.SyncContact">
     <view type="grid" name="sync-contact-grid"/>
     <view type="form" name="sync-contact-form"/>
+  </action-view>
+
+  <menuitem name="referential-conf-partner-link-types" parent="referential-conf"
+    if="__config__.app.getApp('base')?.activatePartnerRelations" title="Partner relations type"
+    action="referential.conf.partner.link.types" order="400"/>
+
+  <action-view name="referential.conf.partner.link.types"
+    title="Partner relations types" model="com.axelor.apps.base.db.PartnerLinkType">
+    <view type="grid" name="partner-link-type-grid"/>
+    <view type="form" name="partner-link-type-form"/>
   </action-view>
 
   <menuitem name="referential-report" parent="referential-root" order="400"
@@ -624,48 +635,6 @@
     <view type="form" name="trading-name-form"/>
   </action-view>
 
-  <menuitem name="alarm-root" title="Alarms" order="600" if="__config__.app.isApp('base')"
-    parent="admin-root"/>
-
-  <menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
-    action="alarm.root.alarm.other" order="100"/>
-
-  <action-view name="alarm.root.alarm.other" title="All Alarms"
-    model="com.axelor.apps.base.db.Alarm">
-    <view type="grid" name="alarm-grid"/>
-    <view type="form" name="alarm-form"/>
-  </action-view>
-
-  <menuitem name="alarm-conf" parent="alarm-root" title="Configuration" icon="fa-cog"
-    order="200"/>
-
-  <menuitem name="alarm-conf-alarm-engine" parent="alarm-conf" title="Alarm engines"
-    action="alarm.conf.alarm.engine" order="100"/>
-
-  <action-view name="alarm.conf.alarm.engine" title="Alarm engines"
-    model="com.axelor.apps.base.db.AlarmEngine">
-    <view type="grid" name="alarm-engine-grid"/>
-    <view type="form" name="alarm-engine-form"/>
-  </action-view>
-
-  <menuitem name="alarm-conf-message" parent="alarm-conf" title="All Messages"
-    action="alarm.conf.message" order="200"/>
-
-  <action-view name="alarm.conf.message" title="All Messages"
-    model="com.axelor.apps.base.db.AlarmMessage">
-    <view type="grid" name="alarm-message-grid"/>
-    <view type="form" name="alarm-message-form"/>
-  </action-view>
-
-  <menuitem name="alarm-conf-alarm-engine-batch" parent="alarm-conf" title="Alarm batches"
-    action="alarm.conf.alarm.engine.batch" order="300"/>
-
-  <action-view name="alarm.conf.alarm.engine.batch" title="Alarm batches"
-    model="com.axelor.apps.base.db.AlarmEngineBatch">
-    <view type="grid" name="alarm-engine-batch-grid"/>
-    <view type="form" name="alarm-engine-batch-form"/>
-  </action-view>
-
   <menuitem name="admin-root-batch" parent="admin-root" if="__config__.app.isApp('base')"
     title="Batches" order="700"/>
 
@@ -698,15 +667,6 @@
 
   <menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root"
     if="__config__.app.isApp('base')" title="Message" order="800"/>
-
-  <menuitem name="mail-conf-pdf-templates" parent="mail-conf" title="PDF Templates"
-    action="admin.root.templating.pdf.templates" order="300"/>
-
-  <action-view name="admin.root.templating.pdf.templates" title="PDF Templates"
-    model="com.axelor.apps.base.db.BirtTemplate">
-    <view type="grid" name="birt-template-grid"/>
-    <view type="form" name="birt-template-form"/>
-  </action-view>
 
   <menuitem name="mail-conf-template-rules" parent="mail-conf" title="Template Rules"
     action="admin.root.templating.template.rules" order="100"/>
@@ -816,7 +776,7 @@
   </action-view>
 
   <menuitem name="admin-root-calendars" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Calendars" order="1200"/>
+    if="__config__.app.isApp('base')" title="Calendars" order="1300"/>
 
   <menuitem name="admin-root-calendars-icalendars" title="iCalendars"
     parent="admin-root-calendars" action="admin.root.calendars.icalendars" order="100"/>
@@ -1018,23 +978,14 @@
 
   <menuitem name="admin-root-api-documentation" parent="admin-root"
     if="__config__.app.isApp('base') &amp;&amp; __config__.swagger" title="API Documentation"
-    order="1000" action="admin.root.api.documentation"/>
+    order="1100" action="admin.root.api.documentation"/>
 
   <action-view name="admin.root.api.documentation" title="API Documentation">
     <view type="html" name="swagger/"/>
   </action-view>
 
   <menuitem name="admin-root-maintenance" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Technical maintenance" order="1100"/>
-
-  <menuitem name="admin-root-object-data-config" parent="admin-root-maintenance"
-    title="Object data config" action="admin.root.object.data.config" order="1200"/>
-
-  <action-view name="admin.root.object.data.config" title="Object data config"
-    model="com.axelor.apps.base.db.ObjectDataConfig">
-    <view type="grid" name="object-data-config-grid"/>
-    <view type="form" name="object-data-config-form"/>
-  </action-view>
+    if="__config__.app.isApp('base')" title="Technical maintenance" order="1200"/>
 
   <menuitem name="admin-root-data-backup" parent="admin-root-maintenance" title="Backup"
     order="1300"/>
@@ -1081,5 +1032,26 @@
 
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
     icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('studio')"/>
+
+  <menuitem name="birt-print-conf" parent="admin-root" if="__config__.app.isApp('base')"
+    title="BIRT printings" order="1000"/>
+
+  <menuitem name="birt-print-conf-birt-print-wizard" parent="birt-print-conf"
+    title="Birt printing wizard" action="birt.print.conf.birt.print.wizard" order="100"/>
+
+  <action-view name="birt.print.conf.birt.print.wizard" title="Birt printing wizard"
+    model="com.axelor.apps.base.db.BirtPrintingWizard">
+    <view type="grid" name="birt-printing-wizard-grid"/>
+    <view type="form" name="birt-printing-wizard-form"/>
+  </action-view>
+
+  <menuitem name="birt-print-conf-birt-templates" parent="birt-print-conf"
+    title="BIRT templates" action="birt.print.conf.birt.templates" order="200"/>
+
+  <action-view name="birt.print.conf.birt.templates" title="BIRT templates"
+    model="com.axelor.apps.base.db.BirtTemplate">
+    <view type="grid" name="birt-template-grid"/>
+    <view type="form" name="birt-template-form"/>
+  </action-view>
 
 </object-views>

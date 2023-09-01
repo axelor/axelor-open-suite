@@ -21,6 +21,7 @@ package com.axelor.apps.base.service.message;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.MessageService;
@@ -71,7 +72,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       try {
         metaFiles.add(createMetaFileUsingBirtTemplate(birtTemplate, templatesContext));
       } catch (Exception e) {
-        throw new IllegalStateException(e);
+        TraceBackService.traceExceptionFromSaveMethod(e);
+        throw new IllegalStateException(e.getMessage(), e);
       }
     }
 

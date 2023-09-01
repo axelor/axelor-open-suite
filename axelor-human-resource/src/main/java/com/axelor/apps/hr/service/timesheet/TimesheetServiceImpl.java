@@ -52,12 +52,12 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -122,6 +122,13 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   protected TimesheetLineRepository timesheetlineRepo;
   protected TimesheetRepository timeSheetRepository;
   protected ProjectService projectService;
+  protected LeaveRequestService leaveRequestService;
+  protected PublicHolidayHrService publicHolidayHrService;
+  protected PublicHolidayService publicHolidayService;
+  protected PartnerPriceListService partnerPriceListService;
+  protected UnitConversionService unitConversionService;
+  protected WeeklyPlanningService weeklyPlanningService;
+  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
   private ExecutorService executor = Executors.newCachedThreadPool();
   private static final int ENTITY_FIND_TIMEOUT = 10000;
   private static final int ENTITY_FIND_INTERVAL = 50;
@@ -141,7 +148,14 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetlineRepo,
       TimesheetRepository timeSheetRepository,
-      ProjectService projectService) {
+      ProjectService projectService,
+      LeaveRequestService leaveRequestService,
+      PublicHolidayHrService publicHolidayHrService,
+      PublicHolidayService publicHolidayService,
+      PartnerPriceListService partnerPriceListService,
+      UnitConversionService unitConversionService,
+      WeeklyPlanningService weeklyPlanningService,
+      LeaveRequestComputeDurationService leaveRequestComputeDurationService) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -156,6 +170,13 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.timesheetlineRepo = timesheetlineRepo;
     this.timeSheetRepository = timeSheetRepository;
     this.projectService = projectService;
+    this.leaveRequestService = leaveRequestService;
+    this.publicHolidayHrService = publicHolidayHrService;
+    this.publicHolidayService = publicHolidayService;
+    this.partnerPriceListService = partnerPriceListService;
+    this.unitConversionService = unitConversionService;
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
   }
 
   @Override
@@ -185,8 +206,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   }
 
   public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException {
-    LeaveService leaveService = Beans.get(LeaveService.class);
-    PublicHolidayHrService publicHolidayHrService = Beans.get(PublicHolidayHrService.class);
 
     Employee employee = timesheet.getEmployee();
     if (employee == null) {
@@ -222,7 +241,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
         while (ChronoUnit.DAYS.between(date1, date2) > 1) {
 
           if (isWorkedDay(missingDay, correspMap, dayPlanningList)
-              && !leaveService.isLeaveDay(employee, missingDay)
+              && !leaveRequestService.isLeaveDay(employee, missingDay)
               && !publicHolidayHrService.checkPublicHolidayDay(missingDay, employee)) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD, "Line for %s is missing.", missingDay);
@@ -407,12 +426,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           employee.getUser().getName());
     }
 
-    LeaveService leaveService = Beans.get(LeaveService.class);
-    PublicHolidayHrService publicHolidayHrService = Beans.get(PublicHolidayHrService.class);
-
     while (!fromDate.isAfter(toDate)) {
       if (isWorkedDay(fromDate, correspMap, dayPlanningList)
-          && !leaveService.isLeaveDay(employee, fromDate)
+          && !leaveRequestService.isLeaveDay(employee, fromDate)
           && !publicHolidayHrService.checkPublicHolidayDay(fromDate, employee)) {
 
         TimesheetLine timesheetLine =
@@ -578,8 +594,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
       PriceList priceList =
-          Beans.get(PartnerPriceListService.class)
-              .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
+          partnerPriceListService.getDefaultPriceList(
+              invoice.getPartner(), PriceListRepository.TYPE_SALE);
 
       if (consolidate) {
         strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
@@ -728,15 +744,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                         final Project updateProject = findProject(project.getId());
                         getEntityManager().lock(updateProject, LockModeType.PESSIMISTIC_WRITE);
 
-                        BigDecimal timeSpent =
-                            projectTimeSpentMap
-                                .get(updateProject)
-                                .add(this.computeSubTimeSpent(updateProject));
-                        updateProject.setTimeSpent(timeSpent);
-
                         projectRepo.save(updateProject);
-
-                        this.computeParentTimeSpent(updateProject);
                       });
                   done = true;
                 } catch (PersistenceException e) {
@@ -752,7 +760,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             });
       }
     }
-    this.setProjectTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
   protected Project findProject(Long projectId) {
@@ -788,17 +795,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       sum = sum.add(this.computeSubTimeSpent(projectIt));
     }
     return sum;
-  }
-
-  @Override
-  public void computeParentTimeSpent(Project project) {
-    Project parentProject = project.getParentProject();
-    if (parentProject == null) {
-      return;
-    }
-    parentProject.setTimeSpent(project.getTimeSpent().add(this.computeTimeSpent(parentProject)));
-    projectRepo.save(parentProject);
-    this.computeParentTimeSpent(parentProject);
   }
 
   @Override
@@ -1114,9 +1110,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
   @Override
   public void prefillLines(Timesheet timesheet) throws AxelorException {
-    PublicHolidayService holidayService = Beans.get(PublicHolidayService.class);
-    LeaveService leaveService = Beans.get(LeaveService.class);
-    WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
+
     AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
 
     LocalDate fromDate = timesheet.getFromDate();
@@ -1137,7 +1131,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
               weeklyPlanning, date, LocalTime.MIN, LocalTime.MAX);
 
       if (appTimesheet.getCreateLinesForHolidays()
-          && holidayService.checkPublicHolidayDay(date, holidayPlanning)) {
+          && publicHolidayService.checkPublicHolidayDay(date, holidayPlanning)) {
         timesheetLineService.createTimesheetLine(
             employee,
             date,
@@ -1146,11 +1140,12 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             I18n.get(HumanResourceExceptionMessage.TIMESHEET_HOLIDAY));
 
       } else if (appTimesheet.getCreateLinesForLeaves()) {
-        List<LeaveRequest> leaveList = leaveService.getLeaves(employee, date);
+        List<LeaveRequest> leaveList = leaveRequestService.getLeaves(employee, date);
         BigDecimal totalLeaveHours = BigDecimal.ZERO;
         if (ObjectUtils.notEmpty(leaveList)) {
           for (LeaveRequest leave : leaveList) {
-            BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
+            BigDecimal leaveHours =
+                leaveRequestComputeDurationService.computeDuration(leave, date, date);
             if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
               leaveHours = leaveHours.multiply(dayValueInHours);
             }
@@ -1163,23 +1158,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
               totalLeaveHours,
               I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAY_LEAVE));
         }
-      }
-    }
-  }
-
-  @Override
-  @Transactional
-  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
-    for (TimesheetLine timesheetLine : timesheetLines) {
-      ProjectTask projectTask = timesheetLine.getProjectTask();
-      if (projectTask != null) {
-        projectTask = projectTaskRepo.find(projectTask.getId());
-        BigDecimal totalrealhrs =
-            isAdd
-                ? projectTask.getTotalRealHrs().add(timesheetLine.getHoursDuration())
-                : projectTask.getTotalRealHrs().subtract(timesheetLine.getHoursDuration());
-        projectTask.setTotalRealHrs(totalrealhrs);
-        projectTaskRepo.save(projectTask);
       }
     }
   }

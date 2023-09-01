@@ -44,43 +44,45 @@
     </toolbar>
 
     <!-- New employee wizard -->
-    <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 5">
+    <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 5" colSpan="12">
       <button name="previousSBSBtn" colSpan="1" icon="fa-caret-left"
         readonlyIf="stepByStepSelect &lt; 2"
         onClick="validate,action-employee-record-previous-step,save"/>
-      <field name="stepByStepSelect" colSpan="9" css="text-center" readonly="true"
+      <field name="stepByStepSelect" colSpan="8" css="text-center" readonly="true"
         showTitle="false" widget="NavSelect" selection-in="[1, 2, 3, 4]"/>
       <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right"
         readonlyIf="(user &amp;&amp; stepByStepSelect &gt;= 3) || (user == null &amp;&amp; stepByStepSelect &gt; 3) "
         onClick="validate,action-employee-record-next-step,save"/>
-      <button name="finishBtn" colSpan="1" title="Finish"
+      <button name="finishBtn" colSpan="2" title="Finish"
         onClick="validate,action-employee-record-finish-sbs,save"
         showIf="stepByStepSelect == 4 || (user &amp;&amp; stepByStepSelect == 3)"/>
     </panel>
 
-    <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5">
+    <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5" sidebar="true">
       <field name="contactPartner" colSpan="12"
         domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
-        form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
+        form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
+        onChange="action-employee-attrs-fill-user">
         <editor x-viewer="true">
-          <field name="picture" colSpan="2" css="center" showTitle="false" widget="Image"/>
-          <panel name="contactDetailsPanel" colSpan="10">
-            <field name="titleSelect" colSpan="2"/>
+          <panel name="imagePanel" colSpan="12">
+            <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>
+          </panel>
+          <panel name="contactDetailsPanel" colSpan="12" itemSpan="12">
+            <field name="titleSelect" colSpan="2" showIf="!$readonly()"/>
             <field name="firstName"
               onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url"
-              colSpan="5"/>
+              colSpan="5" showIf="!$readonly()"/>
             <field name="name" title="Name"
               onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url"
-              colSpan="5"/>
+              colSpan="5" showIf="!$readonly()"/>
 
             <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
               canSelect="false"/>
             <field name="webSite" placeholder="http://www.url.com" widget="url"
               pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
-            <field name="fixedPhone" widget="phone" colSpan="4"
-              x-placeholder-number-type="FIXED_LINE"/>
-            <field name="mobilePhone" widget="phone" colSpan="4"/>
+            <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+            <field name="mobilePhone" widget="phone"/>
           </panel>
         </editor>
       </field>
@@ -133,7 +135,8 @@
 
       <panel colSpan="12">
         <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-          form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
+          form-view="weekly-planning-form" grid-view="weekly-planning-grid"
+          domain="self.typeSelect = 1"/>
         <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
           form-view="events-planning-form" grid-view="events-planning-grid"/>
         <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
@@ -204,153 +207,169 @@
 
     <!-- User creation -->
     <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
-      <field name="user" title="Attach to"/>
+      <field name="user" title="Attach to" onSelect="action-employee-attrs-change-domain"/>
       <button name="createUserBtn" title="Create new user"
-        onClick="save,action-employee-view-open-user-creation-wizard"/>
+        onClick="save,action-employee-view-open-user-creation-form" hideIf="user != null"
+        hidden="true"/>
     </panel>
     <!-- END OF User creation -->
     <!-- END OF New employee wizard -->
-
-    <panel name="headerPanel">
-      <panel name="contactPanel" showIf="stepByStepSelect == 5" colSpan="10">
-        <panel name="viewerTagsPanel" colSpan="12">
-          <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
-            colSpan="12">
-            <viewer>
-              <![CDATA[
-            <h4 class="text-right">
+    <panel name="contactPanel" showIf="stepByStepSelect == 5 &amp;&amp; $readonly()"
+      sidebar="true">
+      <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
+        colSpan="12">
+        <viewer>
+          <![CDATA[
+            <h4 style="text-align: center;">
+                <span class="label label-important" style="background-color: #84429f;" margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.hrManager" x-translate>HR manager</span>
+                <span class="label label-default" style="background-color: #2b9cff; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.external" x-translate>External</span>
                 <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>New employee</span>
-                <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
+                <span class="label label-default" style="background-color: #a1a1a1; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
             </h4>
 	        ]]>
-            </viewer>
-          </field>
-        </panel>
-        <field name="contactPartner" colSpan="12"
-          domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
-          form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
-          <editor x-viewer="true">
-            <panel name="imagePanel" colSpan="2">
-              <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>
+        </viewer>
+      </field>
 
-              <panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
-                <label name="facebookLabel"
-                  title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;"
-                  colSpan="2"/>
-                <label name="twitterLabel"
-                  title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;"
-                  colSpan="2"/>
-                <label name="linkedinLabel"
-                  title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
-                  colSpan="2"/>
-                <label name="youtubeLabel"
-                  title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;"
-                  colSpan="2"/>
-              </panel>
-            </panel>
-            <panel name="contactDetailsPanel" colSpan="10">
-              <field name="simpleFullName" colSpan="12" showTitle="false" showIf="$readonly()"
-                css="bold large"/>
+      <field name="contactPartner.picture" widget="Image" showTitle="false">
+        <viewer depends="contactPartner.picture">
+          <![CDATA[
+              <div style="text-align: center;">
+                <img ng-show="record.contactPartner.picture" ng-src="{{$image('contactPartner.picture', 'content')}}"/>
+                <img ng-show="!record.contactPartner.picture" src="img/partner-default.png" />
+              </div>
+          ]]>
+        </viewer>
+      </field>
 
-              <field name="titleSelect" colSpan="2" showIf="!$readonly()"/>
-              <field name="firstName"
-                onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url"
-                colSpan="5" showIf="!$readonly()"/>
-              <field name="name" title="Name"
-                onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url"
-                colSpan="5" showIf="!$readonly()"/>
+      <field name="contactPartner.fullName" showTitle="false">
+        <viewer depends="contactPartner.fullName">
+          <![CDATA[
+              <div style="text-align: center; font-weight: bold;">{{record.contactPartner.fullName}}</div>
+          ]]>
+        </viewer>
+      </field>
 
-              <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
-                canSelect="false"/>
-              <field name="webSite" placeholder="http://www.url.com" widget="url"
-                pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-
-              <field name="fixedPhone" widget="phone" colSpan="4"
-                x-placeholder-number-type="FIXED_LINE"/>
-              <field name="mobilePhone" widget="phone" colSpan="4"/>
-            </panel>
-          </editor>
-        </field>
+      <panel name="hrPanel" showIf="managerUser || exportCode" title="Employee information"
+        colSpan="12" itemSpan="12">
+        <field name="managerUser" showIf="managerUser" colSpan="6"/>
+        <field name="exportCode" showIf="exportCode" colSpan="6"/>
       </panel>
 
-      <panel name="companyPanel"
-        showIf="stepByStepSelect == 5 &amp;&amp; mainEmploymentContract.payCompany != null"
-        colSpan="2" readonly="true">
-        <field name="mainEmploymentContract" showTitle="false" colSpan="12"
-          domain="self.employee.id = :id">
-          <editor x-viewer="true">
-            <panel name="payCompanyPanel" colSpan="12" showTitle="false">
-              <field name="payCompany.logo" showTitle="false" colSpan="12" widget="Image"/>
-              <field name="payCompany.name" showTitle="false" colSpan="12" css="bold large"
-                readonly="true"/>
-            </panel>
-          </editor>
+      <panel name="contactInformationPanel" title="Contact details" itemSpan="12"
+        showIf="$readonly() &amp;&amp; (contactPartner.emailAddress.address || contactPartner.mobilePhone || contactPartner.fixedPhone || fixedProPhone || mobileProPhone || phoneAtCustomer)">
+        <field name="$contactDetails" showIf="$readonly()" showTitle="false">
+          <viewer
+            depends="contactPartner.emailAddress.address, contactPartner.mobilePhone, contactPartner.fixedPhone, fixedProPhone, mobileProPhone, phoneAtCustomer">
+            <![CDATA[
+            <div ng-show="record.contactPartner.emailAddress.address"><i class="fa fa-envelope"></i> <a href="mailto:{{record.contactPartner.emailAddress.address}}">{{record.contactPartner.emailAddress.address}}</a></div>
+            <div ng-show="record.contactPartner.mobilePhone"><i class="fa fa-phone"></i> <a href="tel:{{record.contactPartner.mobilePhone}}">{{record.contactPartner.mobilePhone}}</a></div>
+            <div ng-show="record.contactPartner.fixedPhone"><i class="fa fa-phone"></i> <a href="tel:{{record.contactPartner.fixedPhone}}">{{record.contactPartner.fixedPhone}}</a></div>
+            <div ng-show="record.fixedProPhone"><i class="fa fa-phone"></i> <a href="tel:{{record.fixedProPhone}}">{{record.fixedProPhone}}</a></div>
+            <div ng-show="record.mobileProPhone"><i class="fa fa-phone"></i> <a href="tel:{{record.mobileProPhone}}">{{record.mobileProPhone}}</a></div>
+            <div ng-show="record.phoneAtCustomer"><i class="fa fa-phone"></i> <a href="tel:{{record.phoneAtCustomer}}">{{record.phoneAtCustomer}}</a></div>
+          ]]>
+          </viewer>
+        </field>
+        <field name="contactPartner.emailAddress.address" hidden="true"/>
+      </panel>
+
+      <panel name="medicalVisitDatePanel" title="Medical visit" showIf="$readonly()"
+        colSpan="12"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()">
+        <field name="lastMedicalVisitDate" hidden="true"/>
+        <field name="nextMedicalVisitDate" hidden="true"/>
+        <field name="$medicalVisitDates" showTitle="false" colSpan="12">
+          <viewer depends="lastMedicalVisitDate, nextMedicalVisitDate">
+            <![CDATA[
+              <div style="font-weight: bold;" ng-show="!record.lastMedicalVisitDate" x-translate>Last medical visit : XX/XX/XXXX</div>
+              <div style="font-weight: bold;" ng-show="record.lastMedicalVisitDate" x-translate>Last medical visit :</div>
+              <div style="font-weight: bold;" ng-show="record.lastMedicalVisitDate">{{record.lastMedicalVisitDate}}</div>
+              </br>
+              <div style="font-weight: bold;" ng-show="record.nextMedicalVisitDate" x-translate>Next medical visit :</div>
+              <div style="font-weight: bold;" ng-show="record.nextMedicalVisitDate">{{record.nextMedicalVisitDate}}</div>
+            ]]>
+          </viewer>
         </field>
       </panel>
     </panel>
-    <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 5">
-      <panel name="informationPanel" title="Information">
-        <panel name="phoneProPanel" title="Work phones" colSpan="12">
-          <field name="fixedProPhone" widget="phone" colSpan="4"
-            x-placeholder-number-type="FIXED_LINE"/>
-          <field name="mobileProPhone" widget="phone" colSpan="4"/>
-          <field name="phoneAtCustomer" widget="phone" colSpan="4"/>
-        </panel>
-
-        <panel name="personalInfoPanel" title="Personal information" colSpan="12">
-          <field name="birthDate" colSpan="4"/>
-          <field name="maritalStatus" colSpan="4"/>
-          <field name="sexSelect" colSpan="4"/>
-          <field name="countryOfBirth" colSpan="4"
-            onChange="action-employee-attrs-country-of-birth-on-change"/>
-          <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid"
-            onChange="action-employee-attrs-department-of-birth-on-change"
-            onSelect="action-employee-attrs-department-of-birth-on-select"/>
-          <field name="cityOfBirth" colSpan="4"
-            onSelect="action-employee-attrs-city-of-birth-on-select"/>
-          <field name="citizenship" colSpan="4"/>
-          <field name="maritalName" colSpan="4"/>
-          <field name="dependentChildren" colSpan="4"/>
-          <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
-          <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
-        </panel>
-
-        <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
-          <field name="emergencyContact" colSpan="4"/>
-          <field name="emergencyNumber" widget="phone" colSpan="4"/>
-          <field name="emergencyContactRelationship" colSpan="4" title="Relationship"/>
-        </panel>
-
-        <panel name="rhInfoPanel" title="HR information" colSpan="12">
-          <panel colSpan="12">
-            <field name="managerUser" canEdit="false" canNew="false" canView="false"
-              colSpan="4" form-view="user-form" grid-view="user-grid"/>
-            <field name="exportCode" colSpan="4"/>
-            <field name="bankDetails" colSpan="4" form-view="bank-details-form"
-              grid-view="bank-details-grid"
-              if="__config__.app.getApp('base')?.getManageMultiBanks()"
-              if-module="axelor-cash-management" widget="SuggestBox"
-              onSelect="action-employee-attrs-bank-details-on-select"/>
-          </panel>
-
-          <panel colSpan="12">
-            <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-              form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
-            <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
-              form-view="events-planning-form" grid-view="events-planning-grid"/>
-            <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
-              form-view="events-planning-form" grid-view="events-planning-grid"/>
-          </panel>
-
-          <panel colSpan="12">
-            <field name="hrManager" colSpan="4" widget="InlineCheckbox"/>
-            <field name="external" colSpan="4" widget="InlineCheckbox"/>
-          </panel>
-        </panel>
+    <panel name="editContactPanel" showIf="stepByStepSelect == 5 &amp;&amp; !$readonly()"
+      sidebar="true" colSpan="12">
+      <panel name="booleanPanel" colSpan="12">
+        <field name="hrManager" colSpan="6" widget="InlineCheckbox"/>
+        <field name="external" colSpan="6" widget="InlineCheckbox"/>
+        <field name="managerUser" canEdit="false" canNew="false" canView="false" colSpan="6"
+          form-view="user-form" grid-view="user-grid"/>
+        <field name="exportCode" colSpan="6"/>
       </panel>
+      <field name="contactPartner" colSpan="12"
+        domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
+        form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
+        onChange="action-employee-attrs-fill-user">
+        <editor x-viewer="true">
+          <panel name="imagePanel" colSpan="12">
+            <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>
+          </panel>
+          <panel name="contactDetailsPanel" colSpan="12" itemSpan="12">
+            <field name="titleSelect" colSpan="2" showIf="!$readonly()"/>
+            <field name="firstName"
+              onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url"
+              colSpan="5" showIf="!$readonly()"/>
+            <field name="name" title="Name"
+              onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url"
+              colSpan="5" showIf="!$readonly()"/>
 
+            <field name="emailAddress" canNew="true" form-view="email-address-simple-form"
+              canSelect="false"/>
+            <field name="webSite" placeholder="http://www.url.com" widget="url"
+              pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+
+            <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+            <field name="mobilePhone" widget="phone"/>
+          </panel>
+        </editor>
+      </field>
+      <panel name="phoneProPanel" title="Work phones" colSpan="12" itemSpan="12"
+        canCollapse="true" collapseIf="true">
+        <field name="fixedProPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="mobileProPhone" widget="phone"/>
+        <field name="phoneAtCustomer" widget="phone"/>
+      </panel>
+    </panel>
+
+    <panel name="personalInfoPanel" title="Personal information" colSpan="12"
+      showIf="stepByStepSelect == 5" canCollapse="true" collapseIf="true">
+      <field name="birthDate" colSpan="4"/>
+      <field name="maritalStatus" colSpan="4"/>
+      <field name="sexSelect" colSpan="4"/>
+      <field name="countryOfBirth" colSpan="4"
+        onChange="action-employee-attrs-country-of-birth-on-change"/>
+      <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid"
+        onChange="action-employee-attrs-department-of-birth-on-change"
+        onSelect="action-employee-attrs-department-of-birth-on-select"/>
+      <field name="cityOfBirth" colSpan="4"
+        onSelect="action-employee-attrs-city-of-birth-on-select"/>
+      <field name="citizenship" colSpan="4"/>
+      <field name="maritalName" colSpan="4"/>
+      <field name="dependentChildren" colSpan="4"/>
+      <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
+      <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+      <field name="bankDetails" colSpan="4" form-view="bank-details-form"
+        grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
+        if-module="axelor-cash-management" widget="SuggestBox"
+        onSelect="action-employee-attrs-bank-details-on-select"/>
+
+      <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
+        <field name="emergencyContact" colSpan="4"/>
+        <field name="emergencyNumber" widget="phone" colSpan="4"/>
+        <field name="emergencyContactRelationship" colSpan="4" title="Relationship"/>
+      </panel>
+    </panel>
+
+
+    <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 5">
       <panel name="employmentContractsPanel" title="Employment contracts">
-        <panel name="contractualInfoPanel" title="Contractual information" colSpan="12">
+        <panel name="contractualInfoPanel" title="Contractual information" colSpan="12"
+          canCollapse="true" collapseIf="true">
           <field name="hireDate" colSpan="4"
             onChange="action-employee-attrs-set-seniority-date"/>
           <field name="seniorityDate" colSpan="4"/>
@@ -364,8 +383,19 @@
           <field name="$dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
             x-bind="{{hourlyRate * dailyWorkHours}}"/>
 
+          <panel name="planningPanel" title="Plannings" colSpan="12" canCollapse="true"
+            collapseIf="true">
+            <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
+              form-view="weekly-planning-form" grid-view="weekly-planning-grid"
+              domain="self.typeSelect = 1"/>
+            <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
+              form-view="events-planning-form" grid-view="events-planning-grid"/>
+            <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
+              form-view="events-planning-form" grid-view="events-planning-grid"/>
+          </panel>
+
           <panel name="mainEmploymentContractPanel" title="Main employment contract"
-            colSpan="12">
+            colSpan="12" canCollapse="true" collapseIf="true">
             <field name="mainEmploymentContract" colSpan="12" domain="self.employee.id = :id"
               showTitle="false">
               <editor x-viewer="true">
@@ -403,61 +433,74 @@
           action="action-employee-view-user-timesheets" colSpan="12"/>
       </panel>
 
-      <panel name="lunchVoucherPanel" title="Lunch vouchers"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher()">
-        <field name="lunchVoucherFormatSelect" colSpan="3"/>
+      <panel name="benefitsPanel" title="Benefits and expenses" colSpan="12" itemSpan="12">
+        <panel name="lunchVoucherPanel" title="Lunch vouchers"
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher()"
+          canCollapse="true" collapseIf="true">
+          <field name="lunchVoucherFormatSelect" colSpan="3"/>
 
-        <panel-dashlet name="lunchVouchersDashletPanel" title="Lunch vouchers"
-          action="action-employee-view-show-lunch-voucher" colSpan="12"/>
+          <panel-dashlet name="lunchVouchersDashletPanel" title="Lunch vouchers"
+            action="action-employee-view-show-lunch-voucher" colSpan="12"/>
 
-        <panel-related name="lunchVoucherAdvanceListPanel"
-          field="lunchVoucherAdvanceList" canEdit="false" canNew="false" canRemove="true"
-          colSpan="12" form-view="lunch-voucher-advance-form" grid-view="lunch-voucher-advance-grid"/>
-        <button name="addLunchVoucherAdvanceBtn" title="Add an advance" colSpan="3"
-          icon="fa-ticket" onClick="save,action-lunch-voucher-advance-new"/>
-      </panel>
+          <panel-related name="lunchVoucherAdvanceListPanel"
+            field="lunchVoucherAdvanceList" canEdit="false" canNew="false" canRemove="true"
+            colSpan="12" form-view="lunch-voucher-advance-form"
+            grid-view="lunch-voucher-advance-grid"/>
+          <button name="addLunchVoucherAdvanceBtn" title="Add an advance" colSpan="3"
+            icon="fa-ticket" onClick="save,action-lunch-voucher-advance-new"/>
+        </panel>
 
-      <panel name="expensesPanel" title="Expenses">
-        <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"
-          colSpan="3"/>
-        <field name="companyCbDetails" colSpan="3" hidden="true" showIf="companyCbSelect > 1"/>
+        <panel name="expensesPanel" title="Expenses" canCollapse="true" collapseIf="true">
+          <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"
+            colSpan="3"/>
+          <field name="companyCbDetails" colSpan="3" hidden="true"
+            showIf="companyCbSelect > 1"/>
+          <field name="analyticDistributionTemplate"
+            grid-view="analytic-distribution-template-grid"
+            form-view="analytic-distribution-template-form"
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+          <panel-related name="employeeAdvanceListPanel" title="Employee advances"
+            field="employeeAdvanceList" colSpan="12" form-view="employee-advance-employee-form"
+            grid-view="employee-advance-employee-grid"
+            if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement()"
+            readonly="false"/>
+        </panel>
 
-        <panel-related name="employeeAdvanceListPanel" title="Employee advances"
-          field="employeeAdvanceList" colSpan="12" form-view="employee-advance-employee-form"
-          grid-view="employee-advance-employee-grid"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement()"
-          readonly="false"/>
-      </panel>
+        <panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')"
+          canCollapse="true" collapseIf="true">
+          <panel-related name="kilometricLogListPanel" title="Kilometric log"
+            field="kilometricLogList" colSpan="12" form-view="kilometric-log-form"
+            grid-view="kilometric-log-grid" if="__config__.app.isApp('timesheet')" readonly="true"/>
 
-      <panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')">
-        <panel-related name="kilometricLogListPanel" title="Kilometric log"
-          field="kilometricLogList" colSpan="12" form-view="kilometric-log-form"
-          grid-view="kilometric-log-grid" if="__config__.app.isApp('timesheet')" readonly="true"/>
+          <panel name="vehicleListPanel" title="Vehicles" colSpan="12">
+            <field name="employeeVehicleList" colSpan="12" showTitle="false">
+              <editor colSpan="12" x-layout="table" x-show-on-new="true" x-viewer="true">
+                <field name="vehicleRegistrationCertificate" colSpan="2" widget="Image"/>
+                <panel colSpan="10" itemSpan="4">
+                  <field name="vehicleMake"/>
+                  <field name="vehicleModel"/>
+                  <field name="plateNo"/>
+                  <field name="kilometricAllowParam" canEdit="false" widget="SuggestBox"/>
+                  <field name="startDate" onChange="action-employee-validate-dates"/>
+                  <field name="endDate" onChange="action-employee-validate-dates"/>
+                </panel>
+              </editor>
+            </field>
+          </panel>
+        </panel>
 
-        <panel name="vehicleListPanel" title="Vehicles" colSpan="12">
-          <field name="employeeVehicleList" colSpan="12" showTitle="false">
-            <editor colSpan="12" x-layout="table" x-show-on-new="true" x-viewer="true">
-              <field name="vehicleRegistrationCertificate" colSpan="2" widget="Image"/>
-              <panel colSpan="10" itemSpan="4">
-                <field name="vehicleMake"/>
-                <field name="vehicleModel"/>
-                <field name="plateNo"/>
-                <field name="kilometricAllowParam" canEdit="false" widget="SuggestBox"/>
-                <field name="startDate" onChange="action-employee-validate-dates"/>
-                <field name="endDate" onChange="action-employee-validate-dates"/>
-              </panel>
-            </editor>
-          </field>
+        <panel name="bonusDashletPanel" title="Bonuses" canCollapse="true" collapseIf="true">
+          <panel-dashlet name="employeeBonusDashletPanel" title="Bonuses"
+            action="employee.dashlet.employee.bonus" colSpan="12"
+            if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getEmployeeBonus()"
+            readonly="true" canCollapse="true" collapseIf="true"/>
         </panel>
       </panel>
 
-      <panel-dashlet name="employeeBonusDashletPanel" title="Bonuses"
-        action="employee.dashlet.employee.bonus" colSpan="12"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getEmployeeBonus()"
-        readonly="true"/>
-
-      <panel-include if-module="axelor-talent" view="talent-employee-form"/>
-
+      <panel name="talentPanel" title="Training" colSpan="12" itemSpan="12"
+        if="__config__.app.isApp('training')">
+        <panel-include if-module="axelor-talent" view="talent-employee-form"/>
+      </panel>
       <panel name="dpaePanel" title="DPAE" if="__user__.activeCompany?.hrConfig?.enableDPAE">
         <button name="generateNewDPAE" title="Generate new DPAE" colSpan="3"
           onClick="save,action-employee-method-generate-new-dpae"/>
@@ -466,16 +509,16 @@
       </panel>
 
       <panel name="employeeFileListPanel" title="Files" colSpan="12">
-        <field name="employeeFileList" showTitle="false" colSpan="12">
-          <editor colSpan="12" x-viewer="true" x-show-on-new="true" x-layout="table">
-            <field name="fileType" colSpan="3" onChange="action-record-set-expiration-date"/>
-            <field name="metaFile" widget="binary-link" colSpan="3"
-              onChange="action-record-set-record-date"/>
-            <field name="recordDate" colSpan="3" readonly="true"/>
-            <field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>
-            <field name="fileType.hasExpirationDate" hidden="true"/>
-          </editor>
-        </field>
+        <panel-related field="employeeFileList" showTitle="false"
+          grid-view="employee-file-grid" form-view="employee-file-form" colSpan="12"/>
+      </panel>
+
+      <panel name="medicalVisitPanel" title="Medical visit" colSpan="12"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()">
+        <panel-related field="medicalVisitList" showTitle="false"
+          form-view="medical-visit-form" grid-view="medical-visit-grid" colSpan="12"
+          onChange="action-employee-method-update-employee-files-with-medical-visit"
+          x-can-copy="true"/>
       </panel>
     </panel-tabs>
 
@@ -567,65 +610,72 @@
     <field name="hireDate"/>
     <field name="leavingDate"/>
     <field name="hrManager"/>
+    <field name="external"/>
     <template><![CDATA[
-		<div style="margin: -16px; height: 180px;display: flex;">
-    		<div class="span4 card-image" style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
-		        <img ng-src="{{$image('contactPartner.picture', 'content')}}" style="width: 128px; height: 64px; object-fit: contain;" />
-		        <strong>{{contactPartner.firstName}} {{contactPartner.name}}</strong>
-    		</div>
-    		<div class="span8" style="padding-left: 40px;display: flex;flex-direction: column;justify-content: center;position: relative;">
-        		<div style="position: absolute;height: calc(100% + 16px);display: flex;align-items: center;left: 0;transform: skew(-20deg, 0deg);border-left: 2px solid #ddd;">
-            		<div ng-style="hrManager && {'background-color': '#d9534f', 'color': '#fff'} || record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days') && {'background-color': '#20BCB5', 'color': '#fff'} || record.leavingDate != null && $moment(record.leavingDate) < $moment()  && {'background-color': '#BC2026', 'color': '#fff'}"
-                	style="width: 30px;height: 60%;background: #ddd; color: #000; display: flex;flex-direction: column;justify-content: center;align-items: center;box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px">
-                		<span ng-if="contactPartner.fixedPhone">
-                    		<i class="fa fa-phone fa-flip-horizontal" style="font-size: 18px;transform: skew(20deg, 0deg);" />
-                		</span>
-                		<span ng-if="contactPartner.mobilePhone">
-                    		<i class="fa fa-mobile" style="font-size: 18px;transform: skew(20deg, 0deg);" />
-                		</span>
-		                <span ng-if="mainEmploymentContract.payCompany.name">
-		                    <i class="fa fa-home" style="font-size: 18px;transform: skew(20deg, 0deg);" />
-		                </span>
-		                <span ng-if="mainEmploymentContract.companyDepartment.name">
-		                    <i class="fa fa-home" style="font-size: 18px;transform: skew(20deg, 0deg);" />
-		                </span>
-            		</div>
-        		</div>
-        		<span>
-		            <span style="margin-left: 2rem" ng-if="contactPartner.fixedPhone">
-		                {{ contactPartner.fixedPhone}}
-		                <br/>
-		            </span>
-		            <span style="margin-left: 1.5rem"  ng-if="contactPartner.mobilePhone">
-		                {{contactPartner.mobilePhone}}
-		                <br/>
-		            </span>
-		            <span style="margin-left: 1rem" ng-if="mainEmploymentContract.payCompany.name">
-		                <strong>
-		                    <span x-translate>Company</span>
-		                </strong>
-		                : {{mainEmploymentContract.payCompany.name}}
-		                <br/>
-		            </span>
-		            <span style="margin-left: 0.5rem" ng-if="mainEmploymentContract.companyDepartment.name">
-                		<strong>
-		                    <span x-translate>Department</span>
-		                </strong>
-		                : {{mainEmploymentContract.companyDepartment.name}}<br/>
-		            </span>
+		<div style="transform-style: preserve-3d;margin: -16px; height: 180px;display: flex;"
+		ng-style="record.leavingDate != null && $moment(record.leavingDate) < $moment() && {'background-color': '#c9c9c9', 'color': '#fff'} ||
+		record.hrManager && {'border-style': 'inset', 'color': '#84429f'} ||
+		record.external && {'background-color': '#7dc2ff'}">
+            <div class="span4 card-image" style="display: flex;flex-direction: column;justify-content: center;align-items: center;color: black;">
+                <img ng-src="{{$image('contactPartner.picture', 'content')}}" style="width: 128px; height: 64px; object-fit: contain;" />
+                <strong>{{contactPartner.firstName}} {{contactPartner.name}}</strong>
+            </div>
+            <div class="span8" style="padding-left: 40px;display: flex;flex-direction: column;justify-content: center;position: relative;color: black;" ng-style="hrManager && {'transform': 'translateZ(-10px)'}">
+                <div style="position: absolute;z-index: -1;height: calc(100% + 16px);display: flex;align-items: center;left: 0;transform: skew(-20deg, 0deg);border-left: 2px solid #ddd;">
+                    <div ng-style="hrManager && {'background-color': '#84429f', 'color': '#fff'} || record.external && {'background-color': '#2b9cff'} || record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days') && {'background-color': '#20BCB5', 'color': '#fff'}"
+                    style="width: 30px;height: 60%;background: #ddd; color: #000; display: flex;flex-direction: column;justify-content: center;align-items: center;box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px">
+                        <span ng-if="contactPartner.fixedPhone">
+                            <i class="fa fa-phone fa-flip-horizontal" style="font-size: 18px;transform: skew(20deg, 0deg);" />
+                        </span>
+                        <span ng-if="contactPartner.mobilePhone">
+                            <i class="fa fa-mobile" style="font-size: 18px;transform: skew(20deg, 0deg);" />
+                        </span>
+                        <span ng-if="mainEmploymentContract.payCompany.name">
+                            <i class="fa fa-home" style="font-size: 18px;transform: skew(20deg, 0deg);" />
+                        </span>
+                        <span ng-if="mainEmploymentContract.companyDepartment.name">
+                            <i class="fa fa-home" style="font-size: 18px;transform: skew(20deg, 0deg);" />
+                        </span>
+                    </div>
+                </div>
+                <span>
+                    <span style="margin-left: 2rem" ng-if="contactPartner.fixedPhone">
+                        {{ contactPartner.fixedPhone}}
+                        <br/>
+                    </span>
+                    <span style="margin-left: 1.5rem"  ng-if="contactPartner.mobilePhone">
+                        {{contactPartner.mobilePhone}}
+                        <br/>
+                    </span>
+                    <span style="margin-left: 1rem" ng-if="mainEmploymentContract.payCompany.name">
+                        <strong>
+                            <span x-translate>Company</span>
+                        </strong>
+                        : {{mainEmploymentContract.payCompany.name}}
+                        <br/>
+                    </span>
+                    <span style="margin-left: 0.5rem" ng-if="mainEmploymentContract.companyDepartment.name">
+                        <strong>
+                            <span x-translate>Department</span>
+                        </strong>
+                        : {{mainEmploymentContract.companyDepartment.name}}<br/>
+                    </span>
+                </span>
+            </div>
+            <div style="display: flex;justify-content: flex-end;position: absolute;bottom: 3px;right: 6px;color: black;">
+                <span class="label label-default" ng-show="hrManager" style="background-color: #84429f; margin: 5px 0 5px 0; display: inline-table; line-height: initial; line-height: initial;" x-translate>
+                    HR manager
+                </span>
+                <span class="label label-default" ng-show="external" style="background-color: #2b9cff; margin: 5px 0 5px 5px; display: inline-table; line-height: initial;" x-translate>
+		            External
 		        </span>
-    		</div>
-    		<div style="display: flex;justify-content: flex-end;position: absolute;bottom: 3px;right: 6px;">
-		        <span class="label label-important" ng-show="hrManager" style="margin: 5px 0 5px 0; display: inline-table; line-height: initial;" line-height: initial;" x-translate>
-		            HR manager
-		        </span>
-		        <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>
-		            New employee
-		        </span>
-		        <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>
+                <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>
+                    New employee
+                </span>
+                <span class="label label-default" style="background-color: #707070; margin: 5px 0 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>
 		            Former employee
 		        </span>
-    		</div>
+            </div>
 		</div>
 		]]>
     </template>
@@ -659,6 +709,7 @@
     model="com.axelor.apps.hr.db.Employee">
     <view type="grid" name="employee-grid"/>
     <view type="form" name="employee-form"/>
+    <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval:employee?.id"/>
   </action-view>
 
@@ -721,10 +772,32 @@
       if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
   </action-condition>
 
+  <action-attrs name="action-employee-attrs-change-domain">
+    <attribute for="user" name="domain"
+      expr="eval: &quot;self.employee = null AND self.partner = null&quot;"
+      if="__this__.contactPartner.linkedUser == null"/>
+    <attribute for="user" name="domain"
+      expr="eval: &quot;self.employee = null AND self.partner = :contactPartner&quot;"
+      if="__this__.contactPartner.linkedUser != null"/>
+  </action-attrs>
+
   <action-attrs name="action-employee-attrs-set-seniority-date">
     <attribute name="value" for="seniorityDate" expr="eval: hireDate"
       if="seniorityDate == null"/>
   </action-attrs>
+
+  <action-attrs name="action-employee-attrs-fill-user">
+    <!-- This case doesn't currently work due to an AOP issue -->
+    <!--attribute for="user" name="value" expr="eval: null" if="contactPartner == null"/ -->
+    <attribute for="user" name="value" expr="eval: contactPartner?.linkedUser"
+      if="contactPartner?.linkedUser != null &amp;&amp; contactPartner?.employee == null"/>
+  </action-attrs>
+
+  <action-method
+    name="action-employee-method-update-employee-files-with-medical-visit">
+    <call class="com.axelor.apps.hr.web.EmployeeController"
+      method="updateEmployeeFilesWithMedicalVisit"/>
+  </action-method>
 
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
     title="Employee filters">
@@ -756,8 +829,13 @@
       <domain>self.leavingDate IS NULL AND self.hireDate &gt; CURRENT_DATE - 30</domain>
     </filter>
     <filter title="Active employees">
-      <domain>(self.leavingDate IS NULL OR self.leavingDate &gt; CURRENT_DATE) AND (self.hireDate IS
-        NULL OR self.hireDate &lt; CURRENT_DATE)</domain>
+      <domain>(self.hireDate IS NULL AND self.leavingDate &gt;= CURRENT_DATE)
+        OR (self.leavingDate IS
+        NULL AND (self.hireDate + 30) &lt;= CURRENT_DATE)
+        OR (self.hireDate IS NOT NULL AND
+        self.leavingDate IS NOT NULL
+        AND (self.hireDate + 30) &lt;= CURRENT_DATE AND self.leavingDate
+        &gt;= CURRENT_DATE)</domain>
     </filter>
     <filter title="Former employees">
       <domain>self.leavingDate &lt; CURRENT_DATE</domain>

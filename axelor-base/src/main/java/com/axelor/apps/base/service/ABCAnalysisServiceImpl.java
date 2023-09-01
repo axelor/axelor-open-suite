@@ -20,7 +20,6 @@ package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
@@ -33,9 +32,7 @@ import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -368,29 +365,6 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
 
     abcAnalysis.setAbcAnalysisSeq(
         sequenceService.getSequenceNumber(sequence, ABCAnalysis.class, "abcAnalysisSeq"));
-  }
-
-  @Override
-  public String printReport(ABCAnalysis abcAnalysis, String reportType) throws AxelorException {
-    if (abcAnalysis.getStatusSelect() != ABCAnalysisRepository.STATUS_FINISHED) {
-      throw new AxelorException(
-          abcAnalysis,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BaseExceptionMessage.ABC_CLASSES_INVALID_STATE_FOR_REPORTING));
-    }
-
-    String name = I18n.get("ABC Analysis") + " - " + abcAnalysis.getAbcAnalysisSeq();
-
-    return ReportFactory.createReport(IReport.ABC_ANALYSIS, name)
-        .addParam("abcAnalysisId", abcAnalysis.getId())
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .addParam(
-            "Timezone",
-            abcAnalysis.getCompany() != null ? abcAnalysis.getCompany().getTimezone() : null)
-        .addFormat(reportType)
-        .toAttach(abcAnalysis)
-        .generate()
-        .getFileLink();
   }
 
   @Override

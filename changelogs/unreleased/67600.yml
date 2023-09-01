@@ -1,0 +1,3 @@
+---
+title: "Supplychain : generatePurchaseOrdersFromSelectedSOLines and getSelectedId refacto in SaleOrderController"
+type: fix

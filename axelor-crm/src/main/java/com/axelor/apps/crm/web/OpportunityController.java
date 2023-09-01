@@ -22,6 +22,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.crm.db.LostReason;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.OpportunityService;
@@ -32,8 +33,15 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class OpportunityController {
@@ -120,6 +128,79 @@ public class OpportunityController {
     if (recurringRevanue != 0 && recurringStartDate != null) {
       LocalDate newDate = recurringStartDate.plusMonths((long) recurringRevanue);
       response.setValue("recurringEndDate", newDate);
+    }
+  }
+
+  public void winningProcess(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Opportunity opportunity = context.asType(Opportunity.class);
+      opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
+      Map<String, Boolean> map = new HashMap<>();
+      map.put("isCustomer", (Boolean) context.get("isCustomer"));
+      map.put("isProspect", (Boolean) context.get("isProspect"));
+      map.put("isSupplier", (Boolean) context.get("isSupplier"));
+      map.put("isEmployee", (Boolean) context.get("isEmployee"));
+      map.put("isContact", (Boolean) context.get("isContact"));
+      map.put("isInternal", (Boolean) context.get("isInternal"));
+      map.put("isPartner", (Boolean) context.get("isPartner"));
+
+      List<Opportunity> otherOpportunities =
+          Beans.get(OpportunityService.class).winningProcess(opportunity, map);
+
+      if (!CollectionUtils.isEmpty(otherOpportunities)) {
+        response.setView(
+            ActionView.define(I18n.get("Other opportunities"))
+                .model(Opportunity.class.getName())
+                .add("form", "other-opportunity-found-popup")
+                .param("popup", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "false")
+                .context(
+                    "_otherOpportunities",
+                    otherOpportunities.stream()
+                        .map(Opportunity::getId)
+                        .collect(Collectors.toList()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void lostProcess(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      List<Integer> opportunityIdList =
+          (List<Integer>) request.getContext().get("_otherOpportunities");
+      List<Opportunity> otherOpportunities = new ArrayList<>();
+      OpportunityRepository opportunityRepository = Beans.get(OpportunityRepository.class);
+      for (Integer opportunityId : opportunityIdList) {
+        otherOpportunities.add(opportunityRepository.find(opportunityId.longValue()));
+      }
+
+      LostReason lostReason = (LostReason) context.get("lostReason");
+      String lostReasonStr = null;
+      if (context.get("lostReasonStr") != null) {
+        lostReasonStr = context.get("lostReasonStr").toString();
+      }
+
+      Beans.get(OpportunityService.class)
+          .lostProcess(otherOpportunities, lostReason, lostReasonStr);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void kanbanOpportunityOnMove(ActionRequest request, ActionResponse response) {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    try {
+      Beans.get(OpportunityService.class).kanbanOpportunityOnMove(opportunity);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

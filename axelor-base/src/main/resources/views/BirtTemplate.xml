@@ -12,12 +12,18 @@
   <form name="birt-template-form" title="Birt Template"
     model="com.axelor.apps.base.db.BirtTemplate" onNew="action-birt-template-record-default"
     width="large">
+    <toolbar>
+      <button name="reloadStandardTemplateBtn" title="Reload standard rptdesign file"
+        onClick="save,action-birt-template-view-default-template-wizard"/>
+    </toolbar>
     <panel name="mainPanel">
       <field name="name" colSpan="5"/>
       <field name="templateLink" colSpan="5"/>
       <field name="format" colSpan="2"/>
       <field name="templateMetaFile" widget="binary-link" colSpan="5"/>
       <field name="metaModel" colSpan="5"/>
+      <field name="templateEngineSelect" colSpan="2"/>
+      <field name="attach"/>
       <panel name="parametersPanel" title="Parameters" colSpan="12">
         <field name="birtTemplateParameterList" showTitle="false" colSpan="12">
           <viewer depends="name,value">
@@ -35,9 +41,66 @@
     </panel>
   </form>
 
+  <form name="reload-template-wizard-form" model="com.axelor.utils.db.Wizard"
+    title="Reload standard rptdesign file" onNew="action-wizard-record-default-template-name">
+    <panel name="mainPanel">
+      <field name="$templateFileName" title="Template file name" type="string"/>
+      <button name="confirmBtn" title="Confirm" readonlyIf="!$templateFileName"
+        onClick="action-wizard-method-set-standard-report-template,close"/>
+    </panel>
+  </form>
+
+  <form title="Select template" name="birt-template-print-config-wizard"
+    model="com.axelor.utils.db.Wizard" onNew="action-attrs-birt-template-config-wizard-onload"
+    canSave="false">
+    <panel name="mainPanel" colSpan="12">
+      <field name="$birtTemplate" title="Template"
+        target="com.axelor.apps.base.db.BirtTemplate" target-name="name" type="many-to-one"
+        required="true"/>
+      <button name="printBtn" title="Print"
+        onClick="action-method-birt-template-config-wizard-print,close"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-attrs-birt-template-config-wizard-onload">
+    <attribute name="domain" for="$birtTemplate"
+      expr="eval:&quot;self.id in (${_birtTemplateIdList.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-method name="action-method-birt-template-config-wizard-print">
+    <call class="com.axelor.apps.base.web.PrintingModelController" method="printFromWizard"/>
+  </action-method>
+
+  <!-- THIS WILL BE USED AS GENERIC ACTION TO PRINT BIRT REPORT FROM BIRT TEMPLATE -->
+  <action-method name="action-method-print-birt">
+    <call class="com.axelor.apps.base.web.PrintingModelController" method="print"/>
+  </action-method>
+
   <action-record name="action-birt-template-record-default"
     model="com.axelor.apps.base.db.BirtTemplate">
     <field name="format" expr="pdf"/>
   </action-record>
+
+  <action-record name="action-wizard-record-default-template-name"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$templateFileName" expr="eval: _templateMetaFile"/>
+  </action-record>
+
+  <action-view name="action-birt-template-view-default-template-wizard"
+    model="com.axelor.utils.db.Wizard" title="Reload standard rptdesign file">
+    <view type="form" name="reload-template-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_templateMetaFile"
+      expr="eval: templateLink ?: templateMetaFile?.fileName"/>
+    <context name="_birtId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-wizard-method-set-standard-report-template">
+    <call method="setStandardReportTemplate"
+      class="com.axelor.apps.base.web.BirtTemplateController"/>
+  </action-method>
 
 </object-views>

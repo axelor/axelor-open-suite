@@ -46,7 +46,8 @@
           action="action-partner-view-show-customer-debt-recovery"
           if="__config__.app.isApp('account')"/>
         <item title="Create sale quotation" name="createSaleQuotationItem"
-          action="save,action-partner-view-create-order" if="__config__.app.isApp('sale')"/>
+          action="save,action-partner-view-create-order" if="__config__.app.isApp('sale')"
+          showIf="isCustomer"/>
         <item title="Create purchase quotation" name="createPurchaseQuotationItem"
           action="save,action-partner-view-create-purchase-quotation"
           if="__config__.app.isApp('purchase')" showIf="isSupplier"/>
@@ -59,6 +60,7 @@
     <extend target="/">
       <attribute name="onLoad" value="crm-action-group-partner-onload"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+      <attribute name="onSave" value="crm-action-partner-group-onsave"/>
     </extend>
     <extend target="//label[@name='facebookLabel']">
       <replace/>
@@ -110,11 +112,10 @@
     <extend target="//button[@name='$positiveBalanceBtn']">
       <attribute name="showIf" value="id &amp;&amp; !isProspect"/>
     </extend>
-    <extend target="//field[@name='isFactor']">
-      <insert position="after">
-        <spacer colSpan="6"/>
+    <extend target="//field[@name='isEmployee']">
+      <insert position="before">
         <field name="leadScoringSelect" showIf="isProspect" widget="ImageSelect"
-          x-labels="false" colSpan="2"/>
+          x-labels="false" colSpan="12"/>
       </insert>
     </extend>
     <extend target="//field[@name='department']">
@@ -176,6 +177,11 @@
     </extend>
     <extend target="//panel[@name='imagePanel']">
       <insert position="before">
+        <button name="validateConversionFromLeadBtn" title="Validate"
+          onClick="action-partner-group-validate-conversion-from-lead" hidden="true"
+          showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+        <button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"
+          hidden="true" showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
         <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
           x-order="sequence" onChange="action-partner-group-partner-status-onchange"
           showIf="$isFromCrm " if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
@@ -187,7 +193,18 @@
         <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
         <field name="lostReason.freeText" hidden="true"/>
         <field name="$isFromCrm" hidden="true" readonly="true"/>
+        <field name="isAlreadyConvertFromLead" hidden="true" readonly="true"/>
       </insert>
+    </extend>
+    <extend target="//field[@name='emailAddress']">
+      <replace>
+        <field name="emailAddress">
+          <editor x-show-titles="false" x-viewer="true">
+            <field name="address" widget="email" colSpan="12"
+              placeholder="whatever@example.com"/>
+          </editor>
+        </field>
+      </replace>
     </extend>
   </form>
 
@@ -197,6 +214,7 @@
       <attribute name="onLoad"
         value="crm-action-group-partner-onload, action-partner-attrs-hide-customer-recovery"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+      <attribute name="onSave" value="crm-action-partner-group-onsave"/>
     </extend>
   </form>
 
@@ -246,9 +264,9 @@
     <extend target="//field[@name='jobTitleFunction']">
       <attribute name="x-create" value="function"/>
       <insert position="before">
+        <field name="isMainContact" colSpan="4"/>
         <field name="isDoNotCall" colSpan="4" hideIf="$readonly()"/>
         <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
-        <field name="isMainContact" colSpan="4"/>
         <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
           <viewer><![CDATA[
 			<h4>
@@ -272,15 +290,25 @@
     <extend target="//panel[@name='companyPanel']">
       <insert position="after">
         <panel-dashlet name="relatedContactPanel"
-          action="action-contact-view-related-contacts" title="Related Contacts" colSpan="12"
+          action="action-contact-method-related-contacts" title="Related Contacts" colSpan="12"
           height="150" showIf="id"/>
       </insert>
+    </extend>
+    <extend target="//field[@name='emailAddress']">
+      <replace>
+        <field name="emailAddress">
+          <editor x-show-titles="false" x-viewer="true">
+            <field name="address" widget="email" colSpan="12"
+              placeholder="whatever@example.com"/>
+          </editor>
+        </field>
+      </replace>
     </extend>
   </form>
 
   <kanban columnBy="partnerStatus" model="com.axelor.apps.base.db.Partner"
     sequenceBy="sequence" title="Prospects" name="partner-prospect-kanban" limit="10"
-    draggable="true">
+    draggable="true" onMove="action-partner-method-kanban-onmove">
     <field name="name"/>
     <field name="leadScoringSelect"/>
     <field name="sizeSelect"/>
@@ -448,7 +476,7 @@
   </cards>
 
   <form name="partner-form-lost-popup" model="com.axelor.apps.base.db.Partner"
-    title="Lost reason" width="large" onSave="action-crm-group-close-lost-partner">
+    title="Lost reason" width="large">
     <panel name="mainPanel">
       <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
       <field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
@@ -456,6 +484,15 @@
         onClick="action-partner-lost-reason-check,action-partner-method-confirm-lost-reason"
         colOffset="4" colSpan="4"/>
       <field name="lostReason.freeText" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="partner-form-generate-opporunity-popup" model="com.axelor.apps.base.db.Partner"
+    title="Generate opportunity ?">
+    <panel name="mainPanel" colSpan="12" itemSpan="6">
+      <button name="generateOpporunityConfirmBtn" title="Yes"
+        onClick="action-partner-method-generate-opportunity-from-lead-and-partner"/>
+      <button name="cancelmBtn" title="No" onClick="close"/>
     </panel>
   </form>
 
@@ -596,9 +633,14 @@
       method="getSubsidiaryPartnersCount"/>
   </action-method>
 
+  <action-method name="action-partner-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="kanbanPartnerOnMove"/>
+  </action-method>
+
   <action-group name="crm-action-group-partner-onload">
     <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
     <action name="action-partner-method-get-subsidiary-partners-count"/>
+    <action name="action-partner-record-set-is-in-conversion-from-lead"/>
     <action name="action-partner-record-set-from-crm"/>
   </action-group>
 
@@ -616,29 +658,86 @@
 
   <action-record name="action-partner-record-set-partner-status"
     model="com.axelor.apps.base.db.Partner">
-    <field name="partnerStatus" expr="eval: __repo__(PartnerStatus).getDefaultStatus()"/>
+    <field name="partnerStatus"
+      expr="eval: __config__.app.getApp('crm')?.partnerDefaultStatus"/>
   </action-record>
 
   <action-record name="action-partner-record-set-from-crm"
     model="com.axelor.apps.base.db.Partner">
     <field name="$isFromCrm" expr="eval: _isFromCrm"/>
+    <field name="partnerStatus" expr="eval: _partnerStatus"
+      if="_partnerStatus != null &amp;&amp; partnerStatus == null"/>
   </action-record>
 
+  <action-record name="action-partner-record-set-is-in-conversion-from-lead"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isAlreadyConvertFromLead" expr="eval: false"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+  </action-record>
+
+
   <action-group name="crm-action-group-partner-onnew">
+    <action name="action-partner-validate-default-status"/>
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
+    <action name="action-partner-method-set-fields-for-conversion-from-lead"
+      if="_isInConversionFromLead"/>
+    <action name="action-partner-record-set-is-in-conversion-from-lead"/>
     <action name="action-partner-record-set-partner-status"/>
     <action name="action-partner-record-set-from-crm"/>
   </action-group>
 
+  <action-group name="crm-action-partner-group-onsave">
+    <action name="action-partner-group-onsave"/>
+    <action name="action-partner-validate-alert-convert-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-method-convert-from-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-view-generate-opporunity-popup"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-record-remove-is-in-conversion-from-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+  </action-group>
+
+  <action-record name="action-partner-record-remove-is-in-conversion-from-lead"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isAlreadyConvertFromLead" expr="eval: true"/>
+  </action-record>
+
+  <action-group name="action-partner-group-validate-conversion-from-lead">
+    <action name="save"/>
+    <action name="action-partner-method-convert-from-lead"/>
+    <action name="action-partner-view-generate-opporunity-popup"/>
+    <action name="action-partner-record-remove-is-in-conversion-from-lead"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-method name="action-partner-method-set-fields-for-conversion-from-lead">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="setFieldsForConversionFromLeads"/>
+  </action-method>
+
+  <action-method name="action-partner-method-convert-from-lead">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="convertLeadFromPartner"/>
+  </action-method>
+
+  <action-method
+    name="action-partner-method-generate-opportunity-from-lead-and-partner">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="openOpportunity"/>
+  </action-method>
+
+  <action-validate name="action-partner-validate-alert-convert-lead">
+    <alert message="Saving this partner will convert the lead!"/>
+  </action-validate>
+
   <action-group name="action-partner-group-partner-status-onchange">
-    <action name="save"
-      if="eval: __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedWinPartnerStatus?.id || __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
     <action name="action-partner-view-partner-popup-view"
       if="eval: __this__?.partnerStatus?.id
       == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
     <action name="action-partner-record-win"
       if="eval: __this__?.partnerStatus?.id == __config__.app.getApp('crm')?.closedWinPartnerStatus?.id"/>
+    <action name="save"/>
   </action-group>
 
   <action-view name="action-partner-view-partner-popup-view"
@@ -647,9 +746,9 @@
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="true"/>
+    <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
-    <context name="_showRecord" expr="eval: id"/>
+    <context name="_showRecord" expr="eval: __this__.id"/>
   </action-view>
 
   <action-record name="action-partner-record-win"
@@ -664,17 +763,27 @@
   </action-condition>
 
   <action-method name="action-partner-method-confirm-lost-reason">
-    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="loseLead"/>
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="losePartner"/>
   </action-method>
 
-  <action-view name="action-contact-view-related-contacts" title="Contacts"
-    model="com.axelor.apps.base.db.Partner">
-    <view type="grid" name="partner-related-contact-grid"/>
-    <view type="form" name="partner-contact-form"/>
-    <domain>SUBSTRING(self.emailAddress.address, LOCATE('@',self.emailAddress.address)+1) =
-      :_emailAddress AND self.id != :id AND self.isContact = true</domain>
-    <context name="_emailAddress" expr="eval: emailAddress?.address?.split('@')[1]"
-      if="emailAddress?.address"/>
+  <action-method name="action-contact-method-related-contacts">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="viewRelatedContacts"/>
+  </action-method>
+
+  <action-view name="action-partner-view-generate-opporunity-popup"
+    title="Generate opportunity ?" model="com.axelor.apps.base.db.Partner">
+    <view type="form" name="partner-form-generate-opporunity-popup"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+    <context name="_lead" expr="eval: _lead"/>
   </action-view>
 
+  <action-validate name="action-partner-validate-default-status">
+    <error message="Please fill default partner status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.partnerDefaultStatus"/>
+  </action-validate>
 </object-views>

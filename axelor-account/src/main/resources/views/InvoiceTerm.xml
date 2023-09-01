@@ -157,12 +157,10 @@
       onClick="action-invoice-term-method-unselect-terms-btn,save" icon="fa-minus-circle"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus"
-      onClick="action-invoice-term-method-select-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-user-plus" onClick="action-invoice-term-method-select-partner-terms-btn"
       readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times"
-      onClick="action-invoice-term-method-unselect-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-user-times" onClick="action-invoice-term-method-unselect-partner-terms-btn"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
@@ -454,7 +452,7 @@
             css="btn-warning" onClick="save,action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" css="btn-danger"
-            onClick="save,action-invoice-term-group-refusal-to-pay,save"/>
+            onClick="save,action-invoiceterm-view-refusal-to-pay,save"/>
         </panel>
         <panel name="pfpEmailPanel">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
@@ -630,7 +628,7 @@
             onClick="save,action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" colSpan="4" css="btn-danger"
-            onClick="save,action-invoice-term-group-refusal-to-pay,save"/>
+            onClick="save,action-invoiceterm-view-refusal-to-pay"/>
         </panel>
         <panel name="pfpEmailPanel" colSpan="6">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
@@ -791,7 +789,7 @@
             css="btn-warning" onClick="save,action-invoice-term-move-group-partial-pfp"
             showIf="pfpValidateStatusSelect == 1"/>
           <button name="refusalToPayBtn" title="Refuse to pay" css="btn-danger"
-            onClick="save,action-invoiceterm-view-refusal-to-pay,save"
+            onClick="save,action-invoiceterm-view-refusal-to-pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)"/>
         </panel>
         <panel name="pfpEmailPanel" colSpan="6">
@@ -875,17 +873,12 @@
   </action-group>
 
   <action-group name="action-invoice-term-group-validate-pfp">
-    <action name="action-invoice-term-validate-before-pfp"/>
-    <action name="save"/>
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
     <action name="action-invoice-term-method-validate-pfp"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-invoice-term-move-group-validate-pfp">
-    <action name="action-invoice-term-move-validate-before-pfp"/>
-    <action name="save"/>
     <action name="action-invoice-term-method-validate-pfp"/>
     <action name="save"/>
   </action-group>
@@ -934,11 +927,6 @@
   <action-group name="action-invoice-term-group-invoice-percentage-onchange">
     <action name="action-invoice-term-record-update-customized"/>
     <action name="action-invoice-term-group-percentage-onchange"/>
-  </action-group>
-
-  <action-group name="action-invoice-term-group-refusal-to-pay">
-    <action name="action-invoice-term-validate-before-pfp"/>
-    <action name="action-invoiceterm-view-refusal-to-pay"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-partial-pfp">
@@ -1112,11 +1100,6 @@
   <action-method name="action-invoice-term-method-pfp-partial-reason-confirm-btn">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="pfpPartialReasonConfirm"/>
-  </action-method>
-
-  <action-method name="action-invoice-term-method-compute-total-payment-session">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
-      method="computeTotalPaymentSession"/>
   </action-method>
 
   <action-method name="action-invoice-term-method-compute-financial-discount">

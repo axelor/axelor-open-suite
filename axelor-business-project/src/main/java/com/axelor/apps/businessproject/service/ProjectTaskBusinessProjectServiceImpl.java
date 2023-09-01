@@ -70,8 +70,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
@@ -111,14 +114,18 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   public ProjectTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
       throws AxelorException {
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
-    task.setProduct(saleOrderLine.getProduct());
-    task.setUnit(saleOrderLine.getUnit());
-    task.setTimeUnit(saleOrderLine.getUnit());
+    Product product = saleOrderLine.getProduct();
+    task.setProduct(product);
+    task.setUnitCost(product.getCostPrice());
+    task.setTotalCosts(
+        product.getCostPrice().multiply(saleOrderLine.getQty()).setScale(2, RoundingMode.HALF_UP));
+    Unit orderLineUnit = saleOrderLine.getUnit();
+    task.setInvoicingUnit(orderLineUnit);
+
     task.setCurrency(project.getClientPartner().getCurrency());
     if (project.getPriceList() != null) {
       PriceListLine line =
-          priceListLineRepo.findByPriceListAndProduct(
-              project.getPriceList(), saleOrderLine.getProduct());
+          priceListLineRepo.findByPriceListAndProduct(project.getPriceList(), product);
       if (line != null) {
         task.setUnitPrice(line.getAmount());
       }
@@ -126,8 +133,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     if (task.getUnitPrice() == null) {
       Company company =
           saleOrderLine.getSaleOrder() != null ? saleOrderLine.getSaleOrder().getCompany() : null;
-      task.setUnitPrice(
-          (BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "salePrice", company));
+      task.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     }
     task.setDescription(saleOrderLine.getDescription());
     task.setQuantity(saleOrderLine.getQty());
@@ -137,8 +143,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
             : false);
 
-    task.setSoldTime(saleOrderLine.getQty());
-    task.setUpdatedTime(saleOrderLine.getQty());
+    if (isTimeUnitValid(orderLineUnit)) {
+      task.setTimeUnit(orderLineUnit);
+      task.setSoldTime(saleOrderLine.getQty());
+      task.setUpdatedTime(saleOrderLine.getQty());
+    }
     return task;
   }
 
@@ -153,7 +162,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal plannedHrs = template.getTotalPlannedHrs();
     if (template.getIsUniqueTaskForMultipleQuantity() && qty.compareTo(BigDecimal.ONE) > 0) {
       plannedHrs = plannedHrs.multiply(qty);
-      task.setName(task.getName() + " x" + qty.intValue());
     }
     task.setTotalPlannedHrs(plannedHrs);
 
@@ -163,6 +171,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask create(String subject, Project project, User assignedTo) {
     ProjectTask task = super.create(subject, project, assignedTo);
+    task.setProjectTaskList(new ArrayList<>());
+    task.setProjectPlanningTimeList(new ArrayList<>());
     task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
@@ -219,6 +229,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setPriceDiscounted(priceDiscounted);
     projectTask.setExTaxTotal(exTaxTotal);
 
+    projectTask.setTotalCosts(
+        projectTask
+            .getProduct()
+            .getCostPrice()
+            .multiply(projectTask.getQuantity())
+            .setScale(2, RoundingMode.HALF_UP));
+
     return projectTask;
   }
 
@@ -267,7 +284,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             projectTask.getPriceDiscounted(),
             projectTask.getDescription(),
             projectTask.getQuantity(),
-            projectTask.getUnit(),
+            projectTask.getInvoicingUnit(),
             null,
             priority,
             projectTask.getDiscountAmount(),
@@ -339,7 +356,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     Company company =
         projectTask.getProject() != null ? projectTask.getProject().getCompany() : null;
     Unit salesUnit = (Unit) productCompanyService.get(product, "salesUnit", company);
-    projectTask.setUnit(
+    projectTask.setInvoicingUnit(
         salesUnit != null ? salesUnit : (Unit) productCompanyService.get(product, "unit", company));
     projectTask.setCurrency((Currency) productCompanyService.get(product, "saleCurrency", company));
     projectTask.setQuantity(projectTask.getBudgetedTime());
@@ -419,7 +436,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setInvoicingType(null);
     projectTask.setToInvoice(null);
     projectTask.setQuantity(null);
-    projectTask.setUnit(null);
+    projectTask.setInvoicingUnit(null);
     projectTask.setUnitPrice(null);
     projectTask.setCurrency(null);
     projectTask.setExTaxTotal(null);
@@ -601,5 +618,30 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setPercentageOfProgress(percentageOfProgression);
     projectTask.setPercentageOfConsumption(percentageOfConsumption);
     projectTask.setRemainingAmountToDo(remainingAmountToDo);
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException {
+
+    ProjectTask projectTask = projectTaskRepo.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put(
+        "unit",
+        Optional.ofNullable(projectTask.getTimeUnit())
+            .map(unit -> unit.getName() + "(s)")
+            .orElse(""));
+    data.put("progress", projectTask.getPercentageOfProgress() + " %");
+    data.put("consumption", projectTask.getPercentageOfConsumption() + " %");
+    data.put("remaining", projectTask.getRemainingAmountToDo());
+
+    return data;
+  }
+
+  @Override
+  public boolean isTimeUnitValid(Unit unit) {
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    return Objects.equals(unit, appBusinessProject.getDaysUnit())
+        || Objects.equals(unit, appBusinessProject.getHoursUnit());
   }
 }

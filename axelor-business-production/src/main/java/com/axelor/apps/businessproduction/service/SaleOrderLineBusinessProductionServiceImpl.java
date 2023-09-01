@@ -38,6 +38,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
@@ -63,7 +64,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       TaxService taxService,
       SaleOrderMarginService saleOrderMarginService,
       InvoiceLineRepository invoiceLineRepository,
-      SaleInvoicingStateService saleInvoicingStateService) {
+      SaleInvoicingStateService saleInvoicingStateService,
+      AnalyticLineModelService analyticLineModelService) {
     super(
         currencyService,
         priceListService,
@@ -81,7 +83,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         taxService,
         saleOrderMarginService,
         invoiceLineRepository,
-        saleInvoicingStateService);
+        saleInvoicingStateService,
+        analyticLineModelService);
   }
 
   @Override

@@ -3,6 +3,77 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
+  <!-- MyRH -->
+
+  <menuitem name="my-hr-root" order="-1600" title="MyHR" icon="fa-user"
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.isMyHrEnabled"
+    icon-background="#84429f"/>
+
+  <menuitem name="my-hr-dashboard" parent="my-hr-root" title="Employee dashboard"
+    action="my.hr.dashboard.view" order="100" icon="fa-address-card-o" icon-background="#84429f"/>
+
+  <action-view name="my.hr.dashboard.view" title="Employee dashboard">
+
+    <view type="dashboard" name="my.hr.dashboard"/>
+  </action-view>
+
+  <menuitem name="all-leave-request" parent="my-hr-root" title="Leave Requests"
+    action="leave.all" order="200" if="__config__.app.isApp('leave')" icon="fa-plane"
+    icon-background="#84429f"/>
+
+  <action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
+    title="My Leave Requests">
+    <view name="leave-request-grid" type="grid"/>
+    <view name="leave-request-form" type="form"/>
+    <view-param name="search-filters" value="leave-request-filters"/>
+    <domain>self.employee.user.id = :user_id AND self.toJustifyLeaveReason =
+      :to_justify_leave_reason</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
+    <context name="to_justify_leave_reason" expr="eval: false"/>
+  </action-view>
+
+  <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
+    order="300" if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f"/>
+
+  <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
+    title="My Expenses">
+    <view name="expense-grid" type="grid"/>
+    <view name="expense-form" type="form"/>
+    <view-param name="search-filters" value="expense-filters"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
+    <context name="_payCompany"
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+  </action-view>
+
+  <menuitem name="all-my-timesheet" parent="my-hr-root" title="Timesheets"
+    action="action.timesheet.view.my.timesheet" order="400" if="__config__.app.isApp('timesheet')"
+    icon="fa-clock-o" icon-background="#84429f"/>
+
+  <action-view name="action.timesheet.view.my.timesheet"
+    model="com.axelor.apps.hr.db.Timesheet" title="My Timesheets">
+    <view name="my-timesheets-grid" type="grid"/>
+    <view name="timesheet-form" type="form"/>
+    <view-param name="search-filters" value="timesheet-filters"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
+  </action-view>
+
+  <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
+    action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="fa-hourglass-end"
+    icon-background="#84429f"/>
+
+  <action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
+    title="My Extra Hours">
+    <view name="extra-hours-grid" type="grid"/>
+    <view name="extra-hours-form" type="form"/>
+    <view-param name="search-filters" value="extra-hours-filters"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
+  </action-view>
+
+  <!-- RH -->
+
   <menuitem name="hr-root" order="-1600" title="HR" icon="fa-sitemap"
     if="__config__.app.isApp('employee')" icon-background="#84429f"/>
 
@@ -282,30 +353,23 @@
     <view type="form" name="health-mutual-rejection-reason-form"/>
   </action-view>
 
+  <menuitem name="hr-root-configuration-medical-visit-reason" parent="hr-root-emp-mgt-conf"
+    title="Medical visit reason" order="1400" action="hr.root.configuration.medical.visit.reason"
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()"/>
+
+  <action-view name="hr.root.configuration.medical.visit.reason"
+    title="Medical visit reason" model="com.axelor.apps.hr.db.MedicalVisitReason">
+    <view type="grid" name="medical-visit-reason-grid"/>
+    <view type="form" name="medical-visit-reason-form"/>
+  </action-view>
+
   <!-- Leave App -->
   <menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')"
     icon="fa-plane" icon-background="#84429f" title="Leave Requests" order="500"/>
 
-  <menuitem name="edit-leave-request" parent="leave-request-root"
-    title="Complete my leave request" action="edit.leave.request" order="100"/>
-
   <action-method name="edit.leave.request">
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="editLeave"/>
   </action-method>
-
-  <menuitem name="all-leave-request" parent="leave-request-root"
-    title="All my Leave Requests" action="leave.all" order="200"/>
-
-  <action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
-    title="My Leave Requests">
-    <view name="leave-request-grid" type="grid"/>
-    <view name="leave-request-form" type="form"/>
-    <view-param name="search-filters" value="leave-request-filters"/>
-    <domain>self.employee.user.id = :user_id AND self.toJustifyLeaveReason =
-      :to_justify_leave_reason</domain>
-    <context name="user_id" expr="eval:__user__.id"/>
-    <context name="to_justify_leave_reason" expr="eval: false"/>
-  </action-view>
 
   <menuitem name="validate-leave-request" parent="leave-request-root"
     title="Leave Requests to Validate" action="leave.validate" tag-style="default"
@@ -328,20 +392,6 @@
   <action-method name="action.leave.request.method.leave.calendar">
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveCalendar"/>
   </action-method>
-
-  <menuitem name="leave-request-to-justify" parent="leave-request-root"
-    title="Leave to justify" action="leave.request.to.justify" order="600"/>
-
-  <action-view name="leave.request.to.justify" title="Leave to justify"
-    model="com.axelor.apps.hr.db.LeaveRequest">
-    <view name="leave-request-form" type="form"/>
-    <view name="leave-request-validate-grid" type="grid"/>
-    <view-param name="search-filters" value="leave-request-filters"/>
-    <domain>self.employee.user.id = :user_id AND self.toJustifyLeaveReason =
-      :to_justify_leave_reason</domain>
-    <context name="user_id" expr="eval:__user__.id"/>
-    <context name="to_justify_leave_reason" expr="eval: true"/>
-  </action-view>
 
   <menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"
     icon="fa-cog" order="700"/>
@@ -369,37 +419,20 @@
   <menuitem name="expense-root" parent="hr-root" if="__config__.app.isApp('expense')"
     icon="fa-credit-card" icon-background="#84429f" title="Expenses" order="600"/>
 
-  <menuitem name="edit-expense" parent="expense-root" title="Complete my expense"
-    action="edit.expense" order="100"/>
-
   <action-method name="edit.expense">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="editExpense"/>
   </action-method>
 
-  <menuitem name="all-expense" parent="expense-root" title="All my Expenses"
-    action="expense.all" order="200"/>
-
-  <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
-    title="My Expenses">
-    <view name="expense-grid" type="grid"/>
-    <view name="expense-form" type="form"/>
-    <view-param name="search-filters" value="expense-filters"/>
-    <domain>self.employee.user.id = :user_id</domain>
-    <context name="user_id" expr="eval:__user__.id"/>
-    <context name="_payCompany"
-      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-  </action-view>
-
   <menuitem name="validate-expense" parent="expense-root" title="Expenses to Validate"
     action="expense.validate" tag-style="default"
-    tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateMenuTag()" order="300"/>
+    tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateMenuTag()" order="100"/>
 
   <action-method name="expense.validate">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
   </action-method>
 
   <menuitem name="ventilate-expense" parent="expense-root" title="Expenses to Ventilate"
-    action="expense.ventilate" tag-count="true" order="400"/>
+    action="expense.ventilate" tag-count="true" order="200"/>
 
   <action-view name="expense.ventilate" title="Expenses to Ventilate"
     model="com.axelor.apps.hr.db.Expense">
@@ -411,29 +444,15 @@
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-view>
 
-  <menuitem name="multiple-users-expense" parent="expense-root"
-    title="Multiple users expenses" action="multiple.users.expense" order="500"/>
-
-  <action-view name="multiple.users.expense" title="Multiple users expenses"
-    model="com.axelor.apps.hr.db.Expense">
-    <view type="grid" name="expense-grid"/>
-    <view type="form" name="expense-form"/>
-    <view-param name="search-filters" value="expense-filters"/>
-    <domain>self.multipleUsers IS TRUE</domain>
-    <context name="setMultipleUsers" expr="eval: true"/>
-    <context name="_payCompany"
-      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-  </action-view>
-
   <menuitem name="historic-expense" parent="expense-root" title="Historic team Expenses"
-    action="expense.historic" order="600"/>
+    action="expense.historic" order="400"/>
 
   <action-method name="expense.historic">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
   </action-method>
 
   <menuitem name="expense-root-conf" parent="expense-root" title="Configuration"
-    icon="fa-cog" order="700"/>
+    icon="fa-cog" order="500"/>
 
   <menuitem name="conf-expense-type" parent="expense-root-conf" title="Expense Type"
     action="conf.expense.type" order="100"/>
@@ -464,35 +483,19 @@
   <menuitem name="timesheet-root" parent="hr-root" if="__config__.app.isApp('timesheet')"
     title="Timesheets" icon="fa-clock-o" icon-background="#84429f" order="700"/>
 
-  <menuitem title="Timesheets" name="all-timesheet" parent="timesheet-root"
-    if="(__user__.employee != null &amp;&amp; __user__.employee.hrManager) || __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() &gt; 0"
+  <menuitem title="All timesheets" name="all-timesheet" parent="timesheet-root"
     action="action.timesheet.method.all.timesheet" order="100"/>
 
   <action-method name="action.timesheet.method.all.timesheet">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheet"/>
   </action-method>
 
-  <menuitem name="edit-timesheet" parent="timesheet-root" title="Complete my Timesheet"
-    action="edit.timesheet" order="200"/>
-
   <action-method name="edit.timesheet">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>
   </action-method>
 
-  <menuitem name="all-my-timesheet" parent="timesheet-root" title="All my Timesheets"
-    action="action.timesheet.view.my.timesheet" order="300"/>
-
-  <action-view name="action.timesheet.view.my.timesheet"
-    model="com.axelor.apps.hr.db.Timesheet" title="My Timesheets">
-    <view name="my-timesheets-grid" type="grid"/>
-    <view name="timesheet-form" type="form"/>
-    <view-param name="search-filters" value="timesheet-filters"/>
-    <domain>self.employee.user.id = :user_id</domain>
-    <context name="user_id" expr="eval:__user__.id"/>
-  </action-view>
-
   <menuitem name="validate-timesheet" parent="timesheet-root"
-    title="Timesheets to Validate" action="timesheet.validate" order="400" tag-style="default"
+    title="Timesheets to Validate" action="timesheet.validate" order="200" tag-style="default"
     tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()"
     if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getNeedValidation()"/>
 
@@ -501,18 +504,10 @@
       method="validateTimesheet"/>
   </action-method>
 
-  <menuitem name="historic-timesheet" parent="timesheet-root"
-    title="Historic team timesheets" action="timesheet.historic" order="500"/>
-
-  <action-method name="timesheet.historic">
-    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
-      method="historicTimesheet"/>
-  </action-method>
-
   <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root"
     action="time.sheet.timer"
     if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"
-    order="600"/>
+    order="400"/>
 
   <action-method name="time.sheet.timer">
     <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
@@ -521,7 +516,7 @@
 
   <menuitem title="Timesheet report" name="time-sheet-report" parent="timesheet-root"
     action="action.timesheet.view.timesheet.report" if="__config__.app.isApp('timesheet')"
-    order="700"/>
+    order="500"/>
 
   <action-view name="action.timesheet.view.timesheet.report"
     model="com.axelor.apps.hr.db.TimesheetReport" title="Timesheet report">
@@ -531,7 +526,7 @@
 
   <menuitem title="Timesheet reminder" name="time-sheet-reminder" parent="timesheet-root"
     action="action.timesheet.view.timesheet.reminder" if="__config__.app.isApp('timesheet')"
-    order="800"/>
+    order="600"/>
 
   <action-view name="action.timesheet.view.timesheet.reminder"
     model="com.axelor.apps.hr.db.TimesheetReminder" title="Timesheet reminder">
@@ -543,25 +538,10 @@
   <menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')"
     title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f" order="800"/>
 
-  <menuitem name="edit-extra-hours" parent="extra-hours-root" title="Request extra hours"
-    action="edit.extra.hours" order="100"/>
-
   <action-method name="edit.extra.hours">
     <call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController"
       method="editExtraHours"/>
   </action-method>
-
-  <menuitem name="all-extra-hours" parent="extra-hours-root" title="All my extra hours"
-    action="extra.hours.all" order="200"/>
-
-  <action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
-    title="My Extra Hours">
-    <view name="extra-hours-grid" type="grid"/>
-    <view name="extra-hours-form" type="form"/>
-    <view-param name="search-filters" value="extra-hours-filters"/>
-    <domain>self.employee.user.id = :user_id</domain>
-    <context name="user_id" expr="eval:__user__.id"/>
-  </action-view>
 
   <menuitem name="validate-extra-hours" parent="extra-hours-root"
     title="Extra hours to validate" action="extra.hours.validate" tag-style="default"
@@ -629,6 +609,15 @@
 
   <action-view name="hr.user.dashboard.view" title="Human Resources Employee">
     <view type="dashboard" name="hr.user.dashboard.sample"/>
+  </action-view>
+
+  <menuitem name="menu-hr-manager-dashboard1" parent="hr-report-root"
+    title="Manager dashboard" action="hr.manager.dashboard.view1" order="300"/>
+
+  <action-view name="hr.manager.dashboard.view1" title="Manager dashboard"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="hr-manager-dashboard-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <menuitem name="project-spent-time" parent="project-current-project" title="Spent time"

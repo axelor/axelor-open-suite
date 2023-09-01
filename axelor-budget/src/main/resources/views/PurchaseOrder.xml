@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="purchase-order-grid" id="budget-purchase-order-grid" title="Purchase orders"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
+    <extend target="//item[@name='seePurchaseOrderLinesItem']">
+      <insert position="after">
+        <item title="See budget distribution lines"
+          action="action-purchase-order-see-budget-distribution-lines"
+          if="__config__.app.isApp('budget')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form name="purchase-order-form" id="budget-purchase-order-form" title="Supplier RFQ/PO"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
+
+    <extend target="/">
+      <attribute name="onSave" value="action-budget-purchase-order-group-on-save"/>
+      <attribute name="onNew" value="action-budget-group-purchase-order-on-new-actions"/>
+      <attribute name="onLoad" value="action-budget-purchase-order-group-onload"/>
+      <attribute name="width" value="large"/>
+    </extend>
+
+    <extend target="//field[@name='project']">
+      <attribute name="onChange"
+        value="budget-action-purchase-order-record-project-onchange"/>
+    </extend>
+
+    <extend target="//panel[@name='timetablePanel']">
+      <insert position="after">
+        <panel name="budgetDistributionPanel" title="Budget distribution"
+          if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
+          showIf="statusSelect &lt;= 4">
+          <field name="project" colSpan="3"
+            onChange="budget-action-purchase-order-record-project-onchange"
+            hideIf="orderTypeSelect == 4"/>
+          <field name="companyDepartment" colSpan="3"
+            onChange="action-budget-purchase-order-attrs-company-dept-onchange"
+            requiredIf="$enableBudgetKey"/>
+          <field name="budgetLevel" if="__config__.app.isApp('budget')"
+            onSelect="action-budget-purchase-order-attrs-budget-level-domain"
+            requiredIf="companyDepartment &amp;&amp; $enableBudgetKey" colSpan="3"
+            showIf="companyDepartment &amp;&amp; $enableBudgetKey"
+            onChange="action-budget-purchase-order-group-budget-level-onchange"
+            form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
+          <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"
+            domain="self.company = :company AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect LIKE 'valid' AND (:budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel = :budgetLevel ) OR (:budgetLevel IS NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((:companyDepartment IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL))"/>
+          <button name="applyToAllBtn" title="Apply to all"
+            onClick="action-budget-btn-apply-to-all-group" readonlyIf="!budget"
+            showIf="statusSelect &lt;= 2"/>
+          <panel-dashlet name="budgetDistributionPanel"
+            action="action-supplychain-budget-distribuion-view-budget-distribution" colSpan="12"
+            showIf="statusSelect &gt;= 3 &amp;&amp; statusSelect &lt;= 4" readonly="true"/>
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="//button[@name='requestedBtn']">
+      <attribute name="onClick" value="action-group-budget-purchase-order-request-onclick"/>
+    </extend>
+
+    <extend target="//button[@name='validateBtn']">
+      <attribute name="onClick"
+        value="action-budget-group-purchase-order-on-validate-actions"/>
+    </extend>
+
+    <extend target="//button[@name='cancelBtn']">
+      <insert position="before">
+        <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+          onClick="action-budget-group-purchase-order-compute-budget-distribution" hidden="true"
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"/>
+      </insert>
+    </extend>
+
+    <extend
+      target="panel-tabs[@name='mainPanelTab']/panel[@name='budgetDistributionPanel']/*[last()]">
+      <insert position="after">
+        <field name="$budgetExceedAlert" type="string" hidden="true"/>
+        <field name="$enableBudgetKey" type="boolean" hidden="true"/>
+        <field name="budgetDistributionGenerated" hidden="true"/>
+        <field name="company.accountConfig.enableBudgetKey" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-budget-btn-apply-to-all-group">
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"/>
+    <action name="save"/>
+    <action name="action-purchase-order-budget-distribution-apply-to-all"/>
+  </action-group>
+
+  <action-group name="action-budget-group-purchase-order-on-validate-actions">
+    <action name="action-method-purchase-order-validate-budget-distribution-list"
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.manageMultiBudget"/>
+    <action name="action-group-purchase-order-on-validate-actions"/>
+  </action-group>
+
+  <action-group name="action-budget-purchase-order-group-on-save">
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
+    <action name="save"/>
+    <action name="action-budget-purchase-order-method-fill-budget-str"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-budget-group-purchase-order-on-new-actions">
+    <action name="action-supplychain-group-purchase-order-on-new-actions"/>
+    <action name="action-budget-purchase-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-budget-group-purchase-order-compute-budget-distribution">
+    <action name="save"/>
+    <action name="action-validate-budget-recompute-budget-distribution"/>
+    <action name="action-method-budget-purchase-order-compute-budget-distribution"/>
+    <action name="action-method-budget-purchase-order-compute-budget-distribution-sum-amount"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group
+    name="action-budget-purchase-order-group-get-and-validate-budget-balance">
+    <action name="action-budget-purchase-order-record-get-budget-balance"/>
+    <action name="action-budget-purchase-order-validate-budget-balance"/>
+  </action-group>
+
+  <action-group name="action-group-budget-purchase-order-request-onclick">
+    <action name="save"/>
+    <action name="action-method-budget-purchase-order-no-compute-budget-distribution"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-purchase-order-method-requested"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-record name="action-budget-purchase-order-record-get-budget-balance"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="$budgetExceedAlert"
+      expr="call:com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl:getBudgetExceedAlert(__this__)"/>
+  </action-record>
+
+  <action-validate name="action-budget-purchase-order-validate-budget-balance">
+    <alert message="$budgetExceedAlert"
+      if="id &amp;&amp; budgetExceedAlert != null &amp;&amp; budgetExceedAlert != ''"/>
+  </action-validate>
+
+  <action-group name="action-budget-purchase-order-group-budget-level-onchange">
+    <action name="action-budget-purchase-order-record-budget-level-onchange"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-budget-purchase-order-group-onload">
+    <action name="action-group-purchase-order-on-load-actions"/>
+    <action name="action-budget-purchase-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
+    <action
+      name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available"
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
+  </action-group>
+
+  <action-record name="action-budget-purchase-order-record-load-budget-key-config"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="$enableBudgetKey"
+      expr="eval:__user__.activeCompany.accountConfig.enableBudgetKey"
+      if="__user__.activeCompany != null"/>
+    <field name="$enableBudgetKey"
+      expr="eval:__repo__(Company).all().fetchOne().accountConfig.enableBudgetKey"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-attrs name="action-budget-purchase-order-attrs-budget-level-domain">
+    <attribute name="domain" for="budgetLevel"
+      expr="eval: &quot;self.companyDepartment IS NOT NULL AND self.companyDepartment = ${companyDepartment?.id} AND self.company = :company AND self.statusSelect = 'valid' AND self.typeSelect = 'budget'&quot;"/>
+  </action-attrs>
+
+  <action-record name="action-budget-purchase-order-record-budget-level-onchange"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="company" expr="eval: budgetLevel?.company"/>
+  </action-record>
+
+  <action-attrs name="action-budget-purchase-order-attrs-company-dept-onchange">
+    <attribute name="value" for="budgetLevel" expr="eval:null"
+      if="__config__.app.isApp('budget')"/>
+  </action-attrs>
+
+  <action-record name="budget-action-purchase-order-record-project-onchange"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="budgetLevel" expr="eval: project ? project.budget : budgetLevel"
+      if="__config__.app.isApp('budget') &amp;&amp; (_project == null || id != null)"/>
+    <field name="company" expr="eval: project ? project.company : null"/>
+  </action-record>
+
+  <action-method
+    name="action-method-budget-purchase-order-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="computeBudgetDistribution"/>
+  </action-method>
+
+  <action-method
+    name="action-method-budget-purchase-order-compute-budget-distribution-sum-amount">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="computePurchaseOrderBudgetDistributionSumAmount"/>
+  </action-method>
+
+  <action-method name="action-budget-purchase-order-method-fill-budget-str">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="fillBudgetStrOnLine"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-budget-distribution-apply-to-all"
+    id="budget-action-purchase-order-budget-distribution-apply-to-all">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="applyToAllBudgetDistribution"/>
+  </action-method>
+
+  <action-method
+    name="action-method-budget-purchase-order-no-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="checkNoComputeBudget"/>
+  </action-method>
+
+  <action-method
+    name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="updateBudgetDistributionAmountAvailable"/>
+  </action-method>
+
+  <action-view name="action-supplychain-budget-distribuion-view-budget-distribution"
+    title="Budget distribution" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="purchase-order-budget-distribution-grid"/>
+    <view type="form" name="purchase-order-budget-distribution-form"/>
+    <view-param name="limit" value="200"/>
+    <domain>self.purchaseOrderLine.purchaseOrder.id = :_purchaseOrderId</domain>
+    <context name="_purchaseOrderId" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-view name="action-purchase-order-see-budget-distribution-lines"
+    title="See budget distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="purchase-order-budget-distribution-complete-grid"/>
+    <view type="form" name="purchase-order-budget-distribution-complete-form"/>
+    <domain>self.purchaseOrderLine.purchaseOrder.statusSelect != 5</domain>
+  </action-view>
+
+</object-views>

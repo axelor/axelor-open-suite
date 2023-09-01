@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.CrmReporting;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -34,6 +35,7 @@ import com.axelor.studio.db.AppCrm;
 import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.HashSet;
 import java.util.Set;
 
 public class CrmReportingServiceImpl implements CrmReportingService {
@@ -42,7 +44,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
 
   protected AppBaseService appBaseService;
   protected static final String PARTNER = "Partner";
-  protected static final String LEAD = "Lead";
+  protected static final String LEAD = "eventLead";
   protected static final String OPPORTUNITY = "Opportunity";
   protected static final String EVENT = "Event";
 
@@ -67,7 +69,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
         if (isPartner) {
           model = PARTNER.toLowerCase();
         } else {
-          model = LEAD.toLowerCase();
+          model = LEAD;
         }
 
         if (className.equals(OPPORTUNITY)) {
@@ -99,6 +101,18 @@ public class CrmReportingServiceImpl implements CrmReportingService {
     throw new AxelorException(
         TraceBackRepository.CATEGORY_MISSING_FIELD,
         I18n.get(CrmExceptionMessage.CRM_REPORTING_TYPE_SELECT_MISSING));
+  }
+
+  @Override
+  public Set<Company> prefillCompanySet(CrmReporting crmReporting) {
+    Set<Company> companySet = new HashSet<>();
+    if (crmReporting.getCompanySet() != null) {
+      companySet = crmReporting.getCompanySet();
+    }
+    if (AuthUtils.getUser() != null && AuthUtils.getUser().getActiveCompany() != null) {
+      companySet.add(AuthUtils.getUser().getActiveCompany());
+    }
+    return companySet;
   }
 
   protected void prepareQuery(CrmReporting crmReporting, boolean isPartner, String model) {

@@ -99,7 +99,8 @@
   </input>
 
   <input file="stock_stockMoveLine.csv" separator=";"
-    type="com.axelor.apps.stock.db.StockMoveLine" search="self.importId = :importId">
+    type="com.axelor.apps.stock.db.StockMoveLine" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportStockMoveLine:importStockMoveLine">
     <bind to="stockMove" search="self.importId = :stockMove_importId"/>
     <bind to="product" search="self.importId = :product_importId"/>
     <bind to="unit" search="self.importId = :unit_importId"/>

@@ -48,7 +48,6 @@ public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
   public ProjectTask copy(ProjectTask entity, boolean deep) {
     ProjectTask task = super.copy(entity, deep);
     task.setTotalPlannedHrs(null);
-    task.setTotalRealHrs(null);
     task.clearProjectPlanningTimeList();
     return task;
   }

@@ -10,9 +10,8 @@
   </grid>
 
   <form name="account-config-form" title="Account configuration"
-    model="com.axelor.apps.account.db.AccountConfig"
-    onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
-    onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
+    model="com.axelor.apps.account.db.AccountConfig" onNew="action-account-config-group-onnew"
+    onSave="action-account-config-group-on-save" onLoad="action-account-config-group-onload"
     width="large">
 
     <panel name="mainPanel">
@@ -29,7 +28,8 @@
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="generateMoveForAdvancePayment" colSpan="3"/>
+      <field name="generateMoveForAdvancePayment" colSpan="3"
+        if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
       <field name="isActivateSimulatedMove" colSpan="3"/>
       <field name="accountingDaybook" colSpan="3"
         onChange="action-account-config-attrs-accounting-daybook-onchange"/>
@@ -269,9 +269,9 @@
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
           <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch"
-            if="__config__.app.isApp('supplychain')"/>
-          <field name="displayPartnerSirenOnInvoicePrinting" widget="boolean-switch"
-            colSpan="12"/>
+            if="__config__.app.isApp('supplychain')" colSpan="12"/>
+          <field name="displayPartnerSirenOnInvoicePrinting" widget="boolean-switch"/>
+          <field name="displayNoFinancialDiscountAppliedOnPrinting" widget="boolean-switch"/>
           <field name="displayItemsCategoriesOnPrinting" widget="boolean-switch"/>
           <panel name="statementsPanel" title="Invoice product statements" colSpan="12"
             hideIf="!displayItemsCategoriesOnPrinting">
@@ -504,6 +504,17 @@
     <action name="action-method-check-account-config-changes-in-analytic" if="id != null"/>
   </action-group>
 
+  <action-group name="action-account-config-group-onnew">
+    <action name="action-account-config-record-default"/>
+    <action name="action-attrs-account-config-set-is-can-new"/>
+    <action name="action-account-config-attrs-analytic-distribution-type-select"/>
+  </action-group>
+
+  <action-group name="action-account-config-group-onload">
+    <action name="action-attrs-account-config-set-is-can-new"/>
+    <action name="action-account-config-attrs-analytic-distribution-type-select"/>
+  </action-group>
+
   <action-validate name="action-account-config-validate-is-activate-simulated-move"
     model="com.axelor.apps.account.db.AccountConfig">
     <alert
@@ -532,5 +543,10 @@
     <call class="com.axelor.apps.account.web.AccountConfigController"
       method="checkChangesInAnalytic"/>
   </action-method>
+
+  <action-attrs name="action-account-config-attrs-analytic-distribution-type-select">
+    <attribute for="analyticDistributionTypeSelect" name="selection-in"
+      expr="eval: !__config__.app.getApp('base')?.getEnableTradingNamesManagement() ? [1,2,3] : [1,2,3,4]"/>
+  </action-attrs>
 
 </object-views>

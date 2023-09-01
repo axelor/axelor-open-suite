@@ -41,8 +41,6 @@
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seePurchaseOrderLinesItem" title="See purchase order lines"
           action="purchase-order-see-purchase-order-lines"/>
-        <item title="See budget distribution lines"
-          action="action-purchase-order-see-budget-distribution-lines"/>
       </menu>
     </menubar>
     <field name="purchaseOrderSeq" width="120"/>
@@ -182,7 +180,7 @@
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati"
             readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"/>
           <field name="interco" hidden="true" if-module="axelor-supplychain"
-            if="__config__.app.isApp('supplychain')"/>
+            if="__config__.app.isApp('supplychain')" widget="boolean-switch"/>
           <field name="createdByInterco" showIf="createdByInterco" readonly="true"
             if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         </panel>
@@ -245,6 +243,8 @@
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
+        <field name="projectTask" domain="self.project = :project"
+          form-view="project-task-form" grid-view="project-task-grid" colSpan="6"/>
       </panel>
       <panel name="POManagementPanel" title="PO Management"
         if-module="axelor-supplier-management" colSpan="12"
@@ -261,17 +261,6 @@
           grid-view="timetable-grid-purchase" form-view="timetable-form-purchase"
           onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"
           if-module="axelor-supplychain"/>
-      </panel>
-      <panel name="budgetDistributionPanel" title="Budget distribution"
-        if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
-        showIf="statusSelect &lt;= 4">
-        <field name="budget" showIf="statusSelect &lt;= 2"/>
-        <button name="applyToAllBtn" title="Apply to all"
-          onClick="save,action-purchase-order-budget-distribution-apply-to-all,save"
-          readonlyIf="!budget" showIf="statusSelect &lt;= 2"/>
-        <panel-dashlet name="budgetDistributionPanel"
-          action="action-supplychain-budget-distribuion-view-budget-distribution" colSpan="12"
-          showIf="statusSelect &gt;= 3 &amp;&amp; statusSelect &lt;= 4" readonly="true"/>
       </panel>
       <panel name="printingPanel" title="Printing">
         <field name="printingSettings" canEdit="false"/>
@@ -488,8 +477,6 @@
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seePurchaseOrderLinesItem" title="See purchase order lines"
           action="purchase-order-see-purchase-order-lines"/>
-        <item title="See budget distribution lines"
-          action="action-purchase-order-see-budget-distribution-lines"/>
       </menu>
     </menubar>
     <field name="purchaseOrderSeq"/>
@@ -582,9 +569,7 @@
     <action name="action-purchase-order-attrs-interco"/>
     <action name="action-purchase-order-attrs-external-reference"/>
     <action name="action-purchase-order-record-load-trading-name-config"/>
-    <action
-      name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available"
-      if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+
   </action-group>
 
   <action-group name="action-group-purchase-order-company-change-actions">
@@ -600,8 +585,6 @@
 
   <action-group name="action-group-purchase-order-on-validate-actions">
     <action name="action-purchase-order-method-check-analytic-distribution-template"/>
-    <action name="action-method-purchase-order-validate-budget-distribution-list"
-      if="__config__.app.getApp('budget')?.manageMultiBudget"/>
     <action name="action-purchase-order-validate-purchase-order-line"/>
     <action name="action-purchase-order-validate-stock-location"/>
     <action name="save"/>
@@ -645,11 +628,6 @@
 
   <action-method name="action-purchase-order-method-update-cost-price">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="updateCostPrice"/>
-  </action-method>
-
-  <action-method name="action-purchase-order-budget-distribution-apply-to-all">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="applyToAllBudgetDistribution"/>
   </action-method>
 
   <action-attrs name="action-purchase-order-attrs-in-ati">
@@ -775,12 +753,6 @@
       method="validateSupplier"/>
   </action-method>
 
-  <action-method name="action-purchase-order-method-generate-budget-distribution"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="generateBudgetDistribution" if="__config__.app.isApp('supplychain')"/>
-  </action-method>
-
   <action-method name="action-purchase-order-method-compute">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="compute"/>
   </action-method>
@@ -852,8 +824,7 @@
     model="com.axelor.apps.stock.db.StockMove" title="Stock move">
     <view name="stock-move-grid" type="grid"/>
     <view name="stock-move-form" type="form"/>
-    <domain>self.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND self.originId
-      = :purchaseOrder</domain>
+    <domain>self.purchaseOrder.id = :purchaseOrder</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
@@ -969,7 +940,6 @@
     <field name="amountToBeSpreadOverTheTimetable" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="timetableList" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <field name="budget" hidden="true" if="!__config__.app.isApp('budget')"/>
     <field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <filter title="My RFQs">
@@ -1055,10 +1025,5 @@
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
-
-  <action-method name="action-method-purchase-order-validate-budget-distribution-list">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="confirmBudgetDistributionList"/>
-  </action-method>
 
 </object-views>

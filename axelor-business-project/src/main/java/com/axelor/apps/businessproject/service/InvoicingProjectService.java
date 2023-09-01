@@ -48,7 +48,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -85,7 +85,7 @@ public class InvoicingProjectService {
 
   @Inject protected TimesheetService timesheetService;
 
-  @Inject protected ExpenseService expenseService;
+  @Inject protected ExpenseInvoiceLineService expenseInvoiceLineService;
 
   @Inject protected PartnerService partnerService;
 
@@ -208,7 +208,7 @@ public class InvoicingProjectService {
         timesheetService.createInvoiceLines(
             invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
     invoiceLineList.addAll(
-        expenseService.createInvoiceLines(
+        expenseInvoiceLineService.createInvoiceLines(
             invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
     invoiceLineList.addAll(
         projectTaskBusinessProjectService.createInvoiceLines(
@@ -557,6 +557,7 @@ public class InvoicingProjectService {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
     }
+    invoicingProject = invoicingProjectRepo.save(invoicingProject);
 
     clearLines(invoicingProject);
     setLines(invoicingProject, project, 0);

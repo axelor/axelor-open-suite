@@ -1,7 +1,0 @@
-title: "Reconcile: reconciliation of different accounts and payment differences management"
-type: feature
-description: |
-  New fields in account config, one account for debit difference, one account for credit difference.
-  When you pay an invoice term and the remaining amount is less than the threshold distance, a new payment will be made of the remaining amount.
-
-  Reconciliation of different accounts are now managed, using a new payment move which reconcile both invoice terms.

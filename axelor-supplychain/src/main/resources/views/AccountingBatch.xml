@@ -64,8 +64,13 @@
     <view type="grid" name="stock-move-line-cut-off-grid"/>
     <view type="form" name="stock-move-line-form"/>
     <domain>
-      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty OR self.product IS NULL
-      OR (:_includeNotStockManagedProduct IS TRUE AND self.product.stockManaged IS FALSE))
+      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty)
+      AND
+      (self.product IS NULL
+      OR (:_includeNotStockManagedProduct IS TRUE AND (self.product.stockManaged IS FALSE OR
+      self.product.stockManaged IS TRUE))
+      OR (:_includeNotStockManagedProduct IS FALSE AND
+      self.product.stockManaged IS TRUE))
       AND
       self.stockMove.invoicingStatusSelect &lt;&gt; 2
       AND
@@ -96,9 +101,9 @@
   <action-view name="action-batch-show-stock-move" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-in-grid"
-      if="accountingBatch.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; accountingBatch.accountingCutOffTypeSelect == 1"/>
+      if="accountingBatch &amp;&amp; accountingBatch.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; accountingBatch.accountingCutOffTypeSelect == 1"/>
     <view type="grid" name="stock-move-out-grid"
-      if="accountingBatch.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF || accountingBatch.accountingCutOffTypeSelect == 2"/>
+      if="(supplychainBatch &amp;&amp; supplychainBatch.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES) || (accountingBatch &amp;&amp; accountingBatch.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; accountingBatch.accountingCutOffTypeSelect == 2)"/>
     <view type="form" name="stock-move-form"/>
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>

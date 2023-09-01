@@ -241,6 +241,14 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   }
 
   @Override
+  @Transactional
+  public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime) {
+
+    ProjectPlanningTime planningTime = planningTimeRepo.find(projectPlanningTime.getId());
+    planningTimeRepo.remove(planningTime);
+  }
+
+  @Override
   public BigDecimal getDurationForCustomer(ProjectTask projectTask) {
     String query =
         "SELECT SUM(self.durationForCustomer) FROM TimesheetLine AS self WHERE self.timesheet.statusSelect = :statusSelect AND self.projectTask = :projectTask";

@@ -121,7 +121,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     nextProjectTask.setParentTask(projectTask.getParentTask());
     nextProjectTask.setProduct(projectTask.getProduct());
-    nextProjectTask.setUnit(projectTask.getUnit());
+    nextProjectTask.setInvoicingUnit(projectTask.getInvoicingUnit());
     nextProjectTask.setQuantity(projectTask.getQuantity());
     nextProjectTask.setUnitPrice(projectTask.getUnitPrice());
     nextProjectTask.setTaskEndDate(projectTask.getTaskEndDate());
@@ -262,5 +262,16 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     String result = buffer.toString();
     return StringUtils.isEmpty(result) ? value : result;
+  }
+
+  @Override
+  public void fillSubtask(ProjectTask projectTask) {
+    ProjectTask parentTask = projectTaskRepo.find(projectTask.getParentTask().getId());
+    projectTask.setParentTask(parentTask);
+    projectTask.setProjectTaskCategory(parentTask.getProjectTaskCategory());
+    projectTask.setProjectTaskSection(parentTask.getProjectTaskSection());
+    projectTask.setPriority(parentTask.getPriority());
+    projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
+    projectTask.setAssignedTo(parentTask.getAssignedTo());
   }
 }

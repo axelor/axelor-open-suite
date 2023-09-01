@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Journal;
@@ -9,22 +27,23 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -48,8 +67,9 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveLineControlService moveLineControlService;
   protected MoveValidateService moveValidateService;
   protected MoveControlService moveControlService;
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AppAccountService appAccountService;
+  protected PeriodServiceAccount periodServiceAccount;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
   public MassEntryVerificationServiceImpl(
@@ -58,20 +78,23 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineControlService moveLineControlService,
       MoveValidateService moveValidateService,
       MoveControlService moveControlService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      PeriodServiceAccount periodServiceAccount,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineControlService = moveLineControlService;
     this.moveValidateService = moveValidateService;
     this.moveControlService = moveControlService;
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.appAccountService = appAccountService;
+    this.periodServiceAccount = periodServiceAccount;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   @Override
   public void checkPreconditionsMassEntry(
-      Move move, int temporaryMoveNumber, List<Move> massEntryMoveList, boolean manageCutOff) {
+      Move move, int temporaryMoveNumber, List<Move> massEntryMoveList, boolean manageCutOff)
+      throws AxelorException {
     this.checkDateMassEntryMove(move, temporaryMoveNumber);
     this.checkOriginDateMassEntryMove(move, temporaryMoveNumber);
     this.checkOriginMassEntryMoveLines(move, temporaryMoveNumber, massEntryMoveList);
@@ -92,11 +115,11 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     // Check move line mass entry date
     LocalDate newDate = newMoveLine.getDate();
     Company company = parentMove.getCompany();
-    if (!moveLine.getDate().equals(newDate)) {
+    if (newDate != null && !newDate.equals(moveLine.getDate())) {
       moveLine.setDate(newDate);
 
       Period period;
-      if (newDate != null && company != null) {
+      if (company != null) {
         period = periodService.getActivePeriod(newDate, company, YearRepository.TYPE_FISCAL);
         parentMove.setPeriod(period);
       }
@@ -162,7 +185,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     if (parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
             == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
         && !moveLine.getPartner().equals(newMoveLine.getPartner())) {
-      moveLineMassEntryToolService.setPartnerChanges(moveLine, newMoveLine);
+      moveLineMassEntryRecordService.resetPartner(moveLine, newMoveLine);
     }
 
     // Check move line mass entry partner bank details
@@ -174,46 +197,63 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   @Override
-  public void checkDateMassEntryMove(Move move, int temporaryMoveNumber) {
-    boolean hasDateError;
-
+  public void checkDateMassEntryMove(Move move, int temporaryMoveNumber) throws AxelorException {
     MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
 
-    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      hasDateError = false;
-      if (move.getPeriod() == null) {
-        hasDateError = true;
-        this.setMassEntryErrorMessage(
-            move,
-            String.format(
-                I18n.get(BaseExceptionMessage.PERIOD_1), move.getCompany(), move.getDate()),
-            true,
-            temporaryMoveNumber);
-      } else {
-        if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-            || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
-          hasDateError = true;
-          this.setMassEntryErrorMessage(
-              move,
-              I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED),
-              true,
-              temporaryMoveNumber);
-        }
-      }
+    boolean hasError = this.checkPeriod(move, temporaryMoveNumber);
+    hasError = this.checkEmptyDate(move, temporaryMoveNumber) || hasError;
+    hasError =
+        this.checkDifferentDate(firstMoveLine.getDate(), move, temporaryMoveNumber) || hasError;
 
-      if (!firstMoveLine.getDate().equals(moveLine.getDate())) {
-        hasDateError = true;
-        this.setMassEntryErrorMessage(
-            move,
-            I18n.get(AccountExceptionMessage.MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE),
-            true,
-            temporaryMoveNumber);
-      }
-
-      if (hasDateError) {
-        this.setFieldsErrorListMessage(moveLine, "date");
-      }
+    if (hasError) {
+      move.getMoveLineMassEntryList()
+          .forEach(moveLine -> this.setFieldsErrorListMessage(moveLine, "date"));
     }
+  }
+
+  protected boolean checkEmptyDate(Move move, int temporaryMoveNumber) {
+    if (move.getMoveLineMassEntryList().stream().map(MoveLine::getDate).anyMatch(Objects::isNull)) {
+      this.setMassEntryErrorMessage(
+          move,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE),
+          true,
+          temporaryMoveNumber);
+      return true;
+    }
+    return false;
+  }
+
+  protected boolean checkDifferentDate(LocalDate firstDate, Move move, int temporaryMoveNumber) {
+    if (move.getMoveLineMassEntryList().stream()
+        .map(MoveLine::getDate)
+        .anyMatch(
+            localDate -> localDate != null && firstDate != null && !firstDate.equals(localDate))) {
+      this.setMassEntryErrorMessage(
+          move,
+          I18n.get(AccountExceptionMessage.MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE),
+          true,
+          temporaryMoveNumber);
+      return true;
+    }
+    return false;
+  }
+
+  protected boolean checkPeriod(Move move, int temporaryMoveNumber) throws AxelorException {
+    if (move.getPeriod() == null) {
+      this.setMassEntryErrorMessage(
+          move,
+          String.format(
+              I18n.get(BaseExceptionMessage.PERIOD_1), move.getCompany().getName(), move.getDate()),
+          true,
+          temporaryMoveNumber);
+      return true;
+    } else if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
+        move.getPeriod(), AuthUtils.getUser())) {
+      this.setMassEntryErrorMessage(
+          move, I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED), true, temporaryMoveNumber);
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -281,6 +321,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
                       ObjectUtils.notEmpty(ml.getMoveLineMassEntryList())
                           && ml.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber()
                               != temporaryMoveNumber
+                          && ml.getOrigin() != null
+                          && move.getOrigin() != null
                           && ml.getOrigin().equals(move.getOrigin()))
               .map(Move::getReference)
               .collect(Collectors.joining(","));
@@ -382,7 +424,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
     switch (fieldName) {
       case "date":
-        message.append(moveLine.getDate().toString());
+        message.append(moveLine.getDate() != null ? moveLine.getDate().toString() : "");
         break;
       case "currencyRate":
         message.append(moveLine.getCurrencyRate().toString());

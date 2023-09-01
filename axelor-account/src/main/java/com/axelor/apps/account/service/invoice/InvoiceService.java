@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -39,14 +38,11 @@ import com.axelor.meta.CallMethod;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public interface InvoiceService {
-
-  public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
 
   /**
    * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
@@ -56,14 +52,6 @@ public interface InvoiceService {
    * @throws AxelorException If operationTypeSelect is empty
    */
   Journal getJournal(Invoice invoice) throws AxelorException;
-
-  /**
-   * Lever l'ensemble des alarmes d'une facture.
-   *
-   * @param invoice Une facture.
-   * @throws Exception
-   */
-  public void raisingAlarms(Invoice invoice, String alarmEngineCode);
 
   /**
    * Fonction permettant de calculer l'intégralité d'une facture :
@@ -329,4 +317,6 @@ public interface InvoiceService {
   boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
 
   void updateInvoiceTermsParentFields(Invoice invoice);
+
+  Invoice computeEstimatedPaymentDate(Invoice invoice);
 }

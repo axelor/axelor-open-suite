@@ -63,6 +63,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -82,14 +83,18 @@ public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
   protected BankDetailsService bankDetailsService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
   public IntercoServiceImpl(
-      PurchaseConfigService purchaseConfigService, BankDetailsService bankDetailsService) {
+      PurchaseConfigService purchaseConfigService,
+      BankDetailsService bankDetailsService,
+      AnalyticLineModelService analyticLineModelService) {
     this.purchaseConfigService = purchaseConfigService;
     this.bankDetailsService = bankDetailsService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -100,6 +105,8 @@ public class IntercoServiceImpl implements IntercoService {
     SaleOrderCreateService saleOrderCreateService = Beans.get(SaleOrderCreateService.class);
     SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
     Company intercoCompany = findIntercoCompany(purchaseOrder.getSupplierPartner());
+    Partner clientPartner = purchaseOrder.getCompany().getPartner();
+
     // create sale order
     SaleOrder saleOrder =
         saleOrderCreateService.createSaleOrder(
@@ -111,10 +118,10 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             null,
             purchaseOrder.getPriceList(),
-            purchaseOrder.getCompany().getPartner(),
+            clientPartner,
             null,
             null,
-            null);
+            clientPartner.getFiscalPosition());
 
     // in ati
     saleOrder.setInAti(purchaseOrder.getInAti());
@@ -135,7 +142,7 @@ public class IntercoServiceImpl implements IntercoService {
     // get stock location
     saleOrder.setStockLocation(
         Beans.get(SaleOrderSupplychainService.class)
-            .getStockLocation(purchaseOrder.getCompany().getPartner(), intercoCompany));
+            .getStockLocation(clientPartner, intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
@@ -192,7 +199,9 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
-    purchaseOrder.setSupplierPartner(saleOrder.getCompany().getPartner());
+    Partner supplierPartner = saleOrder.getCompany().getPartner();
+    purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
 
     // in ati
@@ -207,7 +216,7 @@ public class IntercoServiceImpl implements IntercoService {
     // copy delivery info
     purchaseOrder.setStockLocation(
         Beans.get(PurchaseOrderSupplychainService.class)
-            .getStockLocation(saleOrder.getCompany().getPartner(), intercoCompany));
+            .getStockLocation(supplierPartner, intercoCompany));
     purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
     purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 
@@ -325,9 +334,9 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
 
     // analyticDistribution
-    saleOrderLine =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
-            .getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+
     if (saleOrderLine.getAnalyticMoveLineList() != null) {
       for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
         obj.setSaleOrderLine(saleOrderLine);

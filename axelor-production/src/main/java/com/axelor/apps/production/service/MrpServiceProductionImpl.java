@@ -385,7 +385,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .all()
             .filter(
                 "self.product.id in (?1) AND self.stockLocation in (?2) AND self.mrp.mrpTypeSelect = ?3 "
-                    + "AND self.mrp.statusSelect = ?4 AND self.mrpLineType.elementSelect = ?5 AND self.maturityDate >= ?6 AND (?7 is true OR self.maturityDate <= ?8)",
+                    + "AND self.mrp.statusSelect = ?4 AND self.mrpLineType.elementSelect = ?5 AND self.maturityDate >= ?6 AND (?7 is true OR self.maturityDate <= ?8) AND self.mrp.validateScenario is true",
                 this.productMap.keySet(),
                 this.stockLocationList,
                 MrpRepository.MRP_TYPE_MPS,
@@ -516,7 +516,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       for (ProdProcessLine prodProcessLine :
           defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
         totalDuration +=
-            prodProcessLineService.computeEntireCycleDuration(prodProcessLine, reorderQty);
+            prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty);
       }
     }
     // If days should be rounded to a upper value

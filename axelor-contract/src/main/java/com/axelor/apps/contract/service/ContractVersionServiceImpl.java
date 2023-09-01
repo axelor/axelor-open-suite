@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.AbstractContractVersionRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
@@ -32,6 +33,7 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractVersionServiceImpl extends ContractVersionRepository
     implements ContractVersionService {
@@ -182,5 +185,21 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   @Override
   public ContractVersion newDraft(Contract contract) {
     return copy(contract);
+  }
+
+  public void computeTotals(ContractVersion contractVersion) {
+    List<ContractLine> contractLineList = contractVersion.getContractLineList();
+    if (CollectionUtils.isNotEmpty(contractLineList)) {
+      contractVersion.setInitialExTaxTotalPerYear(
+          contractLineList.stream()
+              .map(ContractLine::getInitialPricePerYear)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+      contractVersion.setYearlyExTaxTotalRevalued(
+          contractLineList.stream()
+              .map(ContractLine::getYearlyPriceRevalued)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO));
+    }
   }
 }

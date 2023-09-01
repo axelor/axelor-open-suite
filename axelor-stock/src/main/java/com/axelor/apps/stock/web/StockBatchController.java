@@ -32,6 +32,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class StockBatchController {
 
+  /* WARNING: The use of Recomputation stock location history batch should be avoided for now as this
+  feature is not working properly */
   public void runBatch(ActionRequest request, ActionResponse response) {
     try {
       StockBatch stockBatch = request.getContext().asType(StockBatch.class);

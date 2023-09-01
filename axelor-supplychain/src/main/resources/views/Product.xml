@@ -31,7 +31,9 @@
             widget="info-button"
             onClick="action-supplychain-stock-move-line-product-future-quantity"/>
           <button name="$reservedQty" title="Reserved quantity" icon="fa-building-o"
-            widget="info-button" onClick="action-supplychain-stock-move-line-product-reserved"/>
+            widget="info-button"
+            if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
+            onClick="action-supplychain-stock-move-line-product-reserved"/>
           <button name="$requestedReservedQty" title="Requested reserved quantity"
             icon="fa-building-o" widget="info-button"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
@@ -47,7 +49,7 @@
             widget="info-button" onClick="action-method-supplychain-stock-available-product"/>
         </panel>
         <panel name="productionIndicators" colSpan="12" itemSpan="3"
-          if-module="axelor-production">
+          if="__config__.app.isApp('production')">
           <button name="$buildingQty" title="Building quantity" icon="fa-cogs"
             widget="info-button" onClick="action-method-production-building-quantity-product"/>
           <button name="$consumeManufOrderQty" title="Consume manuf order quantity"
@@ -151,9 +153,9 @@
     <domain>self.reservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
       AND
       self.product.id = :productId
-      AND (self.stockMove.toStockLocation.id IN :location OR 0 IN
-      :location)
-      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      AND (self.toStockLocation.id IN :location OR 0 IN :location)
+      AND
+      (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
@@ -170,9 +172,10 @@
     <domain>self.stockMove.statusSelect = :statusSelectList
       AND self.product.id = :productId
       AND
-      (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
+      (self.toStockLocation.id IN :location OR 0 IN :location)
       AND
-      (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      (self.stockMove.company.id =
+      :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
@@ -189,9 +192,10 @@
     <domain>self.stockMove.statusSelect = :statusSelect
       AND self.product.id = :productId
       AND
-      (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
+      (self.toStockLocation.id IN :location OR 0 IN :location)
       AND
-      (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      (self.stockMove.company.id =
+      :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>

@@ -54,12 +54,12 @@
     </panel>
     <panel name="stackPanel" title="Stock">
       <field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
-      <field name="manageStockReservation" widget="boolean-switch" colSpan="4"/>
+      <field name="manageStockReservation" widget="boolean-switch" colSpan="4"
+        onChange="action-app-supplychain-validate-config-error"/>
       <field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
 
       <field name="validStepForInvOutSM" showIf="generateInvoiceFromStockMove"
         widget="boolean-switch" colSpan="4"/>
-      <field name="activatePartnerRelations" widget="boolean-switch" colSpan="4"/>
 
     </panel>
     <panel name="intercoPanel" title="Interco">
@@ -105,6 +105,19 @@
     model="com.axelor.studio.db.AppSupplychain">
     <field name="supplierStockMoveGenerationAuto" expr="eval: false"
       if="isPurchaseOrderWithoutIncomingStockMove"/>
+  </action-record>
+
+  <action-validate name="action-app-supplychain-validate-config-error">
+    <error
+      message="Stock reservation feature cannot be active when we are managing stock locations on stock move line."
+      if="manageStockReservation &amp;&amp; __config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"
+      action="action-app-supply-chain-record-set-manage-stock-reservation-false"/>
+  </action-validate>
+
+  <action-record
+    name="action-app-supply-chain-record-set-manage-stock-reservation-false"
+    model="com.axelor.studio.db.AppSupplychain">
+    <field name="manageStockReservation" expr="eval: false"/>
   </action-record>
 
 </object-views>

@@ -61,15 +61,11 @@
         <item name="generateNewVersionItem" title="Generate new version"
           action="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"
           if="__config__.app.getApp('production')?.manageBillOfMaterialVersion"/>
-        <item name="defineDefaultBomProductItem"
-          title="Define as default bill of materials of product"
-          action="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
-          hideIf="product.defaultBillOfMaterial.id == id"/>
       </menu>
     </menubar>
 
     <panel name="mainPanel">
-      <field name="statusSelect" showTitle="false" colSpan="8" readonly="false"
+      <field name="statusSelect" showTitle="false" colSpan="8" readonly="true"
         widget="NavSelect"/>
       <field name="$defaultBOMOnProduct" readonly="true" showIf="id" showTitle="false"
         colSpan="4">
@@ -108,7 +104,6 @@
       <field name="qty" colSpan="3"/>
       <field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"
         canEdit="false" required="true"/>
-      <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -160,6 +155,23 @@
         <field name="note" showTitle="false" colSpan="12"/>
       </panel>
     </panel-tabs>
+
+    <panel name="actionPanel" sidebar="true">
+      <button onClick="save,action-bill-of-material-method-set-validate-status"
+        name="validateBtn" title="Validate" showIf="statusSelect == 1"/>
+      <button onClick="save,action-bill-of-material-method-set-applicable-status"
+        name="makeItApplicableBtn" title="Make it applicable" showIf="statusSelect == 2"/>
+      <button onClick="save,action-bill-of-material-method-set-obsolete-status"
+        name="makeItObsoleteBtn" title="Make it obsolete" showIf="statusSelect == 3"/>
+      <button onClick="save,action-bill-of-material-method-set-draft-status"
+        name="backToDraftBtn" title="Back to draft" showIf="statusSelect > 1"/>
+      <panel name="defineDefaultBomProductPanel" hideIf="$defaultBillOfMaterial.id == id">
+        <spacer/>
+        <button
+          onClick="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
+          colSpan="12" name="defineDefaultBomProductBtn" title="Define as default BOM of product"/>
+      </panel>
+    </panel>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -331,6 +343,27 @@
       expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION}&quot;"
       if="__config__.app.isApp('maintenance')"/>
   </action-attrs>
+
+  <action-method name="action-bill-of-material-method-set-draft-status">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="setDraftStaus"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-method-set-validate-status">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="setValidateStatus"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-method-set-applicable-status">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="setApplicableStatus"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-method-set-obsolete-status">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="setObsoleteStatus"/>
+  </action-method>
+
 </object-views>
 
 

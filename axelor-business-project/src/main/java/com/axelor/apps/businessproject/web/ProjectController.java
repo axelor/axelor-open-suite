@@ -21,16 +21,19 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
+import com.axelor.apps.businessproject.service.ProjectHistoryService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -38,6 +41,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,5 +132,52 @@ public class ProjectController {
 
     Beans.get(ProjectBusinessService.class).computeProjectTotals(project);
     response.setNotify(I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+    response.setReload(true);
+  }
+
+  public void getProjectTimeFollowUpData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          BusinessProjectExceptionMessage.PROJECT_REPORT_NO_ID_FOUND);
+    }
+    Map<String, Object> data =
+        Beans.get(ProjectBusinessService.class)
+            .processRequestToDisplayTimeReporting(Long.valueOf(id));
+    response.setData(List.of(data));
+  }
+
+  public void getProjectFinancialFollowUpData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          BusinessProjectExceptionMessage.PROJECT_REPORT_NO_ID_FOUND);
+    }
+
+    Map<String, Object> data =
+        Beans.get(ProjectBusinessService.class)
+            .processRequestToDisplayFinancialReporting(Long.valueOf(id));
+    response.setData(List.of(data));
+  }
+
+  public void getProjectHistoryData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          BusinessProjectExceptionMessage.PROJECT_REPORT_NO_ID_FOUND);
+    }
+    Map<String, Object> data =
+        Beans.get(ProjectHistoryService.class)
+            .processRequestToDisplayProjectHistory(Long.valueOf(id));
+    response.setData(List.of(data));
   }
 }

@@ -4,6 +4,22 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
   <input file="gdpr-anonymizer.csv" separator=";" type="com.axelor.apps.base.db.Anonymizer"/>
+  <input file="gdpr-anonymizer-lines.csv" separator=";"
+    type="com.axelor.apps.base.db.AnonymizerLine">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+    <bind to="anonymizer" column="anonymizer_importId"
+      search="self.importId = :anonymizer_importId"/>
+    <bind to="useFakeData" column="useFakeData"/>
+  </input>
+
+  <input file="gdpr-anonymizer-lines.csv" separator=";"
+    type="com.axelor.apps.base.db.AnonymizerLine">
+    <bind column="metaModel" to="metaModel" search="self.name = :metaModel"/>
+    <bind column="metaField" to="metaField"
+      search="self.metaModel.name = :metaModel AND self.name = :metaField"/>
+  </input>
 
   <input file="base_appGdpr.csv" separator=";" type="com.axelor.apps.base.db.App"
     search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp">

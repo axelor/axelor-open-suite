@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -33,13 +34,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateService {
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveLineToolService moveLineToolService;
+  protected MoveToolService moveToolService;
 
   @Inject
-  public MoveLineConsolidateServiceImpl(MoveLineToolService moveLineToolService) {
+  public MoveLineConsolidateServiceImpl(
+      MoveLineToolService moveLineToolService, MoveToolService moveToolService) {
     this.moveLineToolService = moveLineToolService;
+    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -137,12 +142,12 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
             "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
             moveLine.getDebit(),
             moveLine.getCredit(),
-            moveLine.getCurrencyAmount());
+            moveLine.getCurrencyAmount().abs());
         log.debug(
             "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
             consolidateMoveLine.getDebit(),
             consolidateMoveLine.getCredit(),
-            consolidateMoveLine.getCurrencyAmount());
+            consolidateMoveLine.getCurrencyAmount().abs());
 
         if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
             != consolidateMoveLine
@@ -150,14 +155,25 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
                 .subtract(consolidateMoveLine.getCredit())
                 .compareTo(BigDecimal.ZERO)) {
           consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().subtract(moveLine.getCurrencyAmount());
+              consolidateMoveLine
+                  .getCurrencyAmount()
+                  .abs()
+                  .subtract(moveLine.getCurrencyAmount().abs());
         } else {
           consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().add(moveLine.getCurrencyAmount());
+              consolidateMoveLine.getCurrencyAmount().abs().add(moveLine.getCurrencyAmount().abs());
         }
-        consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount.abs());
+
         consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
         consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
+
+        boolean isDebit =
+            consolidateMoveLine.getDebit().compareTo(consolidateMoveLine.getCredit()) > 0;
+
+        consolidateCurrencyAmount =
+            moveToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
+
+        consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount);
 
         if (consolidateMoveLine.getAnalyticMoveLineList() != null
             && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
@@ -191,7 +207,9 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       credit = moveLine.getCredit();
       debit = moveLine.getDebit();
 
-      moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().abs());
+      boolean isDebit = debit.compareTo(credit) > 0;
+      moveLine.setCurrencyAmount(
+          moveToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
 
       if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
 

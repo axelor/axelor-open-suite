@@ -33,19 +33,10 @@ public final class BusinessProjectExceptionMessage {
       "You haven't select a product to invoice for the task %s" /*)*/;
   public static final String INVOICING_PROJECT_PROJECT_COMPANY = /*$$(*/
       "You haven't select a company on the main project" /*)*/;
-  public static final String SALE_ORDER_NO_PROJECT = /*$$(*/ "No Project selected" /*)*/;
-  public static final String SALE_ORDER_NO_LINES = /*$$(*/ "No Line can be used for tasks" /*)*/;
-  public static final String SALE_ORDER_NO_TYPE_GEN_PROJECT = /*$$(*/
-      "No type of generation project has been selected" /*)*/;
-  public static final String SALE_ORDER_BUSINESS_PROJECT = /*$$(*/
-      "The project is configured to be alone" /*)*/;
-  public static final String JOB_COSTING_APP = /*$$(*/ "Job costing" /*)*/;
   public static final String FACTORY_NO_FOUND = /*$$(*/
       "Factory not found this type of generator" /*)*/;
   public static final String FACTORY_FILL_WITH_PROJECT_ALONE = /*$$(*/
       "You can't fill a project with the strategy Project Alone." /*)*/;
-
-  public static final String NO_PROJECT_IN_CONTEXT = /*$$(*/ "No project found in context" /*)*/;
   public static final String LINES_NOT_SELECTED = /*$$(*/ "Please select lines" /*)*/;
 
   public static final String SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1 = /*$$(*/
@@ -80,8 +71,17 @@ public final class BusinessProjectExceptionMessage {
   public static final String PROJECT_UPDATE_TOTALS_SUCCESS = /*$$(*/
       "Totals have been updated" /*)*/;
 
+  public static final String PROJECT_TASK_PRODUCT_SALE_ORDER_LINE_UNIT_ERROR = /*$$(*/
+      "The order line unit of the product %s is not compatible with the configuration." /*)*/;
+
+  public static final String PROJECT_TASK_PRODUCT_STOCK_UNIT_ERROR = /*$$(*/
+      "The storage unit of the product %s is not compatible with the configuration." /*)*/;
+
+  public static final String PROJECT_TASK_SOLD_TIME_ERROR = /*$$(*/
+      "Sold time value error for project task %s." /*)*/;
+
   public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
-      "Please set the default number of hours per day in the configuration of app Business Project." /*)*/;
+      "Please set the default number of hours per day in the project configuration." /*)*/;
 
   public static final String PROJECT_CONFIG_DAYS_UNIT_MISSING = /*$$(*/
       "Please set days unit in the configuration of app Business Project." /*)*/;
@@ -91,4 +91,21 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR = /*$$(*/
       "Sold time and updated time must be greater than 0 for task %s" /*)*/;
+
+  public static final String PROJECT_TASK_NO_PROJECT_FOUND = /*$$(*/
+      "No project found for task %s." /*)*/;
+
+  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the task %s." /*)*/;
+
+  public static final String BATCH_BACKUP_TO_PROJECT_HISTORY = /*$$(*/
+      "Backup project data to project history" /*)*/;
+  public static final String BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR = /*$$(*/
+      "Error while trying to save to project history for project %s." /*)*/;
+
+  public static final String PROJECT_REPORT_NO_ID_FOUND = /*$$(*/
+      "Could not find the project id." /*)*/;
+
+  public static final String PROJECT_TASK_REPORT_NO_ID_FOUND = /*$$(*/
+      "Could not find the project task id." /*)*/;
 }

@@ -543,7 +543,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     // do not use invoiced partner if the option is disabled
-    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
       saleOrder.setInvoicedPartner(null);
     }
 
@@ -636,6 +636,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           saleOrder.getSaleOrderSeq());
     }
     saleOrder.setAmountInvoiced(amountInvoiced);
+    updateInvoicingState(saleOrder);
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
         && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
@@ -914,31 +915,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
   }
 
+  @Transactional
   @Override
-  public int getSaleOrderInvoicingState(SaleOrder saleOrder) {
-    return saleInvoicingStateService.getInvoicingState(
-        saleOrder.getAmountInvoiced(),
-        saleOrder.getExTaxTotal(),
-        atLeastOneInvoiceIsVentilated(saleOrder));
-  }
-
-  protected boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder) {
-    if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
-      return false;
-    }
-    return invoiceRepo
-            .all()
-            .filter(
-                "self.statusSelect = :statusSelect AND self.saleOrder.id = :saleOrder OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineList)))")
-            .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
-            .bind("saleOrder", saleOrder.getId())
-            .bind(
-                "saleOrderLineList",
-                saleOrder.getSaleOrderLineList().stream()
-                    .map(SaleOrderLine::getId)
-                    .collect(Collectors.toList()))
-            .count()
-        > 0;
+  public void updateInvoicingState(SaleOrder saleOrder) {
+    saleInvoicingStateService.updateSaleOrderLinesInvoicingState(saleOrder.getSaleOrderLineList());
+    saleOrder.setInvoicingState(
+        saleInvoicingStateService.computeSaleOrderInvoicingState(saleOrder));
   }
 
   public BigDecimal computeSumInvoices(List<Invoice> invoices) {

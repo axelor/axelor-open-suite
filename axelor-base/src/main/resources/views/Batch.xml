@@ -36,6 +36,8 @@
       <field name="comments" showTitle="false" colSpan="12"/>
       <button name="showTraceBackBtn" title="Anomalies" colSpan="4"
         onClick="action-batch-show-trace-back,close"/>
+      <button name="showUserBtn" title="Processed users" hidden="true" colSpan="4"
+        onClick="action-batch-show-users,close"/>
       <button name="showInvoiceBtn" title="Invoices" hidden="true" colSpan="4"
         onClick="action-batch-show-invoice,close" if-module="axelor-account"/>
       <button name="showImportHistoryBtn" title="Import Histories" hidden="true" colspan="4"
@@ -98,6 +100,8 @@
   </form>
 
   <action-attrs name="action-batch-attrs">
+    <attribute name="hidden" for="showUserBtn"
+      expr="eval: !(__parent__?._model == 'com.axelor.apps.base.db.BaseBatch' &amp;&amp; __parent__?.actionSelect == 3)"/>
     <attribute name="hidden" for="showInvoiceBtn"
       expr="eval: __parent__?.invoiceTypeSelect != 1"
       if="__parent__?._model == 'com.axelor.apps.invoice.db.InvoiceBatch'"/>
@@ -184,6 +188,14 @@
     title="Batch">
     <view name="batch-form" type="form"/>
     <context name="_showRecord" expr="eval: batchId"/>
+  </action-view>
+
+  <action-view name="action-batch-show-users" title="Users"
+    model="com.axelor.auth.db.User">
+    <view type="grid" name="user-grid"/>
+    <view type="form" name="user-form"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
   </action-view>
 
   <action-view name="action-batch-show-invoice" title="Invoices"

@@ -221,6 +221,9 @@
       title="Display Deliveries information on invoice printing" default="false"/>
     <boolean name="displayPartnerSirenOnInvoicePrinting"
       title="Display the SIREN number of the partner on printing" default="true"/>
+    <boolean name="displayNoFinancialDiscountAppliedOnPrinting" default="false"
+      title="Display mention 'no financial discount applied' on printing"
+      help="If this option is enabled, the mention 'No discount will be granted for early payment' will be displayed on printing when it's a sale invoice addressed to a legal entity with no granted financial discount"/>
     <boolean name="displayItemsCategoriesOnPrinting"
       title="Display a statement depending on the items category on the print."
       help="This configuration will allow you to set up the statement to be displayed according to the product category present in the invoice."
@@ -351,6 +354,7 @@
 		public static final int DISTRIBUTION_TYPE_FREE = 1;
 		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
 		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
+        public static final int DISTRIBUTION_TYPE_TRADING_NAME = 4;
 
 	]]></extra-code>
 

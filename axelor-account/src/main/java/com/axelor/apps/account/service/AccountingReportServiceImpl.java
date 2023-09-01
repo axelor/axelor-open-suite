@@ -34,10 +34,12 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -56,7 +58,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -93,6 +94,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   protected String query = "";
 
   protected AccountRepository accountRepo;
+  protected MoveToolService moveToolService;
 
   protected List<Object> params = new ArrayList<>();
   protected int paramNumber = 1;
@@ -110,7 +112,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       AccountingReportPrintService accountingReportPrintService,
       MoveLineExportService moveLineExportService,
       AccountRepository accountRepo,
-      InvoicePaymentRepository invoicePaymentRepository) {
+      InvoicePaymentRepository invoicePaymentRepository,
+      MoveToolService moveToolService) {
     this.accountingReportRepo = accountingReportRepo;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
@@ -121,6 +124,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.moveLineExportService = moveLineExportService;
     this.accountRepo = accountRepo;
     this.invoicePaymentRepository = invoicePaymentRepository;
+    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -209,16 +213,20 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
     }
 
-    if (accountingReport.getDateFrom() != null) {
-      this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
-    }
+    if (accountingReport.getReportType() == null
+        || accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      if (accountingReport.getDateFrom() != null) {
+        this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
+      }
 
-    if (accountingReport.getDateTo() != null) {
-      this.addParams("self.date <= ?%d", accountingReport.getDateTo());
-    }
+      if (accountingReport.getDateTo() != null) {
+        this.addParams("self.date <= ?%d", accountingReport.getDateTo());
+      }
 
-    if (accountingReport.getDate() != null) {
-      this.addParams("self.date <= ?%d", accountingReport.getDate());
+      if (accountingReport.getDate() != null) {
+        this.addParams("self.date <= ?%d", accountingReport.getDate());
+      }
     }
 
     if (accountingReport.getJournal() != null) {
@@ -277,16 +285,22 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (journalType != null) {
         this.addParams("self.move.journal.journalType = ?%d", journalType);
       }
-      String dateFromStr = "'" + accountingReport.getDateFrom().atStartOfDay().toString() + "'";
-      String dateToStr = "'" + accountingReport.getDateTo().atTime(LocalTime.MAX).toString() + "'";
+      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
+      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String reconcileDateConditionQuery =
+          String.format(
+              "reconcile.statusSelect = %s AND reconcile.effectiveDate >= %s AND reconcile.effectiveDate <= %s",
+              ReconcileRepository.STATUS_CONFIRMED, dateFromStr, dateToStr);
       String selfReconciledQuery =
-          String.format(
-              "(self.reconcileGroup is not null AND self.reconcileGroup.letteringDateTime >= %s AND self.reconcileGroup.letteringDateTime <= %s)",
-              dateFromStr, dateToStr);
+          "(self.reconcileGroup IS NOT null AND self.reconcileGroup.letteringDateTime IS NOT null "
+              + "AND EXISTS (SELECT 1 FROM Reconcile AS reconcile WHERE "
+              + reconcileDateConditionQuery
+              + " AND self.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine = self.id OR reconcile.creditMoveLine = self.id)))";
       String otherLinedReconciledQuery =
-          String.format(
-              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.letteringDateTime >= %s AND ml.reconcileGroup.letteringDateTime <= %s AND ml.move.id = self.move.id)",
-              dateFromStr, dateToStr);
+          "EXISTS (SELECT 1 FROM MoveLine AS ml WHERE ml.reconcileGroup IS NOT null AND ml.reconcileGroup.letteringDateTime IS NOT null AND ml.move.id = self.move.id "
+              + "AND EXISTS (SELECT 1 FROM Reconcile AS reconcile WHERE "
+              + reconcileDateConditionQuery
+              + " AND ml.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine = ml.id OR reconcile.creditMoveLine = ml.id)))";
       String reconcileQuery =
           String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);
       this.addParams(reconcileQuery);
@@ -328,7 +342,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)) {
-      AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(accountingReport.getCompany());
 
@@ -336,7 +349,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           accountConfigService.getCashPositionVariationDebitAccount(accountConfig);
       Account cashPositionVariationCreditAccount =
           accountConfigService.getCashPositionVariationCreditAccount(accountConfig);
-      Set<Account> accountSet = new HashSet();
+      Set<Account> accountSet = new HashSet<>();
       if (cashPositionVariationDebitAccount != null) {
         accountSet.add(cashPositionVariationDebitAccount);
       }
@@ -362,18 +375,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
-    List<Integer> statusSelects = new ArrayList<>();
+    List<Integer> statusSelects = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
+
     if (accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
-      statusSelects.add(MoveRepository.STATUS_DAYBOOK);
-    }
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
-    if (accountConfigService
-            .getAccountConfig(accountingReport.getCompany())
-            .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
-      statusSelects.add(MoveRepository.STATUS_SIMULATED);
+      statusSelects =
+          moveToolService.getMoveStatusSelect(
+              accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
     }
 
     this.addParams(
@@ -623,7 +632,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
 
     AccountConfig accountConfig =
-        Beans.get(AccountConfigService.class).getAccountConfig(accountingReport.getCompany());
+        accountConfigService.getAccountConfig(accountingReport.getCompany());
     Integer lineMinBeforeLongReportGenerationMessageNumber =
         accountConfig.getLineMinBeforeLongReportGenerationMessageNumber();
     if (lineMinBeforeLongReportGenerationMessageNumber != null
@@ -796,15 +805,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_PAYMENT);
 
-    List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
-    if (accountConfigService
-            .getAccountConfig(accountingReport.getCompany())
-            .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
-      statusSelects.add(MoveRepository.STATUS_SIMULATED);
-    }
+    List<Integer> statusSelects =
+        moveToolService.getMoveStatusSelect(
+            accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
 
     this.addParams(
         String.format(
@@ -850,15 +853,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
-    List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
-    if (accountConfigService
-            .getAccountConfig(accountingReport.getCompany())
-            .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
-      statusSelects.add(MoveRepository.STATUS_SIMULATED);
-    }
+    List<Integer> statusSelects =
+        moveToolService.getMoveStatusSelect(
+            accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
 
     this.addParams(
         String.format(

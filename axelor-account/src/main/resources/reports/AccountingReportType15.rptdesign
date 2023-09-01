@@ -134,9 +134,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -490,7 +487,7 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND TaxPaymentMoveLine.vat_system_select = 2
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND TaxPaymentMoveLine.date_val >= AccountingReport.date_from
@@ -969,7 +966,7 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND TaxPaymentMoveLine.vat_system_select = 2
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND TaxPaymentMoveLine.date_val >= AccountingReport.date_from
@@ -1189,7 +1186,7 @@ AND Account.reconcile_ok = true
 AND  Move.ignore_in_accounting_ok = false
 AND AccountTaxType.technical_type_select like 'tax'
 AND MoveLineTax.vat_system_select = 2
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 and MoveLine.amount_remaining != 0
 and MoveLine.date_val >= AccountingReport.date_from
 and MoveLine.date_val <= AccountingReport.date_to
@@ -1403,7 +1400,7 @@ left outer join public.account_accounting_report_partner_set as PartnerSet on (P
 where AccountingReport.id = ?
 AND PaymentMode.in_out_select = 1
 AND  Move.ignore_in_accounting_ok = false 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 and MoveLine.amount_remaining != 0
 and MoveLine.date_val >= AccountingReport.date_from
 and MoveLine.date_val <= AccountingReport.date_to
@@ -4611,17 +4608,11 @@ balance
             <column id="4824">
                 <property name="width">15%</property>
             </column>
-            <column id="5122">
-                <property name="width">15%</property>
-            </column>
             <column id="4825">
-                <property name="width">15%</property>
-            </column>
-            <column id="5128">
-                <property name="width">15%</property>
+                <property name="width">25%</property>
             </column>
             <column id="4826">
-                <property name="width">15%</property>
+                <property name="width">25%</property>
             </column>
             <header>
                 <row id="4957">
@@ -4632,7 +4623,7 @@ balance
                         </structure>
                     </list-property>
                     <cell id="4958">
-                        <property name="colSpan">10</property>
+                        <property name="colSpan">8</property>
                         <property name="rowSpan">1</property>
                         <text id="4938">
                             <property name="fontSize">10pt</property>
@@ -4674,7 +4665,7 @@ balance
                         </structure>
                     </list-property>
                     <cell id="4889">
-                        <property name="colSpan">10</property>
+                        <property name="colSpan">8</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -4958,7 +4949,7 @@ balance
                         </text>
                     </cell>
                     <cell id="5119">
-                        <property name="colSpan">2</property>
+                        <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -4999,7 +4990,7 @@ balance
                         </text>
                     </cell>
                     <cell id="5125">
-                        <property name="colSpan">2</property>
+                        <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -5134,7 +5125,7 @@ balance
                         </data>
                     </cell>
                     <cell id="5120">
-                        <property name="colSpan">2</property>
+                        <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -5154,7 +5145,7 @@ balance
                         </data>
                     </cell>
                     <cell id="5126">
-                        <property name="colSpan">2</property>
+                        <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -5183,16 +5174,13 @@ balance
                     <cell id="4814"/>
                     <cell id="4815"/>
                     <cell id="4816"/>
-                    <cell id="5121"/>
                     <cell id="4817"/>
-                    <cell id="5127"/>
                     <cell id="4818"/>
                 </row>
             </footer>
         </table>
         <table id="4827">
             <property name="fontSize">8pt</property>
-            <property name="width">11.489583333333334in</property>
             <property name="dataSet">MoveLineAdvancePaymentNotLetteredDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -5263,13 +5251,13 @@ balance
                 <property name="width">15%</property>
             </column>
             <column id="4872">
-                <property name="width">7%</property>
+                <property name="width">10%</property>
             </column>
             <column id="4873">
                 <property name="width">15%</property>
             </column>
             <column id="4874">
-                <property name="width">40%</property>
+                <property name="width">50%</property>
             </column>
             <column id="4875">
                 <property name="width">15%</property>
@@ -5277,14 +5265,8 @@ balance
             <column id="4876">
                 <property name="width">15%</property>
             </column>
-            <column id="5134">
-                <property name="width">5%</property>
-            </column>
             <column id="4877">
-                <property name="width">20%</property>
-            </column>
-            <column id="5140">
-                <property name="width">10%</property>
+                <property name="width">25%</property>
             </column>
             <column id="4878">
                 <property name="width">25%</property>
@@ -5298,7 +5280,7 @@ balance
                         </structure>
                     </list-property>
                     <cell id="4967">
-                        <property name="colSpan">10</property>
+                        <property name="colSpan">8</property>
                         <property name="rowSpan">1</property>
                         <text id="4937">
                             <property name="fontSize">10pt</property>
@@ -5340,7 +5322,7 @@ balance
                         </structure>
                     </list-property>
                     <cell id="4880">
-                        <property name="colSpan">10</property>
+                        <property name="colSpan">8</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -5624,7 +5606,7 @@ balance
                         </text>
                     </cell>
                     <cell id="5131">
-                        <property name="colSpan">2</property>
+                        <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -5665,7 +5647,7 @@ balance
                         </text>
                     </cell>
                     <cell id="5137">
-                        <property name="colSpan">2</property>
+                        <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -5800,7 +5782,7 @@ balance
                         </data>
                     </cell>
                     <cell id="5132">
-                        <property name="colSpan">2</property>
+                        <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -5820,7 +5802,7 @@ balance
                         </data>
                     </cell>
                     <cell id="5138">
-                        <property name="colSpan">2</property>
+                        <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -5849,9 +5831,7 @@ balance
                     <cell id="4866"/>
                     <cell id="4867"/>
                     <cell id="4868"/>
-                    <cell id="5133"/>
                     <cell id="4869"/>
-                    <cell id="5139"/>
                     <cell id="4870"/>
                 </row>
             </footer>

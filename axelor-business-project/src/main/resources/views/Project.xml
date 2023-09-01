@@ -29,13 +29,95 @@
       <insert position="after">
         <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
         <field name="projectTimeUnit" if="__config__.app.isApp('business-project')"/>
+        <field name="spentTimeCostComputationMethod"
+          if="__config__.app.isApp('business-project')"/>
       </insert>
     </extend>
     <extend target="//menu[@name='projectToolsMenu']">
       <insert position="inside">
         <item title="Compute project totals"
           action="save,action-project-method-compute-project-totals"
-          if="__config__.app.isApp('business-project')" showIf="id"/>
+          if="__config__.app.isApp('business-project')" showIf="id &amp;&amp;isBusinessProject"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='salesPanel']">
+      <insert position="before">
+        <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project')" hidden="true" showIf="isBusinessProject">
+          <panel title="Time follow-up" colSpan="12">
+            <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
+              showTitle="false"/>
+            <panel-dashlet action="action-project-view-updated-time-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-planned-time-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-spent-time-custom" colSpan="3"
+              showTitle="false"/>
+
+            <panel-dashlet action="action-project-view-percentage-progress-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-percentage-consumption-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-remaining-to-do-custom"
+              colSpan="3" showTitle="false"/>
+          </panel>
+
+          <panel title="Financial follow-up" colSpan="12">
+            <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
+              <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"/>
+              <panel-dashlet action="action-project-view-initial-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-initial-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-initial-markup-custom"
+                colSpan="3"/>
+              <field name="turnover" hidden="true"/>
+              <field name="initialCosts" hidden="true"/>
+              <field name="initialMargin" hidden="true"/>
+              <field name="initialMarkup" hidden="true"/>
+            </panel>
+            <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+              <panel-dashlet action="action-project-view-forecast-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-forecast-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-forecast-markup-custom"
+                colSpan="3"/>
+              <field name="forecastCosts" hidden="true"/>
+              <field name="forecastMargin" hidden="true"/>
+              <field name="forecastMarkup" hidden="true"/>
+            </panel>
+            <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
+              <panel-dashlet action="action-project-view-real-turnover-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-real-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-real-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-real-markup-custom"
+                colSpan="3"/>
+              <field name="realTurnover" hidden="true"/>
+              <field name="realCosts" hidden="true"/>
+              <field name="realMargin" hidden="true"/>
+              <field name="realMarkup" hidden="true"/>
+            </panel>
+            <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
+              <panel-dashlet action="action-project-view-landing-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-landing-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-landing-markup-custom"
+                colSpan="3"/>
+              <field name="landingCosts" hidden="true"/>
+              <field name="landingMargin" hidden="true"/>
+              <field name="landingMarkup" hidden="true"/>
+            </panel>
+          </panel>
+          <panel name="projectHistoryPanel" title="Project history" colSpan="12">
+            <field name="projectHistoryLineList" colSpan="12" canNew="false" canEdit="false"
+              canRemove="false" title=""/>
+          </panel>
+        </panel>
       </insert>
     </extend>
   </form>

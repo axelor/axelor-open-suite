@@ -191,7 +191,6 @@
       </panel>
       <panel title="Log Times" name="logTimesPanel" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource" showIf="isShowTimeSpent">
-        <field name="timeSpent" title="Time Spent" readonly="true" colSpan="3"/>
         <panel-dashlet name="validatedTimesheetsPanel"
           if="__config__.app.getApp('timesheet')?.needValidation"
           action="action-project-dashlet-validated-timesheet-lines"
@@ -673,19 +672,29 @@
 
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
+    <column name="initial" type="decimal"/>
+    <column name="real" type="decimal"/>
+    <column name="forecast" type="decimal"/>
     <column name="assignedTo" type="reference"/>
     <column name="openTaskBtn" type="button"/>
+    <column name="createSubtaskBtn" type="button"/>
     <column name="deleteTaskBtn" type="button"/>
 
     <node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id"
       onClick="action-project-task-view-task" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
+      <field name="initialMarkup" as="initial"/>
+      <field name="realMarkup" as="real"/>
+      <field name="forecastMarkup" as="forecast"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
-      <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+      <button name="createSubtaskBtn" icon="fa-plus"
+        onClick="save, action-project-view-add-subtask"/>
+      <button name="deleteTaskBtn" icon="fa-times"
+        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+      <button name="openTaskBtn" icon="fa-external-link"
+        onClick="action-project-task-open-task"/>
     </node>
 
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
@@ -694,9 +703,12 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
-      <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+      <button name="createSubtaskBtn" icon="fa-plus"
+        onClick="save, action-project-view-add-subtask"/>
+      <button name="deleteTaskBtn" icon="fa-times"
+        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+      <button name="openTaskBtn" icon="fa-external-link"
+        onClick="action-project-task-open-task"/>
     </node>
 
   </tree>
@@ -900,6 +912,18 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-project-view-add-subtask"
+    model="com.axelor.apps.project.db.ProjectTask" title="Task">
+    <view name="project-task-form" type="form"/>
+    <view name="project-task-grid" type="grid"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_project" expr="eval:__this__.project"/>
+    <context name="_parentTask" expr="eval:__this__"/>
+  </action-view>
+
   <action-record name="action-project-record-bind-customer-project"
     model="com.axelor.apps.project.db.Project">
     <field name="clientPartner" expr="eval: project?.clientPartner"/>
@@ -958,6 +982,10 @@
 
   <action-validate name="action-wizard-validate-project-select">
     <error message="Please select project" if="eval: projectSet == null || projectSet  == 0"/>
+  </action-validate>
+
+  <action-validate name="action-project-task-validate-delete-team-task-confirmation">
+    <alert message="Are you sure you want to delete this task ?"/>
   </action-validate>
 
   <action-attrs name="action-business-support-attrs-project-default">
@@ -1111,7 +1139,6 @@
     <field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
     <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="isInvoicingTimesheet" hidden="true"
       if="!__config__.app.isApp('business-project')"/>

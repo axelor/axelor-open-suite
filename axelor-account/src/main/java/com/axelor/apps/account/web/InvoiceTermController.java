@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -65,12 +64,18 @@ public class InvoiceTermController {
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
         BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
-        BigDecimal amount =
-            Beans.get(InvoiceTermService.class).getCustomizedAmount(invoiceTerm, total);
+
+        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+        BigDecimal amount = invoiceTermService.getCustomizedAmount(invoiceTerm, total);
+        invoiceTerm.setAmount(amount);
+        invoiceTerm.setAmountRemaining(amount);
+        invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
 
         if (amount.signum() > 0) {
-          response.setValue("amount", amount);
-          response.setValue("amountRemaining", amount);
+          response.setValue("amount", invoiceTerm.getAmount());
+          response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
+          response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
+          response.setValue("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
         }
       }
     } catch (Exception e) {
@@ -94,8 +99,14 @@ public class InvoiceTermController {
         BigDecimal percentage =
             invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
 
+        invoiceTerm.setPercentage(percentage);
+        invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+        invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
+
         response.setValue("percentage", percentage);
-        response.setValue("amountRemaining", invoiceTerm.getAmount());
+        response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
+        response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
+        response.setValue("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
         response.setValue(
             "isCustomized",
             invoiceTerm.getPaymentConditionLine() == null
@@ -231,11 +242,9 @@ public class InvoiceTermController {
 
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
-      InvoiceTerm invoiceterm =
-          Beans.get(InvoiceTermRepository.class)
-              .find(request.getContext().asType(InvoiceTerm.class).getId());
+      InvoiceTerm invoiceterm = request.getContext().asType(InvoiceTerm.class);
       Beans.get(InvoiceTermPfpService.class).validatePfp(invoiceterm, AuthUtils.getUser());
-      response.setReload(true);
+      response.setValues(invoiceterm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -380,17 +389,6 @@ public class InvoiceTermController {
     }
   }
 
-  public void computeTotalPaymentSession(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      Beans.get(PaymentSessionService.class)
-          .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
@@ -444,12 +442,14 @@ public class InvoiceTermController {
       response.setValue("$isMultiCurrency", isMultiCurrency);
       MoveLine moveLine = invoiceTerm.getMoveLine();
       Invoice invoice = invoiceTerm.getInvoice();
-      Move move = moveLine.getMove();
       if (invoice != null
               && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
           || (invoice == null
-              && move != null
-              && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency()))) {
+              && moveLine != null
+              && moveLine.getMove() != null
+              && !Objects.equals(
+                  moveLine.getMove().getCurrency(),
+                  moveLine.getMove().getCompany().getCurrency()))) {
         response.setAttr("amount", "title", I18n.get("Amount in currency"));
         response.setAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"));
       }

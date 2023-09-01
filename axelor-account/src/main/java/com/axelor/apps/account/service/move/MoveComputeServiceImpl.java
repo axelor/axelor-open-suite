@@ -68,7 +68,8 @@ public class MoveComputeServiceImpl implements MoveComputeService {
         move.getMoveLineList().stream()
             .filter(isDebitCreditFilter)
             .map(MoveLine::getCurrencyAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .abs();
     values.put("$totalCurrency", totalCurrency);
 
     BigDecimal difference = totalDebit.subtract(totalCredit);

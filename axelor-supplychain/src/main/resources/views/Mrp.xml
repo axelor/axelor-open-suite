@@ -42,7 +42,6 @@
         <viewer depends="mrpSeq,mrpTypeSelect"><![CDATA[
 					<h3>
 						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 1" x-translate>MRP</span>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 2" x-translate>MPS</span>
 						{{record.mrpSeq}}
 					</h3>
 				]]></viewer>
@@ -56,11 +55,11 @@
       <field name="id"/>
       <spacer/>
       <field name="name"/>
-      <field name="createdOn" colSpan="4"/>
-      <field name="startDateTime" colSpan="4" readonly="true"/>
-      <field name="endDateTime" colSpan="4" readonly="true"/>
-      <field name="createdBy"/>
-      <field name="endDate" colSpan="6" hideIf="mrpTypeSelect == 2"/>
+      <field name="createdOn" colSpan="3"/>
+      <field name="createdBy" colSpan="3"/>
+      <field name="startDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
+      <field name="endDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
+      <field name="endDate" colSpan="6"/>
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" colSpan="6"
         domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)"
@@ -71,7 +70,7 @@
       <field name="mrpTypeSelect" hidden="true"/>
       <panel-related name="productSetPanel" field="productSet" canEdit="false"
         form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12"
-        domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND (:mrpTypeSelect = 1 OR self.productSubTypeSelect = 1) AND self.dtype = 'Product'"/>
+        domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND self.dtype = 'Product'"/>
       <panel-related name="productCategorySetPanel" field="productCategorySet"
         canEdit="false" form-view="product-category-form" grid-view="product-category-grid"
         canNew="false" colSpan="12"/>
@@ -85,7 +84,7 @@
         help="A list of sale order lines that will be processed. The lines that can be selected are the ones conforming to the following conditions :\nProduct is storable\nProduct is managed in stock\nProduct is not excluded from mrp\nSale order/quotation has the same stockLocation or a subLocation\nIf MPS, product must be a finished product\nDelivered quantity of the line must be lower than total quantity\nThe line must conform to one or several of the mrp move types"/>
       <panel-related name="mrpForecastSetPanel" field="mrpForecastSet"
         form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12"
-        domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true AND (:mrpTypeSelect = 1 OR self.product.productSubTypeSelect = 1)"/>
+        domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true"/>
     </panel>
     <panel name="statusPanel" showIf="statusSelect == 1" colSpan="12">
       <field name="statusSelect" hidden="true"/>

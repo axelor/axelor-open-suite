@@ -42,11 +42,15 @@
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
     <field name="statusSelect"/>
+    <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
+    <field name="manufOrder.prodProcess" hidden="true"/>
+    <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
+    <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
     <button name="planBtn" icon="fa-calendar" onClick="action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
     <button name="startBtn" icon="fa-play" onClick="action-operation-order-group-start"
-      readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+      readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
     <button name="pauseBtn" icon="fa-pause"
       onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
     <button name="finishBtn" icon="fa-power-off"
@@ -69,12 +73,16 @@
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
     <field name="statusSelect"/>
+    <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
+    <field name="manufOrder.prodProcess" hidden="true"/>
+    <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
+    <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
     <button name="planBtn" icon="fa-calendar"
       onClick="save,action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
     <button name="startBtn" icon="fa-play" onClick="save,action-operation-order-group-start"
-      readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+      readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
     <button name="pauseBtn" icon="fa-pause"
       onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
     <button name="finishBtn" icon="fa-power-off"
@@ -127,6 +135,11 @@
           onChange="action-operation-order-record-set-planned-start-date-time-and-duration"/>
         <field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true"
           x-big="true" onChange="action-operation-order-record-set-planned-end-date-time"/>
+        <field name="plannedHumanDuration" colSpan="12" widget="duration" x-seconds="true"
+          x-big="true" hideIf="workCenter.workCenterTypeSelect == 2"/>
+        <field name="plannedMachineDuration" colSpan="12" widget="duration" x-seconds="true"
+          x-big="true" hideIf="workCenter.workCenterTypeSelect == 1"/>
+        <field name="workCenter.workCenterTypeSelect" hidden="true"/>
       </panel>
       <panel name="realDatesPanel" title="Real dates" colSpan="6">
         <field name="realStartDateT"
@@ -139,15 +152,13 @@
     </panel>
     <panel name="resourcesPanel" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
       <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"
-        colSpan="4" onChange="action-operation-order-attrs-workcenter-machine"/>
+        colSpan="4" onChange="action-operation-order-attrs-workcenter-machine"
+        onSelect="action-operation-order-attrs-set-work-center-domain"/>
       <field name="machine" hidden="true" readonly="true" grid-view="machine-grid"
         form-view="machine-form" colSpan="4"/>
       <field name="machineTool" domain="self.machine = machine" form-view="machine-tool-form"
         grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
-      <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList"
-        readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid"
-        form-view="prod-human-resource-form"/>
       <field name="prodProcessLine.description" colSpan="12"/>
       <field name="prodProcessLine.objectDescriptionList" colSpan="12" height="20"/>
     </panel>
@@ -173,10 +184,14 @@
     </panel>
     <panel name="actionsPanel" title="Actions" sidebar="true" colSpan="12" showIf="id"
       readonlyIf="statusSelect == 6">
+      <field name="manufOrder.prodProcess" hidden="true"/>
+      <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
+      <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
       <button name="planBtn" title="Plan" icon="fa-calendar" colSpan="12"
         hideIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"
         onClick="save,action-operation-order-method-plan" hidden="true"/>
-      <button name="startBtn" title="Start" icon="fa-play" showIf="statusSelect == 3"
+      <button name="startBtn" title="Start" icon="fa-play"
+        showIf="(statusSelect == 3 &amp;&amp; !($get('manufOrder.prodProcess.operationContinuity'))) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; (!$get('prodProcessLine.optional') &amp;&amp; (priority == $get('manufOrder.operationOrderMaxPriority'))))) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; ($get('prodProcessLine.optional') &amp;&amp; (priority &lt; $get('manufOrder.operationOrderMaxPriority')))))"
         colSpan="12" onClick="save,action-operation-order-group-start,save" hidden="true"/>
       <button name="cancelBtn" title="Cancel" icon="fa-times-circle"
         showIf="statusSelect != 2 &amp;&amp; statusSelect != 6" colSpan="12"
@@ -189,8 +204,8 @@
       <button name="pauseBtn" title="Pause" icon="fa-pause" showIf="statusSelect == 4"
         colSpan="12" onClick="save,action-operation-order-method-pause,save" hidden="true"/>
       <button name="resumeBtn" title="Resume" icon="fa-step-forward"
-        showIf="statusSelect == 5" colSpan="12"
-        onClick="save,action-operation-order-method-resume,save" hidden="true"/>
+        showIf="(statusSelect == 5 &amp;&amp; !($get('manufOrder.prodProcess.operationContinuity'))) || (statusSelect == 5 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; (!$get('prodProcessLine.optional') &amp;&amp; (priority == $get('manufOrder.operationOrderMaxPriority'))))) || (statusSelect == 5 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; ($get('prodProcessLine.optional') &amp;&amp; (priority &lt; $get('manufOrder.operationOrderMaxPriority')))))"
+        colSpan="12" onClick="save,action-operation-order-method-resume,save" hidden="true"/>
     </panel>
 
     <panel-related name="operationOrderDurationListPanel"
@@ -302,6 +317,12 @@
     <attribute for="machine" name="value" expr="eval: workCenter?.machine"/>
     <attribute name="hidden" for="machine"
       expr="eval: workCenter?.workCenterTypeSelect == 1"/>
+  </action-attrs>
+
+  <action-attrs name="action-operation-order-attrs-set-work-center-domain">
+    <attribute name="domain" for="workCenter"
+      expr="eval: 'self.id IN (' + prodProcessLine?.workCenterGroup?.workCenterSet?.collect{ it.id }.join(',') + ')'"
+      if="prodProcessLine?.workCenterGroup?.workCenterSet &amp;&amp; !prodProcessLine?.workCenterGroup?.workCenterSet.isEmpty()"/>
   </action-attrs>
 
   <action-record

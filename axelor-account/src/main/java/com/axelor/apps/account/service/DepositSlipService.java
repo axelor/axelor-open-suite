@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.base.AxelorException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface DepositSlipService {
 
@@ -54,6 +56,10 @@ public interface DepositSlipService {
    * @throws IOException
    */
   void validate(DepositSlip depositSlip) throws AxelorException;
+
+  List<Integer> getSelectedPaymentVoucherDueIdList(List<Map<String, Object>> paymentVoucherDueList);
+
+  BigDecimal getTotalAmount(DepositSlip depositSlip, List<Integer> selectedPaymentVoucherDueIdList);
 
   void updateInvoicePayments(DepositSlip depositSlip, LocalDate depositDate);
 }

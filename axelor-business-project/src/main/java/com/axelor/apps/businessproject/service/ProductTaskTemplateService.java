@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -46,5 +47,15 @@ public interface ProductTaskTemplateService {
       LocalDateTime startDate,
       BigDecimal qty,
       SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  void fillProjectTask(
+      Project project,
+      BigDecimal qty,
+      SaleOrderLine saleOrderLine,
+      List<ProjectTask> tasks,
+      Product product,
+      ProjectTask task,
+      ProjectTask parent)
       throws AxelorException;
 }

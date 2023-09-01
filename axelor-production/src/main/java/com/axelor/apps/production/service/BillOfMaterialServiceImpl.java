@@ -478,7 +478,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     return billOfMaterialRepo
         .all()
         .filter(
-            "self.product = ?1 AND self.company = ?2 AND self.statusSelect = ?3",
+            "self.product = ?1 AND self.company = ?2 AND self.statusSelect = ?3 AND (self.archived is null or self.archived is false)",
             originalProduct,
             company,
             BillOfMaterialRepository.STATUS_APPLICABLE)
@@ -503,16 +503,21 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       if (obj != null) {
         billOfMaterial = (BillOfMaterial) obj;
       }
+
+      BillOfMaterial defaultBillOfMaterial = originalProduct.getDefaultBillOfMaterial();
+      // If we can't find any, check for the default BOM for the product if it has the same company
+      // as the cost calculation
+      if (billOfMaterial == null
+          && defaultBillOfMaterial != null
+          && defaultBillOfMaterial.getCompany() != null
+          && defaultBillOfMaterial.getCompany().equals(company)) {
+        billOfMaterial = defaultBillOfMaterial;
+      }
+
       // If we can't find any
       if (billOfMaterial == null) {
         // Get any BOM with original product and company.
         billOfMaterial = getAnyBOM(originalProduct, company);
-      }
-
-      // If we can't find any again, then we take the default bom of the original product regardless
-      // of the company
-      if (billOfMaterial == null) {
-        billOfMaterial = originalProduct.getDefaultBillOfMaterial();
       }
     }
 
@@ -533,6 +538,62 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     List<Long> productIds = (List<Long>) query.getResultList();
 
     return productIds;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setDraftStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_NULL_STATUS));
+    } else if (billOfMaterial.getStatusSelect() != null
+        && billOfMaterial.getStatusSelect() == BillOfMaterialRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_ALREADY_DRAFT_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_DRAFT);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setValidateStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_VALIDATED_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_VALIDATED);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setApplicableStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_APPLICABLE_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_APPLICABLE);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setObsoleteStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_APPLICABLE) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_OBSOLETE_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_OBSOLETE);
+    return billOfMaterialRepo.save(billOfMaterial);
   }
 
   @Override

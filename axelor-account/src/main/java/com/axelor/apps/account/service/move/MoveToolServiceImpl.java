@@ -56,7 +56,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -360,9 +362,9 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     for (MoveLine moveLine : moveLineList) {
       if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
-        balance = balance.add(moveLine.getCurrencyAmount());
+        balance = balance.add(moveLine.getCurrencyAmount().abs());
       } else {
-        balance = balance.subtract(moveLine.getCurrencyAmount());
+        balance = balance.subtract(moveLine.getCurrencyAmount().abs());
       }
     }
     return balance;
@@ -517,6 +519,17 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
   }
 
+  @Override
+  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
+    if (isDebit) {
+      return currencyAmount.abs();
+    } else {
+      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
+          ? currencyAmount
+          : currencyAmount.negate();
+    }
+  }
+
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
     if (period != null) {
@@ -632,18 +645,51 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public List<Move> getMovesWithDuplicatedOrigin(Move move) {
     List<Move> moveList = null;
+    StringBuilder query =
+        new StringBuilder("self.origin = :origin AND self.period.year = :periodYear");
+    Map<String, Object> params = new HashMap<>();
+
     if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
-      moveList =
-          moveRepository
-              .all()
-              .filter(
-                  "(?1 is null OR self.id != ?1) AND self.origin = ?2 AND self.period.year = ?3  AND (?4 is null OR self.partner = ?4)",
-                  move.getId(),
-                  move.getOrigin(),
-                  move.getPeriod().getYear(),
-                  move.getPartner())
-              .fetch();
+      params.put("origin", move.getOrigin());
+      params.put("periodYear", move.getPeriod().getYear());
+
+      if (move.getId() != null) {
+        query.append(" AND self.id != :moveId");
+        params.put("moveId", move.getId());
+      }
+
+      if (ObjectUtils.notEmpty(move.getPartner())) {
+        query.append(" AND self.partner = :partner");
+        params.put("partner", move.getPartner());
+      }
+
+      moveList = moveRepository.all().filter(query.toString()).bind(params).fetch();
     }
     return moveList;
+  }
+
+  @Override
+  public List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company) {
+    List<Integer> statusList = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
+
+    if (ObjectUtils.isEmpty(moveStatusSelect) || company == null) {
+      return statusList;
+    }
+    try {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+      if (accountConfig.getAccountingDaybook()
+          && moveStatusSelect.contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
+        statusList.add(MoveRepository.STATUS_DAYBOOK);
+      }
+      if (accountConfig.getIsActivateSimulatedMove()
+          && moveStatusSelect.contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
+        statusList.add(MoveRepository.STATUS_SIMULATED);
+      }
+    } catch (Exception e) {
+      return statusList;
+    }
+
+    return statusList;
   }
 }

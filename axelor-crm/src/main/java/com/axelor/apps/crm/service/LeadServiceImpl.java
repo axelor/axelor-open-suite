@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LeadServiceImpl implements LeadService {
 
@@ -248,7 +249,33 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Override
-  public LeadStatus getDefaultLeadStatus() {
-    return leadStatusRepo.getDefaultStatus();
+  public LeadStatus getDefaultLeadStatus() throws AxelorException {
+    return appCrmService.getLeadDefaultStatus();
+  }
+
+  @Override
+  public boolean computeIsLost(Lead lead) throws AxelorException {
+    return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());
+  }
+
+  @Override
+  public void kanbanLeadOnMove(Lead lead) throws AxelorException {
+    LeadStatus leadStatus = lead.getLeadStatus();
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+
+    if (Objects.isNull(leadStatus)) {
+      return;
+    }
+    if (leadStatus.equals(convertedLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_KANBAN));
+    }
+    if (leadStatus.equals(lostLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
+    }
   }
 }

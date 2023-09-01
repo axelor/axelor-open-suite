@@ -90,6 +90,11 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       }
     }
 
+    Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
+    if (pfpStatus != null) {
+      move.setPfpValidateStatusSelect(pfpStatus);
+    }
+
     return flashMessage;
   }
 
@@ -143,6 +148,13 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
         return appBaseService.getTodayDate(null).plusDays(1);
       default:
         return null;
+    }
+  }
+
+  @Override
+  public void resetDueDate(Move move) {
+    if (move.getPaymentCondition() == null || !moveInvoiceTermService.displayDueDate(move)) {
+      move.setDueDate(null);
     }
   }
 }

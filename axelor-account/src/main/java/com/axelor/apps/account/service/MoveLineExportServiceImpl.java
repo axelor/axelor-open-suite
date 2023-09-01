@@ -485,10 +485,6 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     }
 
     items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
-    if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0
-        && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      items[16] = "-" + items[16];
-    }
 
     if (move.getCurrency() != null) {
       items[17] = move.getCurrency().getCodeISO();

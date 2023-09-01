@@ -13,6 +13,25 @@
     <a class="btn btn-small btn-success" href="" ui-action-click="action-product-create-purcahse-request"
     x-translate if="__config__.app.isApp('purchase-request')" >Add</a> </div> </div> ]]> </template> </cards> -->
 
+  <form name="product-form" title="Product" id="purchase-product-form"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="//panel[@name='purchaseCostsPanel']">
+      <insert position="inside">
+        <panel-dashlet name="orderHistoryPanel" title="Order history"
+          action="action-product-view-show-purchase-order-line-history" colSpan="12"
+          showIf="purchasable"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-product-view-show-purchase-order-line-history"
+    title="Order history" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <view type="grid" name="purchase-order-line-history-grid"/>
+    <view type="form" name="purchase-order-line-form"/>
+    <domain>self.product.id = :id AND self.purchaseOrder.orderDate &lt; :__date__ AND
+      self.purchaseOrder.statusSelect IN (3,4)</domain>
+  </action-view>
+
   <action-view name="action-product-create-purcahse-request"
     model="com.axelor.apps.purchase.db.PurchaseRequest" title="Purchase request">
     <view type="form" name="purchase-request-form"/>
