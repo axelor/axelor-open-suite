@@ -83,14 +83,18 @@ public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
   protected BankDetailsService bankDetailsService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
   public IntercoServiceImpl(
-      PurchaseConfigService purchaseConfigService, BankDetailsService bankDetailsService) {
+      PurchaseConfigService purchaseConfigService,
+      BankDetailsService bankDetailsService,
+      AnalyticLineModelService analyticLineModelService) {
     this.purchaseConfigService = purchaseConfigService;
     this.bankDetailsService = bankDetailsService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -330,9 +334,9 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
 
     // analyticDistribution
-    saleOrderLine =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
-            .getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+
     if (saleOrderLine.getAnalyticMoveLineList() != null) {
       for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
         obj.setSaleOrderLine(saleOrderLine);

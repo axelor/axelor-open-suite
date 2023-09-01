@@ -31,7 +31,6 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -80,7 +79,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
   protected AppAccountService appAccountService;
-  protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
@@ -92,7 +90,6 @@ public class MoveLineServiceImpl implements MoveLineService {
       PaymentService paymentService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
       AccountingCutOffService cutOffService) {
@@ -101,7 +98,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.paymentService = paymentService;
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
-    this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
@@ -402,14 +398,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
 
     return moveLine;
-  }
-
-  @Override
-  public boolean checkManageAnalytic(Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
   }
 
   @Override

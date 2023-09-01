@@ -16,18 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.quality.service;
 
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.quality.db.QIResolution;
+import com.axelor.apps.quality.db.QIResolutionDecision;
 
-public interface PartnerSupplychainLinkService {
+public interface QIResolutionDecisionService {
 
-  /**
-   * Computes the filter for the given partner field.
-   *
-   * @param partner the main partner to search for related partners
-   * @param strFilter the type of the filter needed
-   * @return the computed filter to be used as a JPQL domain attribute
-   */
-  String computePartnerFilter(Partner partner, String strFilter);
+  boolean checkQuantity(QIResolutionDecision qiResolutionDecision, QIResolution qiResolution);
 }

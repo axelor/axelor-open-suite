@@ -3,18 +3,19 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid model="com.axelor.apps.supplychain.db.PartnerSupplychainLinkType"
-    title="Supply chain links type" editable="true" name="partner-supplychain-link-type-grid">
+  <grid name="partner-link-type-grid" title="Partner relation type"
+    model="com.axelor.apps.base.db.PartnerLinkType" editable="true">
+    <field name="name"/>
     <field name="typeSelect"/>
     <field name="link1Name"/>
     <field name="link2Name"/>
   </grid>
 
-
-  <form model="com.axelor.apps.supplychain.db.PartnerSupplychainLinkType"
-    title="Supply chain type" name="partner-supplychain-link-type-form">
-    <panel>
-      <field name="typeSelect" colSpan="6"/>
+  <form name="partner-link-type-form" title="Partner relation type"
+    model="com.axelor.apps.base.db.PartnerLinkType">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="typeSelect"/>
       <field name="link1Name"/>
       <field name="link2Name"/>
     </panel>

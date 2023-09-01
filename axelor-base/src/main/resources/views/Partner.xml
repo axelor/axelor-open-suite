@@ -351,16 +351,12 @@
           if-module="axelor-account"/>
       </panel>
     </panel>
-    <panel colSpan="12" itemSpan="6" name="partnerSupplyChainLinkListPanel"
-      showIf="isProspect || isCustomer"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.activatePartnerRelations"
-      if-module="axelor-supplychain">
-      <panel-related field="partner1SupplychainLinkList"
-        grid-view="partner-supplychain-link-partner-1-grid"
-        form-view="partner-supplychain-link-form" colSpan="6"/>
-      <panel-related field="partner2SupplychainLinkList"
-        grid-view="partner-supplychain-link-partner-2-grid"
-        form-view="partner-supplychain-link-form" colSpan="6"/>
+    <panel colSpan="12" name="partnerLinkPanel" showIf="isProspect || isCustomer"
+      if="__config__.app.getApp('base')?.activatePartnerRelations">
+      <panel-related field="managedByPartnerLinkList"
+        grid-view="partner-link-partner-1-grid" form-view="partner-link-partner-1-form"/>
+      <panel-related field="managedForPartnerLinkList"
+        grid-view="partner-link-partner-2-grid" form-view="partner-link-partner-2-form"/>
     </panel>
     <panel-dashlet action="action-partner-view-subsidiary-partners"
       name="subsidiaryPartners" showIf="partnerTypeSelect == 1"

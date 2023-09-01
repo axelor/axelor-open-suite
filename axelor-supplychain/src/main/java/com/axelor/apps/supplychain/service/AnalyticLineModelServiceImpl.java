@@ -1,18 +1,17 @@
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
@@ -32,28 +31,28 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
   protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
-  protected AccountConfigService accountConfigService;
   protected AnalyticMoveLineService analyticMoveLineService;
-  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AccountManagementAccountService accountManagementAccountService;
+  protected AnalyticToolService analyticToolService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
       AppBaseService appBaseService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
       AnalyticMoveLineService analyticMoveLineService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      AccountManagementAccountService accountManagementAccountService,
+      AnalyticToolService analyticToolService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
-    this.accountConfigService = accountConfigService;
     this.analyticMoveLineService = analyticMoveLineService;
-    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.accountManagementAccountService = accountManagementAccountService;
+    this.analyticToolService = analyticToolService;
   }
 
   @Override
   public boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel, Company company)
       throws AxelorException {
-    if (!moveLineComputeAnalyticService.checkManageAnalytic(company) || analyticLineModel == null) {
+    if (!analyticToolService.isManageAnalytic(company) || analyticLineModel == null) {
       return false;
     }
 
@@ -88,9 +87,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AnalyticLineModel analyticLineModel, Company company, AnalyticAccount analyticAccount)
       throws AxelorException {
 
-    AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();
-    // TODO add computeAnalytic() into AnalyticMoveLineService
-    //        analyticMoveLine = analyticMoveLineService.computeAnalytic(company, analyticAccount);
+    AnalyticMoveLine analyticMoveLine =
+        analyticMoveLineService.computeAnalytic(company, analyticAccount);
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
     analyticMoveLine.setAmount(analyticLineModel.getExTaxTotal());
@@ -101,12 +99,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
   public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException {
-    AccountConfig accountConfig =
-        accountConfigService.getAccountConfig(analyticLineModel.getCompany());
-
-    if (!accountConfig.getManageAnalyticAccounting()
-        || accountConfig.getAnalyticDistributionTypeSelect()
-            == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+    if (!productAccountManageAnalytic(analyticLineModel)
+        || isFreeAnalyticDistribution(analyticLineModel)) {
       return analyticLineModel;
     }
 
@@ -129,6 +123,29 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     analyticLineModel.copyToModel();
 
     return analyticLineModel;
+  }
+
+  @Override
+  public boolean isFreeAnalyticDistribution(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    return analyticToolService.isFreeAnalyticDistribution(analyticLineModel.getCompany());
+  }
+
+  @Override
+  public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    Product product = analyticLineModel.getProduct();
+    return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
+        && product != null
+        && product.getProductFamily() != null
+        && accountManagementAccountService
+            .getProductAccount(
+                product,
+                analyticLineModel.getCompany(),
+                analyticLineModel.getFiscalPosition(),
+                analyticLineModel.getIsPurchase(),
+                false)
+            .getAnalyticDistributionAuthorized();
   }
 
   @Override

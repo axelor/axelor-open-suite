@@ -197,4 +197,21 @@ public class HRDashboardController {
       TraceBackService.trace(response, e);
     }
   }
+
+  @SuppressWarnings("unchecked")
+  public void getEmployeeMedicalVisitData(ActionRequest request, ActionResponse response) {
+    Employee employee = null;
+
+    LinkedHashMap<String, Object> employeeMap =
+        ((LinkedHashMap<String, Object>) request.getData().get("employee"));
+
+    if (employeeMap != null) {
+      employee =
+          Beans.get(EmployeeRepository.class)
+              .find(Long.parseLong(employeeMap.get("id").toString()));
+    }
+    List<Map<String, Object>> extraHrsData =
+        Beans.get(HRDashboardService.class).getEmployeeMedicalVisitData(employee);
+    response.setData(extraHrsData);
+  }
 }
