@@ -7,16 +7,17 @@
     model="com.axelor.apps.budget.db.GlobalBudget" orderBy="code">
     <field name="code"/>
     <field name="name"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
     <field name="totalAmountExpected"/>
     <field name="totalAmountCommitted"/>
     <field name="totalFirmGap"/>
     <field name="realizedWithNoPo" width="200"/>
     <field name="realizedWithPo" width="200"/>
     <field name="totalAmountAvailable"/>
-    <field name="statusSelect"/>
-    <field name="budgetManager" width="150"/>
     <field name="simulatedAmount"/>
     <field name="availableAmountWithSimulated"/>
+    <field name="statusSelect"/>
   </grid>
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
@@ -67,10 +68,12 @@
 
         <panel name="versionPanel" itemSpan="4" colSpan="12" hideIf="statusSelect == 0">
           <field name="activeVersion" readonly="true"/>
-          <button name="new-budget-version" title="Create New version"
-            onClick="action-view-global-budget-budget-version-new"/>
-          <button name="change-budget-version" title="Change budget version"
-            onClick="action-view-global-budget-budget-version-change"/>
+          <panel name="versionButtonsPanel" hideIf="statusSelect == 3">
+            <button name="new-budget-version" title="Create New version"
+              onClick="action-view-global-budget-budget-version-new"/>
+            <button name="change-budget-version" title="Change budget version"
+              onClick="action-view-global-budget-budget-version-change"/>
+          </panel>
         </panel>
 
         <field name="comments" widget="html"/>
@@ -262,6 +265,7 @@
     title="Sections" model="com.axelor.apps.budget.db.BudgetLevel">
     <view type="grid" name="budget-level-node-grid"/>
     <view type="form" name="budget-section-budget-level-form"/>
+    <view-param name="showArchived" value="true"/>
     <domain>self.parentBudgetLevel.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_isParent" expr="false"/>
@@ -271,6 +275,7 @@
     model="com.axelor.apps.budget.db.BudgetVersion">
     <view type="grid" name="budget-version-grid"/>
     <view type="form" name="budget-version-form"/>
+    <view-param name="showArchived" value="true"/>
     <domain>self.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
   </action-view>
@@ -280,11 +285,12 @@
     <view type="grid" name="budget-lines-grid"/>
     <view type="form" name="budget-included-form"/>
     <view-param name="details-view" value="true"/>
+    <view-param name="showArchived" value="true"/>
     <domain>self.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_globalCode" expr="eval:__this__.code"/>
     <context
-      if="__this__.statusSelect != __repo__(BudgetLevel).BUDGET_LEVEL_STATUS_SELECT_DRAFT"
+      if="__this__.statusSelect != __repo__(GlobalBudget).GLOBAL_BUDGET_STATUS_SELECT_DRAFT"
       name="_isReadOnly" expr="true"/>
     <context name="_typeSelect" expr="eval: 'budget'"/>
   </action-view>
@@ -293,6 +299,7 @@
     model="com.axelor.apps.budget.db.BudgetLevel">
     <view type="grid" name="budget-level-included-grid"/>
     <view type="form" name="budget-group-budget-level-form"/>
+    <view-param name="showArchived" value="true"/>
     <domain>self.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_isParent" expr="false"/>

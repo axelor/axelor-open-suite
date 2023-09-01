@@ -186,7 +186,9 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
         budget.setPeriodDurationSelect(0);
         budget.clearBudgetLineList();
         List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
-        for (BudgetLine budgetLine : budgetLineList) {
+        if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
+          BudgetLine budgetLine = budgetLineList.get(0);
+          recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
           budget.addBudgetLineListItem(budgetLine);
         }
         budgetRepository.save(budget);
@@ -199,5 +201,14 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     globalBudget = globalBudgetRepository.save(globalBudget);
 
     return globalBudget;
+  }
+
+  protected void recomputeImputedAmountsOnBudgetLine(BudgetLine budgetLine, Budget budget) {
+    budgetLine.setAmountCommitted(budget.getTotalAmountCommitted());
+    budgetLine.setAmountRealized(budget.getTotalAmountRealized());
+    budgetLine.setRealizedWithNoPo(budget.getRealizedWithNoPo());
+    budgetLine.setRealizedWithPo(budget.getRealizedWithPo());
+    budgetLine.setFirmGap(budget.getTotalFirmGap());
+    budgetLine.setAmountPaid(budget.getTotalAmountPaid());
   }
 }

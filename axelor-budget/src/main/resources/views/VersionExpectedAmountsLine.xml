@@ -10,8 +10,7 @@
     <field name="budget.budgetLevel.parentBudgetLevel" readonly="true"/>
     <field name="budget.budgetLevel" readonly="true"/>
     <field name="budget" readonly="true"/>
-    <field name="expectedAmount"
-      validIf="expectedAmount &gt; 0 &amp;&amp; expectedAmount &gt;= budget.totalAmountRealized"/>
+    <field name="expectedAmount" validIf="expectedAmount &gt;= budget.totalAmountRealized"/>
     <field name="budget.totalAmountRealized"/>
     <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" hidden="true"/>
   </grid>
@@ -20,9 +19,8 @@
     model="com.axelor.apps.budget.db.VersionExpectedAmountsLine">
     <panel itemSpan="4">
       <field name="budget"/>
-      <field name="expectedAmount"
-        validIf="expectedAmount &gt; 0 &amp;&amp; expectedAmount &gt;= budget.totalAmountRealized"/>
-      <field name="budget.totalAmountRealized" hidden="true"/>
+      <field name="expectedAmount" validIf="expectedAmount &gt;= budget.totalAmountRealized"/>
+      <field name="budget.totalAmountRealized"/>
     </panel>
   </form>
 

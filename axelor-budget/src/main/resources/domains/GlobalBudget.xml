@@ -71,13 +71,13 @@
     <extra-code>
             <![CDATA[
 
-            //budget level budget type select
+            //global budget budget type select
 				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE = 1;
 				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE = 2;
 				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT = 3;
 				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT = 4;
 
-				//budget level status select
+				//global budget status select
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_DRAFT = 0;
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_VALID_STRUCTURE = 1;
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_VALID = 2;
