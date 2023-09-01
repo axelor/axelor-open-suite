@@ -309,7 +309,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 model.getId(),
                 invoiceTerm.getName(),
                 invoiceTerm.getPaymentMode(),
-                invoiceTerm.getBankDetails(),
+                invoice.getCompanyBankDetails(),
                 forecastRecapLineType,
                 forecastRecap);
           }
@@ -742,19 +742,13 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         Invoice invoice = (Invoice) forecastModel;
-        return invoice.getBankDetails();
-      case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
-        SaleOrder saleOrder = (SaleOrder) forecastModel;
-        return saleOrder.getCompanyBankDetails();
-      case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
-        PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
-        return purchaseOrder.getCompanyBankDetails();
+        return invoice.getCompanyBankDetails();
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
         return expense.getBankDetails();
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         Move move = (Move) forecastModel;
-        return move.getPartnerBankDetails();
+        return move.getCompanyBankDetails();
       case ForecastRecapLineTypeRepository.ELEMENT_FORECAST:
         Forecast forecast = (Forecast) forecastModel;
         return forecast.getBankDetails();
@@ -764,6 +758,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         Employee employee = (Employee) forecastModel;
         return employee.getBankDetails();
+      case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
+      case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
+        return null;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -852,7 +849,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             timetable.getSaleOrder().getId(),
             timetable.getSaleOrder().getSaleOrderSeq(),
             timetable.getSaleOrder().getPaymentMode(),
-            timetable.getSaleOrder().getCompanyBankDetails(),
+            null,
             forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
             forecastRecapRepo.find(forecastRecap.getId()));
       }
@@ -895,7 +892,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             timetable.getPurchaseOrder().getId(),
             timetable.getPurchaseOrder().getPurchaseOrderSeq(),
             timetable.getPurchaseOrder().getPaymentMode(),
-            timetable.getPurchaseOrder().getCompanyBankDetails(),
+            null,
             forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
             forecastRecapRepo.find(forecastRecap.getId()));
       }
@@ -948,7 +945,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             invoiceTerm.getMoveLine().getMove().getId(),
             invoiceTerm.getMoveLine().getMove().getReference(),
             invoiceTerm.getPaymentMode(),
-            invoiceTerm.getBankDetails(),
+            invoiceTerm.getMoveLine().getMove().getCompanyBankDetails(),
             forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
             forecastRecapRepo.find(forecastRecap.getId()));
       }
