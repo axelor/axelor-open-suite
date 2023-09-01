@@ -4,14 +4,14 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="budget-scenario-line-grid" title="Budget Scenario Line"
-    model="com.axelor.apps.budget.db.BudgetScenarioLine">
-    <field name="budgetScenarioVariable"/>
-    <field name="year1Value"/>
-    <field name="year2Value"/>
-    <field name="year3Value"/>
-    <field name="year4Value"/>
-    <field name="year5Value"/>
-    <field name="year6Value"/>
+    model="com.axelor.apps.budget.db.BudgetScenarioLine" editable="true">
+    <field name="budgetScenarioVariable" domain="self.entryMethod=0"/>
+    <field name="year1Value" hidden="true"/>
+    <field name="year2Value" hidden="true"/>
+    <field name="year3Value" hidden="true"/>
+    <field name="year4Value" hidden="true"/>
+    <field name="year5Value" hidden="true"/>
+    <field name="year6Value" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.budget.db.BudgetScenarioLine" title="Budget Scenario Line"
@@ -19,13 +19,14 @@
     <panel name="mainPanel" colSpan="12">
 
       <field name="budgetScenarioVariable" domain="self.entryMethod=0" colSpan="12"/>
-      <field name="year1Value"/>
-      <field name="year2Value"/>
-      <field name="year3Value"/>
-      <field name="year4Value"/>
-      <field name="year5Value"/>
-      <field name="year6Value"/>
 
+      <field name="year1Value" hidden="true"/>
+      <field name="year2Value" hidden="true"/>
+      <field name="year3Value" hidden="true"/>
+      <field name="year4Value" hidden="true"/>
+      <field name="year5Value" hidden="true"/>
+      <field name="year6Value" hidden="true"/>
     </panel>
   </form>
+
 </object-views>

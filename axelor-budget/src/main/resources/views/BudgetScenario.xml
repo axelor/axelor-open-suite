@@ -12,13 +12,21 @@
   </grid>
 
   <form model="com.axelor.apps.budget.db.BudgetScenario" title="Budget Scenario"
-    name="budget-scenario-form" width="large">
+    name="budget-scenario-form" width="large" onLoad="action-change-column-names">
     <panel name="mainPanel" colSpan="12">
 
       <field name="name" title="Name" required="true"/>
       <field name="code" title="Code" required="true"/>
+      <field name="company"/>
+      <field name="yearSet" widget="TagSelect"
+        domain="self.company = :company AND self.typeSelect = 1"
+        onChange="save,action-change-column-names" canNew="false"/>
       <field name="budgetScenarioLines" grid-view="budget-scenario-line-grid"
-        form-view="budget-scenario-line-form" domain="com.axelor.apps.budget.db.BudgetScenarioLine"/>
+        form-view="budget-scenario-line-form" colSpan="12"/>
     </panel>
   </form>
+  <action-method name="action-change-column-names">
+    <call class="com.axelor.apps.budget.web.BudgetScenarioLineController"
+      method="changeColumnsNames"/>
+  </action-method>
 </object-views>
