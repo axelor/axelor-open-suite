@@ -28,4 +28,8 @@
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
 
+  <input file="base_partner_link_type.csv" separator=";"
+    type="com.axelor.apps.base.db.PartnerLinkType"
+    search="self.importId = :importId OR self.typeSelect = :typeSelect"/>
+
 </csv-inputs>
