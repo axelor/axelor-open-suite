@@ -1,6 +1,0 @@
----
-title: "INVOICE / INVOICEPAYMENT / RECONCILIATION : Correct anomaly causing payment not being generated"
-type: fix
-description: |
-  Correct anomaly causing payment not being generated on invoice when a new reconciliation is validated  
-  and the invoice's move has been reconciled with a shift to another account (LCR excluding Doubtful process).

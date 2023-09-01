@@ -135,22 +135,40 @@
     <view type="form" name="quality-control-point-type-form"/>
   </action-view>
 
-  <menuitem name="qi-detection" parent="quality-configurations" title="QI Detections"
+  <menuitem name="qi-detection" parent="quality-configurations" title="Detections"
     action="qi.detection" order="500"/>
 
-  <action-view name="qi.detection" title="QI Detections"
+  <action-view name="qi.detection" title="Detections"
     model="com.axelor.apps.quality.db.QIDetection">
     <view type="grid" name="qi-detection-grid"/>
     <view type="form" name="qi-detection-form"/>
   </action-view>
 
-  <menuitem name="qi.status" parent="quality-configurations" title="QI Status"
+  <menuitem name="qi.status" parent="quality-configurations" title="Statuses"
     action="qi.status" order="600"/>
 
-  <action-view name="qi.status" title="QI Status"
+  <action-view name="qi.status" title="Statuses"
     model="com.axelor.apps.quality.db.QIStatus">
     <view type="grid" name="qi-status-grid"/>
     <view type="form" name="qi-status-form"/>
+  </action-view>
+
+  <menuitem name="qi.default" parent="quality-configurations" title="Defaults"
+    action="qi.default" order="700"/>
+
+  <action-view name="qi.default" title="Defaults"
+    model="com.axelor.apps.quality.db.QIDefault">
+    <view type="grid" name="qi-default-grid"/>
+    <view type="form" name="qi-default-form"/>
+  </action-view>
+
+  <menuitem name="qi.decision" parent="quality-configurations" title="Decisions"
+    action="qi.decision" order="800"/>
+
+  <action-view name="qi.decision" title="Decisions"
+    model="com.axelor.apps.quality.db.QIDecision">
+    <view type="grid" name="qi-decision-grid"/>
+    <view type="form" name="qi-decision-form"/>
   </action-view>
 
 </object-views>

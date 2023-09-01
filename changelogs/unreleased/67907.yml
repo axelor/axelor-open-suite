@@ -1,0 +1,3 @@
+---
+title: "Fixed asset : Fix never ending depreciation lines generation if there is a gap of more than one year"
+type: fix

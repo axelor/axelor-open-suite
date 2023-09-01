@@ -1,3 +1,85 @@
+## [7.1.3] (2023-08-24)
+
+#### Fixed
+
+* Webapp: update Axelor Open Platform version to 6.1.5.
+* Move: fixed reverse process to fill bank reconciled amount only if 'Hide move lines in bank reconciliation' is ticked and if the account type is 'cash'
+
+To fix existing records, the following script must be executed:
+
+```sql
+UPDATE account_move_line moveLine
+SET bank_reconciled_amount = 0
+FROM account_account account
+JOIN account_account_type accountType
+ON account.account_type = accountType.id
+WHERE moveLine.account = account.id
+AND accountType.technical_type_select <> 'cash';
+```
+
+* SOP/PMS: Gap is now really a percentage
+
+Changed computation of "Gap" fields so the result will be percentage (e.g. 13% instead of 0.13). The following script can be used to fix existing SOP/PMS:
+
+```sql
+UPDATE production_sop_line SET sop_manuf_gap = sop_manuf_gap*100;
+UPDATE production_sop_line SET sop_sales_gap = sop_sales_gap*100;
+UPDATE production_sop_line SET sop_stock_gap = sop_stock_gap*100; 
+```
+
+* Payment voucher: fixed remaining amount not being recomputed on reset.
+* Payment voucher: fixed being able to pay PFP refused invoice terms.
+* Move: fixed tax check error on daybook when taxes are compensated.
+* Contract: fixed NullPointerException when invoicing a contract.
+* Sale order: fixed a bug where the project was not filled in lines in sale order generated from a project.
+* Stock details: in stock details by product, fixed production indicators visibility.
+* Business project batch: fixed "id to load is required for loading" error when generating invoicing projects.
+* Move/Invoice: added a verification of the sum of the percentages by analytic axis when we account a move.
+* Period: fixed adjusting button not being displayed when adjusting the year.
+* Fixed asset: fixed wrong depreciation value for degressive method.
+* Move / Mass entry: fixed error when emptying the date on a move generated from mass entry.
+* Payment session: filter invoice terms from accounted or daybook moves.
+* Employee: fixed employees having their status set to 'active' while their hire and leave date were empty.
+* Bank reconciliation: merge same bank statement lines to fix wrong ongoing balance due to auto reconcile.
+* Invoice / Payment voucher: fixed generated adjusting moves with multi currency.
+* Accounting report: dates on invoice reports are now required to prevent an error generating an empty report.
+* Invoice: fixed anomaly causing payment not being generated
+
+Correct anomaly causing payment not being generated on invoice when a new reconciliation is validated  
+and the invoice's move has been reconciled with a shift to another account (LCR excluding Doubtful process).
+
+* Import Batch: added missing translation.
+* Move: The date is now correctly required in the form view.
+* Payment voucher / Invoice payment: fixed generated payment move payment condition.
+* Payment voucher: fixed excess payment.
+* Accounting report: fixed payment differences report generation.
+* Invoice payment: add missing translation for field "total amount with financial discount".
+* Invoice: fixed financial discount deadline date computation.
+* Sale order line: fixed a bug where the link to the project was not emptied on copy.
+* Mass entry: fixed date update on move lines with the same move identification.
+* Stock move printing: fixed an issue where lines with different prices were wrongly grouped.
+* Stock details: fixed "see stock details" button in product and sale order line form views.
+* Accounting batch: corrected cut off accounting batch preview record field title cut in half.
+* Invoice line: fixed error when emptying the tax line.
+* Invoice: fixed invoice term due date not being set before saving.
+* Reconcile: fixed inconsistencies when copying reconciles.
+* Tax number: translated and added an helper for 'Include in DEB' configuration.
+* Leave request: fixed employee filter
+
+A HR manager can now create a leave request for every employee.
+Else, if an employee is not a manager, he can only create leave request for himself or for employees he is responsible of.
+
+* Accounting config: fixed default bank details errors message.
+* Invoice term: fixed negative amount on manual creation.
+* CRM search: hide some panels to avoid NPE error.
+* Mass entry: fixed error when we control duplicate origins in a journal where the origin is not required.
+* Stock API: validating a Stock Correction with a real quantity equal to the database quantity now correctly throws an error.
+* Manufacturing order: fixed a bug where sale order set was emptied on change of client partner and any change on saleOrderSet filled the partner.
+* Forecast line: fixed company bank details filter.
+* Contact: the filter on mainPartner now allows to select a company partner only, not an individual.
+* Move: fixed due date issue when changing from single to multi invoice term payment condition.
+* Stock move line: improve performance when selecting a tracking number if there are a large number of stock location lines.
+
 ## [7.1.2] (2023-08-08)
 
 #### Fixed
@@ -310,6 +392,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.3]: https://github.com/axelor/axelor-open-suite/compare/v7.1.2...v7.1.3
 [7.1.2]: https://github.com/axelor/axelor-open-suite/compare/v7.1.1...v7.1.2
 [7.1.1]: https://github.com/axelor/axelor-open-suite/compare/v7.1.0...v7.1.1
 [7.1.0]: https://github.com/axelor/axelor-open-suite/compare/v7.0.5...v7.1.0

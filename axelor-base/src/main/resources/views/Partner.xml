@@ -166,14 +166,42 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope"
-          action="save,action-partner-method-show-envelope" readonlyIf="!id"/>
+        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
+          readonlyIf="!id"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="!id"
           showIf="isCustomer" if-module="axelor-account"/>
       </menu>
     </menubar>
     <panel-include view="incl-event-actions-partner-form"/>
+    <panel name="propertiesPanel" title="Properties" canCollapse="true" sidebar="true"
+      hideIf="$readonly()">
+      <field name="isEmployee" colSpan="12" widget="InlineCheckbox"
+        hideIf="!_showIsEmployee || partnerTypeSelect != 2 || isCustomer || isSupplier || isCarrier || isFactor || isProspect || isCompensation || isContact || isInternal || isPartner || isSubcontractor"
+        onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
+      <field name="isProspect" colSpan="12" widget="InlineCheckbox"
+        hideIf="isContact || isCustomer || isEmployee || isSubcontractor || isInternal || isCarrier || isFactor"
+        onChange="action-partner-group-unset-customer,action-partner-record-unset-factor"/>
+      <field name="isCustomer" colSpan="12" widget="InlineCheckbox"
+        hideIf="isContact ||  isEmployee"
+        onChange="action-partner-group-check-can-change-customer,action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
+      <field name="isSupplier" colSpan="12" widget="InlineCheckbox"
+        hideIf="isContact ||  isEmployee"
+        onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
+      <field name="isSubcontractor" colSpan="12" widget="InlineCheckbox"
+        if-module="axelor-production"
+        if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
+      <field name="isInternal" colSpan="12" widget="InlineCheckbox"/>
+      <field name="isCarrier" colSpan="12" widget="InlineCheckbox"
+        hideIf="isContact ||  isEmployee" if="__config__.app.isApp('stock')"
+        onChange="action-partner-record-unset-factor"/>
+      <field name="isFactor" colSpan="12" widget="InlineCheckbox"
+        hideIf="isContact ||  isEmployee"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
+        if-module="axelor-account"
+        onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
+      <field name="isContact" hidden="true" colSpan="12"/>
+    </panel>
     <panel name="mainPanel">
       <panel name="imagePanel" colSpan="2">
         <field name="picture" showTitle="false" widget="Image" colSpan="12">
@@ -241,31 +269,6 @@
             <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
           <field name="fullName" hidden="true"/>
         </panel>
-        <field name="isProspect" colSpan="2" widget="InlineCheckbox"
-          hideIf="isContact || $readonly()"
-          onChange="action-partner-group-unset-customer,action-partner-record-unset-factor"/>
-        <field name="isEmployee" colSpan="2" widget="InlineCheckbox"
-          hideIf="$readonly() || !_showIsEmployee || partnerTypeSelect != 2 || isCustomer || isSupplier || isCarrier || isFactor || isProspect || isCollaborator || isCompensation || isContact || isInternal || isPartner || isSubcontractor"
-          onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
-        <field name="isCustomer" colSpan="2" widget="InlineCheckbox"
-          hideIf="isContact || $readonly() || isEmployee"
-          onChange="action-partner-group-check-can-change-customer,action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
-        <field name="isSupplier" colSpan="2" widget="InlineCheckbox"
-          hideIf="isContact || $readonly() || isEmployee"
-          onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
-        <field name="isSubcontractor" colSpan="2" widget="InlineCheckbox" hideIf="$readonly()"
-          if-module="axelor-production"
-          if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
-        <field name="isInternal" colSpan="2" widget="InlineCheckbox" hideIf="$readonly()"/>
-        <spacer if="!__config__.app.getApp('production')?.manageOutsourcing" colSpan="2"/>
-        <field name="isCarrier" colSpan="2" widget="InlineCheckbox"
-          hideIf="isContact || $readonly() || isEmployee" if="__config__.app.isApp('stock')"
-          onChange="action-partner-record-unset-factor"/>
-        <field name="isFactor" colSpan="2" widget="InlineCheckbox"
-          hideIf="isContact || $readonly() || isEmployee"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
-          if-module="axelor-account"
-          onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
           colSpan="12">
           <viewer
@@ -638,8 +641,8 @@
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope"
-          action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
+        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
+          readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -1076,8 +1079,8 @@
     onSave="save,action-partner-method-set-user-partner">
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope"
-          action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
+        <item name="envelopeItem" title="Envelope" action="save,action-method-print-birt"
+          readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -1381,10 +1384,6 @@
 
   <action-method name="action-partner-method-check-name-in-archive">
     <call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerNameArchived"/>
-  </action-method>
-
-  <action-method name="action-partner-method-show-envelope">
-    <call class="com.axelor.apps.base.web.PartnerController" method="showEnvelope"/>
   </action-method>
 
   <action-method name="action-partner-method-set-social-network-url">
