@@ -1,3 +1,3 @@
 ---
-title: "ACCOUNTCONFIG / ACCOUNTCHART : Update accounting config files in l10n for accounting based on demo data or to fit new decimal formatting."
+title: "ACCOUNTCONFIG / ACCOUNTCHART : Update accounting config files to improve accounting import."
 type: fix
