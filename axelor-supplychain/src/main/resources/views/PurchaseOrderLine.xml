@@ -26,11 +26,6 @@
             form-view="analytic-distribution-template-form" canEdit="false"
             onChange="action-purchase-order-line-group-analytic-distribution-template-onchange"
             onSelect="action-purchase-order-line-attrs-set-domain-analytic-distribution-template"/>
-          <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
-            grid-view="analytic-move-line-distribution-grid"
-            form-view="analytic-move-line-distribution-form" colSpan="12"
-            onChange="action-purchase-order-line-group-analytic-move-line-list-onchange"/>
-          <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
           <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
             form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
             onSelect="action-purchase-order-line-method-set-axis-domain"
@@ -54,6 +49,11 @@
               onSelect="action-purchase-order-line-method-set-axis-domain"
               onChange="action-purchase-order-line-method-axis-create-analytic-line"/>
           </panel>
+          <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+            grid-view="analytic-move-line-distribution-grid"
+            form-view="analytic-move-line-distribution-form" colSpan="12"
+            onChange="action-purchase-order-line-group-analytic-move-line-list-onchange"/>
+          <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
         </panel>
       </insert>
     </extend>

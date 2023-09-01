@@ -324,6 +324,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (saleOrderLine != null) {
       analyticLineModel = new AnalyticLineModel(saleOrderLine, null);
+    } else if (purchaseOrderLine != null) {
+      analyticLineModel = new AnalyticLineModel(purchaseOrderLine, null);
     }
 
     return analyticLineModel != null
