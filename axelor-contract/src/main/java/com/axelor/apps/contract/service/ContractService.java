@@ -111,6 +111,8 @@ public interface ContractService {
    */
   Invoice invoicingContract(Contract contract) throws AxelorException;
 
+  Invoice invoicingContracts(List<Contract> contractList) throws AxelorException;
+
   /**
    * Renew a contract
    *

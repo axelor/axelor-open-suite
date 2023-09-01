@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
+import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -118,6 +119,8 @@ import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleServiceImpl;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.OpportunitySaleOrderSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
+import com.axelor.apps.supplychain.service.PartnerLinkSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
@@ -183,6 +186,8 @@ import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigServiceImpl;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.TimetableServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
@@ -317,5 +322,8 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderFromSaleOrderLinesService.class)
         .to(PurchaseOrderFromSaleOrderLinesServiceImpl.class);
     bind(AnalyticLineModelService.class).to(AnalyticLineModelServiceImpl.class);
+    bind(AnalyticAttrsSupplychainService.class).to(AnalyticAttrsSupplychainServiceImpl.class);
+    bind(PartnerLinkSupplychainService.class).to(PartnerLinkSupplychainServiceImpl.class);
+    bind(PartnerLinkServiceImpl.class).to(PartnerLinkSupplychainServiceImpl.class);
   }
 }
