@@ -22,10 +22,20 @@ public class BudgetScenarioLineController {
         response.setAttr(fieldName, "title", Integer.toString(yearsList.get(i)));
       }
     }
-    
-    boolean line = Beans.get(BudgetScenarioLineService.class).countBudgetScenarioLines(budgetScenario);
-    if(line) {
-    	response.setAttr("yearSet", "readonly", true);
+  }
+
+  public void yearSetReadOnly(ActionRequest request, ActionResponse response) {
+
+    BudgetScenario budgetScenario = request.getContext().asType(BudgetScenario.class);
+    budgetScenario = Beans.get(BudgetScenarioRepository.class).find(budgetScenario.getId());
+
+    boolean line =
+        Beans.get(BudgetScenarioLineService.class).countBudgetScenarioLines(budgetScenario);
+
+    if (line) {
+      response.setAttr("yearSet", "readonly", true);
+    } else {
+      response.setAttr("yearSet", "readonly", false);
     }
   }
 }
