@@ -1591,7 +1591,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine) {
     if (stockMoveLine != null) {
 
-      stockMoveLine.setStockMove(null);
       stockMoveLine.setPlannedStockMove(null);
       stockMoveLine.setProduct(null);
       stockMoveLine.setFilterOnAvailableProducts(true);

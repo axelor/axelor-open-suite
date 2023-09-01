@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QIResolutionDefault">
+
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="qiResolution" title="Resolution"
+      ref="com.axelor.apps.quality.db.QIResolution" required="true" readonly="true"/>
+    <many-to-one name="qiDefault" title="Default"
+      ref="com.axelor.apps.quality.db.QIDefault" required="true"/>
+    <string name="description" title="Description" large="true"/>
+    <decimal name="quantity" title="Quantity"/>
+    <decimal name="criticality" title="Criticality"/>
+    <integer name="identification" title="Identification"
+      selection="quality.qi.resolution.default.identification.select" default="1"/>
+    <string name="manualIdentification" title="Manual Identification"/>
+    <many-to-many name="trackingNumbersSet" title="Tracking Numbers"
+      ref="com.axelor.apps.stock.db.TrackingNumber"/>
+
+    <extra-code><![CDATA[
+	    public static final int IDENTIFICATION_MANUAL = 1;
+	    public static final int IDENTIFICATION_TRACKING_NUMBER = 2;
+	]]></extra-code>
+
+    <track>
+      <field name="name"/>
+      <field name="qiResolution"/>
+      <field name="qiDefault"/>
+      <field name="description"/>
+      <field name="quantity"/>
+      <field name="criticality"/>
+      <field name="identification"/>
+      <field name="manualIdentification"/>
+    </track>
+
+  </entity>
+
+</domain-models>

@@ -987,7 +987,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           Account creditAccount =
               accountConfigService.getCashPositionVariationCreditAccountDontThrow(accountConfig);
 
-          if (invoiceTermService.isThresholdNotOnLastInvoiceTerm(
+          if (invoiceTermService.isThresholdNotOnLastUnpaidInvoiceTerm(
                   creditMoveLine, accountConfig.getThresholdDistanceFromRegulation())
               || creditAccount == null) {
             return;
@@ -1037,7 +1037,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           Account debitAccount =
               accountConfigService.getCashPositionVariationDebitAccountDontThrow(accountConfig);
 
-          if (invoiceTermService.isThresholdNotOnLastInvoiceTerm(
+          if (invoiceTermService.isThresholdNotOnLastUnpaidInvoiceTerm(
                   debitMoveLine, accountConfig.getThresholdDistanceFromRegulation())
               || debitAccount == null) {
             return;
