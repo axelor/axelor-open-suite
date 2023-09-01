@@ -748,7 +748,7 @@
   </selection>
 
   <selection name="base.partner.link.type.type.select">
-    <option value="0"/>
+    <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
   </selection>
 
 </object-views>
