@@ -5,11 +5,12 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner">
-    <one-to-many name="customerShippingCarriagePaidList"
-      ref="com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid"
-      title="Customer shipping carriage paid configuration" mappedBy="customer"/>
+  <entity name="PartnerLinkType">
 
+    <string name="name"/>
+    <string name="typeSelect" title="Type" selection="base.partner.link.type.type.select"/>
+    <string name="link1Name" title="Relation 1" translatable="true"/>
+    <string name="link2Name" title="Relation 2" translatable="true"/>
   </entity>
 
 </domain-models>
