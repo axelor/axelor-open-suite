@@ -13,8 +13,4 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
-  <input file="base_partner_link_type.csv" separator=";"
-    type="com.axelor.apps.base.db.PartnerLinkType"
-    search="self.importId = :importId OR self.typeSelect = :typeSelect"/>
-
 </csv-inputs>

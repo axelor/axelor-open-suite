@@ -43,9 +43,4 @@
     <option value="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl">Purchase</option>
   </selection>
 
-  <selection name="base.partner.link.type.type.select"
-    id="purchase.partner.link.type.type.select">
-    <option value="Ordered by">Ordered by</option>
-  </selection>
-
 </object-views>

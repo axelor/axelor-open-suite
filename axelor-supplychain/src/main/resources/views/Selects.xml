@@ -178,4 +178,11 @@
     <option value="3">Invoiced</option>
   </selection>
 
+  <selection name="base.partner.link.type.type.select"
+    id="supplychain.partner.link.type.type.select">
+    <option value="Invoiced by">Invoiced by</option>
+    <option value="Ordered by">Ordered by</option>
+    <option value="Delivered by">Delivered by</option>
+  </selection>
+
 </object-views>

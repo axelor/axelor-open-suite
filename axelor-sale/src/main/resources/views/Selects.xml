@@ -99,9 +99,4 @@
   <selection id="sale.research.model.selection" name="research.model.selection">
     <option value="com.axelor.apps.sale.db.SaleOrder">Sale Order</option>
   </selection>
-
-  <selection name="base.partner.link.type.type.select"
-    id="sale.partner.link.type.type.select">
-    <option value="Ordered by">Ordered by</option>
-  </selection>
 </object-views>
