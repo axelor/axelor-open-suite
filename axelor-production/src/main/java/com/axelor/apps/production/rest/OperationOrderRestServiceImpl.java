@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.rest.dto.OperationOrderResponse;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
@@ -34,11 +35,14 @@ import javax.ws.rs.core.Response;
 public class OperationOrderRestServiceImpl implements OperationOrderRestService {
 
   protected OperationOrderWorkflowService operationOrderWorkflowService;
+  protected ManufOrderWorkflowService manufOrderWorkflowService;
 
   @Inject
   public OperationOrderRestServiceImpl(
-      OperationOrderWorkflowService operationOrderWorkflowService) {
+      OperationOrderWorkflowService operationOrderWorkflowService,
+      ManufOrderWorkflowService manufOrderWorkflowService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
+    this.manufOrderWorkflowService = manufOrderWorkflowService;
   }
 
   public Response updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
@@ -64,6 +68,7 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
             || operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY)
         && targetStatus == OperationOrderRepository.STATUS_FINISHED) {
       operationOrderWorkflowService.finish(operationOrder, AuthUtils.getUser());
+      manufOrderWorkflowService.allOpFinished(operationOrder.getManufOrder());
 
       if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
         return ResponseConstructor.build(

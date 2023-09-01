@@ -454,7 +454,6 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
     finish(operationOrder);
     Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());

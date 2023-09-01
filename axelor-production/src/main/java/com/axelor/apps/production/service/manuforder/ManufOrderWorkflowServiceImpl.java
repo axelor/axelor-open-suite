@@ -464,17 +464,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
-    int count = 0;
-    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
-    for (OperationOrder operationOrderIt : operationOrderList) {
-      if (operationOrderIt.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
-        count++;
-      }
-    }
-
-    if (count == operationOrderList.size()) {
+    if (manufOrder.getOperationOrderList().stream()
+        .allMatch(
+            operationOrder1 ->
+                operationOrder1.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED)) {
       this.finish(manufOrder);
     }
   }
