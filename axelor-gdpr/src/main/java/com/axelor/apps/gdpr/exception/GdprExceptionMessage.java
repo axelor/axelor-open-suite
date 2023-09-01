@@ -34,6 +34,9 @@ public final class GdprExceptionMessage {
 
   public static final String SENDING_MAIL_ERROR = /*$$(*/ "Error while sending the mail : %s" /*)*/;
 
+  public static final String RELATIONSHIP_ANONYMIZER_MISSING = /*$$(*/
+      "A relation anonymizer configuration for the model %s is missing." /*)*/;
+
   public static final String RELATIONSHIP_ANONYMIZER_MISSING_REPLACEMENT = /*$$(*/
       "A replacement object is missing for model %s." /*)*/;
 
