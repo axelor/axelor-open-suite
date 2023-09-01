@@ -71,7 +71,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
             this.getColumnCode(
                 column.getPercentageBaseColumn(), parentTitle, groupColumn, configAnalyticAccount));
 
-    if (valuesMap == null) {
+    if (valuesMap == null || column.getCode().equals(column.getPercentageBaseColumn())) {
       if (accountingReport.getTraceAnomalies()
           && StringUtils.notEmpty(column.getPercentageBaseColumn())) {
         this.traceException(
