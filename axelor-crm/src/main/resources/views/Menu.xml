@@ -626,4 +626,22 @@
     <view type="form" name="research-parameter-config-form"/>
   </action-view>
 
+  <menuitem name="crm-conf-corporate-partner-domain" parent="crm-conf"
+    title="Corporate partner work domain" action="crm.conf.corporate.partner.domain" order="1200"/>
+
+  <action-view name="crm.conf.corporate.partner.domain"
+    title="Corporate partner work domain" model="com.axelor.apps.crm.db.CorporatePartnerDomain">
+    <view type="grid" name="corporate-partner-domain-grid"/>
+    <view type="form" name="corporate-partner-domain-form"/>
+  </action-view>
+
+  <menuitem name="crm-conf-fidelity" parent="crm-conf" title="Corporate partner fidelity"
+    action="crm.conf.fidelity" order="1300"/>
+
+  <action-view name="crm.conf.fidelity" title="Corporate partner fidelity"
+    model="com.axelor.apps.crm.db.Fidelity">
+    <view type="grid" name="fidelity-grid"/>
+    <view type="form" name="fidelity-form"/>
+  </action-view>
+
 </object-views>

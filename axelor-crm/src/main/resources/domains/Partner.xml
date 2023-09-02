@@ -48,6 +48,22 @@
     <integer name="sequence" title="Sequence"/>
     <boolean name="isMainContact" title="Main Contact"/>
     <boolean name="isAlreadyConvertFromLead"/>
+    <boolean name="isCorporatePartner" title="Corporate partner"/>
+    <many-to-many name="corporatePartnerDomainSet" title="Work domain"
+      ref="com.axelor.apps.crm.db.CorporatePartnerDomain"/>
+    <many-to-many name="workAreaSet" title="Work area"
+      ref="com.axelor.apps.base.db.Country"/>
+    <one-to-many name="fidelityList" title="Fidelity"
+      ref="com.axelor.apps.crm.db.Fidelity" mappedBy="partner"/>
+    <date name="corporatePartnerSince" title="Corporate partner since"/>
+    <integer name="takenOpportunities" title="Sent opportunities" readonly="true"
+      formula="true">
+        <![CDATA[SELECT COUNT(*) FROM crm_opportunity WHERE crm_opportunity.partner = id]]>
+    </integer>
+    <integer name="wonOpportunities" title="Won opportunities" readonly="true"
+      formula="true">
+        <![CDATA[SELECT COUNT(*) FROM crm_opportunity WHERE crm_opportunity.partner = id AND crm_opportunity.opportunity_status = (SELECT studio_app_crm.closed_win_opportunity_status FROM studio_app_crm LIMIT 1)]]>
+    </integer>
 
     <extra-code>
     <![CDATA[
