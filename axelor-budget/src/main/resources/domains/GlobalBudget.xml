@@ -18,7 +18,7 @@
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
     <many-to-one name="companyDepartment"
-      ref="com.axelor.apps.base.db.CompanyDepartment" title="Company Department"/>
+      ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department"/>
     <many-to-one name="budgetManager" ref="com.axelor.auth.db.User"
       title="Budget manager"/>
     <string name="comments" title="Comment" large="true"/>
@@ -53,6 +53,12 @@
     <integer name="checkAvailableSelect" title="Check available amount"
       selection="budget.budget.level.check.available"/>
 
+    <many-to-one name="activeVersion" ref="com.axelor.apps.budget.db.BudgetVersion"
+      title="Active Version"/>
+    <one-to-many name="budgetVersionList" ref="com.axelor.apps.budget.db.BudgetVersion"
+      title="Budget Version" mappedBy="globalBudget"/>
+
+
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
             <![CDATA[
             return code + " " + name;
@@ -62,13 +68,13 @@
     <extra-code>
             <![CDATA[
 
-            //budget level budget type select
+            //global budget budget type select
 				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE = 1;
 				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE = 2;
 				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT = 3;
 				public static final int GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT = 4;
 
-				//budget level status select
+				//global budget status select
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_DRAFT = 0;
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_VALID_STRUCTURE = 1;
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_VALID = 2;

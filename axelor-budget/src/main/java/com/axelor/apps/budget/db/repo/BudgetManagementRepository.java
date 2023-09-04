@@ -39,6 +39,12 @@ public class BudgetManagementRepository extends BudgetRepository {
                 .subtract(entity.getRealizedWithPo())
                 .subtract(entity.getRealizedWithNoPo())
             : BigDecimal.ZERO);
+    entity.setAvailableAmountWithSimulated(
+        (entity.getAvailableAmount().subtract(entity.getSimulatedAmount()))
+                    .compareTo(BigDecimal.ZERO)
+                > 0
+            ? entity.getAvailableAmount().subtract(entity.getSimulatedAmount())
+            : BigDecimal.ZERO);
 
     GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
 

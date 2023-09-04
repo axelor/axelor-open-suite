@@ -87,7 +87,7 @@
           showIf="id"/>
         <item action="action-budget-global-budget-level-view-section-lines" title="Sections"
           showIf="id"/>
-        <item action="action-budget-global-budget-level-view-budget-lines" title="Lignes"
+        <item action="action-budget-global-budget-level-view-budget-lines" title="Lines"
           showIf="id"/>
       </menu>
     </menubar>
@@ -331,7 +331,7 @@
 
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green">
-      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lignes"
+      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lines"
         colSpan="12" form-view="budget-included-form" grid-view="budget-lines-grid"
         canNew="parentBudgetLevel.globalBudget.statusSelect == 0"
         canEdit="parentBudgetLevel.globalBudget.statusSelect == 0"
@@ -362,7 +362,7 @@
     onLoad="action-budget-level-group-onload" canNew="false">
 
     <panel name="budgetLevelHiddenPanel" hidden="true" colSpan="12">
-      <field name="parentBudgetLevel.statusSelect"/>
+      <field name="globalBudget.statusSelect"/>
       <field name="levelTypeSelect"/>
     </panel>
 
@@ -373,10 +373,8 @@
           readonlyIf="globalBudget.statusSelect != 0 || !$popup()"/>
         <field name="name" colSpan="2"
           readonlyIf="globalBudget.statusSelect != 0 || !$popup()"/>
-        <field name="parentBudgetLevel" colSpan="2" readonly="true"
-          onChange="action-budget-level-record-parent-budget-level-onchange"
-          onSelect="action-budget-level-attrs-parent-budget-level-onselect"
-          form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
+        <field name="globalBudget" colSpan="2" readonly="true" form-view="global-budget-form"
+          grid-view="global-budget-grid"/>
         <spacer colSpan="7"/>
         <field name="typeSelect" colSpan="1" required="true"/>
       </panel>
@@ -425,7 +423,8 @@
         title="Display simulated moves" colSpan="12"/>
     </panel>
 
-    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy">
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy"
+      readonlyIf="globalBudget.statusSelect &gt;= 1">
       <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Sections"
         colSpan="12" form-view="budget-level-node-form" grid-view="budget-level-node-grid"/>
     </panel>
@@ -500,8 +499,9 @@
         title="Display simulated moves" colSpan="12"/>
     </panel>
 
-    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green">
-      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lignes"
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green"
+      readonlyIf="parentBudgetLevel.globalBudget.statusSelect &gt;= 1">
+      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lines"
         colSpan="12" form-view="budget-included-form" grid-view="budget-lines-grid"
         onChange="action-budget-level-method-compute-children-key"/>
     </panel>
@@ -687,7 +687,7 @@
     <field name="endDate" expr="eval: null"/>
   </action-record>
 
-  <action-view name="action-budget-budget-level-view-budget-lines" title="Lignes"
+  <action-view name="action-budget-budget-level-view-budget-lines" title="Lines"
     model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-grid"/>
     <view type="form" name="budget-included-form"/>
@@ -726,7 +726,7 @@
     <context name="_isParent" expr="false"/>
   </action-view>
 
-  <action-view name="action-budget-global-budget-level-view-budget-lines" title="Lignes"
+  <action-view name="action-budget-global-budget-level-view-budget-lines" title="Lines"
     model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-grid"/>
     <view type="form" name="budget-included-form"/>

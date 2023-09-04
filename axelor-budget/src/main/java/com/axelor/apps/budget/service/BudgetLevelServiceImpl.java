@@ -306,18 +306,14 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     globalBudgetLevel.setArchived(true);
 
     if (!CollectionUtils.isEmpty(globalBudgetLevel.getBudgetLevelList())) {
-      for (BudgetLevel group : globalBudgetLevel.getBudgetLevelList()) {
-        group.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
-        group.setArchived(true);
-        if (!CollectionUtils.isEmpty(group.getBudgetLevelList())) {
-          for (BudgetLevel section : group.getBudgetLevelList()) {
-            section.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
-            section.setArchived(true);
-            if (!CollectionUtils.isEmpty(section.getBudgetList())) {
-              for (Budget budget : section.getBudgetList()) {
-                budget.setArchived(true);
-              }
-            }
+      for (BudgetLevel section : globalBudgetLevel.getBudgetLevelList()) {
+        section.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
+        section.setArchived(true);
+
+        if (!CollectionUtils.isEmpty(section.getBudgetList())) {
+          for (Budget budget : section.getBudgetList()) {
+            budget.setArchived(true);
+            budgetRepository.save(budget);
           }
         }
       }

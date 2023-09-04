@@ -3,11 +3,15 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.GlobalBudgetTemplate;
+import com.axelor.apps.budget.db.VersionExpectedAmountsLine;
 import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -23,6 +27,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
   protected BudgetLevelManagementRepository budgetLevelManagementRepository;
+  protected BudgetVersionRepository budgetVersionRepo;
 
   @Inject
   public GlobalBudgetServiceImpl(
@@ -30,12 +35,14 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       GlobalBudgetRepository globalBudgetRepository,
       BudgetService budgetService,
       BudgetRepository budgetRepository,
-      BudgetLevelManagementRepository budgetLevelManagementRepository) {
+      BudgetLevelManagementRepository budgetLevelManagementRepository,
+      BudgetVersionRepository budgetVersionRepo) {
     this.budgetLevelService = budgetLevelService;
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
+    this.budgetVersionRepo = budgetVersionRepo;
   }
 
   @Override
@@ -229,5 +236,57 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       }
       globalBudget.addBudgetLevelListItem(optGroupBudgetLevel);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {RuntimeException.class})
+  public GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
+      throws AxelorException {
+    List<Budget> budgets = globalBudget.getBudgetList();
+    List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
+        budgetVersion.getVersionExpectedAmountsLineList();
+    if (globalBudget.getActiveVersion() != null) {
+      BudgetVersion oldBudgetVersion = globalBudget.getActiveVersion();
+      oldBudgetVersion.setIsActive(false);
+      budgetVersionRepo.save(oldBudgetVersion);
+    }
+
+    for (Budget budget : budgets) {
+      VersionExpectedAmountsLine versionExpectedAmountsLine =
+          versionExpectedAmountsLineList.stream()
+              .filter(version -> version.getBudget().equals(budget))
+              .findFirst()
+              .get();
+      if (versionExpectedAmountsLine != null) {
+        budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
+        budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
+        budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
+        budget.setPeriodDurationSelect(0);
+        budget.clearBudgetLineList();
+        List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
+        if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
+          BudgetLine budgetLine = budgetLineList.get(0);
+          recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
+          budget.addBudgetLineListItem(budgetLine);
+        }
+        budgetRepository.save(budget);
+      }
+    }
+
+    globalBudget.setBudgetList(budgets);
+    globalBudget.setActiveVersion(budgetVersion);
+    budgetVersion.setIsActive(true);
+    globalBudget = globalBudgetRepository.save(globalBudget);
+
+    return globalBudget;
+  }
+
+  protected void recomputeImputedAmountsOnBudgetLine(BudgetLine budgetLine, Budget budget) {
+    budgetLine.setAmountCommitted(budget.getTotalAmountCommitted());
+    budgetLine.setAmountRealized(budget.getTotalAmountRealized());
+    budgetLine.setRealizedWithNoPo(budget.getRealizedWithNoPo());
+    budgetLine.setRealizedWithPo(budget.getRealizedWithPo());
+    budgetLine.setFirmGap(budget.getTotalFirmGap());
+    budgetLine.setAmountPaid(budget.getTotalAmountPaid());
   }
 }

@@ -26,7 +26,7 @@
   </selection>
 
   <selection name="budget.budget.level.type.select">
-    <option value="global">Global Level</option>
+    <option value="global">Global budget</option>
     <option value="group">Group Level</option>
     <option value="section">Section Level</option>
   </selection>
@@ -55,8 +55,8 @@
 
   <selection name="global.budget.status.select">
     <option value="0">Draft</option>
-    <option value="1">Valid structure</option>
-    <option value="2">Valid</option>
+    <option value="1">Validated structure</option>
+    <option value="2">Validate</option>
     <option value="3">Archived</option>
   </selection>
 
@@ -72,7 +72,7 @@
     <option value="4">Results</option>
     <option value="5">Current Expenses</option>
   </selection>
-  
+
   <selection name="app.budget.check.missing.select">
     <option value="0">None</option>
     <option value="1">Optional</option>

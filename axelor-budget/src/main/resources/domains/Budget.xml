@@ -37,7 +37,7 @@
       title="Parent Level"/>
 
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
-      title="Global Level"/>
+      title="Global budget"/>
 
     <string name="typeSelect" title="Type" selection="budget.budget.type.select"
       readonly="true"/>
@@ -71,6 +71,11 @@
       title="Analytic account"/>
     <many-to-many name="accountSet" ref="com.axelor.apps.account.db.Account"
       title="Account(s)"/>
+
+    <many-to-one name="activeVersionExpectedAmountsLine"
+      ref="com.axelor.apps.budget.db.VersionExpectedAmountsLine"
+      title="Active version expected amounts line"/>
+
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
       <![CDATA[
             return code + " " + name;
