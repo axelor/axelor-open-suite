@@ -553,8 +553,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   @Override
   public void resetBudgetLevel(BudgetLevel budgetLevel) {
 
-    budgetLevel.setCode(budgetLevel.getCode() + " (" + I18n.get("copy") + ")");
-
     budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
 
     budgetLevel.setArchived(false);
