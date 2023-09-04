@@ -37,7 +37,10 @@
         <field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
         <field name="teamManagement" widget="boolean-switch"/>
         <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
-        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch"/>
+        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch" colSpan="3"/>
+        <field name="draftPrefix" colSpan="3"/>
+
+
         <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"
@@ -48,6 +51,8 @@
         <field name="generatePartnerSequence" widget="boolean-switch"/>
         <field name="checkRegistrationCode" widget="boolean-switch"/>
         <field name="manageProductVariants" widget="boolean-switch"/>
+        <field name="activatePartnerRelations" widget="boolean-switch"
+          if="['supplychain'].any{module -> __config__.app.isApp(module)}"/>
         <panel name="productSequenceManagement" colSpan="12" itemSpan="4">
           <field name="generateProductSequence" widget="boolean-switch"/>
           <field name="productSequenceTypeSelect" showIf="generateProductSequence"/>
@@ -151,6 +156,12 @@
           form-view="global-tracking-configuration-line-form"
           grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true"
           x-can-copy="true"/>
+      </panel>
+      <panel name="printingsPanel" title="Printings" colSpan="12">
+        <field name="clientSituationBirtTemplate"/>
+        <field name="companyPhoneBookBirtTemplate"/>
+        <field name="contactPhoneBookBirtTemplate"/>
+        <field name="productCatalogPGQLBirtTemplate"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

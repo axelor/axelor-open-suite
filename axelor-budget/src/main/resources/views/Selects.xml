@@ -60,7 +60,6 @@
     <option value="3">Archived</option>
   </selection>
 
-
   <selection name="budget.scenario.entry.method.select">
     <option value="0">Manual</option>
     <option value="1">Formula</option>
@@ -73,4 +72,11 @@
     <option value="4">Results</option>
     <option value="5">Current Expenses</option>
   </selection>
+  
+  <selection name="app.budget.check.missing.select">
+    <option value="0">None</option>
+    <option value="1">Optional</option>
+    <option value="2">Required</option>
+  </selection>
+
 </object-views>

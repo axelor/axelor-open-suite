@@ -11,10 +11,23 @@
 
     <boolean name="checkAvailableBudget" title="Check Available Budget"/>
     <boolean name="manageMultiBudget" title="Manage multi budgets on lines"/>
+    <integer name="missingBudgetCheckSelect" title="Missing budget alert" default="0"
+      selection="app.budget.check.missing.select"
+      help="Depending on the level chosen, the user will receive no alert ('None'), a warning message ('Optional') or will be obliged to fill in the budget information for the rest of the process ('Required')."/>
+
+    <extra-code>
+      <![CDATA[
+      //error check select
+        public static final int APP_BUDGET_MISSING_CHECK_SELECT_NO = 0;
+        public static final int APP_BUDGET_MISSING_CHECK_SELECT_OPTIONAL = 1;
+        public static final int APP_BUDGET_MISSING_CHECK_SELECT_REQUIRED = 2;
+		]]>
+    </extra-code>
 
     <track>
       <field name="checkAvailableBudget" on="UPDATE"/>
       <field name="manageMultiBudget" on="UPDATE"/>
+      <field name="missingBudgetCheckSelect" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

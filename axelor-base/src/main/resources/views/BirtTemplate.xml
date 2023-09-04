@@ -23,6 +23,7 @@
       <field name="templateMetaFile" widget="binary-link" colSpan="5"/>
       <field name="metaModel" colSpan="5"/>
       <field name="templateEngineSelect" colSpan="2"/>
+      <field name="attach"/>
       <panel name="parametersPanel" title="Parameters" colSpan="12">
         <field name="birtTemplateParameterList" showTitle="false" colSpan="12">
           <viewer depends="name,value">

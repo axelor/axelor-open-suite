@@ -249,6 +249,8 @@
 "Enable product description copy",,,
 "End date",,,
 "Enter tracking numbers",,,
+"Error: %s and %s fields are required and can not be null",,,
+"Error: %s field is required and can not be null",,,
 "Estimated Date",,,
 "Estimated date",,,
 "Excl. out of stock products",,,

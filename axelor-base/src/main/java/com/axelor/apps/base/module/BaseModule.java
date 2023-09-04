@@ -106,6 +106,8 @@ import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerLinkService;
+import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -364,5 +366,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductConversionService.class).to(ProductConversionServiceImpl.class);
     bind(PdfService.class).to(PdfServiceImpl.class);
     bind(PdfSignatureService.class).to(PdfSignatureServiceImpl.class);
+    bind(PartnerLinkService.class).to(PartnerLinkServiceImpl.class);
   }
 }

@@ -134,6 +134,9 @@ class BirtTemplateReportSettingsBuilder {
 
   private Object convertValue(String type, String value) throws BirtException {
 
+    if ("null".equals(value)) {
+      return null;
+    }
     if (DesignChoiceConstants.PARAM_TYPE_BOOLEAN.equals(type)) {
       return DataTypeUtil.toBoolean(value);
     } else if (DesignChoiceConstants.PARAM_TYPE_DATETIME.equals(type)) {
