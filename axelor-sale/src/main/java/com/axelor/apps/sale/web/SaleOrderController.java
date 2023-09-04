@@ -660,7 +660,6 @@ public class SaleOrderController {
           I18n.get(SaleExceptionMessage.SALE_ORDER_NO_DETAIL_LINE));
     }
     Beans.get(SaleOrderVersionService.class).createNewVersion(saleOrder);
-    Integer versionNumber = saleOrder.getVersionNumber() - 1;
     response.setValues(saleOrder);
     response.setReload(true);
   }
