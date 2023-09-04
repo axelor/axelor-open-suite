@@ -32,4 +32,14 @@
     type="com.axelor.apps.base.db.PartnerLinkType"
     search="self.importId = :importId OR self.typeSelect = :typeSelect"/>
 
+  <input file="supplychain_supplyChainConfig.csv" separator=";"
+    type="com.axelor.apps.supplychain.db.SupplyChainConfig" search="self.importId = :importId"/>
+
+  <input file="base_birtTemplateConfigLine.csv"
+    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
+    search="self.importId = :importId">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="appBase" search="self.id = '1'"/>
+  </input>
+
 </csv-inputs>
