@@ -95,15 +95,17 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
   }
 
   protected <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
-      throws AxelorException {
+      throws AxelorException, IOException {
     String name = birtTemplate.getName();
     String format = birtTemplate.getFormat();
-    File file =
-        birtTemplateService.generateBirtTemplateFile(birtTemplate, model, name, false, format);
+    Path src =
+        birtTemplateService
+            .generateBirtTemplateFile(birtTemplate, model, name, false, format)
+            .toPath();
     String outFileName = String.format("%s-%s.%s", name, model.getId(), format);
-    File dest = new File(outFileName);
-    file.renameTo(dest);
-    return dest;
+    Path dest =
+        Files.move(src, src.resolveSibling(outFileName), StandardCopyOption.REPLACE_EXISTING);
+    return dest.toFile();
   }
 
   protected String getOutputFileName(BirtTemplate birtTemplate) {
