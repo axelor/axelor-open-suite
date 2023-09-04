@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QITask" extends="com.axelor.apps.base.db.ICalendarEvent">
+
+    <many-to-one name="qiDecision" title="Decision"
+      ref="com.axelor.apps.quality.db.QIDecision"/>
+    <many-to-one name="qiAction" title="Action"
+      ref="com.axelor.apps.quality.db.QIAction"/>
+    <integer name="advancement" title="Advancement" min="0" max="100"/>
+    <many-to-one name="qiProcess" title="Process"
+      ref="com.axelor.apps.quality.db.QIProcess"/>
+    <decimal name="fixedAmount" title="Fixed amount"/>
+    <decimal name="directCost" title="Direct cost"/>
+    <decimal name="totalCost" title="Total Cost"/>
+    <many-to-many name="qiResolutionDefaultsSet" title="Defaults"
+      ref="com.axelor.apps.quality.db.QIResolutionDefault" required="true"/>
+    <many-to-one name="qiAnalysis" ref="com.axelor.apps.quality.db.QIAnalysis"
+      title="Analysis"/>
+
+    <track>
+      <field name="qiDecision"/>
+      <field name="qiAction"/>
+      <field name="advancement"/>
+      <field name="qiProcess"/>
+      <field name="description"/>
+      <field name="fixedAmount"/>
+      <field name="directCost"/>
+      <field name="totalCost"/>
+      <field name="qiAnalysis"/>
+    </track>
+  </entity>
+
+</domain-models>
