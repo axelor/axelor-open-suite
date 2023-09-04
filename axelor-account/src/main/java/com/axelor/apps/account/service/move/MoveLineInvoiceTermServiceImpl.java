@@ -315,6 +315,14 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                     RoundingMode.HALF_UP);
 
+    if (isHoldback) {
+      amount =
+          amount.divide(
+              moveLine.getCurrencyRate(),
+              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              RoundingMode.HALF_UP);
+    }
+
     return invoiceTermService.createInvoiceTerm(
         null,
         move,
