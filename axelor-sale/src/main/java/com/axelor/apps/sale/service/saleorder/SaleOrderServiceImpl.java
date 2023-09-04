@@ -50,7 +50,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -461,66 +460,5 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
     newComplementarySOLines.forEach(saleOrder::addSaleOrderLineListItem);
     saleOrderComputeService.computeSaleOrder(saleOrder);
-  }
-
-  @Override
-  public void createNewVersion(SaleOrder saleOrder) {
-    saleOrder
-        .getSaleOrderLineList()
-        .forEach(saleOrderLine -> historizeSaleOrderLine(saleOrder, saleOrderLine));
-    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
-    saleOrder.setVersionNumber(saleOrder.getVersionNumber() + 1);
-  }
-
-  protected void historizeSaleOrderLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    SaleOrderLine oldVersionSaleOrderLine = saleOrderLineRepo.copy(saleOrderLine, true);
-    oldVersionSaleOrderLine.setSaleOrder(null);
-    oldVersionSaleOrderLine.setOldVersionSaleOrder(saleOrder);
-    oldVersionSaleOrderLine.setVersionNumber(saleOrder.getVersionNumber());
-    oldVersionSaleOrderLine.setVersionDateT(
-        appBaseService.getTodayDateTime(saleOrder.getCompany()).toLocalDateTime());
-    oldVersionSaleOrderLine.setArchived(true);
-    saleOrder.addOldVersionSaleOrderLineListItem(oldVersionSaleOrderLine);
-  }
-
-  @Override
-  public LocalDateTime getVersionDateTime(SaleOrder saleOrder, Integer versionNumber) {
-    List<SaleOrderLine> versionList =
-        saleOrder.getOldVersionSaleOrderLineList().stream()
-            .filter(saleOrderLine -> saleOrderLine.getVersionNumber().equals(versionNumber))
-            .collect(Collectors.toList());
-    if (!versionList.isEmpty()) {
-      return versionList.get(0).getVersionDateT();
-    }
-    return null;
-  }
-
-  @Override
-  public boolean recoverVersion(
-      SaleOrder saleOrder, Integer versionNumber, boolean saveActualVersion) {
-    boolean isNewVersion = !saleOrder.getSaleOrderLineList().isEmpty() && saveActualVersion;
-    if (!saveActualVersion) {
-      saleOrder.getSaleOrderLineList().clear();
-    }
-    createNewVersion(saleOrder);
-    saleOrder.clearSaleOrderLineList();
-    saleOrder.getOldVersionSaleOrderLineList().stream()
-        .filter(
-            oldVersionSaleOrderLine ->
-                oldVersionSaleOrderLine.getVersionNumber().equals(versionNumber))
-        .forEach(
-            oldVersionSaleOrderLine -> recoverSaleOrderLine(saleOrder, oldVersionSaleOrderLine));
-    if (!isNewVersion) {
-      saleOrder.setVersionNumber(saleOrder.getVersionNumber() - 1);
-    }
-    return isNewVersion;
-  }
-
-  protected void recoverSaleOrderLine(SaleOrder saleOrder, SaleOrderLine oldVersionSaleOrderLine) {
-    SaleOrderLine saleOrderLine = saleOrderLineRepo.copy(oldVersionSaleOrderLine, true);
-    saleOrderLine.setOldVersionSaleOrder(null);
-    saleOrderLine.setSaleOrder(saleOrder);
-    saleOrder.setArchived(null);
-    saleOrder.addSaleOrderLineListItem(saleOrderLine);
   }
 }

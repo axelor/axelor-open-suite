@@ -95,8 +95,6 @@
 
     <boolean name="template" title="Template" hidden="true"/>
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
-    <one-to-many name="oldVersionSaleOrderLineList"
-      ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="oldVersionSaleOrder" orderBy="sequence"/>
     <many-to-one name="cancelReason" title="Cancel reason"
       ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="cancelReasonStr" title="Cancel Reason" large="true"/>

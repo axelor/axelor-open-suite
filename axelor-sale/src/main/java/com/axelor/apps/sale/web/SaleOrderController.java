@@ -51,6 +51,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.common.ObjectUtils;
@@ -648,10 +649,20 @@ public class SaleOrderController {
     }
   }
 
-  public void createNewVersion(ActionRequest request, ActionResponse response) {
+  public void createNewVersion(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderService.class).createNewVersion(saleOrder);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    if (saleOrder.getSaleOrderLineList().isEmpty()) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_NO_DETAIL_LINE));
+    }
+    Beans.get(SaleOrderVersionService.class).createNewVersion(saleOrder);
+    Integer versionNumber = saleOrder.getVersionNumber() - 1;
     response.setValues(saleOrder);
+    response.setReload(true);
   }
 
   public void getVersionDateTime(ActionRequest request, ActionResponse response) {
@@ -659,19 +670,47 @@ public class SaleOrderController {
     Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
     response.setValue(
         "$versionDateTime",
-        Beans.get(SaleOrderService.class).getVersionDateTime(saleOrder, versionNumber));
+        Beans.get(SaleOrderVersionService.class).getVersionDateTime(saleOrder, versionNumber));
+  }
+
+  public void getLastVersion(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Integer versionNumber = saleOrder.getVersionNumber() - 1;
+    versionNumber =
+        Beans.get(SaleOrderVersionService.class)
+            .getCorrectedVersionNumber(saleOrder.getVersionNumber(), versionNumber);
+    response.setValue("$previousVersionNumber", versionNumber);
+    response.setAttr("pastVersionsPanel", "refresh", true);
+    response.setValue(
+        "$versionDateTime",
+        Beans.get(SaleOrderVersionService.class).getVersionDateTime(saleOrder, versionNumber));
+  }
+
+  public void getPreviousVersionNumberOnChange(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
+    versionNumber =
+        Beans.get(SaleOrderVersionService.class)
+            .getCorrectedVersionNumber(saleOrder.getVersionNumber(), versionNumber);
+    response.setValue("$previousVersionNumber", versionNumber);
+    response.setAttr("pastVersionsPanel", "refresh", true);
+    response.setValue(
+        "$versionDateTime",
+        Beans.get(SaleOrderVersionService.class).getVersionDateTime(saleOrder, versionNumber));
   }
 
   public void recoverVersion(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
     boolean saveActualVersion = (Boolean) request.getContext().get("saveActualVersion");
-    if (Beans.get(SaleOrderService.class)
+    if (Beans.get(SaleOrderVersionService.class)
         .recoverVersion(saleOrder, versionNumber, saveActualVersion)) {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NEW_VERSION));
     } else {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
     }
     response.setValues(saleOrder);
+    response.setReload(true);
   }
 }

@@ -627,7 +627,7 @@
       <panel if="__config__.app.getApp('sale')?.manageSaleOrderVersion"
         showIf="versionNumber > 1" name="pastVersionRecoveryPanel" title="Past versions">
         <field name="$previousVersionNumber" title="Version number" type="integer" min="1"
-          colSpan="2" onChange="action-sale-order-group-previous-version-number-on-change"/>
+          colSpan="2" onChange="action-sale-order-method-get-previous-version-number-on-change"/>
         <field name="$versionDateTime" type="datetime" title="Version date" colSpan="6"
           readonly="true"/>
         <field name="$saveActualVersion" type="boolean" title="Save actual version"
@@ -635,7 +635,7 @@
           if="__config__.app.getApp('sale')?.isPastVersionRecovery"/>
         <spacer colSpan="4" if="!__config__.app.getApp('sale')?.isPastVersionRecovery"/>
         <button name="lastVersionBtn" title="Go to last version" icon="fa-arrow-right"
-          css="btn-custom text-left" onClick="action-sale-order-group-last-version-btn" colSpan="4"
+          css="btn-custom text-left" onClick="action-sale-order-method-get-last-version" colSpan="4"
           showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; $previousVersionNumber != versionNumber - 1"/>
         <spacer colSpan="4"/>
         <button name="versionRecoveryBtn" title="Recover from this version" icon="fa-upload"
@@ -644,7 +644,6 @@
           showIf="(statusSelect == 1 || statusSelect == 2) "/>
         <spacer colSpan="6" if="!__config__.app.getApp('sale')?.isPastVersionRecovery"/>
 
-        <field name="oldVersionSaleOrderLineList" hidden="true"/>
         <panel-dashlet name="pastVersionsPanel"
           action="action-sale-order-view-previous-versions" colSpan="12" readonly="true"/>
       </panel>
@@ -1439,7 +1438,7 @@
       if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.crm.db.Opportunity'"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-record-set-group-product-on-printing"/>
-    <action name="action-sale-order-attrs-set-previous-version-number"/>
+    <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
   </action-group>
 
@@ -1480,8 +1479,7 @@
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-attrs-incoterm-required"/>
     <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
-    <action name="action-sale-order-attrs-set-previous-version-number"/>
-    <action name="action-sale-order-method-get-version-date-time"/>
+    <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
   </action-group>
 
@@ -1552,28 +1550,12 @@
 
   <action-group name="action-sale-order-group-new-version-btn">
     <action name="save"/>
-    <action name="action-sale-order-validate-check-empty-sale-order-on-new-version"/>
     <action name="action-sale-order-method-new-version"/>
-    <action name="action-sale-order-attrs-set-previous-version-number"/>
-    <action name="action-sale-order-method-get-version-date-time"/>
-    <action name="save"/>
-  </action-group>
-
-  <action-group name="action-sale-order-group-previous-version-number-on-change">
-    <action name="action-sale-order-attrs-previous-version-number-on-change"/>
-    <action name="action-sale-order-method-get-version-date-time"/>
-  </action-group>
-
-  <action-group name="action-sale-order-group-last-version-btn">
-    <action name="action-sale-order-attrs-set-previous-version-number"/>
-    <action name="action-sale-order-attrs-previous-version-number-on-change"/>
-    <action name="action-sale-order-method-get-version-date-time"/>
   </action-group>
 
   <action-group name="action-sale-order-group-version-recovery-btn">
+    <action name="save"/>
     <action name="action-sale-order-method-version-recovery-btn"/>
-    <action name="action-sale-order-attrs-set-previous-version-number"/>
-    <action name="action-sale-order-method-get-version-date-time"/>
     <action name="action-sale-order-line-change-group"/>
     <action name="save"/>
   </action-group>
@@ -1724,6 +1706,15 @@
 
   <action-method name="action-sale-order-method-get-version-date-time">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="getVersionDateTime"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-get-last-version">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="getLastVersion"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-get-previous-version-number-on-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="getPreviousVersionNumberOnChange"/>
   </action-method>
 
   <action-method name="action-sale-order-method-version-recovery-btn">
@@ -1918,19 +1909,6 @@
     <attribute name="domain" for="paymentCondition"
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-attrs-set-previous-version-number">
-    <attribute for="$previousVersionNumber" name="value" expr="eval: 1"
-      if="eval: versionNumber &lt;= 1"/>
-    <attribute for="$previousVersionNumber" name="value" expr="eval: versionNumber - 1"
-      if="eval: versionNumber > 1"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-attrs-previous-version-number-on-change">
-    <attribute for="$previousVersionNumber" name="value" expr="eval: versionNumber - 1"
-      if="eval: previousVersionNumber > versionNumber - 1"/>
-    <attribute name="refresh" for="pastVersionsPanel" expr="eval: true"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-set-save-actual-version">
@@ -2132,11 +2110,6 @@
   <action-validate name="action-validate-sale-quotation-check-selection">
     <error message="You have to choose at least one sale quotation"
       if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
-  </action-validate>
-
-  <action-validate
-    name="action-sale-order-validate-check-empty-sale-order-on-new-version">
-    <error message="Please enter at least one detail line." if="saleOrderLineList?.isEmpty()"/>
   </action-validate>
 
   <action-record name="action-saleorder-record-template"
