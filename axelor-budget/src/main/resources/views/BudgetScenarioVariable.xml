@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="budget-scenario-variable-grid" title="Budget Scenario Variable"
+    model="com.axelor.apps.budget.db.BudgetScenarioVariable" orderBy="code">
+    <field name="name"/>
+    <field name="code"/>
+    <field name="entryMethod"/>
+    <field name="formula"/>
+    <field name="category"/>
+  </grid>
+
+  <form model="com.axelor.apps.budget.db.BudgetScenarioVariable"
+    title="Budget Scenario Variable" name="budget-scenario-variable-form" width="large">
+    <panel name="mainPanel" colSpan="12">
+
+      <field name="name" title="Name" required="true"/>
+      <field name="code" title="Code" required="true"/>
+      <field name="entryMethod"/>
+      <field name="category"/>
+      <field name="formula" title="Formula" showIf="entryMethod =='1'"
+        requiredIf="entryMethod =='1'"/>
+
+    </panel>
+  </form>
+
+</object-views>

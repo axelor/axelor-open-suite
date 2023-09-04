@@ -36,24 +36,7 @@ import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.PurchaseOrderManagementBudgetRepository;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelServiceImpl;
-import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.AppBudgetServiceImpl;
-import com.axelor.apps.budget.service.BudgetAccountConfigService;
-import com.axelor.apps.budget.service.BudgetAccountConfigServiceImpl;
-import com.axelor.apps.budget.service.BudgetAccountService;
-import com.axelor.apps.budget.service.BudgetAccountServiceImpl;
-import com.axelor.apps.budget.service.BudgetDistributionService;
-import com.axelor.apps.budget.service.BudgetDistributionServiceImpl;
-import com.axelor.apps.budget.service.BudgetLevelService;
-import com.axelor.apps.budget.service.BudgetLevelServiceImpl;
-import com.axelor.apps.budget.service.BudgetLineService;
-import com.axelor.apps.budget.service.BudgetLineServiceImpl;
-import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.budget.service.BudgetServiceImpl;
-import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
-import com.axelor.apps.budget.service.GlobalBudgetService;
-import com.axelor.apps.budget.service.GlobalBudgetServiceImpl;
+import com.axelor.apps.budget.service.*;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
@@ -138,5 +121,6 @@ public class BudgetModule extends AxelorModule {
     bind(ProjectStockMoveInvoiceServiceImpl.class).to(StockMoveInvoiceBudgetServiceImpl.class);
     bind(PurchaseOrderInvoiceProjectServiceImpl.class)
         .to(PurchaseOrderInvoiceBudgetServiceImpl.class);
+    bind(BudgetScenarioLineService.class).to(BudgetScenarioLineServiceImpl.class);
   }
 }

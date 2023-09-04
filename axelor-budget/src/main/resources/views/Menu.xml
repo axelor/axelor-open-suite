@@ -165,4 +165,24 @@
     <view type="form" name="global-budget-form"/>
   </action-view>
 
+
+  <menuitem title="Budget Scenario Variable"
+    name="budget-root-budget-management-budget-scenario-variable"
+    parent="budget-root-budget-management" action="budget.root.management.budget.scenario.variable"
+    order="23"/>
+  <action-view name="budget.root.management.budget.scenario.variable"
+    title="Budget Scenario Variable" model="com.axelor.apps.budget.db.BudgetScenarioVariable">
+    <view type="grid" name="budget-scenario-variable-grid"/>
+    <view type="form" name="budget-scenario-variable-form"/>
+  </action-view>
+
+  <menuitem title="Budget Scenario" name="budget-root-budget-management-budget-scenario"
+    parent="budget-root-budget-management" action="budget.root.management.budget.scenario"
+    order="23"/>
+  <action-view name="budget.root.management.budget.scenario"
+    title="Budget Scenario Value" model="com.axelor.apps.budget.db.BudgetScenario">
+    <view type="grid" name="budget-scenario-grid"/>
+    <view type="form" name="budget-scenario-form"/>
+  </action-view>
+
 </object-views>
