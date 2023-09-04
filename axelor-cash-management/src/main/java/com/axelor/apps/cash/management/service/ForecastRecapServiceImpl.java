@@ -759,8 +759,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         Employee employee = (Employee) forecastModel;
         return employee.getBankDetails();
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
+        SaleOrder saleOrder = (SaleOrder) forecastModel;
+        return saleOrder.getCompanyBankDetails();
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
-        return null;
+        PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
+        return purchaseOrder.getCompanyBankDetails();
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
