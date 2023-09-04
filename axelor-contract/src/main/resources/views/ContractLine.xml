@@ -52,11 +52,10 @@
   <form name="contract-line-form" title="Contract line"
     model="com.axelor.apps.contract.db.ContractLine" onNew="action-contract-line-group-onnew"
     onLoad="action-contract-line-group-onload">
-
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
         <field name="product" canEdit="false"
-          onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"
+          onChange="action-contract-line-version-group-product-onchange"
           domain="self.dtype = 'Product'"/>
         <field name="productName"/>
         <field name="qty" readonlyIf="isConsumptionLine"
@@ -78,7 +77,7 @@
         <field name="inTaxTotal" readonly="true"/>
 
         <field name="isConsumptionLine" hidden="true"
-          onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
+          onChange="action-contract-line-group-is-consumption-line-onchange"/>
         <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
         <field name="description" colSpan="12" widget="html"/>
         <field name="contractVersion" hidden="true"/>
@@ -91,16 +90,34 @@
       </panel>
 
       <panel name="analyticDistributionPanel" title="Analytics"
-        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
-          onChange="action-contract-line-method-create-distribution"/>
+          onChange="action-contract-line-group-analytic-distribution-template-onchange"/>
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+          onSelect="action-contract-line-method-set-axis-domain"
+          onChange="action-contract-line-method-axis-create-analytic-line"/>
+        <panel name="axisAnalyticAccountPanel" colSpan="12"
+          readonlyIf="analyticDistributionTemplate">
+          <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+        </panel>
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+          onChange="action-contract-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
       <panel name="datePanel" title="Date" hidden="true">
@@ -111,13 +128,12 @@
 
   <form name="additional-contract-line-form" title="Additional benefit"
     model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced"
-    onNew="action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-scale-and-precision">
-
+    onNew="action-contract-line-group-additional-onnew-onload"
+    onLoad="action-contract-line-group-additional-onnew-onload">
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
         <field name="product" canEdit="false"
-          onChange="action-method-contract-change-product,action-method-contract-line-compute-total"
+          onChange="action-contract-line-additional-group-product-onchange"
           domain="self.dtype = 'Product'"/>
         <field name="productName"/>
         <field name="qty" readonlyIf="isConsumptionLine"
@@ -132,17 +148,35 @@
         <field name="description" colSpan="12" widget="html"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics"
-        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
           onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
-          onChange="action-contract-line-method-create-distribution"/>
+          onChange="action-contract-line-group-analytic-distribution-template-onchange"/>
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
+          onSelect="action-contract-line-method-set-axis-domain"
+          onChange="action-contract-line-method-axis-create-analytic-line"/>
+        <panel name="axisAnalyticAccountPanel" colSpan="12"
+          readonlyIf="analyticDistributionTemplate">
+          <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+          <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+            form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
+            onChange="action-contract-line-method-axis-create-analytic-line"/>
+        </panel>
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           colSpan="12" grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+          onChange="action-contract-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
     </panel-tabs>
@@ -187,17 +221,60 @@
   <action-group name="action-contract-line-group-onnew">
     <action name="action-method-contract-line-fill-default"/>
     <action name="action-contract-line-group-edit-view"/>
+    <action name="action-contract-line-group-manage-analytic"/>
   </action-group>
 
   <action-group name="action-contract-line-group-onload">
     <action name="action-contract-line-group-edit-view"/>
+    <action name="action-contract-line-group-manage-analytic"/>
   </action-group>
 
   <action-group name="action-contract-line-group-edit-view">
     <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-group-manage-analytic"/>
     <action name="action-contract-line-attrs-scale-and-precision"/>
     <action name="action-contract-line-method-hide-date-panel"/>
     <action name="action-contract-line-method-hide-is-to-revaluate"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-additional-onnew-onload">
+    <action name="action-contract-line-attrs-scale-and-precision"/>
+    <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-group-manage-analytic"/>
+  </action-group>
+
+  <action-group
+    name="action-contract-line-group-analytic-distribution-template-onchange">
+    <action name="action-contract-line-method-create-distribution"/>
+    <action name="action-contract-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-analytic-move-line-list-onchange">
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+    <action name="action-contract-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-manage-analytic">
+    <action name="action-contract-line-method-hide-axis-analytic-account"/>
+    <action name="action-contract-line-method-print-analytic-account"/>
+    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"/>
+  </action-group>
+
+  <action-group name="action-contract-line-version-group-product-onchange">
+    <action name="action-method-contract-version-change-product"/>
+    <action name="action-method-contract-line-compute-total"/>
+    <action name="action-contract-line-group-manage-analytic"/>
+  </action-group>
+
+  <action-group name="action-contract-line-additional-group-product-onchange">
+    <action name="action-method-contract-change-product"/>
+    <action name="action-method-contract-line-compute-total"/>
+    <action name="action-contract-line-group-manage-analytic"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-is-consumption-line-onchange">
+    <action name="action-method-contract-line-change-is-consumption-line"/>
+    <action name="action-method-contract-line-compute-total"/>
   </action-group>
 
   <!-- ACTION ATTRS -->
@@ -258,6 +335,30 @@
   <action-method name="action-contract-line-method-hide-is-to-revaluate">
     <call class="com.axelor.apps.contract.web.ContractLineController"
       method="hideIsToRevaluate"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-print-analytic-account">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="printAnalyticAccounts"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-set-axis-domain">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="setAxisDomains"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-axis-create-analytic-line">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="createAnalyticAccountLines"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-hide-axis-analytic-account">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="manageAxis"/>
+  </action-method>
+
+  <action-method
+    name="action-contract-line-method-set-analytic-distribution-panel-hidden">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setAnalyticDistributionPanelHidden"/>
   </action-method>
 
 </object-views>
