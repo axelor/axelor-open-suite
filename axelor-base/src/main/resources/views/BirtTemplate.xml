@@ -76,6 +76,10 @@
     <call class="com.axelor.apps.base.web.PrintingModelController" method="print"/>
   </action-method>
 
+  <action-method name="action-method-print-birt-list">
+    <call class="com.axelor.apps.base.web.PrintingModelController" method="printList"/>
+  </action-method>
+
   <action-record name="action-birt-template-record-default"
     model="com.axelor.apps.base.db.BirtTemplate">
     <field name="format" expr="pdf"/>

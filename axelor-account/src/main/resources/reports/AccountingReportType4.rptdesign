@@ -382,7 +382,7 @@
                     <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name, 
+            <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name,
 MoveLine.partner_seq,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 0
@@ -400,7 +400,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "<30days",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 30
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 60
@@ -409,7 +409,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "30<days<60",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 60
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 90
@@ -418,7 +418,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "60<days<90",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 90
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 120
@@ -427,7 +427,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "90<days<120",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 120
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 150
@@ -436,7 +436,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "120<days<150",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 150
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 180
@@ -445,7 +445,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "150<days<180",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 180
 then
@@ -453,7 +453,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "180<days",
 SUM(CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -471,7 +471,7 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
-(AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND 
+(AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR InvoiceTerm.due_date <= AccountingReport.date_to) AND
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND

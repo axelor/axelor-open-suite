@@ -53,7 +53,8 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
   @Override
   public File generateBirtTemplateFile(BirtTemplate template, Model model, String outputName)
       throws AxelorException {
-    return generateBirtTemplateFile(template, model, outputName, true, template.getFormat());
+    return generateBirtTemplateFile(
+        template, model, outputName, template.getAttach(), template.getFormat());
   }
 
   @Override
