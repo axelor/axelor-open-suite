@@ -26,7 +26,7 @@
       ref="com.axelor.message.db.Template"/>
 
     <integer name="capacity" title="Capacity" selection="production.config.capacity.select"
-      default="1"/>
+      nullable="false" default="1"/>
 
 
     <finder-method name="findByCompany" using="company"/>
