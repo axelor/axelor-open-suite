@@ -1704,10 +1704,6 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="createNewVersion"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-get-version-date-time">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="getVersionDateTime"/>
-  </action-method>
-
   <action-method name="action-sale-order-method-get-last-version">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="getLastVersion"/>
   </action-method>

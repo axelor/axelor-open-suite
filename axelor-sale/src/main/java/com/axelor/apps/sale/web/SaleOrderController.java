@@ -665,14 +665,6 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  public void getVersionDateTime(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
-    response.setValue(
-        "$versionDateTime",
-        Beans.get(SaleOrderVersionService.class).getVersionDateTime(saleOrder, versionNumber));
-  }
-
   public void getLastVersion(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Integer versionNumber = saleOrder.getVersionNumber() - 1;
