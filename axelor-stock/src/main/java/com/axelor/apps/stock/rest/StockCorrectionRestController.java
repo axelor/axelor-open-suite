@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.rest;
 
+import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.stock.db.StockCorrection;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
@@ -75,7 +76,7 @@ public class StockCorrectionRestController {
 
     return ResponseConstructor.build(
         Response.Status.CREATED,
-        "Resource successfully created",
+        Beans.get(ResponseComputeService.class).compute(stockCorrection),
         new StockCorrectionResponse(stockCorrection));
   }
 
