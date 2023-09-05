@@ -6,7 +6,8 @@
   <grid name="ebics-user-grid" title="Ebics user"
     model="com.axelor.apps.bankpayment.db.EbicsUser">
     <toolbar>
-      <button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user"/>
+      <button name="exportUsersBtn" title="Export"
+        onClick="action-ebics-user-view-open-export-ebics-user"/>
       <button name="importUsersBtn" title="import.verb"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
@@ -26,7 +27,8 @@
     model="com.axelor.apps.bankpayment.db.EbicsUser" groupBy="ebicsPartner.ebicsBank,ebicsPartner"
     orderBy="ebicsPartner.ebicsBank,ebicsPartner,userId">
     <toolbar>
-      <button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user"/>
+      <button name="exportUsersBtn" title="Export"
+        onClick="action-ebics-user-view-open-export-ebics-user"/>
       <button name="importUsersBtn" title="import.verb"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
@@ -167,6 +169,15 @@
     </panel>
   </form>
 
+  <form model="com.axelor.utils.db.Wizard" title="Export Ebics users"
+    name="export-ebics-user-wizard-form">
+    <panel name="mainPanel">
+      <field name="_exportLogs" title="Export logs" type="boolean" widget="boolean-switch"
+        help="If this option is unselected, user logs will not be exported."/>
+      <button name="exportBtn" title="Export" onClick="action-export-ebics-user,close"/>
+    </panel>
+  </form>
+
   <action-record name="action-ebics-user-record-set-fullname"
     model="com.axelor.apps.bankpayment.db.EbicsUser">
     <field name="fullName" expr="eval: (name ? name : '')" if="eval: userTypeSelect == 0"/>
@@ -261,6 +272,17 @@
     <view type="grid" name="ebics-request-log-grid"/>
     <view type="form" name="ebics-request-log-form"/>
     <domain>self.ebicsUser = :id</domain>
+  </action-view>
+
+  <action-view name="action-ebics-user-view-open-export-ebics-user"
+    title="Export Ebics users" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="export-ebics-user-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="__ids__" expr="eval: _ids"/>
+    <context name="_exportLogs" expr="eval: false"/>
   </action-view>
 
   <action-export name="action-export-ebics-user" output="${date}${time}"

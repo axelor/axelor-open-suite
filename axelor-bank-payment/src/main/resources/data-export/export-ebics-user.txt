@@ -174,7 +174,10 @@
 			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.x002Certificate?.privateKey)}</privateKey>
 		</x002Certificate>
 	</ebics-user>
-
+	"""
+	if(_exportLogs)
+	out <<
+	"""
 	<ebicsRequestLogList>
 		 $ebicsRequestLog
 	</ebicsRequestLogList>
