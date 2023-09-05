@@ -38,7 +38,6 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
@@ -221,7 +220,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = poLine.getProduct();
-        if (ObjectUtils.notEmpty(product)) {
+        if (product != null) {
           budgetService.validateBudgetDistributionAmounts(
               poLine.getBudgetDistributionList(), poLine.getCompanyExTaxTotal(), product.getCode());
         }

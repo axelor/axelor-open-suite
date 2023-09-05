@@ -1,3 +1,3 @@
 ---
-title : "NPE PurchaseOrder"
+title : "Purchase order: fixed 'NullPointerException' error happening when a line without a product was created."
 type : fix
