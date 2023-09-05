@@ -385,6 +385,7 @@ public class MoveTemplateService {
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
 
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
