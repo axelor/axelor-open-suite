@@ -99,6 +99,8 @@ import com.axelor.apps.hr.service.expense.ExpenseLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpensePrintService;
+import com.axelor.apps.hr.service.expense.ExpensePrintServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
@@ -231,5 +233,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(MedicalVisitService.class).to(MedicalVisitServiceImpl.class);
     bind(MedicalVisitWorkflowService.class).to(MedicalVisitWorkflowServiceImpl.class);
     bind(MedicalVisitRepository.class).to(MedicalVisitHRRepository.class);
+    bind(ExpensePrintService.class).to(ExpensePrintServiceImpl.class);
   }
 }

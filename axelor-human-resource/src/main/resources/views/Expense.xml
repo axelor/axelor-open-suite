@@ -53,6 +53,8 @@
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printExpenseItem" title="Print" action="save,action-method-print-birt"/>
+        <item name="printAll" title="Print report and files"
+          action="save,action-expense-method-print-report-and-proof-file"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -430,6 +432,11 @@
     <attribute for="kilometricExpenseLineList" name="hidden"
       expr="eval: currency != company?.currency"/>
   </action-attrs>
+
+  <action-method name="action-expense-method-print-report-and-proof-file">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="printReportAndProofFiles"/>
+  </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"
     title="Expense filters">

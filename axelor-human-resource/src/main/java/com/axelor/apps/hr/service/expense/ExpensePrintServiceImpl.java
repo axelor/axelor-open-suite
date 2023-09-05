@@ -1,0 +1,96 @@
+package com.axelor.apps.hr.service.expense;
+
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.service.BirtTemplateConfigLineService;
+import com.axelor.apps.base.service.PrintFromBirtTemplateService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.file.PdfTool;
+import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+public class ExpensePrintServiceImpl implements ExpensePrintService {
+
+  protected static final String DATE_FORMAT_YYYYMMDDHHMM = "YYYYMMddHHmm";
+
+  protected MetaFiles metaFiles;
+  protected AppBaseService appBaseService;
+  protected BirtTemplateConfigLineService birtTemplateConfigLineService;
+  protected PrintFromBirtTemplateService printFromBirtTemplateService;
+
+  @Inject
+  public ExpensePrintServiceImpl(
+      MetaFiles metaFiles,
+      AppBaseService appBaseService,
+      BirtTemplateConfigLineService birtTemplateConfigLineService,
+      PrintFromBirtTemplateService printFromBirtTemplateService) {
+    this.metaFiles = metaFiles;
+    this.appBaseService = appBaseService;
+    this.birtTemplateConfigLineService = birtTemplateConfigLineService;
+    this.printFromBirtTemplateService = printFromBirtTemplateService;
+  }
+
+  @Override
+  public DMSFile uploadExpenseReport(Expense expense) throws IOException, AxelorException {
+    String title = getExpenseReportTitle();
+    MetaFile metaFile = metaFiles.upload(printAll(expense));
+    metaFile.setFileName(title + ".pdf");
+    return metaFiles.attach(metaFile, null, expense);
+  }
+
+  @Override
+  public String getExpenseReportTitle() {
+    return I18n.get("Expense")
+        + " - "
+        + I18n.get("Report")
+        + " - "
+        + appBaseService
+            .getTodayDateTime()
+            .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMM));
+  }
+
+  protected File printAll(Expense expense) throws AxelorException, IOException {
+    List<File> fileList = new ArrayList<>();
+    File reportFile = getReportFile(expense);
+    fileList.add(reportFile);
+    List<MetaFile> metaFileList = getExpenseLineJustificationFiles(expense);
+    fileList.addAll(convertMetaFileToFile(metaFileList));
+
+    return PdfTool.mergePdf(fileList);
+  }
+
+  protected File getReportFile(Expense expense) throws AxelorException, IOException {
+    BirtTemplate birtTemplate =
+        birtTemplateConfigLineService.getBirtTemplates(Expense.class.getName()).iterator().next();
+    return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense);
+  }
+
+  protected List<MetaFile> getExpenseLineJustificationFiles(Expense expense) {
+    return expense.getGeneralExpenseLineList().stream()
+        .map(ExpenseLine::getJustificationMetaFile)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
+
+  protected List<File> convertMetaFileToFile(List<MetaFile> metaFileList) {
+    List<File> fileList = new ArrayList<>();
+    for (MetaFile metaFile : metaFileList) {
+      Path path = MetaFiles.getPath(metaFile);
+      fileList.add(path.toFile());
+    }
+    return fileList;
+  }
+}
