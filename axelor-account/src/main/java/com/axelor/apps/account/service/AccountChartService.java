@@ -115,13 +115,14 @@ public class AccountChartService {
 
     accountConfig = accountConfigRepo.find(accountConfig.getId());
     accountConfig.setHasChartImported(true);
-    accountConfigRepo.save(accountConfig);
     act = accountChartRepository.find(act.getId());
+    accountConfig.setAccountChart(act);
     company = companyRepo.find(company.getId());
     Set<Company> companySet = act.getCompanySet();
     companySet.add(company);
     act.setCompanySet(companySet);
     accountChartRepository.save(act);
+    accountConfigRepo.save(accountConfig);
   }
 
   public void importAccountChartData(
