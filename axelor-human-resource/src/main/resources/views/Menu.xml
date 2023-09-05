@@ -353,6 +353,16 @@
     <view type="form" name="health-mutual-rejection-reason-form"/>
   </action-view>
 
+  <menuitem name="hr-root-configuration-medical-visit-reason" parent="hr-root-emp-mgt-conf"
+    title="Medical visit reason" order="1400" action="hr.root.configuration.medical.visit.reason"
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()"/>
+
+  <action-view name="hr.root.configuration.medical.visit.reason"
+    title="Medical visit reason" model="com.axelor.apps.hr.db.MedicalVisitReason">
+    <view type="grid" name="medical-visit-reason-grid"/>
+    <view type="form" name="medical-visit-reason-form"/>
+  </action-view>
+
   <!-- Leave App -->
   <menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')"
     icon="fa-plane" icon-background="#84429f" title="Leave Requests" order="500"/>
@@ -454,7 +464,6 @@
     <view-param name="search-filters" value="product-expense-filters"/>
     <view-param name="forceTitle" value="true"/>
     <domain>self.isModel = false AND self.expense = true AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="false"/>
     <context name="_payCompany"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
@@ -559,7 +568,6 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND
       self.expense = false AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="false"/>
     <context name="_productTypeSelect" expr="storable"/>
   </action-view>

@@ -82,7 +82,7 @@
 
   <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead"
     onLoad="action-group-crm-lead-onload" onNew="action-group-crm-lead-onnew"
-    onSave="action-crm-lead-method-check-name">
+    onSave="action-crm-lead-method-check-name,action-lead-method-show-duplicate-records-fullname">
 
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -260,6 +260,10 @@
         onClick="action-lead-view-lose" css="btn-danger" icon="fa-times-circle"/>
     </panel>
 
+    <panel sidebar="true" name="activityPanel" title="Activity" colSpan="12" showIf="id">
+      <panel-dashlet action="action-lead-view-lead-activity-custom" height="550"/>
+    </panel>
+
     <panel sidebar="true" name="followUpPanel" title="Follow-up" colSpan="12">
       <field name="user" canNew="false" canEdit="false" canView="false" colSpan="6"
         form-view="user-form" grid-view="user-grid"/>
@@ -351,6 +355,45 @@
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
   </grid>
+
+  <custom title="Activity" name="lead-form-activity-custom" css="crm-activity-dashlet">
+    <dataset type="rpc">com.axelor.apps.crm.web.LeadController:getLeadActivityData</dataset>
+    <template>
+      <![CDATA[
+      <div class="crm-activity-card" ng-repeat="item in data">
+        <div>
+          <span class="crm-activity-date">{{item.date | date}}</span>
+          	<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial; float:right;" ng-show="item.status == 1" x-translate>Planned</span>
+            <span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 2" x-translate>Realized</span>
+            <span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 3" x-translate>Canceled</span>
+        </div>
+        <div class="crm-activity-content">
+          <div>
+            <span ng-show="item.type == 'event' && item.activityName == 1" x-translate>Call</span>
+            <span ng-show="item.type == 'event' && item.activityName == 2" x-translate>Meeting</span>
+            <span ng-show="item.type == 'event' && item.activityName == 3" x-translate>Task</span>
+            <span ng-show="item.type == 'event' && item.activityName == 5" x-translate>Note</span>
+            <span ng-show="item.type == 'creation' || item.type == 'statusChange'" x-translate>{{item.activityName}}</span>
+          </div>
+          <div class="crm-activity-icon">
+            <span  ng-show="item.type == 'creation'"><i class="fa fa-plus" style=""></i></span>
+            <span ng-show="item.type == 'statusChange'"><i class="fa fa-exchange"></i></span>
+            <span ng-show="item.type == 'event'">
+              <i ng-show="item.activityName == 1" class="fa fa-phone"></i>
+              <i ng-show="item.activityName == 2" class="fa fa-pencil-square-o"></i>
+              <i ng-show="item.activityName == 3" class="fa fa-tasks"></i>
+              <i ng-show="item.activityName == 5" class="fa fa-sticky-note-o"></i>
+            </span>
+           </div>
+        </div>
+        <div ng-show="item.description != ''">
+          <hr/>
+          <span>{{item.description}}</span>
+        </div>
+      </div>
+      ]]>
+    </template>
+  </custom>
 
   <action-condition name="action-lead-lost-reason-check">
     <check error="A lost reason must be selected" field="lostReason"
@@ -566,6 +609,10 @@
     <context name="_leadId" expr="eval: __id__"/>
   </action-view>
 
+  <action-view name="action-lead-view-lead-activity-custom" title="Activity">
+    <view type="custom" name="lead-form-activity-custom"/>
+  </action-view>
+
   <action-method name="action-show-leads-on-map-page">
     <call method="showLeadsOnMap" class="com.axelor.apps.crm.web.LeadController"/>
   </action-method>
@@ -576,6 +623,10 @@
 
   <action-method name="action-lead-method-view-lead-with-same-domain-name">
     <call class="com.axelor.apps.crm.web.LeadController" method="viewLeadWithSameDomainName"/>
+  </action-method>
+
+  <action-method name="action-lead-method-show-duplicate-records-fullname">
+    <call class="com.axelor.apps.crm.web.LeadController" method="showDuplicateRecordsFullName"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"

@@ -512,7 +512,7 @@ MoveLine.date_val, MoveLine.partner_full_name as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 MoveLine.debit, MoveLine.credit, ReconcileGroup.code as reconcile_group_code, MoveLine.due_date, Journal.code as journal_code,
 Account.code as account_code , Account.name as account_name , Move.reference as move_sequence,
-MoveLine.amount_remaining,
+ABS(MoveLine.amount_remaining) as amount_remaining,
 MoveLine.currency_amount,
 MoveLine.origin_date,
 MoveLine.origin,
@@ -561,7 +561,7 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND (MoveLine.amount_remaining > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
+AND (ABS(MoveLine.amount_remaining) > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
 GROUP BY MoveLine.id, MoveLine.name, MoveLine.description, MoveLine.date_val, MoveLine.partner_full_name,
 account, MoveLine.debit, MoveLine.credit, ReconcileGroup.code, Journal.code, Account.code, Account.name,  Move.reference,
 MoveLine.amount_remaining, MoveLine.currency_amount, Move.currency_code

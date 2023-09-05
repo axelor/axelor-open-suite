@@ -52,7 +52,7 @@
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printExpenseItem" title="Print" action="save,action-print-expense"/>
+        <item name="printExpenseItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -68,7 +68,8 @@
 					]]>
           </viewer>
         </field>
-        <field name="move" readonly="true" showTitle="false" showIf="move" colSpan="4">
+        <field name="ventilated" readonly="true" showTitle="false" showIf="ventilated"
+          colSpan="4">
           <viewer>
 						<![CDATA[
 							<h3>
@@ -123,7 +124,7 @@
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"
             onClick="save,action-expense-add-payment-form"
-            showIf="move &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+            showIf="ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2) &amp;&amp; companyCbSelect != 2"/>
           <button name="cancelPaymentBtn" title="Cancel payment"
             showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
             onClick="save,action-expense-method-cancel-payment"/>
@@ -189,9 +190,7 @@
         grid-view="employee-advance-usage-expense-grid"/>
       <panel name="accountInfoPanel" title="Account information">
         <panel name="moveInfoPanel" title="Account information">
-          <field name="moveDate" readonlyIf="move" colSpan="4"/>
-          <field name="move" showIf="move" readonlyIf="move" colSpan="6" form-view="move-form"
-            grid-view="move-grid"/>
+          <field name="moveDate" readonly="true" colSpan="4"/>
         </panel>
         <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
           colSpan="12">
@@ -333,10 +332,6 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="ventilate"/>
   </action-method>
 
-  <action-method name="action-print-expense">
-    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="printExpense"/>
-  </action-method>
-
   <action-method name="action-expense-method-send">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="send"/>
   </action-method>
@@ -365,7 +360,7 @@
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="cancelBtn"
-      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || move"/>
+      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || ventilated"/>
     <attribute name="readonly" for="period" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="period" expr="eval: ventilated"

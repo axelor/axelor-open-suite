@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -33,7 +32,6 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
@@ -42,7 +40,6 @@ import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -523,29 +520,6 @@ public class TimesheetController {
 
     return Beans.get(HRMenuTagService.class)
         .countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
-  }
-
-  public void printTimesheet(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Timesheet timesheet = request.getContext().asType(Timesheet.class);
-
-    String name = I18n.get("Timesheet") + " " + timesheet.getFullName().replace("/", "-");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.TIMESHEET, name)
-            .addParam("TimesheetId", timesheet.getId())
-            .addParam(
-                "Timezone",
-                timesheet.getCompany() != null ? timesheet.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(timesheet)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing {}", name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   public void setShowActivity(ActionRequest request, ActionResponse response) {

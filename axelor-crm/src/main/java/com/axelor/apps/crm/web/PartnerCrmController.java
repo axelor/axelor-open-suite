@@ -18,23 +18,30 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.CrmActivityService;
 import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.PartnerCrmService;
 import com.axelor.apps.crm.service.PartnerEmailDomainToolService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class PartnerCrmController {
 
@@ -85,7 +92,7 @@ public class PartnerCrmController {
       params =
           emailDomainToolServiceProvider
               .get()
-              .computeParameterForFilter(partner, partner.getEmailAddress());
+              .computeParameterForFilter(partner.getId(), partner.getEmailAddress());
     }
     ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Contacts"));
     actionViewBuilder.model(Partner.class.getName());
@@ -110,5 +117,18 @@ public class PartnerCrmController {
       }
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void getPartnerActivityData(ActionRequest request, ActionResponse response)
+      throws JsonProcessingException, AxelorException {
+    List<Map<String, Object>> dataList;
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.CRM_PROSPECT_NOT_FOUND));
+    }
+    dataList = Beans.get(CrmActivityService.class).getPartnerActivityData(Long.valueOf(id));
+    response.setData(dataList);
   }
 }
