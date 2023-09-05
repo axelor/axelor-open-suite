@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -351,10 +352,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
   @Override
   public Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(
-      Move move, MoveTemplate moveTemplate) {
+      Journal journal, Company company) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveLineAttrsService.addAccountDomain(move, moveTemplate, attrsMap);
+    moveLineAttrsService.addAccountDomain(journal, company, attrsMap);
 
     return attrsMap;
   }

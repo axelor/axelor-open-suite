@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -183,12 +182,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
   @Override
   public void addAccountDomain(
-      Move move, MoveTemplate moveTemplate, Map<String, Map<String, Object>> attrsMap) {
-    if (move == null && moveTemplate == null) {
-      return;
-    }
-    Journal journal = move != null ? move.getJournal() : moveTemplate.getJournal();
-    Company company = move != null ? move.getCompany() : moveTemplate.getCompany();
+      Journal journal, Company company, Map<String, Map<String, Object>> attrsMap) {
     String validAccountTypes =
         journal.getValidAccountTypeSet().stream()
             .map(AccountType::getId)

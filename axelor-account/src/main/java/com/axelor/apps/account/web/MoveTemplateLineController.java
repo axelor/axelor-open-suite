@@ -15,9 +15,11 @@ public class MoveTemplateLineController {
     try {
       MoveTemplateLine moveTemplateLine = request.getContext().asType(MoveTemplateLine.class);
       MoveTemplate moveTemplate = this.getMoveTemplate(request, moveTemplateLine);
-
-      response.setAttrs(
-          Beans.get(MoveLineGroupService.class).getAccountOnSelectAttrsMap(null, moveTemplate));
+      if (moveTemplate != null) {
+        response.setAttrs(
+            Beans.get(MoveLineGroupService.class)
+                .getAccountOnSelectAttrsMap(moveTemplate.getJournal(), moveTemplate.getCompany()));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
