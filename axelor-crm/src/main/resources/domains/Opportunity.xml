@@ -56,6 +56,8 @@
     <integer name="opportunityRating" title="Opportunity scoring"
       selection="gold.rating.icon.select"/>
 
+    <finder-method name="findByPartner" using="partner" all="true"/>
+
     <track>
       <field name="name"/>
       <field name="opportunityStatus"/>

@@ -40,6 +40,8 @@ import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.ConvertLeadWizardServiceImpl;
 import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
 import com.axelor.apps.crm.service.ConvertWizardOpportunityServiceImpl;
+import com.axelor.apps.crm.service.CrmActivityService;
+import com.axelor.apps.crm.service.CrmActivityServiceImpl;
 import com.axelor.apps.crm.service.CrmReportingService;
 import com.axelor.apps.crm.service.CrmReportingServiceImpl;
 import com.axelor.apps.crm.service.EventService;
@@ -76,5 +78,6 @@ public class CrmModule extends AxelorModule {
     bind(PartnerCrmService.class).to(PartnerCrmServiceImpl.class);
     bind(CatalogService.class).to(CatalogServiceImpl.class);
     bind(PartnerEmailDomainToolService.class).to(PartnerEmailDomainToolServiceImpl.class);
+    bind(CrmActivityService.class).to(CrmActivityServiceImpl.class);
   }
 }
