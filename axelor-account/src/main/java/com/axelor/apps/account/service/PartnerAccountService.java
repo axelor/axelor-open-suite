@@ -46,8 +46,9 @@ public class PartnerAccountService {
     return partner.getManagedByPartnerLinkList().stream()
         .filter(
             it ->
-                it.getPartnerLinkType().getTypeSelect()
-                    == PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY)
+                it.getPartnerLinkType()
+                    .getTypeSelect()
+                    .equals(PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY))
         .map(PartnerLink::getPartner2)
         .findFirst()
         .orElse(null);
