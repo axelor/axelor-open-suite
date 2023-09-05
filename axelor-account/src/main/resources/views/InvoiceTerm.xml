@@ -213,7 +213,7 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
           showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
-          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
+          form-view="partner-form" grid-view="partner-grid"
           if="__config__.app.getApp('base')?.activatePartnerRelations"/>
         <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
