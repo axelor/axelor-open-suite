@@ -141,14 +141,11 @@
     <action name="action-invoice-payment-method-set-is-multi-currency"/>
     <action name="action-invoice-payment-method-filter-payment-mode"/>
     <action name="action-invoice-payment-method-load-invoice-terms"/>
-    <action name="action-invoice-payment-method-change-amount"/>
-    <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-change-amounts">
     <action name="action-invoice-payment-record-manual-change"/>
     <action name="action-invoice-payment-method-change-amount"/>
-    <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-mass-payment-new">

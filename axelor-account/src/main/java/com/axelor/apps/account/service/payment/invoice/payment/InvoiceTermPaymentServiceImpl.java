@@ -74,8 +74,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           createInvoiceTermPayment(
               invoicePayment,
               invoiceTerm,
-              invoiceTermService.getAmountRemaining(
-                  invoiceTerm, invoicePayment.getPaymentDate(), isCompanyCurrency)));
+              isCompanyCurrency
+                  ? invoiceTerm.getCompanyAmountRemaining()
+                  : invoiceTerm.getAmountRemaining()));
     }
 
     return invoicePayment;
@@ -243,7 +244,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
   protected InvoiceTermPayment initInvoiceTermPayment(
       InvoiceTerm invoiceTermToPay, BigDecimal amount) {
-    return initInvoiceTermPayment(null, invoiceTermToPay, amount, false);
+    return initInvoiceTermPayment(
+        null, invoiceTermToPay, amount, invoiceTermToPay.getApplyFinancialDiscount());
   }
 
   protected InvoiceTermPayment initInvoiceTermPayment(
@@ -255,8 +257,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     invoiceTermPayment.setInvoicePayment(invoicePayment);
     invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
-    manageInvoiceTermFinancialDiscount(
-        invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
 
     boolean isCompanyCurrency =
         invoicePayment == null
@@ -267,6 +267,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         isCompanyCurrency
             ? paidAmount
             : this.computeCompanyPaidAmount(invoiceTermToPay, paidAmount));
+
+    manageInvoiceTermFinancialDiscount(
+        invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
 
     return invoiceTermPayment;
   }
