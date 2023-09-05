@@ -626,8 +626,8 @@
         action="action-sale-order-view-show-generated-po" hideIf="statusSelect &lt;= 2"/>
       <panel if="__config__.app.getApp('sale')?.manageSaleOrderVersion"
         showIf="versionNumber > 1" name="pastVersionRecoveryPanel" title="Past versions">
-        <field name="$previousVersionNumber" title="Version number" type="integer" min="1"
-          colSpan="2" onChange="action-sale-order-method-get-previous-version-number-on-change"/>
+        <field name="$previousVersionNumber" title="Version number" type="integer" colSpan="2"
+          onChange="action-sale-order-method-get-previous-version-number-on-change"/>
         <field name="$versionDateTime" type="datetime" title="Version date" colSpan="6"
           readonly="true"/>
         <field name="$saveActualVersion" type="boolean" title="Save actual version"
