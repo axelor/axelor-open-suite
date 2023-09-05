@@ -863,16 +863,44 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public BigDecimal getCustomizedAmount(
-      List<InvoiceTerm> invoiceTermList, InvoiceTerm invoiceTerm, BigDecimal total) {
+  public boolean setCustomizedAmounts(
+      InvoiceTerm invoiceTerm, List<InvoiceTerm> invoiceTermList, BigDecimal total) {
     BigDecimal totalPercentage =
         invoiceTermList.stream()
             .map(InvoiceTerm::getPercentage)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO)
             .add(invoiceTerm.getPercentage());
+    boolean isLastInvoiceTerm = totalPercentage.compareTo(BigDecimal.valueOf(100)) == 0;
 
-    if (totalPercentage.compareTo(BigDecimal.valueOf(100)) == 0) {
+    BigDecimal companyTotal =
+        invoiceTerm.getInvoice() != null
+            ? invoiceTerm.getInvoice().getCompanyInTaxTotal()
+            : invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+
+    BigDecimal customizedAmount =
+        this.getCustomizedAmount(invoiceTerm, invoiceTermList, total, isLastInvoiceTerm);
+    BigDecimal customizedCompanyAmount =
+        this.getCustomizedCompanyAmount(
+            invoiceTerm, invoiceTermList, companyTotal, isLastInvoiceTerm);
+
+    invoiceTerm.setAmount(customizedAmount);
+    invoiceTerm.setAmountRemaining(customizedAmount);
+
+    if (customizedCompanyAmount != null) {
+      invoiceTerm.setCompanyAmount(customizedCompanyAmount);
+      invoiceTerm.setCompanyAmountRemaining(customizedCompanyAmount);
+    }
+
+    return customizedAmount.signum() > 0;
+  }
+
+  protected BigDecimal getCustomizedAmount(
+      InvoiceTerm invoiceTerm,
+      List<InvoiceTerm> invoiceTermList,
+      BigDecimal total,
+      boolean isLastInvoiceTerm) {
+    if (isLastInvoiceTerm) {
       BigDecimal totalWithoutCurrent =
           invoiceTermList.stream()
               .map(InvoiceTerm::getAmount)
@@ -886,6 +914,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           .multiply(total)
           .divide(
               new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    }
+  }
+
+  protected BigDecimal getCustomizedCompanyAmount(
+      InvoiceTerm invoiceTerm,
+      List<InvoiceTerm> invoiceTermList,
+      BigDecimal total,
+      boolean isLastInvoiceTerm) {
+    if (isLastInvoiceTerm) {
+      BigDecimal totalWithoutCurrent =
+          invoiceTermList.stream()
+              .map(InvoiceTerm::getCompanyAmount)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      return total.subtract(totalWithoutCurrent);
+    } else {
+      this.computeCompanyAmounts(invoiceTerm, true);
+
+      return null;
     }
   }
 
