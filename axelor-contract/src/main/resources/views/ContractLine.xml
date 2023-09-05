@@ -51,7 +51,7 @@
 
   <form name="contract-line-form" title="Contract line"
     model="com.axelor.apps.contract.db.ContractLine" onNew="action-contract-line-group-onnew"
-    onLoad="action-contract-line-group-onload">
+    onLoad="action-contract-line-group-edit-view">
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
         <field name="product" canEdit="false"
@@ -89,8 +89,7 @@
         <field name="isToRevaluate"/>
       </panel>
 
-      <panel name="analyticDistributionPanel" title="Analytics"
-        onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
+      <panel name="analyticDistributionPanel" title="Analytics">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
@@ -147,8 +146,7 @@
         <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
         <field name="description" colSpan="12" widget="html"/>
       </panel>
-      <panel name="analyticDistributionPanel" title="Analytics"
-        onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
+      <panel name="analyticDistributionPanel" title="Analytics">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
@@ -221,12 +219,6 @@
   <action-group name="action-contract-line-group-onnew">
     <action name="action-method-contract-line-fill-default"/>
     <action name="action-contract-line-group-edit-view"/>
-    <action name="action-contract-line-group-manage-analytic"/>
-  </action-group>
-
-  <action-group name="action-contract-line-group-onload">
-    <action name="action-contract-line-group-edit-view"/>
-    <action name="action-contract-line-group-manage-analytic"/>
   </action-group>
 
   <action-group name="action-contract-line-group-edit-view">
@@ -235,6 +227,7 @@
     <action name="action-contract-line-attrs-scale-and-precision"/>
     <action name="action-contract-line-method-hide-date-panel"/>
     <action name="action-contract-line-method-hide-is-to-revaluate"/>
+    <action name="action-contract-line-group-manage-analytic"/>
   </action-group>
 
   <action-group name="action-contract-line-group-additional-onnew-onload">
@@ -257,6 +250,7 @@
   <action-group name="action-contract-line-group-manage-analytic">
     <action name="action-contract-line-method-hide-axis-analytic-account"/>
     <action name="action-contract-line-method-print-analytic-account"/>
+    <action name="action-contract-line-attrs-read-only-distribution-lines"/>
     <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"/>
   </action-group>
 
