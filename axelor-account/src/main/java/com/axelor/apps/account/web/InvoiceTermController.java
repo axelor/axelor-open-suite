@@ -63,20 +63,14 @@ public class InvoiceTermController {
 
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
-        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent());
-
         List<InvoiceTerm> invoiceTermList =
             this.getInvoiceTermList(request.getContext().getParent());
         invoiceTermList.remove(invoiceTerm);
 
-        InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-        BigDecimal amount =
-            invoiceTermService.getCustomizedAmount(invoiceTermList, invoiceTerm, total);
-        invoiceTerm.setAmount(amount);
-        invoiceTerm.setAmountRemaining(amount);
-        invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
+        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent());
 
-        if (amount.signum() > 0) {
+        if (Beans.get(InvoiceTermService.class)
+            .setCustomizedAmounts(invoiceTerm, invoiceTermList, total)) {
           response.setValue("amount", invoiceTerm.getAmount());
           response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
           response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
@@ -128,6 +122,18 @@ public class InvoiceTermController {
     if (parentContext.get("_model").equals(Invoice.class.getName())) {
       Invoice invoice = parentContext.asType(Invoice.class);
       return invoice.getInTaxTotal();
+    } else if (parentContext.get("_model").equals(MoveLine.class.getName())) {
+      MoveLine moveLine = parentContext.asType(MoveLine.class);
+      return Beans.get(InvoiceTermService.class).getTotalInvoiceTermsAmount(moveLine);
+    } else {
+      return BigDecimal.ZERO;
+    }
+  }
+
+  protected BigDecimal getCustomizedCompanyTotal(Context parentContext) {
+    if (parentContext.get("_model").equals(Invoice.class.getName())) {
+      Invoice invoice = parentContext.asType(Invoice.class);
+      return invoice.getCompanyInTaxTotal();
     } else if (parentContext.get("_model").equals(MoveLine.class.getName())) {
       MoveLine moveLine = parentContext.asType(MoveLine.class);
       return Beans.get(InvoiceTermService.class).getTotalInvoiceTermsAmount(moveLine);

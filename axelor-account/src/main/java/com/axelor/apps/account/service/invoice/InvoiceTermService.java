@@ -267,8 +267,8 @@ public interface InvoiceTermService {
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
 
-  BigDecimal getCustomizedAmount(
-      List<InvoiceTerm> invoiceTermList, InvoiceTerm invoiceTerm, BigDecimal total);
+  boolean setCustomizedAmounts(
+      InvoiceTerm invoiceTerm, List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
       List<InvoiceTerm> invoiceTermList) throws AxelorException;
