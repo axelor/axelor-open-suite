@@ -121,6 +121,10 @@
       ]]>
     </date>
 
+    <integer name="lunchVoucherDistribution" default="100" title="% in paper format"
+      help="Percentage of lunch voucher in paper format, the rest will be in electronic card."
+      min="0" max="100"/>
+
     <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";
@@ -129,6 +133,10 @@
 
    			public static final String SEX_F = "F";
    			public static final String SEX_M = "M";
+
+            public static final int LUNCH_VOUCHER_MGT_FORMAT_PAPER = 1;
+            public static final int LUNCH_VOUCHER_MGT_FORMAT_CARD = 2;
+            public static final int LUNCH_VOUCHER_MGT_FORMAT_BOTH = 3;
    		]]>
     </extra-code>
 
