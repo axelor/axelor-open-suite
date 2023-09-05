@@ -112,6 +112,4 @@ public interface MoveGroupService {
   Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move);
 
   Map<String, Map<String, Object>> getWizardDefaultAttrsMap(LocalDate moveDate);
-
-  Map<String, Object> getSubrogationPartnerOnChangeValuesMap(Move move);
 }

@@ -134,6 +134,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange);
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
+    moveRecordUpdateService.updateSubrogationPartner(move);
 
     moveRepository.save(move);
 
@@ -703,16 +704,5 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addWizardDefault(moveDate, attrsMap);
 
     return attrsMap;
-  }
-
-  @Override
-  public Map<String, Object> getSubrogationPartnerOnChangeValuesMap(Move move) {
-    Map<String, Object> valuesMap = new HashMap<>();
-
-    moveRecordUpdateService.updateSubrogationPartner(move);
-
-    valuesMap.put("moveLineList", move.getMoveLineList());
-
-    return valuesMap;
   }
 }

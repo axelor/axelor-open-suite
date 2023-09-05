@@ -129,8 +129,7 @@
           <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
             showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect)"
             readonlyIf="amountRemaining != inTaxTotal" form-view="partner-form"
-            grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"
-            onChange="action-move-method-subrogation-partner-onchange"/>
+            grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
@@ -800,11 +799,6 @@
 
   <action-method name="action-move-method-check-period">
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
-  </action-method>
-
-  <action-method name="action-move-method-subrogation-partner-onchange">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="onChangeSubrogationPartner"/>
   </action-method>
 
   <!-- ACTION VIEW -->
