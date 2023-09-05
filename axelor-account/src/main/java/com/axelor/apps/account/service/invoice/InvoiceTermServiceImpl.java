@@ -860,12 +860,30 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total) {
-    return invoiceTerm
-        .getPercentage()
-        .multiply(total)
-        .divide(
-            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  public BigDecimal getCustomizedAmount(
+      List<InvoiceTerm> invoiceTermList, InvoiceTerm invoiceTerm, BigDecimal total) {
+    BigDecimal totalPercentage =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getPercentage)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO)
+            .add(invoiceTerm.getPercentage());
+
+    if (totalPercentage.compareTo(BigDecimal.valueOf(100)) == 0) {
+      BigDecimal totalWithoutCurrent =
+          invoiceTermList.stream()
+              .map(InvoiceTerm::getAmount)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      return total.subtract(totalWithoutCurrent);
+    } else {
+      return invoiceTerm
+          .getPercentage()
+          .multiply(total)
+          .divide(
+              new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    }
   }
 
   @Override

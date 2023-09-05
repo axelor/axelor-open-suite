@@ -44,6 +44,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
@@ -62,10 +63,15 @@ public class InvoiceTermController {
 
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
-        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
+        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent());
+
+        List<InvoiceTerm> invoiceTermList =
+            this.getInvoiceTermList(request.getContext().getParent());
+        invoiceTermList.remove(invoiceTerm);
 
         InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-        BigDecimal amount = invoiceTermService.getCustomizedAmount(invoiceTerm, total);
+        BigDecimal amount =
+            invoiceTermService.getCustomizedAmount(invoiceTermList, invoiceTerm, total);
         invoiceTerm.setAmount(amount);
         invoiceTerm.setAmountRemaining(amount);
         invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
@@ -89,7 +95,7 @@ public class InvoiceTermController {
       if (request.getContext().getParent() != null
           && request.getContext().getParent().containsKey("_model")) {
         InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent(), invoiceTerm);
+        BigDecimal total = this.getCustomizedTotal(request.getContext().getParent());
 
         if (total.compareTo(BigDecimal.ZERO) == 0) {
           return;
@@ -118,7 +124,7 @@ public class InvoiceTermController {
     }
   }
 
-  protected BigDecimal getCustomizedTotal(Context parentContext, InvoiceTerm invoiceTerm) {
+  protected BigDecimal getCustomizedTotal(Context parentContext) {
     if (parentContext.get("_model").equals(Invoice.class.getName())) {
       Invoice invoice = parentContext.asType(Invoice.class);
       return invoice.getInTaxTotal();
@@ -127,6 +133,18 @@ public class InvoiceTermController {
       return Beans.get(InvoiceTermService.class).getTotalInvoiceTermsAmount(moveLine);
     } else {
       return BigDecimal.ZERO;
+    }
+  }
+
+  protected List<InvoiceTerm> getInvoiceTermList(Context parentContext) {
+    if (parentContext.get("_model").equals(Invoice.class.getName())) {
+      Invoice invoice = parentContext.asType(Invoice.class);
+      return invoice.getInvoiceTermList();
+    } else if (parentContext.get("_model").equals(MoveLine.class.getName())) {
+      MoveLine moveLine = parentContext.asType(MoveLine.class);
+      return moveLine.getInvoiceTermList();
+    } else {
+      return new ArrayList<>();
     }
   }
 
