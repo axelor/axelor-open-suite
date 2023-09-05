@@ -622,9 +622,11 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
-
-      response.setAttrs(
-          Beans.get(MoveLineGroupService.class).getAccountOnSelectAttrsMap(move, null));
+      if (move != null) {
+        response.setAttrs(
+            Beans.get(MoveLineGroupService.class)
+                .getAccountOnSelectAttrsMap(move.getJournal(), move.getCompany()));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
