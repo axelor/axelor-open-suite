@@ -134,7 +134,7 @@ public class ContractLineController {
 
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
       Beans.get(AnalyticAttrsService.class)
-          .addAnalyticAxisAttrs(contractVersion.getContract().getCompany(), null, attrsMap);
+          .addAnalyticAxisAttrs(contract.getCompany(), null, attrsMap);
 
       response.setAttrs(attrsMap);
     } catch (Exception e) {

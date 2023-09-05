@@ -15,7 +15,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
 
 public class AnalyticLineContractModel extends AnalyticLineModel {
 
@@ -41,6 +40,10 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     this.contractVersion =
         contractVersion != null ? contractVersion : contractLine.getContractVersion();
     this.contract = contract != null ? contract : this.contractVersion.getContract();
+
+    if (this.contractVersion == null && this.contract != null) {
+      this.contractVersion = this.contract.getCurrentContractVersion();
+    }
 
     this.analyticMoveLineList = contractLine.getAnalyticMoveLineList();
     this.axis1AnalyticAccount = contractLine.getAxis1AnalyticAccount();
@@ -83,11 +86,13 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
 
   @Override
   public Company getCompany() {
-    return Optional.ofNullable(this.contractLine)
-        .map(ContractLine::getContractVersion)
-        .map(ContractVersion::getContract)
-        .map(Contract::getCompany)
-        .orElse(super.getCompany());
+    if (this.contract != null) {
+      this.company = this.contract.getCompany();
+    } else {
+      super.getCompany();
+    }
+
+    return this.company;
   }
 
   @Override
