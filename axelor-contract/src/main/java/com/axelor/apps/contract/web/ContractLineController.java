@@ -42,6 +42,20 @@ import java.util.Map;
 @Singleton
 public class ContractLineController {
 
+  protected Contract getContractFromContext(ActionRequest request) {
+    Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
+
+    if (ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1) == null) {
+      contract = ContextTool.getContextParent(request.getContext(), Contract.class, 1);
+    }
+
+    return contract;
+  }
+
+  protected ContractVersion getContractVersionFromContext(ActionRequest request) {
+    return ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
+  }
+
   public void computeTotal(ActionRequest request, ActionResponse response) {
     ContractLine contractLine = request.getContext().asType(ContractLine.class);
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
@@ -58,9 +72,8 @@ public class ContractLineController {
       ActionRequest request, ActionResponse response) {
     try {
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
-      ContractVersion contractVersion =
-          ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
-      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
+      ContractVersion contractVersion = this.getContractVersionFromContext(request);
+      Contract contract = this.getContractFromContext(request);
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
@@ -78,13 +91,8 @@ public class ContractLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
-      ContractVersion contractVersion =
-          ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
-      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
-
-      if (contractVersion == null) {
-        return;
-      }
+      ContractVersion contractVersion = this.getContractVersionFromContext(request);
+      Contract contract = this.getContractFromContext(request);
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
@@ -100,13 +108,8 @@ public class ContractLineController {
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
-      ContractVersion contractVersion =
-          ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
-      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
-
-      if (contractVersion == null) {
-        return;
-      }
+      ContractVersion contractVersion = this.getContractVersionFromContext(request);
+      Contract contract = this.getContractFromContext(request);
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
@@ -124,18 +127,11 @@ public class ContractLineController {
 
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
-      ContractVersion contractVersion =
-          ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
-      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
-
-      if (contractVersion == null || contract == null || contract.getCompany() == null) {
-        return;
-      }
-
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Contract contract = this.getContractFromContext(request);
+
       Beans.get(AnalyticAttrsService.class)
           .addAnalyticAxisAttrs(contract.getCompany(), null, attrsMap);
-
       response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -145,13 +141,8 @@ public class ContractLineController {
   public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
-      ContractVersion contractVersion =
-          ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
-      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
-
-      if (contractVersion == null || contract == null || contract.getCompany() == null) {
-        return;
-      }
+      ContractVersion contractVersion = this.getContractVersionFromContext(request);
+      Contract contract = this.getContractFromContext(request);
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
@@ -168,13 +159,8 @@ public class ContractLineController {
   public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
     try {
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
-      ContractVersion contractVersion =
-          ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
-      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
-
-      if (contractVersion == null || contract == null || contract.getCompany() == null) {
-        return;
-      }
+      ContractVersion contractVersion = this.getContractVersionFromContext(request);
+      Contract contract = this.getContractFromContext(request);
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
