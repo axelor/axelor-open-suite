@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -43,17 +44,20 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected JournalService journalService;
 
   @Inject
   public MoveLineAttrsServiceImpl(
       AccountConfigService accountConfigService,
       MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      JournalService journalService) {
     this.accountConfigService = accountConfigService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
     this.periodServiceAccount = periodServiceAccount;
+    this.journalService = journalService;
   }
 
   protected void addAttr(
@@ -258,5 +262,14 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     if (company.getCurrency() != move.getCurrency()) {
       this.addAttr("currencyAmount", "focus", true, attrsMap);
     }
+  }
+
+  @Override
+  public void addSubrogationPartnerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "invoiceTermList.subrogationPartner",
+        "hidden",
+        !journalService.isSubrogationOk(move.getJournal()),
+        attrsMap);
   }
 }
