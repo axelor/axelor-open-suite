@@ -19,8 +19,7 @@
     <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
       <insert position="after">
         <panel name="analyticDistributionPanel" title="Analytics"
-          onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines"
-          showIf="product">
+          onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form" canEdit="false"
