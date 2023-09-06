@@ -54,11 +54,11 @@ public class ImportAccountChart {
     String[] files =
         new String[] {
           "account_account.csv",
+          "account_fiscalPosition.csv",
           "account_accountEquiv.csv",
           "account_accountType.csv",
-          "account_fiscalPosition.csv",
           "account_tax.csv",
-          "account_taxAccount.csv",
+          "account_accountManagement.csv",
           "account_taxEquiv.csv",
           "account_taxLine.csv"
         };

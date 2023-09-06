@@ -412,7 +412,7 @@
           form-view="stock-location-form"/>
         <field name="toStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form"/>
+          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
         <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
           onChange="action-stock-move-method-update-stock-move-line"/>
         <field name="estimatedDate"
