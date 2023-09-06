@@ -2,11 +2,11 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.service.BirtTemplateConfigLineService;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
@@ -28,18 +28,18 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
 
   protected MetaFiles metaFiles;
   protected AppBaseService appBaseService;
-  protected BirtTemplateConfigLineService birtTemplateConfigLineService;
+  protected HRConfigService hrConfigService;
   protected PrintFromBirtTemplateService printFromBirtTemplateService;
 
   @Inject
   public ExpensePrintServiceImpl(
       MetaFiles metaFiles,
       AppBaseService appBaseService,
-      BirtTemplateConfigLineService birtTemplateConfigLineService,
+      HRConfigService hrConfigService,
       PrintFromBirtTemplateService printFromBirtTemplateService) {
     this.metaFiles = metaFiles;
     this.appBaseService = appBaseService;
-    this.birtTemplateConfigLineService = birtTemplateConfigLineService;
+    this.hrConfigService = hrConfigService;
     this.printFromBirtTemplateService = printFromBirtTemplateService;
   }
 
@@ -74,7 +74,7 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
 
   protected File getReportFile(Expense expense) throws AxelorException, IOException {
     BirtTemplate birtTemplate =
-        birtTemplateConfigLineService.getBirtTemplates(Expense.class.getName()).iterator().next();
+        hrConfigService.getHRConfig(expense.getCompany()).getExpenseReportBirtTemplate();
     return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense);
   }
 
