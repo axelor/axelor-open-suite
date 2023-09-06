@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="picked-products-mass-move-grid" title="Picked products"
+  <grid name="picked-products-mass-stock-move-grid" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProducts" groupBy="pickedProduct"
     onNew="action-picked-products-group-onnew">
     <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
       onChange="action-picked-products-group-product-onchange" required="true"/>
     <field name="fromStockLocation" required="true"
-      domain="self.company = (SELECT company FROM MassMove WHERE id = :massMove) AND self.typeSelect != 3"
+      domain="self.company = (SELECT company FROM MassStockMove WHERE id = :massStockMove) AND self.typeSelect != 3"
       onChange="action-picked-products-record-set-tracking-number,action-picked-products-record-set-currentqty"/>
     <field name="trackingNumber" title="Tracking no."
       onSelect="action-picked-products-attrs-tracking-number-domain"
@@ -18,9 +18,9 @@
     <field name="unit" readonly="true"/>
     <field name="pickedQty" required="true"/>
     <button name="realizePickingBtn" icon="fa-play"
-      onClick="save,action-method-stock-picked-product-create-stock-move"/>
+      onClick="save,action-picked-product-method-realize-picking"/>
     <button name="cancelPickingBtn" icon="fa-undo"
-      onClick="action-method-stock-picked-product-cancel-picking"/>
+      onClick="action-picked-product-method-cancel-picking"/>
   </grid>
 
 
@@ -31,11 +31,10 @@
   <form name="picked-products-form" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProducts" onNew="action-picked-products-group-onnew">
     <panel name="mainPanel">
-      <field name="massMove" required="true" readonly="true"/>
       <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
         onChange="action-picked-products-group-product-onchange" required="true"/>
       <field name="fromStockLocation" required="true"
-        domain="self.company = (SELECT company FROM MassMove WHERE id = :massMove) AND self.typeSelect != 3"
+        domain="self.company = (SELECT company FROM MassStockMove WHERE id = :massStockMove) AND self.typeSelect != 3"
         onChange="action-picked-products-record-set-tracking-number,action-picked-products-record-set-currentqty"/>
       <field name="trackingNumber"
         onSelect="action-picked-products-attrs-tracking-number-domain"/>
@@ -45,30 +44,22 @@
     </panel>
   </form>
 
-  <action-method name="action-method-stock-picked-product-cancel-picking">
-    <call class="com.axelor.apps.stock.web.PickedProductsController" method="cancelPicking"/>
-  </action-method>
+  <action-attrs name="action-picked-products-attrs-tracking-number-required">
+    <attribute name="required" for="trackingNumber"
+      expr="eval: pickedProduct?.trackingNumberConfiguration != null"/>
+  </action-attrs>
 
-  <action-method name="action-method-stock-picked-product-create-stock-move">
-    <call class="com.axelor.apps.stock.web.PickedProductsController" method="realizePicking"/>
-  </action-method>
+  <action-attrs name="action-picked-products-attrs-tracking-number-domain">
+    <attribute name="domain"
+      expr="eval: &quot; self.product = :pickedProduct AND (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine
+	WHERE stockLocationLine.detailsStockLocation = :fromStockLocation))&quot;"
+      for="trackingNumber"/>
+  </action-attrs>
 
-  <action-group name="action-picked-products-group-onnew">
-    <action name="action-picked-products-record-set-massmove"/>
-    <action name="action-picked-products-record-default-location"/>
-  </action-group>
-
-  <action-record name="action-picked-products-record-set-massmove"
+  <action-record name="action-picked-products-record-set-massStockMove"
     model="com.axelor.apps.stock.db.PickedProducts">
-    <field name="massMove" expr="eval: __parent__"/>
+    <field name="massStockMove" expr="eval: __parent__"/>
   </action-record>
-
-  <action-group name="action-picked-products-group-product-onchange">
-    <action name="action-picked-products-record-set-unit"/>
-    <action name="action-picked-products-attrs-tracking-number-required"/>
-    <action name="action-picked-products-record-set-tracking-number"/>
-    <action name="action-picked-products-record-set-currentqty"/>
-  </action-group>
 
   <action-record name="action-picked-products-record-default-location"
     model="com.axelor.apps.stock.db.PickedProducts">
@@ -86,10 +77,7 @@
   <action-record name="action-picked-products-record-set-tracking-number"
     model="com.axelor.apps.stock.db.PickedProducts">
     <field name="trackingNumber" expr="eval: null"
-      if="!(__repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.trackingNumber)"/>
-    <field name="trackingNumber"
-      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.trackingNumber"
-      if="fromStockLocation != null &amp;&amp; pickedProduct.trackingNumberConfiguration != null"/>
+      if="(__repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.trackingNumber) != trackingNumber"/>
   </action-record>
 
   <action-record name="action-picked-products-record-set-unit"
@@ -97,16 +85,24 @@
     <field name="unit" expr="eval: pickedProduct?.unit"/>
   </action-record>
 
-  <action-attrs name="action-picked-products-attrs-tracking-number-required">
-    <attribute name="required" for="trackingNumber"
-      expr="eval: pickedProduct?.trackingNumberConfiguration != null"/>
-  </action-attrs>
+  <action-method name="action-picked-product-method-cancel-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductsController" method="cancelPicking"/>
+  </action-method>
 
-  <action-attrs name="action-picked-products-attrs-tracking-number-domain">
-    <attribute name="domain"
-      expr="eval: &quot; self.product = :pickedProduct AND (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine
-	WHERE stockLocationLine.detailsStockLocation = :fromStockLocation))&quot;"
-      for="trackingNumber"/>
-  </action-attrs>
+  <action-method name="action-picked-product-method-realize-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductsController" method="realizePicking"/>
+  </action-method>
+
+  <action-group name="action-picked-products-group-onnew">
+    <action name="action-picked-products-record-set-massStockMove"/>
+    <action name="action-picked-products-record-default-location"/>
+  </action-group>
+
+  <action-group name="action-picked-products-group-product-onchange">
+    <action name="action-picked-products-record-set-unit"/>
+    <action name="action-picked-products-attrs-tracking-number-required"/>
+    <action name="action-picked-products-record-set-tracking-number"/>
+    <action name="action-picked-products-record-set-currentqty"/>
+  </action-group>
 
 </object-views>

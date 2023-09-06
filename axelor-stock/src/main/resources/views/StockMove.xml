@@ -635,7 +635,7 @@
             <field name="operationOrder" hidden="true" showIf="operationOrder != null"
               if-module="axelor-production"/>
             <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
-            <field name="massMove.sequence" hidden="true" showIf="massMove != null"
+            <field name="massStockMove.sequence" hidden="true" showIf="massStockMove != null"
               title="Mass move"/>
           </panel>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"

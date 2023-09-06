@@ -4,7 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.MassMove;
+import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.PickedProducts;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -12,7 +12,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StoredProducts;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.repo.MassMoveRepository;
+import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.PickedProductsRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -29,39 +29,20 @@ import java.time.LocalDate;
 
 public class PickedProductsServiceImpl implements PickedProductsService {
   protected PickedProductsRepository pickedProductsRepository;
-  protected MassMoveRepository massMoveRepository;
+  protected MassStockMoveRepository massStockMoveRepository;
 
   @Inject
   public PickedProductsServiceImpl(
-      PickedProductsRepository pickedProductsRepository, MassMoveRepository massMoveRepository) {
+      PickedProductsRepository pickedProductsRepository,
+      MassStockMoveRepository massStockMoveRepository) {
     this.pickedProductsRepository = pickedProductsRepository;
-    this.massMoveRepository = massMoveRepository;
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public PickedProducts createPickedProductMobility(
-      MassMove massMove,
-      Product pickedProduct,
-      TrackingNumber trackingNumber,
-      StockLocation fromStockLocation,
-      BigDecimal currentQty,
-      BigDecimal pickedQty,
-      StockMoveLine stockMoveLine) {
-    return this.createPickedProduct(
-        massMove,
-        pickedProduct,
-        trackingNumber,
-        fromStockLocation,
-        currentQty,
-        pickedQty,
-        stockMoveLine);
+    this.massStockMoveRepository = massStockMoveRepository;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
   public PickedProducts createPickedProduct(
-      MassMove massMove,
+      MassStockMove massStockMove,
       Product pickedProduct,
       TrackingNumber trackingNumber,
       StockLocation fromStockLocation,
@@ -77,41 +58,18 @@ public class PickedProductsServiceImpl implements PickedProductsService {
     pickedProducts.setUnit(pickedProduct.getUnit());
     pickedProducts.setPickedQty(pickedQty);
     pickedProducts.setStockMoveLine(stockMoveLine);
-    pickedProducts.setMassMove(massMove);
+    pickedProducts.setMassStockMove(massStockMove);
     pickedProductsRepository.save(pickedProducts);
     return pickedProducts;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void updatePickedProductMobility(
-      MassMove massMove,
-      Long pickedProductId,
-      Product pickedProduct,
-      TrackingNumber trackingNumber,
-      StockLocation fromStockLocation,
-      BigDecimal currentQty,
-      BigDecimal pickedQty,
-      StockMoveLine stockMoveLine) {
-    PickedProducts pickedProducts = pickedProductsRepository.find(pickedProductId);
-    pickedProducts.setPickedProduct(pickedProduct);
-    pickedProducts.setTrackingNumber(trackingNumber);
-    pickedProducts.setFromStockLocation(fromStockLocation);
-    pickedProducts.setCurrentQty(currentQty);
-    pickedProducts.setUnit(pickedProduct.getUnit());
-    pickedProducts.setPickedQty(pickedQty);
-    pickedProducts.setStockMoveLine(stockMoveLine);
-    pickedProducts.setMassMove(massMove);
-    pickedProductsRepository.save(pickedProducts);
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void createStockMoveAndStockMoveLine(MassMove massMove, PickedProducts pickedProducts)
-      throws AxelorException {
+  public void createStockMoveAndStockMoveLine(
+      MassStockMove massStockMove, PickedProducts pickedProducts) throws AxelorException {
     StockLocationLine stockLocationLine = null;
     StockLocation fromStockLocation = pickedProducts.getFromStockLocation();
-    StockLocation toStockLocation = massMove.getCartStockLocation();
+    StockLocation toStockLocation = massStockMove.getCartStockLocation();
     String trackingNumberSeq =
         pickedProducts.getTrackingNumber() != null
             ? pickedProducts.getTrackingNumber().getTrackingNumberSeq()
@@ -148,10 +106,6 @@ public class PickedProductsServiceImpl implements PickedProductsService {
               + " "
               + trackingNumberSeq);
     }
-    if (pickedProducts.getPickedQty().compareTo(pickedProducts.getCurrentQty()) == -1
-        && pickedProducts.getPickedQty().compareTo(BigDecimal.ZERO) != 0) {
-      duplicateProduct(pickedProducts);
-    }
 
     if (pickedProducts.getPickedQty().compareTo(BigDecimal.ZERO) != 0
         && pickedProducts.getPickedQty().compareTo(pickedProducts.getCurrentQty()) <= 0) {
@@ -168,8 +122,8 @@ public class PickedProductsServiceImpl implements PickedProductsService {
                 + trackingNumberSeq);
       }
       Address fromAddress = pickedProducts.getFromStockLocation().getAddress();
-      Address toAddress = massMove.getCartStockLocation().getAddress();
-      Company company = massMove.getCompany() != null ? massMove.getCompany() : null;
+      Address toAddress = massStockMove.getCartStockLocation().getAddress();
+      Company company = massStockMove.getCompany() != null ? massStockMove.getCompany() : null;
       LocalDate toDayDate = LocalDate.now();
       StockMove stockMove =
           Beans.get(StockMoveService.class)
@@ -184,7 +138,7 @@ public class PickedProductsServiceImpl implements PickedProductsService {
                   null,
                   StockMoveRepository.TYPE_INTERNAL);
 
-      stockMove.setMassMove(massMove);
+      stockMove.setMassStockMove(massStockMove);
 
       StockMoveLine stockMoveLine =
           Beans.get(StockMoveLineService.class)
@@ -207,19 +161,18 @@ public class PickedProductsServiceImpl implements PickedProductsService {
       Beans.get(PickedProductsRepository.class).save(pickedProducts);
       StoredProducts storedProducts = new StoredProducts();
       storedProducts.setStoredProduct(pickedProducts.getPickedProduct());
+
       storedProducts.setTrackingNumber(pickedProducts.getTrackingNumber());
       storedProducts.setCurrentQty(pickedProducts.getPickedQty());
       storedProducts.setUnit(pickedProducts.getUnit());
-      if (massMove.getCommonToStockLocation() != null) {
-        storedProducts.setToStockLocation(massMove.getCommonToStockLocation());
+      if (massStockMove.getCommonToStockLocation() != null) {
+        storedProducts.setToStockLocation(massStockMove.getCommonToStockLocation());
       }
       storedProducts.setStoredQty(BigDecimal.ZERO);
-      if (storedProducts.getStoredProduct() == null
-          || storedProducts.getToStockLocation() == null
-          || storedProducts.getUnit() == null) {
+      if (storedProducts.getStoredProduct() == null || storedProducts.getUnit() == null) {
         throw new AxelorException(
             0,
-            I18n.get(StockExceptionMessage.MASS_MOVE_EMPTY_FIELD)
+            I18n.get(StockExceptionMessage.MASS_STOCK_MOVE_EMPTY_FIELD)
                 + " "
                 + pickedProducts.getPickedProduct().getFullName()
                 + " "
@@ -229,33 +182,33 @@ public class PickedProductsServiceImpl implements PickedProductsService {
           && storedProducts.getTrackingNumber() == null) {
         throw new AxelorException(
             0,
-            I18n.get(StockExceptionMessage.MASS_MOVE_EMPTY_TRACKING_NUMBER)
+            I18n.get(StockExceptionMessage.MASS_STOCK_MOVE_EMPTY_TRACKING_NUMBER)
                 + " "
                 + pickedProducts.getPickedProduct().getFullName()
                 + " "
                 + trackingNumberSeq);
       }
       if (storedProducts.getStoredProduct().getTrackingNumberConfiguration() == null
-          && (storedProducts.getToStockLocation() == null || storedProducts.getUnit() == null)) {
+          && storedProducts.getUnit() == null) {
         throw new AxelorException(
             0,
-            I18n.get(StockExceptionMessage.MASS_MOVE_EMPTY_FIELD_WITHOUT_TN)
+            I18n.get(StockExceptionMessage.MASS_STOCK_MOVE_EMPTY_FIELD_WITHOUT_TN)
                 + " "
                 + pickedProducts.getPickedProduct().getFullName()
                 + " "
                 + trackingNumberSeq);
       }
       Beans.get(StoredProductsRepository.class).save(storedProducts);
-      massMove.addStoredProductsListItem(storedProducts);
-      if (massMove.getStatusSelect() != 2) {
-        massMove.setStatusSelect(2);
+      massStockMove.addStoredProductsListItem(storedProducts);
+      if (massStockMove.getStatusSelect() != 2) {
+        massStockMove.setStatusSelect(2);
       }
-      Beans.get(MassMoveRepository.class).save(massMove);
+      Beans.get(MassStockMoveRepository.class).save(massStockMove);
     } else {
       if (pickedProducts.getPickedQty().compareTo(BigDecimal.ZERO) != 0) {
         throw new AxelorException(
             0,
-            I18n.get(StockExceptionMessage.PICKED_QUANTITY_IS_ZERO)
+            I18n.get(StockExceptionMessage.PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY)
                 + " "
                 + pickedProducts.getPickedProduct().getFullName()
                 + " "
@@ -263,7 +216,7 @@ public class PickedProductsServiceImpl implements PickedProductsService {
       } else {
         throw new AxelorException(
             0,
-            I18n.get(StockExceptionMessage.PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY)
+            I18n.get(StockExceptionMessage.PICKED_QUANTITY_IS_ZERO)
                 + " "
                 + pickedProducts.getPickedProduct().getFullName()
                 + " "
@@ -274,7 +227,8 @@ public class PickedProductsServiceImpl implements PickedProductsService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void cancelStockMoveAndStockMoveLine(MassMove massMove, PickedProducts pickedProducts) {
+  public void cancelStockMoveAndStockMoveLine(
+      MassStockMove massStockMove, PickedProducts pickedProducts) {
 
     try {
       if (pickedProducts.getStockMoveLine() != null) {
@@ -284,66 +238,35 @@ public class PickedProductsServiceImpl implements PickedProductsService {
               Beans.get(StoredProductsRepository.class)
                   .all()
                   .filter(
-                      "self.storedProduct =?1 AND self.trackingNumber =?2 AND self.currentQty =?3 AND self.massMove =?4",
+                      "self.storedProduct =?1 AND self.trackingNumber =?2 AND self.currentQty =?3 AND self.massStockMove =?4",
                       pickedProducts.getPickedProduct(),
                       pickedProducts.getTrackingNumber(),
                       pickedProducts.getPickedQty(),
-                      massMove)
+                      massStockMove)
                   .fetchOne();
         } else {
           storedProducts =
               Beans.get(StoredProductsRepository.class)
                   .all()
                   .filter(
-                      "self.storedProduct =?1 AND self.currentQty =?2 AND self.massMove =?3",
+                      "self.storedProduct =?1 AND self.currentQty =?2 AND self.massStockMove =?3",
                       pickedProducts.getPickedProduct(),
                       pickedProducts.getPickedQty(),
-                      massMove)
+                      massStockMove)
                   .fetchOne();
         }
-        storedProducts.setMassMove(null);
+        storedProducts.setMassStockMove(null);
         Beans.get(StoredProductsRepository.class).remove(storedProducts);
         StockMove stockMove = pickedProducts.getStockMoveLine().getStockMove();
         Beans.get(StockMoveService.class).cancel(stockMove);
         pickedProducts.setStockMoveLine(null);
         pickedProducts.setPickedQty(BigDecimal.ZERO);
-        Beans.get(MassMoveRepository.class).save(massMove);
+        Beans.get(MassStockMoveRepository.class).save(massStockMove);
         Beans.get(PickedProductsRepository.class).save(pickedProducts);
         JPA.flush();
       }
     } catch (AxelorException e) {
       e.printStackTrace();
     }
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void duplicateProduct(PickedProducts pickedProducts) {
-
-    Product duplicateProduct =
-        pickedProducts.getPickedProduct() != null ? pickedProducts.getPickedProduct() : null;
-    TrackingNumber duplicateTrackingNumber =
-        pickedProducts.getTrackingNumber() != null ? pickedProducts.getTrackingNumber() : null;
-    StockLocation duplicateFromStockLocation =
-        pickedProducts.getFromStockLocation() != null
-            ? pickedProducts.getFromStockLocation()
-            : null;
-    StockMoveLine duplicateStockMoveLine =
-        pickedProducts.getStockMoveLine() != null ? pickedProducts.getStockMoveLine() : null;
-    MassMove duplicateMassMove =
-        pickedProducts.getMassMove() != null ? pickedProducts.getMassMove() : null;
-    BigDecimal duplicateCurrentQty =
-        pickedProducts.getCurrentQty().subtract(pickedProducts.getPickedQty());
-    pickedProducts.setCurrentQty(pickedProducts.getPickedQty());
-    PickedProducts duplicatePickedProduct =
-        createPickedProduct(
-            duplicateMassMove,
-            duplicateProduct,
-            duplicateTrackingNumber,
-            duplicateFromStockLocation,
-            duplicateCurrentQty,
-            BigDecimal.ZERO,
-            duplicateStockMoveLine);
-    pickedProductsRepository.save(duplicatePickedProduct);
   }
 }

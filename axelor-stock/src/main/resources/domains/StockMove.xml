@@ -124,8 +124,8 @@
     <many-to-one name="stockCorrection" title="Stock correction"
       ref="com.axelor.apps.stock.db.StockCorrection" copy="false"/>
 
-    <many-to-one name="massMove" title="Mass move"
-      ref="com.axelor.apps.stock.db.MassMove"/>
+    <many-to-one name="massStockMove" title="Mass move"
+      ref="com.axelor.apps.stock.db.MassStockMove"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
 

@@ -2,12 +2,12 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.stock.db.MassMove;
+import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.PickedProducts;
 import com.axelor.apps.stock.db.StoredProducts;
-import com.axelor.apps.stock.db.repo.MassMoveRepository;
+import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.service.MassMoveService;
+import com.axelor.apps.stock.service.MassStockMoveService;
 import com.axelor.apps.stock.service.PickedProductsService;
 import com.axelor.apps.stock.service.StoredProductsService;
 import com.axelor.i18n.I18n;
@@ -17,23 +17,23 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
-public class MassMoveController {
+public class MassStockMoveController {
 
   public void importProductFromStockLocation(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    MassMove massMove = request.getContext().asType(MassMove.class);
-    massMove = Beans.get(MassMoveRepository.class).find(massMove.getId());
-    Beans.get(MassMoveService.class).importProductFromStockLocation(massMove);
+    MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+    massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
+    Beans.get(MassStockMoveService.class).importProductFromStockLocation(massStockMove);
     response.setReload(true);
   }
 
   @Transactional
   public void realizePicking(ActionRequest request, ActionResponse response) {
-    MassMove massMove = request.getContext().asType(MassMove.class);
-    massMove = Beans.get(MassMoveRepository.class).find(massMove.getId());
+    MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+    massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
     boolean isQtyEqualZero = false;
     boolean isGreaterThan = false;
-    for (PickedProducts pickedProducts : massMove.getPickedProductsList()) {
+    for (PickedProducts pickedProducts : massStockMove.getPickedProductsList()) {
       if (pickedProducts.getPickedQty().compareTo(BigDecimal.ZERO) == 0) {
         isQtyEqualZero = true;
       }
@@ -42,7 +42,7 @@ public class MassMoveController {
       }
       try {
         Beans.get(PickedProductsService.class)
-            .createStockMoveAndStockMoveLine(massMove, pickedProducts);
+            .createStockMoveAndStockMoveLine(massStockMove, pickedProducts);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -63,31 +63,32 @@ public class MassMoveController {
   }
 
   public void cancelPicking(ActionRequest request, ActionResponse response) {
-    MassMove massMove = request.getContext().asType(MassMove.class);
-    massMove = Beans.get(MassMoveRepository.class).find(massMove.getId());
-    for (PickedProducts pickedProducts : massMove.getPickedProductsList()) {
+    MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+    massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
+    for (PickedProducts pickedProducts : massStockMove.getPickedProductsList()) {
       Beans.get(PickedProductsService.class)
-          .cancelStockMoveAndStockMoveLine(massMove, pickedProducts);
+          .cancelStockMoveAndStockMoveLine(massStockMove, pickedProducts);
     }
-    Beans.get(MassMoveService.class).setStatusSelectToDraft(massMove);
+    Beans.get(MassStockMoveService.class).setStatusSelectToDraft(massStockMove);
     response.setReload(true);
   }
 
   public void getSequence(ActionRequest request, ActionResponse response) throws AxelorException {
-    MassMove massMove = request.getContext().asType(MassMove.class);
-    massMove = Beans.get(MassMoveRepository.class).find(massMove.getId());
+    MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+    massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
     String sequence =
-        Beans.get(MassMoveService.class).getAndSetSequence(massMove.getCompany(), massMove);
+        Beans.get(MassStockMoveService.class)
+            .getAndSetSequence(massStockMove.getCompany(), massStockMove);
     response.setValue("sequence", sequence);
   }
 
   public void realizeStorage(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    MassMove massMove = request.getContext().asType(MassMove.class);
-    massMove = Beans.get(MassMoveRepository.class).find(massMove.getId());
+    MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+    massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
     boolean isGreaterThan = false;
     boolean isQtyEqualZero = false;
-    for (StoredProducts storedProducts : massMove.getStoredProductsList()) {
+    for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
       if (storedProducts.getStoredQty().compareTo(storedProducts.getCurrentQty()) == 1) {
         isGreaterThan = true;
       }
@@ -116,9 +117,9 @@ public class MassMoveController {
   }
 
   public void cancelStorage(ActionRequest request, ActionResponse response) throws AxelorException {
-    MassMove massMove = request.getContext().asType(MassMove.class);
-    massMove = Beans.get(MassMoveRepository.class).find(massMove.getId());
-    for (StoredProducts storedProducts : massMove.getStoredProductsList()) {
+    MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+    massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
+    for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
       Beans.get(StoredProductsService.class).cancelStockMoveAndStockMoveLine(storedProducts);
     }
     response.setReload(true);

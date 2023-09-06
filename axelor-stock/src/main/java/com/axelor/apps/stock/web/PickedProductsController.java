@@ -16,7 +16,7 @@ public class PickedProductsController {
     pickedProducts = Beans.get(PickedProductsRepository.class).find(pickedProducts.getId());
     try {
       Beans.get(PickedProductsService.class)
-          .createStockMoveAndStockMoveLine(pickedProducts.getMassMove(), pickedProducts);
+          .createStockMoveAndStockMoveLine(pickedProducts.getMassStockMove(), pickedProducts);
     } catch (IllegalStateException e) {
       response.setAlert(e.getMessage());
     }
@@ -27,7 +27,7 @@ public class PickedProductsController {
     PickedProducts pickedProducts = request.getContext().asType(PickedProducts.class);
     pickedProducts = Beans.get(PickedProductsRepository.class).find(pickedProducts.getId());
     Beans.get(PickedProductsService.class)
-        .cancelStockMoveAndStockMoveLine(pickedProducts.getMassMove(), pickedProducts);
+        .cancelStockMoveAndStockMoveLine(pickedProducts.getMassStockMove(), pickedProducts);
     response.setReload(true);
   }
 }
