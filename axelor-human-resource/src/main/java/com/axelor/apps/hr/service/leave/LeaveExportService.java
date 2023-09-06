@@ -16,27 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.lunch.voucher;
+package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.hr.db.LunchVoucherMgt;
-import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.auth.db.User;
+import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 import java.util.List;
 
-public interface LunchVoucherMgtService {
+public interface LeaveExportService {
 
-  public void calculate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
-
-  public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
-
-  public int updateStock(
-      List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
-      List<LunchVoucherMgtLine> oldLunchVoucherMgtLines,
-      Company company)
-      throws AxelorException;
-
-  public int checkStock(Company company, int numberToUse) throws AxelorException;
-
-  public void calculateTotal(LunchVoucherMgt lunchVoucherMgt);
+  public MetaFile export(List<Long> ids, User user) throws IOException, AxelorException;
 }

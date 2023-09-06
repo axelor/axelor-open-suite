@@ -18,25 +18,10 @@
  */
 package com.axelor.apps.hr.service.lunch.voucher;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
-import com.axelor.apps.hr.db.LunchVoucherMgtLine;
-import java.util.List;
+import java.io.IOException;
 
-public interface LunchVoucherMgtService {
+public interface LunchVoucherExportService {
 
-  public void calculate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
-
-  public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
-
-  public int updateStock(
-      List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
-      List<LunchVoucherMgtLine> oldLunchVoucherMgtLines,
-      Company company)
-      throws AxelorException;
-
-  public int checkStock(Company company, int numberToUse) throws AxelorException;
-
-  public void calculateTotal(LunchVoucherMgt lunchVoucherMgt);
+  public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException;
 }

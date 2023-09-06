@@ -151,6 +151,7 @@
     <option value="1">Standard</option>
     <option value="2">Nibelis</option>
     <option value="3">Silae</option>
+    <option value="4">Sage</option>
   </selection>
 
   <selection name="hr.employee.marital.status">
