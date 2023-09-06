@@ -367,8 +367,6 @@
     <field name="toDate" expr="eval: _parent?.toDate"/>
     <field name="budgetLevel" expr="eval: _parent"
       if="!budgetLevel &amp;&amp; (_parent?.code != null || _parent?.name != null)"/>
-    <field name="globalBudget" expr="eval: _parent?.parentBudgetLevel?.globalBudget"
-      if="!budgetLevel &amp;&amp; (_parent?.code != null || _parent?.name != null)"/>
     <field name="$globalId" expr="eval: _globalId" if="_globalId"/>
     <field name="$globalId" expr="eval: 0" if="!_globalId"/>
   </action-record>
