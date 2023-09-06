@@ -491,8 +491,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentSession.getSequence(),
             "",
-            partnerBankDetails);
+            paymentSession.getBankDetails());
 
+    move.setPartnerBankDetails(partnerBankDetails);
     move.setPaymentSession(paymentSession);
     move.setPaymentCondition(null);
     move.setSubrogationPartner(subrogationPartner);
