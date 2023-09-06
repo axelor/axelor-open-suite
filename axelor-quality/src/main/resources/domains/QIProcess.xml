@@ -9,7 +9,7 @@
 
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="responsible" title="Responsible" ref="com.axelor.auth.db.User"
+    <many-to-one name="manager" title="QIProcess.manager" ref="com.axelor.auth.db.User"
       required="true"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
       required="true"/>
@@ -17,7 +17,7 @@
     <track>
       <field name="code"/>
       <field name="name"/>
-      <field name="responsible"/>
+      <field name="manager"/>
       <field name="company"/>
     </track>
 

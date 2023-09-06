@@ -7,7 +7,7 @@
     <field name="code"/>
     <field name="name"/>
     <field name="company"/>
-    <field name="responsible"/>
+    <field name="manager"/>
   </grid>
 
   <form name="qi-process-form" title="Process" model="com.axelor.apps.quality.db.QIProcess">
@@ -15,7 +15,7 @@
       <field name="code"/>
       <field name="name"/>
       <field name="company" grid-view="company-grid" form-view="company-form"/>
-      <field name="responsible" grid-view="user-grid" form-view="user-form"/>
+      <field name="manager" grid-view="user-grid" form-view="user-form"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
