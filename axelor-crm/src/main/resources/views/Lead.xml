@@ -50,7 +50,7 @@
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printItem" title="Print" action="action-crm-lead-method-print"/>
+        <item name="printItem" title="Print" action="action-method-print-birt-list"/>
       </menu>
       <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
         <item name="assignToMeItem" title="Assign to me"
@@ -86,7 +86,7 @@
 
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-crm-lead-method-print"/>
+        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -451,10 +451,6 @@
 
   <action-method name="action-lead-event-add-attendee">
     <call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
-  </action-method>
-
-  <action-method name="action-crm-lead-method-print">
-    <call method="print" class="com.axelor.apps.crm.web.LeadController"/>
   </action-method>
 
   <action-method name="action-crm-lead-method-check-name">
