@@ -90,6 +90,7 @@
       <field name="typeSelect" colSpan="3"/>
       <field name="sourceSelect" colSpan="3"/>
       <field name="budgetKey" colSpan="6" readonly="true"/>
+      <field name="category" colSpan="12"/>
       <panel name="datesPanel" colSpan="12">
         <field name="fromDate" colSpan="3" readonlyIf="statusSelect == 2"
           onChange="action-budget-budget-validate-dates" required="true"/>
@@ -174,6 +175,7 @@
         <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
           colSpan="3" grid-view="budget-level-grid" form-view="budget-level-form"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
+        <field name="category" colSpan="12"/>
         <panel name="datesPanel" colSpan="12">
           <field name="fromDate" colSpan="6" readonlyIf="statusSelect == 2"
             onChange="action-budget-budget-validate-dates" required="true"/>
@@ -271,6 +273,7 @@
       <field name="code" required="true" colSpan="2"/>
       <field name="name" required="true" colSpan="4"/>
       <field name="budgetLevel" readonly="true" requiredIf="!$popup()" colSpan="3"/>
+      <field name="category" required="true" colSpan="3"/>
     </panel>
     <panel colSpan="12" name="keyPanel">
       <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"

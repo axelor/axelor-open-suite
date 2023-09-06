@@ -18,20 +18,30 @@
 
       <field name="name" title="Name" required="true"/>
       <field name="code" title="Code" required="true"/>
-      <field name="company"/>
-      <field name="yearSet" widget="TagSelect"
+      <field name="company" required="true"/>
+      <field name="yearSet" widget="TagSelect" showIf="company"
         domain="self.company = :company AND self.typeSelect = 1"
-        readonlyIf="budgetScenarioLineList.length > 0"
-        onChange="save,action-budget-scenario-method-change-column-names" canNew="false"/>
+        onChange="action-budget-scenario-group-year-onchange" canNew="false"/>
       <field name="budgetScenarioLineList" title="Budget Scenario Lines"
         grid-view="budget-scenario-line-grid" form-view="budget-scenario-line-form" colSpan="12"/>
     </panel>
   </form>
 
+  <action-group name="action-budget-scenario-group-year-onchange">
+    <action name="save"/>
+    <action name="action-budget-scenario-method-change-column-names"/>
+    <action name="action-budget-scenario-method-remove-unused-columns"/>
+  </action-group>
+
 
   <action-method name="action-budget-scenario-method-change-column-names">
-    <call class="com.axelor.apps.budget.web.BudgetScenarioLineController"
+    <call class="com.axelor.apps.budget.web.BudgetScenarioController"
       method="changeColumnsNames"/>
+  </action-method>
+
+  <action-method name="action-budget-scenario-method-remove-unused-columns">
+    <call class="com.axelor.apps.budget.web.BudgetScenarioController"
+      method="removeUnusedColumns"/>
   </action-method>
 
 

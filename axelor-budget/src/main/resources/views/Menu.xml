@@ -104,58 +104,36 @@
   <!-- Budget Level Templates -->
 
   <menuitem title="Templates" name="budget-root-budget-management-templates"
-    parent="budget-root-budget-management" order="25" hidden="true"/>
+    parent="budget-root-budget-management" order="25"/>
 
-  <menuitem title="Global budget templates"
-    name="budget-root-budget-management-templates-global-budget"
-    parent="budget-root-budget-management-templates"
-    action="budget.root.budget.management.templates.global.budget" order="30"/>
-  <action-view name="budget.root.budget.management.templates.global.budget"
-    title="Global budget templates" model="com.axelor.apps.budget.db.BudgetLevel">
-    <view type="grid" name="budget-level-template-grid"/>
-    <view type="form" name="global-budget-template-budget-level-form"/>
-    <view-param name="forceTitle" value="true"/>
-    <domain>self.typeSelect = :_typeSelect and self.parentBudgetLevel = null</domain>
-    <context name="_typeSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_TEMPLATE"/>
-    <context name="_isParent" expr="eval: true"/>
-  </action-view>
-
-  <menuitem title="Global budget templates"
+  <menuitem title="Global budget templates using lines"
     name="budget-root-budget-management-global-budget-template"
-    parent="budget-root-budget-management"
+    parent="budget-root-budget-management-templates"
     action="budget.root.budget.management.global.budget.template" order="31"/>
   <action-view name="budget.root.budget.management.global.budget.template"
     title="Global budget templates" model="com.axelor.apps.budget.db.GlobalBudgetTemplate">
     <view type="grid" name="global-budget-template-grid"/>
     <view type="form" name="global-budget-template-form"/>
     <view-param name="forceTitle" value="true"/>
+    <domain>self.isScenario is false</domain>
+    <context name="_isScenario" expr="eval: false"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_TEMPLATE"/>
   </action-view>
 
-  <menuitem title="Line template" name="budget-root-budget-management-templates-line"
-    parent="budget-root-budget-management-templates" action="budget.root.management.templates.line"
-    order="33"/>
-  <action-view name="budget.root.management.templates.line" title="Line template"
-    model="com.axelor.apps.budget.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="forceTitle" value="true"/>
-    <domain>self.typeSelect = :_typeSelect</domain>
-    <context name="_typeSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET"/>
-    <context name="_domain"
-      expr="eval: &quot;self.typeSelect = com.axelor.apps.account.db.repo.BudgetRepository.BUDGET_TYPE_SELECT_TEMPLATE and self.parentBudgetLevel.parentBudgetLevel != null&quot;"/>
-  </action-view>
-
-  <menuitem title="Account model" name="budget-root-budget-management-account-model"
+  <menuitem title="Global budget templates using scenario"
+    name="budget-root-budget-management-global-budget-template-scenario"
     parent="budget-root-budget-management-templates"
-    action="budget.root.budget.management.account.model" order="35"/>
-  <action-view name="budget.root.budget.management.account.model" title="Account model"
-    model="com.axelor.apps.budget.db.AccountModel">
-    <view type="grid" name="account-model-grid"/>
-    <view type="form" name="account-model-form"/>
+    action="budget.root.budget.management.global.budget.template.scenario" order="31"/>
+  <action-view name="budget.root.budget.management.global.budget.template.scenario"
+    title="Global budget templates" model="com.axelor.apps.budget.db.GlobalBudgetTemplate">
+    <view type="grid" name="global-budget-template-grid"/>
+    <view type="form" name="global-budget-template-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.isScenario is true</domain>
+    <context name="_isScenario" expr="eval: true"/>
+    <context name="_typeSelect"
+      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_TEMPLATE"/>
   </action-view>
 
   <menuitem title="Import budgets and budget templates"
@@ -181,8 +159,8 @@
 
   <menuitem title="Budget Scenario Variable"
     name="budget-root-budget-management-budget-scenario-variable"
-    parent="budget-root-budget-management" action="budget.root.management.budget.scenario.variable"
-    order="23"/>
+    parent="budget-root-budget-management-templates"
+    action="budget.root.management.budget.scenario.variable" order="23"/>
   <action-view name="budget.root.management.budget.scenario.variable"
     title="Budget Scenario Variable" model="com.axelor.apps.budget.db.BudgetScenarioVariable">
     <view type="grid" name="budget-scenario-variable-grid"/>
@@ -190,7 +168,7 @@
   </action-view>
 
   <menuitem title="Budget Scenario" name="budget-root-budget-management-budget-scenario"
-    parent="budget-root-budget-management" action="budget.root.management.budget.scenario"
+    parent="budget-root-budget-management-templates" action="budget.root.management.budget.scenario"
     order="23"/>
   <action-view name="budget.root.management.budget.scenario"
     title="Budget Scenario Value" model="com.axelor.apps.budget.db.BudgetScenario">
