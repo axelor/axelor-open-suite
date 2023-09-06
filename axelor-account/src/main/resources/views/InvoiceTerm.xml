@@ -175,6 +175,8 @@
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
     <field name="moveLine.partner"/>
+    <field name="subrogationPartner"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
     <field name="moveLine.origin"/>

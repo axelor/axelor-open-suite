@@ -127,7 +127,7 @@
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
           <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
-            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect)"
+            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || subrogationPartner"
             readonlyIf="amountRemaining != inTaxTotal" form-view="partner-form"
             grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
           <field name="currency"
