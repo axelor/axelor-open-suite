@@ -227,6 +227,9 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       return;
     }
 
+    Map<String, Object> variableAmountMap =
+        budgetScenarioService.buildVariableMap(globalBudgetTemplate.getBudgetScenario());
+
     for (BudgetLevel groupBudgetLevel : globalBudgetTemplate.getBudgetLevelList()) {
       BudgetLevel optGroupBudgetLevel =
           budgetLevelManagementRepository.copy(groupBudgetLevel, false);
@@ -264,9 +267,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
               budgetRepository.save(optBudget);
             }
           } else if (globalBudgetTemplate.getIsScenario() && !ObjectUtils.isEmpty(variablesList)) {
-            Map<String, Object> variableAmountMap =
-                budgetScenarioService.buildVariableMap(
-                    globalBudgetTemplate.getBudgetScenario(), variablesList);
+
             for (BudgetScenarioVariable budgetScenarioVariable : variablesList) {
               Budget optBudget = new Budget();
               optBudget.setCode(budgetScenarioVariable.getCode());

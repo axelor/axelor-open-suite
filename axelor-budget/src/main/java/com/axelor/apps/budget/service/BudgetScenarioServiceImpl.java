@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BudgetScenarioServiceImpl implements BudgetScenarioService {
@@ -28,8 +27,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
   }
 
   @Override
-  public Map<String, Object> buildVariableMap(
-      BudgetScenario budgetScenario, Set<BudgetScenarioVariable> variablesList)
+  public Map<String, Object> buildVariableMap(BudgetScenario budgetScenario)
       throws AxelorException {
     Map<String, Object> variableAmountMap = new HashMap<>();
     if (budgetScenario != null
