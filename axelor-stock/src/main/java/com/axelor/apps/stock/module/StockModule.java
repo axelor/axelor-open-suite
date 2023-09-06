@@ -53,8 +53,8 @@ import com.axelor.apps.stock.service.LogisticalFormLineService;
 import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
-import com.axelor.apps.stock.service.MassMoveService;
-import com.axelor.apps.stock.service.MassMoveServiceImpl;
+import com.axelor.apps.stock.service.MassStockMoveService;
+import com.axelor.apps.stock.service.MassStockMoveServiceImpl;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingServiceImpl;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
@@ -140,7 +140,7 @@ public class StockModule extends AxelorModule {
     bind(StockHistoryLineRepository.class).to(StockHistoryLineManagementRepository.class);
     bind(StockMoveCheckWapService.class).to(StockMoveCheckWapServiceImpl.class);
     bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
-    bind(MassMoveService.class).to(MassMoveServiceImpl.class);
+    bind(MassStockMoveService.class).to(MassStockMoveServiceImpl.class);
     bind(PickedProductsService.class).to(PickedProductsServiceImpl.class);
     bind(StoredProductsService.class).to(StoredProductsServiceImpl.class);
   }

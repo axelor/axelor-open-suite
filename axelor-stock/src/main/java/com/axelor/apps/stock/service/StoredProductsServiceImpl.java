@@ -5,13 +5,13 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.stock.db.MassMove;
+import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StoredProducts;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.db.repo.MassMoveRepository;
+import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StoredProductsRepository;
@@ -26,13 +26,14 @@ import java.time.LocalDate;
 public class StoredProductsServiceImpl implements StoredProductsService {
 
   protected StoredProductsRepository storeProductsRepository;
-  protected MassMoveRepository massMoveRepository;
+  protected MassStockMoveRepository massStockMoveRepository;
 
   @Inject
   public StoredProductsServiceImpl(
-      StoredProductsRepository storeProductsRepository, MassMoveRepository massMoveRepository) {
+      StoredProductsRepository storeProductsRepository,
+      MassStockMoveRepository massStockMoveRepository) {
     this.storeProductsRepository = storeProductsRepository;
-    this.massMoveRepository = massMoveRepository;
+    this.massStockMoveRepository = massStockMoveRepository;
   }
 
   @Override
@@ -43,7 +44,7 @@ public class StoredProductsServiceImpl implements StoredProductsService {
       StockLocation toStockLocation,
       BigDecimal storedQty,
       StockMoveLine stockMoveLine,
-      MassMove massMove) {
+      MassStockMove massStockMove) {
     StoredProducts storedProducts = new StoredProducts();
     storedProducts.setStoredProduct(product);
     storedProducts.setTrackingNumber(trackingNumber);
@@ -52,54 +53,7 @@ public class StoredProductsServiceImpl implements StoredProductsService {
     storedProducts.setToStockLocation(toStockLocation);
     storedProducts.setStoredQty(storedQty);
     storedProducts.setStockMoveLine(stockMoveLine);
-    storedProducts.setMassMove(massMove);
-    return storedProducts;
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public StoredProducts updateStoreProductMobility(
-      Product product,
-      TrackingNumber trackingNumber,
-      BigDecimal currentQty,
-      Long storedProductId,
-      StockLocation toStockLocation,
-      BigDecimal storedQty,
-      StockMoveLine stockMoveLine,
-      MassMove massMove) {
-    StoredProducts storedProducts = storeProductsRepository.find(storedProductId);
-    storedProducts.setStoredProduct(product);
-    storedProducts.setTrackingNumber(trackingNumber);
-    storedProducts.setCurrentQty(currentQty);
-    storedProducts.setUnit(product.getUnit());
-    storedProducts.setToStockLocation(toStockLocation);
-    storedProducts.setStoredQty(storedQty);
-    storedProducts.setStockMoveLine(stockMoveLine);
-    storedProducts.setMassMove(massMove);
-    storeProductsRepository.save(storedProducts);
-    return storedProducts;
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public StoredProducts createStoredProductMobility(
-      Product product,
-      TrackingNumber trackingNumber,
-      BigDecimal currentQty,
-      StockLocation toStockLocation,
-      BigDecimal storedQty,
-      StockMoveLine stockMoveLine,
-      MassMove massMove) {
-    StoredProducts storedProducts =
-        createStoredProduct(
-            product,
-            trackingNumber,
-            currentQty,
-            toStockLocation,
-            storedQty,
-            stockMoveLine,
-            massMove);
-    storeProductsRepository.save(storedProducts);
+    storedProducts.setMassStockMove(massStockMove);
     return storedProducts;
   }
 
@@ -121,8 +75,8 @@ public class StoredProductsServiceImpl implements StoredProductsService {
           storedProducts.getToStockLocation() != null ? storedProducts.getToStockLocation() : null;
       StockMoveLine duplicateStockMoveLine =
           storedProducts.getStockMoveLine() != null ? storedProducts.getStockMoveLine() : null;
-      MassMove duplicateMassMove =
-          storedProducts.getMassMove() != null ? storedProducts.getMassMove() : null;
+      MassStockMove duplicateMassStockMove =
+          storedProducts.getMassStockMove() != null ? storedProducts.getMassStockMove() : null;
       storedProducts.setCurrentQty(storedQty);
       StoredProducts duplicateStoredProduct =
           createStoredProduct(
@@ -132,7 +86,7 @@ public class StoredProductsServiceImpl implements StoredProductsService {
               duplicateToStockLocation,
               BigDecimal.ZERO,
               duplicateStockMoveLine,
-              duplicateMassMove);
+              duplicateMassStockMove);
       storeProductsRepository.save(duplicateStoredProduct);
     }
 
@@ -140,7 +94,8 @@ public class StoredProductsServiceImpl implements StoredProductsService {
         && storedProducts.getToStockLocation() != null
         && storedProducts.getStockMoveLine() == null) {
 
-      if (storedProducts.getStoredQty().compareTo(storedProducts.getCurrentQty()) == 1) {
+      if (storedProducts.getStoredQty().compareTo(storedProducts.getCurrentQty()) == 1
+          && storedProducts.getTrackingNumber() != null) {
         throw new AxelorException(
             0,
             I18n.get(StockExceptionMessage.STORED_QUANTITY_GREATER_THAN_CURRENT_QTY)
@@ -148,12 +103,19 @@ public class StoredProductsServiceImpl implements StoredProductsService {
                 + storedProducts.getStoredProduct().getFullName()
                 + " "
                 + storedProducts.getTrackingNumber().getTrackingNumberSeq());
+      } else if (storedProducts.getStoredQty().compareTo(storedProducts.getCurrentQty()) == 1
+          && storedProducts.getTrackingNumber() == null) {
+        throw new AxelorException(
+            0,
+            I18n.get(StockExceptionMessage.STORED_QUANTITY_GREATER_THAN_CURRENT_QTY)
+                + " "
+                + storedProducts.getStoredProduct().getFullName());
       }
       Address toAddress = storedProducts.getToStockLocation().getAddress();
-      Address fromAddress = storedProducts.getMassMove().getCartStockLocation().getAddress();
-      Company company = storedProducts.getMassMove().getCompany();
+      Address fromAddress = storedProducts.getMassStockMove().getCartStockLocation().getAddress();
+      Company company = storedProducts.getMassStockMove().getCompany();
       StockLocation toStockLocation = storedProducts.getToStockLocation();
-      StockLocation fromStockLocation = storedProducts.getMassMove().getCartStockLocation();
+      StockLocation fromStockLocation = storedProducts.getMassStockMove().getCartStockLocation();
       Product product = storedProducts.getStoredProduct();
       TrackingNumber trackingNumber =
           storedProducts.getTrackingNumber() != null ? storedProducts.getTrackingNumber() : null;
@@ -183,7 +145,7 @@ public class StoredProductsServiceImpl implements StoredProductsService {
                   null,
                   fromStockLocation,
                   toStockLocation);
-      stockMove.setMassMove(storedProducts.getMassMove());
+      stockMove.setMassStockMove(storedProducts.getMassStockMove());
       Beans.get(StockMoveService.class).plan(stockMove);
       Beans.get(StockMoveService.class).realize(stockMove);
       Beans.get(StockMoveRepository.class).save(stockMove);
@@ -191,7 +153,8 @@ public class StoredProductsServiceImpl implements StoredProductsService {
       storedProducts.setStockMoveLine(stockMoveLine);
       storeProductsRepository.save(storedProducts);
     } else {
-      if (storedProducts.getStoredQty().compareTo(BigDecimal.ZERO) == 0) {
+      if (storedProducts.getStoredQty().compareTo(BigDecimal.ZERO) == 0
+          && storedProducts.getTrackingNumber() != null) {
         throw new AxelorException(
             0,
             I18n.get(StockExceptionMessage.STORED_QUANTITY_IS_ZERO)
@@ -199,8 +162,15 @@ public class StoredProductsServiceImpl implements StoredProductsService {
                 + storedProducts.getStoredProduct().getFullName()
                 + " "
                 + storedProducts.getTrackingNumber().getTrackingNumberSeq());
+      } else if (storedProducts.getStoredQty().compareTo(BigDecimal.ZERO) == 0
+          && storedProducts.getTrackingNumber() == null) {
+        throw new AxelorException(
+            0,
+            I18n.get(StockExceptionMessage.STORED_QUANTITY_IS_ZERO)
+                + " "
+                + storedProducts.getStoredProduct().getFullName());
       }
-      if (storedProducts.getStockMoveLine() != null) {
+      if (storedProducts.getStockMoveLine() != null && storedProducts.getTrackingNumber() != null) {
         throw new AxelorException(
             0,
             I18n.get(StockExceptionMessage.ALREADY_STORED_PRODUCT)
@@ -208,18 +178,25 @@ public class StoredProductsServiceImpl implements StoredProductsService {
                 + storedProducts.getStoredProduct()
                 + " "
                 + storedProducts.getTrackingNumber().getTrackingNumberSeq());
+      } else if (storedProducts.getStockMoveLine() != null
+          && storedProducts.getTrackingNumber() == null) {
+        throw new AxelorException(
+            0,
+            I18n.get(StockExceptionMessage.ALREADY_STORED_PRODUCT)
+                + " "
+                + storedProducts.getStoredProduct());
       }
     }
 
-    if (checkIfAllStoredProductAreStored(storedProducts.getMassMove())) {
-      storedProducts.getMassMove().setStatusSelect(3);
-      massMoveRepository.save(storedProducts.getMassMove());
+    if (checkIfAllStoredProductAreStored(storedProducts.getMassStockMove())) {
+      storedProducts.getMassStockMove().setStatusSelect(3);
+      massStockMoveRepository.save(storedProducts.getMassStockMove());
     }
   }
 
-  public boolean checkIfAllStoredProductAreStored(MassMove massMove) {
+  public boolean checkIfAllStoredProductAreStored(MassStockMove massStockMove) {
     boolean allIsStored = true;
-    for (StoredProducts storedProducts : massMove.getStoredProductsList()) {
+    for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
       if (!(storedProducts.getStoredQty().compareTo(storedProducts.getCurrentQty()) == 0
           && storedProducts.getStockMoveLine() != null)) {
         allIsStored = false;

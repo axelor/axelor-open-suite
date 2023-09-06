@@ -278,13 +278,15 @@ public final class StockExceptionMessage {
   public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
       "Error: %s and %s fields are required and can not be null" /*)*/;
 
-  public static final String MASS_MOVE_EMPTY_FIELD = /*$$(*/
+  /** Stock mass move, stored products and picked products services and controllers */
+  public static final String MASS_STOCK_MOVE_EMPTY_FIELD = /*$$(*/
       "One of these values is missing : product ; tracking number, to stock location ; unit." /*)*/;
-  public static final String MASS_MOVE_EMPTY_FIELD_WITHOUT_TN = /*$$(*/
+
+  public static final String MASS_STOCK_MOVE_EMPTY_FIELD_WITHOUT_TN = /*$$(*/
       "One of these values is missing : to stock location ; unit." /*)*/;
-  public static final String MASS_MOVE_EMPTY_TRACKING_NUMBER = /*$$(*/
+  public static final String MASS_STOCK_MOVE_EMPTY_TRACKING_NUMBER = /*$$(*/
       "Tracking number is missing." /*)*/;
-  public static final String MASS_MOVE_NO_SEQUENCE = /*$$(*/
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
       "There's no configured sequence for stock's mass moves for the company %s" /*)*/;
 
   public static final String PICKED_QUANTITY_IS_ZERO = /*$$(*/

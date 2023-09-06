@@ -951,9 +951,12 @@
 "Mass move enabled","Gérer les déplacements en masse",,
 "Picked quantity is equal to 0","La quantité prise est égale à 0",,
 "These products have already been picked","Ces produits ont déjà été pris",,
+"These products have already been stored","ces produits ont déjà été rangés",,
 "At least one line has a picked quantity is equal to 0","Au moins une ligne possède une quantité prise égale à 0",,
 "The product is not available in the stock location source indicated","Le produit n'est pas disponible dans l'emplacement de stock source indiqué",,
 "Many products have not been picked due to stock mismatch",,"Plusieurs produits n'ont pas été pris dû a une inchohérence de stock",,
-"Picked quantity is greater than current quantity","La quantité prise est supérieur a la quantité en stock",,
+"Picked quantity is greater than current quantity","La quantité prise est supérieure a la quantité en stock",,
 "At least one line has a picked quantity  greater than current quantity","Au moins une ligne possède un produit dont la quantité prise est supérieure a la quantité en stock",,
-"At least one line has a stored quantity  greater than current quantity","Au moins une ligne possède un produit dont la quantité déposée est supérieure a la quantité en stock"
+"At least one line has a stored quantity  greater than current quantity","Au moins une ligne possède un produit dont la quantité rangée est supérieure a la quantité en stock"
+"Stored quantity is greater than current quantity","La quantité rangée est supérieurz a la quantité dans le chariot",,
+"Stored quantity is equal to 0","La quantité rangée est égale à zéro",,

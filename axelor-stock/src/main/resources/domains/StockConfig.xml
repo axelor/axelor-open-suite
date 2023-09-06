@@ -105,7 +105,7 @@
     <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
       min="0" nullable="true"/>
 
-    <boolean name="isMassMoveManaged" title="Mass move enabled"/>
+    <boolean name="isMassStockMoveManaged" title="Mass move enabled"/>
     <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Transition location (cart)"/>
 
@@ -170,6 +170,9 @@
       <field name="displayPriceOnPrinting" on="UPDATE"/>
       <field name="displayOrderReferenceAndOrderDate" on="UPDATE"/>
       <field name="percentToleranceForWapChange" on="UPDATE"/>
+
+      <field name="isMassStockMoveManaged" on="UPDATE"/>
+      <field name="cartStockLocation" on="UPDATE"/>
     </track>
   </entity>
 

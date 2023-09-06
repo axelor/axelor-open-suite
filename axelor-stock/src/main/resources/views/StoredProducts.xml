@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="stored-products-mass-move-grid" title="Stored products"
+  <grid name="stored-products-mass-stock-move-grid" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProducts" groupBy="storedProduct"
     onNew="action-stored-products-group-onnew">
     <field name="storedProduct" required="true" domain="self.productTypeSelect = 'storable'"
@@ -14,18 +14,17 @@
     <field name="currentQty" readonly="true"/>
     <field name="unit" readonly="true"/>
     <field name="toStockLocation" required="true"
-      domain="self.company = (SELECT company FROM MassMove WHERE id = :massMove) AND self.typeSelect != 3"/>
+      domain="self.company = (SELECT company FROM MassStockMove WHERE id = :massStockMove) AND self.typeSelect != 3"/>
     <field name="storedQty" required="true"/>
     <button name="realizeStorageBtn" icon="fa-play"
-      onClick="save,action-method-stock-stored-product-realize-storage,save"/>
+      onClick="save,action-stored-product-method-realize-storage,save"/>
     <button name="cancelStorageBtn" icon="fa-undo"
-      onClick="save,action-method-stock-stored-product-cancel-storage"/>
+      onClick="save,action-stored-product-method-cancel-storage"/>
   </grid>
 
   <form name="stored-products-form" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProducts" onNew="action-stored-products-group-onnew">
     <panel name="mainPanel">
-      <field name="massMove" required="true" readonly="true"/>
       <field name="storedProduct" required="true" domain="self.productTypeSelect = 'storable'"
         onChange="action-stored-products-group-product-onchange"/>
       <field name="trackingNumber"
@@ -38,30 +37,6 @@
     </panel>
   </form>
 
-  <action-method name="action-method-stock-stored-product-realize-storage">
-    <call class="com.axelor.apps.stock.web.StoredProductsController" method="realizeStorage"/>
-  </action-method>
-
-  <action-method name="action-method-stock-stored-product-cancel-storage">
-    <call class="com.axelor.apps.stock.web.StoredProductsController" method="cancelStorage"/>
-  </action-method>
-
-  <action-group name="action-stored-products-group-onnew">
-    <action name="action-stored-products-record-set-massmove"/>
-  </action-group>
-
-  <action-group name="action-stored-products-group-product-onchange">
-    <action name="action-stored-products-record-set-tracking-number"/>
-    <action name="action-stored-products-attrs-tracking-number-required"/>
-    <action name="action-stored-products-record-set-currentqty"/>
-    <action name="action-stored-products-record-get-unit"/>
-  </action-group>
-
-  <action-record name="action-stored-products-record-set-massmove"
-    model="com.axelor.apps.stock.db.StoredProducts">
-    <field name="massMove" expr="eval: __parent__"/>
-  </action-record>
-
   <action-attrs name="action-stored-products-attrs-tracking-number-required">
     <attribute name="required" for="trackingNumber"
       expr="eval: storedProduct?.trackingNumberConfiguration != null"/>
@@ -69,7 +44,7 @@
 
   <action-attrs name="action-stored-products-attrs-tracking-number-domain">
     <attribute name="domain"
-      expr="eval: &quot; self.product = :storedProduct AND (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine   WHERE stockLocationLine.detailsStockLocation = ${massMove.cartStockLocation?.id}))&quot;"
+      expr="eval: &quot; self.product = :storedProduct AND (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine   WHERE stockLocationLine.detailsStockLocation = ${massStockMove.cartStockLocation?.id}))&quot;"
       for="trackingNumber"/>
   </action-attrs>
 
@@ -78,13 +53,20 @@
       expr="eval: storedProduct?.trackingNumberConfiguration != null"/>
   </action-attrs>
 
+  <action-record name="action-stored-products-record-default-location"
+    model="com.axelor.apps.stock.db.StoredProducts">
+    <field name="toStockLocation" expr="eval: __parent__?.commonToStockLocation"/>
+  </action-record>
+
+  <action-record name="action-stored-products-record-set-massStockMove"
+    model="com.axelor.apps.stock.db.StoredProducts">
+    <field name="massStockMove" expr="eval: __parent__"/>
+  </action-record>
+
   <action-record name="action-stored-products-record-set-tracking-number"
     model="com.axelor.apps.stock.db.StoredProducts">
     <field name="trackingNumber" expr="eval: null"
-      if="!(__repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', storedProduct, __parent__.cartStockLocation?.id)?.fetchOne()?.trackingNumber)"/>
-    <field name="trackingNumber"
-      expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', storedProduct, __parent__.cartStockLocation?.id)?.fetchOne()?.trackingNumber"
-      if="storedProduct.trackingNumberConfiguration != null"/>
+      if="(__repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', storedProduct, __parent__.cartStockLocation?.id)?.fetchOne()?.trackingNumber) != trackingNumber"/>
   </action-record>
 
   <action-record name="action-stored-products-record-set-currentqty"
@@ -96,10 +78,29 @@
       expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2 AND self.trackingNumber = ?3', storedProduct, __parent__.cartStockLocation, trackingNumber)?.fetchOne()?.currentQty"/>
   </action-record>
 
-
   <action-record name="action-stored-products-record-get-unit"
     model="com.axelor.apps.stock.db.StoredProducts">
     <field name="unit" expr="eval: unit = storedProduct?.unit"/>
   </action-record>
+
+  <action-method name="action-stored-product-method-realize-storage">
+    <call class="com.axelor.apps.stock.web.StoredProductsController" method="realizeStorage"/>
+  </action-method>
+
+  <action-method name="action-stored-product-method-cancel-storage">
+    <call class="com.axelor.apps.stock.web.StoredProductsController" method="cancelStorage"/>
+  </action-method>
+
+  <action-group name="action-stored-products-group-onnew">
+    <action name="action-stored-products-record-set-massStockMove"/>
+    <action name="action-stored-products-record-default-location"/>
+  </action-group>
+
+  <action-group name="action-stored-products-group-product-onchange">
+    <action name="action-stored-products-record-set-tracking-number"/>
+    <action name="action-stored-products-attrs-tracking-number-required"/>
+    <action name="action-stored-products-record-set-currentqty"/>
+    <action name="action-stored-products-record-get-unit"/>
+  </action-group>
 
 </object-views>
