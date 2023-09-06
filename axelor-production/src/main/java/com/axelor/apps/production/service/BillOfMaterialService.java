@@ -42,12 +42,6 @@ public interface BillOfMaterialService {
 
   public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
 
-  public String getFileName(BillOfMaterial billOfMaterial);
-
-  public String getReportLink(
-      BillOfMaterial billOfMaterial, String name, String language, String format)
-      throws AxelorException;
-
   public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom)
       throws AxelorException;
 

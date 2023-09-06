@@ -86,9 +86,6 @@ public final class ProductionExceptionMessage {
       "Unrecognized capacity for company %s production configuration" /*)*/;
 
   /** Manuf Order Controller */
-  public static final String MANUF_ORDER_1 = /*$$(*/
-      "Please select the Manufacturing order(s) to print." /*)*/;
-
   public static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
       "Please select more than one manufacturing order." /*)*/;
 
@@ -103,10 +100,6 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE = /*$$(*/
       "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles." /*)*/;
-
-  /** Operation Order Controller */
-  public static final String OPERATION_ORDER_1 = /*$$(*/
-      "Please select the Operation order(s) to print." /*)*/;
 
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/

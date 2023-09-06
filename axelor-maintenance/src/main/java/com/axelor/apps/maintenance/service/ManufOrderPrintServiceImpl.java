@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.manuforder;
+package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.file.PdfTool;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -39,6 +39,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public ManufOrderPrintServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public String printManufOrders(List<Long> ids) throws IOException {
@@ -71,16 +78,13 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
   @Override
   public ReportSettings prepareReportSettings(ManufOrder manufOrder) {
     String title = getFileName(manufOrder);
-    ReportSettings reportSetting = ReportFactory.createReport(IReport.MANUF_ORDER, title);
+    ReportSettings reportSetting =
+        ReportFactory.createReport(IReport.MAINTENANCE_MANUF_ORDER, title);
     return reportSetting
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .addParam(
-            "Timezone",
-            manufOrder.getCompany() != null ? manufOrder.getCompany().getTimezone() : null)
         .addParam("ManufOrderId", manufOrder.getId().toString())
         .addParam(
-            "activateBarCodeGeneration",
-            Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
+            "activateBarCodeGeneration", appBaseService.getAppBase().getActivateBarCodeGeneration())
         .addFormat(ReportSettings.FORMAT_PDF);
   }
 
@@ -88,7 +92,7 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
   public String getManufOrdersFilename() {
     return I18n.get("Manufacturing orders")
         + " - "
-        + Beans.get(AppBaseService.class)
+        + appBaseService
             .getTodayDate(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .format(DateTimeFormatter.BASIC_ISO_DATE)

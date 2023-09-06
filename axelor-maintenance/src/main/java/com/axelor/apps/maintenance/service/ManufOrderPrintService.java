@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.manuforder;
+package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
