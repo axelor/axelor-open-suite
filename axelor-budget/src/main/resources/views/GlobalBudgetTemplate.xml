@@ -14,7 +14,8 @@
   </grid>
 
   <form name="global-budget-template-form" title="Global budget template"
-    model="com.axelor.apps.budget.db.GlobalBudgetTemplate">
+    model="com.axelor.apps.budget.db.GlobalBudgetTemplate"
+    onNew="action-global-budget-template-record-scenario">
     <panel name="mainPanel" colSpan="12">
       <field name="code" required="true"/>
       <field name="name" required="true"/>
@@ -22,17 +23,24 @@
       <field name="budgetTypeSelect" required="true"/>
       <field name="fromDate" required="true"/>
       <field name="toDate" required="true"/>
+      <field name="budgetScenario" showIf="isScenario" requiredIf="isScenario"/>
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
-      showIf="code &amp;&amp; name &amp;&amp; company &amp;&amp; budgetTypeSelect &amp;&amp; fromDate &amp;&amp; toDate">
+      showIf="code &amp;&amp; name &amp;&amp; company &amp;&amp; budgetTypeSelect &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; ((isScenario &amp;&amp; budgetScenario) || !isScenario)">
       <field name="budgetLevelList" title="Groups" colSpan="12"
         form-view="budget-level-template-form" grid-view="budget-level-template-grid"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="generateGlobalBudgetBtn" title="Generate global budget"
-        onClick="action-global-budget-template-method-generate-global-budget"/>
+        onClick="save,action-global-budget-template-method-generate-global-budget"/>
+      <field name="isScenario" readonly="true"/>
     </panel>
   </form>
+
+  <action-record name="action-global-budget-template-record-scenario"
+    model="com.axelor.apps.budget.db.GlobalBudget">
+    <field name="isScenario" expr="eval: _isScenario"/>
+  </action-record>
 
   <action-method name="action-global-budget-template-method-generate-global-budget">
     <call class="com.axelor.apps.budget.web.GlobalBudgetTemplateController"

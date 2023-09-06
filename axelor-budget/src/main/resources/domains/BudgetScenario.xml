@@ -15,7 +15,6 @@
 
     <one-to-many name="budgetScenarioLineList" mappedBy="budgetScenario"
       ref="com.axelor.apps.budget.db.BudgetScenarioLine"/>
-    <unique-constraint columns="code"/>
 
 
   </entity>

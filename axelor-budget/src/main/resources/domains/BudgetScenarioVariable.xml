@@ -12,12 +12,16 @@
     <integer name="entryMethod" title="Method"
       selection="budget.scenario.entry.method.select" default="0"/>
     <string name="formula" title="Formula"/>
-    <integer name="category" selection="budget.scenario.category.select" default="1"/>
+    <integer name="category" title="Category" selection="budget.scenario.category.select"
+      default="1"/>
+
+    <unique-constraint columns="code"/>
+
     <extra-code>
       <![CDATA[
       //budget scenario entry method type
-        public static final int BUDGET_SCENARIO_VARIABLE_ENTRY_METHOD_TYPE_SELECT_MANUAL = 1;
-        public static final int BUDGET_SCENARIO_VARIABLE_ENTRY_METHOD_TYPE_SELECT_FORMULA = 2;
+        public static final int BUDGET_SCENARIO_VARIABLE_ENTRY_METHOD_TYPE_SELECT_MANUAL = 0;
+        public static final int BUDGET_SCENARIO_VARIABLE_ENTRY_METHOD_TYPE_SELECT_FORMULA = 1;
 
 
       //budget scenario category type

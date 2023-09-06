@@ -367,6 +367,7 @@ public class BudgetServiceImpl implements BudgetService {
       budgetLine.setAvailableAmount(budget.getAmountForGeneration());
       budgetLine.setToBeCommittedAmount(budget.getAmountForGeneration());
       budgetLineList.add(budgetLine);
+      budget.addBudgetLineListItem(budgetLine);
       budgetLineNumber++;
       if (duration == 0) {
         break;
@@ -859,13 +860,7 @@ public class BudgetServiceImpl implements BudgetService {
       if (budget.getPeriodDurationSelect() == null) {
         budget.setPeriodDurationSelect(0);
       }
-      List<BudgetLine> budgetLineList = generatePeriods(budget);
-      budget.clearBudgetLineList();
-      if (!CollectionUtils.isEmpty(budgetLineList)) {
-        for (BudgetLine bl : budgetLineList) {
-          budget.addBudgetLineListItem(bl);
-        }
-      }
+      generatePeriods(budget);
     }
   }
 

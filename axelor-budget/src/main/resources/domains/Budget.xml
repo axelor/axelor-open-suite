@@ -76,6 +76,9 @@
       ref="com.axelor.apps.budget.db.VersionExpectedAmountsLine"
       title="Active version expected amounts line"/>
 
+    <integer name="category" title="Category" selection="budget.scenario.category.select"
+      default="1"/>
+
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
       <![CDATA[
             return code + " " + name;
@@ -97,6 +100,13 @@
         // STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_VALIDATED = 2;
+
+		//budget scenario category type
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_REVENUE = 1;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_RH = 2;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_PRODUCTION = 3;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_RESULTS = 4;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_CURRENT_EXPENSES = 5;
 		]]>
     </extra-code>
   </entity>

@@ -145,7 +145,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     BigDecimal totalAmountPaid = BigDecimal.ZERO;
     BigDecimal totalFirmGap = BigDecimal.ZERO;
     BigDecimal simulatedAmount = BigDecimal.ZERO;
-    if (budgetList != null) {
+    if (!ObjectUtils.isEmpty(budgetList)) {
       for (Budget budget : budgetList) {
         totalAmountExpected = totalAmountExpected.add(budget.getTotalAmountExpected());
         totalAmountCommitted = totalAmountCommitted.add(budget.getTotalAmountCommitted());
@@ -544,6 +544,17 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
         budgetLevelRepository.save(groupBudgetLevel);
       }
     }
+  }
+
+  @Override
+  public void recomputeBudgetLevelTotals(BudgetLevel budgetLevel) {
+    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
+        recomputeBudgetLevelTotals(child);
+      }
+    }
+
+    computeBudgetTotals(budgetLevel);
   }
 
   @Override

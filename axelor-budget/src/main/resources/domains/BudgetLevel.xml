@@ -50,6 +50,8 @@
       title="Budget Levels" mappedBy="parentBudgetLevel"/>
     <one-to-many name="budgetList" ref="com.axelor.apps.budget.db.Budget"
       title="Budgets" mappedBy="budgetLevel"/>
+    <many-to-many name="budgetScenarioVariableSet"
+      ref="com.axelor.apps.budget.db.BudgetScenarioVariable" title="Budget scenario variables"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 
     <many-to-one name="companyDepartment"

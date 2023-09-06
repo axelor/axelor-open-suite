@@ -1,7 +1,6 @@
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.budget.db.BudgetScenario;
-import com.axelor.apps.budget.db.repo.BudgetScenarioRepository;
 import com.axelor.apps.budget.service.BudgetScenarioLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -10,14 +9,13 @@ import java.util.*;
 
 public class BudgetScenarioLineController {
   public void changeColumnsNames(ActionRequest request, ActionResponse response) {
-    BudgetScenario budgetScenario = request.getContext().asType(BudgetScenario.class);
-    budgetScenario = Beans.get(BudgetScenarioRepository.class).find(budgetScenario.getId());
+    BudgetScenario budgetScenario = request.getContext().getParent().asType(BudgetScenario.class);
     ArrayList<Integer> yearsList =
         Beans.get(BudgetScenarioLineService.class).getFiscalYears(budgetScenario);
 
     for (int i = 0; i < Math.min(yearsList.size(), 6); i++) {
       if (yearsList.contains(yearsList.get(i))) {
-        String fieldName = "budgetScenarioLineList.year" + (i + 1) + "Value";
+        String fieldName = "year" + (i + 1) + "Value";
         response.setAttr(fieldName, "hidden", false);
         response.setAttr(fieldName, "title", Integer.toString(yearsList.get(i)));
       }

@@ -18,12 +18,18 @@
 
       <field name="name" title="Name" required="true"/>
       <field name="code" title="Code" required="true"/>
-      <field name="entryMethod"/>
+      <field name="entryMethod"
+        onChange="action-budget-scenario-variable-record-reset-formula-field"/>
       <field name="category"/>
       <field name="formula" title="Formula" showIf="entryMethod =='1'"
         requiredIf="entryMethod =='1'"/>
 
     </panel>
   </form>
+
+  <action-record name="action-budget-scenario-variable-record-reset-formula-field"
+    model="com.axelor.apps.budget.db.BudgetScenarioVariable">
+    <field name="formula" expr="eval: ''"/>
+  </action-record>
 
 </object-views>

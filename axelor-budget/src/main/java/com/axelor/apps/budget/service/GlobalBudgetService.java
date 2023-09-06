@@ -13,6 +13,9 @@ public interface GlobalBudgetService {
   @Transactional(rollbackOn = {RuntimeException.class})
   void computeBudgetLevelTotals(Budget budget);
 
+  @Transactional(rollbackOn = {RuntimeException.class})
+  void recomputeGlobalBudgetTotals(GlobalBudget globalBudget);
+
   void computeTotals(GlobalBudget globalBudget);
 
   void validateChildren(GlobalBudget globalBudget) throws AxelorException;
@@ -25,7 +28,8 @@ public interface GlobalBudgetService {
   void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
 
   @Transactional(rollbackOn = {RuntimeException.class})
-  GlobalBudget generateGlobalBudgetWithTemplate(GlobalBudgetTemplate globalBudgetTemplate);
+  GlobalBudget generateGlobalBudgetWithTemplate(GlobalBudgetTemplate globalBudgetTemplate)
+      throws AxelorException;
 
   GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
       throws AxelorException;

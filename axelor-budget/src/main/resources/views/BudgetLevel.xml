@@ -63,9 +63,10 @@
 
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
     name="budget-level-template-grid" orderBy="code">
-    <field name="globalBudgetTemplate"/>
     <field name="code"/>
     <field name="name"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
   </grid>
 
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
@@ -508,7 +509,8 @@
   </form>
 
   <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
-    name="budget-level-template-form" onNew="action-budget-level-template-group-onnew">
+    name="budget-level-template-form" onNew="action-budget-level-template-group-onnew"
+    onLoad="action-budget-level-template-record-scenario">
     <panel name="generalPanel" colSpan="12">
       <field name="fullName" colSpan="12" hidden="true"/>
       <field name="code" colSpan="4"/>
@@ -520,13 +522,19 @@
         form-view="budget-level-template-form" grid-view="budget-level-template-grid"/>
       <field name="fromDate" onChange="action-budget-level-validate-from-to-dates"/>
       <field name="toDate" onChange="action-budget-level-validate-from-to-dates"/>
+      <field name="$isScenario" hidden="true"/>
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red">
       <field name="budgetLevelList" title="Sections" showIf="globalBudgetTemplate"
         colSpan="12" form-view="budget-level-template-form"
         grid-view="budget-level-children-template-grid"/>
-      <field name="budgetList" title="Lines" showIf="parentBudgetLevel" colSpan="12"
+      <field name="budgetList" title="Lines"
+        showIf="parentBudgetLevel &amp;&amp; !$isScenario" colSpan="12"
         form-view="budget-included-template-form" grid-view="budget-lines-template-grid"/>
+      <field name="budgetScenarioVariableSet" title="Variables"
+        showIf="parentBudgetLevel &amp;&amp; $isScenario" colSpan="12"
+        form-view="budget-scenario-variable-form" grid-view="budget-scenario-variable-grid"
+        canNew="false" canEdit="false" canSelect="true"/>
     </panel>
   </form>
 
@@ -539,6 +547,7 @@
   <action-group name="action-budget-level-template-group-onnew">
     <action name="action-budget-level-group-onnew"/>
     <action name="action-budget-level-template-record-onnew"/>
+    <action name="action-budget-level-template-record-scenario"/>
   </action-group>
 
   <action-group name="action-budget-level-group-onload">
@@ -631,6 +640,11 @@
   <action-record name="action-budget-level-record-project-onchange"
     model="com.axelor.apps.budget.db.BudgetLevel">
     <field name="budgetManager" expr="eval: project?.assignedTo"/>
+  </action-record>
+
+  <action-record name="action-budget-level-template-record-scenario"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <field name="$isScenario" expr="eval: __parent__?.isScenario"/>
   </action-record>
 
   <action-group name="action-budget-level-group-valid-btn-onClick">
