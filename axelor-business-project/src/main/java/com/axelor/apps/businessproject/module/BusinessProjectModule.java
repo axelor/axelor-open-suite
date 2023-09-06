@@ -27,6 +27,7 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementReposit
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
+import com.axelor.apps.businessproject.service.AnalyticLineModelProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ContractLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseInvoiceLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseLineCreateServiceProjectImpl;
@@ -85,6 +86,7 @@ import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
@@ -152,5 +154,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectHistoryService.class).to(ProjectHistoryServiceImpl.class);
     bind(PurchaseOrderProjectService.class).to(PurchaseOrderServiceProjectImpl.class);
     bind(ExpenseLineCreateServiceImpl.class).to(ExpenseLineCreateServiceProjectImpl.class);
+    bind(AnalyticLineModelServiceImpl.class).to(AnalyticLineModelProjectServiceImpl.class);
   }
 }

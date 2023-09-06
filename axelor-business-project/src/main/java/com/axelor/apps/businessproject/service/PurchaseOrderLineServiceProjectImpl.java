@@ -94,18 +94,6 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
   }
 
   @Override
-  public PurchaseOrderLine createAnalyticDistributionWithTemplate(
-      PurchaseOrderLine purchaseOrderLine) {
-    PurchaseOrderLine poLine = super.createAnalyticDistributionWithTemplate(purchaseOrderLine);
-    List<AnalyticMoveLine> analyticMoveLineList = poLine.getAnalyticMoveLineList();
-
-    if (poLine.getProject() != null && analyticMoveLineList != null) {
-      analyticMoveLineList.forEach(analyticLine -> analyticLine.setProject(poLine.getProject()));
-    }
-    return poLine;
-  }
-
-  @Override
   public PurchaseOrderLine updateAnalyticDistributionWithProject(
       PurchaseOrderLine purchaseOrderLine) {
     for (AnalyticMoveLine analyticMoveLine : purchaseOrderLine.getAnalyticMoveLineList()) {
