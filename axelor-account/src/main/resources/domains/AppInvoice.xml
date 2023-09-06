@@ -20,7 +20,6 @@
       title="Auto generate invoice printing file on purchase invoice"/>
 
     <track>
-      <field name="isInvoiceMoveConsolidated" on="UPDATE"/>
       <field name="isVentilationSkipped" on="UPDATE"/>
       <field name="isEnabledProductDescriptionCopyForCustomers" on="UPDATE"/>
       <field name="isEnabledProductDescriptionCopyForSuppliers" on="UPDATE"/>
