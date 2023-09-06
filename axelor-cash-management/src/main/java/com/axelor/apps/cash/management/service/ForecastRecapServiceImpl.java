@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.cash.management.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
@@ -42,15 +41,12 @@ import com.axelor.apps.cash.management.db.ForecastRecapLineType;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapLineTypeRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
-import com.axelor.apps.cash.management.report.IReport;
-import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
@@ -1021,23 +1017,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       forecastRecapLine.setBalance(forecastRecap.getCurrentBalance());
     }
     forecastRecap.setForecastRecapLineList(forecastRecapLines);
-  }
-
-  @Override
-  public String getForecastRecapFileLink(ForecastRecap forecastRecap, String reportType)
-      throws AxelorException {
-    String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
-    title += "-" + forecastRecap.getForecastRecapSeq();
-
-    return ReportFactory.createReport(IReport.FORECAST_RECAP, title + "-${date}")
-        .addParam("ForecastRecapId", forecastRecap.getId())
-        .addParam(
-            "Timezone",
-            forecastRecap.getCompany() != null ? forecastRecap.getCompany().getTimezone() : null)
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .addFormat(reportType)
-        .generate()
-        .getFileLink();
   }
 
   @Override

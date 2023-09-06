@@ -19,11 +19,13 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -33,9 +35,11 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -49,7 +53,15 @@ import java.util.Optional;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
-  @Inject protected WeeklyPlanningService weeklyPlanningService;
+  protected WeeklyPlanningService weeklyPlanningService;
+  protected HRConfigService hrConfigService;
+
+  @Inject
+  public EmployeeServiceImpl(
+      WeeklyPlanningService weeklyPlanningService, HRConfigService hrConfigService) {
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.hrConfigService = hrConfigService;
+  }
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
 
@@ -258,5 +270,41 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           user.getName());
     }
     return user.getEmployee();
+  }
+
+  @Override
+  public BirtTemplate getAnnualReportBirtTemplate(Employee employee) throws AxelorException {
+    Company company = getUser(employee).getActiveCompany();
+    BirtTemplate employeeAnnualReportBirtTemplate = null;
+    if (ObjectUtils.notEmpty(company)) {
+      HRConfig hrConfig = hrConfigService.getHRConfig(company);
+      employeeAnnualReportBirtTemplate = hrConfig.getEmployeeAnnualReportBirtTemplate();
+    }
+
+    if (ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate)
+        || ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate.getTemplateMetaFile())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return employeeAnnualReportBirtTemplate;
+  }
+
+  @Override
+  public BirtTemplate getEmpPhoneBookBirtTemplate() throws AxelorException {
+    Company company = getUser().getActiveCompany();
+    BirtTemplate employeePhoneBookBirtTemplate = null;
+    if (ObjectUtils.notEmpty(company)) {
+      HRConfig hrConfig = hrConfigService.getHRConfig(company);
+      employeePhoneBookBirtTemplate = hrConfig.getEmployeePhoneBookBirtTemplate();
+    }
+
+    if (ObjectUtils.isEmpty(employeePhoneBookBirtTemplate)
+        || ObjectUtils.isEmpty(employeePhoneBookBirtTemplate.getTemplateMetaFile())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return employeePhoneBookBirtTemplate;
   }
 }

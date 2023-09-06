@@ -26,6 +26,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
@@ -35,6 +36,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
@@ -128,7 +130,7 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
 
   @Override
   public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException {
-    Integer lunchVoucherNumber =
+    int lunchVoucherNumber =
         lunchVoucherMgtLine.getDaysWorkedNbr()
             - (lunchVoucherMgtLine.getCanteenEntries()
                 + lunchVoucherMgtLine.getRestaurant()
@@ -136,6 +138,41 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
                 + lunchVoucherMgtLine.getInAdvanceNbr()
                 + lunchVoucherMgtLine.getInvitation());
     lunchVoucherMgtLine.setLunchVoucherNumber(Integer.max(lunchVoucherNumber, 0));
+    computeFormatRepartition(lunchVoucherMgtLine, lunchVoucherNumber);
+  }
+
+  protected void computeFormatRepartition(
+      LunchVoucherMgtLine lunchVoucherMgtLine, int lunchVoucherNumber) {
+    Employee employee = lunchVoucherMgtLine.getEmployee();
+
+    switch (employee.getLunchVoucherFormatSelect()) {
+      default:
+      case EmployeeRepository.LUNCH_VOUCHER_MGT_FORMAT_PAPER:
+        lunchVoucherMgtLine.setPaperFormatNumber(lunchVoucherNumber);
+        lunchVoucherMgtLine.setCardFormatNumber(0);
+        break;
+      case EmployeeRepository.LUNCH_VOUCHER_MGT_FORMAT_CARD:
+        lunchVoucherMgtLine.setCardFormatNumber(lunchVoucherNumber);
+        lunchVoucherMgtLine.setPaperFormatNumber(0);
+        break;
+      case EmployeeRepository.LUNCH_VOUCHER_MGT_FORMAT_BOTH:
+        computeFormatRepartitionForBoth(lunchVoucherMgtLine, lunchVoucherNumber, employee);
+        break;
+    }
+  }
+
+  protected void computeFormatRepartitionForBoth(
+      LunchVoucherMgtLine lunchVoucherMgtLine, Integer lunchVoucherNumber, Employee employee) {
+    BigDecimal distribution = BigDecimal.valueOf(employee.getLunchVoucherDistribution());
+    int paperNumber =
+        BigDecimal.valueOf(lunchVoucherNumber)
+            .multiply(distribution)
+            .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_UP)
+            .intValue();
+    int cardNumber = lunchVoucherNumber - paperNumber;
+
+    lunchVoucherMgtLine.setPaperFormatNumber(paperNumber);
+    lunchVoucherMgtLine.setCardFormatNumber(cardNumber);
   }
 
   @Override

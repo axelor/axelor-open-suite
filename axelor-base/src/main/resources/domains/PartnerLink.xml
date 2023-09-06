@@ -3,14 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PartnerSupplychainLink">
+  <entity name="PartnerLink">
 
     <many-to-one name="partner1" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="partner2" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <many-to-one name="partnerSupplychainLinkType"
-      ref="com.axelor.apps.supplychain.db.PartnerSupplychainLinkType" title="Link type"/>
+    <many-to-one name="partnerLinkType" ref="com.axelor.apps.base.db.PartnerLinkType"
+      title="Link type"/>
 
   </entity>
 

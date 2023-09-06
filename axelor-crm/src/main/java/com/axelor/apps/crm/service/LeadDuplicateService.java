@@ -16,9 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.cash.management.report;
+package com.axelor.apps.crm.service;
 
-public interface IReport {
+import com.axelor.apps.crm.db.Lead;
 
-  public static final String FORECAST_RECAP = "ForecastRecap.rptdesign";
+public interface LeadDuplicateService {
+
+  public String getDuplicateRecordsFullName(Lead lead);
 }

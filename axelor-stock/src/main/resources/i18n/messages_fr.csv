@@ -249,6 +249,8 @@
 "Enable product description copy","Autoriser la copie de la description produit",,
 "End date","Date de fin",,
 "Enter tracking numbers","Saisir les numéros de lot/série",,
+"Error: %s and %s fields are required and can not be null",,,
+"Error: %s field is required and can not be null",,,
 "Estimated Date","Date estimée",,
 "Estimated date","Date estimée",,
 "Excl. out of stock products","Excl. Produits sans stock",,

@@ -23,6 +23,8 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
@@ -34,8 +36,7 @@ import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
-import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
-import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
+import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -258,10 +259,9 @@ public class ContractController {
     try {
       Contract contract = request.getContext().asType(Contract.class);
       String strFilter =
-          Beans.get(PartnerSupplychainLinkService.class)
+          Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  contract.getPartner(),
-                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  contract.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -273,7 +273,7 @@ public class ContractController {
     try {
       Contract contract = request.getContext().asType(Contract.class);
       Partner partner =
-          Beans.get(PartnerSupplychainLinkService.class).getPartnerIfOnlyOne(contract.getPartner());
+          Beans.get(PartnerLinkSupplychainService.class).getPartnerIfOnlyOne(contract.getPartner());
       if (partner != null) {
         response.setValue("invoicedPartner", partner);
       }

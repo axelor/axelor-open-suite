@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -1158,7 +1158,7 @@ order by Tax.code ASC]]></xml-property>
 MoveLine.date_val as moveLineDate,
 MoveLine.origin as moveLineOrigin,
 MoveLine.partner_full_name as partner,
-MoveLine.amount_remaining as amounttoReconcile,
+ABS(MoveLine.amount_remaining) as amounttoReconcile,
 MoveLine.amount_paid as reconciledAmount,
 Account.code as accountCode,
 Account.name as accountName
