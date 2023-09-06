@@ -763,6 +763,7 @@
 "Please add an employee's public holiday events planning related to user %s",,,
 "Please add an end date for generation",,,
 "Please configure Formula Variables for human resource for the company %s",,,
+"Please configure a birt template for expense report.",,,
 "Please configure information for human resources for the company %s",,,
 "Please configure the canceled expense template in HR config for the company %s",,,
 "Please configure the canceled extra hours template in HR config for the company %s",,,

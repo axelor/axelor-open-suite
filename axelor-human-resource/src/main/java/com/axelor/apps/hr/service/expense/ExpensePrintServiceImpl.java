@@ -2,10 +2,12 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
@@ -73,9 +75,20 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
   }
 
   protected File getReportFile(Expense expense) throws AxelorException, IOException {
+    BirtTemplate birtTemplate = getBirtTemplate(expense);
+    return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense);
+  }
+
+  protected BirtTemplate getBirtTemplate(Expense expense) throws AxelorException {
     BirtTemplate birtTemplate =
         hrConfigService.getHRConfig(expense.getCompany()).getExpenseReportBirtTemplate();
-    return printFromBirtTemplateService.generateBirtTemplate(birtTemplate, expense);
+    if (birtTemplate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_BIRT_TEMPLATE_MISSING));
+    }
+
+    return birtTemplate;
   }
 
   protected List<MetaFile> getExpenseLineJustificationFiles(Expense expense) {
