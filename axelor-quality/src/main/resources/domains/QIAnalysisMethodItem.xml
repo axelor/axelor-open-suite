@@ -5,22 +5,13 @@
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
-  <entity name="QICause">
-
+  <entity name="QIAnalysisMethodItem">
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+    <many-to-one ref="com.axelor.apps.base.db.Company" name="company" title="Company"
       required="true"/>
-    <many-to-one name="branch" title="Branch"
-      ref="com.axelor.apps.quality.db.QIAnalysisMethodItem" required="true"/>
-
-    <track>
-      <field name="code"/>
-      <field name="name"/>
-      <field name="company"/>
-      <field name="branch"/>
-    </track>
-
+    <many-to-one ref="com.axelor.apps.quality.db.QIAnalysisMethod" name="analysisMethod"
+      title="Analysis Method"/>
   </entity>
 
 </domain-models>

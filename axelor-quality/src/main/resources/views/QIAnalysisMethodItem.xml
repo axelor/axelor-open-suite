@@ -3,25 +3,20 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="qi-cause-grid" title="Causes" model="com.axelor.apps.quality.db.QICause">
+  <grid name="qi-analysis-method-item-grid" title="Analysis method lines"
+    model="com.axelor.apps.quality.db.QIAnalysisMethodItem">
     <field name="code"/>
     <field name="name"/>
     <field name="company"/>
-    <field name="branch"/>
   </grid>
 
-  <form name="qi-cause-form" title="Cause" model="com.axelor.apps.quality.db.QICause">
+  <form name="qi-analysis-method-item-form" title="Analysis method line"
+    model="com.axelor.apps.quality.db.QIAnalysisMethodItem">
     <panel name="mainPanel">
       <field name="code"/>
       <field name="name"/>
-      <field name="company" grid-view="company-grid" form-view="company-form"/>
-      <field name="branch" grid-view="qi-analysis-method-grid"
-        form-view="qi-analysis-method-form"/>
+      <field name="company"/>
     </panel>
-    <panel-mail name="mailPanel">
-      <mail-messages limit="4"/>
-      <mail-followers/>
-    </panel-mail>
   </form>
 
 </object-views>
