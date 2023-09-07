@@ -1,0 +1,5 @@
+"importId";"code";"name";"company.importId";"statusSelect";"budgetTypeSelect";"fromDate";"toDate";"totalAmountExpected";"totalAmountAvailable";"availableAmountWithSimulated";"checkAvailableSelect"
+11;"EXPENSES";"EXPENSES";1;0;1;"TODAY[1d]";"TODAY[60d]";4300;4300;4300;1
+21;"REVENUE";"REVENUE";1;0;2;"TODAY[1d]";"TODAY[60d]";4300;4300;4300;1
+31;"INVESTMENTS";"INVESTMENTS";1;0;3;"TODAY[1d]";"TODAY[60d]";4300;4300;4300;1
+41;"EXPENSES AND INVESTMENTS";"EXPENSES AND INVESTMENTS";1;0;4;"TODAY[1d]";"TODAY[60d]";4300;4300;4300;1

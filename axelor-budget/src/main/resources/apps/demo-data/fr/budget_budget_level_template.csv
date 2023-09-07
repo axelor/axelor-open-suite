@@ -1,0 +1,4 @@
+"importId";"code";"name";"parentBudgetLevel.importId";"globalBudgetTemplate.importId";"fromDate";"toDate";"typeSelect";"statusSelect";"company.importId";"variables"
+52;"COUTS";"COUTS";;1;"TODAY[1d]";"TODAY[30d]";"template";"draft";1;
+53;"MATIERES PREMIERES";"MATIERES PREMIERES";52;;"TODAY[1d]";"TODAY[30d]";"template";"draft";1;"2|6|7|8|9|10"
+54;"MAIN D’OEUVRE";"MAIN D’OEUVRE";52;;"TODAY[1d]";"TODAY[30d]";"template";"draft";1;"1|3|4|5|11"
