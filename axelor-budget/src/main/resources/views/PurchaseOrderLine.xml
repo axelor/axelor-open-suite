@@ -108,7 +108,7 @@
   </form>
 
   <action-group name="action-budget-group-purchase-purchase-orderline-product-onchange">
-    <action name="action-supplychain-group-purchase-purchaseorderline-product-onchange"/>
+    <action name="supplychain-action-purchase-purchase-order-line-group-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
   </action-group>
