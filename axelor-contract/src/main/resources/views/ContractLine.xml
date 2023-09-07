@@ -55,8 +55,7 @@
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
         <field name="product" canEdit="false"
-          onChange="action-contract-line-version-group-product-onchange"
-          domain="self.dtype = 'Product'"/>
+          onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
         <field name="productName"/>
         <field name="qty" readonlyIf="isConsumptionLine"
           onChange="action-method-contract-line-compute-total"/>
@@ -72,7 +71,7 @@
         </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
-        <field name="unit" canEdit="false"/>
+        <field name="unit" canEdit="false" onChange="action-contract-line-validate-unit-type"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
 
@@ -254,9 +253,10 @@
     <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"/>
   </action-group>
 
-  <action-group name="action-contract-line-version-group-product-onchange">
+  <action-group name="action-contract-line-group-product-onchange">
     <action name="action-method-contract-version-change-product"/>
     <action name="action-method-contract-line-compute-total"/>
+    <action name="action-contract-line-validate-unit-type"/>
     <action name="action-contract-line-group-manage-analytic"/>
   </action-group>
 
@@ -358,5 +358,15 @@
     <call class="com.axelor.apps.contract.web.ContractLineController"
       method="setAnalyticDistributionPanelHidden"/>
   </action-method>
+
+  <!-- ACTION VALIDATE -->
+
+  <action-validate name="action-contract-line-validate-unit-type">
+    <alert
+      message="Warning! The yearly price is calculated based on unit price and &quot;Invoicing duration&quot; from the config panel.
+Please be careful when using products with unit being a time unit.
+In case you have contract lines with different invoicing duration, you can activate and use the Addtional Benefits management feature."
+      if="unit?.unitTypeSelect == 3"/>
+  </action-validate>
 
 </object-views>

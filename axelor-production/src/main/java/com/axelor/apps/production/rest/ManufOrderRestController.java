@@ -19,6 +19,7 @@
 package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
@@ -159,7 +160,8 @@ public class ManufOrderRestController {
   @POST
   @HttpExceptionHandler
   public Response addWastedProduct(
-      @PathParam("manufOrderId") long manufOrderId, WastedProductPostRequest requestBody) {
+      @PathParam("manufOrderId") long manufOrderId, WastedProductPostRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
 
     new SecurityCheck().writeAccess(ManufOrder.class).createAccess(ProdProduct.class).check();
@@ -174,7 +176,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.CREATED,
-        "Waste product successfully added to manufacturing order",
+        Beans.get(ResponseComputeService.class).compute(prodProduct),
         new WastedProductResponse(prodProduct));
   }
 
@@ -227,7 +229,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.CREATED,
-        "Product successfully added to manufacturing order.",
+        Beans.get(ResponseComputeService.class).compute(stockMoveLine),
         new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 }

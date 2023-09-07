@@ -22,4 +22,8 @@ public interface ITranslation {
 
   public static final String CRM_APP_NAME = /*$$(*/ "value:CRM"; /*)*/
   public static final String SALE_QUOTATION = /*$$(*/ "Sale quotation" /*)*/;
+  public static final String CRM_DUPLICATE_RECORDS_FOUND = /*$$(*/ "Duplicate records found" /*)*/;
+  public static final String CRM_DUPLICATE_LEADS = /*$$(*/ "Duplicate leads :" /*)*/;
+  public static final String CRM_DUPLICATE_CONTACTS = /*$$(*/ "Duplicate contacts :" /*)*/;
+  public static final String CRM_DUPLICATE_PROSPECTS = /*$$(*/ "Duplicate prospects :" /*)*/;
 }

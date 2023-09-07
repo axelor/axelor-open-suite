@@ -79,9 +79,9 @@
 
   <action-view name="quality.improvements" title="Quality improvements"
     model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="kanban" name="quality-improvement-kanban"/>
     <view type="grid" name="quality-improvement-grid"/>
     <view type="form" name="quality-improvement-form"/>
-    <view type="kanban" name="quality-improvement-kanban"/>
   </action-view>
 
   <menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings"
@@ -169,6 +169,32 @@
     model="com.axelor.apps.quality.db.QIDecision">
     <view type="grid" name="qi-decision-grid"/>
     <view type="form" name="qi-decision-form"/>
+  </action-view>
+
+  <menuitem name="qi.cause" parent="quality-configurations" title="Causes"
+    action="qi.cause" order="900"/>
+
+  <action-view name="qi.cause" title="Causes" model="com.axelor.apps.quality.db.QICause">
+    <view type="grid" name="qi-cause-grid"/>
+    <view type="form" name="qi-cause-form"/>
+  </action-view>
+
+  <menuitem name="qi.process" parent="quality-configurations" title="Processes"
+    action="qi.process" order="1000"/>
+
+  <action-view name="qi.process" title="Processes"
+    model="com.axelor.apps.quality.db.QIProcess">
+    <view type="grid" name="qi-process-grid"/>
+    <view type="form" name="qi-process-form"/>
+  </action-view>
+
+  <menuitem name="qi.action" parent="quality-configurations" title="Actions"
+    action="qi.action" order="1100"/>
+
+  <action-view name="qi.action" title="Actions"
+    model="com.axelor.apps.quality.db.QIAction">
+    <view type="grid" name="qi-action-grid"/>
+    <view type="form" name="qi-action-form"/>
   </action-view>
 
 </object-views>
