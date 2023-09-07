@@ -64,7 +64,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
                     .BUDGET_SCENARIO_VARIABLE_ENTRY_METHOD_TYPE_SELECT_FORMULA)
             .order("id")
             .fetch();
-    if (ObjectUtils.isEmpty(variableList) || ObjectUtils.isEmpty(variableAmountMap)) {
+    if (ObjectUtils.isEmpty(variableList)) {
       return variableAmountMap;
     } else {
       fillVariableAmountMapWithFormula(variableAmountMap, variableList);
