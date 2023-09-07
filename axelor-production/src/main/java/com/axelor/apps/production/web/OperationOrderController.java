@@ -25,7 +25,6 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
-import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -121,7 +120,7 @@ public class OperationOrderController {
     try {
       OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(ManufOrderWorkflowService.class).resume(operationOrder.getManufOrder());
+      Beans.get(OperationOrderWorkflowService.class).resume(operationOrder);
 
       response.setReload(true);
     } catch (Exception e) {

@@ -1,0 +1,6 @@
+---
+title: "Operation order: fix workflow issues"
+type: fix
+description: |
+  Resuming an operation order in a grid or a form has now the same process and won't affect other order.
+  When pausing an operation order, if every other order is also in stand by, the manuf order will also be paused.
