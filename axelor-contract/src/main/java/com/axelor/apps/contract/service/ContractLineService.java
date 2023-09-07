@@ -80,4 +80,6 @@ public interface ContractLineService {
 
   ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
       throws AxelorException;
+
+  void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException;
 }

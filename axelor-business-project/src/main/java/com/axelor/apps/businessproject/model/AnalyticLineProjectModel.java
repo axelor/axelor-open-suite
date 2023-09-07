@@ -18,18 +18,14 @@ public class AnalyticLineProjectModel extends AnalyticLineContractModel {
   public AnalyticLineProjectModel(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     super(saleOrderLine, saleOrder);
 
-    if (saleOrderLine != null) {
-      this.project = saleOrderLine.getProject();
-    }
+    this.project = saleOrderLine.getProject();
   }
 
   public AnalyticLineProjectModel(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
     super(purchaseOrderLine, purchaseOrder);
 
-    if (purchaseOrderLine != null) {
-      this.project = purchaseOrderLine.getProject();
-    }
+    this.project = purchaseOrderLine.getProject();
   }
 
   public AnalyticLineProjectModel(

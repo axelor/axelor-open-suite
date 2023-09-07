@@ -247,8 +247,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     return contractLine;
   }
 
-  protected void computeAnalytic(Contract contract, ContractLine contractLine)
-      throws AxelorException {
+  public void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException {
     if (appAccountService.isApp("supplychain")) {
       AnalyticLineModel analyticLineModel =
           new AnalyticLineContractModel(contractLine, null, contract);
