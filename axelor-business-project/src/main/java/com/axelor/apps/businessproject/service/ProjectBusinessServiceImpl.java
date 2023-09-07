@@ -499,9 +499,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected BigDecimal processTotalInvoiced(Invoice ventilatedInvoice) {
     switch (ventilatedInvoice.getOperationTypeSelect()) {
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        return ventilatedInvoice.getExTaxTotal();
+        return ventilatedInvoice.getCompanyExTaxTotal();
       case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        return ventilatedInvoice.getExTaxTotal().negate();
+        return ventilatedInvoice.getCompanyExTaxTotal().negate();
       default:
         return BigDecimal.ZERO;
     }
@@ -528,9 +528,24 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected BigDecimal processTotalPaid(Invoice ventilatedInvoice) {
     switch (ventilatedInvoice.getOperationTypeSelect()) {
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        return ventilatedInvoice.getAmountPaid();
+        if (ventilatedInvoice.getExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+          return ventilatedInvoice
+              .getCompanyExTaxTotal()
+              .divide(ventilatedInvoice.getExTaxTotal(), RoundingMode.HALF_UP)
+              .multiply(ventilatedInvoice.getAmountPaid())
+              .setScale(2, RoundingMode.HALF_UP);
+        }
+        return BigDecimal.ZERO;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        return ventilatedInvoice.getAmountPaid().negate();
+        if (ventilatedInvoice.getExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+          return ventilatedInvoice
+              .getCompanyExTaxTotal()
+              .divide(ventilatedInvoice.getExTaxTotal(), RoundingMode.HALF_UP)
+              .multiply(ventilatedInvoice.getAmountPaid())
+              .setScale(2, RoundingMode.HALF_UP)
+              .negate();
+        }
+        return BigDecimal.ZERO;
       default:
         return BigDecimal.ZERO;
     }
