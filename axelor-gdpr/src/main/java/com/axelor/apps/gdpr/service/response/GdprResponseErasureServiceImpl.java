@@ -184,7 +184,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     }
 
     // check configured objects if it contains one sided m2o
-    cleanOtherReferences(reference, metaModel);
+    cleanOtherReferences(reference, metaModel, anonymizationResult);
 
     reference.setArchived(true);
 
@@ -216,7 +216,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * @throws ClassNotFoundException
    * @throws AxelorException
    */
-  protected void cleanOtherReferences(AuditableModel reference, MetaModel metaModel)
+  protected void cleanOtherReferences(
+      AuditableModel reference, MetaModel metaModel, StringBuilder anonymizationResult)
       throws ClassNotFoundException, AxelorException {
     // look through objects in relationshipAnonymizer
     List<RelationshipAnonymizer> relationshipAnonymizerList =
@@ -224,19 +225,99 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
 
     for (RelationshipAnonymizer relationshipAnonymizer : relationshipAnonymizerList) {
       MetaModel modelToProcess = relationshipAnonymizer.getModel();
-      List<MetaField> linkedFieldList =
-          modelToProcess.getMetaFields().stream()
-              .filter(
-                  metaField ->
-                      metaField.getTypeName().equals(metaModel.getName())
-                          && metaField.getRelationship().equals(RELATION_MANY_TO_ONE))
-              .collect(Collectors.toList());
+      // process M2O fields first
+      processModelFields(
+          reference,
+          metaModel,
+          modelToProcess,
+          relationshipAnonymizerList,
+          RELATION_MANY_TO_ONE,
+          anonymizationResult);
 
-      for (MetaField linkedField : linkedFieldList) {
-        checkFieldAndClean(
+      // process O2M fields
+      processModelFields(
+          reference,
+          metaModel,
+          modelToProcess,
+          relationshipAnonymizerList,
+          RELATION_ONE_TO_MANY,
+          anonymizationResult);
+    }
+  }
+
+  protected void processModelFields(
+      AuditableModel reference,
+      MetaModel metaModel,
+      MetaModel modelToProcess,
+      List<RelationshipAnonymizer> relationshipAnonymizerList,
+      String fieldRelationType,
+      StringBuilder anonymizationResult)
+      throws ClassNotFoundException, AxelorException {
+    List<MetaField> linkedFieldList =
+        modelToProcess.getMetaFields().stream()
+            .filter(
+                metaField ->
+                    metaField.getTypeName().equals(metaModel.getName())
+                        && (metaField.getRelationship().equals(fieldRelationType)))
+            .collect(Collectors.toList());
+
+    for (MetaField linkedField : linkedFieldList) {
+      if (RELATION_MANY_TO_ONE.equals(fieldRelationType)) {
+        checkM2OFieldAndClean(
             reference, metaModel, linkedField, modelToProcess, relationshipAnonymizerList);
+      } else {
+        checkO2MFieldAndClean(reference, anonymizationResult, linkedField, modelToProcess);
       }
     }
+  }
+
+  /**
+   * Process for O2M fields
+   *
+   * @param reference
+   * @param anonymizationResult
+   * @param linkedField
+   * @param modelToProcess
+   * @throws ClassNotFoundException
+   */
+  protected static void checkO2MFieldAndClean(
+      AuditableModel reference,
+      StringBuilder anonymizationResult,
+      MetaField linkedField,
+      MetaModel modelToProcess)
+      throws ClassNotFoundException {
+    AuditableModel referenceToClean =
+        Query.of((Class<? extends AuditableModel>) Class.forName(modelToProcess.getFullName()))
+            .filter(":reference MEMBER OF " + linkedField.getName())
+            .bind("reference", reference)
+            .fetchOne();
+
+    // no value found
+    if (referenceToClean == null) {
+      return;
+    }
+
+    Mapper referenceMapper = Mapper.of(referenceToClean.getClass());
+    Property property = referenceMapper.getProperty(linkedField.getName());
+
+    List<AuditableModel> list =
+        (List<AuditableModel>) referenceMapper.get(referenceToClean, linkedField.getName());
+
+    list.removeIf(auditableModel -> Objects.equals(auditableModel.getId(), reference.getId()));
+
+    // error if the field is required and there is no element left
+    if (property.isRequired() && list.isEmpty()) {
+      anonymizationResult.append(
+          String.format(
+              I18n.get(GdprExceptionMessage.RELATIONSHIP_ANONYMIZER_ONE_TO_MANY_REQUIRED_RESULT),
+              linkedField.getName(),
+              modelToProcess.getName()));
+      anonymizationResult.append("\n");
+      return;
+    }
+
+    // replace with new list without the anonymized element
+    referenceMapper.set(referenceToClean, linkedField.getName(), list);
   }
 
   /**
@@ -250,7 +331,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * @throws ClassNotFoundException
    * @throws AxelorException
    */
-  protected void checkFieldAndClean(
+  protected void checkM2OFieldAndClean(
       AuditableModel reference,
       MetaModel metaModel,
       MetaField linkedField,
