@@ -28,7 +28,6 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.utils.service.ListToolService;
@@ -76,19 +75,13 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
 
   @Override
   public void setInvoiceLineAnalyticInfo(
-      InvoiceLine invoiceLine, Invoice invoice, AnalyticLineModel analyticLineModel)
-      throws AxelorException {
+      InvoiceLine invoiceLine, Invoice invoice, AnalyticLineModel analyticLineModel) {
     if (analyticLineModel.getAnalyticDistributionTemplate() != null
         || CollectionUtils.isNotEmpty(analyticLineModel.getAnalyticMoveLineList())) {
       analyticLineModelService.setInvoiceLineAnalyticInfo(analyticLineModel, invoiceLine);
 
       this.copyAnalyticMoveLines(analyticLineModel.getAnalyticMoveLineList(), invoiceLine);
       this.computeAnalyticDistribution(invoiceLine);
-    } else {
-      List<AnalyticMoveLine> analyticMoveLineList =
-          this.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-
-      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
   }
 

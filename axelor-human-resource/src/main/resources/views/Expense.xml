@@ -52,7 +52,7 @@
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printExpenseItem" title="Print" action="save,action-print-expense"/>
+        <item name="printExpenseItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -124,7 +124,7 @@
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"
             onClick="save,action-expense-add-payment-form"
-            showIf="ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)"/>
+            showIf="ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2) &amp;&amp; companyCbSelect != 2"/>
           <button name="cancelPaymentBtn" title="Cancel payment"
             showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
             onClick="save,action-expense-method-cancel-payment"/>
@@ -330,10 +330,6 @@
 
   <action-method name="action-expense-method-ventilate">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="ventilate"/>
-  </action-method>
-
-  <action-method name="action-print-expense">
-    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="printExpense"/>
   </action-method>
 
   <action-method name="action-expense-method-send">

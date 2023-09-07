@@ -146,12 +146,6 @@
     <option value="2">Created from SOP</option>
   </selection>
 
-  <selection name="base.base.partner.supply.chain.link.type.select">
-    <option value="Invoiced by">Invoiced by</option>
-    <option value="Delivered by">Delivered by</option>
-    <option value="Ordered by">Ordered by</option>
-  </selection>
-
   <selection name="supplychain.sale.order.reservation.date.field">
     <option value="0">Confirmation date</option>
     <option value="1">Estimated shipping date</option>
@@ -182,6 +176,13 @@
     <option value="1">Not invoiced</option>
     <option value="2">Partially invoiced</option>
     <option value="3">Invoiced</option>
+  </selection>
+
+  <selection name="base.partner.link.type.type.select"
+    id="supplychain.partner.link.type.type.select">
+    <option value="Invoiced by">Invoiced by</option>
+    <option value="Ordered by">Ordered by</option>
+    <option value="Delivered by">Delivered by</option>
   </selection>
 
 </object-views>

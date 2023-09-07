@@ -60,7 +60,6 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false
       AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_fromSale" expr="eval:true"/>
   </action-view>
 

@@ -1536,6 +1536,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     compute(line, stockMove);
     line.setRealQty(realQty);
     line.setConformitySelect(conformitySelect);
+    line.setIsRealQtyModifiedByUser(true);
     stockMoveLineRepository.save(line);
     return line;
   }
@@ -1591,7 +1592,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine) {
     if (stockMoveLine != null) {
 
-      stockMoveLine.setStockMove(null);
       stockMoveLine.setPlannedStockMove(null);
       stockMoveLine.setProduct(null);
       stockMoveLine.setFilterOnAvailableProducts(true);

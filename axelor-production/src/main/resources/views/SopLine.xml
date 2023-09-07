@@ -4,18 +4,18 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sop-line-grid" title="Sales and Operations Planning Line"
-    model="com.axelor.apps.production.db.SopLine">
-    <field name="year"/>
-    <field name="period"/>
-    <field name="sopSalesForecast"/>
-    <field name="sopRealSales"/>
-    <field name="sopSalesGap"/>
-    <field name="sopManufForecast"/>
-    <field name="sopRealManuf"/>
-    <field name="sopManufGap"/>
-    <field name="sopStockForecast"/>
-    <field name="sopRealStock"/>
-    <field name="sopStockGap"/>
+    model="com.axelor.apps.production.db.SopLine" editable="true">
+    <field name="year" required="true" domain="self.typeSelect = 3"/>
+    <field name="period" required="true" domain="self.year = :year"
+      onChange="action-sop-line-record-set-currency"/>
+    <field name="sopSalesForecast" onChange="action-sop-line-record-compute-sop-sales-gap"/>
+    <field name="sopRealSales" onChange="action-sop-line-record-compute-sop-sales-gap"/>
+    <field name="sopSalesGap" readonly="true"/>
+    <field name="sopRealManuf" onChange="action-sop-line-record-compute-sop-manuf-gap"/>
+    <field name="sopRealStock" onChange="action-sop-line-record-compute-sop-stock-gap"/>
+    <field name="currency" hidden="true"/>
+    <button name="generateMpsForecastsBtn" icon="fa-gear" title="Generate MPS forecasts"
+      onClick="action-sop-line-view-open-wizard"/>
   </grid>
 
   <form name="sop-line-form" title="Sales and Operations Planning Line"
@@ -31,16 +31,10 @@
       <field name="sopRealSales" onChange="action-sop-line-record-compute-sop-sales-gap"
         colSpan="4"/>
       <field name="sopSalesGap" readonly="true" colSpan="4"/>
-      <field name="sopManufForecast" onChange="action-sop-line-record-compute-sop-manuf-gap"
-        colSpan="4"/>
       <field name="sopRealManuf" onChange="action-sop-line-record-compute-sop-manuf-gap"
-        colSpan="4"/>
-      <field name="sopManufGap" readonly="true" colSpan="4"/>
-      <field name="sopStockForecast" onChange="action-sop-line-record-compute-sop-stock-gap"
         colSpan="4"/>
       <field name="sopRealStock" onChange="action-sop-line-record-compute-sop-stock-gap"
         colSpan="4"/>
-      <field name="sopStockGap" readonly="true" colSpan="4"/>
       <button name="generateMpsForecastsBtn" title="Generate MPS forecasts"
         onClick="action-sop-line-view-open-wizard"/>
     </panel>
@@ -105,22 +99,6 @@
       expr="eval: ((sopRealSales - sopSalesForecast)/sopSalesForecast)*100"
       if="sopSalesForecast &amp;&amp; sopRealSales"/>
     <field name="sopSalesGap" expr="eval: null" if="!sopSalesForecast || !sopRealSales"/>
-  </action-record>
-
-  <action-record name="action-sop-line-record-compute-sop-manuf-gap"
-    model="com.axelor.apps.production.db.SopLine">
-    <field name="sopManufGap"
-      expr="eval: ((sopRealManuf - sopManufForecast)/sopManufForecast)*100"
-      if="sopManufForecast &amp;&amp; sopRealManuf"/>
-    <field name="sopManufGap" expr="eval: null" if="!sopManufForecast || !sopRealManuf"/>
-  </action-record>
-
-  <action-record name="action-sop-line-record-compute-sop-stock-gap"
-    model="com.axelor.apps.production.db.SopLine">
-    <field name="sopStockGap"
-      expr="eval: ((sopRealStock - sopStockForecast)/sopStockForecast)*100"
-      if="sopStockForecast &amp;&amp; sopRealStock"/>
-    <field name="sopStockGap" expr="eval: null" if="!sopStockForecast || !sopRealStock"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-total-price"

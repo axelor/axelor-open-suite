@@ -617,7 +617,7 @@ Account.code as account_code , Account.name as account_name , Move.reference as 
 		    ELSE  
 				MetaTranslation.message_value
 			END) as select_title,
-MoveLine.amount_remaining,
+ABS(MoveLine.amount_remaining) as amount_remaining,
 MoveLine.currency_amount,
 Move.currency_code,
 MoveLine.currency_rate,
@@ -674,7 +674,7 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND (MoveLine.amount_remaining > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
+AND (ABS(MoveLine.amount_remaining) > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
 group by MoveLine.id, ReconcileGroup.code, Journal.code, Account.code, Account.name, Move.reference, MetaTranslation.message_value, Meta.select_title, Move.currency_code
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
