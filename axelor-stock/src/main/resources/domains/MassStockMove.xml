@@ -7,8 +7,8 @@
 
   <entity name="MassStockMove" lang="java" cacheable="true">
     <string name="sequence" title="Sequence"/>
-    <integer name="statusSelect" selection="stock.mass.move.status.select" title="Status"
-      default="1"/>
+    <integer name="statusSelect" selection="stock.mass.stock.move.status.select"
+      title="Status" default="1"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Transition location (cart)"/>

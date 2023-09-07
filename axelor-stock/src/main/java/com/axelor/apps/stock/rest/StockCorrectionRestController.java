@@ -68,7 +68,8 @@ public class StockCorrectionRestController {
                 requestBody.fetchProduct(),
                 requestBody.fetchTrackingNumber(),
                 requestBody.getRealQty(),
-                requestBody.fetchReason());
+                requestBody.fetchReason(),
+                requestBody.getComments());
 
     if (requestBody.getStatus() == StockCorrectionRepository.STATUS_VALIDATED) {
       Beans.get(StockCorrectionService.class).validate(stockCorrection);
@@ -118,6 +119,12 @@ public class StockCorrectionRestController {
           message += "Status updated; ";
         }
       }
+    }
+
+    final String comments = requestBody.getComments();
+    if (comments != null) {
+      Beans.get(StockCorrectionService.class).updateComments(stockCorrection, comments);
+      message += "Comments updated; ";
     }
 
     StockCorrectionResponse objectBody = new StockCorrectionResponse(stockCorrection);
