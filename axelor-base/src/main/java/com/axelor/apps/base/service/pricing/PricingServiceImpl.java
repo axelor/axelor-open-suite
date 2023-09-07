@@ -38,7 +38,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,29 +60,29 @@ public class PricingServiceImpl implements PricingService {
 
   @Override
   public Optional<Pricing> getRandomPricing(
-          Company company,
-          Product product,
-          ProductCategory productCategory,
-          String modelName,
-          Pricing pricing) {
+      Company company,
+      Product product,
+      ProductCategory productCategory,
+      String modelName,
+      Pricing pricing) {
     return getPricings(company, product, productCategory, modelName, null).stream().findAny();
   }
 
-    @Override
+  @Override
   public Optional<Pricing> getRootPricingForNextPricings(
-          Company company,
-          Product product,
-          ProductCategory productCategory,
-          String modelName) {
+      Company company, Product product, ProductCategory productCategory, String modelName) {
     List<Pricing> pricings = getAllPricings(company, product, productCategory, modelName);
 
-    Set<Long> pricingsPointedTo = pricings.stream().map(Pricing::getLinkedPricing).filter(Objects::nonNull)
+    Set<Long> pricingsPointedTo =
+        pricings.stream()
+            .map(Pricing::getLinkedPricing)
+            .filter(Objects::nonNull)
             .map(Pricing::getId)
             .collect(Collectors.toSet());
 
     Optional<Pricing> rootPricing = Optional.empty();
 
-    //find the pricing that doesn't have any pricing pointing to it, that's the root
+    // find the pricing that doesn't have any pricing pointing to it, that's the root
     for (Pricing pricing : pricings) {
       if (!pricingsPointedTo.contains(pricing.getId())) {
         rootPricing = Optional.ofNullable(pricing);
@@ -93,7 +92,6 @@ public class PricingServiceImpl implements PricingService {
 
     return rootPricing;
   }
-
 
   @Override
   public List<Pricing> getPricings(
@@ -136,10 +134,7 @@ public class PricingServiceImpl implements PricingService {
 
   @Override
   public List<Pricing> getAllPricings(
-          Company company,
-          Product product,
-          ProductCategory productCategory,
-          String modelName) {
+      Company company, Product product, ProductCategory productCategory, String modelName) {
     LOG.debug("Fetching pricings");
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
@@ -157,7 +152,6 @@ public class PricingServiceImpl implements PricingService {
       filter.append("AND self.concernedModel.name = :modelName ");
       bindings.put("modelName", modelName);
     }
-
 
     filter.append("AND (self.archived = false OR self.archived is null) ");
 

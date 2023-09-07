@@ -46,13 +46,8 @@ public interface PricingService {
       String modelName,
       Pricing pricing);
 
-
   Optional<Pricing> getRootPricingForNextPricings(
-          Company company,
-          Product product,
-          ProductCategory productCategory,
-          String modelName);
-
+      Company company, Product product, ProductCategory productCategory, String modelName);
 
   /**
    * This method will get all pricings filtered with company, product, productCategory, modelName,
@@ -73,11 +68,7 @@ public interface PricingService {
       Pricing pricing);
 
   List<Pricing> getAllPricings(
-          Company company,
-          Product product,
-          ProductCategory productCategory,
-          String modelName);
-
+      Company company, Product product, ProductCategory productCategory, String modelName);
 
   public void historizePricing(Pricing pricing) throws AxelorException;
 

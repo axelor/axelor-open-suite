@@ -37,16 +37,9 @@
     <boolean name="considerZeroCost"
       title="Consider zero cost and zero price lines in the margin"
       help="When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero."/>
-    <integer name="pricingComputingOrder" title="Pricing Computation Order" default="1"
-      selection="sale.pricing.order.type.select"
+    <boolean name="isPricingComputingOrder" title="Pricing computing order"
       help="When selected this is the Order of Computation of Pricing"/>
 
-    <extra-code>
-      <![CDATA[
-         public static final int PRICING_COMPUTATION_ORDER_PREVIOUS = 1;
-         public static final int PRICING_COMPUTATION_ORDER_NEXT = 2;
-      ]]>
-    </extra-code>
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>
       <field name="printingOnSOFinalization" on="UPDATE"/>
@@ -67,7 +60,7 @@
       <field name="isEnableCalculationEntireQuotationUsingPricing" on="UPDATE"/>
       <field name="enablePricingScale" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
-      <field name="pricingComputingOrder" on="UPDATE"/>
+      <field name="isPricingComputingOrder" on="UPDATE"/>
     </track>
   </entity>
 
