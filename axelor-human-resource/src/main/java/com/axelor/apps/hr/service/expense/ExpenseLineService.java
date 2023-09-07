@@ -33,4 +33,6 @@ public interface ExpenseLineService {
    * @param expense
    */
   void completeExpenseLines(Expense expense);
+
+  public boolean isTotalAmountGreaterThanExpenseLimit(Expense expense);
 }

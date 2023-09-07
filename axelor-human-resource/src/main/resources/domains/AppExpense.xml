@@ -14,6 +14,7 @@
       ref="com.axelor.apps.base.db.PfxCertificate"/>
     <many-to-one name="signatureLogo" ref="com.axelor.meta.db.MetaFile"
       title="Signature logo"/>
+    <decimal name="expenseLimit" title="Expense limit for a period" min="0"/>
 
     <track>
       <field name="computeDistanceWithWebService" on="UPDATE"/>

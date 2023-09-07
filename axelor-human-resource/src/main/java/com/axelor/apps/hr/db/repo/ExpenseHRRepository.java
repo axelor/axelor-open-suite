@@ -38,10 +38,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class ExpenseHRRepository extends ExpenseRepository {
 
   protected ExpenseFetchPeriodService expenseFetchPeriodService;
+  protected ExpenseLineService expenseLineService;
 
   @Inject
-  public ExpenseHRRepository(ExpenseFetchPeriodService expenseFetchPeriodService) {
+  public ExpenseHRRepository(
+      ExpenseFetchPeriodService expenseFetchPeriodService, ExpenseLineService expenseLineService) {
     this.expenseFetchPeriodService = expenseFetchPeriodService;
+    this.expenseLineService = expenseLineService;
   }
 
   @Override
@@ -50,9 +53,14 @@ public class ExpenseHRRepository extends ExpenseRepository {
       expense = super.save(expense);
       Beans.get(ExpenseToolService.class).setDraftSequence(expense);
       if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
-        Beans.get(ExpenseLineService.class).completeExpenseLines(expense);
+        expenseLineService.completeExpenseLines(expense);
       }
       Beans.get(ExpenseProofFileService.class).convertProofFilesInPdf(expense);
+      if (expenseLineService.isTotalAmountGreaterThanExpenseLimit(expense)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(HumanResourceExceptionMessage.EXPENSE_EXCEEDING_EXPENSE_LIMIT));
+      }
       return expense;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

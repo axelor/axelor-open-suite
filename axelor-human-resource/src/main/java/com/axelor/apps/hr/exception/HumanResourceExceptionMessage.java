@@ -271,4 +271,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String MEDICAL_VISIT_CANCEL_WRONG_STATUS = /*$$(*/
       "Can only cancel planned or realized medical visit." /*)*/;
+
+  public static final String EXPENSE_EXCEEDING_EXPENSE_LIMIT = /*$$(*/
+      "You are exceeding the expense limit for this period." /*)*/;
 }

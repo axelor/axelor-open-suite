@@ -21,8 +21,11 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +33,17 @@ import java.util.List;
 public class ExpenseLineServiceImpl implements ExpenseLineService {
 
   protected ExpenseLineRepository expenseLineRepository;
+  protected AppHumanResourceService appHumanResourceService;
+  protected ExpenseRepository expenseRepository;
 
   @Inject
-  public ExpenseLineServiceImpl(ExpenseLineRepository expenseLineRepository) {
+  public ExpenseLineServiceImpl(
+      ExpenseLineRepository expenseLineRepository,
+      AppHumanResourceService appHumanResourceService,
+      ExpenseRepository expenseRepository) {
     this.expenseLineRepository = expenseLineRepository;
+    this.appHumanResourceService = appHumanResourceService;
+    this.expenseRepository = expenseRepository;
   }
 
   @Override
@@ -83,5 +93,32 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
         }
       }
     }
+  }
+
+  @Override
+  public boolean isTotalAmountGreaterThanExpenseLimit(Expense expense) {
+    BigDecimal expenseLimit = appHumanResourceService.getAppExpense().getExpenseLimit();
+
+    if (expenseLimit.compareTo(BigDecimal.ZERO) != 0) {
+      BigDecimal totalInTax =
+          findMatchingExpenses(expense).stream()
+              .map(Expense::getInTaxTotal)
+              .reduce(BigDecimal.ZERO, BigDecimal::add)
+              .add(expense.getInTaxTotal());
+
+      return totalInTax.compareTo(expenseLimit) > 0;
+    }
+    return false;
+  }
+
+  protected List<Expense> findMatchingExpenses(Expense expense) {
+    return expenseRepository
+        .all()
+        .filter(
+            "self.employee IS NOT NULL AND self.employee.id = :employeeId AND self.period IS NOT NULL AND self.period.id = :periodId AND self.id != :id")
+        .bind("employeeId", expense.getEmployee().getId())
+        .bind("periodId", expense.getPeriod().getId())
+        .bind("id", expense.getId())
+        .fetch();
   }
 }

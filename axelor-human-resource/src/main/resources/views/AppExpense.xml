@@ -9,6 +9,7 @@
       <field name="computeDistanceWithWebService"/>
       <field name="pfxCertificate" canNew="true" canEdit="true"/>
       <field name="signatureLogo" widget="Image"/>
+      <field name="expenseLimit"/>
     </panel>
 
     <panel-mail name="mailPanel">
