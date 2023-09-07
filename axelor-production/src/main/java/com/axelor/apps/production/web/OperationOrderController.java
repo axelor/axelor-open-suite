@@ -27,6 +27,7 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -57,7 +58,7 @@ public class OperationOrderController {
     OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
     operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
 
-    Beans.get(OperationOrderWorkflowService.class).computeDuration(operationOrder);
+    Beans.get(OperationOrderPlanningService.class).computeDuration(operationOrder);
     response.setReload(true);
   }
 
@@ -67,7 +68,7 @@ public class OperationOrderController {
       LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
       LocalDateTime plannedEndDateT = operationOrder.getPlannedEndDateT();
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(OperationOrderWorkflowService.class)
+      Beans.get(OperationOrderPlanningService.class)
           .setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -80,7 +81,7 @@ public class OperationOrderController {
       LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
       LocalDateTime realEndDateT = operationOrder.getRealEndDateT();
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(OperationOrderWorkflowService.class)
+      Beans.get(OperationOrderPlanningService.class)
           .setRealDates(operationOrder, realStartDateT, realEndDateT);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -96,7 +97,7 @@ public class OperationOrderController {
         return;
       }
       Beans.get(OperationOrderWorkflowService.class)
-          .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()), null);
+          .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
