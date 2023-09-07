@@ -34,10 +34,13 @@ import com.axelor.apps.hr.db.ExtraHoursLine;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.MedicalVisit;
+import com.axelor.apps.hr.db.MedicalVisitReason;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.db.repo.MedicalVisitRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.auth.AuthUtils;
@@ -75,6 +78,8 @@ public class HRDashboardServiceImpl implements HRDashboardService {
   protected EmployeeComputeDaysLeaveBonusService leaveBonusService;
   protected PartnerService partnerService;
 
+  protected MedicalVisitRepository medicalVisitRepository;
+
   @Inject
   public HRDashboardServiceImpl(
       AppBaseService appBaseService,
@@ -84,7 +89,8 @@ public class HRDashboardServiceImpl implements HRDashboardService {
       TimesheetLineRepository timesheetLineRepo,
       PeriodService periodService,
       EmployeeComputeDaysLeaveBonusService leaveBonusService,
-      PartnerService partnerService) {
+      PartnerService partnerService,
+      MedicalVisitRepository medicalVisitRepository) {
     this.appBaseService = appBaseService;
     this.leaveRepo = leaveRepo;
     this.expenseRepo = expenseRepo;
@@ -93,6 +99,7 @@ public class HRDashboardServiceImpl implements HRDashboardService {
     this.periodService = periodService;
     this.leaveBonusService = leaveBonusService;
     this.partnerService = partnerService;
+    this.medicalVisitRepository = medicalVisitRepository;
   }
 
   @Override
@@ -381,6 +388,53 @@ public class HRDashboardServiceImpl implements HRDashboardService {
           "leaveReason",
           Optional.ofNullable(leaveRequest.getLeaveReason())
               .map(LeaveReason::getName)
+              .orElse(null));
+      leaveData.add(map);
+    }
+    return leaveData;
+  }
+
+  @Override
+  public List<Map<String, Object>> getEmployeeMedicalVisitData(Employee employee) {
+    List<MedicalVisit> medicalVisitList = getMedicalVisitList(employee);
+    return getMedicalVisitData(medicalVisitList);
+  }
+
+  protected List<MedicalVisit> getMedicalVisitList(Employee employee) {
+    StringBuilder filter = new StringBuilder("self.statusSelect = :medicalVisitPlannedStatus");
+    Map<String, Object> params = new HashMap<>();
+
+    if (employee != null) {
+      filter.append(" AND self.employee = :employee");
+      params.put("employee", employee);
+    }
+
+    params.put("medicalVisitPlannedStatus", MedicalVisitRepository.STATUS_PLANNED);
+
+    return medicalVisitRepository.all().filter(filter.toString()).bind(params).fetch();
+  }
+
+  protected List<Map<String, Object>> getMedicalVisitData(List<MedicalVisit> medicalVisitList) {
+    List<Map<String, Object>> leaveData = new ArrayList<>();
+
+    for (MedicalVisit medicalVisit : medicalVisitList) {
+      Map<String, Object> map = new HashMap<>();
+      map.put("medicalVisitId", medicalVisit.getId());
+      map.put(
+          "fromDate",
+          medicalVisit.getMedicalVisitStartDateT() != null
+              ? medicalVisit.getMedicalVisitStartDateT()
+              : null);
+      map.put(
+          "toDate",
+          medicalVisit.getMedicalVisitEndDateT() != null
+              ? medicalVisit.getMedicalVisitEndDateT()
+              : null);
+      map.put("employeeName", medicalVisit.getEmployee().getName());
+      map.put(
+          "visitReason",
+          Optional.ofNullable(medicalVisit.getVisitReason())
+              .map(MedicalVisitReason::getName)
               .orElse(null));
       leaveData.add(map);
     }

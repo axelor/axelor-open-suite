@@ -27,6 +27,7 @@
 					</h3>
 				]]></viewer>
       </field>
+      <field name="validateScenario"/>
     </panel>
     <panel colSpan="12" name="errorLogPanel" showIf="errorLog"
       title="Error that happened during the computation">

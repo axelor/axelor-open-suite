@@ -1595,23 +1595,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public boolean isThresholdNotOnLastInvoiceTerm(
+  public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      return moveLine.getInvoiceTermList().stream()
-          .filter(it -> it.getSequence() == moveLine.getInvoiceTermList().size())
-          .anyMatch(
-              it ->
-                  this.isThresholdNotOnInvoiceTerm(it, moveLine, thresholdDistanceFromRegulation));
+      return moveLine.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) >= 0
+          || moveLine.getInvoiceTermList().stream()
+                  .filter(it -> it.getAmountRemaining().signum() > 0)
+                  .count()
+              != 1;
     }
 
     return false;
-  }
-
-  protected boolean isThresholdNotOnInvoiceTerm(
-      InvoiceTerm invoiceTerm, MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
-    return invoiceTerm != null
-        && moveLine.getAmountRemaining().compareTo(invoiceTerm.getAmountRemaining()) >= 0
-        && invoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0;
   }
 }

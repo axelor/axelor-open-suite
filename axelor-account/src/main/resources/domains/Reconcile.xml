@@ -15,6 +15,10 @@
       initParam="true"/>
     <many-to-one name="creditMoveLine" ref="MoveLine" title="Credit line"
       required="true" initParam="true"/>
+    <decimal name="debitMoveLineAmountRemaining" title="Debit move line amount remaining"
+      readonly="true"/>
+    <decimal name="creditMoveLineAmountRemaining" title="Credit move line amount remaining"
+      readonly="true"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="account.reconcile.status.select" initParam="true"/>
     <datetime name="reconciliationDateTime" title="Reconciliation date" readonly="true"/>

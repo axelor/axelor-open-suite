@@ -133,7 +133,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
         return moveLine;
       }
     }
@@ -182,7 +182,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
         return moveLine;
       }
     }

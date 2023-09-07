@@ -30,7 +30,6 @@ import com.axelor.apps.businessproduction.service.OperationOrderTimesheetService
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetServiceImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessServiceImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderWorkflowServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderWizardServiceBusinessImpl;
@@ -45,7 +44,6 @@ import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
@@ -63,8 +61,6 @@ public class BusinessProductionModule extends AxelorModule {
     bind(ProductionOrderSaleOrderServiceImpl.class)
         .to(ProductionOrderSaleOrderServiceBusinessImpl.class);
     bind(InvoicingProjectService.class).to(InvoicingProjectServiceBusinessProdImpl.class);
-    bind(OperationOrderWorkflowServiceImpl.class)
-        .to(OperationOrderWorkflowServiceBusinessImpl.class);
     bind(ManufOrderValidateBusinessService.class).to(ManufOrderValidateBusinessServiceImpl.class);
     bind(OperationOrderValidateBusinessService.class)
         .to(OperationOrderValidateBusinessServiceImpl.class);
