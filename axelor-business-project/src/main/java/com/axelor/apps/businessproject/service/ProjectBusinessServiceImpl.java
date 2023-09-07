@@ -53,6 +53,7 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
+import com.axelor.utils.date.LocalDateUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -508,7 +509,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   protected BigDecimal processInvoicedThisMonth(Invoice ventilatedInvoice) {
-    if (isThisMonth(
+    if (LocalDateUtils.isInTheSameMonth(
         ventilatedInvoice.getInvoiceDate(),
         appBaseService.getTodayDateTime(ventilatedInvoice.getCompany()).toLocalDate())) {
       return processTotalInvoiced(ventilatedInvoice);
@@ -549,10 +550,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       default:
         return BigDecimal.ZERO;
     }
-  }
-
-  protected boolean isThisMonth(LocalDate date, LocalDate today) {
-    return date.getMonthValue() == today.getMonthValue() && date.getYear() == today.getYear();
   }
 
   protected boolean isLastMonth(LocalDate date, LocalDate today) {
