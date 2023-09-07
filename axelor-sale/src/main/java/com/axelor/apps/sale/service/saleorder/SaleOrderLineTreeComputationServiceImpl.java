@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -36,8 +37,8 @@ public class SaleOrderLineTreeComputationServiceImpl
     implements SaleOrderLineTreeComputationService {
 
   @Override
-  @Transactional
-  public SaleOrderLine computePrices(SaleOrderLine saleOrderLine) {
+  @Transactional(rollbackOn = Exception.class)
+  public void computePrices(SaleOrderLine saleOrderLine) throws AxelorException {
 
     List<SaleOrderLineTree> saleOrderLineTrees = saleOrderLine.getSaleOrderLineTreeList();
 
@@ -56,17 +57,6 @@ public class SaleOrderLineTreeComputationServiceImpl
     saleOrderLine.setSubTotalCostPrice(totalCost);
 
     setInTaxPrice(saleOrderLine);
-
-    //    if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-    //      saleOrderLine =
-    //          Beans.get(SaleOrderLineServiceSupplyChain.class)
-    //              .computeAnalyticDistribution(saleOrderLine);
-    //      response.setValue(
-    //          "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
-    //      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
-    //    }
-
-    return saleOrderLine;
   }
 
   private void setInTaxPrice(SaleOrderLine saleOrderLine) {

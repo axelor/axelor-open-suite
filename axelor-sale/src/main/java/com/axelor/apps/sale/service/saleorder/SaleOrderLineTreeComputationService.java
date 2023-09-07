@@ -18,9 +18,10 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
 
 public interface SaleOrderLineTreeComputationService {
 
-  SaleOrderLine computePrices(SaleOrderLine saleOrderLine);
+  void computePrices(SaleOrderLine saleOrderLine) throws AxelorException;
 }
