@@ -263,13 +263,14 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             || invoicePayment.getCurrency().equals(invoiceTermToPay.getCompany().getCurrency());
     invoiceTermPayment.setPaidAmount(
         isCompanyCurrency ? this.computePaidAmount(invoiceTermToPay, paidAmount) : paidAmount);
-    invoiceTermPayment.setCompanyPaidAmount(
-        isCompanyCurrency
-            ? paidAmount
-            : this.computeCompanyPaidAmount(invoiceTermToPay, paidAmount));
 
     manageInvoiceTermFinancialDiscount(
         invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
+
+    invoiceTermPayment.setCompanyPaidAmount(
+        isCompanyCurrency
+            ? invoiceTermPayment.getPaidAmount()
+            : this.computeCompanyPaidAmount(invoiceTermToPay, invoiceTermPayment.getPaidAmount()));
 
     return invoiceTermPayment;
   }
