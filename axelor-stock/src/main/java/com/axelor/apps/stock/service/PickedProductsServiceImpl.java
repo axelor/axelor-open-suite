@@ -29,14 +29,32 @@ import java.time.LocalDate;
 
 public class PickedProductsServiceImpl implements PickedProductsService {
   protected PickedProductsRepository pickedProductsRepository;
+  protected StoredProductsRepository storedProductsRepository;
   protected MassStockMoveRepository massStockMoveRepository;
+  protected StockMoveRepository stockMoveRepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
+  protected StockLocationLineRepository stockLocationLineRepository;
+  protected StockMoveService stockMoveService;
+  protected StockMoveLineService stockMoveLineService;
 
   @Inject
   public PickedProductsServiceImpl(
       PickedProductsRepository pickedProductsRepository,
-      MassStockMoveRepository massStockMoveRepository) {
+      StoredProductsRepository storedProductsRepository,
+      MassStockMoveRepository massStockMoveRepository,
+      StockMoveRepository stockMoveRepository,
+      StockMoveLineRepository stockMoveLineRepository,
+      StockLocationLineRepository stockLocationLineRepository,
+      StockMoveService stockMoveService,
+      StockMoveLineService stockMoveLineService) {
     this.pickedProductsRepository = pickedProductsRepository;
+    this.storedProductsRepository = storedProductsRepository;
     this.massStockMoveRepository = massStockMoveRepository;
+    this.stockMoveRepository = stockMoveRepository;
+    this.stockMoveLineRepository = stockMoveLineRepository;
+    this.stockLocationLineRepository = stockLocationLineRepository;
+    this.stockMoveService = stockMoveService;
+    this.stockMoveLineService = stockMoveLineService;
   }
 
   @Override
@@ -76,7 +94,7 @@ public class PickedProductsServiceImpl implements PickedProductsService {
             : null;
     if (pickedProducts.getTrackingNumber() != null) {
       stockLocationLine =
-          Beans.get(StockLocationLineRepository.class)
+          stockLocationLineRepository
               .all()
               .filter(
                   "self.stockLocation =?1 AND self.product =?2 AND self.currentQty =?3 AND self.trackingNumber =?4",
@@ -87,7 +105,7 @@ public class PickedProductsServiceImpl implements PickedProductsService {
               .fetchOne();
     } else {
       stockLocationLine =
-          Beans.get(StockLocationLineRepository.class)
+          stockLocationLineRepository
               .all()
               .filter(
                   "self.stockLocation =?1 AND self.product =?2 AND self.currentQty =?3 AND self.detailsStockLocation = null",
@@ -126,39 +144,37 @@ public class PickedProductsServiceImpl implements PickedProductsService {
       Company company = massStockMove.getCompany() != null ? massStockMove.getCompany() : null;
       LocalDate toDayDate = LocalDate.now();
       StockMove stockMove =
-          Beans.get(StockMoveService.class)
-              .createStockMove(
-                  fromAddress,
-                  toAddress,
-                  company,
-                  fromStockLocation,
-                  toStockLocation,
-                  toDayDate,
-                  toDayDate,
-                  null,
-                  StockMoveRepository.TYPE_INTERNAL);
+          stockMoveService.createStockMove(
+              fromAddress,
+              toAddress,
+              company,
+              fromStockLocation,
+              toStockLocation,
+              toDayDate,
+              toDayDate,
+              null,
+              StockMoveRepository.TYPE_INTERNAL);
 
       stockMove.setMassStockMove(massStockMove);
 
       StockMoveLine stockMoveLine =
-          Beans.get(StockMoveLineService.class)
-              .createStockMoveLine(
-                  stockMove,
-                  pickedProducts.getPickedProduct(),
-                  pickedProducts.getTrackingNumber(),
-                  pickedProducts.getPickedQty(),
-                  pickedProducts.getPickedQty(),
-                  pickedProducts.getUnit(),
-                  StockMoveLineRepository.CONFORMITY_NONE,
-                  fromStockLocation,
-                  toStockLocation);
+          stockMoveLineService.createStockMoveLine(
+              stockMove,
+              pickedProducts.getPickedProduct(),
+              pickedProducts.getTrackingNumber(),
+              pickedProducts.getPickedQty(),
+              pickedProducts.getPickedQty(),
+              pickedProducts.getUnit(),
+              StockMoveLineRepository.CONFORMITY_NONE,
+              fromStockLocation,
+              toStockLocation);
 
-      Beans.get(StockMoveService.class).plan(stockMove);
-      Beans.get(StockMoveService.class).realize(stockMove);
-      Beans.get(StockMoveRepository.class).save(stockMove);
-      Beans.get(StockMoveLineRepository.class).save(stockMoveLine);
+      stockMoveService.plan(stockMove);
+      stockMoveService.realize(stockMove);
+      stockMoveRepository.save(stockMove);
+      stockMoveLineRepository.save(stockMoveLine);
       pickedProducts.setStockMoveLine(stockMoveLine);
-      Beans.get(PickedProductsRepository.class).save(pickedProducts);
+      pickedProductsRepository.save(pickedProducts);
       StoredProducts storedProducts = new StoredProducts();
       storedProducts.setStoredProduct(pickedProducts.getPickedProduct());
 
@@ -198,7 +214,7 @@ public class PickedProductsServiceImpl implements PickedProductsService {
                 + " "
                 + trackingNumberSeq);
       }
-      Beans.get(StoredProductsRepository.class).save(storedProducts);
+      storedProductsRepository.save(storedProducts);
       massStockMove.addStoredProductsListItem(storedProducts);
       if (massStockMove.getStatusSelect() != 2) {
         massStockMove.setStatusSelect(2);
@@ -235,7 +251,7 @@ public class PickedProductsServiceImpl implements PickedProductsService {
         StoredProducts storedProducts = null;
         if (pickedProducts.getTrackingNumber() != null) {
           storedProducts =
-              Beans.get(StoredProductsRepository.class)
+              storedProductsRepository
                   .all()
                   .filter(
                       "self.storedProduct =?1 AND self.trackingNumber =?2 AND self.currentQty =?3 AND self.massStockMove =?4",
@@ -246,7 +262,7 @@ public class PickedProductsServiceImpl implements PickedProductsService {
                   .fetchOne();
         } else {
           storedProducts =
-              Beans.get(StoredProductsRepository.class)
+              storedProductsRepository
                   .all()
                   .filter(
                       "self.storedProduct =?1 AND self.currentQty =?2 AND self.massStockMove =?3",
@@ -256,13 +272,13 @@ public class PickedProductsServiceImpl implements PickedProductsService {
                   .fetchOne();
         }
         storedProducts.setMassStockMove(null);
-        Beans.get(StoredProductsRepository.class).remove(storedProducts);
+        storedProductsRepository.remove(storedProducts);
         StockMove stockMove = pickedProducts.getStockMoveLine().getStockMove();
-        Beans.get(StockMoveService.class).cancel(stockMove);
+        stockMoveService.cancel(stockMove);
         pickedProducts.setStockMoveLine(null);
         pickedProducts.setPickedQty(BigDecimal.ZERO);
-        Beans.get(MassStockMoveRepository.class).save(massStockMove);
-        Beans.get(PickedProductsRepository.class).save(pickedProducts);
+        massStockMoveRepository.save(massStockMove);
+        pickedProductsRepository.save(pickedProducts);
         JPA.flush();
       }
     } catch (AxelorException e) {

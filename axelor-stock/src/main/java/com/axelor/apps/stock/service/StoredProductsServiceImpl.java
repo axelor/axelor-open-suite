@@ -17,7 +17,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StoredProductsRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -27,13 +26,25 @@ public class StoredProductsServiceImpl implements StoredProductsService {
 
   protected StoredProductsRepository storeProductsRepository;
   protected MassStockMoveRepository massStockMoveRepository;
+  protected StockMoveRepository stockMoveRepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
+  protected StockMoveService stockMoveService;
+  protected StockMoveLineService stockMoveLineService;
 
   @Inject
   public StoredProductsServiceImpl(
       StoredProductsRepository storeProductsRepository,
-      MassStockMoveRepository massStockMoveRepository) {
+      MassStockMoveRepository massStockMoveRepository,
+      StockMoveRepository stockMoveRepository,
+      StockMoveLineRepository stockMoveLineRepository,
+      StockMoveService stockMoveService,
+      StockMoveLineService stockMoveLineService) {
     this.storeProductsRepository = storeProductsRepository;
     this.massStockMoveRepository = massStockMoveRepository;
+    this.stockMoveRepository = stockMoveRepository;
+    this.stockMoveLineRepository = stockMoveLineRepository;
+    this.stockMoveService = stockMoveService;
+    this.stockMoveLineService = stockMoveLineService;
   }
 
   @Override
@@ -67,16 +78,11 @@ public class StoredProductsServiceImpl implements StoredProductsService {
         storedProducts.getCurrentQty() != null ? storedProducts.getCurrentQty() : null;
 
     if (storedQty.compareTo(currentQty) == -1 && storedQty.compareTo(BigDecimal.ZERO) != 0) {
-      Product duplicateProduct =
-          storedProducts.getStoredProduct() != null ? storedProducts.getStoredProduct() : null;
-      TrackingNumber duplicateTrackingNumber =
-          storedProducts.getTrackingNumber() != null ? storedProducts.getTrackingNumber() : null;
-      StockLocation duplicateToStockLocation =
-          storedProducts.getToStockLocation() != null ? storedProducts.getToStockLocation() : null;
-      StockMoveLine duplicateStockMoveLine =
-          storedProducts.getStockMoveLine() != null ? storedProducts.getStockMoveLine() : null;
-      MassStockMove duplicateMassStockMove =
-          storedProducts.getMassStockMove() != null ? storedProducts.getMassStockMove() : null;
+      Product duplicateProduct = storedProducts.getStoredProduct();
+      TrackingNumber duplicateTrackingNumber = storedProducts.getTrackingNumber();
+      StockLocation duplicateToStockLocation = storedProducts.getToStockLocation();
+      StockMoveLine duplicateStockMoveLine = storedProducts.getStockMoveLine();
+      MassStockMove duplicateMassStockMove = storedProducts.getMassStockMove();
       storedProducts.setCurrentQty(storedQty);
       StoredProducts duplicateStoredProduct =
           createStoredProduct(
@@ -122,34 +128,32 @@ public class StoredProductsServiceImpl implements StoredProductsService {
       BigDecimal qty = storedProducts.getStoredQty() != null ? storedProducts.getStoredQty() : null;
       Unit unit = storedProducts.getUnit() != null ? storedProducts.getUnit() : null;
       StockMove stockMove =
-          Beans.get(StockMoveService.class)
-              .createStockMove(
-                  fromAddress,
-                  toAddress,
-                  company,
-                  fromStockLocation,
-                  toStockLocation,
-                  LocalDate.now(),
-                  LocalDate.now(),
-                  null,
-                  StockMoveRepository.TYPE_INTERNAL);
+          stockMoveService.createStockMove(
+              fromAddress,
+              toAddress,
+              company,
+              fromStockLocation,
+              toStockLocation,
+              LocalDate.now(),
+              LocalDate.now(),
+              null,
+              StockMoveRepository.TYPE_INTERNAL);
       StockMoveLine stockMoveLine =
-          Beans.get(StockMoveLineService.class)
-              .createStockMoveLine(
-                  stockMove,
-                  product,
-                  trackingNumber,
-                  qty,
-                  qty,
-                  unit,
-                  null,
-                  fromStockLocation,
-                  toStockLocation);
+          stockMoveLineService.createStockMoveLine(
+              stockMove,
+              product,
+              trackingNumber,
+              qty,
+              qty,
+              unit,
+              null,
+              fromStockLocation,
+              toStockLocation);
       stockMove.setMassStockMove(storedProducts.getMassStockMove());
-      Beans.get(StockMoveService.class).plan(stockMove);
-      Beans.get(StockMoveService.class).realize(stockMove);
-      Beans.get(StockMoveRepository.class).save(stockMove);
-      Beans.get(StockMoveLineRepository.class).save(stockMoveLine);
+      stockMoveService.plan(stockMove);
+      stockMoveService.realize(stockMove);
+      stockMoveRepository.save(stockMove);
+      stockMoveLineRepository.save(stockMoveLine);
       storedProducts.setStockMoveLine(stockMoveLine);
       storeProductsRepository.save(storedProducts);
     } else {
@@ -211,7 +215,7 @@ public class StoredProductsServiceImpl implements StoredProductsService {
   public void cancelStockMoveAndStockMoveLine(StoredProducts storedProducts)
       throws AxelorException {
     if (storedProducts.getStockMoveLine() != null) {
-      Beans.get(StockMoveService.class).cancel(storedProducts.getStockMoveLine().getStockMove());
+      stockMoveService.cancel(storedProducts.getStockMoveLine().getStockMove());
       storedProducts.setStockMoveLine(null);
       storedProducts.setStoredQty(BigDecimal.ZERO);
       storeProductsRepository.save(storedProducts);

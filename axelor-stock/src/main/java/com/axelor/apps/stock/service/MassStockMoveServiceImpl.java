@@ -23,13 +23,18 @@ import javax.swing.JOptionPane;
 public class MassStockMoveServiceImpl implements MassStockMoveService {
 
   protected MassStockMoveRepository massStockMoveRepository;
+  protected SequenceService sequenceService;
+  protected PickedProductsRepository pickedProductRepo;
 
   @Inject
-  public MassStockMoveServiceImpl(MassStockMoveRepository massStockMoveRepository) {
+  public MassStockMoveServiceImpl(
+      MassStockMoveRepository massStockMoveRepository,
+      SequenceService sequenceService,
+      PickedProductsRepository pickedProductRepo) {
     this.massStockMoveRepository = massStockMoveRepository;
+    this.sequenceService = sequenceService;
+    this.pickedProductRepo = pickedProductRepo;
   }
-
-  @Inject protected SequenceService sequenceService;
 
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -82,7 +87,7 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
           pickedProduct.setMassStockMove(massStockMove);
 
           massStockMove.getPickedProductsList().add(pickedProduct);
-          Beans.get(PickedProductsRepository.class).save(pickedProduct);
+          pickedProductRepo.save(pickedProduct);
         }
       }
 

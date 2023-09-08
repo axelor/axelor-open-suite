@@ -67,6 +67,7 @@ public class MassStockMoveRestController {
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
     boolean isQtyEqualZero = false;
     boolean isGreaterThan = false;
+    PickedProductsService pickedProductsService = Beans.get(PickedProductsService.class);
     for (PickedProducts pickedProducts : massStockMove.getPickedProductsList()) {
       if (pickedProducts.getPickedQty().compareTo(BigDecimal.ZERO) == 0) {
         isQtyEqualZero = true;
@@ -75,8 +76,7 @@ public class MassStockMoveRestController {
         isGreaterThan = true;
       }
       try {
-        Beans.get(PickedProductsService.class)
-            .createStockMoveAndStockMoveLine(massStockMove, pickedProducts);
+        pickedProductsService.createStockMoveAndStockMoveLine(massStockMove, pickedProducts);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -115,9 +115,9 @@ public class MassStockMoveRestController {
     new SecurityCheck().writeAccess(MassStockMove.class).createAccess(PickedProducts.class).check();
     MassStockMove massStockMove =
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
+    PickedProductsService pickedProductService = Beans.get(PickedProductsService.class);
     for (PickedProducts pickedProducts : massStockMove.getPickedProductsList()) {
-      Beans.get(PickedProductsService.class)
-          .cancelStockMoveAndStockMoveLine(massStockMove, pickedProducts);
+      pickedProductService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProducts);
     }
     Beans.get(MassStockMoveService.class).setStatusSelectToDraft(massStockMove);
     return ResponseConstructor.build(
@@ -138,6 +138,7 @@ public class MassStockMoveRestController {
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
     boolean isGreaterThan = false;
     boolean isQtyEqualZero = false;
+    StoredProductsService storedProductsService = Beans.get(StoredProductsService.class);
     for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
       if (storedProducts.getStoredQty().compareTo(storedProducts.getCurrentQty()) == 1) {
         isGreaterThan = true;
@@ -145,7 +146,7 @@ public class MassStockMoveRestController {
       if (storedProducts.getStoredQty().compareTo(BigDecimal.ZERO) == 0) {
         isQtyEqualZero = true;
       }
-      Beans.get(StoredProductsService.class).createStockMoveAndStockMoveLine(storedProducts);
+      storedProductsService.createStockMoveAndStockMoveLine(storedProducts);
     }
     if (isQtyEqualZero && isGreaterThan) {
       return ResponseConstructor.build(
@@ -181,8 +182,9 @@ public class MassStockMoveRestController {
     new SecurityCheck().writeAccess(MassStockMove.class).createAccess(StoredProducts.class).check();
     MassStockMove massStockMove =
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
+    StoredProductsService storedProductsService = Beans.get(StoredProductsService.class);
     for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
-      Beans.get(StoredProductsService.class).cancelStockMoveAndStockMoveLine(storedProducts);
+      storedProductsService.cancelStockMoveAndStockMoveLine(storedProducts);
     }
     return ResponseConstructor.build(
         Response.Status.OK,
