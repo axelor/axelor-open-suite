@@ -449,7 +449,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                       invoicePayment
                           .getFinancialDiscount()
                           .getDiscountRate()
-                          .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)),
+                          .divide(BigDecimal.valueOf(100))),
                   2,
                   RoundingMode.HALF_UP);
         }

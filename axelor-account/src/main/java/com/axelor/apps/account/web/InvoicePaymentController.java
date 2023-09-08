@@ -46,6 +46,7 @@ import com.axelor.utils.StringTool;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -220,8 +221,8 @@ public class InvoicePaymentController {
       List<Long> invoiceTermIdList =
           Beans.get(InvoicePaymentToolService.class).changeAmount(invoicePayment, invoiceId);
 
-      response.setValue("$invoiceTerms", invoiceTermIdList);
-      response.setValues(invoicePayment);
+      response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -243,13 +244,40 @@ public class InvoicePaymentController {
       List<Long> invoiceTermIdList =
           Beans.get(InvoicePaymentToolService.class).loadInvoiceTerms(invoicePayment, invoiceId);
 
-      response.setValues(invoicePayment);
-      response.setValue("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
-      response.setValue("$invoiceTerms", invoiceTermIdList);
+      Map<String, Object> invoiceTermMap = new HashMap<String, Object>();
+
+      invoiceTermMap.put("invoice", invoicePayment.getInvoice());
+      invoiceTermMap.put("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
+
+      response.setValues(
+          this.getInvoiceTermValuesMap(invoiceTermMap, invoicePayment, invoiceTermIdList));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  private Map<String, Object> getInvoiceTermValuesMap(
+      Map<String, Object> invoiceTermMap,
+      InvoicePayment invoicePayment,
+      List<Long> invoiceTermIdList) {
+    if (ObjectUtils.isEmpty(invoiceTermMap)) {
+      invoiceTermMap = new HashMap<String, Object>();
+    }
+    invoiceTermMap.put("$invoiceTerms", invoiceTermIdList);
+    invoiceTermMap.put("amount", invoicePayment.getAmount());
+    invoiceTermMap.put(
+        "totalAmountWithFinancialDiscount", invoicePayment.getTotalAmountWithFinancialDiscount());
+    invoiceTermMap.put(
+        "financialDiscountTotalAmount", invoicePayment.getFinancialDiscountTotalAmount());
+    invoiceTermMap.put("applyFinancialDiscount", invoicePayment.getApplyFinancialDiscount());
+    invoiceTermMap.put("financialDiscount", invoicePayment.getFinancialDiscount());
+    invoiceTermMap.put(
+        "financialDiscountDeadlineDate", invoicePayment.getFinancialDiscountDeadlineDate());
+    invoiceTermMap.put(
+        "financialDiscountTaxAmount", invoicePayment.getFinancialDiscountTaxAmount());
+    invoiceTermMap.put("financialDiscountAmount", invoicePayment.getFinancialDiscountAmount());
+    return invoiceTermMap;
   }
 
   @SuppressWarnings("unchecked")
