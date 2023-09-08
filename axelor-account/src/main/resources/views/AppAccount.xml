@@ -13,7 +13,7 @@
       <field name="paymentVouchersOnSupplierInvoice" widget="boolean-switch"/>
       <field name="paymentVouchersOnCustomerInvoice" widget="boolean-switch"/>
       <field name="activatePassedForPayment" widget="boolean-switch"/>
-      <field name="manageFinancialDiscount" widget="boolean-switch"/>
+      <field name="manageFinancialDiscount" widget="boolean-switch" hidden="true"/>
       <field name="manageCutOffPeriod" widget="boolean-switch"/>
       <field name="allowMultiInvoiceTerms" widget="boolean-switch"/>
       <field name="partnerBalConfigSelect"/>
