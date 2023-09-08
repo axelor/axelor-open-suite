@@ -58,7 +58,6 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderService bankOrderService;
-  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
@@ -89,10 +88,10 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         appAccountService,
         accountManagementAccountService,
         invoicePaymentToolService,
-        moveLineInvoiceTermService);
+        moveLineInvoiceTermService,
+        invoiceTermService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
-    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
