@@ -1,0 +1,3 @@
+---
+title: "Operation Order: On plannification, fixed a bug where a operation order could only start at the same time as others with same priority."
+type: fix

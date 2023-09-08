@@ -359,11 +359,12 @@ public class OperationOrderWorkflowService {
         operationOrderRepo
             .all()
             .filter(
-                "self.manufOrder = :manufOrder AND self.priority <= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+                "self.manufOrder = :manufOrder AND ((self.priority = :priority AND self.machine = :machine) OR self.priority < :priority) AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
             .bind("manufOrder", manufOrder)
             .bind("priority", operationOrder.getPriority())
             .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
             .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("machine", operationOrder.getMachine())
             .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
             .order("-plannedEndDateT")
