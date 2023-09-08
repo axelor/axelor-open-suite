@@ -1645,4 +1645,28 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     return false;
   }
+
+  @Override
+  public BigDecimal adjustAmountInCompanyCurrency(
+      List<InvoiceTerm> invoiceTermList,
+      BigDecimal companyAmountRemaining,
+      BigDecimal amountToPayInCompanyCurrency,
+      BigDecimal amountToPay,
+      BigDecimal currencyRate) {
+    BigDecimal moveLineAmountRemaining =
+        companyAmountRemaining.subtract(amountToPayInCompanyCurrency);
+    BigDecimal invoiceTermAmountRemaining =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmountRemaining)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO)
+            .subtract(amountToPay)
+            .multiply(currencyRate)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal diff = moveLineAmountRemaining.subtract(invoiceTermAmountRemaining);
+
+    return amountToPayInCompanyCurrency
+        .add(diff)
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
 }

@@ -110,7 +110,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     if (CollectionUtils.isNotEmpty(invoiceTerms)) {
       this.initInvoiceTermPaymentsWithAmount(
-          invoicePayment, invoiceTerms, invoicePayment.getAmount());
+          invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
     }
   }
 
@@ -118,7 +118,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
-      BigDecimal availableAmount) {
+      BigDecimal availableAmount,
+      BigDecimal reconcileAmount) {
     int invoiceTermCount = invoiceTermsToPay.size();
     InvoicePaymentToolService invoicePaymentToolService =
         Beans.get(InvoicePaymentToolService.class);
@@ -126,6 +127,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     InvoiceTerm invoiceTermToPay;
     InvoiceTermPayment invoiceTermPayment;
     BigDecimal baseAvailableAmount = availableAmount;
+    BigDecimal availableAmountUnchanged = availableAmount;
 
     boolean isCompanyCurrency = false;
 
@@ -175,6 +177,19 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           invoicePayment.setTotalAmountWithFinancialDiscount(
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
         }
+      }
+
+      if (availableAmountUnchanged.compareTo(reconcileAmount) != 0
+          && availableAmount.signum() <= 0) {
+        BigDecimal totalInCompanyCurrency =
+            invoiceTermPaymentList.stream()
+                .map(InvoiceTermPayment::getCompanyPaidAmount)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        BigDecimal diff = reconcileAmount.subtract(totalInCompanyCurrency);
+        BigDecimal companyPaidAmount = invoiceTermPayment.getCompanyPaidAmount().add(diff);
+
+        invoiceTermPayment.setCompanyPaidAmount(companyPaidAmount);
       }
     }
 
