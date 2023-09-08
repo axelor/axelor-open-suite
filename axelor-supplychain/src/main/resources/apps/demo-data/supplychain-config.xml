@@ -108,6 +108,5 @@
   <input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"
     search="self.importId = :importId"
     call="com.axelor.csv.script.ImportSupplyChain:importInventory"/>
-
 </csv-inputs>
 

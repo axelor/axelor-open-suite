@@ -116,7 +116,7 @@
           <panel name="datePanel" showFrame="false" colSpan="12">
             <field name="period" form-view="period-form" grid-view="period-grid"
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
-            <field name="date"
+            <field name="date" required="true"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
               onChange="action-move-group-date-onchange" colSpan="2"/>
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
@@ -296,25 +296,26 @@
         ]]></viewer>
         </field>
         <field name="$totalCurrency" title="Total Currency" readonly="true"
-          showIf="currency.id != companyCurrency.id" colSpan="3" type="integer">
+          showIf="currency.id != companyCurrency.id" colSpan="3" type="decimal"
+          x-scale="currency.numberOfDecimals">
           <viewer><![CDATA[
           <h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
         ]]></viewer>
         </field>
         <field name="$totalDebit" title="Total debit" readonly="true" colSpan="3"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer><![CDATA[
                                 <h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
         ]]></viewer>
         </field>
         <field name="$totalCredit" title="Total credit" readonly="true" colSpan="3"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer><![CDATA[
                                 <h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
         ]]></viewer>
         </field>
         <field name="$difference" title="Difference" readonly="true" colSpan="2"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer><![CDATA[
                                 <h3>
                                         <span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
@@ -326,7 +327,7 @@
       <panel name="detailsPanel" title="Details">
         <panel name="relatedToPanel" title="Related to" readonly="true" colSpan="12"
           itemSpan="4" stacked="true"
-          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves">
+          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment">
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
             readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher" readonlyIf="$validatePeriod"
@@ -364,6 +365,8 @@
           <field name="ignoreInDebtRecoveryOk"/>
           <field name="rejectOk" readonly="true" showIf="rejectOk"/>
           <field name="companyCurrency" hidden="true"/>
+          <field name="companyCurrency.numberOfDecimals" hidden="true"/>
+          <field name="currency.numberOfDecimals" hidden="true"/>
           <field name="$periodClosed" hidden="true"/>
           <field name="$simulatedPeriodClosed" hidden="true"/>
           <field name="period.statusSelect" hidden="true"/>

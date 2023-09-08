@@ -92,7 +92,7 @@
     canNew="false" onSave="action-timesheet-group-onsave" canCopy="false">
     <menubar>
       <menu name="timesheetToolsMenu" title="Reports" icon="fa-files-o">
-        <item name="printTimesheetItem" title="Print" action="save,action-print-timesheet"/>
+        <item name="printTimesheetItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
       <menu title="Tools" icon="fa-wrench">
         <item title="Lines Generation Wizard" showIf="statusSelect == 1"
@@ -577,10 +577,6 @@
   <action-method name="action-timesheet-method-edit-timesheet-selected">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="editTimesheetSelected"/>
-  </action-method>
-
-  <action-method name="action-print-timesheet">
-    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="printTimesheet"/>
   </action-method>
 
   <action-method name="action-timesheet-method-set-show-activity">

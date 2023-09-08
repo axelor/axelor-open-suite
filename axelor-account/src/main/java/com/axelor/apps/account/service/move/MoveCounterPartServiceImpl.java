@@ -107,6 +107,8 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     moveLine.setDueDate(move.getOriginDate());
     moveLine = moveLineToolService.setCurrencyAmount(moveLine);
     moveLine.setDescription(move.getDescription());
+    moveLineToolService.setDecimals(moveLine, move);
+
     return moveLine;
   }
 

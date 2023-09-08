@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="mobile-settings-json-field-form-base" name="json-field-form-base"
+    title="Custom field" model="com.axelor.meta.db.MetaJsonField" extension="true">
+
+    <extend target="//field[@name='visibleInGrid']">
+      <insert position="after">
+        <field name="isVisibleInMobileApp" widget="inline-checkbox"
+          if-module="axelor-mobile-settings" if="__config__.app.isApp('mobile-settings')"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

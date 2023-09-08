@@ -29,6 +29,9 @@
         showIf="partFinishMoAutomaticEmail" form-view="template-form" grid-view="template-grid"
         domain="self.metaModel.name = 'ManufOrder'"/>
     </panel>
+    <panel name="planificationPanel" title="Planification">
+      <field name="capacity"/>
+    </panel>
     <panel name="manufOrderSeqPanel" title="Manufacturing order sequence">
       <field name="manufOrderSequence" canEdit="true" canNew="true"
         domain="self.codeSelect = 'manufOrder' and self.company = :company"

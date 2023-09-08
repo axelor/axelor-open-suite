@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -36,14 +37,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,15 +56,18 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public MoveLineControlServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineService moveLineService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      ScaleServiceAccount scaleServiceAccount) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   @Override
@@ -166,7 +168,12 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           invoiceAttached == null ? moveLine.getCurrencyAmount() : invoiceAttached.getInTaxTotal();
     }
 
-    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    if (invoiceAttached == null) {
+      total = scaleServiceAccount.getScaledValue(moveLine, total, isCompanyAmount);
+    } else {
+      total = scaleServiceAccount.getScaledValue(invoiceAttached, total, isCompanyAmount);
+    }
+
     BigDecimal invoiceTermTotal =
         invoiceTermList.stream()
             .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())
@@ -298,7 +305,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   public boolean canReconcile(MoveLine moveLine) {
     return (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0
         && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
             || moveLine.getInvoiceTermList().stream()
                 .allMatch(invoiceTermService::isNotAwaitingPayment));

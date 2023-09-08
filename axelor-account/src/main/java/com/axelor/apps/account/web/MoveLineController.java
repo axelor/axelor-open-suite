@@ -18,22 +18,19 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
-import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -46,6 +43,7 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -61,24 +59,23 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveLineController {
 
-  private final int startAxisPosition = 1;
-  private final int endAxisPosition = 5;
-
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
       if (move != null
-          && Beans.get(MoveLineComputeAnalyticService.class)
-              .checkManageAnalytic(move.getCompany())) {
+          && Beans.get(AnalyticToolService.class).isManageAnalytic(move.getCompany())) {
         moveLine =
             Beans.get(MoveLineComputeAnalyticService.class).computeAnalyticDistribution(moveLine);
         response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
@@ -151,6 +148,9 @@ public class MoveLineController {
     try {
       if (idList != null && !idList.isEmpty()) {
         MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
+        Company company = null;
+        boolean differentCompanies = false;
+
         for (Integer id : idList) {
           if (id != null) {
             MoveLine moveLine = moveLineRepository.find(id.longValue());
@@ -161,6 +161,13 @@ public class MoveLineController {
                   || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
                 totalCredit = totalCredit.add(moveLine.getCredit());
                 totalDebit = totalDebit.add(moveLine.getDebit());
+              }
+
+              if (company == null && moveLine.getMove().getCompany() != null) {
+                company = moveLine.getMove().getCompany();
+              } else if (moveLine.getMove().getCompany() != null
+                  && company != moveLine.getMove().getCompany()) {
+                differentCompanies = true;
               }
             } else {
               throw new AxelorException(
@@ -174,6 +181,15 @@ public class MoveLineController {
           }
         }
         finalBalance = totalDebit.subtract(totalCredit);
+
+        if (!differentCompanies) {
+          ScaleServiceAccount scaleServiceAccount = Beans.get(ScaleServiceAccount.class);
+          int scale = scaleServiceAccount.getScale(company, null, true);
+
+          totalCredit = totalCredit.setScale(scale, RoundingMode.HALF_UP);
+          totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);
+          finalBalance = finalBalance.setScale(scale, RoundingMode.HALF_UP);
+        }
 
         response.setView(
             ActionView.define(I18n.get("Calculation"))
@@ -211,41 +227,14 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
-      List<Long> analyticAccountList;
-      AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
-      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
 
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-
-        if (move != null
-            && analyticToolService.isPositionUnderAnalyticAxisSelect(move.getCompany(), i)) {
-          analyticAccountList = analyticLineService.getAxisDomains(moveLine, move.getCompany(), i);
-          if (ObjectUtils.isEmpty(analyticAccountList)) {
-            response.setAttr(
-                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                "domain",
-                "self.id IN (0)");
-          } else {
-            if (move.getCompany() != null) {
-              String idList =
-                  analyticAccountList.stream()
-                      .map(Object::toString)
-                      .collect(Collectors.joining(","));
-
-              response.setAttr(
-                  "axis" + i + "AnalyticAccount",
-                  "domain",
-                  "self.id IN ("
-                      + idList
-                      + ") AND self.statusSelect = "
-                      + AnalyticAccountRepository.STATUS_ACTIVE
-                      + " AND (self.company is null OR self.company.id = "
-                      + move.getCompany().getId()
-                      + ")");
-            }
-          }
-        }
+      if (move == null) {
+        return;
       }
+
+      response.setAttrs(
+          Beans.get(AnalyticGroupService.class)
+              .getAnalyticAxisDomainAttrsMap(moveLine, move.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -254,50 +243,16 @@ public class MoveLineController {
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = null;
+      Move move = this.getMove(request, moveLine);
 
-      if (request.getContext().getParent() != null
-          && (Move.class).equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
-      } else if (moveLine.getId() != null) {
-        moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
-        move = moveLine.getMove();
+      if (move == null) {
+        return;
       }
 
-      if (move != null && move.getCompany() != null) {
-        AccountConfig accountConfig =
-            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-        if (Beans.get(MoveLineComputeAnalyticService.class)
-            .checkManageAnalytic(move.getCompany())) {
-          AnalyticAxis analyticAxis = null;
-          for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-            response.setAttr(
-                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                "hidden",
-                !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
-            for (AnalyticAxisByCompany analyticAxisByCompany :
-                accountConfig.getAnalyticAxisByCompanyList()) {
-              if (analyticAxisByCompany.getSequence() + 1 == i) {
-                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-              }
-            }
-            if (analyticAxis != null) {
-              response.setAttr(
-                  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                  "title",
-                  analyticAxis.getName());
-              analyticAxis = null;
-            }
-          }
-        } else {
-          response.setAttr("analyticDistributionTemplate", "hidden", true);
-          response.setAttr("analyticMoveLineList", "hidden", true);
-          for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-            response.setAttr(
-                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "hidden", true);
-          }
-        }
-      }
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Beans.get(AnalyticAttrsService.class).addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
+
+      response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -475,7 +430,10 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
 
-      response.setAttrs(Beans.get(MoveLineGroupService.class).getOnLoadAttrsMap(moveLine, move));
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getOnLoadValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getOnLoadAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -493,8 +451,10 @@ public class MoveLineController {
         move = parentContext.asType(Move.class);
       }
 
-      response.setAttrs(
-          Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getOnLoadValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getOnLoadMoveAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -622,8 +582,11 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
-
-      response.setAttrs(Beans.get(MoveLineGroupService.class).getAccountOnSelectAttrsMap(move));
+      if (move != null) {
+        response.setAttrs(
+            Beans.get(MoveLineGroupService.class)
+                .getAccountOnSelectAttrsMap(move.getJournal(), move.getCompany()));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

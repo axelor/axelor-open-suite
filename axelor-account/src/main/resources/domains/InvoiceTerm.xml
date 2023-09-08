@@ -12,13 +12,14 @@
     <date name="dueDate" title="Due date"/>
     <date name="estimatedPaymentDate" title="Estimated payment date"/>
     <date name="originDate" title="Origin date"/>
-    <decimal name="amount" title="Amount"/>
-    <decimal name="companyAmount" title="Amount (company currency)"/>
-    <decimal name="amountRemaining" title="Amount remaining"/>
-    <decimal name="companyAmountRemaining" title="Amount remaining (company currency)"/>
-    <decimal name="remainingPfpAmount" title="Remaining amount" scale="2" precision="20"
+    <decimal name="amount" title="Amount" scale="3" precision="20"/>
+    <decimal name="companyAmount" title="Amount (company currency)" scale="3" precision="20"/>
+    <decimal name="amountRemaining" title="Amount remaining" scale="3" precision="20"/>
+    <decimal name="companyAmountRemaining" title="Amount remaining (company currency)"
+      scale="3" precision="20"/>
+    <decimal name="remainingPfpAmount" title="Remaining amount" scale="3" precision="20"
       help="This amount corresponds, in the event of a partial pass for payment, to the remaining amount which didn't get the consent to be paid. This amount corresponds to the amount of the invoice term which has been newly generated during the partial pass for payment process and which is linked to this term."/>
-    <decimal name="initialPfpAmount" title="Initial amount" scale="2" precision="20"
+    <decimal name="initialPfpAmount" title="Initial amount" scale="3" precision="20"
       help="This amount corresponds, in the event of a partial pass for payment, to the initial amount of the term."/>
     <boolean name="isPaid" title="Paid" default="false"/>
     <boolean name="isHoldBack" title="Holdback" default="false"/>
@@ -34,11 +35,12 @@
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"/>
-    <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
+    <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount" scale="3"
+      precision="20"/>
     <decimal name="remainingAmountAfterFinDiscount"
-      title="Remaining total amount after Fin. discount"/>
+      title="Remaining total amount after Fin. discount" scale="3" precision="20"/>
     <decimal name="amountRemainingAfterFinDiscount"
-      title="Remaining amount after Fin. discount"/>
+      title="Remaining amount after Fin. discount" scale="3" precision="20"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
     <!-- <integer name="discountBaseSelect" title="Discount base" selection="account.financial.discount.discount.base.select"/> -->
     <!-- <decimal name="discountRate" title="Discount rate" /> -->
@@ -62,12 +64,12 @@
     <many-to-one name="paymentSession" title="Payment session" readonly="true"
       ref="com.axelor.apps.account.db.PaymentSession"/>
     <boolean name="isSelectedOnPaymentSession" title="Selected on Session"/>
-    <decimal name="paymentAmount" title="Signed payment amount"/>
+    <decimal name="paymentAmount" title="Signed payment amount" scale="3" precision="20"/>
 
     <boolean name="applyFinancialDiscount" title="Apply financial discount ?"/>
     <boolean name="applyFinancialDiscountOnPaymentSession"
       title="Apply Fin. Discount (session) ?"/>
-    <decimal name="amountPaid" title="Amount paid" readonly="true"/>
+    <decimal name="amountPaid" title="Amount paid" readonly="true" scale="3" precision="20"/>
     <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
     <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
       title="Name">
@@ -101,7 +103,7 @@
     </integer>
 
     <boolean name="pfpfPartialValidationOk"/>
-    <decimal name="pfpPartialValidationAmount"/>
+    <decimal name="pfpPartialValidationAmount" scale="3" precision="20"/>
 
     <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 

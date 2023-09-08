@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -44,6 +45,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -54,6 +56,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
@@ -62,13 +65,15 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       MoveLineService moveLineService,
       MoveLineCreateService moveLineCreateService,
       MoveLineToolService moveLineToolService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      ScaleServiceAccount scaleServiceAccount) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineService = moveLineService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   @Override
@@ -155,6 +160,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     }
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      adjustLastInvoiceTerm(moveLine.getInvoiceTermList(), moveLine.getCurrencyAmount().abs());
       moveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
       this.handleFinancialDiscount(moveLine);
     }
@@ -222,7 +228,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             .multiply(paymentConditionLine.getPaymentPercentage())
             .divide(
                 BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                scaleServiceAccount.getScale(move, false),
                 RoundingMode.HALF_UP);
 
     if (holdbackMoveLine == null) {
@@ -253,6 +259,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
       moveLineToolService.setCurrencyAmount(moveLine);
       moveLineToolService.setCurrencyAmount(holdbackMoveLine);
+      moveLineToolService.setDecimals(holdbackMoveLine, move);
 
       move.addMoveLineListItem(holdbackMoveLine);
     }
@@ -308,12 +315,12 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
-            ? total
+            ? total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
             : total
                 .multiply(percentage)
                 .divide(
                     BigDecimal.valueOf(100),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    scaleServiceAccount.getScale(move, false),
                     RoundingMode.HALF_UP);
 
     User pfpUser = null;
@@ -354,7 +361,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       moveLine.setDebit(moveLine.getDebit().add(amount));
     }
 
-    moveLine.setAmountRemaining(moveLine.getAmountRemaining().add(amount));
+    BigDecimal signum = BigDecimal.valueOf(moveLine.getAmountRemaining().signum());
+    moveLine.setAmountRemaining(moveLine.getAmountRemaining().abs().add(amount).multiply(signum));
   }
 
   protected Account getHoldbackAccount(MoveLine moveLine, Move move) throws AxelorException {
@@ -404,5 +412,25 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   public void setDueDateFromInvoiceTerms(MoveLine moveLine) {
     moveLine.setDueDate(
         invoiceTermService.getDueDate(moveLine.getInvoiceTermList(), moveLine.getDueDate()));
+  }
+
+  protected void adjustLastInvoiceTerm(List<InvoiceTerm> invoiceTermList, BigDecimal totalAmount) {
+    BigDecimal sumOfInvoiceTerm =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    if (totalAmount.compareTo(sumOfInvoiceTerm) != 0) {
+      InvoiceTerm lastElement = invoiceTermList.get(invoiceTermList.size() - 1);
+
+      BigDecimal difference = totalAmount.subtract(sumOfInvoiceTerm);
+      BigDecimal amount = lastElement.getAmount().add(difference);
+      BigDecimal amountRemaining = lastElement.getAmountRemaining().add(difference);
+
+      lastElement.setAmount(amount);
+      lastElement.setAmountRemaining(amountRemaining);
+
+      invoiceTermService.computeCompanyAmounts(lastElement, true);
+    }
   }
 }

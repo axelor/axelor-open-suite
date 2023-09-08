@@ -29,9 +29,9 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -74,16 +74,17 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected int jpaLimit = 20;
+  private final int ALTERNATIVE_SCALE = 10;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
   protected AppAccountService appAccountService;
-  protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public MoveLineServiceImpl(
@@ -92,19 +93,19 @@ public class MoveLineServiceImpl implements MoveLineService {
       PaymentService paymentService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
-      AccountingCutOffService cutOffService) {
+      AccountingCutOffService cutOffService,
+      ScaleServiceAccount scaleServiceAccount) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
-    this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   @Override
@@ -346,10 +347,11 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     BigDecimal prorata = BigDecimal.ONE;
     if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-      prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+      prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     }
 
-    return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
+    return scaleServiceAccount.getScaledValue(
+        moveLine, prorata.multiply(moveLine.getCurrencyAmount()), false);
   }
 
   @Override
@@ -391,25 +393,18 @@ public class MoveLineServiceImpl implements MoveLineService {
       if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
         BigDecimal prorata = BigDecimal.ONE;
         if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-          prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+          prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
         }
 
         moveLine.setCutOffProrataAmount(
-            prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP));
+            scaleServiceAccount.getScaledValue(
+                moveLine, prorata.multiply(moveLine.getCurrencyAmount()), false));
         moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
         moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
       }
     }
 
     return moveLine;
-  }
-
-  @Override
-  public boolean checkManageAnalytic(Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
   }
 
   @Override
@@ -443,10 +438,16 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
-          amount.multiply(
-              financialDiscount
-                  .getDiscountRate()
-                  .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+          scaleServiceAccount.getScaledValue(
+              moveLine,
+              amount.multiply(
+                  financialDiscount
+                      .getDiscountRate()
+                      .divide(
+                          BigDecimal.valueOf(100),
+                          AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
+                          RoundingMode.HALF_UP)),
+              true));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
     } else {

@@ -446,7 +446,17 @@ public class ReconcileServiceImpl implements ReconcileService {
     Move debitMove = debitMoveLine.getMove();
     Move creditMove = creditMoveLine.getMove();
     Invoice debitInvoice = invoiceRepository.findByMove(debitMove);
+    if (debitInvoice == null) {
+      debitInvoice = invoiceRepository.findByOldMove(debitMove);
+      debitInvoice =
+          debitInvoice != null ? (debitInvoice.getLcrAccounted() ? debitInvoice : null) : null;
+    }
     Invoice creditInvoice = invoiceRepository.findByMove(creditMove);
+    if (creditInvoice == null) {
+      creditInvoice = invoiceRepository.findByOldMove(creditMove);
+      creditInvoice =
+          creditInvoice != null ? (creditInvoice.getLcrAccounted() ? creditInvoice : null) : null;
+    }
     BigDecimal amount = reconcile.getAmount();
 
     this.checkCurrencies(debitMoveLine, creditMoveLine);
@@ -751,7 +761,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException {
-    BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
+    BigDecimal amount =
+        debitMoveLine.getAmountRemaining().abs().min(creditMoveLine.getAmountRemaining().abs());
     Reconcile reconcile =
         this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
 
@@ -960,7 +971,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   @Transactional(rollbackOn = {Exception.class})
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException {
     if (creditMoveLine != null) {
-      BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
+      BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining().abs();
       log.debug("Credit amount to pay / to reconcile: {}", creditAmountRemaining);
 
       if (creditAmountRemaining.compareTo(BigDecimal.ZERO) > 0) {
@@ -976,7 +987,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           Account creditAccount =
               accountConfigService.getCashPositionVariationCreditAccountDontThrow(accountConfig);
 
-          if (invoiceTermService.isThresholdNotOnLastInvoiceTerm(
+          if (invoiceTermService.isThresholdNotOnLastUnpaidInvoiceTerm(
                   creditMoveLine, accountConfig.getThresholdDistanceFromRegulation())
               || creditAccount == null) {
             return;
@@ -1026,7 +1037,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           Account debitAccount =
               accountConfigService.getCashPositionVariationDebitAccountDontThrow(accountConfig);
 
-          if (invoiceTermService.isThresholdNotOnLastInvoiceTerm(
+          if (invoiceTermService.isThresholdNotOnLastUnpaidInvoiceTerm(
                   debitMoveLine, accountConfig.getThresholdDistanceFromRegulation())
               || debitAccount == null) {
             return;

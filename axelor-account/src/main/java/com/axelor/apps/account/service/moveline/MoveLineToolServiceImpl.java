@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -132,7 +133,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
         return moveLine;
       }
     }
@@ -181,7 +182,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
         return moveLine;
       }
     }
@@ -306,6 +307,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
     boolean isDebit = moveLine.getDebit().compareTo(moveLine.getCredit()) > 0;
+    int returnedScale = RETURNED_SCALE;
+
     if (move.getMoveLineList().size() == 0 || moveLine.getCurrencyRate().signum() == 0) {
       try {
         moveLine.setCurrencyRate(
@@ -319,9 +322,14 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     } else {
       moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
+
+    if (move.getCurrency() != null) {
+      returnedScale = move.getCurrency().getNumberOfDecimals();
+    }
+
     BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
     BigDecimal currencyAmount =
-        unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP);
+        unratedAmount.divide(moveLine.getCurrencyRate(), returnedScale, RoundingMode.HALF_UP);
     moveLine.setCurrencyAmount(moveToolService.computeCurrencyAmountSign(currencyAmount, isDebit));
     return moveLine;
   }
@@ -404,5 +412,16 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     return moveLine.getCutOffStartDate() != null
         && moveLine.getCutOffEndDate() != null
         && !functionalOriginList.contains(moveLine.getMove().getFunctionalOriginSelect());
+  }
+
+  @Override
+  public void setDecimals(MoveLine moveLine, Move move) {
+    Currency currency = move.getCurrency();
+    Currency companyCurrency = move.getCompanyCurrency();
+
+    if (currency != null && companyCurrency != null) {
+      moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
+      moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
+    }
   }
 }

@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
@@ -42,7 +41,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -57,6 +60,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected StockMoveLine stockMoveLine;
 
   protected UnitConversionService unitConversionService;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public InvoiceLineGeneratorSupplyChain(
@@ -183,48 +187,39 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
    */
   @Override
   protected InvoiceLine createInvoiceLine() throws AxelorException {
-
     InvoiceLine invoiceLine = super.createInvoiceLine();
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return invoiceLine;
     }
 
-    InvoiceLineAnalyticService invoiceLineAnalyticService =
-        Beans.get(InvoiceLineAnalyticService.class);
+    InvoiceLineAnalyticSupplychainService invoiceLineAnalyticService =
+        Beans.get(InvoiceLineAnalyticSupplychainServiceImpl.class);
 
     this.assignOriginElements(invoiceLine);
 
-    List<AnalyticMoveLine> analyticMoveLineList = null;
+    List<AnalyticMoveLine> analyticMoveLineList;
 
-    if (saleOrderLine != null) {
+    if (this.manageAnalytic()) {
+      if (saleOrderLine != null) {
+        switch (saleOrderLine.getTypeSelect()) {
+          case SaleOrderLineRepository.TYPE_END_OF_PACK:
+            invoiceLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
+            invoiceLine.setIsShowTotal(saleOrderLine.getIsShowTotal());
+            break;
 
-      switch (saleOrderLine.getTypeSelect()) {
-        case SaleOrderLineRepository.TYPE_END_OF_PACK:
-          invoiceLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
-          invoiceLine.setIsShowTotal(saleOrderLine.getIsShowTotal());
-          break;
+          case SaleOrderLineRepository.TYPE_NORMAL:
+            invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
+                invoiceLine, invoice, new AnalyticLineModel(saleOrderLine, null));
+            break;
 
-        case SaleOrderLineRepository.TYPE_NORMAL:
-          if (saleOrderLine.getAnalyticDistributionTemplate() != null
-              || !ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
-            invoiceLine.setAnalyticDistributionTemplate(
-                saleOrderLine.getAnalyticDistributionTemplate());
-            this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-            analyticMoveLineList =
-                invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
-          } else {
-            analyticMoveLineList =
-                invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-            analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
-          }
-          break;
-
-        default:
-          return invoiceLine;
+          default:
+            return invoiceLine;
+        }
       }
+    }
 
-    } else if (purchaseOrderLine != null) {
+    if (purchaseOrderLine != null) {
       if (purchaseOrderLine.getIsTitleLine()) {
         return invoiceLine;
       } else {
@@ -275,7 +270,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       analyticMoveLineList =
           invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-      analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
@@ -329,6 +324,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
   }
 
+  // TODO to be deleted
   public void copyAnalyticMoveLines(
       List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine) {
 
@@ -354,5 +350,17 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     } else {
       return product.getPurchasesUnit();
     }
+  }
+
+  public boolean manageAnalytic() throws AxelorException {
+    AnalyticLineModel analyticLineModel = null;
+
+    if (saleOrderLine != null) {
+      analyticLineModel = new AnalyticLineModel(saleOrderLine, null);
+    }
+
+    return analyticLineModel != null
+        && Beans.get(AnalyticLineModelService.class)
+            .productAccountManageAnalytic(analyticLineModel);
   }
 }

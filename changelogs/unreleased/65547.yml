@@ -1,0 +1,3 @@
+---
+title : "API Stock : stock move line creation does not modify value of boolean isRealQtyModifiedByUser"
+type: fix

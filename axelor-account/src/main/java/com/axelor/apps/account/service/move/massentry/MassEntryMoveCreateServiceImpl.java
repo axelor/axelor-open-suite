@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -62,6 +63,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected MoveRepository moveRepository;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public MassEntryMoveCreateServiceImpl(
@@ -75,7 +77,8 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       MoveSimulateService moveSimulateService,
       MoveRepository moveRepository,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      MoveLineToolService moveLineToolService) {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
@@ -87,6 +90,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     this.moveRepository = moveRepository;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -208,6 +212,10 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     moveResult.setCompanyBankDetails(parentMove.getCompanyBankDetails());
     moveResult.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
 
+    if (parentMove.getCompany() != null) {
+      moveResult.setCompanyCurrency(parentMove.getCompany().getCurrency());
+    }
+
     fillMoveWithMoveLineMassEntry(
         moveResult, parentMove.getMoveLineMassEntryList(), temporaryMoveNumber);
 
@@ -247,6 +255,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         }
         massEntryLine.setFieldsErrorList(null);
         MoveLineMassEntry copy = moveLineMassEntryRepository.copy(massEntryLine, false);
+        moveLineToolService.setDecimals(copy, move);
         moveLineMassEntryRecordService.fillAnalyticMoveLineList(massEntryLine, copy);
 
         move.addMoveLineListItem(copy);

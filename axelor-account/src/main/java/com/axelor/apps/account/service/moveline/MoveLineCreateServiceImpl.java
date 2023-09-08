@@ -38,6 +38,7 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
@@ -92,6 +93,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected TaxService taxService;
   protected AppBaseService appBaseService;
   protected AnalyticLineService analyticLineService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -110,7 +112,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AppBaseService appBaseService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      ScaleServiceAccount scaleServiceAccount) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -127,6 +130,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.taxService = taxService;
     this.appBaseService = appBaseService;
     this.analyticLineService = analyticLineService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   /**
@@ -226,7 +230,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       throws AxelorException {
 
     if (amountInSpecificMoveCurrency != null) {
-      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+      amountInSpecificMoveCurrency =
+          scaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.abs(), false);
     }
 
     log.debug(
@@ -258,9 +263,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (isDebit) {
-      debit = amountInCompanyCurrency;
+      debit = scaleServiceAccount.getScaledValue(move, amountInCompanyCurrency, true);
     } else {
-      credit = amountInCompanyCurrency;
+      credit = scaleServiceAccount.getScaledValue(move, amountInCompanyCurrency, true);
     }
 
     if (currencyRate == null) {
@@ -278,7 +283,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (!isDebit) {
-      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.negate();
+      amountInSpecificMoveCurrency =
+          scaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.negate(), false);
     }
 
     MoveLine moveLine =
@@ -498,7 +504,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setAnalyticMoveLineList(analyticMoveLineList);
         }
 
-        analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
+        analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
 
         TaxLine taxLine = invoiceLine.getTaxLine();
         if (taxLine != null) {
@@ -735,14 +741,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         }
       }
 
-      moveLine.setDebit(
-          moveLine
-              .getDebit()
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
-      moveLine.setCredit(
-          moveLine
-              .getCredit()
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      moveLine.setDebit(scaleServiceAccount.getScaledValue(move, moveLine.getDebit(), false));
+      moveLine.setCredit(scaleServiceAccount.getScaledValue(move, moveLine.getCredit(), false));
 
       moveLines.add(moveLine);
     }
@@ -860,6 +860,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         StringTool.cutTooLongString(
             moveLineToolService.determineDescriptionMoveLine(
                 move.getJournal(), move.getOrigin(), move.getDescription())));
+    moveLineToolService.setDecimals(newOrUpdatedMoveLine, move);
 
     BigDecimal taxLineValue =
         taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
@@ -870,20 +871,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_RECEIVABLE);
     }
 
+    int scale = scaleServiceAccount.getScale(move, true);
     BigDecimal newMoveLineDebit =
-        debit
-            .multiply(taxLineValue)
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+        debit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
     BigDecimal newMoveLineCredit =
-        credit
-            .multiply(taxLineValue)
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+        credit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
+
     this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
@@ -916,6 +909,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
       newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
       newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
+      moveLineToolService.setDecimals(newOrUpdatedMoveLineRC, move);
 
       newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
 

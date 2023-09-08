@@ -326,7 +326,6 @@ public class InvoicingProjectService {
       projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
       timesheetLineBusinessService.timsheetLineInvoicing(project);
     }
-    invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
       return;
