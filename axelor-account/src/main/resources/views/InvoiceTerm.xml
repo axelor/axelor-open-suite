@@ -238,12 +238,12 @@
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
         hidden="true" showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
         readonly="true">
-        <field name="financialDiscount"/>
-        <field name="financialDiscount.discountRate"/>
-        <field name="financialDiscountDeadlineDate"/>
-        <field name="financialDiscountAmount"/>
-        <field name="remainingAmountAfterFinDiscount"/>
-        <field name="amountRemainingAfterFinDiscount"/>
+        <field name="financialDiscount" readonly="true"/>
+        <field name="financialDiscount.discountRate" readonly="true"/>
+        <field name="financialDiscountDeadlineDate" readonly="true"/>
+        <field name="financialDiscountAmount" readonly="true"/>
+        <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+        <field name="amountRemainingAfterFinDiscount" readonly="true"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="pfpPanel" colSpan="12"
@@ -738,7 +738,7 @@
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
         hidden="true" showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
         readonly="true">
-        <field name="financialDiscount"/>
+        <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount"/>

@@ -231,7 +231,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
               || reconcile.getCreditMoveLine().getMove().getFunctionalOriginSelect()
                   == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT;
     }
-    if (!invoicePayment.getApplyFinancialDiscount()) {
+    if (!invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
       invoicePayment.setApplyFinancialDiscount(
           invoiceTerm.getFinancialDiscountDeadlineDate() != null
               && invoiceTerm.getApplyFinancialDiscount()

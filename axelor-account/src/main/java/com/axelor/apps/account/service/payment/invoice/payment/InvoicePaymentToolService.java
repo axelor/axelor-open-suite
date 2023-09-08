@@ -76,4 +76,7 @@ public interface InvoicePaymentToolService {
   List<Long> changeAmount(InvoicePayment invoicePayment, Long invoiceId) throws AxelorException;
 
   List<Long> loadInvoiceTerms(InvoicePayment invoicePayment, Long invoiceId) throws AxelorException;
+
+  public List<Long> computeDatasForFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException;
 }

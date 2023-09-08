@@ -203,9 +203,15 @@ public class InvoicePaymentController {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
-      Beans.get(InvoicePaymentToolService.class).computeFinancialDiscount(invoicePayment);
+      Long invoiceId =
+          Long.valueOf(
+              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
 
-      response.setValues(invoicePayment);
+      List<Long> invoiceTermIdList =
+          Beans.get(InvoicePaymentToolService.class)
+              .computeDatasForFinancialDiscount(invoicePayment, invoiceId);
+
+      response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -247,7 +253,6 @@ public class InvoicePaymentController {
       Map<String, Object> invoiceTermMap = new HashMap<String, Object>();
 
       invoiceTermMap.put("invoice", invoicePayment.getInvoice());
-      invoiceTermMap.put("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
 
       response.setValues(
           this.getInvoiceTermValuesMap(invoiceTermMap, invoicePayment, invoiceTermIdList));
@@ -277,6 +282,7 @@ public class InvoicePaymentController {
     invoiceTermMap.put(
         "financialDiscountTaxAmount", invoicePayment.getFinancialDiscountTaxAmount());
     invoiceTermMap.put("financialDiscountAmount", invoicePayment.getFinancialDiscountAmount());
+    invoiceTermMap.put("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
     return invoiceTermMap;
   }
 

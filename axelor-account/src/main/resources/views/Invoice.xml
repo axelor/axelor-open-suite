@@ -780,6 +780,16 @@ InvoiceSet.length > 0))"
           showIf="[2,3].includes(statusSelect) &amp;&amp; ( invoiceAutomaticMail || invoiceAutomaticMailOnValidate )"
           onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
       </panel>
+      <panel name="financialDiscountPanel" colSpan="12" title="Financial discount">
+        <field name="financialDiscount" readonlyIf="statusSelect == 3"
+          onChange="action-invoice-group-financial-discount"/>
+        <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
+        <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
+          <field name="financialDiscountRate" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+        </panel>
+      </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
         showTitle="false">
         <field name="debitBlockingOk"/>
@@ -823,17 +833,6 @@ InvoiceSet.length > 0))"
             colSpan="12" css="red">
             <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
           </field>
-        </panel>
-        <panel name="financialDiscountPanel" showIf="statusSelect > 2" colSpan="12">
-          <field name="financialDiscount" readonlyIf="amountPaid > 0"
-            onChange="action-invoice-group-financial-discount"/>
-          <field name="financialDiscountDeadlineDate" readonly="true"
-            showIf="financialDiscount"/>
-          <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
-            <field name="financialDiscountRate" readonly="true"/>
-            <field name="financialDiscountTotalAmount" readonly="true"/>
-            <field name="remainingAmountAfterFinDiscount" readonly="true"/>
-          </panel>
         </panel>
         <panel-related name="invoicePaymentListPanel" title="Payments details"
           field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
@@ -1514,6 +1513,8 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-attrs-operationsubtype-selection"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1660,6 +1661,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="action-invoice-method-update-final-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
@@ -2693,8 +2696,10 @@ InvoiceSet.length > 0))"
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="financialDiscount" expr="eval: partner.financialDiscount" if="partner"/>
-    <field name="financialDiscount" expr="eval: null" if="!partner"/>
+    <field name="financialDiscount" expr="eval: partner.financialDiscount"
+      if="partner &amp;&amp; financialDiscount == null"/>
+    <field name="financialDiscount" expr="eval: null"
+      if="!partner &amp;&amp; financialDiscount == null"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"
@@ -2708,8 +2713,6 @@ InvoiceSet.length > 0))"
     <field name="financialDiscountDeadlineDate"
       expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
       if="dueDate &amp;&amp; id != null &amp;&amp; financialDiscount != null"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="!partner || !partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: 0"
       if="!partner || !partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount" expr="eval: 0"

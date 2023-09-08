@@ -59,9 +59,13 @@
       <field name="invoice" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
     </panel>
-    <panel name="discountPanel" title="Financial discount" showIf="applyFinancialDiscount"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
-      <field name="applyFinancialDiscount" readonly="true"/>
+    <panel name="discountPanel" title="Financial discount"
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount()"
+      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0" showIf="financialDiscount">
+      <field name="applyFinancialDiscount"
+        onChange="action-invoice-payment-group-apply-financial-discount-on-change"/>
+      <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"
+        requiredIf="applyFinancialDiscount"/>
       <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
         showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
         readonly="true"/>
@@ -153,6 +157,13 @@
     <action name="action-invoice-payment-method-mass-payment-set-amount"/>
   </action-group>
 
+  <action-group name="action-invoice-payment-group-apply-financial-discount-on-change">
+    <action name="action-invoice-payment-record-manual-change"/>
+    <action name="action-invoice-payment-method-new-discount"/>
+  </action-group>
+
+
+
   <action-validate name="action-invoice-payment-validate-mass-payment">
     <error message="Please fill in the company bank details." if="companyBankDetails == null"/>
     <error message="Please fill in the date." if="paymentDate == null"/>
@@ -188,7 +199,6 @@
     <field name="financialDiscount"
       expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) AND self.financialDiscount is not null &quot;,_invoices).fetchOne()?.financialDiscount"/>
   </action-record>
-
 
   <action-attrs name="action-invoice-payment-attrs-new">
     <attribute for="amount" name="readonly"
