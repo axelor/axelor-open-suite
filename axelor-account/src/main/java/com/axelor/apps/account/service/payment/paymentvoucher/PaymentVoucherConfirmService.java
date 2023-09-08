@@ -846,6 +846,14 @@ public class PaymentVoucherConfirmService {
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     BigDecimal currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
 
+    companyAmountToPay =
+        invoiceTermService.adjustAmountInCompanyCurrency(
+            moveLineToPay.getInvoiceTermList(),
+            moveLineToPay.getAmountRemaining(),
+            companyAmountToPay,
+            amountToPay,
+            moveLineToPay.getCurrencyRate());
+
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             paymentMove,
@@ -867,10 +875,8 @@ public class PaymentVoucherConfirmService {
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(
         paymentMove, moveLine, paymentDate, false);
 
-    BigDecimal amountInCompanyCurrency = moveLine.getDebit().add(moveLine.getCredit());
-
     Reconcile reconcile =
-        reconcileService.createReconcile(moveLineToPay, moveLine, amountInCompanyCurrency, true);
+        reconcileService.createReconcile(moveLineToPay, moveLine, companyAmountToPay, true);
     if (reconcile != null) {
       log.debug("Reconcile : : : {}", reconcile);
       reconcileService.confirmReconcile(reconcile, true, true);

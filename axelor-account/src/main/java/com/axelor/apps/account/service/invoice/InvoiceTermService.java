@@ -318,4 +318,11 @@ public interface InvoiceTermService {
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
   boolean getPfpValidatorUserCondition(Invoice invoice);
+
+  BigDecimal adjustAmountInCompanyCurrency(
+      List<InvoiceTerm> invoiceTermList,
+      BigDecimal companyAmountRemaining,
+      BigDecimal amountToPayInCompanyCurrency,
+      BigDecimal amountToPay,
+      BigDecimal currencyRate);
 }
