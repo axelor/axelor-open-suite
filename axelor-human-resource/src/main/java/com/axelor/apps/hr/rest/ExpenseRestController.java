@@ -5,9 +5,11 @@ import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.rest.dto.ExpensePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpensePutRequest;
+import com.axelor.apps.hr.rest.dto.ExpenseRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseResponse;
 import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseCreateService;
+import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.inject.Beans;
@@ -112,6 +114,26 @@ public class ExpenseRestController {
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
     Beans.get(ExpenseValidateService.class).validate(expense);
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Refuse an expense",
+      tags = {"Expense"})
+  @Path("/refuse/{expenseId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response refuseExpense(
+      @PathParam("expenseId") Long expenseId, ExpenseRefusalPutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
+    Beans.get(ExpenseRefusalService.class)
+        .refuseWithReason(expense, requestBody.getGroundForRefusal());
 
     return ResponseConstructor.build(
         Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
