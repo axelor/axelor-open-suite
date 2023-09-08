@@ -228,7 +228,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     }
 
     Map<String, Object> variableAmountMap =
-        budgetScenarioService.buildVariableMap(globalBudgetTemplate.getBudgetScenario());
+        budgetScenarioService.getVariableMap(globalBudgetTemplate.getBudgetScenario(), 1);
 
     for (BudgetLevel groupBudgetLevel : globalBudgetTemplate.getBudgetLevelList()) {
       BudgetLevel optGroupBudgetLevel =

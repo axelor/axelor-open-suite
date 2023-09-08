@@ -42,10 +42,11 @@
         </panel>
 
         <panel name="generalPanel" colSpan="12" readonlyIf="statusSelect != 0">
-          <field name="code" colSpan="4" requiredIf="statusSelect == 0"/>
-          <field name="name" colSpan="4" requiredIf="statusSelect == 0"/>
-          <field name="company" canNew="false" colSpan="4"
+          <field name="code" colSpan="3" requiredIf="statusSelect == 0"/>
+          <field name="name" colSpan="3" requiredIf="statusSelect == 0"/>
+          <field name="company" canNew="false" colSpan="3"
             readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0" required="true"/>
+          <field name="company.currency" colSpan="3" readonly="true" hideIf="!company"/>
           <field name="fromDate" colSpan="4" requiredIf="statusSelect == 0"
             onChange="action-global-budget-validate-from-to-dates"/>
           <field name="toDate" colSpan="4" requiredIf="statusSelect == 0"

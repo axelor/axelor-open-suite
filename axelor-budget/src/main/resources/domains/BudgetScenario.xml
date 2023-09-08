@@ -9,12 +9,24 @@
 
     <string name="name" title="Name"/>
     <string name="code" title="Code"/>
+
+    <integer name="statusSelect" title="Status" selection="budget.scenario.status.select"
+      default="0"/>
+
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-many ref="com.axelor.apps.base.db.Year" name="yearSet" title="Years"/>
 
 
     <one-to-many name="budgetScenarioLineList" mappedBy="budgetScenario"
       ref="com.axelor.apps.budget.db.BudgetScenarioLine"/>
+
+    <extra-code>
+      <![CDATA[
+				//budget scenario status select
+				public static final int BUDGET_SCENARIO_STATUS_SELECT_DRAFT = 0;
+				public static final int BUDGET_SCENARIO_STATUS_SELECT_VALID = 1;
+	      ]]>
+    </extra-code>
 
 
   </entity>
