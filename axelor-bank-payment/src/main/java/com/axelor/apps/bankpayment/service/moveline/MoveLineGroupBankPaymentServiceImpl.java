@@ -21,6 +21,7 @@ package com.axelor.apps.bankpayment.service.moveline;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
@@ -55,6 +56,7 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
       MoveToolService moveToolService,
       AnalyticLineService analyticLineService,
       MoveAttrsService moveAttrsService,
+      MoveComputeService moveComputeService,
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService) {
     super(
@@ -68,7 +70,8 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
         moveLineToolService,
         moveToolService,
         analyticLineService,
-        moveAttrsService);
+        moveAttrsService,
+        moveComputeService);
     this.moveLineCheckBankPaymentService = moveLineCheckBankPaymentService;
     this.moveLineRecordBankPaymentService = moveLineRecordBankPaymentService;
   }

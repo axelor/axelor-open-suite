@@ -213,7 +213,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
   @Override
   public Map<String, Object> getOnLoadValuesMap(Move move) throws AxelorException {
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     valuesMap.put(
         "$validatePeriod",
@@ -246,7 +246,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
     moveRecordSetService.setOriginDate(move);
 
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
 
@@ -366,7 +366,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getMoveLineListOnChangeValuesMap(
       Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -625,7 +625,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveLineTaxService.autoTaxLineGenerateNoSave(move);
     moveCounterPartService.generateCounterpartMoveLine(move, dueDate);
 
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     valuesMap.put("moveLineList", move.getMoveLineList());
 
@@ -636,7 +636,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getGenerateTaxLinesOnClickValuesMap(Move move) throws AxelorException {
     moveLineTaxService.autoTaxLineGenerateNoSave(move);
 
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     valuesMap.put("moveLineList", move.getMoveLineList());
 
