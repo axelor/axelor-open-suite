@@ -12,6 +12,7 @@
       ref="com.axelor.apps.budget.db.BudgetDistribution" title="Budget Distribution"
       mappedBy="invoiceLine"/>
     <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
+    <!-- ajouter un scale et precision -->
 
   </entity>
 

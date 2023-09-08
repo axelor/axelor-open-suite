@@ -7,7 +7,9 @@
     model="com.axelor.apps.account.db.InvoiceLineTax">
     <field name="taxLine" width="400%" grid-view="tax-line-grid" form-view="tax-line-form"/>
     <field name="exTaxBase"/>
+    <!-- en devise societe -->
     <field name="taxTotal" aggregate="sum"/>
+    <!-- en devise societe -->
     <field name="vatSystemSelect"/>
   </grid>
 
@@ -20,8 +22,11 @@
       <field name="taxLine.tax.name"/>
       <field name="taxLine.value"/>
       <field name="exTaxBase"/>
+      <!-- en devise -->
       <field name="taxTotal"/>
+      <!-- en devise -->
       <field name="inTaxTotal"/>
+      <!-- en devise -->
       <field name="vatSystemSelect" readonly="true"/>
       <field name="subTotalExcludingFixedAssets" hidden="true"/>
       <field name="subTotalOfFixedAssets" hidden="true"/>

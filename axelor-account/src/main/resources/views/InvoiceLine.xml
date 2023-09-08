@@ -5,15 +5,22 @@
 
   <grid name="invoice-line-grid" title="Invoice lines"
     model="com.axelor.apps.account.db.InvoiceLine">
+
+
+    <!-- A Faire -->
     <hilite strong="true" color="default" if="typeSelect != 0"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <!-- en devise -->
     <field name="inTaxPrice" x-scale="2"/>
+    <!-- en devise -->
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="exTaxTotal" aggregate="sum"/>
+    <!-- en devise -->
     <field name="inTaxTotal" aggregate="sum"/>
+    <!-- en devise -->
     <field name="typeSelect" hidden="true"/>
   </grid>
 
@@ -51,6 +58,8 @@
     model="com.axelor.apps.account.db.InvoiceLine" width="large" readonlyIf="$isReadOnly"
     onNew="action-account-invoice-line-onnew-group"
     onLoad="action-group-account-invoice-line-onload">
+
+    <!-- A faire -->
     <panel name="titlePanel" showIf="typeSelect > 0">
       <field name="productName" title="Title" requiredIf="typeSelect != 0" colSpan="9"/>
       <field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line"/>
@@ -103,15 +112,18 @@
           form-view="unit-form" grid-view="unit-grid"/>
         <field name="price" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
+        <!-- en devise -->
         <field name="inTaxPrice" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           hidden="true"/>
+        <!-- en devise -->
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
             hideIf="discountTypeSelect == 0"/>
+          <!-- en devise -->
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
         <field name="taxLine" canEdit="false"
@@ -119,13 +131,17 @@
           grid-view="tax-line-grid" form-view="tax-line-form"
           domain="self.endDate = null or self.endDate &gt; :__date__"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
+        <!-- en devise -->
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
+        <!-- en devise -->
         <field name="$isReadOnly" hidden="true"/>
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="invoice" hidden="true"/>
         <field name="companyExTaxTotal" hidden="true"/>
+        <!-- en devise societe -->
         <field name="companyInTaxTotal" hidden="true"/>
+        <!-- en devise societe -->
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>

@@ -41,10 +41,12 @@
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
-    <field name="exTaxTotal" aggregate="sum" width="120"/>
-    <field name="inTaxTotal" aggregate="sum" width="120"/>
-    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="120"
+      x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
@@ -193,10 +195,12 @@
       width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
-    <field name="exTaxTotal" aggregate="sum" width="120"/>
-    <field name="inTaxTotal" aggregate="sum" width="120"/>
-    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="120"
+      x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -244,10 +248,11 @@
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="pfpValidateStatusSelect" title="PFP"
@@ -304,10 +309,11 @@
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidateStatusSelect" title="PFP"/>
@@ -352,9 +358,10 @@
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
@@ -373,9 +380,11 @@
     <field name="invoiceId" width="120"/>
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
   </grid>
@@ -1222,7 +1231,8 @@ InvoiceSet.length > 0))"
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
           colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"/>
-        <field name="amountRemaining" hidden="true"/>
+        <field name="amountRemaining" hidden="true" x-scale="currency.numberOfDecimals"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
         <field name="hasPendingPayments" hidden="true"/>
         <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
           canView="false"/>

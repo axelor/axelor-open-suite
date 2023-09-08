@@ -17,6 +17,7 @@
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true" hidden="false">
+            <!-- en devise societe -->
             <viewer depends="companyExTaxTotal,$currencySymbol">
               <![CDATA[
                               <dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
@@ -26,6 +27,7 @@
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true"/>
+          <!-- en devise societe -->
           <field name="budget"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>

@@ -8,6 +8,7 @@
     <hilite if="$moment(paymentDate).diff(invoice.dueDate,'days') &gt; 0" color="warning"/>
     <field name="paymentDate"/>
     <field name="amount" aggregate="sum"/>
+    <!-- en devise ci dessous -->
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
     <field name="companyBankDetails" form-view="bank-details-form"
@@ -34,6 +35,7 @@
     <panel name="mainPanel" readonlyIf="statusSelect != 0">
       <field name="typeSelect" showIf="id" colSpan="12"/>
       <field name="amount" onChange="action-invoice-payment-group-change-amounts"/>
+      <!-- en devise ci dessous -->
       <field name="currency" canEdit="false" readonlyIf="$isMultiCurrency"
         form-view="currency-form" grid-view="currency-grid"
         onChange="action-invoice-payment-group-change-amounts"/>
@@ -65,13 +67,18 @@
       <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
         showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
         readonly="true"/>
+      <!-- a definir -->
       <panel name="financialDiscountAmountPanel"
         showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonly="true" colSpan="12">
+        <!-- a definir -->
         <field name="financialDiscount"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
+        <!-- a definir -->
         <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
+        <!-- a definir -->
         <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
+        <!-- a definir -->
       </panel>
     </panel>
     <panel name="otherDetailsPanel" showIf="id">
