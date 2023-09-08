@@ -24,11 +24,11 @@ import com.google.inject.Inject;
 import java.time.LocalDate;
 import org.apache.commons.collections.CollectionUtils;
 
-public class MoveComputeServiceImpl implements MoveComputeService {
+public class MoveCutOffServiceImpl implements MoveCutOffService {
   protected MoveLineService moveLineService;
 
   @Inject
-  public MoveComputeServiceImpl(MoveLineService moveLineService) {
+  public MoveCutOffServiceImpl(MoveLineService moveLineService) {
     this.moveLineService = moveLineService;
   }
 
