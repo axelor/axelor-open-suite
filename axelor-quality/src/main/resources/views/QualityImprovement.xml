@@ -193,6 +193,14 @@
           </editor>
         </field>
       </panel>
+
+      <panel name="analysisCostPanel" title="Analysis costs">
+        <panel-dashlet name="costsListPanel"
+          action="custom:quality.improvements.costs.lists.per.decision" colSpan="6" height="350"/>
+        <panel-dashlet name="costsDistributionPanel"
+          action="chart:chart.quality.improvements.costs.distributions.per.decision" colSpan="6"
+          height="350"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -326,6 +334,7 @@
     <action name="action-quality-improvement-attrs-set-defaults" if="qiDetection"/>
     <action name="action-quality-improvement-attrs-set-dummy-field-values-onload"
       if="qiIdentification"/>
+    <action name="action-quality-improvement-refresh-analysis-costs-dashlets"/>
   </action-group>
 
   <action-group name="action-quality-improvement-group-customer-partner-on-change">
@@ -638,5 +647,10 @@
   <action-method name="action-quality-improvement-method-set-advancement">
     <call class="com.axelor.apps.quality.web.QIAnalysisController" method="setAdvancement"/>
   </action-method>
+
+  <action-attrs name="action-quality-improvement-refresh-analysis-costs-dashlets">
+    <attribute name="refresh" for="costsListPanel" expr="eval: true"/>
+    <attribute name="refresh" for="costsDistributionPanel" expr="eval: true"/>
+  </action-attrs>
 
 </object-views>
