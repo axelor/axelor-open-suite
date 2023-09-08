@@ -49,6 +49,8 @@ public interface MoveLineTaxService {
       MoveLine customerPaymentMoveLine, MoveLine invoiceMoveLine, Reconcile reconcile)
       throws AxelorException;
 
+  boolean isGenerateMoveLineForAutoTax(String accountType);
+
   int getVatSystem(Move move, MoveLine moveline) throws AxelorException;
 
   void checkTaxMoveLines(Move move) throws AxelorException;
