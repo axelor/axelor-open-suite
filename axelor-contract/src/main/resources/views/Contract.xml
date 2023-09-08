@@ -132,7 +132,8 @@
         <panel title="Notes" stacked="true" name="notesPanel">
           <field name="note" showTitle="false"/>
         </panel>
-        <panel name="pricesPerYear" title="Prices per year">
+        <panel name="pricesPerYearPanel" title="Prices per year"
+          showIf="currentContractVersion.isPeriodicInvoicing">
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false" readonly="true">
             <viewer
@@ -347,8 +348,9 @@
       </panel>
 
       <panel name="commercialConditionPanel" title="Commercial condition" hidden="true"
-        showIf="targetTypeSelect == 1">
-        <field name="isToRevaluate" widget="boolean-switch" colSpan="12"/>
+        showIf="targetTypeSelect == 1 &amp;&amp; currentContractVersion.isPeriodicInvoicing">
+        <field name="isToRevaluate" widget="boolean-switch" colSpan="12"
+          onChange="action-contract-method-hide-fields-list"/>
         <field name="revaluationPeriod"
           requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
           domain="self.applicationTypeSelect = 2"/>
@@ -396,6 +398,7 @@
     <action name="action-contract-attrs-require-payment-config"/>
     <action name="action-contract-attrs-readonly-by-config"/>
     <action name="action-contract-readonly-if-unchangable"/>
+    <action name="action-contract-method-hide-fields-list"/>
   </action-group>
 
   <action-attrs name="action-contract-attrs-readonly-by-config">
@@ -596,6 +599,10 @@
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
+
+  <action-method name="action-contract-method-hide-fields-list">
+    <call class="com.axelor.apps.contract.web.ContractController" method="hideFields"/>
+  </action-method>
 
   <search-filters name="contract-filters"
     model="com.axelor.apps.contract.db.Contract" title="Contract filters">
