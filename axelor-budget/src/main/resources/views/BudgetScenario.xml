@@ -15,24 +15,44 @@
     name="budget-scenario-form" width="large"
     onLoad="action-budget-scenario-method-change-column-names">
     <panel name="mainPanel" colSpan="12">
+      <field name="statusSelect" showTitle="false" readonly="true" colSpan="8"
+        widget="NavSelect"/>
+    </panel>
+    <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect == 1">
 
-      <field name="name" title="Name" required="true"/>
-      <field name="code" title="Code" required="true"/>
-      <field name="company" required="true"/>
+      <field name="name" title="Name" requiredIf="statusSelect == 0"/>
+      <field name="code" title="Code" requiredIf="statusSelect == 0"/>
+      <field name="company" requiredIf="statusSelect == 0"/>
       <field name="yearSet" widget="TagSelect" showIf="company"
         domain="self.company = :company AND self.typeSelect = 1"
         onChange="action-budget-scenario-group-year-onchange" canNew="false"/>
-      <field name="budgetScenarioLineList" title="Budget Scenario Lines"
+      <field name="budgetScenarioLineList" title="Budget Scenario Lines" height="550"
         grid-view="budget-scenario-line-grid" form-view="budget-scenario-line-form" colSpan="12"/>
+    </panel>
+    <panel name="buttonPanel" sidebar="true">
+      <button name="draftBtn" title="draftBtn"
+        showIf="statusSelect == 1 &amp;&amp; budgetScenarioLineList.length &gt; 0" colSpan="12"
+        onClick="action-budget-scenario-method-draft,save,action-budget-scenario-method-change-column-names"/>
+      <button name="validateBtn" title="Validate"
+        showIf="statusSelect == 0 &amp;&amp; budgetScenarioLineList.length &gt; 0" colSpan="12"
+        onClick="action-budget-scenario-method-validate,save,action-budget-scenario-method-change-column-names"/>
+
     </panel>
   </form>
 
   <action-group name="action-budget-scenario-group-year-onchange">
     <action name="save"/>
-    <action name="action-budget-scenario-method-change-column-names"/>
     <action name="action-budget-scenario-method-remove-unused-columns"/>
+    <action name="action-budget-scenario-method-change-column-names"/>
   </action-group>
 
+  <action-method name="action-budget-scenario-method-draft">
+    <call class="com.axelor.apps.budget.web.BudgetScenarioController" method="draftScenario"/>
+  </action-method>
+
+  <action-method name="action-budget-scenario-method-validate">
+    <call class="com.axelor.apps.budget.web.BudgetScenarioController" method="validateScenario"/>
+  </action-method>
 
   <action-method name="action-budget-scenario-method-change-column-names">
     <call class="com.axelor.apps.budget.web.BudgetScenarioController"

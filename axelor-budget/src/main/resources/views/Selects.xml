@@ -79,4 +79,9 @@
     <option value="2">Required</option>
   </selection>
 
+  <selection name="budget.scenario.status.select">
+    <option value="0">Draft</option>
+    <option value="1">Validate</option>
+  </selection>
+
 </object-views>

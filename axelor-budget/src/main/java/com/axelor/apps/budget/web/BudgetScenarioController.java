@@ -1,8 +1,10 @@
 package com.axelor.apps.budget.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetScenario;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
 import com.axelor.apps.budget.service.BudgetScenarioLineService;
+import com.axelor.apps.budget.service.BudgetScenarioService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -40,5 +42,23 @@ public class BudgetScenarioController {
           budgetScenarioLine, Math.min(budgetScenario.getYearSet().size(), 6));
     }
     response.setValue("budgetScenarioLineList", budgetScenario.getBudgetScenarioLineList());
+  }
+
+  public void draftScenario(ActionRequest request, ActionResponse response) {
+    BudgetScenario budgetScenario = request.getContext().asType(BudgetScenario.class);
+
+    Beans.get(BudgetScenarioService.class).draftScenario(budgetScenario);
+    response.setValues(budgetScenario);
+  }
+
+  public void validateScenario(ActionRequest request, ActionResponse response) {
+    try {
+      BudgetScenario budgetScenario = request.getContext().asType(BudgetScenario.class);
+
+      Beans.get(BudgetScenarioService.class).validateScenario(budgetScenario);
+      response.setValues(budgetScenario);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
