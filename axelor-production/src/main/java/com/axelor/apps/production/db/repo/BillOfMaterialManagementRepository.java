@@ -26,7 +26,14 @@ import java.util.List;
 
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
 
-  @Inject protected BillOfMaterialLineRepository billOfMaterialLineRepository;
+  protected BillOfMaterialLineRepository billOfMaterialLineRepository;
+
+  @Inject
+  public BillOfMaterialManagementRepository(
+      BillOfMaterialLineRepository billOfMaterialLineRepository) {
+
+    this.billOfMaterialLineRepository = billOfMaterialLineRepository;
+  }
 
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {

@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="bill-of-material-line-grid" title="Bills of material"
+  <grid name="bill-of-material-line-grid" title="Bill of materials"
     model="com.axelor.apps.production.db.BillOfMaterialLine">
     <field name="priority" width="71"/>
     <field name="qty" aggregate="sum" x-scale="2"/>

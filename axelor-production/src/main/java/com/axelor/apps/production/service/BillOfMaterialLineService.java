@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 public interface BillOfMaterialLineService {
 
-  BillOfMaterialLine newBillOfMaterial(
+  BillOfMaterialLine createBillOfMaterialLine(
       Product product,
       BillOfMaterial billOfMaterial,
       BigDecimal qty,

@@ -34,12 +34,12 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
       bom = billOfMaterialService.getBOM(product, billOfMaterial.getCompany());
     }
 
-    return newBillOfMaterial(
+    return createBillOfMaterialLine(
         product, bom, BigDecimal.ONE, billOfMaterial.getUnit(), priority, false);
   }
 
   @Override
-  public BillOfMaterialLine newBillOfMaterial(
+  public BillOfMaterialLine createBillOfMaterialLine(
       Product product,
       BillOfMaterial billOfMaterial,
       BigDecimal qty,
@@ -65,7 +65,7 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
     BigDecimal qty = billOfMaterial.getQty();
     boolean hasNoManageStock = billOfMaterial.getHasNoManageStock();
 
-    return newBillOfMaterial(
+    return createBillOfMaterialLine(
         product, billOfMaterial, qty, billOfMaterial.getUnit(), null, hasNoManageStock);
   }
 
