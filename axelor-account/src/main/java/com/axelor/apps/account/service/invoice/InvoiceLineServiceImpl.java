@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -73,6 +74,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected TaxService taxService;
   protected InternationalService internationalService;
+  protected InvoiceLineAttrsService invoiceLineAttrsService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -86,7 +88,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       TaxService taxService,
-      InternationalService internationalService) {
+      InternationalService internationalService,
+      InvoiceLineAttrsService invoiceLineAttrsService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -99,6 +102,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
     this.taxService = taxService;
     this.internationalService = internationalService;
+    this.invoiceLineAttrsService = invoiceLineAttrsService;
   }
 
   @Override
@@ -690,5 +694,20 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             .orElse(BigDecimal.ZERO);
 
     return invoiceLine.getPrice().add(taxValue);
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    invoiceLineAttrsService.setPriceScale(invoice, attrsMap);
+    invoiceLineAttrsService.setInTaxPriceScale(invoice, attrsMap);
+    invoiceLineAttrsService.setDiscountAmountScale(invoice, attrsMap);
+    invoiceLineAttrsService.setExTaxTotalScale(invoice, attrsMap);
+    invoiceLineAttrsService.setInTaxTotalScale(invoice, attrsMap);
+    invoiceLineAttrsService.setCompanyExTaxTotalScale(invoice, attrsMap);
+    invoiceLineAttrsService.setCompanyInTaxTotalScale(invoice, attrsMap);
+
+    return attrsMap;
   }
 }

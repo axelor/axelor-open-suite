@@ -593,4 +593,15 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void setScale(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      Invoice invoice = this.getInvoice(request.getContext());
+
+      response.setAttrs(Beans.get(InvoiceLineService.class).setScale(invoiceLine, invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

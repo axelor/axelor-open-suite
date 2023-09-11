@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -71,6 +72,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
       SupplierCatalogService supplierCatalogService,
       TaxService taxService,
       InternationalService internationalService,
+      InvoiceLineAttrsService invoiceLineAttrsService,
       BudgetService budgetService,
       BudgetRepository budgetRepository,
       BudgetDistributionService budgetDistributionService) {
@@ -86,7 +88,8 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
         invoiceLineAnalyticService,
         supplierCatalogService,
         taxService,
-        internationalService);
+        internationalService,
+        invoiceLineAttrsService);
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
