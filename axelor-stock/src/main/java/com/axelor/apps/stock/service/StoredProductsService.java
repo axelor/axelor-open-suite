@@ -10,6 +10,7 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import java.math.BigDecimal;
 
 public interface StoredProductsService {
+
   public void createStockMoveAndStockMoveLine(StoredProducts storedProducts) throws AxelorException;
 
   public void cancelStockMoveAndStockMoveLine(StoredProducts storedProducts) throws AxelorException;

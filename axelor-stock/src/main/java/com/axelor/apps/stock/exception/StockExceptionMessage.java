@@ -280,23 +280,23 @@ public final class StockExceptionMessage {
 
   /** Stock mass move, stored products and picked products services and controllers */
   public static final String MASS_STOCK_MOVE_EMPTY_FIELD = /*$$(*/
-      "One of these values is missing : product ; tracking number, to stock location ; unit." /*)*/;
+      "One of these values is missing : product ; tracking number, to stock location ; unit. (%s %s)" /*)*/;
 
   public static final String MASS_STOCK_MOVE_EMPTY_FIELD_WITHOUT_TN = /*$$(*/
-      "One of these values is missing : to stock location ; unit." /*)*/;
+      "One of these values is missing : to stock location ; unit. (%s %s)" /*)*/;
   public static final String MASS_STOCK_MOVE_EMPTY_TRACKING_NUMBER = /*$$(*/
-      "Tracking number is missing." /*)*/;
+      "Tracking number is missing. (%s %s)" /*)*/;
   public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
       "There's no configured sequence for stock's mass moves for the company %s" /*)*/;
 
   public static final String PICKED_QUANTITY_IS_ZERO = /*$$(*/
-      "Picked quantity is equal to 0" /*)*/;
+      "Picked quantity is equal to 0 (%s %s)" /*)*/;
 
   public static final String PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
-      "Picked quantity is greater than current quantity" /*)*/;
+      "Picked quantity is greater than current quantity (%s %s)" /*)*/;
 
   public static final String ALREADY_PICKED_PRODUCT = /*$$(*/
-      "These products have already been picked" /*)*/;
+      "These products have already been picked (%s %s)" /*)*/;
 
   public static final String ALREADY_STORED_PRODUCT = /*$$(*/
       "These products have already been stored" /*)*/;
@@ -308,7 +308,7 @@ public final class StockExceptionMessage {
       "At least one line has a stored quantity is equal to 0" /*)*/;
 
   public static final String PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE = /*$$(*/
-      "The product is not available in the stock location source indicated" /*)*/;
+      "The product is not available in the stock location source indicated (%s %s)" /*)*/;
 
   public static final String MANY_PRODUCTS_HAVE_NOT_BEEN_PICKED = /*$$(*/
       "Many products have not been picked due to stock mismatch" /*)*/;
@@ -320,8 +320,8 @@ public final class StockExceptionMessage {
       "At least one line has a stored quantity  greater than current quantity" /*)*/;
 
   public static final String STORED_QUANTITY_IS_ZERO = /*$$(*/
-      "Stored quantity is equal to 0" /*)*/;
+      "Stored quantity is equal to 0 (%s %s)" /*)*/;
 
   public static final String STORED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
-      "Stored quantity is greater than current quantity" /*)*/;
+      "Stored quantity is greater than current quantity (%s %s)" /*)*/;
 }

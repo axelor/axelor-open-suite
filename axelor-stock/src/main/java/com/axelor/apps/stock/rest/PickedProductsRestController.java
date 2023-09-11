@@ -52,7 +52,7 @@ public class PickedProductsRestController {
   @Path("/cancel-picking/{id}")
   @POST
   @HttpExceptionHandler
-  public Response cancelPicking(@PathParam("id") Long pickedProductId) {
+  public Response cancelPicking(@PathParam("id") Long pickedProductId) throws AxelorException {
     new SecurityCheck().writeAccess(PickedProducts.class).writeAccess(StockMove.class).check();
     PickedProducts pickedProduct =
         ObjectFinder.find(PickedProducts.class, pickedProductId, ObjectFinder.NO_VERSION);

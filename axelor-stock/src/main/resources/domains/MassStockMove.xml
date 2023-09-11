@@ -20,6 +20,16 @@
       title="Picked products" mappedBy="massStockMove"/>
     <one-to-many name="storedProductsList" ref="com.axelor.apps.stock.db.StoredProducts"
       title="Stored products" mappedBy="massStockMove"/>
+
+    <extra-code><![CDATA[
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_IN_PROGRESS = 2;
+		public static final int STATUS_REALIZED = 3;
+		public static final int STATUS_CANCELED = 4;
+
+	]]></extra-code>
+
   </entity>
 
 </domain-models>

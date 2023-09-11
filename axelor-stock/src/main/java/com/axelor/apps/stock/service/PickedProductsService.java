@@ -15,7 +15,7 @@ public interface PickedProductsService {
       MassStockMove massStockMove, PickedProducts pickedProducts) throws AxelorException;
 
   public void cancelStockMoveAndStockMoveLine(
-      MassStockMove massStockMove, PickedProducts pickedProducts);
+      MassStockMove massStockMove, PickedProducts pickedProducts) throws AxelorException;
 
   public PickedProducts createPickedProduct(
       MassStockMove massStockMove,

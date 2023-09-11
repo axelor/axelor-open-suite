@@ -3,72 +3,50 @@ package com.axelor.apps.stock.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.db.PickedProducts;
-import com.axelor.apps.stock.db.StoredProducts;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.MassStockMoveService;
-import com.axelor.apps.stock.service.PickedProductsService;
-import com.axelor.apps.stock.service.StoredProductsService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public class MassStockMoveController {
 
-  public void importProductFromStockLocation(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
-    massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
-    Beans.get(MassStockMoveService.class).importProductFromStockLocation(massStockMove);
-    response.setReload(true);
+  public void importProductFromStockLocation(ActionRequest request, ActionResponse response) {
+    try {
+      MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+      massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
+      Beans.get(MassStockMoveService.class).importProductFromStockLocation(massStockMove);
+      response.setReload(true);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
-  @Transactional
   public void realizePicking(ActionRequest request, ActionResponse response) {
     MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
     massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
-    boolean isQtyEqualZero = false;
-    boolean isGreaterThan = false;
-    PickedProductsService pickedProductsService = Beans.get(PickedProductsService.class);
-    for (PickedProducts pickedProducts : massStockMove.getPickedProductsList()) {
-      if (pickedProducts.getPickedQty().compareTo(BigDecimal.ZERO) == 0) {
-        isQtyEqualZero = true;
-      }
-      if (pickedProducts.getPickedQty().compareTo(pickedProducts.getCurrentQty()) == 1) {
-        isGreaterThan = true;
-      }
-      try {
-        pickedProductsService.createStockMoveAndStockMoveLine(massStockMove, pickedProducts);
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-      }
-    }
-    if (isQtyEqualZero && isGreaterThan) {
-      response.setAlert(
-          I18n.get(StockExceptionMessage.AT_LEAST_ONE_PICKED_QUANTITY_IS_ZERO)
-              + ". "
-              + I18n.get(
-                  StockExceptionMessage.AT_LEAST_ONE_PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY));
-    } else if (isQtyEqualZero) {
+
+    if (massStockMove.getPickedProductsList().stream()
+        .anyMatch(it -> BigDecimal.ZERO.compareTo(it.getPickedQty()) == 0)) {
       response.setAlert(I18n.get(StockExceptionMessage.AT_LEAST_ONE_PICKED_QUANTITY_IS_ZERO));
-    } else if (isGreaterThan) {
+    }
+    if (massStockMove.getPickedProductsList().stream()
+        .anyMatch(it -> it.getPickedQty().compareTo(it.getCurrentQty()) == 1)) {
       response.setAlert(
           I18n.get(StockExceptionMessage.AT_LEAST_ONE_PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY));
     }
+    Beans.get(MassStockMoveService.class).realizePicking(massStockMove);
+
     response.setReload(true);
   }
 
   public void cancelPicking(ActionRequest request, ActionResponse response) {
     MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
     massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
-    PickedProductsService pickedProductsService = Beans.get(PickedProductsService.class);
-    for (PickedProducts pickedProducts : massStockMove.getPickedProductsList()) {
-      pickedProductsService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProducts);
-    }
+    Beans.get(MassStockMoveService.class).cancelPicking(massStockMove);
     Beans.get(MassStockMoveService.class).setStatusSelectToDraft(massStockMove);
     response.setReload(true);
   }
@@ -86,44 +64,26 @@ public class MassStockMoveController {
       throws AxelorException {
     MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
     massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
-    boolean isGreaterThan = false;
-    boolean isQtyEqualZero = false;
-    StoredProductsService storedProductsService = Beans.get(StoredProductsService.class);
-    for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
-      if (storedProducts.getStoredQty().compareTo(storedProducts.getCurrentQty()) == 1) {
-        isGreaterThan = true;
-      }
-      if (storedProducts.getStoredQty().compareTo(BigDecimal.ZERO) == 0) {
-        isQtyEqualZero = true;
-      }
-      try {
-        storedProductsService.createStockMoveAndStockMoveLine(storedProducts);
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-      }
-    }
-    if (isQtyEqualZero && isGreaterThan) {
-      response.setAlert(
-          I18n.get(StockExceptionMessage.AT_LEAST_ONE_STORED_QUANTITY_IS_ZERO)
-              + ". "
-              + I18n.get(
-                  StockExceptionMessage.AT_LEAST_ONE_STORED_QUANTITY_GREATER_THAN_CURRENT_QTY));
-    } else if (isQtyEqualZero) {
+
+    if (massStockMove.getStoredProductsList().stream()
+        .anyMatch(it -> BigDecimal.ZERO.compareTo(it.getStoredQty()) == 0)) {
       response.setAlert(I18n.get(StockExceptionMessage.AT_LEAST_ONE_STORED_QUANTITY_IS_ZERO));
-    } else if (isGreaterThan) {
+    }
+    if (massStockMove.getStoredProductsList().stream()
+        .anyMatch(it -> it.getStoredQty().compareTo(it.getCurrentQty()) == 1)) {
       response.setAlert(
           I18n.get(StockExceptionMessage.AT_LEAST_ONE_STORED_QUANTITY_GREATER_THAN_CURRENT_QTY));
     }
+
+    Beans.get(MassStockMoveService.class).realizeStorage(massStockMove);
+
     response.setReload(true);
   }
 
-  public void cancelStorage(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancelStorage(ActionRequest request, ActionResponse response) {
     MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
     massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
-    StoredProductsService storedProductsService = Beans.get(StoredProductsService.class);
-    for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
-      storedProductsService.cancelStockMoveAndStockMoveLine(storedProducts);
-    }
+    Beans.get(MassStockMoveService.class).cancelStorage(massStockMove);
     response.setReload(true);
   }
 }
