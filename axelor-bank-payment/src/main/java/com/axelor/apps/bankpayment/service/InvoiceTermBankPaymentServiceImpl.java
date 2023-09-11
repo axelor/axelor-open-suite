@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -51,6 +53,8 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
       UserRepository userRepo,
+      JournalService journalService,
+      PartnerAccountService partnerAccountService,
       ScaleServiceAccount scaleServiceAccount,
       BankOrderLineOriginRepository bankOrderLineOriginRepository) {
     super(
@@ -63,6 +67,8 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
         reconcileService,
         invoicePaymentCreateService,
         userRepo,
+        journalService,
+        partnerAccountService,
         scaleServiceAccount);
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
   }
