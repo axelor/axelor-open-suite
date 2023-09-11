@@ -8,7 +8,8 @@
     <field name="partner1" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-partner-link-attrs-set-partners-domain"/>
     <field name="partnerLinkType" form-view="partner-link-type-form"
-      grid-view="partner-link-type-grid"/>
+      grid-view="partner-link-type-grid"
+      onSelect="action-partner-link-attrs-set-partner-link-type-domain"/>
     <field name="partner2" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-partner-link-attrs-set-partners-domain"/>
   </grid>
@@ -24,7 +25,8 @@
   <grid name="partner-link-partner-2-grid" title="Partner relations"
     model="com.axelor.apps.base.db.PartnerLink" editable="true">
     <field name="partnerLinkType" form-view="partner-link-type-form"
-      grid-view="partner-link-type-grid" target-name="link1Name"/>
+      grid-view="partner-link-type-grid" target-name="link1Name"
+      onSelect="action-partner-link-attrs-set-partner-link-type-domain"/>
     <field name="partner1" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-partner-link-attrs-set-partners-domain"/>
   </grid>
@@ -57,7 +59,19 @@
     <attribute name="domain" for="partner1"
       expr="eval: &quot; self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE) AND NOT self.id = ${__parent__?.id} &quot;"/>
     <attribute name="domain" for="partner2"
-      expr="eval: &quot; self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE) AND NOT self.id = ${__parent__?.id} &quot;"/>
+      expr="eval: &quot; self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE) AND NOT self.id = ${__parent__?.id} &quot;"
+      if="partnerLinkType?.typeSelect != 'Payed by'"/>
+    <attribute name="domain" for="partner2"
+      expr="eval: &quot; self.isSubrogation IS TRUE AND NOT self.id = ${__parent__?.id} &quot;"
+      if="partnerLinkType?.typeSelect == 'Payed by'"/>
+    <attribute name="domain" for="partner2" expr="eval: &quot; self.id = 0 &quot;"
+      if="partnerLinkType == null"/>
+  </action-attrs>
+
+  <action-attrs name="action-partner-link-attrs-set-partner-link-type-domain">
+    <attribute name="domain" for="partnerLinkType"
+      expr="eval: &quot; NOT self.typeSelect = 'Payed by' &quot;" if="!__parent__?.isSubrogation"/>
+    <attribute name="domain" for="partnerLinkType" expr="" if="__parent__?.isSubrogation"/>
   </action-attrs>
 
   <action-attrs name="action-partner-link-attrs-set-partner-1-readonly">
