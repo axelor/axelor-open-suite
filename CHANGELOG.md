@@ -1,3 +1,32 @@
+## [7.0.9] (2023-09-11)
+
+#### Changes
+
+* API: improve response message on object creation.
+
+#### Fixed
+
+* API Stock: fixed an issue when creating a stock move line where the quantity was not flagged as modified manually.
+* Fixed asset: fixed never ending depreciation lines generation if there is a gap of more than one year.
+* Product: on product creation, fills the currency with the currency from the company of the logged user.
+* Invoice: fixed wrong translations on ventilate error.
+* Manufacturing API: improved behaviour on operation order status change.
+* Account: fixed an issue preventing the user from deleting accounts that have compatible accounts.
+* Operation order: fixed workflow issues
+
+Resuming an operation order in a grid or a form has now the same process and will not affect other orders.
+When pausing an operation order, if every other order is also in stand by, the manuf order will also be paused.
+
+* Invoice line: set analytic accounting panel to readonly.
+* Sale/Purchase order and stock move: fixed wrong filters when selecting stock locations, the filters did not correctly followed the stock location configuration.
+* Stock move: fixed 'NullPointerException' error when emptying product on stock move line.
+* Payment session: fixed generated payment move lines on a partner balance account not having an invoice term.
+* Manufacturing order: fixed an issue where some planning processes were not executed.
+* Move template: fixed copied move template being valid.
+* Invoice term: fixed wrong amount in invoice term generation.
+* Journal: balance tag is now correctly computed.
+* Manufacturing order: when generating a multi level manufacturing order, correctly fills the partner.
+
 ## [7.0.8] (2023-08-24)
 
 #### Fixed
@@ -474,6 +503,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.9]: https://github.com/axelor/axelor-open-suite/compare/v7.0.8...v7.0.9
 [7.0.8]: https://github.com/axelor/axelor-open-suite/compare/v7.0.7...v7.0.8
 [7.0.7]: https://github.com/axelor/axelor-open-suite/compare/v7.0.6...v7.0.7
 [7.0.6]: https://github.com/axelor/axelor-open-suite/compare/v7.0.5...v7.0.6
