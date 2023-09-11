@@ -59,8 +59,8 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingServiceImpl;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.PartnerStockSettingsServiceImpl;
-import com.axelor.apps.stock.service.PickedProductsService;
-import com.axelor.apps.stock.service.PickedProductsServiceImpl;
+import com.axelor.apps.stock.service.PickedProductService;
+import com.axelor.apps.stock.service.PickedProductServiceImpl;
 import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
@@ -84,8 +84,8 @@ import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.stock.service.StockMoveUpdateServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
-import com.axelor.apps.stock.service.StoredProductsService;
-import com.axelor.apps.stock.service.StoredProductsServiceImpl;
+import com.axelor.apps.stock.service.StoredProductService;
+import com.axelor.apps.stock.service.StoredProductServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationServiceImpl;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
@@ -141,7 +141,7 @@ public class StockModule extends AxelorModule {
     bind(StockMoveCheckWapService.class).to(StockMoveCheckWapServiceImpl.class);
     bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
     bind(MassStockMoveService.class).to(MassStockMoveServiceImpl.class);
-    bind(PickedProductsService.class).to(PickedProductsServiceImpl.class);
-    bind(StoredProductsService.class).to(StoredProductsServiceImpl.class);
+    bind(PickedProductService.class).to(PickedProductServiceImpl.class);
+    bind(StoredProductService.class).to(StoredProductServiceImpl.class);
   }
 }

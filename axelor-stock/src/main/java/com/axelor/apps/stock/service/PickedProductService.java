@@ -3,21 +3,21 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.db.PickedProducts;
+import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import java.math.BigDecimal;
 
-public interface PickedProductsService {
+public interface PickedProductService {
 
   public void createStockMoveAndStockMoveLine(
-      MassStockMove massStockMove, PickedProducts pickedProducts) throws AxelorException;
+      MassStockMove massStockMove, PickedProduct pickedProduct) throws AxelorException;
 
   public void cancelStockMoveAndStockMoveLine(
-      MassStockMove massStockMove, PickedProducts pickedProducts) throws AxelorException;
+      MassStockMove massStockMove, PickedProduct pickedProduct) throws AxelorException;
 
-  public PickedProducts createPickedProduct(
+  public PickedProduct createPickedProduct(
       MassStockMove massStockMove,
       Product pickedProduct,
       TrackingNumber trackingNumber,

@@ -7,11 +7,11 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.db.PickedProducts;
+import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.StoredProducts;
+import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
-import com.axelor.apps.stock.db.repo.PickedProductsRepository;
+import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -24,32 +24,32 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
 
   protected MassStockMoveRepository massStockMoveRepository;
   protected SequenceService sequenceService;
-  protected PickedProductsRepository pickedProductRepo;
+  protected PickedProductRepository pickedProductRepo;
   protected StockLocationLineRepository stockLocationLineRepository;
-  protected PickedProductsService pickedProductsService;
-  protected StoredProductsService storedProductsService;
+  protected PickedProductService pickedProductService;
+  protected StoredProductService storedProductService;
 
   @Inject
   public MassStockMoveServiceImpl(
       MassStockMoveRepository massStockMoveRepository,
       SequenceService sequenceService,
-      PickedProductsRepository pickedProductRepo,
+      PickedProductRepository pickedProductRepo,
       StockLocationLineRepository stockLocationLineRepository,
-      PickedProductsService pickedProductsService,
-      StoredProductsService storedProductsService) {
+      PickedProductService pickedProductService,
+      StoredProductService storedProductService) {
     this.massStockMoveRepository = massStockMoveRepository;
     this.sequenceService = sequenceService;
     this.pickedProductRepo = pickedProductRepo;
     this.stockLocationLineRepository = stockLocationLineRepository;
-    this.pickedProductsService = pickedProductsService;
-    this.storedProductsService = storedProductsService;
+    this.pickedProductService = pickedProductService;
+    this.storedProductService = storedProductService;
   }
 
   @Override
   public void realizePicking(MassStockMove massStockMove) {
-    for (PickedProducts pickedProducts : massStockMove.getPickedProductsList()) {
+    for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
       try {
-        pickedProductsService.createStockMoveAndStockMoveLine(massStockMove, pickedProducts);
+        pickedProductService.createStockMoveAndStockMoveLine(massStockMove, pickedProduct);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -58,9 +58,9 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
 
   @Override
   public void realizeStorage(MassStockMove massStockMove) {
-    for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
+    for (StoredProduct storedProduct : massStockMove.getStoredProductList()) {
       try {
-        storedProductsService.createStockMoveAndStockMoveLine(storedProducts);
+        storedProductService.createStockMoveAndStockMoveLine(storedProduct);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -69,9 +69,9 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
 
   @Override
   public void cancelPicking(MassStockMove massStockMove) {
-    for (PickedProducts pickedProducts : massStockMove.getPickedProductsList()) {
+    for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
       try {
-        pickedProductsService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProducts);
+        pickedProductService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProduct);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -80,9 +80,9 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
 
   @Override
   public void cancelStorage(MassStockMove massStockMove) {
-    for (StoredProducts storedProducts : massStockMove.getStoredProductsList()) {
+    for (StoredProduct storedProduct : massStockMove.getStoredProductList()) {
       try {
-        storedProductsService.cancelStockMoveAndStockMoveLine(storedProducts);
+        storedProductService.cancelStockMoveAndStockMoveLine(storedProduct);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -110,8 +110,8 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
     for (StockLocationLine line : stockLocationLineList) {
       if (line.getProduct().getTrackingNumberConfiguration() == null
           && line.getCurrentQty().compareTo(BigDecimal.ZERO) == 1) {
-        PickedProducts pickedProduct =
-            pickedProductsService.createPickedProduct(
+        PickedProduct pickedProduct =
+            pickedProductService.createPickedProduct(
                 massStockMove,
                 line.getProduct(),
                 null,
@@ -119,7 +119,7 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
                 line.getCurrentQty(),
                 BigDecimal.ZERO,
                 null);
-        massStockMove.addPickedProductsListItem(pickedProduct);
+        massStockMove.addPickedProductListItem(pickedProduct);
         pickedProductRepo.save(pickedProduct);
       }
     }
@@ -127,8 +127,8 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
       if (line.getCurrentQty().compareTo(BigDecimal.ZERO) == 1
           && line.getProduct() != null
           && line.getProduct().getTrackingNumberConfiguration() != null) {
-        PickedProducts pickedProduct =
-            pickedProductsService.createPickedProduct(
+        PickedProduct pickedProduct =
+            pickedProductService.createPickedProduct(
                 massStockMove,
                 line.getProduct(),
                 line.getTrackingNumber(),
@@ -136,7 +136,7 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
                 line.getCurrentQty(),
                 BigDecimal.ZERO,
                 null);
-        massStockMove.addPickedProductsListItem(pickedProduct);
+        massStockMove.addPickedProductListItem(pickedProduct);
         pickedProductRepo.save(pickedProduct);
       }
     }

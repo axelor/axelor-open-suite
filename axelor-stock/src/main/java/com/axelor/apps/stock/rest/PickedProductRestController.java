@@ -1,10 +1,10 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.PickedProducts;
+import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.rest.dto.PickedProductsResponse;
-import com.axelor.apps.stock.service.PickedProductsService;
+import com.axelor.apps.stock.rest.dto.PickedProductResponse;
+import com.axelor.apps.stock.service.PickedProductService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -25,7 +25,7 @@ import javax.ws.rs.core.Response;
 @Path("/aos/picked-product")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class PickedProductsRestController {
+public class PickedProductRestController {
 
   @Operation(
       summary = "Realize picking for picked product",
@@ -34,16 +34,16 @@ public class PickedProductsRestController {
   @POST
   @HttpExceptionHandler
   public Response realizePicking(@PathParam("id") Long pickedProductId) throws AxelorException {
-    new SecurityCheck().writeAccess(PickedProducts.class).createAccess(StockMove.class).check();
-    PickedProducts pickedProduct =
-        ObjectFinder.find(PickedProducts.class, pickedProductId, ObjectFinder.NO_VERSION);
-    Beans.get(PickedProductsService.class)
+    new SecurityCheck().writeAccess(PickedProduct.class).createAccess(StockMove.class).check();
+    PickedProduct pickedProduct =
+        ObjectFinder.find(PickedProduct.class, pickedProductId, ObjectFinder.NO_VERSION);
+    Beans.get(PickedProductService.class)
         .createStockMoveAndStockMoveLine(pickedProduct.getMassStockMove(), pickedProduct);
 
     return ResponseConstructor.build(
         Response.Status.OK,
         "Stock move successfully created for this Picked Product",
-        new PickedProductsResponse(pickedProduct));
+        new PickedProductResponse(pickedProduct));
   }
 
   @Operation(
@@ -53,15 +53,15 @@ public class PickedProductsRestController {
   @POST
   @HttpExceptionHandler
   public Response cancelPicking(@PathParam("id") Long pickedProductId) throws AxelorException {
-    new SecurityCheck().writeAccess(PickedProducts.class).writeAccess(StockMove.class).check();
-    PickedProducts pickedProduct =
-        ObjectFinder.find(PickedProducts.class, pickedProductId, ObjectFinder.NO_VERSION);
-    Beans.get(PickedProductsService.class)
+    new SecurityCheck().writeAccess(PickedProduct.class).writeAccess(StockMove.class).check();
+    PickedProduct pickedProduct =
+        ObjectFinder.find(PickedProduct.class, pickedProductId, ObjectFinder.NO_VERSION);
+    Beans.get(PickedProductService.class)
         .cancelStockMoveAndStockMoveLine(pickedProduct.getMassStockMove(), pickedProduct);
 
     return ResponseConstructor.build(
         Response.Status.OK,
         "Picked Product successfully canceled",
-        new PickedProductsResponse(pickedProduct));
+        new PickedProductResponse(pickedProduct));
   }
 }

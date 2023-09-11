@@ -29,11 +29,11 @@ public class MassStockMoveController {
     MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
     massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
 
-    if (massStockMove.getPickedProductsList().stream()
+    if (massStockMove.getPickedProductList().stream()
         .anyMatch(it -> BigDecimal.ZERO.compareTo(it.getPickedQty()) == 0)) {
       response.setAlert(I18n.get(StockExceptionMessage.AT_LEAST_ONE_PICKED_QUANTITY_IS_ZERO));
     }
-    if (massStockMove.getPickedProductsList().stream()
+    if (massStockMove.getPickedProductList().stream()
         .anyMatch(it -> it.getPickedQty().compareTo(it.getCurrentQty()) == 1)) {
       response.setAlert(
           I18n.get(StockExceptionMessage.AT_LEAST_ONE_PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY));
@@ -65,11 +65,11 @@ public class MassStockMoveController {
     MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
     massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
 
-    if (massStockMove.getStoredProductsList().stream()
+    if (massStockMove.getStoredProductList().stream()
         .anyMatch(it -> BigDecimal.ZERO.compareTo(it.getStoredQty()) == 0)) {
       response.setAlert(I18n.get(StockExceptionMessage.AT_LEAST_ONE_STORED_QUANTITY_IS_ZERO));
     }
-    if (massStockMove.getStoredProductsList().stream()
+    if (massStockMove.getStoredProductList().stream()
         .anyMatch(it -> it.getStoredQty().compareTo(it.getCurrentQty()) == 1)) {
       response.setAlert(
           I18n.get(StockExceptionMessage.AT_LEAST_ONE_STORED_QUANTITY_GREATER_THAN_CURRENT_QTY));

@@ -16,9 +16,9 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Common source location"/>
     <many-to-one name="commonToStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Common destination location"/>
-    <one-to-many name="pickedProductsList" ref="com.axelor.apps.stock.db.PickedProducts"
+    <one-to-many name="pickedProductList" ref="com.axelor.apps.stock.db.PickedProduct"
       title="Picked products" mappedBy="massStockMove"/>
-    <one-to-many name="storedProductsList" ref="com.axelor.apps.stock.db.StoredProducts"
+    <one-to-many name="storedProductList" ref="com.axelor.apps.stock.db.StoredProduct"
       title="Stored products" mappedBy="massStockMove"/>
 
     <extra-code><![CDATA[

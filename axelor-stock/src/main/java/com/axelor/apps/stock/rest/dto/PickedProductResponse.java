@@ -1,11 +1,11 @@
 package com.axelor.apps.stock.rest.dto;
 
-import com.axelor.apps.stock.db.PickedProducts;
+import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseStructure;
 import java.math.BigDecimal;
 
-public class PickedProductsResponse extends ResponseStructure {
+public class PickedProductResponse extends ResponseStructure {
 
   private final Long id;
   private final Long pickedProductId;
@@ -16,7 +16,7 @@ public class PickedProductsResponse extends ResponseStructure {
   private final BigDecimal currentQty;
   private final Long stockMoveLineId;
 
-  public PickedProductsResponse(PickedProducts pickedProduct) {
+  public PickedProductResponse(PickedProduct pickedProduct) {
     super(
         pickedProduct.getVersion() != null ? pickedProduct.getVersion() : ObjectFinder.NO_VERSION);
     this.id = pickedProduct.getId();

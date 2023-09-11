@@ -1,8 +1,8 @@
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.db.PickedProducts;
-import com.axelor.apps.stock.db.StoredProducts;
+import com.axelor.apps.stock.db.PickedProduct;
+import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.utils.api.ResponseStructure;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +30,15 @@ public class MassStockMoveResponse extends ResponseStructure {
     this.commonFromStockLocationId = massStockMove.getCommonFromStockLocation().getId();
     this.commonToStockLocationId = massStockMove.getCommonFromStockLocation().getId();
     this.pickedProductList =
-        massStockMove.getPickedProductsList() != null
-            ? massStockMove.getPickedProductsList().stream()
-                .map(PickedProducts::getId)
+        massStockMove.getPickedProductList() != null
+            ? massStockMove.getPickedProductList().stream()
+                .map(PickedProduct::getId)
                 .collect(Collectors.toList())
             : new ArrayList<>();
     this.storedProductList =
-        massStockMove.getStoredProductsList() != null
-            ? massStockMove.getStoredProductsList().stream()
-                .map(StoredProducts::getId)
+        massStockMove.getStoredProductList() != null
+            ? massStockMove.getStoredProductList().stream()
+                .map(StoredProduct::getId)
                 .collect(Collectors.toList())
             : new ArrayList<>();
   }

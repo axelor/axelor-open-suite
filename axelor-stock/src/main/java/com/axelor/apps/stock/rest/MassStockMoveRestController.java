@@ -2,9 +2,9 @@ package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.db.PickedProducts;
+import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StoredProducts;
+import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.rest.dto.MassStockMoveResponse;
 import com.axelor.apps.stock.service.MassStockMoveService;
@@ -39,7 +39,7 @@ public class MassStockMoveRestController {
   @HttpExceptionHandler
   public Response importProductFromStockLocation(@PathParam("id") Long massStockMoveId)
       throws AxelorException {
-    new SecurityCheck().writeAccess(MassStockMove.class).createAccess(PickedProducts.class).check();
+    new SecurityCheck().writeAccess(MassStockMove.class).createAccess(PickedProduct.class).check();
     MassStockMove massStockMove =
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
     Beans.get(MassStockMoveService.class).importProductFromStockLocation(massStockMove);
@@ -61,10 +61,10 @@ public class MassStockMoveRestController {
     MassStockMove massStockMove =
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
     boolean isGreaterThan =
-        massStockMove.getPickedProductsList().stream()
+        massStockMove.getPickedProductList().stream()
             .anyMatch(it -> it.getPickedQty().compareTo(it.getCurrentQty()) == 1);
     boolean isQtyEqualZero =
-        massStockMove.getPickedProductsList().stream()
+        massStockMove.getPickedProductList().stream()
             .anyMatch(it -> BigDecimal.ZERO.compareTo(it.getPickedQty()) == 0);
 
     Beans.get(MassStockMoveService.class).realizePicking(massStockMove);
@@ -100,7 +100,7 @@ public class MassStockMoveRestController {
   @POST
   @HttpExceptionHandler
   public Response cancelMassPicking(@PathParam("id") Long massStockMoveId) {
-    new SecurityCheck().writeAccess(MassStockMove.class).createAccess(PickedProducts.class).check();
+    new SecurityCheck().writeAccess(MassStockMove.class).createAccess(PickedProduct.class).check();
     MassStockMove massStockMove =
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
     Beans.get(MassStockMoveService.class).cancelPicking(massStockMove);
@@ -118,15 +118,15 @@ public class MassStockMoveRestController {
   @POST
   @HttpExceptionHandler
   public Response realizeStorage(@PathParam("id") Long massStockMoveId) throws AxelorException {
-    new SecurityCheck().writeAccess(MassStockMove.class).createAccess(StoredProducts.class).check();
+    new SecurityCheck().writeAccess(MassStockMove.class).createAccess(StoredProduct.class).check();
     MassStockMove massStockMove =
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
 
     boolean isGreaterThan =
-        massStockMove.getStoredProductsList().stream()
+        massStockMove.getStoredProductList().stream()
             .anyMatch(it -> it.getStoredQty().compareTo(it.getCurrentQty()) == 1);
     boolean isQtyEqualZero =
-        massStockMove.getStoredProductsList().stream()
+        massStockMove.getStoredProductList().stream()
             .anyMatch(it -> BigDecimal.ZERO.compareTo(it.getStoredQty()) == 0);
     Beans.get(MassStockMoveService.class).realizeStorage(massStockMove);
     if (isQtyEqualZero && isGreaterThan) {
@@ -160,7 +160,7 @@ public class MassStockMoveRestController {
   @POST
   @HttpExceptionHandler
   public Response cancelStorage(@PathParam("id") Long massStockMoveId) throws AxelorException {
-    new SecurityCheck().writeAccess(MassStockMove.class).createAccess(StoredProducts.class).check();
+    new SecurityCheck().writeAccess(MassStockMove.class).createAccess(StoredProduct.class).check();
     MassStockMove massStockMove =
         ObjectFinder.find(MassStockMove.class, massStockMoveId, ObjectFinder.NO_VERSION);
     Beans.get(MassStockMoveService.class).cancelStorage(massStockMove);

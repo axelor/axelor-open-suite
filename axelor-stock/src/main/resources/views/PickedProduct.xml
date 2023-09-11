@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="picked-products-mass-stock-move-grid" title="Picked products"
-    model="com.axelor.apps.stock.db.PickedProducts" groupBy="pickedProduct"
+    model="com.axelor.apps.stock.db.PickedProduct" groupBy="pickedProduct"
     onNew="action-picked-products-group-onnew">
     <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
       onChange="action-picked-products-group-product-onchange" required="true"/>
@@ -29,7 +29,7 @@
 
 
   <form name="picked-products-form" title="Picked products"
-    model="com.axelor.apps.stock.db.PickedProducts" onNew="action-picked-products-group-onnew">
+    model="com.axelor.apps.stock.db.PickedProduct" onNew="action-picked-products-group-onnew">
     <panel name="mainPanel">
       <field name="pickedProduct" domain="self.productTypeSelect = 'storable'"
         onChange="action-picked-products-group-product-onchange" required="true"/>
@@ -57,17 +57,17 @@
   </action-attrs>
 
   <action-record name="action-picked-products-record-set-massStockMove"
-    model="com.axelor.apps.stock.db.PickedProducts">
+    model="com.axelor.apps.stock.db.PickedProduct">
     <field name="massStockMove" expr="eval: __parent__"/>
   </action-record>
 
   <action-record name="action-picked-products-record-default-location"
-    model="com.axelor.apps.stock.db.PickedProducts">
+    model="com.axelor.apps.stock.db.PickedProduct">
     <field name="fromStockLocation" expr="eval: __parent__?.commonFromStockLocation"/>
   </action-record>
 
   <action-record name="action-picked-products-record-set-currentqty"
-    model="com.axelor.apps.stock.db.PickedProducts">
+    model="com.axelor.apps.stock.db.PickedProduct">
     <field if="fromStockLocation != null" name="currentQty"
       expr="eval: __repo__(StockLocationLine).all().filter('self.product = ?1 AND self.stockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.currentQty"/>
     <field if="fromStockLocation != null &amp;&amp; trackingNumber != null" name="currentQty"
@@ -75,22 +75,22 @@
   </action-record>
 
   <action-record name="action-picked-products-record-set-tracking-number"
-    model="com.axelor.apps.stock.db.PickedProducts">
+    model="com.axelor.apps.stock.db.PickedProduct">
     <field name="trackingNumber" expr="eval: null"
       if="(__repo__(StockLocationLine).all().filter('self.product = ?1 AND self.detailsStockLocation = ?2', pickedProduct, fromStockLocation)?.fetchOne()?.trackingNumber) != trackingNumber"/>
   </action-record>
 
   <action-record name="action-picked-products-record-set-unit"
-    model="com.axelor.apps.stock.db.PickedProducts">
+    model="com.axelor.apps.stock.db.PickedProduct">
     <field name="unit" expr="eval: pickedProduct?.unit"/>
   </action-record>
 
   <action-method name="action-picked-product-method-cancel-picking">
-    <call class="com.axelor.apps.stock.web.PickedProductsController" method="cancelPicking"/>
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="cancelPicking"/>
   </action-method>
 
   <action-method name="action-picked-product-method-realize-picking">
-    <call class="com.axelor.apps.stock.web.PickedProductsController" method="realizePicking"/>
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="realizePicking"/>
   </action-method>
 
   <action-group name="action-picked-products-group-onnew">

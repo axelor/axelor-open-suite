@@ -1,11 +1,11 @@
 package com.axelor.apps.stock.rest.dto;
 
-import com.axelor.apps.stock.db.StoredProducts;
+import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseStructure;
 import java.math.BigDecimal;
 
-public class StoredProductsResponse extends ResponseStructure {
+public class StoredProductResponse extends ResponseStructure {
 
   private final Long id;
   private final Long storedProductId;
@@ -16,28 +16,24 @@ public class StoredProductsResponse extends ResponseStructure {
   private final BigDecimal currentQty;
   private final Long stockMoveLineId;
 
-  public StoredProductsResponse(StoredProducts storedProducts) {
+  public StoredProductResponse(StoredProduct storedProduct) {
     super(
-        storedProducts.getVersion() != null
-            ? storedProducts.getVersion()
-            : ObjectFinder.NO_VERSION);
-    this.id = storedProducts.getId();
-    this.storedProductId = storedProducts.getStoredProduct().getId();
+        storedProduct.getVersion() != null ? storedProduct.getVersion() : ObjectFinder.NO_VERSION);
+    this.id = storedProduct.getId();
+    this.storedProductId = storedProduct.getStoredProduct().getId();
     this.trackingNumberId =
-        storedProducts.getTrackingNumber() != null
-            ? storedProducts.getTrackingNumber().getId()
+        storedProduct.getTrackingNumber() != null
+            ? storedProduct.getTrackingNumber().getId()
             : null;
     this.toStockLocationId =
-        storedProducts.getToStockLocation() != null
-            ? storedProducts.getToStockLocation().getId()
+        storedProduct.getToStockLocation() != null
+            ? storedProduct.getToStockLocation().getId()
             : null;
-    this.unitId = storedProducts.getStoredProduct().getUnit().getId();
-    this.storedQty = storedProducts.getStoredQty();
-    this.currentQty = storedProducts.getCurrentQty();
+    this.unitId = storedProduct.getStoredProduct().getUnit().getId();
+    this.storedQty = storedProduct.getStoredQty();
+    this.currentQty = storedProduct.getCurrentQty();
     this.stockMoveLineId =
-        storedProducts.getStockMoveLine() != null
-            ? storedProducts.getStockMoveLine().getId()
-            : null;
+        storedProduct.getStockMoveLine() != null ? storedProduct.getStockMoveLine().getId() : null;
   }
 
   public long getId() {
