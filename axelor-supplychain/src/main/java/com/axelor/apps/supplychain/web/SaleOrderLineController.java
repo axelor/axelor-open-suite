@@ -482,7 +482,6 @@ public class SaleOrderLineController {
       }
 
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      saleOrderLine.setSaleOrder(saleOrder);
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 

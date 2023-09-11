@@ -5,6 +5,8 @@
 
   <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
+    <field name="subrogationPartner"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="moveLine.origin"/>
     <field name="moveLine.originDate"/>
     <field name="moveLine.move.journal"/>
@@ -46,6 +48,8 @@
     </toolbar>
     <hilite color="danger"
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    <field name="subrogationPartner"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="invoice.invoiceId"/>
     <field name="moveLine"/>
     <field name="company"/>
@@ -76,6 +80,8 @@
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="sequence"/>
     <field name="name"/>
+    <field name="subrogationPartner"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="invoice"/>
     <field name="dueDate"/>
     <field name="amount" title="To pay / To use" x-scale="currency.numberOfDecimals"/>
@@ -111,6 +117,8 @@
       if="!isPaid &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="sequence"/>
     <field name="name"/>
+    <field name="subrogationPartner"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="dueDate"/>
     <field name="amount"/>
     <field name="$amountRemaining" type="decimal" title="Remaining amount"/>
@@ -135,6 +143,8 @@
     canNew="false">
     <field name="sequence"/>
     <field name="name"/>
+    <field name="subrogationPartner"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="dueDate"/>
     <field name="amount" x-scale="currency.numberOfDecimals"/>
     <field name="paymentMode"/>
@@ -177,6 +187,8 @@
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
     <field name="moveLine.partner"/>
+    <field name="subrogationPartner"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
     <field name="moveLine.origin"/>
@@ -213,6 +225,11 @@
         <field name="isPaid"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+        <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
+          showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
+          form-view="partner-form" grid-view="partner-grid"
+          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+        <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -369,6 +386,10 @@
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
+        <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
+          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
+          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+        <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -537,6 +558,11 @@
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
+        <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
+          showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
+          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
+          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+        <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
