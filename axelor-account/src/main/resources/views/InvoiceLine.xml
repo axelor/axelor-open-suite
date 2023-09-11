@@ -12,15 +12,11 @@
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <!-- en devise -->
-    <field name="inTaxPrice" x-scale="2"/>
-    <!-- en devise -->
+    <field name="priceDiscounted" title="Unit price W.T."/>
+    <field name="inTaxPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="exTaxTotal" aggregate="sum"/>
-    <!-- en devise -->
     <field name="inTaxTotal" aggregate="sum"/>
-    <!-- en devise -->
     <field name="typeSelect" hidden="true"/>
   </grid>
 

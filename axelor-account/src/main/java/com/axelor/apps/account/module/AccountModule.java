@@ -163,6 +163,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceAttrsService;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
@@ -696,5 +698,7 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticGroupService.class).to(AnalyticGroupServiceImpl.class);
 
     bind(ScaleServiceAccount.class).to(ScaleServiceAccountImpl.class);
+
+    bind(InvoiceAttrsService.class).to(InvoiceAttrsServiceImpl.class);
   }
 }

@@ -1194,7 +1194,8 @@ InvoiceSet.length > 0))"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
           form-view="invoice-line-client-form" grid-view="invoice-line-grid"
-          onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+          onChange="action-invoice-group-invoice-line-list-report-onchange" canMove="true"
+          orderBy="sequence"/>
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
@@ -1549,6 +1550,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-set-payment-visibility"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-attrs-operationsubtype-selection"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1649,14 +1651,12 @@ InvoiceSet.length > 0))"
     <action name="save"/>
   </action-group>
 
-
   <action-group name="action-invoice-group-pfp-validate">
     <action name="save"/>
     <action name="action-invoice-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
     <action name="action-method-account-invoice-validate-pfp"/>
   </action-group>
-
 
   <action-group name="action-invoice-group-add-invoice-payment">
     <action name="save"/>
@@ -1671,6 +1671,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-invoice-group-on-validate">
@@ -1766,6 +1767,11 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-invoice-line-list-report-onchange">
+    <action name="action-invoice-method-compute"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-mode-onchange">
@@ -2389,6 +2395,10 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-manage-pfp-status">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="managePfpStatusOnInvoiceTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-set-invoice-line-list-scale">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="setInvoiceLinesScale"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
