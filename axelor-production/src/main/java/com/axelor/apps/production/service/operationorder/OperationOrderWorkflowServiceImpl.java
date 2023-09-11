@@ -178,11 +178,22 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void pause(OperationOrder operationOrder) {
+
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
 
     stopOperationOrderDuration(operationOrder);
 
+    pauseManufOrder(operationOrder);
+
     operationOrderRepo.save(operationOrder);
+  }
+
+  protected void pauseManufOrder(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    if (manufOrder.getOperationOrderList().stream()
+        .allMatch(order -> order.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY)) {
+      manufOrder.setStatusSelect(ManufOrderRepository.STATUS_STANDBY);
+    }
   }
 
   @Override
@@ -210,7 +221,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 
     startOperationOrderDuration(operationOrder, AuthUtils.getUser());
-
+    operationOrder.getManufOrder().setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     operationOrderRepo.save(operationOrder);
   }
 

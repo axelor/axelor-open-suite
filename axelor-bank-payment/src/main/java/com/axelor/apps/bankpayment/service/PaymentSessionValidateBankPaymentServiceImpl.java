@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -509,11 +510,12 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       Move move,
       InvoiceTerm invoiceTerm,
       Pair<InvoiceTerm, BigDecimal> pair,
+      AccountConfig accountConfig,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
     super.createAndReconcileMoveLineFromPair(
-        paymentSession, move, invoiceTerm, pair, out, paymentAmountMap);
+        paymentSession, move, invoiceTerm, pair, accountConfig, out, paymentAmountMap);
 
     manageInvoicePayment(paymentSession, invoiceTerm, pair.getRight());
   }
