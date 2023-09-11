@@ -49,6 +49,8 @@
     <many-to-one name="resume" title="JobApplication.resume"
       ref="com.axelor.meta.db.MetaFile"/>
     <many-to-one name="dmsFile" ref="com.axelor.dms.db.DMSFile"/>
+    <one-to-many ref="com.axelor.apps.hr.db.EmployeeFile" name="fileList"
+      title="File list"/>
     <extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;

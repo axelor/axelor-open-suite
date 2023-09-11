@@ -30,4 +30,6 @@ public interface JobApplicationService {
   void setDMSFile(JobApplication jobApplication);
 
   String getInlineUrl(JobApplication jobApplication);
+
+  void setEmployeeFileList(JobApplication jobApplication, Employee employee);
 }

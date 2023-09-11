@@ -164,8 +164,11 @@
           </viewer>
         </field>
       </panel>
-    </panel-tabs>
 
+      <panel name="filesPanel" title="Files" itemSpan="12">
+        <field name="fileList" colSpan="12"/>
+      </panel>
+    </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>

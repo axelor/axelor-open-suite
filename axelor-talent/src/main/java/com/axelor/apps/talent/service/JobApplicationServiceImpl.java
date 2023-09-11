@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -92,9 +93,21 @@ public class JobApplicationServiceImpl implements JobApplicationService {
       employee
           .getMainEmploymentContract()
           .setCompanyDepartment(jobApplication.getJobPosition().getCompanyDepartment());
+    setEmployeeFileList(jobApplication, employee);
     employee.setName(employee.getContactPartner().getName());
 
     return employee;
+  }
+
+  @Override
+  public void setEmployeeFileList(JobApplication jobApplication, Employee employee) {
+    if (ObjectUtils.isEmpty(employee)) {
+      employee = jobApplication.getEmployee();
+      if (ObjectUtils.isEmpty(employee)) return;
+    }
+    if (ObjectUtils.notEmpty(jobApplication.getFileList())) {
+      jobApplication.getFileList().forEach(employee::addEmployeeFileListItem);
+    }
   }
 
   protected Partner createContact(JobApplication jobApplication) {

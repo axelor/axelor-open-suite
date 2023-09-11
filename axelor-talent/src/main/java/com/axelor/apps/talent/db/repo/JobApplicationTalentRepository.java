@@ -30,6 +30,7 @@ public class JobApplicationTalentRepository extends JobApplicationRepository {
   public JobApplication save(JobApplication entity) {
 
     entity.setFullName(jobApplicationService.computeFullName(entity));
+    jobApplicationService.setEmployeeFileList(entity, null);
 
     return super.save(entity);
   }
