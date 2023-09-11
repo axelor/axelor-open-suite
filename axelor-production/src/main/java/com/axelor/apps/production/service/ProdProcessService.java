@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
@@ -61,10 +62,9 @@ public class ProdProcessService {
       throws AxelorException {
     Map<Product, BigDecimal> bomMap = new HashMap<Product, BigDecimal>();
 
-    Set<BillOfMaterial> setBoM =
-        MoreObjects.firstNonNull(bom.getBillOfMaterialSet(), Collections.emptySet());
-    for (BillOfMaterial bomIt : setBoM) {
-      bomMap.put(bomIt.getProduct(), bomIt.getQty());
+    List<BillOfMaterialLine> billOfMaterialLines = bom.getBillOfMaterialLineList();
+    for (BillOfMaterialLine boml : billOfMaterialLines) {
+      bomMap.put(boml.getProduct(), boml.getQty());
     }
     List<ProdProcessLine> listPPL =
         MoreObjects.firstNonNull(prodProcess.getProdProcessLineList(), Collections.emptyList());

@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -39,7 +40,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
 
@@ -47,18 +47,21 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   protected ProductionOrderService productionOrderService;
   protected ProductionOrderRepository productionOrderRepo;
   protected AppProductionService appProductionService;
+  protected BillOfMaterialService billOfMaterialService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
       UnitConversionService unitConversionService,
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      BillOfMaterialService billOfMaterialService) {
 
     this.unitConversionService = unitConversionService;
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
     this.appProductionService = appProductionService;
+    this.billOfMaterialService = billOfMaterialService;
   }
 
   @Override
@@ -191,10 +194,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 saleOrder,
                 saleOrderLine,
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER);
-        tempChildBomList.addAll(
-            childBom.getBillOfMaterialSet().stream()
-                .filter(BillOfMaterial::getDefineSubBillOfMaterial)
-                .collect(Collectors.toList()));
+        tempChildBomList.addAll(billOfMaterialService.getSubBillOfMaterial(childBom));
       }
       childBomList.clear();
       childBomList.addAll(tempChildBomList);
