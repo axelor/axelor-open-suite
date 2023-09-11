@@ -23,7 +23,9 @@
 
   <form title="Sale order line sub element" name="sale-order-line-sub-element-form"
     model="com.axelor.apps.sale.db.SaleOrderLineTree"
-    onNew="action-sale-order-line-tree-record-fill-the-saleOrderLine-field">
+    onNew="action-sale-order-line-tree-attrs-scale-and-precision,action-sale-order-line-tree-record-fill-the-saleOrderLine-field"
+    onSave="action-sale-order-line-tree-attrs-scale-and-precision"
+    onLoad="action-sale-order-line-tree-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="typeSelect" colSpan="3"
         onChange="action-sale-order-line-tree-record-empty-the-fields"/>
@@ -56,7 +58,7 @@
   <tree name="sale-order-line-tree" title="Sale order line tree">
     <column name="code" type="string" title="Code"/>
     <column name="product" type="reference"/>
-    <column name="quantity" title="Quantity"/>
+    <column name="quantity" title="sale.quantity"/>
     <column name="unit" type="reference" title="Unit"/>
     <column name="unitCost" type="decimal" title="Unit cost"/>
     <column name="unitPrice" type="decimal" title="Unit price"/>
@@ -70,7 +72,7 @@
       domain="self.saleOrderLine.id=:id AND self.parentSaleOrderLineTree is null" draggable="true">
       <field name="code" as="code"/>
       <field name="product" as="product"/>
-      <field name="quantity" as="quantity"/>
+      <field name="quantity" as="sale.quantity"/>
       <field name="unit" as="unit"/>
       <field name="unitCost" as="unitCost"/>
       <field name="unitPrice" as="unitPrice"/>
@@ -114,7 +116,7 @@
         <viewer>
         <![CDATA[
 		  <script>
-			let div= document.querySelector("#_formWidget43 > div > div > div:nth-child(1) > div > fieldset > div.btn-toolbar.pull-right");
+			let div= document.querySelector("#_formWidget44 > div > div > div:nth-child(1) > div > fieldset > div.btn-toolbar.pull-right");
 			div.remove();
 		  </script>
 		]]>
@@ -232,4 +234,13 @@
     <field name="totalCost" expr="eval:null"/>
     <field name="totalPrice" expr="eval:null"/>
   </action-record>
+
+  <action-attrs name="action-sale-order-line-tree-attrs-scale-and-precision">
+    <attribute name="scale" for="quantity"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+
+    <attribute name="scale" for="unitPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
+
 </object-views>

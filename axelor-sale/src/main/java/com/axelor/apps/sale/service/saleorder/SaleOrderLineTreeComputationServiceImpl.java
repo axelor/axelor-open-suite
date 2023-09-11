@@ -49,7 +49,12 @@ public class SaleOrderLineTreeComputationServiceImpl
             .map(SaleOrderLineTree::getTotalPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     saleOrderLine.setPrice(totalPrice);
+  }
 
+  @Override
+  @Transactional
+  public void computeSubTotalCostPrice(SaleOrderLine saleOrderLine) {
+    List<SaleOrderLineTree> saleOrderLineTrees = saleOrderLine.getSaleOrderLineTreeList();
     BigDecimal totalCost =
         saleOrderLineTrees.stream()
             .map(SaleOrderLineTree::getTotalCost)

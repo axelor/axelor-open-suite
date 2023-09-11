@@ -677,6 +677,7 @@
 "important",,,
 "info",,,
 "is used for concatenation","est utilisé pour la concaténation",,
+"sale.quantity","Quantité",,
 "searching Partners that are suppliers and with a name starting with “A”","rechercher des tiers qui sont des fournisseurs avec un nom commençant par “A”",,
 "searching for Product with id = 1:","rechercher un produit qui a pour id = 1",,
 "searching for ProductFamily with the code ‘SERV’","rechercher une famille de produit avec le code ‘SERV’",,

@@ -28,7 +28,7 @@ public class SaleOrderLineCalculationComboServiceImpl
 
     Beans.get(SaleOrderLineService.class)
         .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
-
+    saleOrderLineTreeCalculationsService.computeSubTotalCostPrice(saleOrderLine);
     return Beans.get(SaleOrderMarginService.class)
         .getSaleOrderLineComputedMarginInfo(saleOrderLine.getSaleOrder(), saleOrderLine);
   }

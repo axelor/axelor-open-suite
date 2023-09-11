@@ -24,4 +24,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 public interface SaleOrderLineTreeComputationService {
 
   void computePrices(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  void computeSubTotalCostPrice(SaleOrderLine saleOrderLine);
 }
