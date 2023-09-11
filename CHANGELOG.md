@@ -1,3 +1,23 @@
+## [6.4.22] (2023-09-11)
+
+#### Fixed
+
+* API Stock: fixed an issue when creating a stock move line where the quantity was not flagged as modified manually.
+* Fixed asset: fixed never ending depreciation lines generation if there is a gap of more than one year.
+* Product: on product creation, fills the currency with the currency from the company of the logged user.
+* Invoice: fixed wrong translations on ventilate error.
+* Manufacturing API: improved behaviour on operation order status change.
+* Account: fixed an issue preventing the user from deleting accounts that have compatible accounts
+* Invoice line: set analytic accounting panel to readonly.
+* Sale/Purchase order and stock move: fixed wrong filters when selecting stock locations, the filters did not correctly followed the stock location configuration.
+* Stock move: fixed 'NullPointerException' error when emptying product on stock move line.
+* Payment session: fixed generated payment move lines on a partner balance account not having an invoice term.
+* Manufacturing order: fixed an issue where some planning processes were not executed.
+* Move template: fixed copied move template being valid.
+* Invoice term: fixed wrong amount in invoice term generation.
+* Journal: balance tag is now correctly computed.
+* Manufacturing order: when generating a multi level manufacturing order, correctly fills the partner.
+
 ## [6.4.21] (2023-08-24)
 
 #### Fixed
@@ -970,6 +990,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.22]: https://github.com/axelor/axelor-open-suite/compare/v6.4.21...v6.4.22
 [6.4.21]: https://github.com/axelor/axelor-open-suite/compare/v6.4.20...v6.4.21
 [6.4.20]: https://github.com/axelor/axelor-open-suite/compare/v6.4.19...v6.4.20
 [6.4.19]: https://github.com/axelor/axelor-open-suite/compare/v6.4.18...v6.4.19
