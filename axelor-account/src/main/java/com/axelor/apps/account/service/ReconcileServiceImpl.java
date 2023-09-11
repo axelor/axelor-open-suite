@@ -458,11 +458,23 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditInvoice != null ? (creditInvoice.getLcrAccounted() ? creditInvoice : null) : null;
     }
     BigDecimal amount = reconcile.getAmount();
+    boolean isRefund =
+        (debitInvoice.getOriginalInvoice() != null
+                && Objects.equals(debitInvoice.getOriginalInvoice(), creditInvoice))
+            || (creditInvoice != null
+                && Objects.equals(creditInvoice.getOriginalInvoice(), debitInvoice));
 
     this.checkCurrencies(debitMoveLine, creditMoveLine);
 
     this.updatePayment(
-        reconcile, debitMoveLine, debitInvoice, debitMove, creditMove, amount, updateInvoiceTerms);
+        reconcile,
+        debitMoveLine,
+        debitInvoice,
+        debitMove,
+        creditMove,
+        amount,
+        updateInvoiceTerms,
+        isRefund);
     this.updatePayment(
         reconcile,
         creditMoveLine,
@@ -470,7 +482,8 @@ public class ReconcileServiceImpl implements ReconcileService {
         creditMove,
         debitMove,
         amount,
-        updateInvoiceTerms);
+        updateInvoiceTerms,
+        isRefund);
   }
 
   protected void checkCurrencies(MoveLine debitMoveLine, MoveLine creditMoveLine)
@@ -496,14 +509,16 @@ public class ReconcileServiceImpl implements ReconcileService {
       Move move,
       Move otherMove,
       BigDecimal amount,
-      boolean updateInvoiceTerms)
+      boolean updateInvoiceTerms,
+      boolean isRefund)
       throws AxelorException {
 
     InvoicePayment invoicePayment = null;
     if (invoice != null
         && otherMove.getFunctionalOriginSelect()
             != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
-      if (otherMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE) {
+      if (otherMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE
+          && !isRefund) {
         invoicePayment =
             Optional.of(reconcile)
                 .map(Reconcile::getInvoicePayment)
