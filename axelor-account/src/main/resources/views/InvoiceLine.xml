@@ -331,6 +331,7 @@
     <action name="action-invoice-line-method-translate-product-description-and-name"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
+    <action name="action-invoice-line-method-set-scale"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
