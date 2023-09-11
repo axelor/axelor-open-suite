@@ -133,7 +133,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesServic
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
@@ -263,7 +263,7 @@ public class SupplychainModule extends AxelorModule {
     bind(StockLocationServiceImpl.class).to(StockLocationServiceSupplychainImpl.class);
     bind(StockLocationServiceSupplychain.class).to(StockLocationServiceSupplychainImpl.class);
     bind(ReservedQtyService.class).to(ReservedQtyServiceImpl.class);
-    bind(PurchaseOrderLineServiceImpl.class).to(PurchaseOrderLineServiceSupplychainImpl.class);
+    bind(PurchaseOrderLineServiceImpl.class).to(PurchaseOrderLineServiceSupplyChainImpl.class);
     bind(PurchaseOrderStockService.class).to(PurchaseOrderStockServiceImpl.class);
     bind(AccountingCutOffServiceImpl.class).to(AccountingCutOffSupplyChainServiceImpl.class);
     bind(AccountingCutOffSupplyChainService.class).to(AccountingCutOffSupplyChainServiceImpl.class);
@@ -289,7 +289,7 @@ public class SupplychainModule extends AxelorModule {
     bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
     bind(StockMoveReservedQtyService.class).to(StockMoveReservedQtyServiceImpl.class);
     bind(PurchaseOrderLineServiceSupplyChain.class)
-        .to(PurchaseOrderLineServiceSupplychainImpl.class);
+        .to(PurchaseOrderLineServiceSupplyChainImpl.class);
     bind(PurchaseOrderWorkflowServiceImpl.class)
         .to(PurchaseOrderWorkflowServiceSupplychainImpl.class);
     bind(InvoiceServiceSupplychain.class).to(InvoiceServiceSupplychainImpl.class);

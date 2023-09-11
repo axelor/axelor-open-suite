@@ -16,9 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.cash.management.report;
+package com.axelor.apps.quality.web;
 
-public interface IReport {
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.quality.db.QIAnalysis;
+import com.axelor.apps.quality.service.QIAnalysisService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-  public static final String FORECAST_RECAP = "ForecastRecap.rptdesign";
+public class QIAnalysisController {
+
+  public void setAdvancement(ActionRequest request, ActionResponse response) {
+    try {
+      QIAnalysis qiAnalysis = request.getContext().asType(QIAnalysis.class);
+      int advancement = Beans.get(QIAnalysisService.class).setAdvancement(qiAnalysis);
+      response.setValue("advancement", advancement);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
