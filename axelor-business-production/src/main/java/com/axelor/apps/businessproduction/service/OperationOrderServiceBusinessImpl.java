@@ -21,14 +21,18 @@ package com.axelor.apps.businessproduction.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
@@ -37,6 +41,8 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +52,13 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
   public OperationOrderServiceBusinessImpl(
       BarcodeGeneratorService barcodeGeneratorService,
       AppProductionService appProductionService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
-    super(barcodeGeneratorService, appProductionService, manufOrderStockMoveService);
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ProdProcessLineService prodProcessLineService) {
+    super(
+        barcodeGeneratorService,
+        appProductionService,
+        manufOrderStockMoveService,
+        prodProcessLineService);
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -118,5 +129,25 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
     operationOrder.setIsToInvoice(isToInvoice);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
+  }
+
+  /**
+   * Computes the duration of all the {@link OperationOrderDuration} of {@code operationOrder} If we
+   * manage timesheet with manuf order, we get the duration with the timesheet lines.
+   *
+   * @param operationOrder An operation order
+   * @return Real duration of {@code operationOrder}
+   */
+  @Override
+  public Duration computeRealDuration(OperationOrder operationOrder) {
+
+    if (appProductionService.isApp("production")
+        && appProductionService.getAppProduction().getManageBusinessProduction()
+        && appProductionService.getAppProduction().getEnableTimesheetOnManufOrder()) {
+      List<TimesheetLine> timesheetLineList = operationOrder.getTimesheetLineList();
+      return Beans.get(TimesheetLineService.class).computeTotalDuration(timesheetLineList);
+    } else {
+      return super.computeRealDuration(operationOrder);
+    }
   }
 }

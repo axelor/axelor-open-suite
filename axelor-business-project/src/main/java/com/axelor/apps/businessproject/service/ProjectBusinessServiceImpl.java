@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -51,10 +53,12 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
+import com.axelor.utils.date.LocalDateUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,6 +76,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
   protected AppBaseService appBaseService;
+  protected InvoiceRepository invoiceRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "fa-level-up";
@@ -89,7 +94,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppBusinessProjectService appBusinessProjectService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      InvoiceRepository invoiceRepository) {
     super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
     this.partnerService = partnerService;
     this.addressService = addressService;
@@ -97,6 +103,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
     this.appBaseService = appBaseService;
+    this.invoiceRepository = invoiceRepository;
   }
 
   @Override
@@ -310,6 +317,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       throws AxelorException {
     computeTimeFollowUp(project, projectTaskList);
     computeFinancialFollowUp(project, projectTaskList);
+    computeInvoicingFollowUp(project);
     projectRepository.save(project);
   }
 
@@ -416,7 +424,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     project.setForecastCosts(forecastCosts);
 
     project.setForecastMargin(project.getTurnover().subtract(forecastCosts));
-    if (!forecastCosts.equals(BigDecimal.ZERO)) {
+    if (forecastCosts.compareTo(BigDecimal.ZERO) != 0) {
       project.setForecastMarkup(
           project
               .getForecastMargin()
@@ -462,6 +470,95 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     }
   }
 
+  protected void computeInvoicingFollowUp(Project project) {
+    List<Invoice> ventilatedInvoices =
+        invoiceRepository
+            .all()
+            .filter("self.project.id = :projectId AND self.statusSelect = :invoiceStatusVentilated")
+            .bind("projectId", project.getId())
+            .bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED)
+            .fetch();
+
+    BigDecimal totalInvoiced = BigDecimal.ZERO;
+    BigDecimal invoicedThisMonth = BigDecimal.ZERO;
+    BigDecimal invoicedLastMonth = BigDecimal.ZERO;
+    BigDecimal totalPaid = BigDecimal.ZERO;
+
+    for (Invoice ventilatedInvoice : ventilatedInvoices) {
+      totalInvoiced = totalInvoiced.add(processTotalInvoiced(ventilatedInvoice));
+      invoicedThisMonth = invoicedThisMonth.add(processInvoicedThisMonth(ventilatedInvoice));
+      invoicedLastMonth = invoicedLastMonth.add(processInvoicedLastMonth(ventilatedInvoice));
+      totalPaid = totalPaid.add(processTotalPaid(ventilatedInvoice));
+    }
+
+    project.setTotalInvoiced(totalInvoiced);
+    project.setInvoicedThisMonth(invoicedThisMonth);
+    project.setInvoicedLastMonth(invoicedLastMonth);
+    project.setTotalPaid(totalPaid);
+  }
+
+  protected BigDecimal processTotalInvoiced(Invoice ventilatedInvoice) {
+    switch (ventilatedInvoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        return ventilatedInvoice.getCompanyExTaxTotal();
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        return ventilatedInvoice.getCompanyExTaxTotal().negate();
+      default:
+        return BigDecimal.ZERO;
+    }
+  }
+
+  protected BigDecimal processInvoicedThisMonth(Invoice ventilatedInvoice) {
+    if (LocalDateUtils.isInTheSameMonth(
+        ventilatedInvoice.getInvoiceDate(),
+        appBaseService.getTodayDateTime(ventilatedInvoice.getCompany()).toLocalDate())) {
+      return processTotalInvoiced(ventilatedInvoice);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal processInvoicedLastMonth(Invoice ventilatedInvoice) {
+    if (isLastMonth(
+        ventilatedInvoice.getInvoiceDate(),
+        appBaseService.getTodayDateTime(ventilatedInvoice.getCompany()).toLocalDate())) {
+      return processTotalInvoiced(ventilatedInvoice);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  protected BigDecimal processTotalPaid(Invoice ventilatedInvoice) {
+    switch (ventilatedInvoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        if (ventilatedInvoice.getExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+          return ventilatedInvoice
+              .getCompanyExTaxTotal()
+              .divide(ventilatedInvoice.getExTaxTotal(), RoundingMode.HALF_UP)
+              .multiply(ventilatedInvoice.getAmountPaid())
+              .setScale(2, RoundingMode.HALF_UP);
+        }
+        return BigDecimal.ZERO;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        if (ventilatedInvoice.getExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
+          return ventilatedInvoice
+              .getCompanyExTaxTotal()
+              .divide(ventilatedInvoice.getExTaxTotal(), RoundingMode.HALF_UP)
+              .multiply(ventilatedInvoice.getAmountPaid())
+              .setScale(2, RoundingMode.HALF_UP)
+              .negate();
+        }
+        return BigDecimal.ZERO;
+      default:
+        return BigDecimal.ZERO;
+    }
+  }
+
+  protected boolean isLastMonth(LocalDate date, LocalDate today) {
+    if (today.getMonthValue() > 1) {
+      return date.getMonthValue() == today.getMonthValue() - 1 && date.getYear() == today.getYear();
+    }
+    return date.getMonthValue() == 12 && date.getYear() == today.getYear() - 1;
+  }
+
   protected BigDecimal getConvertedTime(
       BigDecimal duration, Unit fromUnit, Unit toUnit, BigDecimal numberHoursADay)
       throws AxelorException {
@@ -502,6 +599,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setLandingCosts(project.getLandingCosts());
     projectHistoryLine.setLandingMargin(project.getLandingMargin());
     projectHistoryLine.setLandingMarkup(project.getLandingMarkup());
+
+    projectHistoryLine.setTotalInvoiced(project.getTotalInvoiced());
+    projectHistoryLine.setInvoicedThisMonth(project.getInvoicedThisMonth());
+    projectHistoryLine.setInvoicedLastMonth(project.getInvoicedLastMonth());
+    projectHistoryLine.setTotalPaid(project.getTotalPaid());
 
     project.addProjectHistoryLineListItem(projectHistoryLine);
 
@@ -551,6 +653,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal landingCosts = project.getLandingCosts();
     BigDecimal landingMargin = project.getLandingMargin();
     BigDecimal landingMarkup = project.getLandingMarkup();
+    BigDecimal totalInvoiced = project.getTotalInvoiced();
+    BigDecimal invoicedThisMonth = project.getInvoicedThisMonth();
+    BigDecimal invoicedLastMonth = project.getInvoicedLastMonth();
+    BigDecimal totalPaid = project.getTotalPaid();
 
     data.put("turnover", turnover);
     data.put("initialCosts", initialCosts);
@@ -566,6 +672,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     data.put("landingCosts", landingCosts);
     data.put("landingMargin", landingMargin);
     data.put("landingMarkup", landingMarkup);
+    data.put("totalInvoiced", totalInvoiced);
+    data.put("invoicedThisMonth", invoicedThisMonth);
+    data.put("invoicedLastMonth", invoicedLastMonth);
+    data.put("totalPaid", totalPaid);
 
     List<ProjectHistoryLine> projectHistoryLineList = project.getProjectHistoryLineList();
 
@@ -621,6 +731,18 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     data.put(
         "landingMarkupProgress",
         getProgressIcon(projectHistoryLine.getLandingMarkup().compareTo(landingMarkup)));
+    data.put(
+        "totalInvoicedProgress",
+        getProgressIcon(projectHistoryLine.getTotalInvoiced().compareTo(totalInvoiced)));
+    data.put(
+        "invoicedThisMonthProgress",
+        getProgressIcon(projectHistoryLine.getInvoicedThisMonth().compareTo(invoicedThisMonth)));
+    data.put(
+        "invoicedLastMonthProgress",
+        getProgressIcon(projectHistoryLine.getInvoicedLastMonth().compareTo(invoicedLastMonth)));
+    data.put(
+        "totalPaidProgress",
+        getProgressIcon(projectHistoryLine.getTotalPaid().compareTo(totalPaid)));
 
     return data;
   }

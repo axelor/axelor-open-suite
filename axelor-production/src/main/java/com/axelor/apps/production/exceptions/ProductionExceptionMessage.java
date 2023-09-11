@@ -82,6 +82,9 @@ public final class ProductionExceptionMessage {
   public static final String PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING = /*$$(*/
       "Your production virtual stock location is not an outsourcing location." /*)*/;
 
+  public static final String UNRECOGNIZED_CAPACITY_FOR_COMPANY_PRODUCTION_CONFIG = /*$$(*/
+      "Unrecognized capacity for company %s production configuration" /*)*/;
+
   /** Manuf Order Controller */
   public static final String MANUF_ORDER_1 = /*$$(*/
       "Please select the Manufacturing order(s) to print." /*)*/;

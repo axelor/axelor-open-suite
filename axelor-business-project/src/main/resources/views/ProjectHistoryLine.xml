@@ -16,6 +16,10 @@
     <field name="forecastCosts"/>
     <field name="forecastMargin"/>
     <field name="forecastMarkup"/>
+    <field name="totalInvoiced"/>
+    <field name="invoicedThisMonth"/>
+    <field name="invoicedLastMonth"/>
+    <field name="totalPaid"/>
   </grid>
 
   <form title="Project history" name="project-history-line-form"

@@ -643,6 +643,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         line.getFromDate() != null
                 && line.getContractVersion() != null
                 && line.getContractVersion().getContract() != null
+                && line.getContractVersion().getContract().getInvoicePeriodStartDate() != null
                 && line.getFromDate()
                     .isAfter(line.getContractVersion().getContract().getInvoicePeriodStartDate())
             ? line.getDescription()

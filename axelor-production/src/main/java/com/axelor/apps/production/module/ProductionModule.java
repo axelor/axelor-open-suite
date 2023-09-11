@@ -101,6 +101,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -187,5 +189,6 @@ public class ProductionModule extends AxelorModule {
     bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceProductionImpl.class);
     bind(MachineService.class).to(MachineServiceImpl.class);
     bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceImpl.class);
+    bind(OperationOrderPlanningService.class).to(OperationOrderPlanningServiceImpl.class);
   }
 }
