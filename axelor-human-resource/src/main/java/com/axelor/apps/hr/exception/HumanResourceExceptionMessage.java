@@ -273,4 +273,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String MEDICAL_VISIT_CANCEL_WRONG_STATUS = /*$$(*/
       "Can only cancel planned or realized medical visit." /*)*/;
+
+  public static final String EXPENSE_ADD_LINE_WRONG_STATUS = /*$$(*/
+      "Can only add expense line to drafted expense." /*)*/;
 }
