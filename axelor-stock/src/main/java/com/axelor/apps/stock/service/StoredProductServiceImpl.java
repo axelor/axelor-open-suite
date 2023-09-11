@@ -74,7 +74,7 @@ public class StoredProductServiceImpl implements StoredProductService {
     return duplicatedStoredProduct;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void createStockMoveForStoredProduct(StoredProduct storedProduct)
       throws AxelorException {
     StockLocation toStockLocation = storedProduct.getToStockLocation();

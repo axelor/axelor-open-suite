@@ -35,7 +35,7 @@
       <button name="selectPickedProductFromStockLocationBtn"
         title="Select products from location" readonlyIf="statusSelect != 1"
         onClick="save,action-mass-stock-move-method-import-picked-product"
-        help="Permet d'ajouter tous les produits de l'emplacement source commun"/>
+        help="Allows to add every product from the common stock location"/>
       <panel-related name="pickedProductListPanel" field="pickedProductList"
         grid-view="picked-products-mass-stock-move-grid" form-view="picked-products-form"
         editable="true" colSpan="12"/>

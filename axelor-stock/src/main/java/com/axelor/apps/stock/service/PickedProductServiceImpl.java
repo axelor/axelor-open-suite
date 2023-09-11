@@ -76,7 +76,7 @@ public class PickedProductServiceImpl implements PickedProductService {
     return pickedProduct;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void createStockMoveForPickedProduct(
       PickedProduct pickedProduct, MassStockMove massStockMove) throws AxelorException {
     StockLocation fromStockLocation = pickedProduct.getFromStockLocation();
@@ -113,7 +113,7 @@ public class PickedProductServiceImpl implements PickedProductService {
     pickedProductRepository.save(pickedProduct);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createStoredProductFromPickedProduct(
       PickedProduct pickedProduct, MassStockMove massStockMove) throws AxelorException {
     String trackingNumberSeq =

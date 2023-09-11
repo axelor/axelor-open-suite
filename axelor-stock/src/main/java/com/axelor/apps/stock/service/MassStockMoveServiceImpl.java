@@ -105,7 +105,7 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
     if (stockLocationLineList.isEmpty() && detailsStockLocationLineList.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get("No stock location lines have been found in the common from stock location."));
+          I18n.get(StockExceptionMessage.MASS_STOCK_MOVE_NO_LOCATION_LINE));
     }
     for (StockLocationLine line : stockLocationLineList) {
       if (line.getProduct().getTrackingNumberConfiguration() == null

@@ -1,6 +1,5 @@
 package com.axelor.apps.stock.web;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
@@ -17,15 +16,19 @@ public class StoredProductController {
       storedProduct = Beans.get(StoredProductRepository.class).find(storedProduct.getId());
       Beans.get(StoredProductService.class).createStockMoveAndStockMoveLine(storedProduct);
       response.setReload(true);
-    } catch (AxelorException e) {
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void cancelStorage(ActionRequest request, ActionResponse response) throws AxelorException {
-    StoredProduct storedProduct = request.getContext().asType(StoredProduct.class);
-    storedProduct = Beans.get(StoredProductRepository.class).find(storedProduct.getId());
-    Beans.get(StoredProductService.class).cancelStockMoveAndStockMoveLine(storedProduct);
-    response.setReload(true);
+  public void cancelStorage(ActionRequest request, ActionResponse response) {
+    try {
+      StoredProduct storedProduct = request.getContext().asType(StoredProduct.class);
+      storedProduct = Beans.get(StoredProductRepository.class).find(storedProduct.getId());
+      Beans.get(StoredProductService.class).cancelStockMoveAndStockMoveLine(storedProduct);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

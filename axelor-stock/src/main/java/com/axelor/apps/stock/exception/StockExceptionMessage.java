@@ -289,6 +289,9 @@ public final class StockExceptionMessage {
   public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
       "There's no configured sequence for stock's mass moves for the company %s" /*)*/;
 
+  public static final String MASS_STOCK_MOVE_NO_LOCATION_LINE = /*$$(*/
+      "No stock location lines have been found in the common from stock location." /*)*/;
+
   public static final String PICKED_QUANTITY_IS_ZERO = /*$$(*/
       "Picked quantity is equal to 0 (%s %s)" /*)*/;
 

@@ -1,6 +1,5 @@
 package com.axelor.apps.stock.web;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
@@ -18,7 +17,7 @@ public class PickedProductController {
       Beans.get(PickedProductService.class)
           .createStockMoveAndStockMoveLine(pickedProduct.getMassStockMove(), pickedProduct);
       response.setReload(true);
-    } catch (AxelorException e) {
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
@@ -30,7 +29,7 @@ public class PickedProductController {
       Beans.get(PickedProductService.class)
           .cancelStockMoveAndStockMoveLine(pickedProduct.getMassStockMove(), pickedProduct);
       response.setReload(true);
-    } catch (AxelorException e) {
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
