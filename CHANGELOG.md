@@ -1,3 +1,18 @@
+## [6.3.27] (2023-09-11)
+
+#### Fixed
+
+* Fixed asset: fixed never ending depreciation lines generation if there is a gap of more than one year.
+* Product: on product creation, fills the currency with the currency from the company of the logged user.
+* Invoice: fixed wrong translations on ventilate error.
+* Invoice line: set analytic accounting panel to readonly.
+* Sale/Purchase order and stock move: fixed wrong filters when selecting stock locations, the filters did not correctly followed the stock location configuration.
+* Stock move: fixed 'NullPointerException' error when emptying product on stock move line.
+* Manufacturing order: fixed an issue where some planning processes were not executed.
+* Move template: fixed copied move template being valid.
+* Journal: balance tag is now correctly computed.
+* Manufacturing order: when generating a multi level manufacturing order, correctly fills the partner.
+
 ## [6.3.26] (2023-08-24)
 
 #### Fixed
@@ -829,6 +844,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.27]: https://github.com/axelor/axelor-open-suite/compare/v6.3.26...v6.3.27
 [6.3.26]: https://github.com/axelor/axelor-open-suite/compare/v6.3.25...v6.3.26
 [6.3.25]: https://github.com/axelor/axelor-open-suite/compare/v6.3.24...v6.3.25
 [6.3.24]: https://github.com/axelor/axelor-open-suite/compare/v6.3.23...v6.3.24
