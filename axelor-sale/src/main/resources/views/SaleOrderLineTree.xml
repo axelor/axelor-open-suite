@@ -78,7 +78,7 @@
       domain="self.saleOrderLine.id=:id AND self.parentSaleOrderLineTree is null" draggable="true">
       <field name="code" as="code"/>
       <field name="product" as="product"/>
-      <field name="quantity" as="quantity"/>
+      <field name="quantity" as="sale.quantity"/>
       <field name="unit" as="unit"/>
       <field name="unitCost" as="unitCost"/>
       <field name="unitPrice" as="unitPrice"/>
