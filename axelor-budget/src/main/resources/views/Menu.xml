@@ -7,82 +7,66 @@
     icon="fa-pie-chart" order="-850" if="__config__.app.isApp('budget')"/>
 
   <menuitem title="Budgets" name="budget-root-budget-management-budgets"
-    parent="budget-root-budget-management" order="10" hidden="true"/>
+    parent="budget-root-budget-management" order="10"/>
 
   <!-- Budget Level -->
 
   <menuitem title="Sale budgets" name="budget-root-budget-management-budgets-sale"
-    parent="budget-root-budget-management-budgets" hidden="true"
+    parent="budget-root-budget-management-budgets"
     action="budget.root.budget.management.budgets.sale" order="10"/>
 
   <action-view name="budget.root.budget.management.budgets.sale" title="Sale budget"
-    model="com.axelor.apps.budget.db.BudgetLevel">
-    <view type="grid" name="budget-level-grid"/>
-    <view type="form" name="global-budget-budget-level-form"/>
+    model="com.axelor.apps.budget.db.GlobalBudget">
+    <view type="grid" name="global-budget-grid"/>
+    <view type="form" name="global-budget-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.typeSelect = :_typeSelect AND self.parentBudgetLevel = null AND
-      self.budgetTypeSelect = :_budgetTypeSelect</domain>
-    <context name="_typeSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET"/>
+    <domain>self.budgetTypeSelect = :_budgetTypeSelect</domain>
     <context name="_budgetTypeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE"/>
-    <context name="_isParent" expr="eval: true"/>
   </action-view>
 
   <menuitem title="Purchase budgets" name="budget-root-budget-management-budgets-purchase"
-    parent="budget-root-budget-management-budgets" hidden="true"
+    parent="budget-root-budget-management-budgets"
     action="budget.root.budget.management.budgets.purchase" order="20"/>
 
   <action-view name="budget.root.budget.management.budgets.purchase"
-    title="Purchase budget" model="com.axelor.apps.budget.db.BudgetLevel">
-    <view type="grid" name="budget-level-grid"/>
-    <view type="form" name="global-budget-budget-level-form"/>
+    title="Purchase budget" model="com.axelor.apps.budget.db.GlobalBudget">
+    <view type="grid" name="global-budget-grid"/>
+    <view type="form" name="global-budget-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.typeSelect = :_typeSelect AND self.parentBudgetLevel = null AND
-      self.budgetTypeSelect = :_budgetTypeSelect</domain>
-    <context name="_typeSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET"/>
+    <domain>self.budgetTypeSelect = :_budgetTypeSelect</domain>
     <context name="_budgetTypeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE"/>
-    <context name="_isParent" expr="eval: true"/>
   </action-view>
 
   <menuitem title="Investment budgets"
     name="budget-root-budget-management-budgets-investment"
-    parent="budget-root-budget-management-budgets" hidden="true"
+    parent="budget-root-budget-management-budgets"
     action="budget.root.budget.management.budgets.investment" order="30"/>
 
   <action-view name="budget.root.budget.management.budgets.investment"
-    title="Investment budget" model="com.axelor.apps.budget.db.BudgetLevel">
-    <view type="grid" name="budget-level-grid"/>
-    <view type="form" name="global-budget-budget-level-form"/>
+    title="Investment budget" model="com.axelor.apps.budget.db.GlobalBudget">
+    <view type="grid" name="global-budget-grid"/>
+    <view type="form" name="global-budget-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.typeSelect = :_typeSelect AND self.parentBudgetLevel = null AND
-      self.budgetTypeSelect = :_budgetTypeSelect</domain>
-    <context name="_typeSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET"/>
+    <domain>self.budgetTypeSelect = :_budgetTypeSelect</domain>
     <context name="_budgetTypeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT"/>
-    <context name="_isParent" expr="eval: true"/>
   </action-view>
 
   <menuitem title="Purchase and investment budgets"
     name="budget-root-budget-management-budgets-purchase-and-investment"
     parent="budget-root-budget-management-budgets"
-    action="budget.root.budget.management.budgets.purchase.and.investment" order="40" hidden="true"/>
+    action="budget.root.budget.management.budgets.purchase.and.investment" order="40"/>
 
   <action-view name="budget.root.budget.management.budgets.purchase.and.investment"
-    title="Purchase and investment budget" model="com.axelor.apps.budget.db.BudgetLevel">
-    <view type="grid" name="budget-level-grid"/>
-    <view type="form" name="global-budget-budget-level-form"/>
+    title="Purchase and investment budget" model="com.axelor.apps.budget.db.GlobalBudget">
+    <view type="grid" name="global-budget-grid"/>
+    <view type="form" name="global-budget-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.typeSelect = :_typeSelect AND self.parentBudgetLevel = null AND
-      self.budgetTypeSelect = :_budgetTypeSelect</domain>
-    <context name="_typeSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET"/>
+    <domain>self.budgetTypeSelect = :_budgetTypeSelect</domain>
     <context name="_budgetTypeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT"/>
-    <context name="_isParent" expr="eval: true"/>
   </action-view>
 
   <menuitem title="Detailed view" name="budget-root-budget-management-budget-detailed-view"
@@ -147,15 +131,6 @@
       expr="eval: __repo__(AdvancedImport).all().filter('self.importId = ?','101').fetchOne()?.getId()"/>
     <context name="_canNew" expr="eval: false"/>
   </action-view>
-
-  <menuitem title="Global Budget" name="budget-root-budget-management-global-budget"
-    parent="budget-root-budget-management" action="budget.root.management.global-budget" order="23"/>
-  <action-view name="budget.root.management.global-budget" title="Global Budget"
-    model="com.axelor.apps.budget.db.GlobalBudget">
-    <view type="grid" name="global-budget-grid"/>
-    <view type="form" name="global-budget-form"/>
-  </action-view>
-
 
   <menuitem title="Budget Scenario Variable"
     name="budget-root-budget-management-budget-scenario-variable"

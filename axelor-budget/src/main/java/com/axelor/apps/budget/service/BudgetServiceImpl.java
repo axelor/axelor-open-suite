@@ -413,10 +413,19 @@ public class BudgetServiceImpl implements BudgetService {
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
       if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            String.format(
-                I18n.get(BudgetExceptionMessage.BUDGET_MISSING_BUDGET_KEY), budget.getCode()));
+        String error =
+            computeBudgetKey(
+                budget,
+                budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getCompany());
+        if (!Strings.isNullOrEmpty(error)) {
+          throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, error);
+        }
+        if (Strings.isNullOrEmpty(budget.getBudgetKey())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              String.format(
+                  I18n.get(BudgetExceptionMessage.BUDGET_MISSING_BUDGET_KEY), budget.getCode()));
+        }
       }
 
       budget.setStatusSelect(BudgetRepository.STATUS_VALIDATED);

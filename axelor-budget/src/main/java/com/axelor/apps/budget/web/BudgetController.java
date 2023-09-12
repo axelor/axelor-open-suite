@@ -242,7 +242,10 @@ public class BudgetController {
       Budget budget = request.getContext().asType(Budget.class);
       boolean periodNotHidden = budget != null && budget.getId() != null;
 
-      response.setAttr("periodsGenerationAssistantPanel", "hidden", !periodNotHidden);
+      response.setAttr(
+          "periodsGenerationAssistantPanel",
+          "hidden",
+          !periodNotHidden || budget.getStatusSelect() == BudgetRepository.STATUS_VALIDATED);
       response.setAttr("budgetLineListPanel", "hidden", !periodNotHidden);
       response.setAttr("budgetLineList", "hidden", !periodNotHidden);
       response.setAttr("$periodNotAvailable", "hidden", periodNotHidden);

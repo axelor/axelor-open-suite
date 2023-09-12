@@ -34,11 +34,9 @@ import com.axelor.apps.budget.db.repo.AdvancedImportBudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -176,59 +174,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
                 > 0
             ? (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount))
             : BigDecimal.ZERO);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
-  public BudgetLevel createGlobalBudgets(BudgetLevel budgetLevel) {
-
-    List<BudgetLevel> groupBudgetLevelList = budgetLevel.getBudgetLevelList();
-
-    BudgetLevel optGlobalBudgetLevel = budgetLevelManagementRepository.copy(budgetLevel, false);
-    optGlobalBudgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
-    optGlobalBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
-    optGlobalBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-    if (AuthUtils.getUser() != null) {
-      if (optGlobalBudgetLevel.getCompanyDepartment() == null) {
-        optGlobalBudgetLevel.setCompanyDepartment(AuthUtils.getUser().getCompanyDepartment());
-      }
-      optGlobalBudgetLevel.setBudgetManager(AuthUtils.getUser());
-    }
-
-    for (BudgetLevel groupBudgetLevel : groupBudgetLevelList) {
-      List<BudgetLevel> sectionBudgetLevelList = groupBudgetLevel.getBudgetLevelList();
-
-      BudgetLevel optGroupBudgetLevel =
-          budgetLevelManagementRepository.copy(groupBudgetLevel, false);
-      optGroupBudgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
-      optGroupBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
-      optGroupBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-
-      for (BudgetLevel sectionBudgetLevel : sectionBudgetLevelList) {
-        List<Budget> budgetList = sectionBudgetLevel.getBudgetList();
-
-        BudgetLevel optSectionBudgetLevel =
-            budgetLevelManagementRepository.copy(sectionBudgetLevel, false);
-        optSectionBudgetLevel.setStatusSelect(
-            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
-        optSectionBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
-        optSectionBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-
-        for (Budget budget : budgetList) {
-          Budget optBudget = budgetRepository.copy(budget, true);
-          optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-          optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-          optBudget.clearAccountModelSet();
-          optBudget.setBudgetModel(budget);
-          optSectionBudgetLevel.addBudgetListItem(optBudget);
-        }
-        optGroupBudgetLevel.addBudgetLevelListItem(optSectionBudgetLevel);
-      }
-      optGlobalBudgetLevel.addBudgetLevelListItem(optGroupBudgetLevel);
-    }
-    budgetLevelManagementRepository.save(optGlobalBudgetLevel);
-
-    return optGlobalBudgetLevel;
   }
 
   @Override
