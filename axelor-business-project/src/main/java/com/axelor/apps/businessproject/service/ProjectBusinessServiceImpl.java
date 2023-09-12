@@ -290,14 +290,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
-  public String getTimeZone(Project project) {
-    if (project == null || project.getCompany() == null) {
-      return null;
-    }
-    return project.getCompany().getTimezone();
-  }
-
-  @Override
   public void computeProjectTotals(Project project) throws AxelorException {
 
     project = projectRepository.find(project.getId());
