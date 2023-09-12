@@ -760,4 +760,5 @@
       self.moveLine.move.statusSelect = 5</domain>
     <context name="_groupId" expr="eval: id"/>
   </action-view>
+
 </object-views>
