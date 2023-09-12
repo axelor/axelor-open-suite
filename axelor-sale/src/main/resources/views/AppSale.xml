@@ -29,7 +29,7 @@
         showIf="enablePricingScale"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
       <field name="isPricingComputingOrder" title="Pricing computing order"
-        widget="boolean-select" x-true-text="Before" x-false-text="After"
+        widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
         showIf="enablePricingScale"/>
     </panel>
     <panel name="actionsPanel">
