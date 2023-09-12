@@ -639,6 +639,36 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   }
 
   @Override
+  public Map<String, Object> processRequestToDisplayFinancialReporting(Long id)
+      throws AxelorException {
+
+    ProjectTask projectTask = projectTaskRepo.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put("turnover", projectTask.getTurnover());
+    data.put("initialCosts", projectTask.getInitialCosts());
+    data.put("initialMargin", projectTask.getInitialMargin());
+    data.put("initialMarkup", projectTask.getInitialMarkup());
+    data.put("realTurnover", projectTask.getRealTurnover());
+    data.put("realCosts", projectTask.getRealCosts());
+    data.put("realMargin", projectTask.getRealMargin());
+    data.put("realMarkup", projectTask.getRealMarkup());
+    data.put("landingCosts", projectTask.getLandingCosts());
+    data.put("landingMargin", projectTask.getLandingMargin());
+    data.put("landingMarkup", projectTask.getLandingMarkup());
+    data.put("forecastCosts", projectTask.getForecastCosts());
+    data.put("forecastMargin", projectTask.getForecastMargin());
+    data.put("forecastMarkup", projectTask.getForecastMarkup());
+    if (projectTask.getProject() != null
+        && projectTask.getProject().getCompany() != null
+        && projectTask.getProject().getCompany().getCurrency() != null) {
+      data.put("currencySymbol", projectTask.getProject().getCompany().getCurrency().getSymbol());
+    }
+
+    return data;
+  }
+
+  @Override
   public boolean isTimeUnitValid(Unit unit) {
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
     return Objects.equals(unit, appBusinessProject.getDaysUnit())

@@ -68,6 +68,12 @@ public class ProjectHistoryServiceImpl implements ProjectHistoryService {
     data.put("landingCosts", projectHistoryLine.getLandingCosts());
     data.put("landingMargin", projectHistoryLine.getLandingMargin());
     data.put("landingMarkup", projectHistoryLine.getLandingMarkup());
+    if (projectHistoryLine.getProject() != null
+        && projectHistoryLine.getProject().getCompany() != null
+        && projectHistoryLine.getProject().getCompany().getCurrency() != null) {
+      data.put(
+          "currencySymbol", projectHistoryLine.getProject().getCompany().getCurrency().getSymbol());
+    }
 
     return data;
   }
