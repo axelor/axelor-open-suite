@@ -34,15 +34,21 @@
         showIf="typeSelect &amp;&amp;parentSaleOrderLineTree"/>
       <field name="saleOrderLine" colSpan="3" showIf="false"/>
     </panel>
+    <panel name="viewPanel" showIf="typeSelect==1">
+      <field name="totalCost" onChange="action-sale-order-line-tree-method-update-fields"/>
+      <field name="totalPrice" onChange="action-sale-order-line-tree-method-update-fields"/>
+    </panel>
     <panel name="productPanel" showIf="typeSelect==2">
       <field name="title" colSpan="6"/>
       <field name="product" onChange="action-sale-order-line-tree-method-fill-the-fields"
-        colSpan="6"/>
+        colSpan="6" requiredIf="typeSelect==2"/>
       <panel title="Info product" colSpan="12">
         <field name="quantity" onChange="action-sale-order-line-tree-method-update-fields"/>
         <field name="unit"/>
-        <field name="unitCost" onChange="action-sale-order-line-tree-method-update-fields"/>
-        <field name="unitPrice" onChange="action-sale-order-line-tree-method-update-fields"/>
+        <field name="unitCost" onChange="action-sale-order-line-tree-method-update-fields"
+          requiredIf="typeSelect==2"/>
+        <field name="unitPrice" onChange="action-sale-order-line-tree-method-update-fields"
+          requiredIf="typeSelect==2"/>
         <field name="marginRate"
           onChange="action-sale-order-line-tree-method-update-unit-price"/>
         <field name="totalCost" onChange="action-sale-order-line-tree-method-update-fields"/>
@@ -195,6 +201,10 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineTreeController" method="computePrices"/>
   </action-method>
 
+  <action-method
+    name="action-sale-order-line-tree-method-verify-if-it-has-sub-element">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineTreeController" method="hasSubElement"/>
+  </action-method>
 
   <action-group name="action-group-sale-order-line-tree-method-remove-sub-element">
     <action name="action-validate-sale-order-line-tree-remove-sub-element"/>
@@ -210,6 +220,7 @@
   <action-group name="action-sale-order-line-tree-group-onchange-price">
     <action name="save"/>
     <action name="action-sale-order-line-tree-method-compute-prices"/>
+    <action name="action-sale-order-line-tree-method-verify-if-it-has-sub-element"/>
   </action-group>
 
   <action-record name="action-sale-order-line-tree-record-empty-the-fields"
@@ -233,4 +244,8 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 
+  <action-method name="action-sale-order-line-tree-method-update-hasTree">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineTreeController"
+      method="saveHasSubElement"/>
+  </action-method>
 </object-views>

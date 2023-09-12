@@ -20,6 +20,8 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTree;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineTreeRepository;
@@ -70,10 +72,10 @@ public class SaleOrderLineTreeServiceImpl implements SaleOrderLineTreeService {
     BigDecimal costPrice = product.getCostPrice();
     BigDecimal salePrice = product.getSalePrice();
     BigDecimal qty = saleOrderLineTree.getQuantity();
-
     saleOrderLineTree.setTitle(product.getName());
     saleOrderLineTree.setUnit(product.getUnit());
     saleOrderLineTree.setDescription(product.getDescription());
+
     saleOrderLineTree.setUnitCost(costPrice);
     saleOrderLineTree.setUnitPrice(salePrice);
     saleOrderLineTree.setTotalCost(costPrice.multiply(qty));
@@ -116,9 +118,7 @@ public class SaleOrderLineTreeServiceImpl implements SaleOrderLineTreeService {
     BigDecimal marginRate = saleOrderLineTree.getMarginRate();
     if (marginRate == null) {
       saleOrderLineTree.setUnitPrice(null);
-    }
-
-    if (BigDecimal.ONE.subtract(marginRate).signum() != 0) {
+    } else if (BigDecimal.ONE.subtract(marginRate).signum() != 0) {
       BigDecimal unitCost = saleOrderLineTree.getUnitCost();
       BigDecimal unitPrice =
           unitCost != null ? unitCost.multiply(BigDecimal.ONE.add(marginRate)) : null;
@@ -143,5 +143,29 @@ public class SaleOrderLineTreeServiceImpl implements SaleOrderLineTreeService {
     }
 
     saleOrderLineTreeRepository.remove(saleOrderLineTree);
+  }
+
+  @Transactional
+  @Override
+  public SaleOrderLine hasSubElement(SaleOrderLine saleOrderLine) {
+    if (saleOrderLineTreeRepository
+            .all()
+            .filter("self.saleOrderLine.id = ?1", saleOrderLine.getId())
+            .count()
+        > 0) {
+      saleOrderLine.setHasTree(true);
+    } else {
+      saleOrderLine.setHasTree(false);
+    }
+    return saleOrderLine;
+  }
+
+  @Transactional
+  @Override
+  public SaleOrder saveHasSubElement(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    saleOrderLines.forEach(this::hasSubElement);
+    saleOrder.setSaleOrderLineList(saleOrderLines);
+    return saleOrder;
   }
 }

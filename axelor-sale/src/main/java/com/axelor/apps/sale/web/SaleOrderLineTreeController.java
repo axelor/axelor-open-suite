@@ -22,10 +22,12 @@ import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTree;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineTreeRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineCalculationComboService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
 import com.axelor.inject.Beans;
@@ -73,6 +75,26 @@ public class SaleOrderLineTreeController {
     response.setValue("price", saleOrderLine.getPrice());
     response.setValue("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
 
+    response.setReload(true);
+  }
+
+  public void hasSubElement(ActionRequest request, ActionResponse response) {
+
+    Long id = (Long) request.getContext().get("id");
+    SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(id);
+    saleOrderLine = Beans.get(SaleOrderLineTreeService.class).hasSubElement(saleOrderLine);
+
+    response.setValue("hasTree", saleOrderLine.getHasTree());
+    response.setReload(true);
+  }
+
+  public void saveHasSubElement(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Long id = (Long) request.getContext().get("id");
+    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(id);
+    saleOrder = Beans.get(SaleOrderLineTreeService.class).saveHasSubElement(saleOrder);
+    response.setValues(saleOrder);
     response.setReload(true);
   }
 

@@ -229,7 +229,8 @@
 
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
-    onNew="action-group-sale-saleorder-onnew">
+    onNew="action-group-sale-saleorder-onnew"
+    onSave="action-sale-order-line-tree-method-update-hasTree">
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print"
         hideIf="clientPartner == null" readonlyIf="!id"

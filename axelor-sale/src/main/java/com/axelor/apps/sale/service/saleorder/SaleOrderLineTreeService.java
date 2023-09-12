@@ -19,6 +19,8 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorAlertException;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTree;
 
 public interface SaleOrderLineTreeService {
@@ -30,4 +32,8 @@ public interface SaleOrderLineTreeService {
   SaleOrderLineTree updateUnitPrice(SaleOrderLineTree saleOrderLineTree);
 
   void removeElement(SaleOrderLineTree saleOrderLineTree) throws AxelorAlertException;
+
+  SaleOrderLine hasSubElement(SaleOrderLine saleOrderLine);
+
+  SaleOrder saveHasSubElement(SaleOrder saleOrder);
 }
