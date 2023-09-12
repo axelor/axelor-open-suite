@@ -28,6 +28,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -50,17 +51,20 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
   protected AppBaseService appBaseService;
   protected PurchaseOrderService purchaseOrderService;
   protected BirtTemplateService birtTemplateService;
+  protected PurchaseConfigService purchaseConfigService;
 
   @Inject
   public PurchaseOrderPrintServiceImpl(
       AppPurchaseService appPurchaseService,
       AppBaseService appBaseService,
       PurchaseOrderService purchaseOrderService,
-      BirtTemplateService birtTemplateService) {
+      BirtTemplateService birtTemplateService,
+      PurchaseConfigService purchaseConfigService) {
     this.appPurchaseService = appPurchaseService;
     this.appBaseService = appBaseService;
     this.purchaseOrderService = purchaseOrderService;
     this.birtTemplateService = birtTemplateService;
+    this.purchaseConfigService = purchaseConfigService;
   }
 
   @Override
@@ -107,7 +111,8 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
   public ReportSettings prepareReportSettings(PurchaseOrder purchaseOrder, String formatPdf)
       throws AxelorException {
     purchaseOrderService.checkPrintingSettings(purchaseOrder);
-    BirtTemplate poBirtTemplate = purchaseOrderService.getPOBirtTemplate(purchaseOrder);
+    BirtTemplate poBirtTemplate =
+        purchaseConfigService.getPurchaseOrderBirtTemplate(purchaseOrder.getCompany());
     String title = getFileName(purchaseOrder);
 
     return birtTemplateService.generate(

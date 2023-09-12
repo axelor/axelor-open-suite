@@ -19,7 +19,6 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -102,8 +101,6 @@ public interface PurchaseOrderService {
       throws AxelorException;
 
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException;
-
-  BirtTemplate getPOBirtTemplate(PurchaseOrder purchaseOrder) throws AxelorException;
 
   void checkPrintingSettings(PurchaseOrder purchaseOrder) throws AxelorException;
 }

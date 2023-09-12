@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -55,7 +54,6 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -289,7 +287,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException {
     checkPrintingSettings(purchaseOrder);
-    BirtTemplate purchaseOrderBirtTemplate = getPOBirtTemplate(purchaseOrder);
+    BirtTemplate purchaseOrderBirtTemplate =
+        purchaseConfigService.getPurchaseOrderBirtTemplate(purchaseOrder.getCompany());
 
     String title =
         I18n.get("Purchase order")
@@ -316,21 +315,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
               I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
               purchaseOrder.getPurchaseOrderSeq()));
     }
-  }
-
-  @Override
-  public BirtTemplate getPOBirtTemplate(PurchaseOrder purchaseOrder) throws AxelorException {
-    BirtTemplate purchaseOrderBirtTemplate =
-        purchaseConfigService
-            .getPurchaseConfig(purchaseOrder.getCompany())
-            .getPurchaseOrderBirtTemplate();
-    if (ObjectUtils.isEmpty(purchaseOrderBirtTemplate)
-        || ObjectUtils.isEmpty(purchaseOrderBirtTemplate.getTemplateMetaFile())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
-    }
-    return purchaseOrderBirtTemplate;
   }
 
   @Override
