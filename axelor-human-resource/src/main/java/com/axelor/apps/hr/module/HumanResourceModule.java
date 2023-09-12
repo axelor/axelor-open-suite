@@ -35,6 +35,8 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractHRRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineHRRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
@@ -240,5 +242,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveExportService.class).to(LeaveExportServiceImpl.class);
     bind(LunchVoucherExportService.class).to(LunchVoucherExportServiceImpl.class);
     bind(ExpenseCreateService.class).to(ExpenseCreateServiceImpl.class);
+    bind(ExpenseLineRepository.class).to(ExpenseLineHRRepository.class);
   }
 }
