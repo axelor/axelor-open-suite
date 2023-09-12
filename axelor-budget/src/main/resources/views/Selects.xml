@@ -86,4 +86,9 @@
     <option value="1">Validated</option>
   </selection>
 
+  <selection name='accounting.report.type.select'
+    id="budget.accounting.report.type.select">
+    <option order="25" value="25">Revenue and expenditure state</option>
+  </selection>
+
 </object-views>
