@@ -47,7 +47,7 @@
       <field name="product" canEdit="false" onChange="action-move-template-line-get-account"
         form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
       <field name="account" canEdit="false"
-        onSelect="action-move-template-line-set-account-domain" grid-view="account-grid"
+        onSelect="action-move-template-line-method-account-onselect" grid-view="account-grid"
         form-view="account-form"
         onChange="action-move-template-line-record-account-onchange,action-move-template-attrs-set-hidden-analytic-distribution-template"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
@@ -73,7 +73,7 @@
       <field name="product" canEdit="false" onChange="action-move-template-line-get-account"
         form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
       <field name="account" canEdit="false"
-        onSelect="action-move-template-line-set-account-domain" grid-view="account-grid"
+        onSelect="action-move-template-line-method-account-onselect" grid-view="account-grid"
         form-view="account-form"
         onChange="action-move-template-line-record-account-onchange,action-move-template-attrs-set-hidden-analytic-distribution-template"/>
       <field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
@@ -118,14 +118,10 @@
     <field name="percentage" expr="eval: 0"/>
   </action-record>
 
-  <action-attrs name="action-move-template-line-set-account-domain">
-    <attribute name="domain" for="account"
-      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;"
-      if="__parent__ != null"/>
-    <attribute name="domain" for="account"
-      expr="eval:&quot; self.statusSelect = 1 AND self.company.id = ${moveTemplate?.company?.id} &quot;"
-      if="moveTemplate != null"/>
-  </action-attrs>
+  <action-method name="action-move-template-line-method-account-onselect">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="accountOnSelect"/>
+  </action-method>
 
   <action-attrs
     name="action-move-template-attrs-set-hidden-analytic-distribution-template">

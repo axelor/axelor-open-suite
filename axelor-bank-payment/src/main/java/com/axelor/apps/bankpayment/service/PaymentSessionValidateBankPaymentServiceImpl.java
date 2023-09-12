@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -313,10 +314,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
                               || it.getBankOrderDate().equals(invoiceTerm.getDueDate()))
                           && it.getPartner().equals(invoiceTerm.getMoveLine().getPartner())
                           && ((it.getReceiverBankDetails() == null
-                                  && invoiceTerm.getBankDetails() == null)
+                                  && this.getBankDetails(invoiceTerm) == null)
                               || (it.getReceiverBankDetails() != null
                                   && it.getReceiverBankDetails()
-                                      .equals(invoiceTerm.getBankDetails()))))
+                                      .equals(this.getBankDetails(invoiceTerm)))))
               .findFirst()
               .orElse(null);
     }
@@ -368,7 +369,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             bankOrder.getBankOrderFileFormat(),
             null,
             invoiceTerm.getMoveLine().getPartner(),
-            invoiceTerm.getBankDetails(),
+            this.getBankDetails(invoiceTerm),
             invoiceTerm.getAmountPaid().subtract(reconciledAmount),
             paymentSession.getCurrency(),
             bankOrderDate,
@@ -509,11 +510,12 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       Move move,
       InvoiceTerm invoiceTerm,
       Pair<InvoiceTerm, BigDecimal> pair,
+      AccountConfig accountConfig,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
     super.createAndReconcileMoveLineFromPair(
-        paymentSession, move, invoiceTerm, pair, out, paymentAmountMap);
+        paymentSession, move, invoiceTerm, pair, accountConfig, out, paymentAmountMap);
 
     manageInvoicePayment(paymentSession, invoiceTerm, pair.getRight());
   }

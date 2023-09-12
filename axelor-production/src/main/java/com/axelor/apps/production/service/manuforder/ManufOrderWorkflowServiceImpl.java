@@ -52,6 +52,7 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -88,6 +89,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ProductCompanyService productCompanyService;
   protected ProductionConfigRepository productionConfigRepo;
   protected PurchaseOrderService purchaseOrderService;
+  protected OperationOrderService operationOrderService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -97,7 +99,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ManufOrderRepository manufOrderRepo,
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      OperationOrderService operationOrderService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -105,6 +108,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.productCompanyService = productCompanyService;
     this.productionConfigRepo = productionConfigRepo;
     this.purchaseOrderService = purchaseOrderService;
+    this.operationOrderService = operationOrderService;
   }
 
   @Override
@@ -166,7 +170,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         long duration = 0;
         for (OperationOrder order : manufOrder.getOperationOrderList()) {
           duration +=
-              operationOrderWorkflowService.computeEntireCycleDuration(
+              operationOrderService.computeEntireCycleDuration(
                   order, order.getManufOrder().getQty()); // in seconds
         }
         manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
@@ -178,7 +182,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     for (ManufOrder manufOrder : manufOrderList) {
       if (manufOrder.getOperationOrderList() != null) {
         for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-          operationOrderWorkflowService.plan(operationOrder, null);
+          operationOrderWorkflowService.plan(operationOrder);
         }
       }
     }

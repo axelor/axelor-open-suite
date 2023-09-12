@@ -113,6 +113,8 @@ import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveExportService;
+import com.axelor.apps.hr.service.leave.LeaveExportServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.LeaveLineServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
@@ -129,6 +131,8 @@ import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowService;
 import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceServiceImpl;
+import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherExportService;
+import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherExportServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
@@ -233,6 +237,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(MedicalVisitService.class).to(MedicalVisitServiceImpl.class);
     bind(MedicalVisitWorkflowService.class).to(MedicalVisitWorkflowServiceImpl.class);
     bind(MedicalVisitRepository.class).to(MedicalVisitHRRepository.class);
+    bind(LeaveExportService.class).to(LeaveExportServiceImpl.class);
+    bind(LunchVoucherExportService.class).to(LunchVoucherExportServiceImpl.class);
     bind(ExpenseLineRepository.class).to(ExpenseLineHRRepository.class);
   }
 }

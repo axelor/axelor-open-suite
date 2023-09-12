@@ -29,11 +29,13 @@ import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
@@ -70,15 +72,18 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   protected AppProductionService appProductionService;
 
   protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected ProdProcessLineService prodProcessLineService;
 
   @Inject
   public OperationOrderServiceImpl(
       BarcodeGeneratorService barcodeGeneratorService,
       AppProductionService appProductionService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ProdProcessLineService prodProcessLineService) {
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.prodProcessLineService = prodProcessLineService;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -513,5 +518,41 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         operationOrder.setBarCode(barcodeFile);
       }
     }
+  }
+
+  @Override
+  public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
+      throws AxelorException {
+    ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+
+    return prodProcessLineService.computeEntireCycleDuration(operationOrder, prodProcessLine, qty);
+  }
+
+  /**
+   * Computes the duration of all the {@link OperationOrderDuration} of {@code operationOrder}
+   *
+   * @param operationOrder An operation order
+   * @return Real duration of {@code operationOrder}
+   */
+  @Override
+  public Duration computeRealDuration(OperationOrder operationOrder) {
+    Duration totalDuration = Duration.ZERO;
+
+    List<OperationOrderDuration> operationOrderDurations =
+        operationOrder.getOperationOrderDurationList();
+    if (operationOrderDurations != null) {
+      for (OperationOrderDuration operationOrderDuration : operationOrderDurations) {
+        if (operationOrderDuration.getStartingDateTime() != null
+            && operationOrderDuration.getStoppingDateTime() != null) {
+          totalDuration =
+              totalDuration.plus(
+                  Duration.between(
+                      operationOrderDuration.getStartingDateTime(),
+                      operationOrderDuration.getStoppingDateTime()));
+        }
+      }
+    }
+
+    return totalDuration;
   }
 }

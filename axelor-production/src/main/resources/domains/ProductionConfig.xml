@@ -25,6 +25,9 @@
     <many-to-one name="partFinishMoMessageTemplate" title="Message template"
       ref="com.axelor.message.db.Template"/>
 
+    <integer name="capacity" title="Capacity" selection="production.config.capacity.select"
+      nullable="false" default="1"/>
+
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -32,6 +35,9 @@
 		<![CDATA[
    			public static final int REALIZE_START = 0;
    			public static final int REALIZE_FINISH = 1;
+
+   			public static final int INFINITE_CAPACITY_SCHEDULING = 1;
+   			public static final int FINITE_CAPACITY_SCHEDULING = 2;
    		]]>
     </extra-code>
 

@@ -49,7 +49,8 @@
     <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
     <button name="planBtn" icon="fa-calendar" onClick="action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-    <button name="startBtn" icon="fa-play" onClick="action-operation-order-group-start"
+    <button name="startBtn" icon="fa-play"
+      onClick="action-operation-order-group-start-or-resume"
       readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
     <button name="pauseBtn" icon="fa-pause"
       onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
@@ -81,7 +82,8 @@
     <button name="planBtn" icon="fa-calendar"
       onClick="save,action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-    <button name="startBtn" icon="fa-play" onClick="save,action-operation-order-group-start"
+    <button name="startBtn" icon="fa-play"
+      onClick="save,action-operation-order-group-start-or-resume"
       readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
     <button name="pauseBtn" icon="fa-pause"
       onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>

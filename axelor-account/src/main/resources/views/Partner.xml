@@ -121,9 +121,10 @@
       <insert position="inside">
         <field name="isCompensation" colSpan="12" widget="InlineCheckbox"
           showIf="isCustomer &amp;&amp; isSupplier"/>
+        <field name="isSubrogation" colSpan="12" widget="InlineCheckbox"
+          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       </insert>
     </extend>
-
   </form>
 
 
