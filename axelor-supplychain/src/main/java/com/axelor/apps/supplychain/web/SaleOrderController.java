@@ -704,4 +704,16 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setAdvancePayment(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(SaleOrderSupplychainService.class).setAdvancePayment(saleOrder);
+    response.setValues(saleOrder);
+  }
+
+  public void updateTimetableAmounts(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(SaleOrderSupplychainService.class).updateTimetableAmounts(saleOrder);
+    response.setValues(saleOrder);
+  }
 }

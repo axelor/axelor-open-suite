@@ -1,5 +1,6 @@
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -15,15 +16,18 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
   protected SaleOrderRepository saleOrderRepository;
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected AppBaseService appBaseService;
+  protected SaleOrderOnLineChangeService saleOrderOnLineChangeService;
 
   @Inject
   public SaleOrderVersionServiceImpl(
       SaleOrderRepository saleOrderRepository,
       SaleOrderLineRepository saleOrderLineRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderOnLineChangeService saleOrderOnLineChangeService) {
     this.saleOrderRepository = saleOrderRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.appBaseService = appBaseService;
+    this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
   }
 
   @Override
@@ -34,7 +38,6 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
         .forEach(saleOrderLine -> historizeSaleOrderLine(saleOrder, saleOrderLine));
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrder.setVersionNumber(saleOrder.getVersionNumber() + 1);
-    saleOrderRepository.save(saleOrder);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -83,7 +86,8 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public boolean recoverVersion(
-      SaleOrder saleOrder, Integer versionNumber, boolean saveActualVersion) {
+      SaleOrder saleOrder, Integer versionNumber, boolean saveActualVersion)
+      throws AxelorException {
     boolean isNewVersion = !saleOrder.getSaleOrderLineList().isEmpty() && saveActualVersion;
     if (!saveActualVersion) {
       saleOrder.getSaleOrderLineList().clear();
@@ -96,7 +100,7 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
     if (!isNewVersion) {
       saleOrder.setVersionNumber(saleOrder.getVersionNumber() - 1);
     }
-    saleOrderRepository.save(saleOrder);
+    saleOrderOnLineChangeService.onLineChange(saleOrder);
     return isNewVersion;
   }
 

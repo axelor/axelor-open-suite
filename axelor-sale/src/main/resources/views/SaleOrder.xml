@@ -426,11 +426,11 @@
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-attrs-compute-tax-number-domain"
-          onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
+          onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-method-fiscal-position-on-change,action-sale-order-method-on-line-change"/>
         <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-supplychain-attrs-fiscal-position-domain"
-          onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
+          onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-method-on-line-change"/>
         <panel name="otherInfoPanel" colSpan="3">
           <field name="inAti" hidden="true"
             readonlyIf="(saleOrderLineList &amp;&amp; saleOrderLineList.length > 0) || statusSelect &gt;= 2"
@@ -479,7 +479,7 @@
           title="Details Lines" readonlyIf="clientPartner == null" colSpan="12"
           field="saleOrderLineList" form-view="sale-order-line-form"
           grid-view="sale-order-line-grid" orderBy="sequence"
-          onChange="action-sale-order-line-change-group" canMove="true" height="30"/>
+          onChange="action-sale-order-method-on-line-change" canMove="true" height="30"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
@@ -768,7 +768,7 @@
           domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
         <field name="paymentCondition" readonlyIf="statusSelect > 2" canEdit="false"
           form-view="payment-condition-form" grid-view="payment-condition-grid"
-          onChange="action-sale-order-record-set-advance-payment"
+          onChange="action-sale-order-method-set-advance-payment"
           onSelect="action-sale-order-attrs-payment-condition-set-domain"/>
       </panel>
       <field name="companyBankDetails" canEdit="false" hidden="true" widget="SuggestBox"
@@ -1384,7 +1384,7 @@
     <action name="action-sale-order-record-from-partner"/>
     <action name="action-sale-order-record-partner"/>
 
-    <action name="action-sale-order-record-set-advance-payment"
+    <action name="action-sale-order-method-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
     <action name="action-sale-order-method-address-str"/>
@@ -1416,7 +1416,7 @@
 
   <action-group name="action-sale-group-onchange-client-partner">
     <action name="action-sale-order-record-partner"/>
-    <action name="action-sale-order-record-set-advance-payment"
+    <action name="action-sale-order-method-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
     <action name="action-sale-order-method-fill-company-bank-details"/>
@@ -1477,7 +1477,7 @@
     <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
-    <action name="action-sale-order-attrs-incoterm-required"/>
+    <action name="action-sale-order-method-is-incoterm-required"/>
     <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
@@ -1493,25 +1493,9 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
-  <action-group name="action-sale-order-line-change-group">
-    <action name="action-sale-order-method-complementary-products"/>
-    <action name="action-sale-order-method-update-product-qty-with-pack-header-qty"
-      if="saleOrderLineList.find{it->it.typeSelect == 2} != null"/>
-    <action name="action-sale-order-method-compute"/>
-    <action name="action-sale-order-method-compute-margin"/>
-    <action name="action-sale-order-record-set-advance-payment"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-    <action name="action-sale-order-record-update-timetable-amounts"
-      if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
-    <action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"
-      if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
-    <action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2} != null"/>
-    <action name="action-sale-order-attrs-incoterm-required"/>
-  </action-group>
-
   <action-group name="action-sale-order-group-client-partner-change">
     <action name="action-sale-order-record-partner"/>
-    <action name="action-sale-order-record-set-advance-payment"
+    <action name="action-sale-order-method-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-sale-order-method-address-str"/>
     <action name="action-sale-order-method-fill-price-list"
@@ -1556,8 +1540,6 @@
   <action-group name="action-sale-order-group-version-recovery-btn">
     <action name="save"/>
     <action name="action-sale-order-method-version-recovery-btn"/>
-    <action name="action-sale-order-line-change-group"/>
-    <action name="save"/>
   </action-group>
 
   <action-validate name="action-sale-order-validate-quotation">
@@ -1611,16 +1593,6 @@
     <field name="inAti"
       expr="eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-set-advance-payment"
-    model="com.axelor.apps.sale.db.SaleOrder" if-module="axelor-supplychain">
-    <field name="advancePaymentNeeded"
-      expr="eval: paymentCondition?.advancePaymentNeeded > 0 ? true : false"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-    <field name="advancePaymentAmountNeeded"
-      expr="eval: inTaxTotal * ((paymentCondition?.advancePaymentNeeded == null) ? 0 : paymentCondition?.advancePaymentNeeded / 100.0)"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
   </action-record>
 
   <action-method
@@ -1698,6 +1670,10 @@
   <action-method name="action-sale-order-method-fiscal-position-on-change">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="updateLinesAfterFiscalPositionChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-on-line-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="onLineChange"/>
   </action-method>
 
   <action-method name="action-sale-order-method-new-version">
@@ -2280,6 +2256,10 @@
       class="com.axelor.apps.sale.web.SaleOrderController"/>
   </action-method>
 
+  <action-method name="action-sale-order-method-is-incoterm-required">
+    <call method="isIncotermRequired" class="com.axelor.apps.sale.web.SaleOrderController"/>
+  </action-method>
+
   <action-attrs name="action-sale-order-attrs-readonly-timetable">
     <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }"
       for="timetableTemplate"/>
@@ -2298,14 +2278,5 @@
     <field name="stockLocation"
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
   </action-record>
-
-  <action-attrs name="action-sale-order-attrs-incoterm-required">
-    <attribute for="incoterm" name="required"
-      expr="eval: __config__.app.isApp('supplychain')
-          &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
-          &amp;&amp; (
-          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
-          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
-  </action-attrs>
 
 </object-views>
