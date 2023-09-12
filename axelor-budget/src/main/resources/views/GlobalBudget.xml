@@ -54,8 +54,7 @@
           <button name="updateDatesBtn" colSpan="2" title="Update dates"
             onClick="save,action-global-budget-method-set-dates"
             readonlyIf="fromDate == null || toDate == null"/>
-          <field name="budgetTypeSelect" requiredIf="statusSelect == 0" colSpan="4"
-            readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0"/>
+          <field name="budgetTypeSelect" colSpan="4" readonly="true"/>
           <field name="companyDepartment" colSpan="4" showIf="company"
             domain="self.company = :company OR self.company IS NULL"/>
           <field name="budgetManager" colSpan="4" showIf="company"

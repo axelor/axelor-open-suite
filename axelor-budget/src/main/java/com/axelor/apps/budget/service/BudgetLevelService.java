@@ -43,15 +43,6 @@ public interface BudgetLevelService {
   public void computeBudgetTotals(BudgetLevel budgetLevel);
 
   /**
-   * This function creates Global budget (budget) i.e. level 1 {@link BudgetLevel} from Global
-   * budget (template)
-   *
-   * @param budgetLevel
-   * @return BudgetLevel
-   */
-  public BudgetLevel createGlobalBudgets(BudgetLevel budgetLevel);
-
-  /**
    * This function imports and updates BudgetLevel.
    *
    * @param budgetLevel

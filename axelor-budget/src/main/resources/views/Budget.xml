@@ -173,7 +173,7 @@
           readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
           domain="self.parentBudgetLevel != null AND self.parentBudgetLevel.globalBudget.id = :globalId"/>
         <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
-          colSpan="3" grid-view="budget-level-grid" form-view="budget-level-form"/>
+          colSpan="3" grid-view="global-budget-grid" form-view="global-budget-form"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
         <field name="category" colSpan="12"/>
         <panel name="datesPanel" colSpan="12">
@@ -192,9 +192,11 @@
         if="__config__.app.isApp('supplychain')" colSpan="3" stacked="true" hidden="true"
         showIf="budgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel.globalBudget.statusSelect == 2">
         <button name="showBudgetDistributionLineOrderLineBtn"
+          showIf="totalAmountCommitted &gt; 0 || totalAmountRealized &gt; 0"
           onClick="action-budget-group-view-budget-distribution-order-line"
           title="Display committed lines" colSpan="12"/>
         <button name="seeBudgetDistributionLines"
+          showIf="totalAmountCommitted &gt; 0 || totalAmountRealized &gt; 0"
           onClick="action-budget-distribution-view-show-budget-distibution-lines"
           title="Display distribution lines" colSpan="12"/>
         <button name="seeRealizedWithNoPo" showIf="realizedWithNoPo &gt; 0"
@@ -211,7 +213,7 @@
       <static name="$periodNotAvailable" colSpan="12" hidden="true">
         <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
       <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
-        colSpan="12" readonlyIf="statusSelect != 1">
+        colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
         <field name="periodDurationSelect" colSpan="4"/>
         <field name="amountForGeneration" colSpan="4"/>
         <button name="generatePeriodsBtn" title="Generate periods"
