@@ -18,6 +18,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -172,7 +173,8 @@ public class PickedProductServiceImpl implements PickedProductService {
         pickedProduct.getTrackingNumber() != null
             ? pickedProduct.getTrackingNumber().getTrackingNumberSeq()
             : "";
-    StockLocationLine stockLocationLine =
+
+    Query<StockLocationLine> query =
         stockLocationLineRepository
             .all()
             .filter(
@@ -181,6 +183,19 @@ public class PickedProductServiceImpl implements PickedProductService {
                         != null
                     ? " AND self.trackingNumber =?4"
                     : " AND self.detailsStockLocation = null",
+                fromStockLocation,
+                pickedProduct.getPickedProduct(),
+                BigDecimal.ZERO,
+                pickedProduct.getTrackingNumber());
+    System.out.println("SALUT : " + query);
+    StockLocationLine stockLocationLine =
+        stockLocationLineRepository
+            .all()
+            .filter(
+                "self.stockLocation =?1 AND self.product =?2 AND self.currentQty =?3"
+                    + (pickedProduct.getTrackingNumber() != null
+                        ? " AND self.trackingNumber =?4"
+                        : " AND self.detailsStockLocation = null"),
                 fromStockLocation,
                 pickedProduct.getPickedProduct(),
                 BigDecimal.ZERO,
@@ -234,10 +249,9 @@ public class PickedProductServiceImpl implements PickedProductService {
               .all()
               .filter(
                   "self.storedProduct =?1 AND self.currentQty =?2 AND self.massStockMove =?3"
-                              + pickedProduct.getTrackingNumber()
-                          != null
-                      ? " AND self.trackingNumber =?4"
-                      : "",
+                      + (pickedProduct.getTrackingNumber() != null
+                          ? " AND self.trackingNumber =?4"
+                          : ""),
                   pickedProduct.getPickedProduct(),
                   pickedProduct.getPickedQty(),
                   massStockMove,
