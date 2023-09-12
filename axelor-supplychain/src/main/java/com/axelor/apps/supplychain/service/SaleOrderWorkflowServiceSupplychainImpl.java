@@ -54,7 +54,6 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AppSupplychainService appSupplychainService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
-  protected SaleConfigService saleConfigService;
   protected SaleOrderCheckAnalyticService saleOrderCheckAnalyticService;
 
   @Inject
@@ -84,13 +83,13 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
         userService,
         saleOrderLineService,
         birtTemplateService,
-        saleOrderService);
+        saleOrderService,
+        saleConfigService);
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
-    this.saleConfigService = saleConfigService;
     this.saleOrderCheckAnalyticService = saleOrderCheckAnalyticService;
   }
 

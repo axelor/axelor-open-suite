@@ -27,6 +27,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -49,17 +50,20 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
   protected AppSaleService appSaleService;
   protected BirtTemplateService birtTemplateService;
   protected SaleOrderRepository saleOrderRepository;
+  protected SaleConfigService saleConfigService;
 
   @Inject
   public SaleOrderPrintServiceImpl(
       SaleOrderService saleOrderService,
       AppSaleService appSaleService,
       BirtTemplateService birtTemplateService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      SaleConfigService saleConfigService) {
     this.saleOrderService = saleOrderService;
     this.appSaleService = appSaleService;
     this.birtTemplateService = birtTemplateService;
     this.saleOrderRepository = saleOrderRepository;
+    this.saleConfigService = saleConfigService;
   }
 
   @Override
@@ -108,7 +112,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
       throws AxelorException {
 
     saleOrderService.checkPrintingSettings(saleOrder);
-    BirtTemplate saleOrderBirtTemplate = saleOrderService.getSaleOrderBirtTemplate(saleOrder);
+    BirtTemplate saleOrderBirtTemplate =
+        saleConfigService.getSaleOrderBirtTemplate(saleOrder.getCompany());
     String title = saleOrderService.getFileName(saleOrder);
 
     return birtTemplateService.generate(

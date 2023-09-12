@@ -40,6 +40,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -63,6 +64,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected SaleOrderLineService saleOrderLineService;
   protected BirtTemplateService birtTemplateService;
   protected SaleOrderService saleOrderService;
+  protected SaleConfigService saleConfigService;
 
   @Inject
   public SaleOrderWorkflowServiceImpl(
@@ -74,7 +76,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       UserService userService,
       SaleOrderLineService saleOrderLineService,
       BirtTemplateService birtTemplateService,
-      SaleOrderService saleOrderService) {
+      SaleOrderService saleOrderService,
+      SaleConfigService saleConfigService) {
 
     this.sequenceService = sequenceService;
     this.partnerRepo = partnerRepo;
@@ -85,6 +88,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     this.saleOrderLineService = saleOrderLineService;
     this.birtTemplateService = birtTemplateService;
     this.saleOrderService = saleOrderService;
+    this.saleConfigService = saleConfigService;
   }
 
   @Override
@@ -250,7 +254,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException {
 
     saleOrderService.checkPrintingSettings(saleOrder);
-    BirtTemplate saleOrderBirtTemplate = saleOrderService.getSaleOrderBirtTemplate(saleOrder);
+    BirtTemplate saleOrderBirtTemplate =
+        saleConfigService.getSaleOrderBirtTemplate(saleOrder.getCompany());
 
     birtTemplateService.generateBirtTemplateLink(
         saleOrderBirtTemplate,
