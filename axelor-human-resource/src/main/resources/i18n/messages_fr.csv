@@ -2,7 +2,7 @@
 "%d expense treated successfully,","%d note de frais traitée avec succès.",,
 "%d expenses treated successfully,","%d notes de frais traitées avec succès.",,
 "6 days week","6 jours par semaine",,
-"<span class='label label-warning'>At least one line of this expense exceeds the authorised amount for its type of expense.</span>","<span class='label label-warning'>Au moins une ligne de cette note de frais dépace le montant autorisé pour son type de frais.</span>",,
+"<span class='label label-warning'>At least one line of this expense exceeds the authorised amount for its type of expense.</span>","<span class='label label-warning'>Au moins une ligne de cette note de frais dépasse le montant autorisé pour son type de frais.</span>",,
 "A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one.","Une demande de congés est déjà acceptée sur cette période ou une partie de celle-ci. Merci d'annuler la précédente pour accepter cette demande.",,
 "ADD A LINE","Ajouter la ligne",,
 "Account information","Informations comptable",,
