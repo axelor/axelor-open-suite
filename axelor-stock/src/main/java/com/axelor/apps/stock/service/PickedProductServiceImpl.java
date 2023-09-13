@@ -174,20 +174,6 @@ public class PickedProductServiceImpl implements PickedProductService {
             ? pickedProduct.getTrackingNumber().getTrackingNumberSeq()
             : "";
 
-    Query<StockLocationLine> query =
-        stockLocationLineRepository
-            .all()
-            .filter(
-                "self.stockLocation =?1 AND self.product =?2 AND self.currentQty =?3"
-                            + pickedProduct.getTrackingNumber()
-                        != null
-                    ? " AND self.trackingNumber =?4"
-                    : " AND self.detailsStockLocation = null",
-                fromStockLocation,
-                pickedProduct.getPickedProduct(),
-                BigDecimal.ZERO,
-                pickedProduct.getTrackingNumber());
-    System.out.println("SALUT : " + query);
     StockLocationLine stockLocationLine =
         stockLocationLineRepository
             .all()
