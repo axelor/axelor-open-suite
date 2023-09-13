@@ -24,13 +24,15 @@
       <field name="enableSalesProductByTradName" widget="boolean-switch"/>
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
-      <field name="enablePricingScale" widget="boolean-switch"/>
-      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
-        showIf="enablePricingScale"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
-      <field name="isPricingComputingOrder" title="Pricing computing order"
-        widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
-        showIf="enablePricingScale"/>
+      <panel name="pricingScalePanel" colSpan="12">
+        <field name="enablePricingScale" widget="boolean-switch"/>
+        <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
+               showIf="enablePricingScale"/>
+        <field name="isPricingComputingOrder" title="Pricing computing order"
+               widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
+               showIf="enablePricingScale"/>
+      </panel>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
