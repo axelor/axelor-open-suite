@@ -21,8 +21,11 @@ package com.axelor.apps.account.service.analytic;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.util.List;
 
@@ -39,4 +42,7 @@ public interface AnalyticToolService {
       AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList);
 
   <T> T getFieldFromContextParent(Context context, String fieldName, Class<T> klass);
+
+  AnalyticLine getParentWithContext(
+      ActionRequest request, ActionResponse response, AnalyticMoveLine analyticMoveLine);
 }
