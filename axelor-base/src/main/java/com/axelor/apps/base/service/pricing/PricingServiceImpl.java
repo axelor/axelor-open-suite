@@ -90,7 +90,7 @@ public class PricingServiceImpl implements PricingService {
     // find the pricing that doesn't have any pricing pointing to it, that's the root
     for (Pricing pricing : pricings) {
       if (!pricingsPointedTo.contains(pricing.getId())) {
-        rootPricing = Optional.ofNullable(pricing);
+        rootPricing = Optional.of(pricing);
         break;
       }
     }
@@ -133,7 +133,7 @@ public class PricingServiceImpl implements PricingService {
     filter.append("AND (self.archived = false OR self.archived is null) ");
 
     appendProductFilter(product, productCategory, filter, bindings);
-    LOG.debug("Filtering pricing with {}", filter.toString());
+    LOG.debug("Filtering pricing with {}", filter);
     return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
   }
 
@@ -161,7 +161,7 @@ public class PricingServiceImpl implements PricingService {
     filter.append("AND (self.archived = false OR self.archived is null) ");
 
     appendProductFilter(product, productCategory, filter, bindings);
-    LOG.debug("Filtering pricing with {}", filter.toString());
+    LOG.debug("Filtering pricing with {}", filter);
     return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
   }
 
