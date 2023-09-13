@@ -114,9 +114,11 @@
           <field name="$viewerProductTags" showTitle="false" colSpan="12" readonly="true">
             <viewer depends="configurator">
 							<![CDATA[
-								<h4 style="text-align: right;">
-									<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.configurator != null" x-translate>Customised</span>
-								</h4>
+								<>
+									<Box d="flex" justifyContent="flex-end">
+										{configurator && <Badge bg="danger">{_t('Customised')}</Badge>}
+									</Box>
+								</>
 							]]>
             </viewer>
           </field>
@@ -143,8 +145,10 @@
         <field name="picture" showTitle="false" colSpan="12" widget="Image">
           <viewer>
 					<![CDATA[
-			    		<img ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          				<img ng-show="!record.picture" src="img/product-default.png" />
+						<>
+							{picture && <Image src={$image('picture', 'content')}></Image>}
+							{!picture && <Image src="img/product-default.png"></Image>}
+						</>
 					]]>
           </viewer>
         </field>
@@ -547,22 +551,22 @@
     <field name="internalDescription"/>
     <field name="configurator.id"/>
     <template><![CDATA[
-		    <div class="span12"><strong>{{$fmt('fullName')}}</strong></div>
-			<div>
-			  <div class="span4 card-image" style="width: 128px; height: 64px;">
-			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
-			    <img ng-show="!picture" src="img/product-default.png" />
-			  </div>
-			  <div class="span8" style="width: 60%;">
-			    <span>{{$fmt('salePrice') | currency: saleCurrency.symbol}}<br/>
-			    {{productFamily.name}}<br/>
-			    {{productCategory.name}}</span>
-			  </div>
-			</div>
-			<div class="span12" ng-bind-html="internalDescription"></div>
-			<div class="span12" style="margin-left:0px;">
-	  			<span class="label label-important" ng-show="record.configurator.id" x-translate>Customised</span>
-			</div>
+		<>
+			<strong>{$fmt('fullName')}</strong>
+			<Box d="grid" gridTemplateColumns="40% 60%">
+				<Box style={{ width: 128, height: 64 }}>
+					{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+					{!picture && <Image src="img/product-default.png"></Image>}
+				</Box>
+				<Box>
+					{$fmt('saleCurrency.symbol')} {$fmt('salePrice')} <Box/>
+					{productFamily.name} <Box/>
+					{productCategory.name}
+					</Box>
+				</Box>
+			<Box dangerouslySetInnerHTML={{__html : internalDescription}}></Box>
+			{configurator?.id && <Badge bg="danger">{_t('Customised')}</Badge>}
+		</>
 		]]>
     </template>
   </cards>

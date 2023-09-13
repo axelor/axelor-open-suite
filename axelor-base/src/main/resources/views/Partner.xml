@@ -207,13 +207,13 @@
         <field name="picture" showTitle="false" widget="Image" colSpan="12">
           <viewer>
             <![CDATA[
-					    <div>
-			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
-          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 1" src="img/partner-m-default.png" />
-          					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && record.titleSelect == 2" src="img/partner-w-default.png" />
-        					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect == 2 && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
-     					</div>
+            		<>
+     					{picture && <Image src={$image('picture', 'content')} style={{ width: "80%" }}></Image>}
+     					{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg" style={{ width: "80%" }}></Image>}
+     					{!picture && partnerTypeSelect == 2 && titleSelect == 1 && <Image src="img/partner-m-default.png" style={{ width: "80%" }}></Image>}
+     					{!picture && partnerTypeSelect == 2 && titleSelect == 2 && <Image src="img/partner-w-default.png" style={{ width: "80%" }}></Image>}
+     					{!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png" style={{ width: "80%" }}></Image>}
+					</>
 					]]>
           </viewer>
         </field>
@@ -266,7 +266,8 @@
             onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
           <field name="$balance" hidden="true"/>
           <static name="duplicatePartnerText" hidden="true" colSpan="12">
-            <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+              <![CDATA[<><Badge bg="warning">There is already a partner with this name.</Badge></>]]>
+          </static>
           <field name="fullName" hidden="true"/>
         </panel>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
@@ -274,15 +275,17 @@
           <viewer
             depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier">
             <![CDATA[
-							<h4 style="text-align: right;">
-								<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
-								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
-								<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
-								<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
-								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
-								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-							</h4>
+						<>
+							<Box d="flex" justifyContent="flex-end" gap="4">
+								{isProspect && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Prospect')}</Badge>}
+								{isEmployee && <Badge style={{ backgroundColor: "#5680FC" }}>{_t('Employee')}</Badge>}
+								{isCustomer && <Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Customer')}</Badge>}
+								{isSupplier && <Badge style={{ backgroundColor: "#7D54FC" }}>{_t('Supplier')}</Badge>}
+								{isSubcontractor && <Badge style={{ backgroundColor: "#000080" }}>{_t('Subcontractor')}</Badge>}
+								{isFactor && <Badge style={{ backgroundColor: "#54FC62" }}>{_t('Factor')}</Badge>}
+								{isCarrier && <Badge style={{ backgroundColor: "#FF0000" }}>{_t('Carrier')}</Badge>}
+							</Box>
+						</>
                         ]]>
           </viewer>
         </field>
@@ -290,21 +293,26 @@
         <panel name="blockingPanel" hideIf="!$readonly()" colOffset="9" colSpan="3">
           <field name="$activeBlockings" showTitle="false" colSpan="12">
             <viewer><![CDATA[
-                            <h4 style="text-align: right;">
-                                <span ng-repeat="item in record.blockingList" class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="$moment(item.blockingToDate) > $moment(today)">
-                                	<i class="fa fa-ban"/>
-                                	<span x-translate>{{ {'1':'Remin._block','2':'Inv._block','3':'Reimb._block','4':'Debit_block','5':'Sale_block','6':'Purch._block'}[item.blockingSelect] }}</span>
-                                	<!-- hidden spans only there for translation purposes -->
-                                	<span x-translate style="display:none">Remin._block</span>
-                                	<span x-translate style="display:none">Inv._block</span>
-                                	<span x-translate style="display:none">Reimb._block</span>
-                                	<span x-translate style="display:none">Debit_block</span>
-                                	<span x-translate style="display:none">Sale_block</span>
-                                	<span x-translate style="display:none">Purch._block</span>
-                                	<i class="fa fa-caret-right" style="margin: 0 4px;"/>
-                                	{{ item.blockingToDate | date : 'L' }}
-                                </span>
-                            </h4>
+                            <>
+	                            <Box d="flex" flexDirection="column" justifyContent="flex-end">
+		                            {blockingList.map((b) => {
+		                            	const selectMap = {
+		                            	'1': _t('Remin._block'),
+		                            	'2': _t('Inv._block'),
+		                            	'3': _t('Reimb._block'),
+		                            	'4': _t('Debit_block'),
+		                            	'5': _t('Sale_block'),
+		                            	'6': _t('Purch._block'),
+		                            };
+		                            return (
+		                            ($moment(b.blockingToDate) > $moment(today)) &&
+		                            	<Badge bg="danger" mt={2}>
+		                            		<Icon icon="slash-circle"/> {selectMap[b.blockingSelect]} <Icon icon="caret-right-fill"/> {$moment(b.blockingToDate).format('L')}
+		                            	</Badge>
+		                            );
+		                           })}
+		                    	</Box>
+		                    </>
                         ]]></viewer>
           </field>
         </panel>
@@ -389,7 +397,8 @@
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
           <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12">
-            <![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
+		  	  <![CDATA[<><Badge bg="warning">Please add an invoice address and a delivery address by default.</Badge></>]]>
+          </static>
           <field name="partnerAddressList" colSpan="12" form-view="partner-address-form"
             grid-view="partner-address-grid">
             <editor x-show-titles="false" onNew="action-partner-address-attrs-set-canselect">
@@ -650,12 +659,12 @@
         <field name="picture" widget="Image" showTitle="false" colSpan="12">
           <viewer>
             <![CDATA[
-					    <div>
-			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          					<img width="80%" ng-show="!record.picture && record.titleSelect == 1" src="img/partner-m-default.png" />
-          					<img width="80%" ng-show="!record.picture && record.titleSelect == 2" src="img/partner-w-default.png" />
-        					<img width="80%" ng-show="!record.picture && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
-     					</div>
+     					<>
+	     					{picture && <Image src={$image('picture', 'content')} style={{ width: "80%" }}></Image>}
+	     					{!picture && titleSelect == 1 && <Image src="img/partner-m-default.png" style={{ width: "80%" }}></Image>}
+	     					{!picture && titleSelect == 2 && <Image src="img/partner-w-default.png" style={{ width: "80%" }}></Image>}
+	     					{!picture && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png" style={{ width: "80%" }}></Image>}
+						</>
 					]]>
           </viewer>
         </field>
@@ -688,13 +697,12 @@
           </editor>
         </field>
         <static name="duplicatePartnerText" hidden="true" colSpan="12">
-          <![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">There is already a contact with this name.</Badge></>]]>
+        </static>
         <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
           showTitle="false" readonly="true">
           <viewer depends="$duplicatePartnerInArchiveText">
-            <![CDATA[
-						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
-					]]>
+            <![CDATA[<><Badge bg="warning">{_t('There is an archived partner with this name.')} ({$duplicatePartnerInArchiveText})</Badge></>]]>
           </viewer>
         </field>
         <panel name="companyPanel" title="Company" colSpan="12">
@@ -819,36 +827,35 @@
     <field name="isFactor" if-module="axelor-account" if="__config__.app.isApp('account')"/>
     <field name="isCarrier"/>
     <template><![CDATA[
-			<div>
-				<div class="span12"><strong>{{fullName}}</strong></div>
-		 	</div>
-			<div>
-			  <div class="span4 card-image" style="width: 128px; height: 64px;">
-                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
-                <img ng-show="!picture && partnerTypeSelect != 2" src="img/company-default.jpg" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 1" src="img/partner-m-default.png" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 2" src="img/partner-w-default.png" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
-			  </div>
-			  <div class="span8">
-			  	<address>
-			  	{{mainAddress.fullName}}
-			  	</address>
-			    <span>
-			    {{fixedPhone}}<br/>
-			    {{emailAddress.address}}<br/>
-			    {{partnerCategory.name}}<br/>
-			    <h4 style="text-align: right;">
-					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
-					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
-					<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
-					<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-					<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
-					<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
-					<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-				</h4>
-			  </div>
-			</div>
+		<>
+			<Box>
+				<strong>{fullName}</strong>
+				<Box d="grid" gridTemplateColumns="33% 67%">
+					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+		     			{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
+					</Box>
+					<Box>
+						{mainAddress.fullName} <Box/>
+						{fixedPhone} <Box/>
+						{emailAddress.address} <Box/>
+						{partnerCategory.name} <Box/>
+					</Box>
+				</Box>
+				<Box d="flex" justifyContent="flex-end" gap="4" mt={4}>
+					{isProspect && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Prospect')}</Badge>}
+					{isEmployee && <Badge style={{ backgroundColor: "#5680FC" }}>{_t('Employee')}</Badge>}
+					{isCustomer && <Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Customer')}</Badge>}
+					{isSupplier && <Badge style={{ backgroundColor: "#7D54FC" }}>{_t('Supplier')}</Badge>}
+					{isSubcontractor && <Badge style={{ backgroundColor: "#000080" }}>{_t('Subcontractor')}</Badge>}
+					{isFactor && <Badge style={{ backgroundColor: "#54FC62" }}>{_t('Factor')}</Badge>}
+					{isCarrier && <Badge style={{ backgroundColor: "#FF0000" }}>{_t('Carrier')}</Badge>}
+				</Box>
+			</Box>
+		</>
 		]]>
     </template>
   </cards>
@@ -873,188 +880,27 @@
     <field name="partnerSeq"/>
     <field name="simpleFullName"/>
     <template><![CDATA[
-		<style>
-		    #contact-card{{id}} {
-		      margin: -16px;
-		      height: 180px;
-		      display: flex;
-		    }
-		    #contact-card{{id}} > .span4 {
-		      display: flex;
-		      flex-direction: column;
-		      justify-content: center;
-		      align-items: center;
-		    }
-		    #contact-card{{id}} > .span4 strong {
-		      padding: 0 0.5rem;
-		    }
-		    #contact-card{{id}} > .span8 {
-		      padding-left: 40px;
-		      display: flex;
-		      flex-direction: column;
-		      justify-content: center;
-		      position: relative;
-		    }
-		    #contact-card{{id}} .card-image .img {
-		      width: 128px;
-		      height: 64px;
-		      object-fit: contain;
-		    }
-		    #contact-card{{id}} .list {
-		      position: absolute;
-		      height: calc(100% + 20px);
-		      display: flex;
-		      align-items: center;
-		      left: 0;
-		      transform: skew(-20deg, 0deg);
-		      border-left: 2px solid #ddd;
-		      width: 100%;
-		    }
-		    #contact-card{{id}} .list .bar {
-		      width: 30px;
-		      height: 60%;
-		      background: #20bcb5;
-		      display: flex;
-		      flex-direction: column;
-		      justify-content: center;
-		      align-items: center;
-		      box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px;
-		    }
-		    #contact-card{{id}} .list .data {
-		      width: 100%;
-		      color: #fff;
-		      position: absolute;
-		      left: 8px;
-		    }
-		    #contact-card{{id}} .icon {
-		      width: 20px;
-		      display: inline-block;
-		    }
-		    #contact-card{{id}} .icon i {
-		      transform: skew(20deg, 0deg);
-		    }
-		    #contact-card{{id}} .icon i.fa-envelope {
-		      font-size: 0.8rem;
-		    }
-		    #contact-card{{id}} .icon i.fa-mobile {
-		      font-size: 1.25rem;
-		    }
-		    #contact-card{{id}} .icon i.fa-building {
-		      font-size: 0.75rem;
-		    }
-		    #contact-card{{id}} .icon i.fa-home,
-		    #contact-card{{id}} .icon i.fa-phone {
-		      font-size: 1rem;
-		    }
-		    #contact-card{{id}} .item {
-		      position: relative;
-		      line-height: 20px;
-		    }
-		    #contact-card{{id}} .item .details {
-		      transform: skew(20deg, 0deg);
-		      position: absolute;
-		      color: #000;
-		      margin: 0;
-		      margin-left: 18px;
-		    }
-		    #contact-card{{id}} .item:nth-child(1) .details {
-		      width: calc(100% - 3.75rem);
-		    }
-		    #contact-card{{id}} .item:nth-child(2) .details {
-		      width: calc(100% - 3.25rem);
-		    }
-		    #contact-card{{id}} .item:nth-child(3) .details {
-		      width: calc(100% - 2.75rem);
-		    }
-		    #contact-card{{id}} .item:nth-child(4) .details {
-		      width: calc(100% - 2.25rem);
-		    }
-		    #contact-card{{id}} .item:nth-child(5) .details {
-		      width: calc(100% - 1.75rem);
-		    }
-		    #contact-card{{id}} .item:not(.address) .details {
-		      white-space: nowrap;
-		      text-overflow: ellipsis;
-		      overflow: hidden;
-		    }
-		    #contact-card{{id}} .item.address .details {
-		      word-wrap: break-word;
-		      overflow: hidden;
-		    }
-		  </style>
-
-		   <div id="contact-card{{id}}">
-		    <div class="span4 card-image">
-		      <img
-		        class="img"
-		        ng-if="picture"
-		        ng-src="{{$image('picture', 'content')}}"
-		      />
-		      <img
-		        ng-if="!picture && titleSelect == 1"
-		        src="img/partner-m-default.png"
-		      />
-		      <img
-		        ng-if="!picture && titleSelect == 2"
-		        src="img/partner-w-default.png"
-		      />
-		      <img
-		        ng-if="!picture && (titleSelect > 2 || !titleSelect)"
-		        src="img/partner-default.png"
-		      />
-		      <strong>{{partnerSeq}} <br/> {{simpleFullName}}</strong>
-		    </div>
-
-		    <div class="span8">
-		      <div class="list">
-		          <div class="bar" />
-		          <div class="data">
-		              <div class="item" ng-if="fixedPhone">
-		                  <span class="icon">
-		                      <i class="fa fa-phone fa-flip-horizontal" />
-		                  </span>
-		                  <span class="details">
-		                      {{fixedPhone}}
-		                  </span>
-		              </div>
-		              <div class="item" ng-if="mobilePhone">
-		                  <span class="icon">
-		                      <i class="fa fa-mobile" />
-		                  </span>
-		                  <span class="details">
-		                      {{mobilePhone}}
-		                  </span>
-		              </div>
-		              <div class="item" ng-if="emailAddress.address">
-		                  <span class="icon">
-		                      <i class="fa fa-envelope" />
-		                  </span>
-		                  <span class="details">
-		                      {{emailAddress.address}}
-		                  </span>
-		              </div>
-		              <div class="item" ng-if="mainPartner.simpleFullName">
-		                  <span class="icon">
-		                      <i class="fa fa-building" />
-		                  </span>
-		                  <span class="details">
-		                      {{mainPartner.simpleFullName}}
-		                  </span>
-		              </div>
-		              <div class="item address" ng-if="mainAddress.fullName">
-		                  <span class="icon">
-		                      <i class="fa fa-home fa-flip-horizontal" />
-		                  </span>
-		                  <span class="details">
-		                      {{mainAddress.fullName}}
-		                  </span>
-		              </div>
-		          </div>
-		      </div>
-		    </div>
-		  </div>
-
-		  </div>
+		<>
+		  	<Box d="grid" gridTemplateColumns="33% 67%">
+				<Box d="flex" flexDirection="column" alignItems="center">
+					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+	     				{!picture && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
+	     				{!picture && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
+	     				{!picture && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
+					</Box>
+					<Box as="strong" textAlign="center">{partnerSeq}</Box>
+					<Box as="strong" textAlign="center">{simpleFullName}</Box>
+				</Box>
+				<Box>
+					{fixedPhone && <Box><Icon icon="telephone-fill"/> {fixedPhone} </Box>}
+					{mobilePhone && <Box><Icon icon="phone-fill"/> {mobilePhone} </Box>}
+					{emailAddress?.address && <Box><Icon icon="envelope-fill"/> {emailAddress.address} </Box>}
+					{mainPartner?.simpleFullName && <Box><Icon icon="building-fill"/> {mainPartner.simpleFullName} </Box>}
+					{mainAddress?.fullName && <Box><Icon icon="house-door-fill"/> {mainAddress.fullName} </Box>}
+				</Box>
+			</Box>
+		</>
 		]]>
     </template>
   </cards>
@@ -1111,7 +957,8 @@
         <field name="firstName" showTitle="false" css="highlight" placeholder="First name"
           onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
         <static name="duplicatePartnerText" hidden="true" colSpan="12">
-          <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">There is already a partner with this name.</Badge></>]]>
+        </static>
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
             domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet AND p.partnerTypeSelect = 1)"
