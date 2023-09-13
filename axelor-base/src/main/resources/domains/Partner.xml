@@ -128,6 +128,11 @@
     <many-to-many name="partnerRoleSet" ref="com.axelor.apps.base.db.PartnerRole"
       title="Roles"/>
 
+    <one-to-many name="managedByPartnerLinkList"
+      ref="com.axelor.apps.base.db.PartnerLink" title="Managed by" mappedBy="partner1"/>
+    <one-to-many name="managedForPartnerLinkList"
+      ref="com.axelor.apps.base.db.PartnerLink" title="Managed for" mappedBy="partner2"/>
+
     <!-- -Json fields -->
     <string name="partnerAttrs" title="Fields" json="true"/>
     <string name="contactAttrs" title="Fields" json="true"/>

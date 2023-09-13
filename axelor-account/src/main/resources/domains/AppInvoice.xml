@@ -9,7 +9,6 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines"/>
     <boolean name="isVentilationSkipped" title="Skip ventilation"/>
     <boolean name="isEnabledProductDescriptionCopyForCustomers"
       title="Enable product description copy for customers"/>
@@ -21,7 +20,6 @@
       title="Auto generate invoice printing file on purchase invoice"/>
 
     <track>
-      <field name="isInvoiceMoveConsolidated" on="UPDATE"/>
       <field name="isVentilationSkipped" on="UPDATE"/>
       <field name="isEnabledProductDescriptionCopyForCustomers" on="UPDATE"/>
       <field name="isEnabledProductDescriptionCopyForSuppliers" on="UPDATE"/>

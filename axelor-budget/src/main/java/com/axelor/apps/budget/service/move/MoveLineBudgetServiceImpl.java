@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service.move;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.AxelorException;
@@ -50,8 +51,8 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(MoveLine moveLine) {
-    if (moveLine == null || moveLine.getMove() == null) {
+  public String computeBudgetDistribution(Move move, MoveLine moveLine) {
+    if (move == null || moveLine == null) {
       return "";
     }
     moveLine.clearBudgetDistributionList();
@@ -59,8 +60,8 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         budgetDistributionService.createBudgetDistribution(
             moveLine.getAnalyticMoveLineList(),
             moveLine.getAccount(),
-            moveLine.getMove().getCompany(),
-            moveLine.getMove().getDate(),
+            move.getCompany(),
+            move.getDate(),
             moveLine.getCredit().add(moveLine.getDebit()),
             moveLine.getName(),
             moveLine);

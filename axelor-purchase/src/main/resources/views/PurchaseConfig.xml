@@ -30,7 +30,9 @@
       <field name="isAnalyticDistributionRequired" widget="boolean-switch"
         if="__config__.app.getApp('account')"/>
     </panel>
-
+    <panel name="printingsPanel" title="Printings" colSpan="12">
+      <field name="purchaseOrderBirtTemplate"/>
+    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>

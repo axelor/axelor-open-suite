@@ -87,7 +87,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
 
   @Override
   public void computeAnalyticDistribution(MoveLine moveLine, Move move) throws AxelorException {
-    if (move != null && this.checkManageAnalytic(move.getCompany())) {
+    if (move != null && analyticToolService.isManageAnalytic(move.getCompany())) {
       this.computeAnalyticDistribution(moveLine);
     }
   }
@@ -145,7 +145,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   @Override
   public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine, Move move)
       throws AxelorException {
-    if (this.checkManageAnalytic(move.getCompany())) {
+    if (analyticToolService.isManageAnalytic(move.getCompany())) {
       this.createAnalyticDistributionWithTemplate(moveLine);
     }
 
@@ -286,12 +286,5 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
           .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
-  }
-
-  @Override
-  public boolean checkManageAnalytic(Company company) throws AxelorException {
-    return company != null
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfigService.getAccountConfig(company).getManageAnalyticAccounting();
   }
 }

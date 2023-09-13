@@ -1018,6 +1018,9 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_VOUCHER_NOT_GENERATE_ALL = /*$$(*/
       "Some due elements could not be loaded there was no amount left to pay." /*)*/;
 
+  public static final String PAYMENT_VOUCHER_PFP_NOT_VALIDATED = /*$$(*/
+      "Some imported invoice terms are not PFP validated." /*)*/;
+
   /** Payment schedule line service */
   public static final String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
       "Missing direct debit payment mode in the company's account configuration" /*)*/;
@@ -1129,13 +1132,13 @@ public final class AccountExceptionMessage {
    * Partner
    */
   public static final String PARTNER_BANK_DETAILS_MISSING = /*$$(*/
-      "Bank details are missing for partner %s." /*)*/;
+      "Default bank details are missing for partner %s." /*)*/;
 
   /*
    * Company
    */
   public static final String COMPANY_BANK_DETAILS_MISSING = /*$$(*/
-      "Bank details are missing for company %s." /*)*/;
+      "Default bank details are missing for company %s." /*)*/;
 
   /*
    * Invoice printing
@@ -1210,7 +1213,7 @@ public final class AccountExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 
   public static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
+      "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -1604,16 +1607,19 @@ public final class AccountExceptionMessage {
       "Report type %s doesn't have any line." /*)*/;
 
   public static final String REPORT_TYPE_DIFFERENT_RESULT_SELECT = /*$$(*/
-      "Report type %s has intersecting column %s and line %s with different computation method." /*)*/;
+      "Computation methods are different." /*)*/;
 
   public static final String REPORT_TYPE_NO_RESULT_SELECT = /*$$(*/
-      "Report type %s has intersecting column %s and line %s with no defined computation method." /*)*/;
+      "No computation method is defined." /*)*/;
 
   public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
       "Report type %s has group columns of different types." /*)*/;
 
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
-      "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
+      "Computation method is the same as the group but there is none." /*)*/;
+
+  public static final String REPORT_TYPE_TOTAL_LINE_NOT_EXISTS = /*$$(*/
+      "The given percentage total line does not exist." /*)*/;
 
   public static final String COMPENSATION_ON_SESSION_BY_INVOICE_TERM = /*$$(*/
       "Compensation is not allowed on payment session accounted by invoice term, please unselect them" /*)*/;
@@ -1663,4 +1669,7 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_CONDITION_LINKED_OBJECTS = /*$$(*/
       "Changes will be applied on next records." /*)*/;
+
+  public static final String NO_DEPRECIATION_ACCOUNT_FOUND_IN_FIXED_ASSET_CATEGORY = /*$$(*/
+      "No depreciation account found in fixed asset category %s." /*)*/;
 }

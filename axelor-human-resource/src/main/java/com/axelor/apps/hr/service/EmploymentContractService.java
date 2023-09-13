@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.hr.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Department;
@@ -27,8 +26,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
-import com.axelor.apps.hr.report.IReport;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -48,20 +45,6 @@ public class EmploymentContractService {
 
   @Transactional(rollbackOn = {Exception.class})
   public int addAmendment(EmploymentContract employmentContract) throws AxelorException {
-    String name =
-        employmentContract.getFullName() + "_" + employmentContract.getEmploymentContractVersion();
-
-    ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name + "-${date}")
-        .addParam("ContractId", employmentContract.getId())
-        .addParam(
-            "Timezone",
-            employmentContract.getPayCompany() != null
-                ? employmentContract.getPayCompany().getTimezone()
-                : null)
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .toAttach(employmentContract)
-        .generate()
-        .getFileLink();
 
     int version = employmentContract.getEmploymentContractVersion() + 1;
     employmentContract.setEmploymentContractVersion(version);

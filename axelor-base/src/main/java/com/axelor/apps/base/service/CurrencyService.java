@@ -199,7 +199,9 @@ public class CurrencyService {
     // So we convert the amount
     if (exchangeRate.compareTo(BigDecimal.ONE) != 0) {
 
-      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
+      return amount
+          .multiply(exchangeRate)
+          .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
 
     return amount;

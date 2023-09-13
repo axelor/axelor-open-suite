@@ -109,6 +109,8 @@ public final class HumanResourceExceptionMessage {
       "A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one." /*)*/;
   public static final String LEAVE_REQUEST_NO_COMPANY = /*$$(*/
       "Please set a company up on leave request" /*)*/;
+  public static final String LEAVE_REQUEST_NO_LINE_PRESENT = /*$$(*/
+      "You need lines to fill your export." /*)*/;
 
   public static final String EMPLOYEE_PLANNING = /*$$(*/
       "Please, add a planning for employee : %s" /*)*/;
@@ -245,4 +247,36 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_CAN_NOT_DELETE_VENTILATED = /*$$(*/
       "Ventilated expense can not be deleted. %s can not be deleted." /*)*/;
+
+  public static final String EXPENSE_LINE_DATE_ERROR = /*$$(*/ "Date can't be in the future" /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_EXPENSE_PRODUCT = /*$$(*/
+      "Please provide an expense product." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_KILOMETRIC_ALLOWANCE_PARAM = /*$$(*/
+      "Please provide a kilometric allowance parameter." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_KILOMETRIC_TYPE = /*$$(*/
+      "Please provide a kilometric type." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_CITIES = /*$$(*/
+      "Please provide starting and arriving cities." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_COMPANY = /*$$(*/
+      "Please provide a company." /*)*/;
+
+  public static final String MEDICAL_VISIT_PLAN_WRONG_STATUS = /*$$(*/
+      "Can only plan draft medical visit." /*)*/;
+
+  public static final String MEDICAL_VISIT_REALIZE_WRONG_STATUS = /*$$(*/
+      "Can only realize planned medical visit." /*)*/;
+
+  public static final String MEDICAL_VISIT_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel planned or realized medical visit." /*)*/;
+
+  public static final String EXPENSE_ADD_LINE_WRONG_STATUS = /*$$(*/
+      "Can only add expense line to drafted expense." /*)*/;
+
+  public static final String EXPENSE_LINE_VALIDATE_TOTAL_AMOUNT = /*$$(*/
+      "The expense line amount exceeds the authorized limit of %s. Please correct the amount or request the intervention of an HR manager." /*)*/;
 }

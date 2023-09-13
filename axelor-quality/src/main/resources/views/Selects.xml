@@ -38,6 +38,7 @@
   <selection name="sequence.generic.code.select" id="quality.sequence.generic.code.select">
     <option value="qualityAlert">Quality alert</option>
     <option value="qualityControl">Quality control</option>
+    <option value="qualityImprovement">Quality improvement</option>
   </selection>
 
   <selection name="team.type.select" id="quality.team.type.select">
@@ -56,6 +57,55 @@
   <selection name="quality.measuring.point.measuring.type.select">
     <option value="1">Note</option>
     <option value="2">Conformity</option>
+  </selection>
+
+  <selection name="quality.qi.type.select">
+    <option value="1">Product</option>
+    <option value="2">System</option>
+  </selection>
+
+  <selection name="quality.qi.detection.origin.select">
+    <option value="1">Supplier</option>
+    <option value="2">Internal</option>
+    <option value="3">Customer</option>
+  </selection>
+
+  <selection name="quality.qi.resolution.default.identification.select">
+    <option value="1">Manual</option>
+    <option value="2">Tracking Number</option>
+  </selection>
+
+  <selection name="quality.qi.resolution.decision.responsible.select">
+    <option value="1">Employee</option>
+    <option value="2">Customer</option>
+    <option value="3">Supplier</option>
+    <option value="4">Customer contact</option>
+    <option value="5">Supplier contact</option>
+  </selection>
+
+  <selection name="quality.qi.resolution.decision.acceptance.select">
+    <option value="1"></option>
+    <option value="2">Waiting</option>
+    <option value="3">Accepted</option>
+    <option value="4">Rejected</option>
+    <option value="5">Partially accepted</option>
+  </selection>
+
+  <selection name="quality.qi.analysis.efficiency.select">
+    <option value="1">No checked</option>
+    <option value="2">Yes</option>
+    <option value="3">No</option>
+  </selection>
+
+  <selection name="quality.qi.cause.branch.select">
+    <option value="1">Material</option>
+    <option value="2">Machine</option>
+    <option value="3">Methods</option>
+    <option value="4">Man power</option>
+    <option value="5">Management</option>
+    <option value="6">Medium</option>
+    <option value="7">Measure</option>
+    <option value="8">Financial means</option>
   </selection>
 
 </object-views>

@@ -20,12 +20,15 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
 
@@ -64,7 +67,7 @@ public class JournalService {
         "debit", resultArr[0] != null ? new BigDecimal(resultArr[0].toString()) : BigDecimal.ZERO);
     resultMap.put(
         "credit", resultArr[1] != null ? new BigDecimal(resultArr[1].toString()) : BigDecimal.ZERO);
-    resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")));
+    resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")).abs());
 
     return resultMap;
   }
@@ -89,5 +92,16 @@ public class JournalService {
   protected Journal desactivate(Journal journal) {
     journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
     return journal;
+  }
+
+  public boolean isSubrogationOk(Journal journal) {
+    List<Integer> journalTypeList =
+        Arrays.asList(
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER);
+
+    return journal != null
+        && journalTypeList.contains(journal.getJournalType().getTechnicalTypeSelect());
   }
 }
