@@ -1,5 +1,6 @@
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -13,7 +14,7 @@ public class TradingNameController {
     try {
       TradingName tradingName = request.getContext().asType(TradingName.class);
       boolean emptyTemplate =
-          Beans.get(TradingNameAnalyticServiceImpl.class).isAnalyticTypeByTradingName(tradingName);
+          Beans.get(TradingNameAnalyticService.class).isAnalyticTypeByTradingName(tradingName);
       response.setAttr("analyticDistributionPanel", "hidden", emptyTemplate);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -27,7 +28,7 @@ public class TradingNameController {
         return;
       }
       boolean emptyTemplate =
-          Beans.get(TradingNameAnalyticServiceImpl.class).isAnalyticTypeByTradingName(tradingName);
+          Beans.get(TradingNameAnalyticService.class).isAnalyticTypeByTradingName(tradingName);
 
       if (emptyTemplate) {
         response.setValue("analyticDistributionTemplate", null);
