@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -36,23 +36,25 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
-import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -86,6 +88,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected CurrencyService currencyService;
 
   @Inject protected PurchaseConfigService purchaseConfigService;
+
+  @Inject protected ProductConversionService productConversionService;
+
+  @Inject protected BirtTemplateService birtTemplateService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -280,15 +286,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Override
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException {
-    if (purchaseOrder.getPrintingSettings() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
-              purchaseOrder.getPurchaseOrderSeq()));
-    }
-
-    String language = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
+    checkPrintingSettings(purchaseOrder);
+    BirtTemplate purchaseOrderBirtTemplate =
+        purchaseConfigService.getPurchaseOrderBirtTemplate(purchaseOrder.getCompany());
 
     String title =
         I18n.get("Purchase order")
@@ -297,19 +297,24 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 ? "-V" + purchaseOrder.getVersionNumber()
                 : "");
 
-    ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
-        .addParam("PurchaseOrderId", purchaseOrder.getId())
-        .addParam("Locale", language)
-        .addParam(
-            "Timezone",
-            purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
-        .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
-        .addParam(
-            "AddressPositionSelect", purchaseOrder.getPrintingSettings().getAddressPositionSelect())
-        .toAttach(purchaseOrder)
-        .generate()
-        .getFileLink();
+    birtTemplateService.generateBirtTemplateLink(
+        purchaseOrderBirtTemplate,
+        EntityHelper.getEntity(purchaseOrder),
+        null,
+        title + "-${date}",
+        true,
+        ReportSettings.FORMAT_PDF);
+  }
+
+  @Override
+  public void checkPrintingSettings(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (purchaseOrder.getPrintingSettings() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          String.format(
+              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
+              purchaseOrder.getPurchaseOrderSeq()));
+    }
   }
 
   @Override
@@ -494,7 +499,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                   productCompanyService.get(product, "costTypeSelect", purchaseOrder.getCompany())
               == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
             productCompanyService.set(
-                product, "costPrice", lastPurchasePrice, purchaseOrder.getCompany());
+                product,
+                "costPrice",
+                productConversionService.convertFromPurchaseToStockUnitPrice(
+                    product, lastPurchasePrice),
+                purchaseOrder.getCompany());
             if ((Boolean)
                 productCompanyService.get(
                     product, "autoUpdateSalePrice", purchaseOrder.getCompany())) {

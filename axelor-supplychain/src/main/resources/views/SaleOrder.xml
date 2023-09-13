@@ -42,7 +42,7 @@
         target="com.axelor.apps.base.db.Partner"
         onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
       <button name="generatePOConfirmBtn" title="Confirm Purchase order generation"
-        onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+        onClick="action-sale-order-group-generate-po-select-supplierpartner"/>
     </panel>
   </form>
 
@@ -135,6 +135,12 @@
   <action-group name="action-group-supplychain-saleorder-onload">
     <action name="action-group-sale-saleorder-onload"/>
     <action name="action-sale-order-attrs-interco"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-generate-po-select-supplierpartner">
+    <action name="action-supplychain-so-generate-po-check-supplier-partner"/>
+    <action
+      name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
   </action-group>
 
   <action-method name="action-supplychain-sale-order-method-get-stock-location">

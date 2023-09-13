@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
@@ -74,6 +75,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -443,9 +445,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected void assignProductLevel(BillOfMaterial billOfMaterial, int level, Company company)
       throws AxelorException {
 
-    if (billOfMaterial.getBillOfMaterialSet() == null
-        || billOfMaterial.getBillOfMaterialSet().isEmpty()
-        || level > 100) {
+    if (CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialLineList()) || level > 100) {
 
       Product subProduct = billOfMaterial.getProduct();
 
@@ -456,12 +456,13 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
       level = level + 1;
 
-      for (BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterialLines : billOfMaterial.getBillOfMaterialLineList()) {
 
-        Product subProduct = subBillOfMaterial.getProduct();
+        Product subProduct = billOfMaterialLines.getProduct();
 
-        if (this.productMap.containsKey(subProduct.getId())) {
-          this.assignProductLevel(subBillOfMaterial, level, company);
+        if (this.productMap.containsKey(subProduct.getId())
+            && billOfMaterialLines.getBillOfMaterial() != null) {
+          this.assignProductLevel(billOfMaterialLines.getBillOfMaterial(), level, company);
 
           if (hasValidBillOfMaterial(subProduct, company)) {
             this.assignProductLevel(

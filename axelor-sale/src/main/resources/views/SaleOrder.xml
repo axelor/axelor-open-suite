@@ -409,13 +409,13 @@
           canEdit="false" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 
         <field name="invoicedPartner"
-          if="__config__.app.getApp('supplychain')?.activatePartnerRelations" required="true"
+          if="__config__.app.getApp('base')?.activatePartnerRelations" required="true"
           hideIf="company == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-main-invoicing-address"
           onSelect="action-sale-order-supplychain-method-set-invoiced-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
         <field name="deliveredPartner"
-          if="__config__.app.getApp('supplychain')?.activatePartnerRelations" requiredIf="true"
+          if="__config__.app.getApp('base')?.activatePartnerRelations" requiredIf="true"
           hideIf="company == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-delivery-address"
           onSelect="action-sale-order-supplychain-method-set-delivered-partner-domain"
@@ -1369,7 +1369,7 @@
     <action name="action-sale-order-method-fill-company-bank-details"/>
     <action
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <action name="action-sale-order-method-empty-fiscal-position-if-not-compatible"
       if="__config__.app.isApp('supplychain')"/>
   </action-group>
@@ -1505,7 +1505,7 @@
     <action name="action-sale-order-record-set-group-product-on-printing"/>
     <action
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <action name="action-sale-order-method-fiscal-position-on-change"/>
     <action name="action-sale-order-method-compute"/>
   </action-group>
@@ -1829,7 +1829,7 @@
     <attribute name="domain" for="mainInvoicingAddress"
       expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
     <attribute name="domain" for="mainInvoicingAddress"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"
       expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')}) OR self.id IN (${(invoicedPartner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
   </action-attrs>
 
@@ -1837,7 +1837,7 @@
     <attribute name="domain" for="deliveryAddress"
       expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
     <attribute name="domain" for="deliveryAddress"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"
       expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')}) OR self.id IN (${(deliveredPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
   </action-attrs>
 

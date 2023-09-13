@@ -23,12 +23,13 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.rpc.Context;
 import java.util.List;
 
 public interface AnalyticToolService {
 
   boolean isManageAnalytic(Company company) throws AxelorException;
+
+  boolean isFreeAnalyticDistribution(Company company) throws AxelorException;
 
   boolean isPositionUnderAnalyticAxisSelect(Company company, int position) throws AxelorException;
 
@@ -37,6 +38,4 @@ public interface AnalyticToolService {
 
   boolean isAnalyticAxisFilled(
       AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList);
-
-  <T> T getFieldFromContextParent(Context context, String fieldName, Class<T> klass);
 }

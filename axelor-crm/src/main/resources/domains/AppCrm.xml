@@ -6,7 +6,7 @@
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppCrm" cacheable="true">
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <integer name="assignableUsers" title="Assignable Users"
       selection="crm.app.crm.assignable.user.select"/>

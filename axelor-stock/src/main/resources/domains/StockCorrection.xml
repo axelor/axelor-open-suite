@@ -21,6 +21,7 @@
     <integer name="statusSelect" title="Status" selection="stock.correction.status.select"
       readonly="true"/>
     <datetime name="validationDateT" title="Validation Date" readonly="true"/>
+    <string name="comments" large="true" multiline="true" title="Comments"/>
 
     <extra-code><![CDATA[
 

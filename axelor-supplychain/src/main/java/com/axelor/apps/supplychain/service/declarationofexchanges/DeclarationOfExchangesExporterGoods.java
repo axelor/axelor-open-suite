@@ -18,16 +18,17 @@
  */
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.ModeOfTransport;
 import com.axelor.apps.stock.db.NatureOfTransaction;
@@ -38,9 +39,8 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
-import com.axelor.apps.supplychain.report.IReport;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -55,7 +55,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -106,6 +105,8 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
                 PARTNER_SEQ,
                 INVOICE)));
     this.stockMoveToolService = Beans.get(StockMoveToolService.class);
+    this.supplyChainConfigService = Beans.get(SupplyChainConfigService.class);
+    this.birtTemplateService = Beans.get(BirtTemplateService.class);
   }
 
   @Override
@@ -323,13 +324,22 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
   @Override
   protected String exportToPDF() throws AxelorException {
-    return ReportFactory.createReport(IReport.DECLARATION_OF_EXCHANGES_OF_GOODS, getTitle())
-        .addParam("DeclarationOfExchangesId", declarationOfExchanges.getId())
-        .addParam("UserId", Optional.ofNullable(AuthUtils.getUser()).map(User::getId).orElse(null))
-        .addParam("Locale", ReportSettings.getPrintingLocale())
-        .addFormat(declarationOfExchanges.getFormatSelect())
-        .toAttach(declarationOfExchanges)
-        .generate()
-        .getFileLink();
+    SupplyChainConfig supplyChainConfig =
+        supplyChainConfigService.getSupplyChainConfig(declarationOfExchanges.getCompany());
+    BirtTemplate declarationOfExchGoodsBirtTemplate =
+        supplyChainConfig.getDeclarationOfExchGoodsBirtTemplate();
+    if (ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate)
+        || ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate.getTemplateMetaFile())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return birtTemplateService.generateBirtTemplateLink(
+        declarationOfExchGoodsBirtTemplate,
+        declarationOfExchanges,
+        null,
+        getTitle(),
+        true,
+        declarationOfExchanges.getFormatSelect());
   }
 }

@@ -594,6 +594,28 @@
 	  ]]></template>
   </custom>
 
+  <custom name="hr-manager-medical-visits-custom-view" title="Medical visits"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeMedicalVisitData
+    </dataset>
+    <template><![CDATA[
+	<div ng-repeat="item in data">
+		<div style="display:flex; width:95%; margin:8px; padding:2px 20px; border-radius:5px; border:2px solid #cecfce; background-color:#E8E8E8; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('medical.visit.all',{'mode':'edit','state':item.medicalVisitId})">
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.fromDate | date:'YYYY-MM-DD-hh:mm'}} - {{item.toDate | date:'YYYY-MM-DD-hh:mm'}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+				<p style="padding:2px; margin:0; font-size:12px; color:#1d1e22">{{item.visitReason}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; justify-content:center; font-weight: bold">
+				<p style="padding:2px; margin:0; font-size:12px; color:#1d1e22">{{item.employeeName}}</p>
+			</div>
+		</div>
+	</div>
+    ]]></template>
+  </custom>
+
   <action-record model="com.axelor.apps.hr.db.Expense"
     name="action.hr.chart.set.period.last.month">
     <field name="period"

@@ -26,13 +26,10 @@ import com.axelor.apps.cash.management.db.ForecastRecap;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
-import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,26 +67,6 @@ public class ForecastRecapController {
 
     } catch (Exception e) {
       TraceBackService.trace(e);
-    }
-  }
-
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-    try {
-
-      Context context = request.getContext();
-      Long forecastRecapId = new Long(context.get("_forecastRecapId").toString());
-      String reportType = (String) context.get("reportTypeSelect");
-      ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(forecastRecapId);
-
-      String fileLink =
-          Beans.get(ForecastRecapService.class).getForecastRecapFileLink(forecastRecap, reportType);
-      String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
-      title += "-" + forecastRecap.getForecastRecapSeq();
-      logger.debug("Printing {}", title);
-      response.setView(ActionView.define(title).add("html", fileLink).map());
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 }

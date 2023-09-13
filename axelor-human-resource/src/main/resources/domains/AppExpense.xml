@@ -7,9 +7,13 @@
 
   <entity name="AppExpense" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="computeDistanceWithWebService"/>
+    <many-to-one name="pfxCertificate" title="PFX Certificate"
+      ref="com.axelor.apps.base.db.PfxCertificate"/>
+    <many-to-one name="signatureLogo" ref="com.axelor.meta.db.MetaFile"
+      title="Signature logo"/>
 
     <track>
       <field name="computeDistanceWithWebService" on="UPDATE"/>

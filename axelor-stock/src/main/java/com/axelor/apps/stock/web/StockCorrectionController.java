@@ -25,7 +25,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -76,8 +75,6 @@ public class StockCorrectionController {
       boolean success = Beans.get(StockCorrectionService.class).validate(stockCorrection);
       if (success) {
         response.setReload(true);
-      } else {
-        response.setError(I18n.get(StockExceptionMessage.STOCK_CORRECTION_2));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

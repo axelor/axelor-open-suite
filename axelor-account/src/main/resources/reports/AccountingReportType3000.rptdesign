@@ -209,13 +209,6 @@
                     <text-property name="heading">date_to</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <property name="alias">display_simulated_move</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <text-property name="heading">display_simulated_move</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">report_title</property>
                     <property name="alias">report_title</property>
                     <property name="analysis">dimension</property>
@@ -339,76 +332,71 @@
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
                         <property name="name">report_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">comparison</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">no_of_periods</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">company_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">journal</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">period</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">display_delta_year</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">display_delta_year_percentage</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">reportyear</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">reportn1year</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">18</property>
                         <property name="name">reportn2year</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -446,104 +434,97 @@
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
                     <property name="name">report_title</property>
                     <property name="nativeName">report_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">comparison</property>
                     <property name="nativeName">comparison</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">no_of_periods</property>
                     <property name="nativeName">no_of_periods</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">journal</property>
                     <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">period</property>
                     <property name="nativeName">period</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">display_delta_year</property>
                     <property name="nativeName">display_delta_year</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">display_delta_year_percentage</property>
                     <property name="nativeName">display_delta_year_percentage</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">16</property>
                     <property name="name">reportyear</property>
                     <property name="nativeName">reportyear</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">17</property>
                     <property name="name">reportn1year</property>
                     <property name="nativeName">reportn1year</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">18</property>
                     <property name="name">reportn2year</property>
                     <property name="nativeName">reportn2year</property>
                     <property name="dataType">string</property>
@@ -555,7 +536,6 @@
 	Report.publication_date_time as report_date,
 	Report.date_from as date_from,
 	Report.date_to as date_to,
-	Report.display_simulated_move as display_simulated_move,
 	ReportType.report_title as report_title,
 	ReportType.comparison as comparison,
 	ReportType.no_of_periods as no_of_periods,
@@ -798,10 +778,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">columnNotCompute</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previousYear</property>
+                    <property name="columnName">otherYear</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">previousYear</text-property>
-                    <text-property name="heading">previousYear</text-property>
+                    <text-property name="displayName">otherYear</text-property>
+                    <text-property name="heading">otherYear</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">lineName</property>
@@ -941,7 +921,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">previousYear</property>
+                        <property name="name">otherYear</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -1084,8 +1064,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">previousYear</property>
-                    <property name="nativeName">previousYear</property>
+                    <property name="name">otherYear</property>
+                    <property name="nativeName">otherYear</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -1173,7 +1153,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ConfigColumn.rule_type_select AS "columnRuleType",
 	(ConfigColumn.hidden OR ConfigGroupColumn.hidden) AS "columnHidden",
 	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
-	ConfigColumn.compute_previous_year AS "previousYear",
+	ConfigColumn.compute_previous_year AS "otherYear",
 	ReportValue.line_title AS "lineName",
 	ReportValue.line_number AS "lineNb",
 	ConfigLine.hidden AS "lineHidden",
@@ -1453,8 +1433,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                             <expression name="measureExpression" type="javascript">dataSetRow["lineRuleType"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
-                        <tabular-measure name="previousYear" id="5975">
-                            <expression name="measureExpression" type="javascript">dataSetRow["previousYear"]</expression>
+                        <tabular-measure name="otherYear" id="5975">
+                            <expression name="measureExpression" type="javascript">dataSetRow["otherYear"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
                         <tabular-measure name="style" id="6055">
@@ -1659,19 +1639,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <text-property name="displayName">logo_path</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move_1</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">comparison</property>
@@ -3044,8 +3011,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 <property name="dataType">integer</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">previousYear</property>
-                                                <expression name="expression" type="javascript">measure["previousYear"]</expression>
+                                                <property name="name">otherYear</property>
+                                                <expression name="expression" type="javascript">measure["otherYear"]</expression>
                                                 <property name="dataType">boolean</property>
                                             </structure>
                                             <structure>

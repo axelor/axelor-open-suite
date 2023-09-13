@@ -35,7 +35,6 @@
  */
 package com.axelor.apps.hr.web.expense;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
@@ -54,7 +53,6 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
@@ -71,7 +69,6 @@ import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -314,28 +311,6 @@ public class ExpenseController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    Expense expense = request.getContext().asType(Expense.class);
-
-    String name = I18n.get("Expense") + " " + expense.getFullName().replace("/", "-");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.EXPENSE, name)
-            .addParam("ExpenseId", expense.getId())
-            .addParam(
-                "Timezone",
-                expense.getCompany() != null ? expense.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(expense)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing {}", name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   /* Count Tags displayed on the menu items */
@@ -715,5 +690,13 @@ public class ExpenseController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void checkTotalAmount(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    response.setAttr(
+        "overAmountLimitText",
+        "hidden",
+        !Beans.get(ExpenseLineService.class).isThereOverAmountLimit(expense));
   }
 }
