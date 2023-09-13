@@ -264,11 +264,9 @@
       <panel name="blockedCustCreditExceedPanel" colSpan="12">
         <field name="blockedOnCustCreditExceed" showTitle="false" readonly="true"
           showIf="blockedOnCustCreditExceed &amp;&amp; !manualUnblock" colSpan="4">
-          <viewer depends="blockedOnCustCreditExceed"><![CDATA[
-	          <h5>
-	            <span class="label label-default" style="background-color: #B6473F; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.blockedOnCustCreditExceed" x-translate>Blocked</span>
-	          </h5>
-	        ]]></viewer>
+          <viewer depends="blockedOnCustCreditExceed">
+            <![CDATA[<>{blockedOnCustCreditExceed && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Blocked')}</Badge>}</>]]>
+          </viewer>
         </field>
         <button name="manualUnblockBtn" title="Manual Unblock"
           showIf="blockedOnCustCreditExceed == true &amp;&amp; manualUnblock == false" colSpan="4"
@@ -277,30 +275,28 @@
         <field name="orderBeingEdited" hidden="true"/>
         <field name="$viewerOrderBeingEdited" showTitle="false" readonly="true"
           showIf="orderBeingEdited" colSpan="9">
-          <viewer depends="orderBeingEdited"><![CDATA[
-	          <h4>
-	            <span class="label label-important" ng-show="record.orderBeingEdited" x-translate>Order being edited</span>
-	          </h4>
-	        ]]></viewer>
+          <viewer depends="orderBeingEdited">
+            <![CDATA[<>{orderBeingEdited && <Badge bg="danger">{_t('Order being edited')}</Badge>}</>]]>
+          </viewer>
         </field>
         <field name="$viewerOrderRequiresAdvancePayment" showTitle="false" readonly="true"
           showIf="(statusSelect == 2 &amp;&amp; advancePaymentNeeded) &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)"
           colSpan="6">
-          <viewer><![CDATA[
-		      	<h4>
-		        	<span class="label label-important" x-translate>Advance payment needed</span>
-		      	</h4>
-		    	]]></viewer>
+          <viewer>
+            <![CDATA[<><Badge bg="danger">{_t('Advance payment needed')}</Badge></>]]>
+          </viewer>
         </field>
       </panel>
       <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
       <field name="saleOrderSeq" showTitle="false">
         <viewer depends="statusSelect,saleOrderSeq"><![CDATA[
-		      <h3>
-		        <span ng-show="[1,2,5].includes(record.statusSelect) &amp;&amp; record.saleOrderSeq" x-translate>Quotation</span>
-		        <span ng-show="[3,4].includes(record.statusSelect)" x-translate>Sale order</span>
-		        {{record.saleOrderSeq}}
-		      </h3>
+	          <>
+	             <h3>
+	             	{[1,2,5].includes(statusSelect) && saleOrderSeq && <span>{_t('Quotation')} </span>}
+	             	{[3,4].includes(statusSelect) && <span>{_t('Sale order')} </span>}
+	             	{saleOrderSeq}
+	             </h3>
+	          </>
 		    ]]></viewer>
       </field>
       <panel name="detailsPanel" colSpan="10">
@@ -309,67 +305,45 @@
           if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowSusbcriptionSaleOrder()"
           if-module="axelor-supplychain">
           <viewer><![CDATA[
-	          <div>
-	            <div class="span7">
-	              <h5>
-	                <span class="label label-info">
-	                <span ng-show="record.saleOrderTypeSelect == 1" x-translate>Standard</span>
-	                <span ng-show="record.saleOrderTypeSelect == 2" x-translate>Subscription</span>
-	              </h5>
-	            </div>
-	          </div>
+	          <>
+	             {saleOrderTypeSelect == 1 && <Badge bg="info">{_t('Standard')}</Badge>}
+	             {saleOrderTypeSelect == 2 && <Badge bg="info">{_t('Subscription')}</Badge>}
+	          </>
 	        ]]></viewer>
         </field>
         <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
           name="invoicingState" showTitle="false" readonly="true" showIf="statusSelect >= 3"
           css="label-bold bold" colSpan="3">
           <viewer depends="invoicingState"><![CDATA[
-	        <div>
-	        <div class="span7">
-	          <h5>
-	          <span class="label label-important" ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
-	          <span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
-	          <span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
-	        </h5>
-	        </div>
-	      </div>
+	          <>
+	             {invoicingState == 1 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+	             {invoicingState == 2 && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+	             {invoicingState == 3 && <Badge bg="success">{_t('Invoiced')}</Badge>}
+	          </>
 	      ]]></viewer>
         </field>
         <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
           showTitle="false" name="deliveryState" showIf="statusSelect >= 3" css="label-bold bold"
           colSpan="3">
           <viewer><![CDATA[
-	        <div>
-	        <div class="span7">
-	        <h5>
-	          <span class="label label-important" ng-show="record.deliveryState == 1" x-translate>Not delivered</span>
-	          <span class="label label-warning" ng-show="record.deliveryState == 2" x-translate>Partially delivered</span>
-	          <span class="label label-success" ng-show="record.deliveryState == 3" x-translate>Delivered</span>
-	        </h5>
-	        </div>
-	      </div>
+	          <>
+	             {deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
+	             {deliveryState == 2 && <Badge bg="warning">{_t('Partially delivered')}</Badge>}
+	             {deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
+	          </>
 	      ]]></viewer>
         </field>
         <field name="availabilityRequestLabel" colSpan="3" css="label-bold bold"
           showTitle="false" readonly="true" hidden="true">
-          <viewer><![CDATA[
-	          <div>
-	            <div class="span7">
-	              <h5>
-	                <span class="label label-important">
-	                <span x-translate>Availability Request</span>
-	              </h5>
-	            </div>
-	          </div>
-	        ]]></viewer>
+          <viewer>
+            <![CDATA[<><Badge bg="danger">{_t('Availability Request')}</Badge></>]]>
+          </viewer>
         </field>
         <field name="$discountsNeedReview" showIf="$discountsNeedReview" showTitle="false"
           readonly="true">
-          <viewer><![CDATA[
-		      	<h4>
-		        	<span class="label label-important" x-translate>Discounts need review</span>
-		      	</h4>
-					]]></viewer>
+          <viewer>
+            <![CDATA[<><Badge bg="danger">{_t('Discounts need review')}</Badge></>]]>
+          </viewer>
         </field>
       </panel>
       <field name="oneoffSale" colSpan="2"/>
@@ -451,7 +425,7 @@
             form-view="address-partner-address-form" grid-view="address-grid"/>
           <field name="mainInvoicingAddressStr"
             readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
-            <viewer><![CDATA[{{record.mainInvoicingAddressStr}}]]></viewer>
+            <viewer><![CDATA[<>{mainInvoicingAddressStr}</>]]></viewer>
           </field>
         </panel>
         <panel name="deliveryAddressPanel" stacked="true">
@@ -463,7 +437,7 @@
             form-view="address-partner-address-form" grid-view="address-grid"/>
           <field name="deliveryAddressStr"
             readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
-            <viewer><![CDATA[{{record.deliveryAddressStr}}]]></viewer>
+            <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
           </field>
         </panel>
       </panel>
@@ -746,24 +720,38 @@
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
-      <separator/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12" css="order-subtotal">
+      <field name="inTaxTotal" showTitle="false" colSpan="12">
         <viewer
           depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
-
-	                  <dl class="dl-horizontal">
-	                      <dt x-translate>Total W.T.</dt>
-	                      <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
-	                      <dt x-translate>Total tax</dt>
-	                      <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
-	                      <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-	                      <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
-	                      <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-	                      <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-	                      <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
-	                      <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
-	                  </dl>
-
+	                  <>
+	                     <dl>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
+	                     	</Box>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
+	                     	</Box>
+	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
+	                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
+	                     	</Box>
+	                     	{statusSelect >= 3 &&
+	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
+	                     			<dd>{currency.symbol} {$fmt('amountInvoiced')}</dd>
+	                     		</Box>
+	                     	}
+	                     	{statusSelect >= 2 &&
+	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
+	                     			<dd>{currency.symbol} {$fmt('advanceTotal')}</dd>
+	                     		</Box>
+	                     	}
+	                     </dl>
+	                  </>
 	              ]]></viewer>
       </field>
     </panel>
@@ -798,22 +786,14 @@
       <field name="$duplicateExternalReference" hidden="true" colSpan="12" showTitle="false"
         readonly="true">
         <viewer>
-        		<![CDATA[
-               	  <h4>
-               	    <span class="label label-warning" style="color: #FFFFFF;" x-translate>Watch out, a sale order was already created with this external reference.</span>
-                  </h4>
-              	]]>
+          <![CDATA[<><Badge bg="warning">{_t('Watch out, a sale order was already created with this external reference.')}</Badge></>]]>
         </viewer>
       </field>
       <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form"
         grid-view="opportunity-grid" canEdit="false"/>
       <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
         <viewer>
-          <![CDATA[
-            <h5>
-              <span ng-show="true" class='label label-warning' x-translate>Reference already existing</span>
-            </h5>
-          ]]>
+          <![CDATA[<><Badge bg="warning">{_t('Reference already existing')}</Badge></>]]>
         </viewer>
       </field>
     </panel>
@@ -862,7 +842,7 @@
       <field name="cancelReason" hidden="true"/>
       <field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true"
         showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">
-        <viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
+        <viewer><![CDATA[<>{cancelReasonStr}</>]]></viewer>
       </field>
       <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
         name="standardDelay" hidden="true" readonly="true" showIf="standardDelay > 0"/>
@@ -947,11 +927,7 @@
         </panel>
         <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
           <viewer>
-	            <![CDATA[
-		            <h5>
-		              <span ng-show="true" class='label label-warning' x-translate>Reference already existing</span>
-		            </h5>
-	            ]]>
+	        <![CDATA[<><Badge bg="warning">{_t('Reference already existing')}</Badge></>]]>
           </viewer>
         </field>
       </panel>
@@ -1013,22 +989,39 @@
     </panel>
 
     <panel name="inTaxTotalPanel" sidebar="true" readonly="true" colSpan="4">
-      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+      <field name="inTaxTotal" showTitle="false" colSpan="12">
         <viewer
           depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
-                    <dl class="dl-horizontal">
-                        <dt x-translate>Total W.T.</dt>
-                        <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
-                        <dt x-translate>Total tax</dt>
-                        <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
-                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
-                        <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-                        <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-                        <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
-                        <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
-                    </dl>
+	                  <>
+	                     <dl>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
+	                     	</Box>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
+	                     	</Box>
+	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
+	                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
+	                     	</Box>
+	                     	{statusSelect >= 3 &&
+	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
+	                     			<dd>{currency.symbol} {$fmt('amountInvoiced')}</dd>
+	                     		</Box>
+	                     	}
+	                     	{statusSelect >= 2 &&
+	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
+	                     			<dd>{currency.symbol} {$fmt('advanceTotal')}</dd>
+	                     		</Box>
+	                     	}
+	                     </dl>
+	                  </>
                     ]]>
         </viewer>
       </field>
@@ -1079,7 +1072,7 @@
             onSelect="action-sale-order-attrs-domain-main-invoicing-address"
             form-view="address-partner-address-form" grid-view="address-grid"/>
           <field name="mainInvoicingAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-            <viewer>{{record.mainInvoicingAddressStr}}</viewer>
+            <viewer><![CDATA[<>{mainInvoicingAddressStr}</>]]></viewer>
           </field>
         </panel>
 
@@ -1093,7 +1086,7 @@
             onSelect="action-sale-order-attrs-domain-delivery-address"
             form-view="address-partner-address-form" grid-view="address-grid"/>
           <field name="deliveryAddressStr" readonlyIf="statusSelect &gt; 1" height="5">
-            <viewer>{{record.deliveryAddressStr}}</viewer>
+            <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
           </field>
         </panel>
         <panel name="detailsPanel" colSpan="8">
@@ -1112,23 +1105,40 @@
             form-view="user-form" grid-view="user-grid" canView="false"/>
           <field name="statusSelect" widget="NavSelect" colSpan="12"/>
         </panel>
-        <panel name="inTaxTotalPanel" readonly="true" css="order-subtotal" colSpan="4">
+        <panel name="inTaxTotalPanel" readonly="true" colSpan="4">
           <field name="inTaxTotal" showTitle="false" colSpan="12">
             <viewer
               depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                         <![CDATA[
-                        <dl class="dl-horizontal">
-                            <dt x-translate>Total W.T.</dt>
-                            <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
-                            <dt x-translate>Total V.A.T.</dt>
-                            <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
-                            <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                            <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
-                            <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-                            <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-                            <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment A.T.I. total</dt>
-                            <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
-                        </dl>
+		                  <>
+		                     <dl>
+		                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+		                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
+		                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
+		                     	</Box>
+		                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+		                     		<Box as="dt" fontWeight="normal">{_t('Total V.A.T.')}</Box>
+		                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
+		                     	</Box>
+		                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
+		                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
+		                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
+		                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
+		                     	</Box>
+		                     	{statusSelect >= 3 &&
+		                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+		                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
+		                     			<dd>{currency.symbol} {$fmt('amountInvoiced')}</dd>
+		                     		</Box>
+		                     	}
+		                     	{statusSelect >= 2 &&
+		                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+		                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
+		                     			<dd>{currency.symbol} {$fmt('advanceTotal')}</dd>
+		                     		</Box>
+		                     	}
+		                     </dl>
+		                  </>
                         ]]>
             </viewer>
           </field>
@@ -1226,7 +1236,7 @@
   </action-group>
 
   <cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
-    width="300px" css="rect-image" orderBy="-orderDate">
+    width="360px" css="rect-image" orderBy="-orderDate">
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
@@ -1249,58 +1259,53 @@
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <field name="invoicingState"/>
     <template><![CDATA[
-		    <div class="span12">
-		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
-		    	<a class="pull-right muted">{{ $fmt('orderDate') }}</a>
-	    	</div>
-			<div>
-			  <div>
-				  <div class="span8">
-				    <i class="fa fa-users" aria-hidden="true"></i>
-				  	{{ clientPartner.fullName }}
-				  </div>
-					<div class="span4 pull-right">
-						<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-						<span ng-show="record.statusSelect == 1" x-translate>Draft quotation</span>
-						<span ng-show="record.statusSelect == 2" x-translate>Finalized quotation</span>
-						<span ng-show="record.statusSelect == 3" x-translate>Order confirmed</span>
-						<span ng-show="record.statusSelect == 4" x-translate>Order completed</span>
-						<span ng-show="record.statusSelect == 5" x-translate>Canceled</span>
-					</div>
-			  </div>
-			  <div>
-				  <div class="span6">
-				  	<h5>
-						<span class="label label-important"  ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
-					</h5>
-					<h5>
-						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
-						<span class="label label-warning" ng-show="record.deliveryState > 0 && record.deliveryState == 2" x-translate>Partially delivered</span>
-						<span class="label label-success" ng-show="record.deliveryState > 0 && record.deliveryState == 3" x-translate>Delivered</span>
-					</h5>
-                    <h5>
-                        <span class="label label-important" ng-show="record.orderBeingEdited" x-translate>Order being edited</span>
-                    </h5>
-				  </div>
-				  <div class="span6">
-				    <span><strong><span x-translate>WT</span> : {{$fmt('exTaxTotal') | currency: currency.symbol}}</strong><br/>
-				    <strong><span x-translate>ATI</span> : {{$fmt('inTaxTotal') | currency: currency.symbol}}</strong></span>
-				  </div>
-			  </div>
-			</div>
-			<div class="span12" style="margin-left:0px;">
-			  <span class="label label-default" ng-show="!record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
-			  <span class="label label-default" ng-show="record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ tradingName.name }}</span>
-			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
-			</div>
+			<>
+				<strong>
+					<span>{_t('Sale order')}</span> {saleOrderSeq}
+					{externalReference && <span> ( {externalReference} )</span>}
+				</strong>
+				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('orderDate')}</Box>
+				<Box d="grid" gridTemplateColumns="67% 33%">
+					<Box>
+						<Icon icon="people-fill"/> {clientPartner.fullName}
+					</Box>
+					<Box>
+						<Icon icon="arrow-right"/>
+						{statusSelect == 1 && <span>{_t('Draft quotation')}</span>}
+						{statusSelect == 2 && <span>{_t('Finalized quotation')}</span>}
+						{statusSelect == 3 && <span>{_t('Order confirmed')}</span>}
+						{statusSelect == 4 && <span>{_t('Order completed')}</span>}
+						{statusSelect == 5 && <span>{_t('Canceled')}</span>}
+					</Box>
+				</Box>
+				<Box d="flex" justifyContent="space-between" mt={1}>
+					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
+						{invoicingState == 1 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+		                {invoicingState == 2 && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+		                {invoicingState == 3 && <Badge bg="success">{_t('Invoiced')}</Badge>}
+
+	                	{deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
+	                	{deliveryState == 2 && <Badge bg="warning">{_t('Partially delivered')}</Badge>}
+	                	{deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
+
+		            	{orderBeingEdited && <Badge bg="danger">{_t('Order being edited')}</Badge>}
+		            </Box>
+		            <Box>
+			            <strong>{_t('WT')} : {currency.symbol}{$fmt('exTaxTotal')}</strong> <Box/>
+			            <strong>{_t('ATI')} : {currency.symbol}{$fmt('inTaxTotal')}</strong>
+		            </Box>
+				</Box>
+				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
+					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(tradingName.name || company.name)}</Badge>
+					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+				</Box>
+			</>
 		]]>
     </template>
   </cards>
 
   <cards name="sale-order-quotation-cards" title="Sale order quotation"
-    model="com.axelor.apps.sale.db.SaleOrder" width="300px" css="rect-image" orderBy="-orderDate">
+    model="com.axelor.apps.sale.db.SaleOrder" width="360px" css="rect-image" orderBy="-orderDate">
     <menubar>
       <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
         <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
@@ -1327,49 +1332,45 @@
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <field name="invoicingState"/>
     <template><![CDATA[
-		    <div class="span12">
-		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
-		    	<a class="pull-right muted">{{ $fmt('orderDate') }}</a>
-	    	</div>
-			<div>
-			  <div>
-				  <div class="span8">
-				    <i class="fa fa-users" aria-hidden="true"></i>
-				  	{{ clientPartner.fullName }}
-				  </div>
-					<div class="span4 pull-right">
-						<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-						<span ng-show="record.statusSelect == 1" x-translate>Draft quotation</span>
-						<span ng-show="record.statusSelect == 2" x-translate>Finalized quotation</span>
-						<span ng-show="record.statusSelect == 3" x-translate>Order confirmed</span>
-						<span ng-show="record.statusSelect == 4" x-translate>Order completed</span>
-						<span ng-show="record.statusSelect == 5" x-translate>Canceled</span>
-					</div>
-			  </div>
-			  <div>
-				  <div class="span6">
-				  	<h5>
-						<span class="label label-important"  ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
-					</h5>
-					<h5>
-						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
-						<span class="label label-warning" ng-show="record.deliveryState > 0 && record.deliveryState == 2" x-translate>Partially delivered</span>
-						<span class="label label-success" ng-show="record.deliveryState > 0 && record.deliveryState == 3" x-translate>Delivered</span>
-					</h5>
-				  </div>
-				  <div class="span6">
-				    <span><strong><span x-translate>WT</span> : {{$fmt('exTaxTotal') | currency: currency.symbol}}</strong><br/>
-				    <strong><span x-translate>ATI</span> : {{$fmt('inTaxTotal') | currency: currency.symbol}}</strong></span>
-				  </div>
-			  </div>
-			</div>
-			<div class="span12" style="margin-left:0px;">
-			  <span class="label label-default" ng-show="!record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
-			  <span class="label label-default" ng-show="record.tradingName.name" style="background-color: #2185D0;" x-translate>{{ tradingName.name }}</span>
-			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
-			</div>
+			<>
+				<strong>
+					<span>{_t('Sale quotation')}</span> {saleOrderSeq}
+					{externalReference && <span> ( {externalReference} )</span>}
+				</strong>
+				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('orderDate')}</Box>
+				<Box d="grid" gridTemplateColumns="67% 33%">
+					<Box>
+						<Icon icon="people-fill"/> {clientPartner.fullName}
+					</Box>
+					<Box>
+						<Icon icon="arrow-right"/>
+						{statusSelect == 1 && <span>{_t('Draft quotation')}</span>}
+						{statusSelect == 2 && <span>{_t('Finalized quotation')}</span>}
+						{statusSelect == 3 && <span>{_t('Order confirmed')}</span>}
+						{statusSelect == 4 && <span>{_t('Order completed')}</span>}
+						{statusSelect == 5 && <span>{_t('Canceled')}</span>}
+					</Box>
+				</Box>
+				<Box d="flex" justifyContent="space-between" mt={1}>
+					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
+						{invoicingState == 1 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+		                {invoicingState == 2 && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+		                {invoicingState == 3 && <Badge bg="success">{_t('Invoiced')}</Badge>}
+
+	                	{deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
+	                	{deliveryState == 2 && <Badge bg="warning">{_t('Partially delivered')}</Badge>}
+	                	{deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
+		            </Box>
+		            <Box>
+			            <strong>{_t('WT')} : {currency.symbol}{$fmt('exTaxTotal')}</strong> <Box/>
+			            <strong>{_t('ATI')} : {currency.symbol}{$fmt('inTaxTotal')}</strong>
+		            </Box>
+				</Box>
+				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
+					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(tradingName.name || company.name)}</Badge>
+					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+				</Box>
+			</>
 		]]>
     </template>
   </cards>
