@@ -136,7 +136,10 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
     List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
     PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
     BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = invoice.getInvoiceDate();
+    LocalDate computeDate =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
 
     if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder().getOrderDate() != null) {
       computeDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();

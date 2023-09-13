@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class GlobalBudgetServiceImpl implements GlobalBudgetService {
@@ -69,6 +70,15 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     budgetLevelService.computeBudgetLevelTotals(budget);
 
     GlobalBudget globalBudget = budget.getGlobalBudget();
+
+    if (globalBudget == null) {
+      globalBudget =
+          Optional.ofNullable(budget.getBudgetLevel())
+              .map(BudgetLevel::getParentBudgetLevel)
+              .map(BudgetLevel::getGlobalBudget)
+              .orElse(null);
+    }
+
     if (globalBudget != null) {
       computeTotals(globalBudget);
       globalBudgetRepository.save(globalBudget);

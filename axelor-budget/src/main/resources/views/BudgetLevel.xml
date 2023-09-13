@@ -113,7 +113,7 @@
           onClick="action-group-budget-line-distribution-view-show-simulated-moves-lines"
           title="Display simulated moves" colSpan="12"/>
       </panel>
-      <panel name="datesPanel" colSpan="8" showIf="$popup()">
+      <panel name="datesPanel" colSpan="12" showIf="$popup()">
         <field name="fromDate" colSpan="4" required="true"
           onChange="action-budget-level-validate-from-to-dates"/>
         <field name="toDate" colSpan="4" required="true"

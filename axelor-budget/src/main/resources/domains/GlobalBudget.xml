@@ -51,7 +51,7 @@
       title="Budget Level" mappedBy="globalBudget"/>
 
     <integer name="checkAvailableSelect" title="Check available amount"
-      selection="budget.budget.level.check.available"/>
+      selection="budget.budget.level.check.available" default="2"/>
 
     <many-to-one name="activeVersion" ref="com.axelor.apps.budget.db.BudgetVersion"
       title="Active Version"/>

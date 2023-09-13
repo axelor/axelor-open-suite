@@ -135,7 +135,7 @@
         canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
     </panel>
   </form>
-  
+
   <form title="New Budget Version" name="global-budget-budget-version-new-wizard-form"
     model="com.axelor.utils.db.Wizard">
     <panel>
@@ -199,10 +199,10 @@
     <call class="com.axelor.apps.budget.web.GlobalBudgetController"
       method="setBudgetVersionDomain"/>
   </action-method>
-  
+
   <action-view
-          name="action-global-budget-line-distribution-view-show-simulated-moves-lines"
-          title="Simulated Moves" model="com.axelor.apps.budget.db.BudgetDistribution">
+    name="action-global-budget-line-distribution-view-show-simulated-moves-lines"
+    title="Simulated Moves" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-simulated-moves"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -211,10 +211,10 @@
       self.moveLine.move.statusSelect = 5</domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
-  
+
   <action-view
-          name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-with-po"
-          title="Display realized with po" model="com.axelor.apps.budget.db.BudgetDistribution">
+    name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-with-po"
+    title="Display realized with po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-with-po-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -226,10 +226,10 @@
     </domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
-  
+
   <action-view
-          name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
-          title="Display realized with no po" model="com.axelor.apps.budget.db.BudgetDistribution">
+    name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
+    title="Display realized with no po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-without-po-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -243,10 +243,10 @@
     </domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
-  
+
   <action-view
-          name="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-          title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    name="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
+    title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -254,16 +254,16 @@
     <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId</domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
-  
+
   <action-group name="action-global-budget-group-view-global-order-line">
     <action name="action-global-budget-view-global-purchase-order-line"
-            if="__this__?.budgetTypeSelect != 2"/>
+      if="__this__?.budgetTypeSelect != 2"/>
     <action name="action-global-budget-view-global-sale-order-line"
-            if="__this__?.budgetTypeSelect == 2"/>
+      if="__this__?.budgetTypeSelect == 2"/>
   </action-group>
 
   <action-view name="action-global-budget-view-global-purchase-order-line"
-               title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-purchase-order-line-global-dashlet-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
     <domain>self.purchaseOrderLine != null and
@@ -274,7 +274,7 @@
   </action-view>
 
   <action-view name="action-global-budget-view-global-sale-order-line"
-               title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
     <domain>self.saleOrderLine != null and

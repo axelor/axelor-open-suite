@@ -46,7 +46,7 @@ public class BudgetManagementRepository extends BudgetRepository {
             ? entity.getAvailableAmount().subtract(entity.getSimulatedAmount())
             : BigDecimal.ZERO);
 
-    GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);    
+    GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
     if (entity.getBudgetLevel() != null && entity.getBudgetLevel().getParentBudgetLevel() != null) {
       entity.setGlobalBudget(entity.getBudgetLevel().getParentBudgetLevel().getGlobalBudget());
     }

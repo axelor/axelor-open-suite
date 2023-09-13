@@ -56,7 +56,7 @@
   <selection name="global.budget.status.select">
     <option value="0">Draft</option>
     <option value="1">Validated structure</option>
-    <option value="2">Validate</option>
+    <option value="2">Validated</option>
     <option value="3">Archived</option>
   </selection>
 
