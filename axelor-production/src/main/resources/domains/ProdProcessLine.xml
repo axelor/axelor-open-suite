@@ -41,6 +41,14 @@
     <boolean name="useLineInGeneratedPurchaseOrder"
       title="Use this line in the generated purchase order"
       help="Products associated with the work center will be used"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <integer name="costTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="costAmount" title="Cost (W.T.)"/>
+    <many-to-one name="hrProduct" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <integer name="hrCostTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="hrCostAmount" title="Cost (W.T.)"/>
 
     <track>
       <field name="prodProcess"/>

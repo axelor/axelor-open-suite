@@ -60,6 +60,8 @@
     <boolean name="isInputInHundredthHours" title="Hundredth of an hour input"
       help="When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00)."/>
 
+    <boolean name="isCostPerProcessLine" title="Cost per process line"/>
+
     <extra-code><![CDATA[
 		// OPERATION_CONTINUITY_SELECT
         public static final int OPERATION_CONTINUITY_SELECT_NO_CONTINUITY =0;

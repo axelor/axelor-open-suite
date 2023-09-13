@@ -53,7 +53,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       ProductionConfigRepository productionConfigRepo,
       PurchaseOrderService purchaseOrderService,
       AppBaseService appBaseService,
-      OperationOrderService operationOrderService) {
+      OperationOrderService operationOrderService,
+      AppProductionService appProductionService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
@@ -63,7 +64,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         productionConfigRepo,
         purchaseOrderService,
         appBaseService,
-        operationOrderService);
+        operationOrderService,
+        appProductionService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

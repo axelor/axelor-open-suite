@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppProductionService {
@@ -89,5 +90,12 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
         .createQuery(
             "UPDATE Partner self SET self.isSubcontractor = FALSE WHERE self.isSubcontractor IS TRUE")
         .executeUpdate();
+  }
+
+  @Override
+  public boolean getIsCostPerProcessLine() {
+    return Optional.ofNullable(getAppProduction())
+        .map(AppProduction::getIsCostPerProcessLine)
+        .orElse(Boolean.FALSE);
   }
 }

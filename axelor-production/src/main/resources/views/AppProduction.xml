@@ -60,6 +60,7 @@
           domain="self.costTypeSelect = 2"/>
         <field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom"
           widget="boolean-switch"/>
+        <field name="isCostPerProcessLine" widget="boolean-switch"/>
       </panel>
       <panel name="printingPanel" title="Printings">
         <field name="printPlannedDateOnManufOrder"/>
