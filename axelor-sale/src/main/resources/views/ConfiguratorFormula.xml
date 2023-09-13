@@ -13,32 +13,53 @@
     <panel name="helpPanel" title="Help">
       <field name="$helpViewer" showTitle="false" readonly="true" colSpan="12">
         <viewer><![CDATA[
-<h3 id="the-script-must-be-written-in-groovy"><span x-translate>The script must be written in</span> <a href="http://docs.groovy-lang.org/latest/html/documentation/" target="_blank">Groovy</a></h3>
-<h4 id="string">String</h4>
-<p><code>+</code> <span x-translate>is used for concatenation</span>:</p>
-<pre><code>v = &quot;def&quot;
-&quot;abc&quot; + v // returns &quot;abcdef&quot;</code></pre>
-<p><span x-translate>String interpolation can also be used</span>:</p>
-<pre><code>v = &quot;def&quot;
-&quot;abc${v}&quot; // also returns &quot;abcdef&quot;</code></pre>
-<h4 id="decimal">Decimal</h4>
-<p><span x-translate>Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.</span></p>
-<h4 id="current-user" x-translate>Current User</h4>
-<p><code>__user__</code> <span x-translate>gives access to connected user.</span> <br>
-<span x-translate>Example: accessing the name of the user</span>: <code>__user__.name</code>.</p>
-<h4 id="date">Date</h4>
-<p><code>__date__</code> <span x-translate>gives access to today date and</span> <code>__datetime__</code> <span x-translate>to current date time.</span></p>
-<h4 id="parentsaleorder" x-translate>Access to parent sale order</h4>
-<p><code>parentSaleOrderId</code> <span x-translate>gives access to the id of parent sale order (when adding a sale order line with this configurator)</span></p>
-<h4 id="query-to-database" x-translate>Query to database</h4>
-<p><code>__repo__</code> <span x-translate>gives access to a repository with the same syntax as the repositories in java</span>.<br>
-<span x-translate>Examples</span>:
-<ul>
-<li> <span x-translate>searching for Product with id = 1:</span> <code>__repo__(Product).find(1)</code>
-<li> <span x-translate>searching for ProductFamily with the code ‘SERV’</span>: <code>__repo__(ProductFamily).all().filter("self.code = 'SERV'").fetchOne()</code>
-<li> <span x-translate>searching Partners that are suppliers and with a name starting with “A”</span>: <code>__repo__(Partner).all().filter("self.isSupplier IS TRUE AND self.name LIKE 'A%'").fetchOne()</code>
-</ul>
-</p>]]>
+			<>
+				<h3>
+					<span>{_t('The script must be written in')} </span>
+					<Box as="a" href={"http://docs.groovy-lang.org/latest/html/documentation/"} target="_blank">Groovy</Box>
+				</h3>
+				<h4>{_t('String')}</h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>+</Box> <span>{_t('is used for concatenation')}</span>:
+				</p>
+				<Box border borderColor="dark-subtle" color="black" borderWidth={1} as="pre" bg="secondary-subtle" p={2}>
+					{`v = "def" \n"abc" + v //returns "abcdef"`}
+				</Box>
+				<p>
+					<span>{_t('String interpolation can also be used')}</span>:
+				</p>
+				<Box border borderColor="dark-subtle" color="black" borderWidth={1} as="pre" bg="secondary-subtle" p={2}>
+					{`v = "def" \n"abc\${v}" // also returns "abcdef"`}
+				</Box>
+				<h4>{_t('Decimal')}</h4>
+				<p>
+					<span>{_t('Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.')}</span>
+				</p>
+				<h4>{_t('Current User')}</h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__user__</Box> <span>{_t('gives access to connected user.')}</span><Box/>
+					<span>{_t('Example: accessing the name of the user')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__user__.name</Box>.
+				</p>
+				<h4>{_t('Date')}</h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__date__</Box> <span>{_t('gives access to today date and')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__datetime__</Box> <span>{_t('to current date time.')}</span>
+				</p>
+				<h4>{_t('Access to parent sale order')}</h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>parentSaleOrderId</Box> <span>{_t('gives access to the id of parent sale order (when adding a sale order line with this configurator)')}</span>
+				</p>
+				<h4><span>{_t('Query to database')}</span></h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__repo__</Box> <span>{_t('gives access to a repository with the same syntax as the repositories in java')}</span>.<Box/>
+					<span>{_t('Examples')}</span>:
+					<ul>
+						<li>{_t('searching for Product with id = 1:')} <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__repo__(Product).find(1)</Box> </li>
+						<li>{_t('searching for ProductFamily with the code ‘SERV’')}: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__repo__(ProductFamily).all().filter("self.code = 'SERV'").fetchOne()</Box> </li>
+						<li>{_t('searching Partners that are suppliers and with a name starting with “A”')}: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__repo__(Partner).all().filter("self.isSupplier IS TRUE AND self.name LIKE 'A%'").fetchOne()</Box> </li>
+					</ul>
+				</p>
+			</>
+		]]>
         </viewer>
       </field>
     </panel>
