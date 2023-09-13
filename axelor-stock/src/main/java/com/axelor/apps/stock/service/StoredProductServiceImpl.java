@@ -117,7 +117,9 @@ public class StoredProductServiceImpl implements StoredProductService {
 
     if (storedQty.compareTo(currentQty) == -1 && storedQty.compareTo(BigDecimal.ZERO) != 0) {
       StoredProduct duplicatedStoredProduct = duplicateStoredProduct(storedProduct);
+      storedProduct.setCurrentQty(storedQty);
       storedProductRepository.save(duplicatedStoredProduct);
+      storedProduct = storedProductRepository.save(storedProduct);
     }
 
     if (storedProduct.getStoredQty().compareTo(BigDecimal.ZERO) != 0
