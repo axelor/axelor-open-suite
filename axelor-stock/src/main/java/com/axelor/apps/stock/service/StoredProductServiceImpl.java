@@ -22,7 +22,7 @@ import java.time.LocalDate;
 
 public class StoredProductServiceImpl implements StoredProductService {
 
-  protected StoredProductRepository storeProductsRepository;
+  protected StoredProductRepository storedProductRepository;
   protected MassStockMoveRepository massStockMoveRepository;
   protected StockMoveRepository stockMoveRepository;
   protected StockMoveLineRepository stockMoveLineRepository;
@@ -31,13 +31,13 @@ public class StoredProductServiceImpl implements StoredProductService {
 
   @Inject
   public StoredProductServiceImpl(
-      StoredProductRepository storeProductsRepository,
+      StoredProductRepository storedProductRepository,
       MassStockMoveRepository massStockMoveRepository,
       StockMoveRepository stockMoveRepository,
       StockMoveLineRepository stockMoveLineRepository,
       StockMoveService stockMoveService,
       StockMoveLineService stockMoveLineService) {
-    this.storeProductsRepository = storeProductsRepository;
+    this.storedProductRepository = storedProductRepository;
     this.massStockMoveRepository = massStockMoveRepository;
     this.stockMoveRepository = stockMoveRepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -67,7 +67,7 @@ public class StoredProductServiceImpl implements StoredProductService {
   }
 
   protected StoredProduct duplicateStoredProduct(StoredProduct storedProduct) {
-    StoredProduct duplicatedStoredProduct = storeProductsRepository.copy(storedProduct, false);
+    StoredProduct duplicatedStoredProduct = storedProductRepository.copy(storedProduct, false);
     duplicatedStoredProduct.setCurrentQty(
         storedProduct.getCurrentQty().subtract(storedProduct.getStoredQty()));
     duplicatedStoredProduct.setStoredQty(BigDecimal.ZERO);
@@ -106,7 +106,7 @@ public class StoredProductServiceImpl implements StoredProductService {
     stockMoveService.plan(stockMove);
     stockMoveService.realize(stockMove);
     storedProduct.setStockMoveLine(stockMoveLine);
-    storeProductsRepository.save(storedProduct);
+    storedProductRepository.save(storedProduct);
   }
 
   @Override
@@ -117,7 +117,7 @@ public class StoredProductServiceImpl implements StoredProductService {
 
     if (storedQty.compareTo(currentQty) == -1 && storedQty.compareTo(BigDecimal.ZERO) != 0) {
       StoredProduct duplicatedStoredProduct = duplicateStoredProduct(storedProduct);
-      storeProductsRepository.save(duplicatedStoredProduct);
+      storedProductRepository.save(duplicatedStoredProduct);
     }
 
     if (storedProduct.getStoredQty().compareTo(BigDecimal.ZERO) != 0
@@ -175,7 +175,7 @@ public class StoredProductServiceImpl implements StoredProductService {
       stockMoveService.cancel(storedProduct.getStockMoveLine().getStockMove());
       storedProduct.setStockMoveLine(null);
       storedProduct.setStoredQty(BigDecimal.ZERO);
-      storeProductsRepository.save(storedProduct);
+      storedProductRepository.save(storedProduct);
     }
   }
 }

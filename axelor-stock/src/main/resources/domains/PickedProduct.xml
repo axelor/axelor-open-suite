@@ -18,6 +18,9 @@
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="pickedQty" title="Picked qty"/>
     <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"/>
+
+    <entity-listener class="com.axelor.apps.stock.db.repo.PickedProductListener"/>
+
   </entity>
 
 </domain-models>

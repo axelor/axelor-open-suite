@@ -18,6 +18,9 @@
       title="Destination location"/>
     <decimal name="storedQty" title="Stored qty"/>
     <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"/>
+
+    <entity-listener class="com.axelor.apps.stock.db.repo.StoredProductListener"/>
+
   </entity>
 
 </domain-models>

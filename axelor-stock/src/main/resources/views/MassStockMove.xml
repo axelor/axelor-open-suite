@@ -17,9 +17,9 @@
 
   <form name="mass-stock-move-form" title="Mass move"
     model="com.axelor.apps.stock.db.MassStockMove" width="large"
-    onNew="action-mass-stock-move-group-onnew" onSave="save,action-mass-stock-move-group-onsave">
+    onNew="action-mass-stock-move-group-onnew">
     <panel name="mainPanel">
-      <field name="statusSelect" widget="NavSelect" required="true"/>
+      <field name="statusSelect" widget="NavSelect" required="true" readonly="true"/>
       <field name="sequence" readonly="true"/>
       <field name="company" required="true"/>
       <field name="cartStockLocation" required="true"
@@ -38,7 +38,7 @@
         help="Allows to add every product from the common stock location"/>
       <panel-related name="pickedProductListPanel" field="pickedProductList"
         grid-view="picked-products-mass-stock-move-grid" form-view="picked-products-form"
-        editable="true" colSpan="12"/>
+        onChange="save" editable="true" colSpan="12"/>
       <button name="realizePickingBtn" title="Pick all / the rest"
         onClick="save,action-mass-stock-move-method-realize-picking,action-refresh-record,save"
         icon="fa-play"/>
@@ -49,7 +49,7 @@
     <panel name="storedProductPanel">
       <panel-related name="storedProductListPanel" field="storedProductList"
         grid-view="stored-products-mass-stock-move-grid" form-view="stored-products-form"
-        editable="true" colSpan="12"/>
+        onChange="save" editable="true" colSpan="12"/>
       <button name="realizeStorageBtn" title="Store all / the rest"
         onClick="save,action-mass-stock-move-method-realize-storage"/>
       <button name="cancelStorageBtn" title="Cancel storage"
@@ -70,10 +70,6 @@
     <field name="cartStockLocation" expr="eval: company.stockConfig?.cartStockLocation"
       if="company.stockConfig.isMassStockMoveManaged"/>
   </action-record>
-
-  <action-method name="action-mass-stock-move-method-get-sequence">
-    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="getSequence"/>
-  </action-method>
 
   <action-method name="action-mass-stock-move-method-import-picked-product">
     <call class="com.axelor.apps.stock.web.MassStockMoveController"
@@ -99,10 +95,6 @@
   <action-group name="action-mass-stock-move-group-onnew">
     <action name="action-mass-stock-move-record-set-company"/>
     <action name="action-mass-stock-move-record-default"/>
-  </action-group>
-
-  <action-group name="action-mass-stock-move-group-onsave">
-    <action name="action-mass-stock-move-method-get-sequence"/>
   </action-group>
 
 </object-views>

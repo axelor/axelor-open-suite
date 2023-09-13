@@ -6,7 +6,7 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="MassStockMove" lang="java" cacheable="true">
-    <string name="sequence" title="Sequence"/>
+    <string name="sequence" title="Sequence" namecolumn="true"/>
     <integer name="statusSelect" selection="stock.mass.stock.move.status.select"
       title="Status" default="1"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>

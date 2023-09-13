@@ -15,11 +15,14 @@
     <field name="unit" readonly="true"/>
     <field name="toStockLocation" required="true"
       domain="self.company = (SELECT company FROM MassStockMove WHERE id = :massStockMove) AND self.typeSelect != 3"/>
-    <field name="storedQty" required="true"/>
+    <field name="storedQty" required="true"
+      readonlyIf="$get('stockMoveLine.stockMove.statusSelect') == 3"/>
     <button name="realizeStorageBtn" icon="fa-play"
-      onClick="save,action-stored-product-method-realize-storage,save"/>
+      onClick="save,action-stored-product-method-realize-storage,save"
+      readonlyIf="$get('stockMoveLine.stockMove.statusSelect') == 3"/>
     <button name="cancelStorageBtn" icon="fa-undo"
       onClick="save,action-stored-product-method-cancel-storage"/>
+    <field name="stockMoveLine.stockMove.statusSelect" hidden="true"/>
   </grid>
 
   <form name="stored-products-form" title="Stored products"

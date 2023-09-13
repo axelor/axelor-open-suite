@@ -152,25 +152,21 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
-  public String getAndSetSequence(Company company, MassStockMove massStockMoveToSet)
-      throws AxelorException {
-    String sequence = massStockMoveToSet.getSequence();
-
-    String seq;
-    if (sequence == null || sequence.isEmpty()) {
-      seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.MASS_STOCK_MOVE, company, MassStockMove.class, "sequence");
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(StockExceptionMessage.MASS_STOCK_MOVE_NO_SEQUENCE),
-            company.getName());
-      }
-      massStockMoveToSet.setSequence(seq);
-      massStockMoveRepository.save(massStockMoveToSet);
-      return seq;
+  public String getSequence(MassStockMove massStockMove) throws AxelorException {
+    Company company = massStockMove.getCompany();
+    if (company == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.MASS_STOCK_MOVE_NO_COMPANY));
+    }
+    String sequence =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.MASS_STOCK_MOVE, company, MassStockMove.class, "sequence");
+    if (sequence == null || sequence.isBlank()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.MASS_STOCK_MOVE_NO_SEQUENCE),
+          company.getName());
     }
     return sequence;
   }

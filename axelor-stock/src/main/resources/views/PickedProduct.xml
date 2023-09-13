@@ -16,11 +16,14 @@
       onChange="action-picked-products-record-set-currentqty"/>
     <field name="currentQty" readonly="true"/>
     <field name="unit" readonly="true"/>
-    <field name="pickedQty" required="true"/>
+    <field name="pickedQty" required="true"
+      readonlyIf="$get('stockMoveLine.stockMove.statusSelect') == 3"/>
     <button name="realizePickingBtn" icon="fa-play"
-      onClick="save,action-picked-product-method-realize-picking"/>
+      onClick="save,action-picked-product-method-realize-picking"
+      readonlyIf="$get('stockMoveLine.stockMove.statusSelect') == 3"/>
     <button name="cancelPickingBtn" icon="fa-undo"
       onClick="action-picked-product-method-cancel-picking"/>
+    <field name="stockMoveLine.stockMove.statusSelect" hidden="true"/>
   </grid>
 
 

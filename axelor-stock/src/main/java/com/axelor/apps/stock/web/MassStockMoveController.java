@@ -58,19 +58,6 @@ public class MassStockMoveController {
     }
   }
 
-  public void getSequence(ActionRequest request, ActionResponse response) {
-    try {
-      MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
-      massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
-      String sequence =
-          Beans.get(MassStockMoveService.class)
-              .getAndSetSequence(massStockMove.getCompany(), massStockMove);
-      response.setValue("sequence", sequence);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void realizeStorage(ActionRequest request, ActionResponse response) {
     try {
       MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
