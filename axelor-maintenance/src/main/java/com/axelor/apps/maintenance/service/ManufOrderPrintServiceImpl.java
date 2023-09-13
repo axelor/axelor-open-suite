@@ -18,14 +18,21 @@
  */
 package com.axelor.apps.maintenance.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.maintenance.report.IReport;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
@@ -41,25 +48,46 @@ import java.util.Optional;
 public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
 
   protected AppBaseService appBaseService;
+  protected ProductionConfigService productionConfigService;
+  protected BirtTemplateService birtTemplateService;
+  protected ManufOrderRepository manufOrderRepository;
 
   @Inject
-  public ManufOrderPrintServiceImpl(AppBaseService appBaseService) {
+  public ManufOrderPrintServiceImpl(
+      AppBaseService appBaseService,
+      ProductionConfigService productionConfigService,
+      BirtTemplateService birtTemplateService,
+      ManufOrderRepository manufOrderRepository) {
     this.appBaseService = appBaseService;
+    this.productionConfigService = productionConfigService;
+    this.birtTemplateService = birtTemplateService;
+    this.manufOrderRepository = manufOrderRepository;
   }
 
   @Override
-  public String printManufOrders(List<Long> ids) throws IOException {
+  public String printManufOrders(List<Long> ids) throws IOException, AxelorException {
     List<File> printedManufOrders = new ArrayList<>();
-    ModelTool.apply(
-        ManufOrder.class,
-        ids,
-        new ThrowConsumer<ManufOrder, Exception>() {
+    int errorCount =
+        ModelTool.apply(
+            ManufOrder.class,
+            ids,
+            new ThrowConsumer<ManufOrder, Exception>() {
 
-          @Override
-          public void accept(ManufOrder manufOrder) throws Exception {
-            printedManufOrders.add(print(manufOrder));
-          }
-        });
+              @Override
+              public void accept(ManufOrder manufOrder) throws Exception {
+                try {
+                  printedManufOrders.add(print(manufOrder));
+                } catch (Exception e) {
+                  TraceBackService.trace(e);
+                  throw e;
+                }
+              }
+            });
+    if (errorCount > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get("The file could not be generated"));
+    }
     String fileName = getManufOrdersFilename();
     return PdfTool.mergePdfToFileLink(printedManufOrders, fileName);
   }
@@ -76,16 +104,30 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
   }
 
   @Override
-  public ReportSettings prepareReportSettings(ManufOrder manufOrder) {
+  public ReportSettings prepareReportSettings(ManufOrder manufOrder) throws AxelorException {
+    manufOrder = manufOrderRepository.find(manufOrder.getId());
     String title = getFileName(manufOrder);
-    ReportSettings reportSetting =
-        ReportFactory.createReport(IReport.MAINTENANCE_MANUF_ORDER, title);
-    return reportSetting
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .addParam("ManufOrderId", manufOrder.getId().toString())
-        .addParam(
-            "activateBarCodeGeneration", appBaseService.getAppBase().getActivateBarCodeGeneration())
-        .addFormat(ReportSettings.FORMAT_PDF);
+    Company company = manufOrder.getCompany();
+    BirtTemplate maintenanceManufOrderBirtTemplate = null;
+    if (ObjectUtils.notEmpty(company)) {
+      maintenanceManufOrderBirtTemplate =
+          productionConfigService
+              .getProductionConfig(company)
+              .getMaintenanceManufOrderBirtTemplate();
+    }
+    if (maintenanceManufOrderBirtTemplate == null
+        || maintenanceManufOrderBirtTemplate.getTemplateMetaFile() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return birtTemplateService.generate(
+        maintenanceManufOrderBirtTemplate,
+        manufOrder,
+        null,
+        title,
+        maintenanceManufOrderBirtTemplate.getAttach(),
+        ReportSettings.FORMAT_PDF);
   }
 
   @Override
