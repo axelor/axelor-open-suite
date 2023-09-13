@@ -9,7 +9,6 @@ public interface PdfSignatureService {
       MetaFile metaFile,
       MetaFile certificate,
       String certificatePassword,
-      MetaFile imageFile,
       String reason,
       String location)
       throws AxelorException;
