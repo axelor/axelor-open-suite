@@ -57,6 +57,8 @@
     <boolean name="isManufOrderPlannedAfterMerge" title="Automatically plan after fusion"/>
 
     <boolean name="manageWorkCenterGroup" title="Manage work center group"/>
+    <boolean name="isInputInHundredthHours" title="Hundredth of an hour input"
+      help="When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00)."/>
 
     <extra-code><![CDATA[
 		// OPERATION_CONTINUITY_SELECT
@@ -95,6 +97,7 @@
       <field name="enableToolManagement" on="UPDATE"/>
       <field name="isManufOrderPlannedAfterMerge" on="UPDATE"/>
       <field name="manageWorkCenterGroup" on="UPDATE"/>
+      <field name="isInputInHundredthHours" on="UPDATE"/>
 
     </track>
   </entity>
