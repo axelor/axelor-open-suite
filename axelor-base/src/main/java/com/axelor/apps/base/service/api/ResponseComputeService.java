@@ -16,17 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.db.repo;
+package com.axelor.apps.base.service.api;
 
-import com.axelor.apps.account.db.MoveTemplate;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.db.Model;
 
-public class MoveTemplateManagementRepository extends MoveTemplateRepository {
-  @Override
-  public MoveTemplate copy(MoveTemplate entity, boolean deep) {
-    MoveTemplate copy = super.copy(entity, deep);
-
-    copy.setIsValid(false);
-
-    return copy;
-  }
+public interface ResponseComputeService {
+  String compute(Model model) throws AxelorException;
 }

@@ -158,6 +158,8 @@ import com.axelor.apps.base.service.advanced.imports.SearchCallService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallServiceImpl;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
+import com.axelor.apps.base.service.api.ResponseComputeService;
+import com.axelor.apps.base.service.api.ResponseComputeServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
@@ -349,5 +351,6 @@ public class BaseModule extends AxelorModule {
     bind(AnonymizerLineService.class).to(AnonymizerLineServiceImpl.class);
     bind(ProductUpdateService.class).to(ProductUpdateServiceImpl.class);
     bind(ProductConversionService.class).to(ProductConversionServiceImpl.class);
+    bind(ResponseComputeService.class).to(ResponseComputeServiceImpl.class);
   }
 }
