@@ -31,10 +31,11 @@
         showTitle="false"/>
       <field name="purchaseRequestSeq" showTitle="false" readonly="true">
         <viewer depends="purchaseRequestSeq"><![CDATA[
-					<h3>
-						<span ng-show="record.purchaseRequestSeq" x-translate>Purchase request</span>
-						{{record.purchaseRequestSeq}}
-					</h3>
+					<>
+						<h3>
+							{purchaseRequestSeq && <span>{_t('Purchase request')} {purchaseRequestSeq}</span>}
+						</h3>
+					</>
 				]]></viewer>
       </field>
     </panel>
