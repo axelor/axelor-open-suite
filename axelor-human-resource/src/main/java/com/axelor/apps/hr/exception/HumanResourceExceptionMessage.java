@@ -276,4 +276,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_ADD_LINE_WRONG_STATUS = /*$$(*/
       "Can only add expense line to drafted expense." /*)*/;
+
+  public static final String EXPENSE_LINE_VALIDATE_TOTAL_AMOUNT = /*$$(*/
+      "The expense line amount exceeds the authorized limit of %s. Please correct the amount or request the intervention of an HR manager." /*)*/;
 }

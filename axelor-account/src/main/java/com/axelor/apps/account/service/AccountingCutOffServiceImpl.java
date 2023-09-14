@@ -679,7 +679,12 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            move.getPartner(), product, move.getCompany(), move.getTradingName(), isPurchase);
+            move.getPartner(),
+            product,
+            move.getCompany(),
+            move.getTradingName(),
+            moveLine.getAccount(),
+            isPurchase);
 
     moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

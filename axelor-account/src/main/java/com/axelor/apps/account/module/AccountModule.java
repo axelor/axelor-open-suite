@@ -97,6 +97,8 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
+import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
+import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
@@ -694,5 +696,7 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticAttrsService.class).to(AnalyticAttrsServiceImpl.class);
 
     bind(AnalyticGroupService.class).to(AnalyticGroupServiceImpl.class);
+
+    bind(TradingNameAnalyticService.class).to(TradingNameAnalyticServiceImpl.class);
   }
 }

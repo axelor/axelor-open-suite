@@ -18,20 +18,20 @@
  */
 package com.axelor.apps.sale.service.saleorder.print;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.file.PdfTool;
@@ -41,18 +41,29 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
   protected SaleOrderService saleOrderService;
   protected AppSaleService appSaleService;
+  protected BirtTemplateService birtTemplateService;
+  protected SaleOrderRepository saleOrderRepository;
+  protected SaleConfigService saleConfigService;
 
   @Inject
   public SaleOrderPrintServiceImpl(
-      SaleOrderService saleOrderService, AppSaleService appSaleService) {
+      SaleOrderService saleOrderService,
+      AppSaleService appSaleService,
+      BirtTemplateService birtTemplateService,
+      SaleOrderRepository saleOrderRepository,
+      SaleConfigService saleConfigService) {
     this.saleOrderService = saleOrderService;
     this.appSaleService = appSaleService;
+    this.birtTemplateService = birtTemplateService;
+    this.saleOrderRepository = saleOrderRepository;
+    this.saleConfigService = saleConfigService;
   }
 
   @Override
@@ -64,18 +75,29 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
   }
 
   @Override
-  public String printSaleOrders(List<Long> ids) throws IOException {
+  public String printSaleOrders(List<Long> ids) throws IOException, AxelorException {
     List<File> printedSaleOrders = new ArrayList<>();
-    ModelTool.apply(
-        SaleOrder.class,
-        ids,
-        new ThrowConsumer<SaleOrder, Exception>() {
-          @Override
-          public void accept(SaleOrder saleOrder) throws Exception {
-            printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
-          }
-        });
-    Integer status = Beans.get(SaleOrderRepository.class).find(ids.get(0)).getStatusSelect();
+    int errorCount =
+        ModelTool.apply(
+            SaleOrder.class,
+            ids,
+            new ThrowConsumer<SaleOrder, Exception>() {
+              @Override
+              public void accept(SaleOrder saleOrder) throws Exception {
+                try {
+                  printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
+                } catch (Exception e) {
+                  TraceBackService.trace(e);
+                  throw e;
+                }
+              }
+            });
+    if (errorCount > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get("The file could not be generated"));
+    }
+    Integer status = saleOrderRepository.find(ids.get(0)).getStatusSelect();
     String fileName = getSaleOrderFilesName(status);
     return PdfTool.mergePdfToFileLink(printedSaleOrders, fileName);
   }
@@ -89,37 +111,18 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
   public ReportSettings prepareReportSettings(SaleOrder saleOrder, boolean proforma, String format)
       throws AxelorException {
 
-    if (saleOrder.getPrintingSettings() == null) {
-      if (saleOrder.getCompany().getPrintingSettings() != null) {
-        saleOrder.setPrintingSettings(saleOrder.getCompany().getPrintingSettings());
-      } else {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            String.format(
-                I18n.get(SaleExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
-                saleOrder.getSaleOrderSeq()),
-            saleOrder);
-      }
-    }
-    String locale = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
-
+    saleOrderService.checkPrintingSettings(saleOrder);
+    BirtTemplate saleOrderBirtTemplate =
+        saleConfigService.getSaleOrderBirtTemplate(saleOrder.getCompany());
     String title = saleOrderService.getFileName(saleOrder);
 
-    ReportSettings reportSetting =
-        ReportFactory.createReport(IReport.SALES_ORDER, title + " - ${date}");
-
-    return reportSetting
-        .addParam("SaleOrderId", saleOrder.getId())
-        .addParam(
-            "Timezone",
-            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
-        .addParam("Locale", locale)
-        .addParam("ProformaInvoice", proforma)
-        .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
-        .addParam(
-            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
-        .addFormat(format);
+    return birtTemplateService.generate(
+        saleOrderBirtTemplate,
+        saleOrder,
+        Map.of("ProformaInvoice", proforma),
+        title + " - ${date}",
+        saleOrderBirtTemplate.getAttach(),
+        format);
   }
 
   /** Return the name for the printed sale orders. */
