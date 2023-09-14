@@ -92,9 +92,9 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
     int scale = appBaseService.getNbDecimalDigitForQty();
     if (stockLocationId != 0L && companyId != 0L) {
-      List<StockLocation> stockLocationList =
-          stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
-      if (!stockLocationList.isEmpty()) {
+      List<Long> stockLocationIds =
+          stockLocationService.getAllLocationAndSubLocationId(stockLocation, false);
+      if (!stockLocationIds.isEmpty()) {
         BigDecimal realQty = BigDecimal.ZERO;
         BigDecimal futureQty = BigDecimal.ZERO;
         BigDecimal reservedQty = BigDecimal.ZERO;
@@ -108,13 +108,12 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
         availableQty = this.getAvailableQty(product, company, stockLocation);
         requestedReservedQty = this.getRequestedReservedQty(product, company, stockLocation);
 
-        for (StockLocation sl : stockLocationList) {
-          realQty = realQty.add(stockLocationService.getRealQty(productId, sl.getId(), companyId));
-          futureQty =
-              futureQty.add(stockLocationService.getFutureQty(productId, sl.getId(), companyId));
+        for (Long sl : stockLocationIds) {
+          realQty = realQty.add(stockLocationService.getRealQty(productId, sl, companyId));
+          futureQty = futureQty.add(stockLocationService.getFutureQty(productId, sl, companyId));
           reservedQty =
               reservedQty.add(
-                  stockLocationServiceSupplychain.getReservedQty(productId, sl.getId(), companyId));
+                  stockLocationServiceSupplychain.getReservedQty(productId, sl, companyId));
         }
 
         map.put("$realQty", realQty.setScale(scale, RoundingMode.HALF_UP));

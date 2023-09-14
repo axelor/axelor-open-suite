@@ -31,7 +31,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.db.JPA;
@@ -73,8 +72,8 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
   protected Optional<ABCAnalysisLine> createABCAnalysisLine(
       ABCAnalysis abcAnalysis, Product product) throws AxelorException {
     ABCAnalysisLine abcAnalysisLine = null;
-    List<StockLocation> stockLocationList =
-        stockLocationService.getAllLocationAndSubLocation(abcAnalysis.getStockLocation(), false);
+    List<Long> stockLocationIds =
+        stockLocationService.getAllLocationAndSubLocationId(abcAnalysis.getStockLocation(), false);
     BigDecimal productQty = BigDecimal.ZERO;
     BigDecimal productWorth = BigDecimal.ZERO;
     List<StockLocationLine> stockLocationLineList;
@@ -84,8 +83,8 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
         stockLocationLineRepository
             .all()
             .filter(
-                "self.stockLocation IN :stockLocationList AND self.product.id = :productId AND self.currentQty != 0 ")
-            .bind("stockLocationList", stockLocationList)
+                "self.stockLocation.id IN :stockLocationIds AND self.product.id = :productId AND self.currentQty != 0 ")
+            .bind("stockLocationIds", stockLocationIds)
             .bind("productId", product.getId());
 
     while (!(stockLocationLineList = stockLocationLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {

@@ -92,6 +92,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
@@ -858,15 +859,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         if (stockLocationId != 0L) {
           StockLocation stockLocation =
               Beans.get(StockLocationRepository.class).find(stockLocationId);
-          List<StockLocation> stockLocationList =
+          List<Long> stockLocationIds =
               Beans.get(StockLocationService.class)
-                  .getAllLocationAndSubLocation(stockLocation, false);
-          if (!stockLocationList.isEmpty()
-              && stockLocation.getCompany().getId().equals(companyId)) {
+                  .getAllLocationAndSubLocationId(stockLocation, false);
+          if (!stockLocationIds.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
             query +=
-                " AND self.fromStockLocation.id IN ("
-                    + StringTool.getIdListString(stockLocationList)
-                    + ") ";
+                " AND self.fromStockLocation.id IN "
+                    + stockLocationIds.stream()
+                        .map(Objects::toString)
+                        .collect(Collectors.joining(",", " (", ") "));
           }
         }
       }
@@ -896,14 +897,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       if (stockLocationId != 0L) {
         StockLocation stockLocation =
             Beans.get(StockLocationRepository.class).find(stockLocationId);
-        List<StockLocation> stockLocationList =
+        List<Long> stockLocationIds =
             Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
+                .getAllLocationAndSubLocationId(stockLocation, false);
+        if (!stockLocationIds.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
-              " AND self.stockMove.toStockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
-                  + ") ";
+              " AND self.stockMove.toStockLocation.id IN "
+                  + stockLocationIds.stream()
+                      .map(Objects::toString)
+                      .collect(Collectors.joining(",", " (", ") "));
         }
       }
     }

@@ -345,8 +345,8 @@ public class StockLocationServiceImpl implements StockLocationService {
     }
     return String.format(
         "self.id in (%s)",
-        getAllLocationAndSubLocation(stockLocation, false).stream()
-            .map(location -> location.getId().toString())
+        getAllLocationAndSubLocationId(stockLocation, false).stream()
+            .map(Object::toString)
             .collect(Collectors.joining(",")));
   }
 }

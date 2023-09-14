@@ -43,7 +43,6 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -53,7 +52,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -780,14 +781,15 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       if (stockLocationId != 0L) {
         StockLocation stockLocation =
             Beans.get(StockLocationRepository.class).find(stockLocationId);
-        List<StockLocation> stockLocationList =
+        List<Long> stockLocationIds =
             Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
+                .getAllLocationAndSubLocationId(stockLocation, false);
+        if (!stockLocationIds.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
-              " AND self.stockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
-                  + ") ";
+              " AND self.stockLocation.id IN "
+                  + stockLocationIds.stream()
+                      .map(Objects::toString)
+                      .collect(Collectors.joining(",", " (", ") "));
         }
       }
     }
