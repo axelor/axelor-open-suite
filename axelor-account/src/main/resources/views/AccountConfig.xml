@@ -20,32 +20,23 @@
 
       <spacer colSpan="12"/>
 
-      <field name="isActivateSimulatedMove" colSpan="3"/>
-      <field name="accountingDaybook" colSpan="3"
-        onChange="action-account-config-attrs-accounting-daybook-onchange"/>
-      <field name="generateMoveForAdvancePayment" colSpan="3"
-        if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
-
-
       <panel name="accountConfigInitPanel" title="Accounting configuration initialization"
         colSpan="12">
-        <field name="$noAccountChartLabel"
-          showIf="!$existingChartAccount || !hasChartImported" colSpan="12" hidden="true"
-          showTitle="false" readonly="true">
+        <field name="$noAccountChartLabel" hideIf="$existingChartAccount || hasChartImported"
+          colSpan="12" hidden="true" showTitle="false" readonly="true">
           <viewer>
             <![CDATA[
-              <span class="label label-important" x-translate>There is no account chart defined. Please define a chart from the account configuration menu or import a default one using the account charts available below :</span>
+              <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate>There is no account chart defined. Please define a chart from the account configuration menu or import a default one using the account charts available below :</span>
             ]]>
           </viewer>
         </field>
         <field name="accountChart" readonlyIf="hasChartImported"
           form-view="account-chart-form" grid-view="account-chart-grid" canNew="true" colSpan="3"/>
-        <field name="hasChartImported" readonly="true" colSpan="3"/>
+        <field name="hasChartImported" readonly="true" colSpan="3" showIf="hasChartImported"/>
         <spacer colSpan="6"/>
         <field name="hasAccountCodeFixedNbrChar" colSpan="3" readonlyIf="hasChartImported"/>
         <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
           readonlyIf="hasChartImported"/>
-
 
         <spacer colSpan="12"/>
 
@@ -54,7 +45,7 @@
           <field name="$noFiscalYearLabel" showTitle="false" readonly="true" colSpan="12">
             <viewer>
               <![CDATA[
-              <span class="label label-important" x-translate>There is no fiscal year and periods defined. Please enter below the fiscal year dates (included-included) and the periods duration :</span>
+              <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate>There is no fiscal year and periods defined. Please enter below the fiscal year dates (included-included) and the periods duration :</span>
             ]]>
             </viewer>
           </field>
@@ -68,21 +59,32 @@
           <field name="$accountingPeriodDuration" type="integer" title="Period duration"
             selection="base.year.period.duration.select" showIf="$generateFiscalYear"
             requiredIf="$generateFiscalYear" colSpan="4"/>
-          <button name="generateFiscalYearBtn" title="Import fiscal year / periods"
+          <button name="generateFiscalYearBtn" title="Generate fiscal year / periods"
             onClick="action-account-config-method-generate-fiscal-year-and-period"
             showIf="(!accountChart || $existingChartAccount) &amp;&amp; $generateFiscalYear"
             hidden="true" colSpan="3"/>
         </panel>
 
+        <spacer colSpan="12"/>
+
+        <panel name="moveConfigPanel" title="Accounting entries status" colSpan="12">
+          <field name="isActivateSimulatedMove" colSpan="3"/>
+          <field name="accountingDaybook" colSpan="3"
+            onChange="action-account-config-attrs-accounting-daybook-onchange"/>
+          <field name="generateMoveForAdvancePayment" colSpan="3"
+            if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
+        </panel>
+
         <panel name="installTemplatePanel" hideIf="hasChartImported" colSpan="12"
           hidden="true">
 
-          <button name="importAccountConfigBtn" title="Import accounting configuration"
+          <button name="importAccountConfigBtn"
+            title="Import/Generate accounting configuration"
             onClick="action-account-config-group-import-account-config"
             showIf="accountChart &amp;&amp; !$existingChartAccount &amp;&amp; !$existingFiscalYear &amp;&amp; $generateFiscalYear"
             hidden="true" colSpan="3"/>
           <spacer colSpan="9"/>
-          <button name="installTemplateBtn" title="Import a chart"
+          <button name="installTemplateBtn" title="Import the chart"
             readonlyIf="company == null || accountChart == null || (hasAccountCodeFixedNbrChar &amp;&amp; (accountCodeNbrCharSelect == 0 || accountCodeNbrCharSelect == null))"
             icon="fa-import" onClick="action-group-account-config-installchart-click"
             showIf="accountChart &amp;&amp; !$existingChartAccount &amp;&amp; ($existingFiscalYear || !$generateFiscalYear)"
@@ -622,6 +624,7 @@
   </action-method>
 
   <action-group name="action-account-config-group-import-account-config">
+    <action name="save"/>
     <action name="action-account-config-method-generate-fiscal-year-and-period"/>
     <action name="action-method-account-config-install-chart"/>
   </action-group>

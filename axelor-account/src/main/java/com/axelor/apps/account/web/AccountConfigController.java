@@ -21,12 +21,14 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.YearAccountService;
 import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -101,7 +103,9 @@ public class AccountConfigController {
             fiscalYearFromDate,
             fiscalYearToDate,
             accountingPeriodDuration,
-            fiscalYearFromDate.plusDays(1L));
+            fiscalYearToDate.plusDays(1L));
+    response.setInfo(
+        I18n.get(AccountExceptionMessage.ACCOUNT_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS));
     response.setReload(true);
   }
 }
