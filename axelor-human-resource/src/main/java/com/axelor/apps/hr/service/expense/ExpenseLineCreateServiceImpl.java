@@ -2,6 +2,7 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -14,6 +15,7 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -56,7 +58,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       BigDecimal totalTax,
       MetaFile justificationMetaFile,
       String comments,
-      Employee employee)
+      Employee employee,
+      Currency currency)
       throws AxelorException {
 
     if (expenseProduct == null) {
@@ -65,7 +68,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_MISSING_EXPENSE_PRODUCT));
     }
 
-    ExpenseLine expenseLine = createBasicExpenseLine(project, employee, expenseDate, comments);
+    ExpenseLine expenseLine =
+        createBasicExpenseLine(project, employee, expenseDate, comments, currency);
     setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     expenseProofFileService.convertProofFileToPdf(expenseLine);
@@ -84,13 +88,15 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       String toCity,
       String comments,
       Employee employee,
-      Company company)
+      Company company,
+      Currency currency)
       throws AxelorException {
 
     checkKilometricLineRequiredValues(
         kilometricAllowParam, kilometricType, fromCity, toCity, company);
 
-    ExpenseLine expenseLine = createBasicExpenseLine(project, employee, expenseDate, comments);
+    ExpenseLine expenseLine =
+        createBasicExpenseLine(project, employee, expenseDate, comments, currency);
     setKilometricExpenseLineInfo(
         kilometricAllowParam, kilometricType, fromCity, toCity, company, expenseLine);
 
@@ -184,7 +190,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   }
 
   protected ExpenseLine createBasicExpenseLine(
-      Project project, Employee employee, LocalDate expenseDate, String comments)
+      Project project, Employee employee, LocalDate expenseDate, String comments, Currency currency)
       throws AxelorException {
     ExpenseLine expenseLine = new ExpenseLine();
     if (expenseDate.isAfter(appBaseService.getTodayDate(null))) {
@@ -192,11 +198,21 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           HumanResourceExceptionMessage.EXPENSE_LINE_DATE_ERROR);
     }
+
+    setCurrency(currency, expenseLine);
     expenseLine.setProject(project);
     expenseLine.setEmployee(employee);
     expenseLine.setExpenseDate(expenseDate);
     expenseLine.setComments(comments);
     expenseLine.setTotalAmount(BigDecimal.ZERO);
     return expenseLine;
+  }
+
+  protected void setCurrency(Currency currency, ExpenseLine expenseLine) {
+    if (currency != null) {
+      expenseLine.setCurrency(currency);
+    } else {
+      expenseLine.setCurrency(AuthUtils.getUser().getActiveCompany().getCurrency());
+    }
   }
 }
