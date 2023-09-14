@@ -114,7 +114,8 @@
           onClick="save,action-budget-budget-level-method-set-dates"
           readonlyIf="code == null || name == null || parentBudgetLevel == null || globalBudget.statusSelect == 2"/>
       </panel>
-      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true" title="Total amounts">
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
         <field name="totalAmountExpected"/>
         <field name="totalAmountAvailable"/>
         <field name="availableAmountWithSimulated"/>
@@ -187,7 +188,8 @@
           onClick="save,action-budget-budget-level-method-set-dates"
           readonlyIf="code == null || name == null || parentBudgetLevel == null || parentBudgetLevel.globalBudget == null || parentBudgetLevel.globalBudget.statusSelect &gt;= 1"/>
       </panel>
-      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true" title="Total amounts">
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
         <field name="totalAmountExpected"/>
         <field name="totalAmountAvailable"/>
         <field name="availableAmountWithSimulated"/>
@@ -243,7 +245,8 @@
           onClick="save,action-budget-budget-level-method-set-dates"
           readonlyIf="code == null || name == null || parentBudgetLevel == null || globalBudget.statusSelect &gt;= 1"/>
       </panel>
-      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true" title="Total amounts">
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
         <field name="totalAmountExpected"/>
         <field name="totalAmountAvailable"/>
         <field name="availableAmountWithSimulated"/>
@@ -318,7 +321,8 @@
           onClick="save,action-budget-budget-level-method-set-dates"
           readonlyIf="code == null || name == null || parentBudgetLevel == null || parentBudgetLevel.globalBudget == null || parentBudgetLevel.globalBudget.statusSelect == 2 "/>
       </panel>
-      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true" title="Total amounts">
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
         <field name="totalAmountExpected"/>
         <field name="totalAmountAvailable"/>
         <field name="availableAmountWithSimulated"/>

@@ -111,7 +111,8 @@
             showIf="statusSelect == 2 &amp;&amp; simulatedAmount != 0"/>
         </panel>
       </panel>
-      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true" title="Total amounts">
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
         <field name="totalAmountExpected"/>
         <field name="totalAmountAvailable"/>
         <field name="availableAmountWithSimulated"/>

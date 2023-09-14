@@ -217,7 +217,7 @@
         <field name="availableAmountWithSimulated"/>
         <field name="simulatedAmount"/>
         <field name="totalAmountCommitted" if-module="axelor-supplychain"
-               if="__config__.app.isApp('supplychain')"/>
+          if="__config__.app.isApp('supplychain')"/>
         <field name="realizedWithNoPo"/>
         <field name="realizedWithPo"/>
         <field name="totalAmountPaid"/>
