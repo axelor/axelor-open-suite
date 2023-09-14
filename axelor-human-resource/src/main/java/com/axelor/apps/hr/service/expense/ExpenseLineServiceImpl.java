@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,5 +84,16 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
         }
       }
     }
+  }
+
+  @Override
+  public boolean isThereOverAmountLimit(Expense expense) {
+    return expense.getGeneralExpenseLineList().stream()
+        .anyMatch(
+            line -> {
+              BigDecimal amountLimit = line.getExpenseProduct().getAmountLimit();
+              return amountLimit.compareTo(BigDecimal.ZERO) != 0
+                  && amountLimit.compareTo(line.getTotalAmount()) < 0;
+            });
   }
 }

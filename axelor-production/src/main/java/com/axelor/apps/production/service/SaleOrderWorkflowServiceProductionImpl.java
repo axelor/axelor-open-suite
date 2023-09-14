@@ -21,6 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -30,6 +31,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
@@ -63,7 +65,9 @@ public class SaleOrderWorkflowServiceProductionImpl
       SaleConfigService saleConfigService,
       SaleOrderCheckAnalyticService saleOrderCheckAnalyticService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      BirtTemplateService birtTemplateService,
+      SaleOrderService saleOrderService) {
     super(
         sequenceService,
         partnerRepo,
@@ -78,7 +82,9 @@ public class SaleOrderWorkflowServiceProductionImpl
         accountingSituationSupplychainService,
         partnerSupplychainService,
         saleConfigService,
-        saleOrderCheckAnalyticService);
+        saleOrderCheckAnalyticService,
+        birtTemplateService,
+        saleOrderService);
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;
   }

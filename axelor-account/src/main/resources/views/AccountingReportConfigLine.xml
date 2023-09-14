@@ -60,16 +60,16 @@
         <field name="ruleTypeSelect" showIf="reportTypeColumn == null"
           requiredIf="typeSelect != 4" validIf="[4,5].includes(typeSelect) || ruleTypeSelect > 0"
           readonlyIf="typeSelect == 3" selection-in="[1,2,3]"
-          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
+          onChange="action-accounting-report-config-line-group-rule-type-select-onchange"/>
         <field name="ruleTypeSelect"
           showIf="reportTypeColumn != null &amp;&amp; typeSelect != 4"
           requiredIf="![4,5].includes(typeSelect)" validIf="typeSelect >= 4 || ruleTypeSelect > 0"
           readonlyIf="typeSelect == 3"
-          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
+          onChange="action-accounting-report-config-line-group-rule-type-select-onchange"/>
         <field name="ruleTypeSelect"
           showIf="reportTypeColumn != null &amp;&amp; typeSelect == 4" requiredIf="typeSelect == 4"
           validIf="typeSelect != 4 || ruleTypeSelect > 0" selection-in="[2,3]"
-          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
+          onChange="action-accounting-report-config-line-group-rule-type-select-onchange"/>
       </panel>
       <panel name="infoPanel" colSpan="12" showIf="[1,2,4].includes(typeSelect)">
         <field name="label" requiredIf="[1,2,4].includes(typeSelect)"/>
@@ -86,6 +86,7 @@
         </panel>
         <field name="percentageBaseColumn"
           showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"
+          requiredIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"
           help="Percentages will be computed based on the given column values."/>
       </panel>
     </panel>
@@ -180,6 +181,12 @@
 
   <action-group name="action-accounting-report-config-line-group-column-onnew">
     <action name="action-accounting-report-config-line-record-column-rule"/>
+    <action name="action-accounting-report-config-line-attrs-set-active-tab"/>
+  </action-group>
+
+  <action-group
+    name="action-accounting-report-config-line-group-rule-type-select-onchange">
+    <action name="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
     <action name="action-accounting-report-config-line-attrs-set-active-tab"/>
   </action-group>
 

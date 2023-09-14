@@ -92,8 +92,8 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial =
         billOfMaterialRepository.find(request.getContext().asType(BillOfMaterial.class).getId());
 
-    List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
-    BillOfMaterialSet =
+    List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
+    billOfMaterialList =
         billOfMaterialRepository
             .all()
             .filter("self.originalBillOfMaterial = :origin")
@@ -101,10 +101,10 @@ public class BillOfMaterialController {
             .fetch();
     String message;
 
-    if (!BillOfMaterialSet.isEmpty()) {
+    if (!billOfMaterialList.isEmpty()) {
 
       String existingVersions = "";
-      for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
+      for (BillOfMaterial billOfMaterialVersion : billOfMaterialList) {
         existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
       }
       message =
@@ -170,19 +170,22 @@ public class BillOfMaterialController {
   }
 
   public void openBomTree(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-    billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      TempBomTree tempBomTree =
+          Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
 
-    TempBomTree tempBomTree =
-        Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
-
-    response.setView(
-        ActionView.define(I18n.get("Bill of materials"))
-            .model(TempBomTree.class.getName())
-            .add("tree", "bill-of-material-tree")
-            .context("_tempBomTreeId", tempBomTree.getId())
-            .map());
+      response.setView(
+          ActionView.define(I18n.get("Bill of materials"))
+              .model(TempBomTree.class.getName())
+              .add("tree", "bill-of-material-tree")
+              .context("_tempBomTreeId", tempBomTree.getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {

@@ -36,8 +36,6 @@ public interface BillOfMaterialService {
 
   static final String UNIT_DAY_CODE = "JR";
 
-  public List<BillOfMaterial> getBillOfMaterialSet(Product product);
-
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
   public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;
@@ -50,7 +48,8 @@ public interface BillOfMaterialService {
       BillOfMaterial billOfMaterial, String name, String language, String format)
       throws AxelorException;
 
-  public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom);
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom)
+      throws AxelorException;
 
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException;
 
@@ -99,4 +98,8 @@ public interface BillOfMaterialService {
   BillOfMaterial setApplicableStatus(BillOfMaterial billOfMaterial) throws AxelorException;
 
   BillOfMaterial setObsoleteStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  int getPriority(BillOfMaterial billOfMaterial);
+
+  List<BillOfMaterial> getSubBillOfMaterial(BillOfMaterial billOfMaterial);
 }

@@ -175,10 +175,14 @@
         showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12" readonly="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
-        title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
-        form-view="expense-line-form" grid-view="expense-line-grid"
-        onChange="action-expense-group-expense-line-on-change"/>
+      <panel name="generalExpenseLineListMainPanel" title="General expenses">
+        <static name="overAmountLimitText" hidden="true" colSpan="12">
+          <![CDATA[<span class='label label-warning'>At least one line of this expense exceeds the authorised amount for its type of expense.</span>]]></static>
+        <panel-related name="generalExpenseLineListPanel"
+          field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1"
+          colSpan="12" editable="true" form-view="expense-line-form" grid-view="expense-line-grid"
+          onChange="action-expense-group-expense-line-on-change,action-expense-method-check-total-amount"/>
+      </panel>
       <panel-related name="kilometricExpenseLineListPanel"
         field="kilometricExpenseLineList" title="Kilometric Allowances"
         readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
@@ -251,6 +255,7 @@
     <action name="action-expense-attrs-expense-company-cb"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-expense-method-check-total-amount"/>
   </action-group>
 
   <action-group name="action-expense-group-send">
@@ -421,6 +426,10 @@
   <action-method name="action-expense-method-update-moveDate-and-period">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController"
       method="updateMoveDateAndPeriod"/>
+  </action-method>
+
+  <action-method name="action-expense-method-check-total-amount">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkTotalAmount"/>
   </action-method>
 
   <action-attrs name="action-expense-attrs-set-total-to-refund">

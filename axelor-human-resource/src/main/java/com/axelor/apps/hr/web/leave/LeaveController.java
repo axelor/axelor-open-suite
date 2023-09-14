@@ -34,6 +34,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.leave.LeaveExportService;
 import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
@@ -41,21 +42,26 @@ import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.JpaSecurity;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.axelor.rpc.Criteria;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Singleton
 public class LeaveController {
@@ -161,8 +167,12 @@ public class LeaveController {
               .add("form", "leave-request-form")
               .param("search-filters", "leave-request-filters");
 
-      actionView.domain(
-          "(self.statusSelect = 1 OR self.statusSelect = 3 OR self.statusSelect = 4)");
+      actionView
+          .domain("(self.statusSelect IN :statusSelectList)")
+          .context(
+              "statusSelectList",
+              List.of(
+                  LeaveRequestRepository.STATUS_VALIDATED, LeaveRequestRepository.STATUS_REFUSED));
 
       if (employee == null || !employee.getHrManager()) {
         actionView
@@ -437,5 +447,48 @@ public class LeaveController {
 
     return Beans.get(HRMenuTagService.class)
         .countRecordsTag(LeaveRequest.class, LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void exportLeaveRequest(ActionRequest request, ActionResponse response) {
+    try {
+
+      Context context = request.getContext();
+      List<Long> ids = null;
+
+      if (context.get("_ids") == null) {
+        JpaSecurity security = Beans.get(JpaSecurity.class);
+        ids =
+            Criteria.parse(request)
+                .createQuery(
+                    LeaveRequest.class,
+                    security.getFilter(JpaSecurity.CAN_READ, LeaveRequest.class))
+                .select("id").fetch(0, 0).stream()
+                .map(m -> (Long) m.get("id"))
+                .collect(Collectors.toList());
+      } else {
+        List<Integer> idIntList = (List<Integer>) context.get("_ids");
+        ids = idIntList.stream().map(Long::valueOf).collect(Collectors.toList());
+      }
+
+      MetaFile metaFile = Beans.get(LeaveExportService.class).export(ids, request.getUser());
+
+      if (metaFile != null) {
+        response.setView(
+            ActionView.define(I18n.get("Export file"))
+                .model(LeaveRequest.class.getName())
+                .add(
+                    "html",
+                    "ws/rest/com.axelor.meta.db.MetaFile/"
+                        + metaFile.getId()
+                        + "/content/download?v="
+                        + metaFile.getVersion())
+                .param("download", "true")
+                .map());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
