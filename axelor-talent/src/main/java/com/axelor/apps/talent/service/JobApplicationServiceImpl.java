@@ -112,7 +112,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             .filter(
                 "self.isDirectory = false AND self.relatedId = :relatedModelId AND self.relatedModel = :relatedModelName")
             .bind("relatedModelId", jobApplication.getId())
-            .bind("relatedModelName", "com.axelor.apps.talent.db.JobApplication")
+            .bind("relatedModelName", jobApplication.getClass().getName())
             .fetch();
 
     for (DMSFile dmsFile : dmsFileList) {
