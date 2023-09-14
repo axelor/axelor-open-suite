@@ -94,7 +94,8 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
     return fileLink;
   }
 
-  protected <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
+  @Override
+  public <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
       throws AxelorException, IOException {
     String name = birtTemplate.getName();
     String format = birtTemplate.getFormat();
