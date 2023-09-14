@@ -179,8 +179,6 @@ import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeServiceImpl;
 import com.axelor.apps.account.service.journal.JournalControlService;
 import com.axelor.apps.account.service.journal.JournalControlServiceImpl;
-import com.axelor.apps.account.service.move.MoveComputeService;
-import com.axelor.apps.account.service.move.MoveComputeServiceImpl;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveControlServiceImpl;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
@@ -189,6 +187,8 @@ import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
+import com.axelor.apps.account.service.move.MoveCutOffService;
+import com.axelor.apps.account.service.move.MoveCutOffServiceImpl;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -486,7 +486,7 @@ public class AccountModule extends AxelorModule {
 
     bind(FixedAssetGenerationService.class).to(FixedAssetGenerationServiceImpl.class);
 
-    bind(MoveComputeService.class).to(MoveComputeServiceImpl.class);
+    bind(MoveCutOffService.class).to(MoveCutOffServiceImpl.class);
 
     bind(MoveCounterPartService.class).to(MoveCounterPartServiceImpl.class);
 

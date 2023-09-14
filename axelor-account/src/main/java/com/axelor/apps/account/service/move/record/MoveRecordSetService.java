@@ -60,5 +60,7 @@ public interface MoveRecordSetService {
 
   void setPfpValidatorUser(Move move);
 
+  Map<String, Object> computeTotals(Move move);
+
   void setSubrogationPartner(Move move);
 }

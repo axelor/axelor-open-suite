@@ -1,0 +1,3 @@
+---
+title: "Sale/Purchase order line : Fix wrong error being displayed when emptying the product"
+type: fix
