@@ -68,6 +68,8 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
   @Min(0)
   private Long companyId;
 
+  private Boolean toInvoice;
+
   public Long getProjectId() {
     return projectId;
   }
@@ -194,6 +196,14 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
 
   public void setCurrencyId(Long currencyId) {
     this.currencyId = currencyId;
+  }
+
+  public Boolean getToInvoice() {
+    return toInvoice;
+  }
+
+  public void setToInvoice(Boolean toInvoice) {
+    this.toInvoice = toInvoice;
   }
 
   public Project fetchProject() {

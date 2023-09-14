@@ -46,6 +46,7 @@ public class ExpenseLineRestController {
     Employee employee = requestBody.fetchEmployee();
     String comments = requestBody.getComments();
     String expenseLineType = requestBody.getExpenseLineType();
+    Boolean toInvoice = requestBody.getToInvoice();
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
@@ -58,7 +59,8 @@ public class ExpenseLineRestController {
               requestBody.fetchjustificationMetaFile(),
               comments,
               employee,
-              requestBody.fetchCurrency());
+              requestBody.fetchCurrency(),
+              toInvoice);
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
@@ -74,7 +76,8 @@ public class ExpenseLineRestController {
               comments,
               employee,
               requestBody.fetchCompany(),
-              requestBody.fetchCurrency());
+              requestBody.fetchCurrency(),
+              toInvoice);
     }
 
     return ResponseConstructor.build(
