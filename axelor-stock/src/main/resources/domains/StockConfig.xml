@@ -105,6 +105,10 @@
     <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
       min="0" nullable="true"/>
 
+    <boolean name="isMassStockMoveManaged" title="Mass move enabled"/>
+    <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Transition location (cart)"/>
+
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
 		public static final int VALUATION_TYPE_ACCOUNTING_VALUE = 2;
@@ -166,6 +170,9 @@
       <field name="displayPriceOnPrinting" on="UPDATE"/>
       <field name="displayOrderReferenceAndOrderDate" on="UPDATE"/>
       <field name="percentToleranceForWapChange" on="UPDATE"/>
+
+      <field name="isMassStockMoveManaged" on="UPDATE"/>
+      <field name="cartStockLocation" on="UPDATE"/>
     </track>
   </entity>
 
