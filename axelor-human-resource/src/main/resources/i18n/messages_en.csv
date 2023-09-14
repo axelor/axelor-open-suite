@@ -698,6 +698,7 @@
 "No timesheet to be validated by your subordinates",,,
 "Non-Executive",,,
 "None",,,
+"Not all expenses are in the same currency. You can only create or add lines to an expense report when they have the same currency.",,,
 "Not invoiced",,,
 "Note",,,
 "Number of canteen entries",,,

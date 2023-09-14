@@ -242,6 +242,7 @@
     <field name="analyticDistributionTemplate"
       expr="eval: __parent__?.employee?.analyticDistributionTemplate"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+    <field name="currency" expr="eval: __parent__?.company?.currency"/>
   </action-record>
 
   <action-record name="action-expense-on-change-tax-untaxt-amount"

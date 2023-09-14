@@ -697,6 +697,7 @@
 "No timesheet to be validated by your subordinates","Aucune f. de temps à valider par mes subordonnés",,
 "Non-Executive","Non-cadre",,
 "None","Aucun",,
+"Not all expenses are in the same currency. You can only create or add lines to an expense report when they have the same currency.","Tous les frais ne sont pas dans la même devise. Vous ne pouvez créer ou ajouter des lignes à une note de frais que lorsqu'elles ont la même devise.",,
 "Not invoiced","Non facturé",,
 "Note","Note",,
 "Number of canteen entries","Nombre de passage à la cantine",,
