@@ -146,13 +146,12 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.fillProductInformation(invoice, invoiceLine);
-    }
-
     Map<String, Object> productInformation =
         new HashMap<>(super.fillProductInformation(invoice, invoiceLine));
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return productInformation;
+    }
 
     computeSequence(invoice, invoiceLine);
 
