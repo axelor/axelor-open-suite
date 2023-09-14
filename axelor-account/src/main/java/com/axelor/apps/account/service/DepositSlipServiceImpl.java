@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
@@ -27,13 +26,16 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
@@ -44,7 +46,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +63,19 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   protected final Logger logger = LoggerFactory.getLogger(getClass());
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected PaymentVoucherRepository paymentVoucherRepository;
+  protected AccountConfigService accountConfigService;
+  protected BirtTemplateService birtTemplateService;
 
   @Inject
   public DepositSlipServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
-      PaymentVoucherRepository paymentVoucherRepository) {
+      PaymentVoucherRepository paymentVoucherRepository,
+      AccountConfigService accountConfigService,
+      BirtTemplateService birtTemplateService) {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.paymentVoucherRepository = paymentVoucherRepository;
+    this.accountConfigService = accountConfigService;
+    this.birtTemplateService = birtTemplateService;
   }
 
   @Override
@@ -134,16 +141,14 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
     deleteExistingPublishDmsFile(depositSlip, filename);
 
-    ReportSettings settings = ReportFactory.createReport(getReportName(depositSlip), filename);
-    settings.addParam("DepositSlipId", depositSlip.getId());
-    settings.addParam("BankDetailsId", bankDetails.getId());
-    settings.addParam("ChequeDate", Date.valueOf(chequeDate));
-    settings.addParam("Locale", ReportSettings.getPrintingLocale(null));
-    settings.addParam(
-        "Timezone",
-        depositSlip.getCompany() != null ? depositSlip.getCompany().getTimezone() : null);
-    settings.addFormat("pdf");
-    settings.toAttach(depositSlip).generate();
+    BirtTemplate chequeDepositSlipBirtTemplate = getChequeDepositSlipBirtTemplate(depositSlip);
+    birtTemplateService.generate(
+        chequeDepositSlipBirtTemplate,
+        depositSlip,
+        Map.of("BankDetailsId", bankDetails.getId(), "ChequeDate", chequeDate),
+        filename,
+        true,
+        chequeDepositSlipBirtTemplate.getFormat());
   }
 
   protected void deleteExistingPublishDmsFile(DepositSlip depositSlip, String filename) {
@@ -171,18 +176,25 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     return stringBuilder.toString();
   }
 
-  protected String getReportName(DepositSlip depositSlip) throws AxelorException {
-    switch (depositSlip.getPaymentModeTypeSelect()) {
-      case PaymentModeRepository.TYPE_CHEQUE:
-        return IReport.CHEQUE_DEPOSIT_SLIP;
-      case PaymentModeRepository.TYPE_CASH:
-        return IReport.CASH_DEPOSIT_SLIP;
-      default:
-        throw new AxelorException(
-            depositSlip,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            AccountExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
+  protected BirtTemplate getChequeDepositSlipBirtTemplate(DepositSlip depositSlip)
+      throws AxelorException {
+    if (depositSlip.getPaymentModeTypeSelect() != PaymentModeRepository.TYPE_CHEQUE) {
+      throw new AxelorException(
+          depositSlip,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          AccountExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
     }
+    BirtTemplate chequeDepositSlipBirtTemplate =
+        accountConfigService
+            .getAccountConfig(depositSlip.getCompany())
+            .getChequeDepositSlipBirtTemplate();
+    if (ObjectUtils.isEmpty(chequeDepositSlipBirtTemplate)
+        || ObjectUtils.isEmpty(chequeDepositSlipBirtTemplate.getTemplateMetaFile())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return chequeDepositSlipBirtTemplate;
   }
 
   @Override

@@ -200,7 +200,6 @@ public final class AccountExceptionMessage {
       "%s : You must configure shit to irrecoverable sequence for the company %s" /*)*/;
   public static final String IRRECOVERABLE_5 = /*$$(*/ "Treatment finished" /*)*/;
   public static final String IRRECOVERABLE_6 = /*$$(*/ "Anomalies generated" /*)*/;
-  public static final String IRRECOVERABLE_7 = /*$$(*/ "You must select a printing type" /*)*/;
 
   /** Journal service */
   public static final String JOURNAL_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;

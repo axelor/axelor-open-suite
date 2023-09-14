@@ -456,7 +456,11 @@
           orderBy="sequence"/>
         <field name="$isCanNew" type="boolean" hidden="true"/>
       </panel>
-
+      <panel name="printingsPanel" title="Printings" colSpan="12">
+        <field name="invoiceBirtTemplate"/>
+        <field name="purchaseInvoicesDetailsBirtTemplate"/>
+        <field name="chequeDepositSlipBirtTemplate"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
