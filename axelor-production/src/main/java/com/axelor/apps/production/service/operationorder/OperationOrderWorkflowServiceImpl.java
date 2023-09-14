@@ -174,10 +174,11 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * Pauses the given {@link OperationOrder} and sets its pausing time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void pause(OperationOrder operationOrder) {
+  public void pause(OperationOrder operationOrder) throws AxelorException {
 
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
 
@@ -198,7 +199,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
   @Override
   @Transactional
-  public void pause(OperationOrder operationOrder, User user) {
+  public void pause(OperationOrder operationOrder, User user) throws AxelorException {
 
     stopOperationOrderDuration(operationOrder, AuthUtils.getUser());
 
@@ -338,27 +339,29 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void stopOperationOrderDuration(OperationOrder operationOrder) {
+  public void stopOperationOrderDuration(OperationOrder operationOrder) throws AxelorException {
 
     stopAllOperationOrderDuration(operationOrder);
   }
 
-  protected void stopAllOperationOrderDuration(OperationOrder operationOrder) {
+  protected void stopAllOperationOrderDuration(OperationOrder operationOrder)
+      throws AxelorException {
     if (operationOrder.getOperationOrderDurationList() != null) {
-      operationOrder.getOperationOrderDurationList().stream()
-          .filter(ood -> ood.getStoppingDateTime() == null)
-          .forEach(
-              ood -> {
-                stopOperationOrderDuration(ood);
-              });
+      for (OperationOrderDuration ood : operationOrder.getOperationOrderDurationList()) {
+        if (ood.getStoppingDateTime() == null) {
+          stopOperationOrderDuration(ood);
+        }
+      }
     }
   }
 
   @Override
-  public void stopOperationOrderDuration(OperationOrder operationOrder, User user) {
+  public void stopOperationOrderDuration(OperationOrder operationOrder, User user)
+      throws AxelorException {
 
     Map<String, Object> bindingMap = new HashMap<>();
     StringBuilder operationOrderFilter =
@@ -383,7 +386,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void stopOperationOrderDuration(OperationOrderDuration duration) {
+  public void stopOperationOrderDuration(OperationOrderDuration duration) throws AxelorException {
     if (duration != null) {
       duration.setStoppedBy(AuthUtils.getUser());
       duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());
