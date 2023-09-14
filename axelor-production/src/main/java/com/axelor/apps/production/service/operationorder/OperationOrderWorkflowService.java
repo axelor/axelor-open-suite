@@ -503,7 +503,8 @@ public class OperationOrderWorkflowService {
   protected void pauseManufOrder(OperationOrder operationOrder) {
     ManufOrder manufOrder = operationOrder.getManufOrder();
     if (manufOrder.getOperationOrderList().stream()
-        .allMatch(order -> order.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY)) {
+        .allMatch(
+            order -> order.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS)) {
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_STANDBY);
     }
   }
