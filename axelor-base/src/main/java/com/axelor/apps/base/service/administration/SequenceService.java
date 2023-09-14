@@ -276,8 +276,8 @@ public class SequenceService {
         break;
 
       case LETTERS:
-        padStr = PADDING_LETTER;
         SequenceLettersTypeSelect lettersType = sequence.getSequenceLettersTypeSelect();
+        padStr = applyCase(PADDING_LETTER, lettersType);
         nextSequence = findNextLetterSequence(nextNum, lettersType);
         break;
 
@@ -308,11 +308,6 @@ public class SequenceService {
 
   protected String findNextLetterSequence(long nextNum, SequenceLettersTypeSelect lettersType)
       throws AxelorException {
-    if (lettersType == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.SEQUENCE_LETTERS_TYPE_IS_NULL));
-    }
 
     String result;
     if (nextNum <= 0) {
@@ -323,6 +318,17 @@ public class SequenceService {
       result = convertNextSeqLongToString(nextNum);
     }
 
+    return applyCase(result, lettersType);
+  }
+
+  protected static String applyCase(String result, SequenceLettersTypeSelect lettersType)
+      throws AxelorException {
+
+    if (lettersType == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.SEQUENCE_LETTERS_TYPE_IS_NULL));
+    }
     switch (lettersType) {
       case UPPERCASE:
         return result;

@@ -60,7 +60,7 @@ class TestSequenceService {
   }
 
   @ParameterizedTest
-  @CsvSource({"1,a", "27,ba", "677,baa"})
+  @CsvSource({"1,a", "27,ba", "677,baa", "17577,baaa", "456976,zzzz"})
   void findNextLetterSequence_when_lettersType_is_lowercase(long input, String expected)
       throws AxelorException {
     String actual =
