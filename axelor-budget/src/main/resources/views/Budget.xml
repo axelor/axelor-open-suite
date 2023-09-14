@@ -52,23 +52,16 @@
   </grid>
 
   <grid name="budget-lines-grid" title="Budgets" model="com.axelor.apps.budget.db.Budget"
-    edit-icon="true" canNew="false" orderBy="code">
-    <button name="showBudgetBtn" icon="fa-bars" onClick="action-budget-budget-view-budget"/>
+    edit-icon="true" canNew="false" orderBy="budgetLevel.id,code">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
-    <field name="totalAmountExpected" aggregate="sum" title="Initial"/>
-    <field name="totalAmountCommitted" aggregate="sum" title="Total amount committed"/>
-    <field name="totalFirmGap" aggregate="sum"/>
-    <field name="realizedWithNoPo"/>
-    <field name="realizedWithPo"/>
+    <field name="totalAmountExpected"/>
+    <field name="totalAmountCommitted"/>
+    <field name="totalAmountRealized"/>
     <field name="availableAmount"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="company"
-      hidden="true"/>
-    <field name="inChargeUser" hidden="true"/>
-    <field name="typeSelect" hidden="true"/>
   </grid>
 
   <form name="budget-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
@@ -84,35 +77,33 @@
       <field name="name" required="true" colSpan="4"/>
       <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
         onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
-        domain="self.parentBudgetLevel != null"/>
+        domain="self.parentBudgetLevel != null" form-view="budget-section-budget-level-form"/>
       <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
         colSpan="3" grid-view="global-budget-grid" form-view="global-budget-form"/>
       <field name="typeSelect" colSpan="3"/>
       <field name="sourceSelect" colSpan="3"/>
       <field name="budgetKey" colSpan="6" readonly="true"/>
-      <field name="category" colSpan="12"/>
-      <panel name="datesPanel" colSpan="12">
-        <field name="fromDate" colSpan="3" readonlyIf="statusSelect == 2"
-          onChange="action-budget-budget-validate-dates" required="true"/>
-        <field name="toDate" colSpan="3" readonlyIf="statusSelect == 2"
-          onChange="action-budget-budget-validate-dates" required="true"/>
-        <field name="company" hidden="true"/>
-        <field name="company.currency" hidden="true"/>
-      </panel>
+      <field name="category" colSpan="4"/>
+      <field name="fromDate" colSpan="4" readonlyIf="statusSelect == 2"
+        onChange="action-budget-budget-validate-dates" required="true"/>
+      <field name="toDate" colSpan="4" readonlyIf="statusSelect == 2"
+        onChange="action-budget-budget-validate-dates" required="true"/>
+      <field name="company" hidden="true"/>
+      <field name="company.currency" hidden="true"/>
     </panel>
 
     <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" title="Initial"
       itemSpan="3">
       <field name="totalAmountExpected"/>
+      <field name="availableAmount"/>
+      <field name="availableAmountWithSimulated"/>
+      <field name="simulatedAmount"/>
       <field name="totalAmountCommitted" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
       <field name="realizedWithNoPo"/>
       <field name="realizedWithPo"/>
-      <field name="simulatedAmount"/>
-      <field name="availableAmount"/>
-      <field name="availableAmountWithSimulated"/>
-      <field name="totalFirmGap"/>
       <field name="totalAmountPaid"/>
+      <field name="totalFirmGap"/>
       <field name="totalAmountRealized" hidden="true"/>
       <separator colSpan="12"/>
     </panel>
@@ -168,20 +159,18 @@
         <field name="code" required="true" colSpan="2"
           onChange="budget-action-method-budget-manage-budget-key"/>
         <field name="name" required="true" colSpan="4"/>
-        <field name="budgetLevel"
+        <field name="budgetLevel" form-view="budget-section-budget-level-form"
           onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
           readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
           domain="self.parentBudgetLevel != null AND self.parentBudgetLevel.globalBudget.id = :globalId"/>
         <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
           colSpan="3" grid-view="global-budget-grid" form-view="global-budget-form"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
-        <field name="category" colSpan="12"/>
-        <panel name="datesPanel" colSpan="12">
-          <field name="fromDate" colSpan="6" readonlyIf="statusSelect == 2"
-            onChange="action-budget-budget-validate-dates" required="true"/>
-          <field name="toDate" colSpan="6" readonlyIf="statusSelect == 2"
-            onChange="action-budget-budget-validate-dates" required="true"/>
-        </panel>
+        <field name="category" colSpan="4"/>
+        <field name="fromDate" colSpan="4" readonlyIf="statusSelect == 2"
+          onChange="action-budget-budget-validate-dates" required="true"/>
+        <field name="toDate" colSpan="4" readonlyIf="statusSelect == 2"
+          onChange="action-budget-budget-validate-dates" required="true"/>
         <field name="$globalId" hidden="true"/>
         <field name="statusSelect" hidden="true"/>
         <field name="budgetLevel.parentBudgetLevel" hidden="true"/>
@@ -221,19 +210,19 @@
         <separator colSpan="12"/>
       </panel>
 
-      <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12"
+      <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" itemSpan="3"
         title="Total amounts">
-        <field name="totalAmountExpected" colSpan="3" title="Initial"/>
+        <field name="totalAmountExpected"/>
+        <field name="availableAmount"/>
+        <field name="availableAmountWithSimulated"/>
+        <field name="simulatedAmount"/>
         <field name="totalAmountCommitted" if-module="axelor-supplychain"
-          if="__config__.app.isApp('supplychain')" colSpan="3" title="Total amount committed"/>
-        <field name="totalFirmGap" colSpan="3"/>
-        <field name="realizedWithNoPo" colSpan="3"/>
-        <field name="realizedWithPo" colSpan="3"/>
-        <field name="availableAmountWithSimulated" colSpan="3"/>
-        <field name="simulatedAmount" colSpan="3"/>
-        <field name="availableAmount" colSpan="3"/>
-        <field name="totalAmountRealized" colSpan="3" hidden="true"/>
-        <field name="totalAmountPaid" colSpan="3"/>
+          if="__config__.app.isApp('supplychain')"/>
+        <field name="realizedWithNoPo"/>
+        <field name="realizedWithPo"/>
+        <field name="totalAmountPaid"/>
+        <field name="totalFirmGap"/>
+        <field name="totalAmountRealized" hidden="true"/>
         <separator colSpan="12"/>
       </panel>
 
@@ -383,12 +372,6 @@
     model="com.axelor.apps.budget.db.Budget">
     <field name="toDate" expr="eval: null"/>
   </action-record>
-
-  <action-view name="action-budget-budget-view-budget" title="Budgets"
-    model="com.axelor.apps.budget.db.Budget">
-    <view type="form" name="budget-included-form"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
 
   <action-view name="action-budget-budget-view-budget-template" title="Budgets"
     model="com.axelor.apps.budget.db.Budget">

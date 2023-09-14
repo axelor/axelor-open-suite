@@ -10,13 +10,11 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="totalAmountExpected"/>
-    <field name="totalAmountCommitted"/>
-    <field name="totalFirmGap"/>
-    <field name="realizedWithNoPo" width="200"/>
-    <field name="realizedWithPo" width="200"/>
     <field name="totalAmountAvailable"/>
-    <field name="simulatedAmount"/>
-    <field name="availableAmountWithSimulated"/>
+    <field name="totalAmountCommitted"/>
+    <field name="realizedWithNoPo"/>
+    <field name="realizedWithPo"/>
+    <field name="totalFirmGap"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -113,17 +111,18 @@
             showIf="statusSelect == 2 &amp;&amp; simulatedAmount != 0"/>
         </panel>
       </panel>
-      <panel name="totalAmountPanel" colSpan="12" readonly="true" title="Total amounts">
-        <field name="totalAmountExpected" colSpan="3"/>
-        <field name="totalAmountCommitted" colSpan="3"/>
-        <field name="realizedWithNoPo" colSpan="3"/>
-        <field name="realizedWithPo" colSpan="3"/>
-        <field name="simulatedAmount" colSpan="3"/>
-        <field name="totalAmountAvailable" colSpan="3"/>
-        <field name="availableAmountWithSimulated" colSpan="3" showIf="id"/>
-        <field name="totalFirmGap" colSpan="3"/>
-        <field name="totalAmountRealized" colSpan="3" hidden="true"/>
-        <field name="totalAmountPaid" colSpan="3"/>
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
+        <field name="totalAmountExpected"/>
+        <field name="totalAmountAvailable"/>
+        <field name="availableAmountWithSimulated"/>
+        <field name="simulatedAmount"/>
+        <field name="totalAmountCommitted"/>
+        <field name="realizedWithNoPo"/>
+        <field name="realizedWithPo"/>
+        <field name="totalAmountPaid"/>
+        <field name="totalFirmGap"/>
+        <field name="totalAmountRealized" hidden="true"/>
       </panel>
     </panel>
 

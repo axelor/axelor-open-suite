@@ -24,7 +24,7 @@
       <field name="fromDate" required="true"/>
       <field name="toDate" required="true"/>
       <field name="budgetScenario" showIf="isScenario" requiredIf="isScenario"
-        domain="self.statusSelect == 1"/>
+        domain="self.statusSelect = 1"/>
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
       showIf="code &amp;&amp; name &amp;&amp; company &amp;&amp; budgetTypeSelect &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; ((isScenario &amp;&amp; budgetScenario) || !isScenario)">

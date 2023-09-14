@@ -10,17 +10,15 @@
     <field name="levelTypeSelect"/>
     <field name="parentBudgetLevel"/>
     <field name="totalAmountExpected"/>
-    <field name="totalAmountCommitted"/>
-    <field name="totalFirmGap"/>
-    <field name="realizedWithNoPo" width="200"/>
-    <field name="realizedWithPo" width="200"/>
     <field name="totalAmountAvailable"/>
+    <field name="totalAmountCommitted"/>
+    <field name="realizedWithNoPo"/>
+    <field name="realizedWithPo"/>
+    <field name="totalFirmGap"/>
     <field name="statusSelect"/>
     <field name="budgetManager" width="150"/>
     <field name="project" if="__config__.app.isApp('project')"/>
     <field name="versionNumber" width="150"/>
-    <field name="simulatedAmount"/>
-    <field name="availableAmountWithSimulated"/>
   </grid>
 
   <!--Group Grid -->
@@ -32,14 +30,11 @@
     <field name="name"/>
     <field name="globalBudget"/>
     <field name="totalAmountExpected"/>
+    <field name="totalAmountAvailable"/>
     <field name="totalAmountCommitted"/>
-    <field name="totalFirmGap"/>
     <field name="realizedWithNoPo"/>
     <field name="realizedWithPo"/>
-    <field name="totalAmountAvailable" title="Available amount"/>
-    <field name="typeSelect"/>
-    <field name="simulatedAmount"/>
-    <field name="availableAmountWithSimulated"/>
+    <field name="totalFirmGap"/>
   </grid>
 
   <!--Section Grid -->
@@ -51,14 +46,11 @@
     <field name="name"/>
     <field name="parentBudgetLevel"/>
     <field name="totalAmountExpected"/>
+    <field name="totalAmountAvailable"/>
     <field name="totalAmountCommitted"/>
-    <field name="totalFirmGap"/>
     <field name="realizedWithNoPo"/>
     <field name="realizedWithPo"/>
-    <field name="totalAmountAvailable"/>
-    <field name="typeSelect"/>
-    <field name="simulatedAmount"/>
-    <field name="availableAmountWithSimulated"/>
+    <field name="totalFirmGap"/>
   </grid>
 
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
@@ -122,17 +114,18 @@
           onClick="save,action-budget-budget-level-method-set-dates"
           readonlyIf="code == null || name == null || parentBudgetLevel == null || globalBudget.statusSelect == 2"/>
       </panel>
-      <panel name="totalAmountPanel" colSpan="12" readonly="true" title="Total amounts">
-        <field name="totalAmountExpected" colSpan="3"/>
-        <field name="totalAmountCommitted" colSpan="3"/>
-        <field name="realizedWithNoPo" colSpan="3"/>
-        <field name="realizedWithPo" colSpan="3"/>
-        <field name="simulatedAmount" colSpan="3"/>
-        <field name="totalAmountAvailable" colSpan="3"/>
-        <field name="availableAmountWithSimulated" colSpan="3" showIf="id"/>
-        <field name="totalFirmGap" colSpan="3"/>
-        <field name="totalAmountRealized" colSpan="3" hidden="true"/>
-        <field name="totalAmountPaid" colSpan="3"/>
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
+        <field name="totalAmountExpected"/>
+        <field name="totalAmountAvailable"/>
+        <field name="availableAmountWithSimulated"/>
+        <field name="simulatedAmount"/>
+        <field name="totalAmountCommitted"/>
+        <field name="realizedWithNoPo"/>
+        <field name="realizedWithPo"/>
+        <field name="totalAmountPaid"/>
+        <field name="totalFirmGap"/>
+        <field name="totalAmountRealized" hidden="true"/>
       </panel>
 
     </panel>
@@ -195,17 +188,18 @@
           onClick="save,action-budget-budget-level-method-set-dates"
           readonlyIf="code == null || name == null || parentBudgetLevel == null || parentBudgetLevel.globalBudget == null || parentBudgetLevel.globalBudget.statusSelect &gt;= 1"/>
       </panel>
-      <panel name="totalAmountPanel" colSpan="12" readonly="true" title="Total amounts">
-        <field name="totalAmountExpected" colSpan="3"/>
-        <field name="totalAmountCommitted" colSpan="3"/>
-        <field name="realizedWithNoPo" colSpan="3"/>
-        <field name="realizedWithPo" colSpan="3"/>
-        <field name="simulatedAmount" colSpan="3"/>
-        <field name="totalAmountAvailable" colSpan="3"/>
-        <field name="availableAmountWithSimulated" colSpan="3" showIf="id"/>
-        <field name="totalFirmGap" colSpan="3"/>
-        <field name="totalAmountRealized" colSpan="3" hidden="true"/>
-        <field name="totalAmountPaid" colSpan="3"/>
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
+        <field name="totalAmountExpected"/>
+        <field name="totalAmountAvailable"/>
+        <field name="availableAmountWithSimulated"/>
+        <field name="simulatedAmount"/>
+        <field name="totalAmountCommitted"/>
+        <field name="realizedWithNoPo"/>
+        <field name="realizedWithPo"/>
+        <field name="totalAmountPaid"/>
+        <field name="totalFirmGap"/>
+        <field name="totalAmountRealized" hidden="true"/>
       </panel>
 
     </panel>
@@ -251,17 +245,18 @@
           onClick="save,action-budget-budget-level-method-set-dates"
           readonlyIf="code == null || name == null || parentBudgetLevel == null || globalBudget.statusSelect &gt;= 1"/>
       </panel>
-      <panel name="totalAmountPanel" colSpan="12" readonly="true" title="Total amounts">
-        <field name="totalAmountExpected" colSpan="3"/>
-        <field name="totalAmountCommitted" colSpan="3"/>
-        <field name="realizedWithNoPo" colSpan="3"/>
-        <field name="realizedWithPo" colSpan="3"/>
-        <field name="simulatedAmount" colSpan="3"/>
-        <field name="totalAmountAvailable" colSpan="3"/>
-        <field name="availableAmountWithSimulated" colSpan="3" showIf="id"/>
-        <field name="totalFirmGap" colSpan="3"/>
-        <field name="totalAmountRealized" colSpan="3" hidden="true"/>
-        <field name="totalAmountPaid" colSpan="3"/>
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
+        <field name="totalAmountExpected"/>
+        <field name="totalAmountAvailable"/>
+        <field name="availableAmountWithSimulated"/>
+        <field name="simulatedAmount"/>
+        <field name="totalAmountCommitted"/>
+        <field name="realizedWithNoPo"/>
+        <field name="realizedWithPo"/>
+        <field name="totalAmountPaid"/>
+        <field name="totalFirmGap"/>
+        <field name="totalAmountRealized" hidden="true"/>
       </panel>
     </panel>
     <panel name="groupOrderLineBtnPanel"
@@ -326,22 +321,24 @@
           onClick="save,action-budget-budget-level-method-set-dates"
           readonlyIf="code == null || name == null || parentBudgetLevel == null || parentBudgetLevel.globalBudget == null || parentBudgetLevel.globalBudget.statusSelect == 2 "/>
       </panel>
-      <panel name="totalAmountPanel" colSpan="12" readonly="true" title="Total amounts">
-        <field name="totalAmountExpected" colSpan="3"/>
-        <field name="totalAmountCommitted" colSpan="3"/>
-        <field name="totalFirmGap" colSpan="3"/>
-        <field name="realizedWithNoPo" colSpan="3"/>
-        <field name="realizedWithPo" colSpan="3"/>
-        <field name="totalAmountAvailable" colSpan="3"/>
-        <field name="simulatedAmount" colSpan="3"/>
-        <field name="availableAmountWithSimulated" colSpan="3" showIf="id"/>
-        <field name="totalAmountRealized" colSpan="3" hidden="true"/>
-        <field name="totalAmountPaid" colSpan="3"/>
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
+        <field name="totalAmountExpected"/>
+        <field name="totalAmountAvailable"/>
+        <field name="availableAmountWithSimulated"/>
+        <field name="simulatedAmount"/>
+        <field name="totalAmountCommitted"/>
+        <field name="realizedWithNoPo"/>
+        <field name="realizedWithPo"/>
+        <field name="totalAmountPaid"/>
+        <field name="totalFirmGap"/>
+        <field name="totalAmountRealized" hidden="true"/>
       </panel>
     </panel>
 
     <panel name="sectionOrderLineBtnPanel" colSpan="3" stacked="true"
-      hideIf="$popup() || parentBudgetLevel == null" sidebar="true">
+      hideIf="$popup() || parentBudgetLevel == null || parentBudgetLevel.globalBudget == null || parentBudgetLevel.globalBudget.statusSelect == 0"
+      sidebar="true">
 
       <button name="showSectionOrderLineBtn"
         showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"
