@@ -16,6 +16,7 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -212,7 +213,17 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     if (currency != null) {
       expenseLine.setCurrency(currency);
     } else {
-      expenseLine.setCurrency(AuthUtils.getUser().getActiveCompany().getCurrency());
+      setActiveCompanyCurrency(expenseLine);
+    }
+  }
+
+  protected void setActiveCompanyCurrency(ExpenseLine expenseLine) {
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      Company company = user.getActiveCompany();
+      if (company != null) {
+        expenseLine.setCurrency(company.getCurrency());
+      }
     }
   }
 }
