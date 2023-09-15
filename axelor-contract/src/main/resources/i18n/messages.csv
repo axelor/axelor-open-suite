@@ -220,6 +220,7 @@
 "The product can't be empty.",,,
 "There is an error in the formula.",,,
 "There is no contract associated with this version.",,,
+"This period is used to compute the next revaluation date.",,,
 "To",,,
 "To closed",,,
 "To revaluate",,,

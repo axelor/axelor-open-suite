@@ -391,6 +391,7 @@ public class MoveTemplateService {
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
 
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
             moveLineToolService.setDecimals(moveLine, move);
 

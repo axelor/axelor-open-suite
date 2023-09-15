@@ -57,7 +57,8 @@ public class ExpenseLineRestController {
               requestBody.getTotalTax(),
               requestBody.fetchjustificationMetaFile(),
               comments,
-              employee);
+              employee,
+              requestBody.fetchCurrency());
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
@@ -72,7 +73,8 @@ public class ExpenseLineRestController {
               requestBody.getToCity(),
               comments,
               employee,
-              requestBody.fetchCompany());
+              requestBody.fetchCompany(),
+              requestBody.fetchCurrency());
     }
 
     return ResponseConstructor.build(
