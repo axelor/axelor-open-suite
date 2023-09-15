@@ -44,7 +44,6 @@ public class SequenceController {
 
   public void computeFullName(ActionRequest request, ActionResponse response) {
     Sequence sequence = request.getContext().asType(Sequence.class);
-
     String fullName = Beans.get(SequenceService.class).computeFullName(sequence);
     response.setValue("fullName", fullName);
   }
@@ -68,7 +67,6 @@ public class SequenceController {
   public void updateSequenceVersionsYearly(ActionRequest request, ActionResponse response) {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
-
       SequenceService sequenceService = Beans.get(SequenceService.class);
       LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(sequence.getCompany());
       LocalDate endOfDate = todayDate.withDayOfYear(todayDate.lengthOfYear());
