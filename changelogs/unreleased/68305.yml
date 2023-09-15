@@ -1,0 +1,3 @@
+---
+title: "Move template : Fix invoice terms not being created on a move template generation by amount"
+type: fix
