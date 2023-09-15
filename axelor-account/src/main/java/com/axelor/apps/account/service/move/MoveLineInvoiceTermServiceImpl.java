@@ -74,13 +74,13 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
   @Override
   public void generateDefaultInvoiceTerm(
-      Move move, MoveLine moveLine, boolean canCreateHolbackMoveLine) throws AxelorException {
-    this.generateDefaultInvoiceTerm(move, moveLine, null, canCreateHolbackMoveLine);
+      Move move, MoveLine moveLine, boolean canCreateHoldbackMoveLine) throws AxelorException {
+    this.generateDefaultInvoiceTerm(move, moveLine, null, canCreateHoldbackMoveLine);
   }
 
   @Override
   public void generateDefaultInvoiceTerm(
-      Move move, MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
+      Move move, MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHoldbackMoveLine)
       throws AxelorException {
     if (move == null
         || moveLine == null
@@ -149,7 +149,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 holdbackAccount,
                 singleTermDueDate,
                 total,
-                canCreateHolbackMoveLine);
+                canCreateHoldbackMoveLine);
       } else if (!paymentConditionLine.getIsHoldback()) {
         this.computeInvoiceTerm(moveLine, move, paymentConditionLine, singleTermDueDate, total);
       }
@@ -209,7 +209,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       Account holdbackAccount,
       LocalDate singleTermDueDate,
       BigDecimal total,
-      boolean canCreateHolbackMoveLine)
+      boolean canCreateHoldbackMoveLine)
       throws AxelorException {
     MoveLine holdbackMoveLine = null;
 
@@ -228,7 +228,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 RoundingMode.HALF_UP);
 
     if (holdbackMoveLine == null) {
-      if (!canCreateHolbackMoveLine) {
+      if (!canCreateHoldbackMoveLine) {
         moveLine.clearInvoiceTermList();
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,

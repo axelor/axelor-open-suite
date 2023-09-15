@@ -25,10 +25,10 @@ import java.time.LocalDate;
 
 public interface MoveLineInvoiceTermService {
   void generateDefaultInvoiceTerm(
-      Move move, MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
+      Move move, MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHoldbackMoveLine)
       throws AxelorException;
 
-  void generateDefaultInvoiceTerm(Move move, MoveLine moveLine, boolean canCreateHolbackMoveLine)
+  void generateDefaultInvoiceTerm(Move move, MoveLine moveLine, boolean canCreateHoldbackMoveLine)
       throws AxelorException;
 
   void updateInvoiceTermsParentFields(MoveLine moveLine);
