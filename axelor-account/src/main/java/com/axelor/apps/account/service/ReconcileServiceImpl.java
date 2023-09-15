@@ -573,7 +573,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     if (amount.compareTo(otherMoveLine.getCredit().max(otherMoveLine.getDebit())) == 0
         && total.compareTo(otherMoveLine.getCurrencyAmount()) != 0) {
-      total = otherMoveLine.getCurrencyAmount();
+      total = otherMoveLine.getCurrencyAmount().abs();
     }
 
     return total;
