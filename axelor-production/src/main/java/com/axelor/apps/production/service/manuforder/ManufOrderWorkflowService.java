@@ -60,4 +60,6 @@ public interface ManufOrderWorkflowService {
       throws AxelorException;
 
   void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException;
+
+  String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;
 }
