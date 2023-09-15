@@ -105,23 +105,9 @@ public class PricingServiceImpl implements PricingService {
       ProductCategory productCategory,
       String modelName,
       Pricing pricing) {
-    LOG.debug("Fetching pricings");
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
-
-    filter.append("self.startDate <= :todayDate ");
-    filter.append("AND (self.endDate > :todayDate OR self.endDate = NULL) ");
-    bindings.put("todayDate", appBaseService.getTodayDate(company));
-
-    if (company != null) {
-      filter.append("AND self.company = :company ");
-      bindings.put("company", company);
-    }
-
-    if (modelName != null) {
-      filter.append("AND self.concernedModel.name = :modelName ");
-      bindings.put("modelName", modelName);
-    }
+    pricingFetchFilter(filter, bindings, company, modelName);
 
     if (pricing != null) {
       filter.append("AND self.linkedPricing = :linkedPricing ");
@@ -140,9 +126,20 @@ public class PricingServiceImpl implements PricingService {
   @Override
   public List<Pricing> getAllPricings(
       Company company, Product product, ProductCategory productCategory, String modelName) {
-    LOG.debug("Fetching pricings");
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
+    pricingFetchFilter(filter, bindings, company, modelName);
+
+    filter.append("AND (self.archived = false OR self.archived is null) ");
+
+    appendProductFilter(product, productCategory, filter, bindings);
+    LOG.debug("Filtering pricing with {}", filter);
+    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+  }
+
+  protected void pricingFetchFilter(
+      StringBuilder filter, Map<String, Object> bindings, Company company, String modelName) {
+    LOG.debug("Fetching pricings");
 
     filter.append("self.startDate <= :todayDate ");
     filter.append("AND (self.endDate > :todayDate OR self.endDate = NULL) ");
@@ -157,12 +154,6 @@ public class PricingServiceImpl implements PricingService {
       filter.append("AND self.concernedModel.name = :modelName ");
       bindings.put("modelName", modelName);
     }
-
-    filter.append("AND (self.archived = false OR self.archived is null) ");
-
-    appendProductFilter(product, productCategory, filter, bindings);
-    LOG.debug("Filtering pricing with {}", filter);
-    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
   }
 
   protected void appendProductFilter(
