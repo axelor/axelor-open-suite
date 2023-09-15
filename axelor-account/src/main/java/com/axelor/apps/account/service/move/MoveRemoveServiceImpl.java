@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
@@ -31,12 +33,14 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.service.ArchivingToolService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +57,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   protected AccountingSituationService accountingSituationService;
 
   protected AccountCustomerService accountCustomerService;
+  protected DebtRecoveryRepository debtRecoveryRepository;
 
   @Inject
   public MoveRemoveServiceImpl(
@@ -61,13 +66,15 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
       ArchivingToolService archivingToolService,
       ReconcileService reconcileService,
       AccountingSituationService accountingSituationService,
-      AccountCustomerService accountCustomerService) {
+      AccountCustomerService accountCustomerService,
+      DebtRecoveryRepository debtRecoveryRepository) {
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
     this.archivingToolService = archivingToolService;
     this.reconcileService = reconcileService;
     this.accountingSituationService = accountingSituationService;
     this.accountCustomerService = accountCustomerService;
+    this.debtRecoveryRepository = debtRecoveryRepository;
   }
 
   @Override
@@ -235,5 +242,58 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   @Transactional
   public void deleteMove(Move move) {
     moveRepo.remove(move);
+  }
+
+  @Override
+  public void checkDebtRecovery(Move move, MoveLine moveLine) throws AxelorException {
+    String errorMessage = "";
+    Map<String, String> objectsLinkToMoveMap =
+        archivingToolService.getObjectLinkTo(move, move.getId());
+    String moveModelError = null;
+
+    for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
+      String modelName = I18n.get(archivingToolService.getModelTitle(entry.getKey()));
+      if (!entry.getKey().equals("MoveLine")) {
+        if (moveModelError == null) {
+          moveModelError = modelName;
+        } else {
+          moveModelError += ", " + modelName;
+        }
+      }
+    }
+
+    if (hasDebtRecovery(move, moveLine)) {
+      errorMessage =
+          String.format(
+              I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+              move.getReference(),
+              moveModelError);
+    }
+
+    if (errorMessage != null && !errorMessage.isEmpty()) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
+    }
+  }
+
+  protected boolean hasDebtRecovery(Move move, MoveLine moveLine) {
+    String query = "self.partner = :partner AND self.company = :company";
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("partner", move.getPartner());
+    params.put("company", move.getCompany());
+
+    List<DebtRecovery> debtRecoveryList =
+        debtRecoveryRepository.all().filter(query).bind(params).fetch();
+
+    return ObjectUtils.notEmpty(moveLine.getInvoiceTermList())
+        && moveLine.getInvoiceTermList().stream()
+            .anyMatch(
+                invoiceTerm ->
+                    debtRecoveryList.stream()
+                        .anyMatch(
+                            debtRecovery ->
+                                debtRecovery
+                                    .getInvoiceTermDebtRecoverySet()
+                                    .contains(invoiceTerm)));
   }
 }

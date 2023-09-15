@@ -20,6 +20,7 @@ package com.axelor.apps.budget.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -54,6 +55,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
       ReconcileService reconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
+      DebtRecoveryRepository debtRecoveryRepository,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
       BudgetService budgetService) {
     super(
@@ -63,6 +65,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
         reconcileService,
         accountingSituationService,
         accountCustomerService,
+        debtRecoveryRepository,
         bankStatementLineAFB120Repository);
     this.budgetService = budgetService;
   }

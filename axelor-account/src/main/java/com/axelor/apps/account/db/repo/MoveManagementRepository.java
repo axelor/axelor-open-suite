@@ -200,6 +200,8 @@ public class MoveManagementRepository extends MoveRepository {
                   I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE));
             }
           }
+
+          Beans.get(MoveRemoveService.class).checkDebtRecovery(move, moveLine);
         }
       }
 

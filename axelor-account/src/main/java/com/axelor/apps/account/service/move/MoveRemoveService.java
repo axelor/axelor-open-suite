@@ -19,6 +19,8 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.AxelorException;
 import java.util.List;
 
 public interface MoveRemoveService {
@@ -32,4 +34,6 @@ public interface MoveRemoveService {
   void deleteMove(Move move) throws Exception;
 
   void checkMoveBeforeRemove(Move move) throws Exception;
+
+  void checkDebtRecovery(Move move, MoveLine moveLine) throws AxelorException;
 }

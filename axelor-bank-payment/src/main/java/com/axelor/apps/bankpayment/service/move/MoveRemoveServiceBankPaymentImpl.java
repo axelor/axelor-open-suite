@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.move;
 
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -50,6 +51,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
       ReconcileService reconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
+      DebtRecoveryRepository debtRecoveryRepository,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
     super(
         moveRepo,
@@ -57,7 +59,8 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
         archivingToolService,
         reconcileService,
         accountingSituationService,
-        accountCustomerService);
+        accountCustomerService,
+        debtRecoveryRepository);
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
   }
 
