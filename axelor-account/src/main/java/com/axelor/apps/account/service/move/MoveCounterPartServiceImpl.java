@@ -113,6 +113,11 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     moveLine.setDueDate(move.getOriginDate());
     moveLine.setCurrencyAmount(currencyAmount);
     moveLine.setDescription(move.getDescription());
+    moveLine.setCurrencyRate(
+        move.getMoveLineList().stream()
+            .map(MoveLine::getCurrencyRate)
+            .findAny()
+            .orElse(BigDecimal.ONE));
 
     return moveLine;
   }
