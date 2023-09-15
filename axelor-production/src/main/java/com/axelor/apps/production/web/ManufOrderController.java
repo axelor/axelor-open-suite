@@ -228,25 +228,8 @@ public class ManufOrderController {
                 .fetch();
       }
 
-      String message = "";
+      String message = Beans.get(ManufOrderWorkflowService.class).planManufOrders(manufOrders);
 
-      for (ManufOrder manufOrder : manufOrders) {
-        Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
-        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-          message = manufOrder.getMoCommentFromSaleOrder();
-        }
-
-        if (manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()) {
-          Beans.get(ManufOrderWorkflowService.class).createPurchaseOrder(manufOrder);
-        }
-
-        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
-          message =
-              message
-                  .concat(System.lineSeparator())
-                  .concat(manufOrder.getMoCommentFromSaleOrderLine());
-        }
-      }
       response.setReload(true);
       if (!message.isEmpty()) {
         message =

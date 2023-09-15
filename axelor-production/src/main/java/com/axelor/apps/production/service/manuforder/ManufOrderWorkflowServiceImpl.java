@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -68,6 +67,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -85,6 +85,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ProductCompanyService productCompanyService;
   protected ProductionConfigRepository productionConfigRepo;
   protected PurchaseOrderService purchaseOrderService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -94,7 +95,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ManufOrderRepository manufOrderRepo,
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      AppBaseService appBaseService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -102,6 +104,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.productCompanyService = productCompanyService;
     this.productionConfigRepo = productionConfigRepo;
     this.purchaseOrderService = purchaseOrderService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -583,28 +586,40 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
     PurchaseOrderLine purchaseOrderLine;
-    BigDecimal quantity = BigDecimal.ONE;
-    Unit startUnit =
-        Beans.get(UnitRepository.class)
-            .all()
-            .filter("self.name = 'Hour' AND self.unitTypeSelect = :unitType")
-            .bind("unitType", UnitRepository.UNIT_TYPE_TIME)
-            .fetchOne();
+    BigDecimal quantity;
+    Unit startUnit = appBaseService.getAppBase().getUnitHours();
+
+    if (startUnit == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT));
+    }
 
     for (ProdHumanResource humanResource : operationOrder.getProdHumanResourceList()) {
 
       Product product = humanResource.getProduct();
       Unit purchaseUnit = product.getPurchasesUnit();
+      Unit stockUnit = product.getUnit();
 
-      if (purchaseUnit != null) {
-        quantity =
-            unitConversionService.convert(
-                startUnit,
-                purchaseUnit,
-                new BigDecimal(humanResource.getDuration() / 3600),
-                0,
-                humanResource.getProduct());
+      Unit endUnit = (purchaseUnit != null) ? purchaseUnit : stockUnit;
+
+      if (endUnit == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_END_UNIT));
       }
+      final int COMPUTATION_SCALE = 20;
+      quantity =
+          unitConversionService.convert(
+              startUnit,
+              endUnit,
+              new BigDecimal(humanResource.getDuration())
+                  .divide(BigDecimal.valueOf(3600), COMPUTATION_SCALE, RoundingMode.HALF_UP),
+              appBaseService.getNbDecimalDigitForQty(),
+              humanResource.getProduct());
+      // have to force the scale as the conversion service will not round if the start unit and the
+      // end unit are equals.
+      quantity = quantity.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
 
       purchaseOrderLine =
           purchaseOrderLineService.createPurchaseOrderLine(
@@ -707,5 +722,30 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     manufOrder.setPurchaseOrder(purchaseOrder);
 
     manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException {
+
+    StringBuilder messageBuilder = new StringBuilder();
+
+    for (ManufOrder manufOrder : manufOrderList) {
+      this.plan(manufOrder);
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+        messageBuilder.append(manufOrder.getMoCommentFromSaleOrder());
+      }
+
+      if (Boolean.TRUE.equals(manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning())) {
+        this.createPurchaseOrder(manufOrder);
+      }
+
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+        messageBuilder
+            .append(System.lineSeparator())
+            .append(manufOrder.getMoCommentFromSaleOrderLine());
+      }
+    }
+    return messageBuilder.toString();
   }
 }
