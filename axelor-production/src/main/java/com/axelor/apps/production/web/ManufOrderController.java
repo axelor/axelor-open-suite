@@ -229,7 +229,7 @@ public class ManufOrderController {
                 .fetch();
       }
 
-      String message = Beans.get(ManufOrderWorkflowService.class).planManufOrder(manufOrders);
+      String message = Beans.get(ManufOrderWorkflowService.class).planManufOrders(manufOrders);
 
       response.setReload(true);
       if (!message.isEmpty()) {

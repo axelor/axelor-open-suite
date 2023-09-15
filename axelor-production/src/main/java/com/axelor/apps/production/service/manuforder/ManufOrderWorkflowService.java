@@ -70,5 +70,5 @@ public interface ManufOrderWorkflowService {
    */
   void updatePlannedDates(ManufOrder manufOrder);
 
-  public String planManufOrder(List<ManufOrder> manufOrderList) throws AxelorException;
+  String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;
 }

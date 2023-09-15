@@ -604,7 +604,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
     PurchaseOrderLine purchaseOrderLine;
-    BigDecimal quantity = BigDecimal.ONE;
+    BigDecimal quantity;
     Unit startUnit = appBaseService.getAppBase().getUnitHours();
 
     if (ObjectUtils.isEmpty(startUnit)) {
@@ -628,14 +628,18 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             TraceBackRepository.CATEGORY_NO_VALUE,
             I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_END_UNIT));
       }
+      final int COMPUTATION_SCALE = 20;
       quantity =
           unitConversionService.convert(
               startUnit,
               endUnit,
               new BigDecimal(workCenter.getHrDurationPerCycle())
-                  .divide(BigDecimal.valueOf(3600), 10, RoundingMode.HALF_UP),
-              2,
+                  .divide(BigDecimal.valueOf(3600), COMPUTATION_SCALE, RoundingMode.HALF_UP),
+              appBaseService.getNbDecimalDigitForQty(),
               product);
+      // have to force the scale as the conversion service will not round if the start unit and the
+      // end unit are equals.
+      quantity = quantity.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
 
       purchaseOrderLine =
           purchaseOrderLineService.createPurchaseOrderLine(
@@ -742,7 +746,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public String planManufOrder(List<ManufOrder> manufOrderList) throws AxelorException {
+  public String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException {
 
     StringBuilder messageBuilder = new StringBuilder();
 
