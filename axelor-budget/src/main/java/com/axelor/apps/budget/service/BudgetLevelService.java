@@ -74,10 +74,8 @@ public interface BudgetLevelService {
    * Find the budget level in database then set their dates and save it
    *
    * @param budgetLevel, fromDate, toDate
-   * @throws AxelorException
    */
-  public void updateBudgetLevelDates(BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException;
+  public void updateBudgetLevelDates(BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate);
 
   /**
    * This function set current BudgetLevel to the new project if budget in project is null.

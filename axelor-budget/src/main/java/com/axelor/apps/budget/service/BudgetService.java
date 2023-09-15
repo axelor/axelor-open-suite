@@ -57,8 +57,7 @@ public interface BudgetService {
    * @param budget, fromDate, toDate
    * @throws AxelorException
    */
-  public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException;
+  public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate);
 
   /**
    * Compute all firm gap in budget lines and set the total firm gap on budget then save it

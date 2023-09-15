@@ -39,7 +39,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -119,17 +118,11 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setRealizedWithPo(realizedWithPo);
     budgetLevel.setTotalAmountAvailable(
         (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
-                    .compareTo(BigDecimal.ZERO)
-                > 0
-            ? totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo)
-            : BigDecimal.ZERO);
+            .max(BigDecimal.ZERO));
     budgetLevel.setTotalFirmGap(totalFirmGap);
     budgetLevel.setSimulatedAmount(simulatedAmount);
     budgetLevel.setAvailableAmountWithSimulated(
-        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).compareTo(BigDecimal.ZERO)
-                > 0
-            ? (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount))
-            : BigDecimal.ZERO);
+        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
   }
 
   @Override
@@ -163,17 +156,11 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setRealizedWithPo(realizedWithPo);
     budgetLevel.setTotalAmountAvailable(
         (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
-                    .compareTo(BigDecimal.ZERO)
-                > 0
-            ? totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo)
-            : BigDecimal.ZERO);
+            .max(BigDecimal.ZERO));
     budgetLevel.setTotalFirmGap(totalFirmGap);
     budgetLevel.setSimulatedAmount(simulatedAmount);
     budgetLevel.setAvailableAmountWithSimulated(
-        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).compareTo(BigDecimal.ZERO)
-                > 0
-            ? (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount))
-            : BigDecimal.ZERO);
+        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
   }
 
   @Override
@@ -271,7 +258,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       List<BudgetLevel> groupBudgetLevelList, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
     if (CollectionUtils.isNotEmpty(groupBudgetLevelList)) {
-      BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
       for (BudgetLevel groupBudgetLevel : groupBudgetLevelList) {
         if (groupBudgetLevel.getId() != null) {
           updateBudgetLevelDates(groupBudgetLevel, fromDate, toDate);
@@ -287,7 +273,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       throws AxelorException {
 
     if (CollectionUtils.isNotEmpty(sectionBudgetLevelList)) {
-      BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
       for (BudgetLevel sectionBudgetLevel : sectionBudgetLevelList) {
         if (sectionBudgetLevel.getId() != null) {
           updateBudgetLevelDates(sectionBudgetLevel, fromDate, toDate);
@@ -313,8 +298,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void updateBudgetLevelDates(BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException {
+  public void updateBudgetLevelDates(
+      BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate) {
     budgetLevel = budgetLevelManagementRepository.find(budgetLevel.getId());
     budgetLevel.setFromDate(fromDate);
     budgetLevel.setToDate(toDate);
@@ -399,23 +384,23 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     if (budget != null
         && budget.getBudgetLevel() != null
         && budget.getBudgetLevel().getParentBudgetLevel() != null
-        && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel() != null
+        && budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget() != null
         && budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getParentBudgetLevel()
+                .getGlobalBudget()
                 .getCheckAvailableSelect()
             != null
         && budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getParentBudgetLevel()
+                .getGlobalBudget()
                 .getCheckAvailableSelect()
             != 0) {
       return budget
           .getBudgetLevel()
           .getParentBudgetLevel()
-          .getParentBudgetLevel()
+          .getGlobalBudget()
           .getCheckAvailableSelect();
     } else {
       return appBudgetService.getAppBudget().getCheckAvailableBudget()

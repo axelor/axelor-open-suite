@@ -84,7 +84,7 @@
           showIf="statusSelect == 0 &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
           colSpan="12" onClick="action-global-budget-group-validate-structure"/>
         <button name="validBtn" title="validateBtn" showIf="statusSelect == 1" colSpan="12"
-          onClick="action-global-budget-group-valid-btn-onClick"/>
+          onClick="action-global-budget-method-validate-children, save"/>
         <button name="archivedBtn" title="archiveBtn" showIf="statusSelect == 2" colSpan="12"
           onClick="action-global-budget-method-archived-btn-onClick, save"/>
 
@@ -165,7 +165,6 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <context name="_globalBudget" expr="eval: __this__"/>
-    <!-- <context name="_statusSelect" expr="eval: statusSelect"/> -->
   </action-view>
 
   <action-view name="action-view-global-budget-budget-version-change"
@@ -176,7 +175,6 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <context name="_globalBudget" expr="eval: __this__"/>
-    <!-- <context name="_budgetVersion" expr="eval: __this__"/> -->
   </action-view>
 
   <action-method name="action-method-global-budget-budget-version-change">
@@ -287,18 +285,17 @@
     <action name="action-global-budget-method-check-budget-dates"/>
   </action-group>
 
-  <action-group name="action-global-budget-group-valid-btn-onClick">
-    <action name="action-global-budget-method-check-budget-dates"/>
-    <action name="action-global-budget-method-recompute-budget-keys"/>
-    <action name="action-global-budget-method-validate-children"/>
-    <action name="save"/>
-  </action-group>
-
   <action-group name="action-global-budget-group-validate-structure">
+    <action name="action-global-budget-method-check-budget-dates"/>
     <action name="action-global-budget-method-validate-structure"/>
     <action name="save"/>
     <action name="action-method-budget-default-version-new"/>
   </action-group>
+
+  <action-method name="action-method-budget-default-version-new">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController"
+      method="createDefaultBudgetVersion"/>
+  </action-method>
 
   <action-method name="action-global-budget-method-set-dates">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="setDates"/>
@@ -314,10 +311,6 @@
 
   <action-method name="action-global-budget-method-validate-structure">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="validateStructure"/>
-  </action-method>
-
-  <action-method name="action-global-budget-method-recompute-budget-keys">
-    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="recomputeBudgetKey"/>
   </action-method>
 
   <action-method name="action-global-budget-method-archived-btn-onClick">

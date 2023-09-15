@@ -5,7 +5,7 @@ import com.axelor.apps.budget.service.BudgetScenarioLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.util.*;
+import java.util.ArrayList;
 
 public class BudgetScenarioLineController {
   public void changeColumnsNames(ActionRequest request, ActionResponse response) {
