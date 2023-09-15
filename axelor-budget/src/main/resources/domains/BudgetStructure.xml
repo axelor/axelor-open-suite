@@ -5,7 +5,7 @@
 
   <module package="com.axelor.apps.budget.db" name="budget"/>
 
-  <entity name="GlobalBudgetTemplate">
+  <entity name="BudgetStructure">
 
     <string name="code" title="Code"/>
     <string name="name" title="Name"/>
@@ -14,15 +14,10 @@
     <integer name="budgetTypeSelect" selection="global.budget.budget.type.select"
       default="4" title="Budget type select"/>
 
-    <many-to-one name="budgetScenario" title="Budget scenario"
-      ref="com.axelor.apps.budget.db.BudgetScenario"/>
-
-    <date name="fromDate" title="From"/>
-    <date name="toDate" title="To"/>
     <boolean name="isScenario" title="Scenario"/>
 
     <one-to-many name="budgetLevelList" ref="com.axelor.apps.budget.db.BudgetLevel"
-      title="Budget Level" mappedBy="globalBudgetTemplate"/>
+      title="Budget Level" mappedBy="budgetStructure"/>
 
     <extra-code>
             <![CDATA[

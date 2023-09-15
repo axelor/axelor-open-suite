@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="budget-structure-grid" title="Budget structures"
+    model="com.axelor.apps.budget.db.BudgetStructure" orderBy="code">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="company"/>
+    <field name="budgetTypeSelect"/>
+  </grid>
+
+  <form name="budget-structure-form" title="Budget structure"
+    model="com.axelor.apps.budget.db.BudgetStructure"
+    onNew="action-budget-structure-record-scenario">
+    <panel name="mainPanel" colSpan="12">
+      <field name="code" required="true"/>
+      <field name="name" required="true"/>
+      <field name="company" required="true"/>
+      <field name="budgetTypeSelect" required="true"/>
+    </panel>
+    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
+      showIf="code &amp;&amp; name &amp;&amp; company &amp;&amp; budgetTypeSelect">
+      <field name="budgetLevelList" title="Groups" colSpan="12"
+        form-view="budget-level-template-form" grid-view="budget-level-template-grid"/>
+    </panel>
+  </form>
+
+  <action-record name="action-budget-structure-record-scenario"
+    model="com.axelor.apps.budget.db.BudgetStructure">
+    <field name="isScenario" expr="eval: _isScenario"/>
+  </action-record>
+
+</object-views>

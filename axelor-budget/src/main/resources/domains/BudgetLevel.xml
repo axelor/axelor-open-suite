@@ -21,8 +21,8 @@
 
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
       title="Global level"/>
-    <many-to-one name="globalBudgetTemplate"
-      ref="com.axelor.apps.budget.db.GlobalBudgetTemplate" title="Global budget template"/>
+    <many-to-one name="budgetStructure" ref="com.axelor.apps.budget.db.BudgetStructure"
+      title="Budget structure"/>
 
     <string name="statusSelect" title="Status" selection="budget.level.status.select"
       default="draft"/>
@@ -100,14 +100,14 @@
 
     </string>
 
-    <string name="globalId" search="globalBudget,globalBudgetTemplate">
+    <string name="globalId" search="globalBudget,budgetStructure">
       <![CDATA[
          if (globalBudget != null && globalBudget.getId() != null){
 
             return globalBudget.getId().toString();
-         } else if (globalBudgetTemplate != null && globalBudgetTemplate.getId() != null){
+         } else if (budgetStructure != null && budgetStructure.getId() != null){
 
-            return globalBudgetTemplate.getId().toString();
+            return "Structure - "+budgetStructure.getId().toString();
          }
          else {
          	return "0";
