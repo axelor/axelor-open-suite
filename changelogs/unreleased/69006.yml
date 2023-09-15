@@ -1,0 +1,3 @@
+---
+title: "Move : Add control to check if any invoice term is in debt recovery process at move save"
+type: fix
