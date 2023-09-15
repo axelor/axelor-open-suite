@@ -16,20 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.move;
+package com.axelor.apps.base.service.api;
 
-import com.axelor.apps.account.db.Move;
-import java.time.LocalDate;
-import java.util.Map;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.db.Model;
 
-public interface MoveComputeService {
-  Map<String, Object> computeTotals(Move move);
-
-  boolean checkManageCutOffDates(Move move);
-
-  void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
-
-  void autoApplyCutOffDates(Move move);
-
-  void applyCutOffDatesInEmptyLines(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+public interface ResponseComputeService {
+  String compute(Model model) throws AxelorException;
 }

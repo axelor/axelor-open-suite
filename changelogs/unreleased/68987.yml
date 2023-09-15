@@ -1,0 +1,3 @@
+---
+title: "Reconcile : Fix effective date computation when we generate payment move from payment voucher"
+type: fix

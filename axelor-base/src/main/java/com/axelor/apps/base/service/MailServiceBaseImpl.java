@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
@@ -49,6 +50,7 @@ import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
@@ -72,6 +74,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -253,12 +256,17 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected Set<String> recipients(MailMessage message, Model entity) {
     final Set<String> recipients = new LinkedHashSet<>();
     final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
-    String entityName = entity.getClass().getName();
 
     if (message.getRecipients() != null) {
       for (MailAddress address : message.getRecipients()) {
         recipients.add(address.getAddress());
       }
+    }
+
+    String entityName =
+        Optional.ofNullable(entity).map(Model::getClass).map(Class::getName).orElse(null);
+    if (ObjectUtils.isEmpty(entityName)) {
+      return Sets.filter(recipients, Predicates.notNull());
     }
 
     for (MailFollower follower : followers.findAll(message)) {
@@ -267,11 +275,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
       User user = follower.getUser();
       if (user != null) {
-        if (!(user.getReceiveEmails()
+        if (user.getReceiveEmails()
             && user.getFollowedMetaModelSet().stream()
-                .anyMatch(x -> x.getFullName().equals(entityName)))) {
-          continue;
-        } else {
+                .map(MetaModel::getFullName)
+                .anyMatch(entityName::equals)) {
           Partner partner = user.getPartner();
           if (partner != null && partner.getEmailAddress() != null) {
             recipients.add(partner.getEmailAddress().getAddress());
@@ -380,6 +387,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   }
 
   void updateTemplateAndContext(MailMessage message, Model entity) {
+    if (entity == null) {
+      return;
+    }
+
     boolean isDefaultTemplate = false;
     messageTemplate = this.getTemplateByModel(entity);
 
@@ -454,12 +465,14 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   protected void setRecipientsFromTemplate(MailBuilder builder, Set<String> recipients) {
 
-    if (messageTemplate == null) {
-      return;
-    }
+    String[] ccRcp = new String[0];
+    String[] toRcp = new String[0];
 
-    String[] ccRcp = getRecipients(messageTemplate.getCcRecipients());
-    String[] toRcp = getRecipients(messageTemplate.getToRecipients());
+    if (messageTemplate != null) {
+      ccRcp = getRecipients(messageTemplate.getCcRecipients());
+      toRcp = getRecipients(messageTemplate.getToRecipients());
+      builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
+    }
 
     if (ccRcp.length == 0) {
       ccRcp = recipients.toArray(new String[0]);
@@ -471,7 +484,6 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     builder.to(toRcp);
     builder.cc(ccRcp);
-    builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
   }
 
   void updateRecipientsTemplatesContext(Set<String> recipients) {

@@ -59,4 +59,6 @@ public interface MoveRecordSetService {
   void setPfpStatus(Move move) throws AxelorException;
 
   void setPfpValidatorUser(Move move);
+
+  Map<String, Object> computeTotals(Move move);
 }

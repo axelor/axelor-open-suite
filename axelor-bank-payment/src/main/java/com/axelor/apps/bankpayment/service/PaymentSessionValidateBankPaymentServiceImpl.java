@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -33,8 +34,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -97,7 +98,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -125,7 +126,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         appBaseService,
         moveCreateService,
         moveValidateService,
-        moveComputeService,
+        moveCutOffService,
         moveLineCreateService,
         reconcileService,
         invoiceTermService,
@@ -509,11 +510,12 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       Move move,
       InvoiceTerm invoiceTerm,
       Pair<InvoiceTerm, BigDecimal> pair,
+      AccountConfig accountConfig,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
     super.createAndReconcileMoveLineFromPair(
-        paymentSession, move, invoiceTerm, pair, out, paymentAmountMap);
+        paymentSession, move, invoiceTerm, pair, accountConfig, out, paymentAmountMap);
 
     manageInvoicePayment(paymentSession, invoiceTerm, pair.getRight());
   }

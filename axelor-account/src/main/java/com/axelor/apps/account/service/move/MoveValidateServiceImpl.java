@@ -101,7 +101,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveControlService moveControlService;
-  protected MoveComputeService moveComputeService;
+  protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
 
   @Inject
@@ -122,7 +122,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveLineTaxService moveLineTaxService,
       PeriodServiceAccount periodServiceAccount,
       MoveControlService moveControlService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -140,7 +140,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveControlService = moveControlService;
-    this.moveComputeService = moveComputeService;
+    this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
   }
 
@@ -223,7 +223,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                 MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
                 MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
             .contains(move.getFunctionalOriginSelect())) {
-      moveComputeService.autoApplyCutOffDates(move);
+      moveCutOffService.autoApplyCutOffDates(move);
 
       if (!moveToolService.checkMoveLinesCutOffDates(move)) {
         throw new AxelorException(
@@ -839,12 +839,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     BigDecimal linesTaxAmount =
         moveLineList.stream()
             .filter(
-                moveLine -> {
-                  String accountType =
-                      moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
-                  return accountType.equals(AccountTypeRepository.TYPE_INCOME)
-                      || accountType.equals(AccountTypeRepository.TYPE_CHARGE);
-                })
+                moveLine ->
+                    moveLineTaxService.isGenerateMoveLineForAutoTax(
+                        moveLine.getAccount().getAccountType().getTechnicalTypeSelect()))
             .map(this::getTaxAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
