@@ -50,6 +50,12 @@
     <boolean name="isVerifyInventoryLineEnabled"
       title="Enable line verification on inventories" default="false"/>
 
+    <boolean name="isMultiCurrencyEnabled" title="Activate multi currency" default="false"/>
+    <boolean name="isProjectInvoicingEnabled" title="Activate invoicing on projects"
+      default="false"/>
+    <boolean name="isKilometricExpenseLineAllowed" title="Allow kilometric expenses"
+      default="false"/>
+
     <track>
       <field name="isStockAppEnabled" on="UPDATE"/>
       <field name="isProductionAppEnabled" on="UPDATE"/>
@@ -69,6 +75,9 @@
       <field name="isCustomerDeliveryLineAdditionEnabled" on="UPDATE"/>
       <field name="isSupplierArrivalLineAdditionEnabled" on="UPDATE"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
+      <field name="isMultiCurrencyEnabled" on="UPDATE"/>
+      <field name="isProjectInvoicingEnabled" on="UPDATE"/>
+      <field name="isKilometricExpenseLineAllowed" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

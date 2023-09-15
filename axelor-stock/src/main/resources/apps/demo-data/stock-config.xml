@@ -29,7 +29,7 @@
   </input>
 
   <input file="stock_stockConfig.csv" separator=";"
-    type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId" update="true"/>
 
   <input file="stock_customsCodeNomenclature.csv" separator=";"
     type="com.axelor.apps.stock.db.CustomsCodeNomenclature">

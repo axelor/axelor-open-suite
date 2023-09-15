@@ -1093,8 +1093,7 @@ InvoiceSet.length > 0))"
       <button name="showInvoiceBtn" title="Print" icon="fa-print"
         onClick="save,action-invoice-method-show-invoice"/>
       <button name="showAnnexBtn" title="Print annex" icon="fa-print"
-        onClick="action-invoice-business-project-method-print-annex"
-        if-module="axelor-business-project"
+        onClick="action-business-project-group-print-annex" if-module="axelor-business-project"
         showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)"/>
     </toolbar>
 

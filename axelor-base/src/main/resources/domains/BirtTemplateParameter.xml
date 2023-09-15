@@ -7,7 +7,7 @@
 
   <entity name="BirtTemplateParameter">
     <string name="name" title="Name" required="true"/>
-    <string name="value" title="Value"/>
+    <string name="value" title="Value" large="true"/>
     <string name="type" title="Type" selection="base.birt.template.parameter.type.select"
       default="string"/>
     <many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate"/>

@@ -1,3 +1,44 @@
+## [7.1.4] (2023-09-11)
+
+#### Features
+
+* API: improve response when creating object
+
+#### Fixed
+
+* App builder: update axelor-studio dependency from 1.2.1 to 1.2.3.
+* API Stock: fixed an issue when creating a stock move line where the quantity was not flagged as modified manually.
+* Account: added check for depreciation account in fixed asset category on fixed asset disposal.
+* Purchase order: fixed 'NullPointerException' error happening when a line without a product was created.
+* Fixed asset: fixed never ending depreciation lines generation if there is a gap of more than one year.
+* Reconcile: fixed payment adjustment when the last invoice term paid is not the one with the latest date.
+* Product: on product creation, fills the currency with the currency from the company of the logged user.
+* Invoice: fixed wrong translations on ventilate error.
+* Manufacturing API: improved behaviour on operation order status change.
+* HR Dashboard: fixed expense dashboards.
+* Account: fixed an issue preventing the user from deleting accounts that have compatible accounts.
+* Move template: fixed filters on accounting accounts in move template lines.
+* Contract line: added a warning when the user selects a product with a time unit.
+* Operation order: fixed workflow issues
+
+Resuming an operation order in a grid or a form has now the same process and will not affect other orders.
+When pausing an operation order, if every other order is also in stand by, the manuf order will also be paused.
+
+* Invoice line: set analytic accounting panel to readonly.
+* Account chart: updated accounting config files to improve accounting import.
+* Payment session: fixed the account at payment on payment session using compensation invoice/moves.
+* Project: fixed error when opening the default dashboard view.
+* Contract: hide revaluation related panel and fields when periodic invoicing is disabled.
+* Sale/Purchase order and stock move: fixed wrong filters when selecting stock locations, the filters did not correctly followed the stock location configuration.
+* Stock move: fixed 'NullPointerException' error when emptying product on stock move line.
+* Payment session: fixed generated payment move lines on a partner balance account not having an invoice term.
+* Manufacturing order: fixed an issue where some planning processes were not executed.
+* Move template: fixed copied move template being valid.
+* Invoice term: fixed wrong amount in invoice term generation.
+* Journal: balance tag is now correctly computed.
+* Contract: fixed 'NullPointerException' error when invoicing a contract.
+* Manufacturing order: when generating a multi level manufacturing order, correctly fills the partner.
+
 ## [7.1.3] (2023-08-24)
 
 #### Fixed
@@ -392,6 +433,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.4]: https://github.com/axelor/axelor-open-suite/compare/v7.1.3...v7.1.4
 [7.1.3]: https://github.com/axelor/axelor-open-suite/compare/v7.1.2...v7.1.3
 [7.1.2]: https://github.com/axelor/axelor-open-suite/compare/v7.1.1...v7.1.2
 [7.1.1]: https://github.com/axelor/axelor-open-suite/compare/v7.1.0...v7.1.1
