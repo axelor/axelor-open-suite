@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
@@ -46,6 +47,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveToolService moveToolService;
   protected AnalyticLineService analyticLineService;
   protected MoveAttrsService moveAttrsService;
+  protected MoveCutOffService moveCutOffService;
 
   @Inject
   public MoveLineGroupServiceImpl(
@@ -59,7 +61,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveLineToolService moveLineToolService,
       MoveToolService moveToolService,
       AnalyticLineService analyticLineService,
-      MoveAttrsService moveAttrsService) {
+      MoveAttrsService moveAttrsService,
+      MoveCutOffService moveCutOffService) {
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
     this.moveLineRecordService = moveLineRecordService;
@@ -71,6 +74,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.moveToolService = moveToolService;
     this.analyticLineService = analyticLineService;
     this.moveAttrsService = moveAttrsService;
+    this.moveCutOffService = moveCutOffService;
   }
 
   @Override
@@ -323,7 +327,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     valuesMap.put("originDate", moveLine.getOriginDate());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-    if (move != null && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+    if (move != null
+        && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
+        && move.getMassEntryManageCutOff()
+        && moveCutOffService.checkManageCutOffDates(move)) {
       valuesMap.put("cutOffStartDate", moveLine.getOriginDate());
       valuesMap.put("deliveryDate", moveLine.getOriginDate());
     }
