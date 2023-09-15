@@ -415,7 +415,7 @@ public class SaleOrderController {
   }
 
   /**
-   * Called on trading name change. Set the default value for {@link SaleOrder printingSettings}
+   * Called on trading name change. Set the default value for {@link SaleOrder#printingSettings}
    *
    * @param request
    * @param response
