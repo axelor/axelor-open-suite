@@ -19,8 +19,9 @@
     <bind to="origin" column="PieceRef"/>
     <bind to="description" column="EcritureLib"/>
     <bind to="currencyAmount" eval="Montantdevise.replace(',', '.')" column="Montantdevise"/>
-    <bind to="reconcileGroup" column="EcritureLet" search="self.code = :EcritureLet">
+    <bind to="reconcileGroup" column="EcritureLet" search="self.importId = :EcritureLet">
       <bind to="code" column="EcritureLet"/>
+      <bind to="importId" column="EcritureLet"/>
       <bind to="letteringDateTime" column="DateLet" if="DateLet"
         eval="java.time.LocalDate.parse(DateLet,'yyyyMMdd').atTime(java.time.LocalTime.NOON)"/>
     </bind>
