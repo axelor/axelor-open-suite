@@ -62,7 +62,7 @@ public class BatchBackupToProjectHistoryService extends AbstractBatch {
         try {
           projectBusinessService.backupToProjectHistory(project);
           incrementDone();
-        } catch (AxelorException e) {
+        } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
               e,
