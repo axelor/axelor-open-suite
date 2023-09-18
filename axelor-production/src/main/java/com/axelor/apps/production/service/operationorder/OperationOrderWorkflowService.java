@@ -71,6 +71,7 @@ public class OperationOrderWorkflowService {
   protected MachineToolRepository machineToolRepo;
   protected WeeklyPlanningService weeklyPlanningService;
   protected ProdProcessLineService prodProcessLineService;
+  protected ManufOrderWorkflowService manufOrderWorkflowService;
 
   @Inject
   public OperationOrderWorkflowService(
@@ -80,7 +81,8 @@ public class OperationOrderWorkflowService {
       AppProductionService appProductionService,
       MachineToolRepository machineToolRepo,
       WeeklyPlanningService weeklyPlanningService,
-      ProdProcessLineService prodProcessLineService) {
+      ProdProcessLineService prodProcessLineService,
+      ManufOrderWorkflowService manufOrderWorkflowService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -88,6 +90,7 @@ public class OperationOrderWorkflowService {
     this.machineToolRepo = machineToolRepo;
     this.weeklyPlanningService = weeklyPlanningService;
     this.prodProcessLineService = prodProcessLineService;
+    this.manufOrderWorkflowService = manufOrderWorkflowService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -437,7 +440,7 @@ public class OperationOrderWorkflowService {
 
     if (operationOrder.getManufOrder().getStatusSelect()
         != ManufOrderRepository.STATUS_IN_PROGRESS) {
-      Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+      manufOrderWorkflowService.start(operationOrder.getManufOrder());
     }
   }
 
@@ -451,6 +454,7 @@ public class OperationOrderWorkflowService {
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
     }
 
+    pauseManufOrder(operationOrder);
     operationOrderRepo.save(operationOrder);
   }
 
@@ -574,10 +578,16 @@ public class OperationOrderWorkflowService {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    finishProcess(operationOrder);
+    manufOrderWorkflowService.sendFinishedMail(manufOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void finishProcess(OperationOrder operationOrder) throws AxelorException {
     finish(operationOrder);
-    Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
+    manufOrderWorkflowService.allOpFinished(operationOrder.getManufOrder());
   }
 
   /**
