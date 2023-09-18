@@ -786,4 +786,14 @@ public class MoveController {
   protected boolean getChangeDummyBoolean(Context context, String name) {
     return Optional.ofNullable(context.get(name)).map(value -> (Boolean) value).orElse(false);
   }
+
+  public void checkPeriodPermission(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      Beans.get(MoveCheckService.class).checkPeriodPermission(move);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
