@@ -285,4 +285,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_CURRENCY_NOT_EQUAL = /*$$(*/
       "Not all expenses are in the same currency. You can only create or add lines to an expense report when they have the same currency." /*)*/;
+
+  public static final String EXPENSE_LIMIT_EXCEEDED = /*$$(*/
+      "The expense limit has been exceeded for the period %s to %s" /*)*/;
 }
