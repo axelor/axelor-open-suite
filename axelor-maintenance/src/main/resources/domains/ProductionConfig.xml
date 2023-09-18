@@ -8,7 +8,7 @@
   <entity name="ProductionConfig" cacheable="true">
 
     <many-to-one name="maintenanceBillOfMaterialBirtTemplate"
-      title="Maintenance bill of material template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+      title="Maintenance bill of materials template" ref="com.axelor.apps.base.db.BirtTemplate"/>
     <many-to-one name="maintenanceManufOrderBirtTemplate"
       title="Maintenance manuf order template" ref="com.axelor.apps.base.db.BirtTemplate"/>
     <many-to-one name="maintenanceProdProcessBirtTemplate"
