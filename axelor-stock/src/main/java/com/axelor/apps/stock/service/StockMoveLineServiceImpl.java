@@ -614,19 +614,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     // avgPrice in stock move line is a bigdecimal but is nullable.
     BigDecimal newQty = stockMoveLine.getRealQty();
-    BigDecimal oldQty = stockLocationLine.getCurrentQty().subtract(newQty);
     BigDecimal newPrice =
         stockMoveLine.getWapPrice() != null
             ? stockMoveLine.getWapPrice()
             : stockMoveLine.getCompanyUnitPriceUntaxed();
     BigDecimal newAvgPrice;
-    if (oldAvgPrice == null
-        || oldQty == null
-        || oldAvgPrice.compareTo(BigDecimal.ZERO) == 0
-        || oldQty.compareTo(BigDecimal.ZERO) == 0) {
-      oldAvgPrice = BigDecimal.ZERO;
-      oldQty = BigDecimal.ZERO;
-    }
 
     Unit stockLocationLineUnit = stockLocationLine.getUnit();
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
@@ -648,6 +640,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               newPrice.scale(),
               stockMoveLine.getProduct());
     }
+
+    BigDecimal oldQty = stockLocationLine.getCurrentQty().subtract(newQty);
 
     log.debug(
         "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
