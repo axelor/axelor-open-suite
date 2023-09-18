@@ -8,6 +8,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,7 +58,9 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
           getCertificateAndSign(certificatePassword, reason, location, inputStream, doc, outStream);
         }
       }
-      return metaFiles.upload(tempPdfFile);
+      MetaFile resultFile = metaFiles.upload(tempPdfFile);
+      resultFile.setFileName(Files.getNameWithoutExtension(metaFile.getFileName()) + ".pdf");
+      return resultFile;
     } catch (AxelorException | IOException | GeneralSecurityException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

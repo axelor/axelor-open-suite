@@ -7,6 +7,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
+import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +54,9 @@ public class PdfServiceImpl implements PdfService {
 
       convertImageToPdf(metaFile, tempPdfFile);
       metaFiles.delete(metaFile);
-      return metaFiles.upload(tempPdfFile);
+      MetaFile resultFile = metaFiles.upload(tempPdfFile);
+      resultFile.setFileName(Files.getNameWithoutExtension(metaFile.getFileName()) + ".pdf");
+      return resultFile;
     } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
