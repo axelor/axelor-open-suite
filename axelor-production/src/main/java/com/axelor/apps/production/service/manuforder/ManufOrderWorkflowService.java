@@ -41,6 +41,8 @@ public interface ManufOrderWorkflowService {
 
   boolean finish(ManufOrder manufOrder) throws AxelorException;
 
+  void finishManufOrder(ManufOrder manufOrder) throws AxelorException;
+
   boolean partialFinish(ManufOrder manufOrder) throws AxelorException;
 
   void cancel(ManufOrder manufOrder, CancelReason cancelReason, String cancelReasonStr)
@@ -71,4 +73,8 @@ public interface ManufOrderWorkflowService {
   void updatePlannedDates(ManufOrder manufOrder);
 
   String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;
+
+  boolean sendPartialFinishMail(ManufOrder manufOrder);
+
+  boolean sendFinishedMail(ManufOrder manufOrder);
 }

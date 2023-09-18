@@ -73,6 +73,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected ProdProcessLineService prodProcessLineService;
   protected MachineService machineService;
   protected ManufOrderService manufOrderService;
+  protected ManufOrderWorkflowService manufOrderWorkflowService;
 
   @Inject
   public OperationOrderWorkflowServiceImpl(
@@ -84,7 +85,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       WeeklyPlanningService weeklyPlanningService,
       ProdProcessLineService prodProcessLineService,
       MachineService machineService,
-      ManufOrderService manufOrderService) {
+      ManufOrderService manufOrderService,
+      ManufOrderWorkflowService manufOrderWorkflowService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -94,6 +96,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     this.prodProcessLineService = prodProcessLineService;
     this.machineService = machineService;
     this.manufOrderService = manufOrderService;
+    this.manufOrderWorkflowService = manufOrderWorkflowService;
   }
 
   /**
@@ -345,7 +348,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
     if (operationOrder.getManufOrder().getStatusSelect()
         != ManufOrderRepository.STATUS_IN_PROGRESS) {
-      Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+      manufOrderWorkflowService.start(operationOrder.getManufOrder());
     }
   }
 
@@ -363,7 +366,6 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     stopOperationOrderDuration(operationOrder);
 
     pauseManufOrder(operationOrder);
-
     operationOrderRepo.save(operationOrder);
   }
 
@@ -386,7 +388,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     if (allOperationDurationAreStopped(operationOrder)) {
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
     }
-
+    pauseManufOrder(operationOrder);
     operationOrderRepo.save(operationOrder);
   }
 
@@ -457,10 +459,16 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    finishProcess(operationOrder);
+    manufOrderWorkflowService.sendFinishedMail(manufOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void finishProcess(OperationOrder operationOrder) throws AxelorException {
     finish(operationOrder);
-    Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
+    manufOrderWorkflowService.allOpFinished(operationOrder.getManufOrder());
   }
 
   /**
