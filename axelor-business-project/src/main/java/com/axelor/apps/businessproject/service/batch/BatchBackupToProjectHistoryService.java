@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -61,16 +62,14 @@ public class BatchBackupToProjectHistoryService extends AbstractBatch {
         try {
           projectBusinessService.backupToProjectHistory(project);
           incrementDone();
-        } catch (Exception e) {
+        } catch (AxelorException e) {
           incrementAnomaly();
           TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get(
-                          BusinessProjectExceptionMessage.BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR),
-                      project.getId()),
-                  e),
-              batch.getId().toString());
+              e,
+              String.format(
+                  I18n.get(BusinessProjectExceptionMessage.BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR),
+                  project.getId()),
+              batch.getId());
         }
       }
       JPA.clear();
