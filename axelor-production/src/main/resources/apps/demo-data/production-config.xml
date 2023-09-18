@@ -42,7 +42,8 @@
 
 
   <input file="production_productionConfig.csv" separator=";"
-    type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"
+    update="true"/>
   <input file="stock_stockConfig.csv" separator=";"
     type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId"/>
 
