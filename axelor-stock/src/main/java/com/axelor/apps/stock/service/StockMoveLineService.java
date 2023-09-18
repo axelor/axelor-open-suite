@@ -319,7 +319,7 @@ public interface StockMoveLineService {
       boolean generateOrder)
       throws AxelorException;
 
-  public BigDecimal computeNewAveragePriceLocationLine(
+  BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
 
   /**
