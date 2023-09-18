@@ -165,6 +165,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
     LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
+
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
 
     MachineTimeSlot freeMachineTimeSlot =
@@ -257,11 +258,12 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
         operationOrderRepo
             .all()
             .filter(
-                "self.manufOrder = :manufOrder AND self.priority <= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+                "self.manufOrder = :manufOrder AND ((self.priority = :priority AND self.machine = :machine) OR self.priority < :priority) AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
             .bind("manufOrder", manufOrder)
             .bind("priority", operationOrder.getPriority())
             .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
             .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("machine", operationOrder.getMachine())
             .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
             .order("-plannedEndDateT")
@@ -370,7 +372,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected void pauseManufOrder(OperationOrder operationOrder) {
     ManufOrder manufOrder = operationOrder.getManufOrder();
     if (manufOrder.getOperationOrderList().stream()
-        .allMatch(order -> order.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY)) {
+        .allMatch(
+            order -> order.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS)) {
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_STANDBY);
     }
   }

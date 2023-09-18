@@ -72,6 +72,8 @@ public interface ManufOrderWorkflowService {
    */
   void updatePlannedDates(ManufOrder manufOrder);
 
+  String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;
+
   boolean sendPartialFinishMail(ManufOrder manufOrder);
 
   boolean sendFinishedMail(ManufOrder manufOrder);
