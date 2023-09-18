@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
