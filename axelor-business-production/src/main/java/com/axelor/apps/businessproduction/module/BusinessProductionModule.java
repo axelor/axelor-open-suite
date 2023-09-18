@@ -25,6 +25,8 @@ import com.axelor.apps.businessproduction.service.InvoicingProjectServiceBusines
 import com.axelor.apps.businessproduction.service.ManufOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessService;
 import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckService;
+import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckServiceImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetService;
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetServiceImpl;
@@ -80,5 +82,8 @@ public class BusinessProductionModule extends AxelorModule {
         .to(OperationOrderWorkflowBusinessServiceImpl.class);
     bind(TimesheetLineBusinessProductionService.class)
         .to(TimesheetLineBusinessProductionServiceImpl.class);
+
+    bind(OperationOrderBusinessProductionCheckService.class)
+        .to(OperationOrderBusinessProductionCheckServiceImpl.class);
   }
 }

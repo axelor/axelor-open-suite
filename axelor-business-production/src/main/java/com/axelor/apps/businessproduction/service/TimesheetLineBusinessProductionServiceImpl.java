@@ -41,6 +41,10 @@ public class TimesheetLineBusinessProductionServiceImpl
 
     User user = operationOrderDuration.getStartedBy();
 
+    if (user.getEmployee() == null) {
+      return Optional.empty();
+    }
+
     Employee employee = employeeService.getEmployee(user);
 
     if (employee.getTimesheetImputationSelect() == EmployeeRepository.TIMESHEET_MANUF_ORDER
