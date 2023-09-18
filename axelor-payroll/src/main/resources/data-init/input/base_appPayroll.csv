@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Payroll Management";"payroll";41;"Manage employees payroll";"app-payroll.png";"axelor-payroll";"employee";112

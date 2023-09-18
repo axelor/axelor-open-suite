@@ -1,0 +1,20 @@
+plugins{
+    id 'com.axelor.app'
+}
+
+apply from: "../libs.gradle"
+apply from: "../version.gradle"
+
+apply {
+    version = openSuiteVersion
+}
+
+axelor {
+    title "Axelor Payroll"
+    description "Axelor Payroll Module"
+}
+
+dependencies {
+    api project(":modules:axelor-account")
+    api project(":modules:axelor-human-resource")
+}

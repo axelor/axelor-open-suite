@@ -64,7 +64,7 @@
   "proxy": "http://localhost:8080/",
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "CI=false node scripts/build.js",
+    "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {

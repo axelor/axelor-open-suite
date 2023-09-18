@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+    <grid name="payroll-grid" title="Payrolls" model="com.axelor.apps.payroll.db.Payroll">
+        <field name="name" />
+        <field name="accountingStyle" />
+        <field name="processingFrequency" />
+        <field name="enabled" />
+    </grid>
+
+    <form name="payroll-form" title="Payroll" model="com.axelor.apps.payroll.db.Payroll"
+          onSave="action-add-processing-time,save">
+        <panel>
+            <field name="name" />
+            <field name="code" />
+            <field name="accountingStyle" />
+            <field name="preferredDayConfigType" />
+            <field name="processingFrequency" />
+            <field name="company" />
+            <field name="period" required="true"/>
+            <field name="journal" required="true"/>
+            <field name="debitAccount" required="true"/>
+            <field name="creditAccount" required="true" />
+            <field name="leaveTreatment" />
+            <field name="enabled" />
+            <field name="prorate" />
+            <field name="processedDate" />
+            <field name="timeToProcess" hidden="true"/>
+
+        </panel>
+    </form>
+
+    <action-method name="action-add-processing-time">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="addProcessingTime"/>
+    </action-method>
+
+</object-views>

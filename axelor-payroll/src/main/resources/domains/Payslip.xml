@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
+    <module name="payroll" package="com.axelor.apps.payroll.db"/>
+
+    <sequence name="payroll.payslip.seq" initial="1" increment="1" padding="5" prefix="PAYSLIP_" />
+
+    <entity name="Payslip" lang="java" cacheable="true" sequential="true">
+
+        <string name="code" sequence="payroll.payslip.seq" />
+        <many-to-one name="payPeriod" ref="com.axelor.apps.base.db.Period" title="Pay Period"/>
+        <many-to-one name="employee" ref="EmployeePayrollData" title="Employee"/>
+        <many-to-many name="earnings" ref="com.axelor.apps.payroll.db.PayrollComponent" title="Earnings"/>
+        <many-to-many name="deductions" ref="com.axelor.apps.payroll.db.PayrollComponent" title="Deductions"/>
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+        <date name="processedDate" title="Processed Date"/>
+        <string name="month" title="Month" />
+        <string name="year" title="Year" />
+        <decimal name="calculatedTax" title="Calculated Tax"/>
+        <decimal name="calculatedDeductions" title="Total Deductions"/>
+        <decimal name="otherDeductions" title="Other Deductions aside Tax and SSNIT"/>
+        <decimal name="grossIncome" title="Gross Income" />
+        <decimal name="netIncome" title="Net Income" />
+        <decimal name="ssnitContribution" title="SSNIT Contribution" />
+
+    </entity>
+</domain-models>

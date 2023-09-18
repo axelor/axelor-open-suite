@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
+    <module name="payroll" package="com.axelor.apps.payroll.db"/>
+
+    <entity name="Paygrade" lang="java" cacheable="true" >
+
+        <string name="name" title="Name" required="true"/>
+        <string name="code" title="Code" required="true" hashKey="true"/>
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+        <many-to-many name="components" ref="com.axelor.apps.payroll.db.PayrollComponent" title="Payroll Components"/>
+
+        <unique-constraint columns="code,company"/>
+
+        <track>
+            <field name="name"/>
+            <field name="code"/>
+            <field name="company"/>
+        </track>
+
+    </entity>
+</domain-models>

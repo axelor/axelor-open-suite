@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+    <menuitem name="payroll-root" order="-108" title="Payroll" icon="fa-calculator" icon-background="#525252" if="__config__.app.isApp('payroll')" />
+
+    <menuitem name="payroll-create" title="Create Payroll" parent="payroll-root" action="payroll.create.all"/>
+
+    <action-view name="payroll.create.all" title="Create Payroll" model="com.axelor.apps.payroll.db.Payroll">
+        <view type="grid" name="payroll-grid" />
+        <view type="form" name="payroll-form" />
+    </action-view>
+
+    <menuitem name="payroll-employees-all" title="Employees on Payroll" parent="payroll-root" action="payroll.employee.all" />
+
+    <action-view name="payroll.employee.all" title="Employees" model="com.axelor.apps.payroll.db.EmployeePayrollData">
+        <view type="grid" name="employee-payroll-data-grid" />
+        <view type="form" name="employee-payroll-data-form" />
+    </action-view>
+
+    <menuitem name="payroll-taxes-all" title="Taxes" parent="payroll-root" action="taxes.all" />
+
+    <action-view name="taxes.all" title="Taxes" model="com.axelor.apps.payroll.db.PayrollTax">
+        <view type="grid" name="payroll-tax-grid" />
+        <view type="form" name="payroll-tax-form" />
+        <domain>self.name != :name</domain>
+        <context name="name" expr="SSNIT" />
+    </action-view>
+
+    <menuitem name="payroll-grades" title="Employee Grades" parent="payroll-root" action="grades.all" />
+
+    <action-view name="grades.all" title="Employee Grades" model="com.axelor.apps.payroll.db.Paygrade">
+        <view type="grid" name="paygrade-grid" />
+        <view type="form" name="paygrade-form" />
+    </action-view>
+
+    <menuitem name="payroll-components" title="Components" parent="payroll-root" action="components-list-general" />
+
+    <action-view name="components.all" title="Components" model="com.axelor.apps.payroll.db.PayrollComponent">
+        <view type="grid" name="payroll-component-grid" />
+        <view type="form" name="payroll-component-form" />
+    </action-view>
+
+    <!--This view show components of statusType general-->
+    <action-view name="components-list-general" title="Payroll Components" model="com.axelor.apps.payroll.db.PayrollComponent">
+        <view type="grid" name="payroll-component-grid" />
+        <view type="form" name="payroll-component-form" />
+        <domain>self.statusType = :statusType</domain>
+        <context name="statusType" expr="General" />
+    </action-view>
+
+    <menuitem name="processed-payroll-summaries" title="Processed Payroll Summaries" parent="payroll-root"
+              action="summaries.all" />
+
+    <action-view name="summaries.all" title="Processed Payroll Summaries" model="com.axelor.apps.payroll.db.ProcessPayrollSummary">
+        <view type="grid" name="process-payroll-summary-grid" />
+        <view type="form" name="process-payroll-summary-form" />
+    </action-view>
+
+    <menuitem name="process-employees-payroll-summaries" title="Process Employee Payroll Summaries"
+              parent="payroll-root" action="employee-payroll-summaries.all" />
+
+    <action-view name="employee-payroll-summaries.all" title="Process Employee Payroll Summaries"
+                 model="com.axelor.apps.payroll.db.ProcessedEmployeePayrollData">
+        <view type="grid" name="processed-employee-payroll-data-grid" />
+        <view type="form" name="processed-employee-payroll-data-form" />
+    </action-view>
+
+    <menuitem name="payroll-configuration" title="Configuration" icon="fa-cog" parent="payroll-root" order="2" />
+
+    <menuitem name="payroll-configuration-ssnit" title="SSNIT" parent="payroll-configuration"
+              action="payroll-edit-ssnit"/>
+
+    <action-view name="payroll-edit-ssnit" title="Edit SSNIT" model="com.axelor.apps.payroll.db.PayrollTax">
+        <view type="form" name="payroll-ssnit-form" />
+        <view type="grid" name="payroll-ssnit-grid" />
+        <domain>self.name = :name</domain>
+        <context name="name" expr="SSNIT" />
+    </action-view>
+
+    <menuitem name="menu-payroll-help" title="Help" parent="payroll-root"
+              order="5" icon="fa-question-circle" icon-background="#525252" />
+</object-views>

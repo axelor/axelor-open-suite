@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+    <grid name="employee-payroll-data-grid" title="Employees Payroll Data" model="com.axelor.apps.payroll.db.EmployeePayrollData">
+        <field name="employee" />
+        <field name="company" />
+        <field name="paygrade" />
+        <field name="payroll" />
+    </grid>
+
+    <form name="employee-payroll-data-form" title="Employee Payroll Data"
+          model="com.axelor.apps.payroll.db.EmployeePayrollData"
+          onNew="action-set-employee,action-make-employee-field-not-readonly"
+          onLoad="action-set-employee,action-make-employee-field-readonly">
+        <panel>
+            <field name="employee" onChange="action-set-employee" readonlyIf="makeFieldReadOnly"/>
+            <field name="payroll" onChange="action-payroll-company-record-onchange" />
+            <field name="company" readonly="true"/>
+            <field name="paygrade" onChange="action-set-grade-components">
+            </field>
+            <panel-related field="employeeGradeComponent" colSpan="12" canNew="false"
+                           canSelect="false" canRemove="false" onChange="action-update-employee-grade-components"/>
+            <panel colSpan="12">
+                <!-- Domain in added to filter to show only general components-->
+                <panel-related field="additionalPayrollComponent" colSpan="12" domain="self.statusType='General'"/>
+            </panel>
+        </panel>
+    </form>
+
+    <action-record name="action-make-employee-field-not-readonly" model="com.axelor.apps.payroll.db.EmployeePayrollData">
+        <field name="makeFieldReadOnly" expr="false"/>
+    </action-record>
+
+    <action-record name="action-make-employee-field-readonly" model="com.axelor.apps.payroll.db.EmployeePayrollData">
+        <field name="makeFieldReadOnly" expr="true"/>
+    </action-record>
+
+    <action-record name="action-payroll-company-record-onchange" model="com.axelor.apps.payroll.db.EmployeePayrollData">
+        <field name="company" expr="eval: payroll != null ? payroll.company : null"/>
+    </action-record>
+
+    <action-method name="action-set-grade-components">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="setGradeComponents"/>
+    </action-method>
+
+    <action-method name="action-update-employee-grade-components">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="updateEmployeeGradeComponents" />
+    </action-method>
+
+    <action-method name="action-set-employee">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="setPayrollEmployee" />
+    </action-method>
+
+
+</object-views>

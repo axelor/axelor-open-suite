@@ -1,0 +1,2 @@
+name;object;can_read;can_write;can_create;can_remove;can_export;condition;conditionParams;roleName
+perm.payroll.all;com.axelor.apps.payroll.db.*;x;x;x;x;x;self.createdBy.organisation = null OR self.createdBy.organisation = ?;__user__.organisation;Admin

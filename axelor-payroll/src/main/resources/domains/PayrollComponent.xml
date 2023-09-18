@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
+    <module name="payroll" package="com.axelor.apps.payroll.db"/>
+
+    <enum name="ComponentAmountTypeEnum">
+        <item name="FLAT" value="Flat"/>
+        <item name="CALCULATED" value="Calculated"/>
+    </enum>
+
+    <enum name="ComponentStatusTypeEnum">
+        <item name="GENERAL" value="General"/>
+        <item name="RESERVED" value="Reserved"/>
+    </enum>
+    <enum name="ComponentTypeEnum">
+        <item name="INCOME" value="Income"/>
+        <item name="DEDUCTION" value="Deduction"/>
+    </enum>
+
+    <entity name="PayrollComponent" lang="java" cacheable="true">
+
+        <string name="name" title="Name" required="true" />
+        <string name="code" title="Code" required="true" hashKey="true"/>
+        <enum name="amountType" ref="ComponentAmountTypeEnum" title="Amount Type" required="true"/>
+        <enum name="componentType" ref="ComponentTypeEnum" required="true"/>
+        <enum name="statusType" ref="ComponentStatusTypeEnum" required="true"/>
+        <string name="calculationFormula" title="Calculation Formula"/>
+        <boolean name="isActive"/>
+        <boolean name="isBaseSalary" />
+        <boolean name="isStatusTypeReadOnly" />
+        <boolean name="makeFieldReadOnly" />
+        <date name="effectiveDate" title="Effective Date"/>
+        <many-to-one name="applicableTax" ref="com.axelor.apps.payroll.db.PayrollTax" title="Applicable Tax"/>
+        <decimal name="defaultValue" />
+        <decimal name="calculatedValue" />
+
+        <unique-constraint columns="code,name"/>
+
+        <track>
+            <field name="name"/>
+            <field name="code"/>
+        </track>
+
+    </entity>
+</domain-models>

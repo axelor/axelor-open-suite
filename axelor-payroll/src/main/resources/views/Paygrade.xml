@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+    <grid name="paygrade-grid" title="Paygrades" model="com.axelor.apps.payroll.db.Paygrade">
+        <field name="code" />
+        <field name="name" />
+    </grid>
+
+    <form name="paygrade-form" title="Paygrade" model="com.axelor.apps.payroll.db.Paygrade">
+        <panel>
+            <field name="code" />
+            <field name="name" />
+            <field name="company" />
+            <panel-related field="components" colSpan="12" domain="self.statusType='General'" />
+        </panel>
+    </form>
+</object-views>

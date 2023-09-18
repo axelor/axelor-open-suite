@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+    <grid name="processed-employee-payroll-data-grid" title="Processed Employees Payroll Data"
+          model="com.axelor.apps.payroll.db.ProcessedEmployeePayrollData" canEdit="false" canNew="false">
+        <field name="employee" />
+        <field name="company" />
+        <field name="totalRemuneration" />
+        <field name="totalTax" />
+        <field name="totalSsnitContribution" />
+        <field name="totalDeductions" />
+
+
+    </grid>
+
+    <form name="processed-employee-payroll-data-form" title="Processed Employee Payroll Data"
+          model="com.axelor.apps.payroll.db.ProcessedEmployeePayrollData" canEdit="false" canNew="false">
+        <panel>
+            <panel readonly="true" colSpan="12">
+                <field name="employee" />
+                <field name="company" />
+                <field name="totalRemuneration" />
+                <field name="totalTax" />
+                <field name="totalSsnitContribution" />
+                <field name="otherDeductions" />
+                <field name="totalDeductions" />
+            </panel>
+            <panel-related field="payslips" colSpan="12" readonly="true" />
+        </panel>
+    </form>
+</object-views>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
+    <module name="payroll" package="com.axelor.apps.payroll.db"/>
+
+    <enum name="AccountEntryStyle">
+        <item name="SINGLE" value="Single"/>
+        <item name="BOTH_MULTIPLE" value="Multiple Both Sides"/>
+        <item name="MULTIPLE_CREDITS" value="Multiple Credits" />
+        <item name="MULTIPLE_DEBITS" value="Multiple Debits" />
+    </enum>
+
+    <enum name="LeaveTreatment">
+        <item name="LEAVE_NOT_PAID" value="Leave Not Paid" />
+        <item name="LEAVE_PAID" value="Leave Paid" />
+        <item name="LEAVE_ALLOWANCE" value="Leave Allowance" />
+    </enum>
+
+    <enum name="PayrollFrequency">
+        <item name="HOURLY" value="hourly" />
+        <item name="DAILY" value="daily" />
+        <item name="WEEKLY" value="weekly" />
+        <item name="MONTHLY" value="monthly" />
+        <item name="QUARTERLY" value="quarterly" />
+        <item name="YEARLY" value="yearly" />
+    </enum>
+
+    <enum name="PayDayConfigType">
+        <item name="LAST_WORKING_DAY" value="Last Working Day"/>
+        <item name="NEXT_WORKING_DAY" value="Next Working Day"/>
+    </enum>
+
+    <entity name="Payroll" lang="java" cacheable="true">
+
+        <string name="name" title="Name" required="true"/>
+        <string name="code" title="Code" required="true" hashKey="true"/>
+        <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" />
+        <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal" />
+        <many-to-one ref="com.axelor.apps.account.db.Account" name="debitAccount" title="Debit Account"/>
+        <many-to-one ref="com.axelor.apps.account.db.Account" name="creditAccount" title="Credit Account"/>
+        <one-to-many name="employees" ref="EmployeePayrollData" title="Employees on Payroll" mappedBy="payroll"/>
+        <enum name="accountingStyle" ref="AccountEntryStyle"></enum>
+        <enum name="processingFrequency" ref="PayrollFrequency"/>
+        <integer name="preferredProcessDayOfMonth"/>
+        <enum name="preferredDayConfigType" ref="PayDayConfigType"/>
+        <enum name="leaveTreatment" ref="LeaveTreatment"/>
+        <boolean name="enabled"/>
+        <boolean name="prorate"/>
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+        <date name="processedDate" title="Processing Date" />
+        <time name="timeToProcess" title="Time to Process"/>
+        <decimal name="totalAmountProcessed" />
+
+        <unique-constraint columns="code,company"/>
+
+        <track>
+            <field name="name"/>
+            <field name="code"/>
+           <field name="company"/>
+        </track>
+
+    </entity>
+</domain-models>

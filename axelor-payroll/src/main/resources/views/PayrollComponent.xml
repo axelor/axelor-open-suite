@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+    <grid name="payroll-component-grid" title="Payroll Components" model="com.axelor.apps.payroll.db.PayrollComponent">
+        <field name="name" />
+        <field name="code" />
+        <field name="componentType" />
+    </grid>
+
+    <form name="payroll-component-form" title="Payroll Component"
+          model="com.axelor.apps.payroll.db.PayrollComponent"
+          onNew="action-on-new-component"
+          onLoad="action-make-status-type-not-readonly,action-make-field-readonly"
+          onSave="action-edit-component-save">
+        <panel>
+            <field name="name" readonlyIf="makeFieldReadOnly"/>
+            <field name="code" readonlyIf="makeFieldReadOnly"/>
+            <field name="componentType" readonlyIf="makeFieldReadOnly"/>
+            <field name="statusType" readonlyIf="isStatusTypeReadOnly" />
+            <field name="amountType" />
+            <field name="defaultValue" />
+            <panel showIf="amountType == 'CALCULATED'" colSpan="6">
+                <field name="calculationFormula" colSpan="10" />
+                <button name="calFormulaOk" onClick="action-compute-calculated-value" colSpan="2" title="Done" />
+            </panel>
+            <field name="calculatedValue" showIf="amountType == 'CALCULATED'" readonly="true"/>
+            <field name="applicableTax" hideIf="componentType == 'DEDUCTION'" domain="self.name != 'SSNIT'"/>
+            <field name="effectiveDate" />
+            <field name="isBaseSalary" />
+            <field name="isActive" />
+        </panel>
+    </form>
+    
+    <action-method name="action-on-new-component">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="onNewComponent"/>
+    </action-method>
+
+    <action-method name="action-compute-calculated-value">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="computeCalculatedValue"/>
+    </action-method>
+
+    <action-method name="action-edit-component-save">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="editComponentSave" />
+    </action-method>
+
+    <action-method name="action-make-status-type-not-readonly">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="makeStatusTypeNotReadOnly" />
+    </action-method>
+
+    <action-method name="action-make-field-readonly">
+        <call class="com.axelor.apps.payroll.web.PayrollController" method="makeFieldReadOnly" />
+    </action-method>
+</object-views>

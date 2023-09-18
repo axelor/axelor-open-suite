@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
+    <module name="payroll" package="com.axelor.apps.payroll.db"/>
+    
+    <sequence name="payroll.emp.seq" initial="1" increment="1" padding="5" prefix="PAY_EMP_" />
+
+    <entity name="EmployeePayrollData" lang="java" cacheable="true" sequential="true">
+
+        <string name="code" sequence="payroll.emp.seq" required="true"/>
+        <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" required="true"/>
+        <one-to-one name="paygrade" ref="com.axelor.apps.payroll.db.Paygrade" title="Employee Paygrade" required="true"/>
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+        <many-to-one name="payroll" ref="Payroll" title="Payroll" required="true"/>
+        <many-to-many name="employeeGradeComponent" ref="PayrollComponent" title="Employee Grade Component" />
+        <many-to-many name="additionalPayrollComponent" ref="PayrollComponent"
+                      title="Additional Components" />
+        <string name="name" >
+            <![CDATA[
+                if(employee == null){
+                    return null;
+                }
+                return employee.getName();
+            ]]>
+        </string>
+        <boolean name="makeFieldReadOnly" />
+
+        <unique-constraint columns="employee,company"/>
+
+    </entity>
+</domain-models>

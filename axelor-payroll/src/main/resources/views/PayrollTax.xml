@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+    <grid name="payroll-tax-grid" title="Payroll Taxes" model="com.axelor.apps.payroll.db.PayrollTax">
+        <field name="name" />
+        <field name="code" />
+        <field name="rateType" />
+    </grid>
+
+    <form name="payroll-tax-form" title="Payroll Tax" model="com.axelor.apps.payroll.db.PayrollTax">
+        <panel colSpan="12">
+            <field name="name" />
+            <field name="code" />
+            <field name="rateType" />
+            <field name="flatRate" hideIf="rateType == 'TIERED'" />
+            <field name="tierFormula" widget="Text" showIf="rateType == 'TIERED'" />
+        </panel>
+    </form>
+
+    <form name="payroll-ssnit-form" title="Edit SSNIT" model="com.axelor.apps.payroll.db.PayrollTax"
+          canNew="false" canDelete="false" onNew="action-default-ssnit-values">
+        <panel colSpan="12">
+            <field name="name" readonly="true"/>
+            <field name="code" readonly="true"/>
+            <field name="rateType" readonly="true"/>
+            <field name="flatRate" />
+        </panel>
+    </form>
+
+    <grid name="payroll-ssnit-grid" title="Payroll Taxes" model="com.axelor.apps.payroll.db.PayrollTax" canNew="false">
+        <field name="name" />
+        <field name="code" />
+        <field name="rateType" />
+    </grid>
+
+    <action-record name="action-default-ssnit-values" model="com.axelor.apps.payroll.db.PayrollTax">
+        <field name="name" expr="eval: 'SSNIT'"/>
+        <field name="code" expr="eval: 'GHSSNIT'" />
+        <field name="rateType" expr="eval: 'FLAT'" />
+    </action-record>
+</object-views>

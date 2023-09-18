@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+              http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+    <grid name="process-payroll-summary-grid" title="Process Payroll Summaries"
+          model="com.axelor.apps.payroll.db.ProcessPayrollSummary" canNew="false" canEdit="false">
+        <field name="name" />
+        <field name="payPeriod" />
+        <field name="company" />
+        <field name="month" />
+        <field name="year" />
+        <field name="timeOfProcessing" />
+        <field name="processedDate" />
+        <field name="totalProcessedAmount" />
+
+    </grid>
+
+    <form name="process-payroll-summary-form" title="Process Payroll Summary" canNew="false"
+          model="com.axelor.apps.payroll.db.ProcessPayrollSummary" canEdit="false" >
+        <panel readonly="true" colSpan="12">
+            <field name="name" />
+            <field name="payPeriod" />
+            <field name="company" />
+            <field name="month" />
+            <field name="year" />
+            <field name="processedDate" />
+            <field name="timeOfProcessing" />
+            <field name="totalProcessedAmount" />
+            <field name="totalRemuneration" />
+            <field name="totalOtherDeductions" />
+            <field name="totalTax" />
+            <field name="totalSsnitContribution" />
+            <field name="totalDeductions" />
+        </panel>
+        <panel-related field="payslips" colSpan="12" readonly="true" />
+
+    </form>
+</object-views>

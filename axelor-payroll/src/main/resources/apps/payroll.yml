@@ -1,0 +1,13 @@
+---
+name: Payroll
+code: payroll
+typeSelect: standard
+installOrder: 3000
+description: |
+  Manages Employee Payroll
+image: app-payroll.png
+modules:
+  axelor-payroll
+dependsOn:
+  - employee
+sequence: 112

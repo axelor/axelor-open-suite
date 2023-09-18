@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+              http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+    <grid name="payroll-payslip-grid" title="Payslips"
+          model="com.axelor.apps.payroll.db.Payslip" canNew="false" canEdit="false">
+        <field name="employee" />
+        <field name="payPeriod" />
+        <field name="company" />
+        <field name="processedDate" />
+        <field name="calculatedTax" />
+        <field name="calculatedDeductions" />
+        <field name="grossIncome" />
+        <field name="netIncome" />
+        <field name="ssnitContribution" />
+
+    </grid>
+
+    <form name="payroll-payslip-form" title="Payslips" canNew="false"
+          model="com.axelor.apps.payroll.db.Payslip" canEdit="false" >
+        <panel readonly="true" colSpan="12">
+            <field name="employee" />
+            <field name="payPeriod" />
+            <field name="company" />
+            <field name="processedDate" />
+            <field name="ssnitContribution" />
+            <field name="calculatedTax" />
+            <field name="otherDeductions" />
+            <field name="calculatedDeductions" />
+            <field name="grossIncome" />
+            <field name="netIncome" />
+        </panel>
+        <panel-related field="earnings" colSpan="12" readonly="true" title="Earnings"/>
+        <panel-related field="deductions" colSpan="12" readonly="true" title="Deductions Aside Ssnit and PAYE Tax"/>
+    </form>
+</object-views>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+
+    <module name="payroll" package="com.axelor.apps.payroll.db"/>
+
+    <entity name="ProcessPayrollSummary" lang="java" cacheable="true">
+
+        <string name="name" title="Name" />
+        <string name="frequency" title="Frequency" />
+        <time name="timeOfProcessing" title="Time of Processing" />
+        <many-to-one name="payPeriod" ref="com.axelor.apps.base.db.Period" title="Pay Period"/>
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+        <one-to-many name="payslips" ref="Payslip" title="Payslips" />
+        <string name="month" title="Month">
+            <![CDATA[
+                if(processedDate == null){
+                    return null;
+                }
+                String month =  ""+processedDate.getMonth();
+                return month.substring(0, 1).toUpperCase() + month.substring(1, month.length()).toLowerCase();
+            ]]>
+        </string>
+        <string name="year" title="Year">
+            <![CDATA[
+                if(processedDate == null){
+                    return null;
+                }
+                return ""+processedDate.getYear();
+            ]]>
+        </string>
+        <date name="processedDate" title="Processed Date" />
+        <decimal name="totalOtherDeductions" title="Other Deductions aside Tax and SSNIT" />
+        <decimal name="totalDeductions" title="Total Deductions"/>
+        <decimal name="totalTax" title="Total Tax"/>
+        <decimal name="totalRemuneration" title="Total Remuneration"/>
+        <decimal name="totalSsnitContribution" title="Total SSNIT Contribution"/>
+        <decimal name="totalProcessedAmount" title="Total Processed Amount"/>
+
+    </entity>
+</domain-models>
