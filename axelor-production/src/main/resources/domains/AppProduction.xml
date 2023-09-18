@@ -47,7 +47,7 @@
 
     <string name="mOFilterOnStockDetailStatusSelect"
       title="Status considered to filter a manuf order"
-      selection="production.manuf.order.status.select" default="4,5"/>
+      selection="production.manuf.order.status.select" default="3,4,5"/>
     <integer name="operationContinuitySelect" title="Operation Continuity"
       selection="production.manuf.operation.continuity.select"/>
     <boolean name="manageOutsourcing" title="Manage outsourcing"/>

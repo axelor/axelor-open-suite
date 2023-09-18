@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -42,6 +43,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -140,6 +144,8 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       return;
     }
 
+    checkCurrency(expense, expenseLineList);
+
     for (ExpenseLine expenseLine : expenseLineList) {
       Product expenseProduct = expenseLine.getExpenseProduct();
       KilometricAllowParam kilometricAllowParam = expenseLine.getKilometricAllowParam();
@@ -149,6 +155,21 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       if (expenseProduct != null && kilometricAllowParam != null) {
         expense.addKilometricExpenseLineListItem(expenseLine);
       }
+    }
+  }
+
+  protected void checkCurrency(Expense expense, List<ExpenseLine> expenseLineList)
+      throws AxelorException {
+    Set<Currency> currencySet =
+        expenseLineList.stream().map(ExpenseLine::getCurrency).collect(Collectors.toSet());
+    Optional<Currency> expenseLineCurrency = currencySet.stream().findFirst();
+
+    if (currencySet.size() > 1
+        || (expenseLineCurrency.isPresent()
+            && !expense.getCurrency().equals(expenseLineCurrency.get()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_CURRENCY_NOT_EQUAL));
     }
   }
 

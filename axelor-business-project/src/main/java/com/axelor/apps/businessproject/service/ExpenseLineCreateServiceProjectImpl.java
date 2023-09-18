@@ -1,6 +1,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Employee;
@@ -41,10 +42,10 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
   @Transactional(rollbackOn = {Exception.class})
   @Override
   protected ExpenseLine createBasicExpenseLine(
-      Project project, Employee employee, LocalDate expenseDate, String comments)
+      Project project, Employee employee, LocalDate expenseDate, String comments, Currency currency)
       throws AxelorException {
     ExpenseLine expenseLine =
-        super.createBasicExpenseLine(project, employee, expenseDate, comments);
+        super.createBasicExpenseLine(project, employee, expenseDate, comments, currency);
 
     if (appBusinessProjectService.isApp("business-project")) {
       if (project != null) {
