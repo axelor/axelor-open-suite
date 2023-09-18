@@ -18,23 +18,30 @@
  */
 package com.axelor.apps.maintenance.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.maintenance.report.IReport;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceImpl
     implements BillOfMaterialMaintenanceService {
+
+  protected ProductionConfigService productionConfigService;
+  protected BirtTemplateService birtTemplateService;
 
   @Inject
   public BillOfMaterialServiceMaintenanceImpl(
@@ -43,7 +50,9 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      ProductionConfigService productionConfigService,
+      BirtTemplateService birtTemplateService) {
     super(
         billOfMaterialRepo,
         tempBomTreeRepo,
@@ -51,6 +60,8 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
         productCompanyService,
         billOfMaterialLineService,
         billOfMaterialService);
+    this.productionConfigService = productionConfigService;
+    this.birtTemplateService = birtTemplateService;
   }
 
   @Override
@@ -63,13 +74,23 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
 
   @Override
   public String getReportLink(BillOfMaterial billOfMaterial, String name) throws AxelorException {
-
-    return ReportFactory.createReport(
-            IReport.MAINTENANCE_BILL_OF_MATERIAL, getFileName(billOfMaterial) + "-${date}")
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .addParam("BillOfMaterialId", billOfMaterial.getId())
-        .generate()
-        .getFileLink();
+    billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
+    Company company = billOfMaterial.getCompany();
+    BirtTemplate maintenanceBOMBirtTemplate = null;
+    if (ObjectUtils.notEmpty(company)) {
+      maintenanceBOMBirtTemplate =
+          productionConfigService
+              .getProductionConfig(company)
+              .getMaintenanceBillOfMaterialBirtTemplate();
+    }
+    if (maintenanceBOMBirtTemplate == null
+        || maintenanceBOMBirtTemplate.getTemplateMetaFile() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return birtTemplateService.generateBirtTemplateLink(
+        maintenanceBOMBirtTemplate, billOfMaterial, getFileName(billOfMaterial) + "-${date}");
   }
 
   @Override
