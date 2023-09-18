@@ -265,9 +265,18 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     manufOrderRepo.save(manufOrder);
   }
 
+  /**
+   * CAUTION : This method can not be called from a Transactional method or the mail sending method
+   * could not work correctly.
+   */
   @Override
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
     finishManufOrder(manufOrder);
+    return sendFinishedMail(manufOrder);
+  }
+
+  @Override
+  public boolean sendFinishedMail(ManufOrder manufOrder) {
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -278,8 +287,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     return true;
   }
 
+  /** CAUTION : Must be called in a different transaction from sending mail method. */
   @Transactional(rollbackOn = {Exception.class})
-  protected void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
+  public void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
@@ -380,6 +390,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
     manufOrderStockMoveService.partialFinish(manufOrder);
+    return sendPartialFinishMail(manufOrder);
+  }
+
+  public boolean sendPartialFinishMail(ManufOrder manufOrder) {
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -465,18 +479,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
-    int count = 0;
-    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
-    for (OperationOrder operationOrderIt : operationOrderList) {
-      if (operationOrderIt.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
-        count++;
-      }
-    }
-
-    if (count == operationOrderList.size()) {
-      this.finish(manufOrder);
+    if (manufOrder.getOperationOrderList().stream()
+        .allMatch(
+            operationOrder ->
+                operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED)) {
+      this.finishManufOrder(manufOrder);
     }
   }
 
