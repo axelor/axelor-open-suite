@@ -716,11 +716,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     BigDecimal oldQty = stockLocationLine.getCurrentQty().subtract(newQty);
 
-    if (oldAvgPrice == null || oldAvgPrice.signum() == 0 || oldQty.signum() == 0) {
-      oldAvgPrice = BigDecimal.ZERO;
-      oldQty = BigDecimal.ZERO;
-    }
-
     log.debug(
         "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
         oldAvgPrice,
