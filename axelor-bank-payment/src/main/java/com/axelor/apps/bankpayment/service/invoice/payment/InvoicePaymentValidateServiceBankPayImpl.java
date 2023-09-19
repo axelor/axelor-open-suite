@@ -155,6 +155,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
       throws AxelorException {
 
+    // Payment date has been initialized at creation. But BankOrder may be validate on a later date
+    // So updating paymentDate
+    invoicePayment.setPaymentDate(invoicePayment.getBankOrder().getBankOrderDate());
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     Company company = invoicePayment.getInvoice().getCompany();
