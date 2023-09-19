@@ -27,18 +27,19 @@
   </grid>
 
   <form name="accounting-report-form" title="Accounting report"
-    model="com.axelor.apps.account.db.AccountingReport" onNew="action-group-account-report-on-new"
-    onLoad="action-attrs-accounting-report-attrs-move-status-domain,action-accounting-report-attrs-display-anomalies">
+    model="com.axelor.apps.account.db.AccountingReport"
+    onLoad="action-accounting-report-attrs-display-anomalies"
+    onNew="action-accounting-report-record-default">
     <panel name="mainPanel"
       readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 19 || reportType.typeSelect == 20)">
-      <field name="ref" showTitle="false"
+      <field name="ref" showTitle="false" readonly="true"
         showIf="id &amp;&amp; ![23,24].includes(reportType.typeSelect)" colSpan="12"
-        css="label-bold bold large" readonly="true">
+        css="label-bold bold large">
         <viewer><![CDATA[
-          <span>{{record.ref}}</span>
-    	]]></viewer>
+        <span>{{record.ref}}</span>
+          ]]></viewer>
       </field>
-      <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
+      <field name="company" readonlyIf="ref != null" widget="SuggestBox" canEdit="false"
         onChange="action-group-account-accounting-report-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
       <field name="date" readonlyIf="statusSelect == 2 &amp;&amp; reportType.typeSelect != 18"
@@ -46,108 +47,98 @@
       <field name="reportType"
         onChange="action-group-account-accounting-report-reporttype-onchange"
         domain="self.reportExportTypeSelect = 1 AND self.company = :company"/>
-      <field name="reportType.typeSelect" hidden="true"/>
       <field name="exportTypeSelect" selection-in="['pdf','xlsx','ods']"/>
-
-      <field name="reportType.comparison" hidden="true"/>
     </panel>
-
-    <panel sidebar="true" name="infoPanel" title="Info">
+    <panel name="infoPanel" title="Info" sidebar="true">
       <button name="searchBtn" title="Search"
         hideIf="([19,20].indexOf(reportType.typeSelect) == -1)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
       <button name="exportBtn" title="Print" icon="fa-print"
         onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click"/>
       <button name="createAccountingExportBtn" title="Create accounting export"
-        icon="fa-cogs" showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19"
+        showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19" icon="fa-cogs"
         onClick="save,action-accounting-report-method-create-export-from-report"/>
       <field name="statusSelect"/>
       <field name="publicationDateTime" hideIf="[23,24].includes(reportType.typeSelect)"/>
     </panel>
-
     <panel name="periodPanel" title="Period"
       hideIf="![1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,2000,2001,3000].includes(reportType.typeSelect)">
-      <field name="year" canEdit="false"
+      <field name="year"
         readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)"
-        onChange="action-accounting-report-record-period-dates"
+        canEdit="false" onChange="action-accounting-report-record-period-dates"
         onSelect="action-accounting-report-attrs-year-domain"
         requiredIf="[12,15,16,17,19,20].includes(reportType.typeSelect) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
-        grid-view="year-account-grid" form-view="year-account-form"/>
-      <field name="period" canEdit="false"
+        form-view="year-account-form" grid-view="year-account-grid"/>
+      <field name="period" canView="false" canEdit="false"
         onChange="action-group-account-accounting-report-period-onchange"
+        onSelect="action-accounting-report-attrs-period-domain"
         requiredIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"
-        onSelect="action-accounting-report-attrs-period-domain" form-view="period-form"
-        grid-view="period-grid" canView="false"/>
+        form-view="period-form" grid-view="period-grid"/>
       <field name="dateFrom"
-        readonlyIf="(statusSelect == 2 &amp;&amp; [18,19].includes(reportType.typeSelect)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
+        readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
         onChange="action-move-Live-report-record-set-date-to"
-        requiredIf="[12,15,19,20,21,22,23,24,25].includes(reportType.typeSelect)"/>
+        requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
       <field name="dateTo"
-        readonlyIf="(statusSelect == 2 &amp;&amp; [18,19].includes(reportType.typeSelect)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
-        requiredIf="[12,15,19,20,21,22,23,24,25].includes(reportType.typeSelect)"/>
-      <field name="isComparativeBalance" widget="inline-checkbox" colSpan="12"
-        showIf="reportType.typeSelect == 2"/>
-
+        readonlyIf="(statusSelect == 2 &amp;&amp; (reportType.typeSelect == 18 || reportType.typeSelect == 19)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
+        requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
+      <field name="isComparativeBalance" showIf="reportType.typeSelect == 2" colSpan="12"
+        widget="inline-checkbox"/>
+      <panel name="otherPeriodPanel" title="Comparative period"
+        showIf="(reportType.typeSelect == 2 &amp;&amp; isComparativeBalance ) || (reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports)"
+        colSpan="12" canCollapse="true">
+        <field name="otherYear" colSpan="6"
+          onChange="action-accounting-report-record-other-period-dates"
+          onSelect="action-accounting-report-attrs-other-year-domain" form-view="year-account-form"
+          grid-view="year-account-grid"/>
+        <field name="otherPeriod" colSpan="6" canView="false"
+          onChange="action-accounting-report-record-other-period-on-change"
+          onSelect="action-accounting-report-attrs-other-period-domain" form-view="period-form"
+          grid-view="period-grid"/>
+        <field name="otherDateFrom" colSpan="6"/>
+        <field name="otherDateTo" colSpan="6"/>
+      </panel>
     </panel>
-
     <panel-tabs name="mainPanelTab">
       <panel name="filterPanel" title="Filter">
-        <panel name="otherPeriodPanel" title="Comparative period" colSpan="12"
-          canCollapse="true" collapseIf="true"
-          showIf="(reportType.typeSelect == 2 &amp;&amp; isComparativeBalance ) || (reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports)">
-          <field name="otherYear"
-            onChange="action-accounting-report-record-other-period-dates"
-            onSelect="action-accounting-report-attrs-other-year-domain"
-            grid-view="year-account-grid" form-view="year-account-form" colSpan="6"/>
-          <field name="otherPeriod"
-            onChange="action-accounting-report-record-other-period-on-change"
-            onSelect="action-accounting-report-attrs-other-period-domain" form-view="period-form"
-            grid-view="period-grid" canView="false" colSpan="6"/>
-          <field name="otherDateFrom" colSpan="6"/>
-          <field name="otherDateTo" colSpan="6"/>
-        </panel>
-
-        <panel name="accountingPanel" title="Accounting" colSpan="12" canCollapse="true"
-          hideIf="reportType.typeSelect == 25">
+        <panel name="accountingPanel" title="Accounting" colSpan="12" canCollapse="true">
           <field name="currency"/>
           <field name="minAmountExcl"
-            showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
+            showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
           <field name="journal"
             hideIf="[0,1,2,3,5,10,12,13,14,15,16,17,18,19,20,21,22,23,24,3000].indexOf(reportType.typeSelect) != -1"
-            domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
-            grid-view="journal-grid" canEdit="false"
-            onChange="action-accounting-report-record-reset-display-simulated-move"
-            requiredIf="reportType.typeSelect == 11"/>
-          <field name="journalSet" if-module="axelor-bank-payment"
-            if="__config__.app.isApp('bank-payment')" requiredIf="reportType.typeSelect == 18"
-            widget="TagSelect" canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
-            domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
-            grid-view="journal-grid" canEdit="false"/>
-          <field name="paymentMode" grid-view="payment-mode-grid"
-            form-view="payment-mode-form"
-            hideIf="[1,2,3,4,5,7,10,11,12,13,14,15,16,17,19,20,21,22,23,24,2000,2001].indexOf(reportType.typeSelect) != -1"/>
-          <field name="moveStatusSelect" widget="MultiSelect"
-            onSelect="action-attrs-accounting-report-attrs-move-status-domain" selection-in="[2,5]"
-            hideIf="[1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,20,21,22,2000,2001,3000].indexOf(reportType.typeSelect) == -1"/>
-          <field name="accountSet" requiredIf="reportType.typeSelect == 18"
+            canEdit="false" onChange="action-accounting-report-record-reset-display-simulated-move"
+            domain="self.statusSelect = 1 AND self.company = :company"
+            requiredIf="reportType.typeSelect == 11" form-view="journal-form"
+            grid-view="journal-grid"/>
+          <field if="__config__.app.isApp('bank-payment')" if-module="axelor-bank-payment"
+            name="journalSet" showIf="reportType.typeSelect == 18" colSpan="12" widget="TagSelect"
+            canNew="false" canEdit="false"
+            domain="self.statusSelect = 1 AND self.company = :company"
+            requiredIf="reportType.typeSelect == 18" form-view="journal-form"
+            grid-view="journal-grid"/>
+          <field name="paymentMode"
+            hideIf="[1,2,3,4,5,7,10,11,12,13,14,15,16,17,19,20,21,22,23,24,2000,2001].indexOf(reportType.typeSelect) != -1"
+            form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+          <field name="accountSet"
             hideIf="[12,15,16,19,20,21,22,23,24,2000,2001].indexOf(reportType.typeSelect) != -1"
-            colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect"
-            canNew="false" onSelect="action-accounting-report-attrs-accountset-domain"/>
-
+            colSpan="12" widget="TagSelect" canNew="false"
+            onSelect="action-accounting-report-attrs-accountset-domain"
+            requiredIf="reportType.typeSelect == 18" form-view="account-form"
+            grid-view="account-grid"/>
           <field name="partnerSet"
             hideIf="[12,15,16,17,18,19,20,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
-            colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect"
-            canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
-
-          <field name="accountTypeSet" colSpan="12" showIf="reportType.typeSelect == 6"
+            colSpan="12" widget="TagSelect" canNew="false"
+            domain=":company member of self.companySet AND self.isContact = false"
+            form-view="partner-form" grid-view="partner-grid"/>
+          <field name="accountTypeSet" showIf="reportType.typeSelect == 6" colSpan="12"
             widget="TagSelect" canNew="false" form-view="account-type-form"
             grid-view="account-type-grid"/>
-
-          <field name="bankDetailsSet" if-module="axelor-bank-payment"
-            if="__config__.app.isApp('bank-payment')" requiredIf="reportType.typeSelect == 18"
-            showIf="reportType.typeSelect == 18" colSpan="12" form-view="bank-details-form"
-            grid-view="bank-details-grid" widget="TagSelect" canNew="false"
-            onSelect="action-accounting-report-method-set-bank-details-domain"/>
+          <field if="__config__.app.isApp('bank-payment')" if-module="axelor-bank-payment"
+            name="bankDetailsSet" showIf="reportType.typeSelect == 18" colSpan="12"
+            widget="TagSelect" canNew="false"
+            onSelect="action-accounting-report-method-set-bank-details-domain"
+            requiredIf="reportType.typeSelect == 18" form-view="bank-details-form"
+            grid-view="bank-details-grid"/>
         </panel>
         <panel name="budgetPanel" title="Budget" canCollapse="true" colSpan="12"
           showIf="reportType.typeSelect == 25">
@@ -156,20 +147,18 @@
             grid-view="global-budget-grid" widget="TagSelect" canNew="false"
             domain="self.statusSelect IN (1,2)"/>
         </panel>
-        <panel name="fixedAssetPanel" title="Fixed asset" colSpan="12" canCollapse="true"
-          collapseIf="true" showIf="reportType.typeSelect == 17">
+        <panel name="fixedAssetPanel" title="Fixed asset" showIf="reportType.typeSelect == 17"
+          colSpan="12" canCollapse="true" collapseIf="true">
           <field name="analyticDistributionTemplate" showIf="reportType.typeSelect == 17"
             form-view="analytic-distribution-template-form"
             grid-view="analytic-distribution-template-grid"/>
-          <field name="subtotalByAnalyticDistribution" showIf="reportType.typeSelect == 17"
-            widget="boolean-switch"/>
           <field name="fixedAssetLineTypeSelect" requiredIf="reportType.typeSelect == 17"/>
         </panel>
-        <panel name="analyticPanel" title="Analytic" colSpan="12" canCollapse="true"
-          collapseIf="true"
-          showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 3000">
-          <field name="analyticJournal" canNew="false"
-            showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001"
+        <panel name="analyticPanel" title="Analytic"
+          showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001 || reportType.typeSelect == 3000"
+          colSpan="12" canCollapse="true" collapseIf="true">
+          <field name="analyticJournal"
+            showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001" canNew="false"
             domain="self.company = :company" form-view="analytic-journal-form"
             grid-view="analytic-journal-grid"/>
           <field name="analyticAxisSet"
@@ -178,92 +167,97 @@
             grid-view="analytic-axis-grid"/>
           <field name="analyticAccountSet"
             showIf="[2000,2001,3000].includes(reportType.typeSelect)" colSpan="12"
-            widget="TagSelect" canNew="false" form-view="analytic-account-form"
-            grid-view="analytic-account-grid" domain="self.company = :company"/>
+            widget="TagSelect" canNew="false" domain="self.company = :company"
+            form-view="analytic-account-form" grid-view="analytic-account-grid"/>
           <field name="accountTypeSet"
             showIf="[6,2000,2001].indexOf(reportType.typeSelect) != -1" colSpan="12"
             widget="TagSelect" canNew="false" form-view="account-type-form"
             grid-view="account-type-grid"/>
-
           <panel-related name="accountingReportAnalyticConfigLineListPanel"
-            field="accountingReportAnalyticConfigLineList" colSpan="12" height="15"
-            x-row-height="29" form-view="accounting-report-analytic-config-line-form"
-            grid-view="accounting-report-analytic-config-line-grid"
-            showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
+            showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"
+            colSpan="12" height="15" field="accountingReportAnalyticConfigLineList"
+            form-view="accounting-report-analytic-config-line-form"
+            grid-view="accounting-report-analytic-config-line-grid" x-row-height="29"/>
         </panel>
-        <panel name="printingInformationsPanel" title="Printing information" colSpan="12"
-          hideIf="[15,16,17,18,19,20,21,22,25,2000].indexOf(reportType.typeSelect) != -1">
-          <panel name="amountsPanel" title="Amounts" colSpan="12" canCollapse="true"
-            stacked="true"
-            hideIf="[2,5,6,10,11,12,15,16,21,22,2000].indexOf(reportType.typeSelect) != -1">
-
-            <field name="globalByDate"
-              hideIf="[1,2,3,4,5,6,10,11,12,13,14,15,16,17,21,23,24,22,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
-              onChange="action-accounting-report-record-global-by-date"/>
-            <field name="globalByPartner"
-              showIf="[3,7,13,23,24].indexOf(reportType.typeSelect) != -1"
-              onChange="action-accounting-report-record-global-by-partner"/>
-            <field name="displayCumulativeBalance"
-              showIf="reportType.typeSelect == 1 || reportType.typeSelect == 7 || reportType.typeSelect == 2001"/>
-            <field name="detailed" hideIf="[4,23,24].indexOf(reportType.typeSelect) != -1"
-              onChange="action-accounting-report-record-detailed"/>
-            <field name="global"
-              hideIf="[0,1,2,3,4,5,6,7,10,11,12,13,15,16,17,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
-              onChange="action-accounting-report-record-global"/>
-            <field name="subtotalByAnalyticDistribution" showIf="reportType.typeSelect == 17"
-              widget="inline-checkbox"/>
-            <field name="displayDeltaYear"
-              showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"/>
-            <field name="displayDeltaYearPercentage"
-              showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"/>
-          </panel>
-          <panel name="accountingMovesPanel" title="Moves" colSpan="12" canCollapse="true"
-            hideIf="[17,23,24].indexOf(reportType.typeSelect) != -1">
-            <separator title="Balance sheet entries" colSpan="12"
-              hideIf="[5,10,16,17,21,22,23,24].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
-            <field name="displayClosingAccountingMoves"
-              hideIf="[5,10,12,15,16,17,21,22,23,24,1001,1010,2000].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
-            <field name="displayOpeningAccountingMoves"
-              hideIf="[5,10,12,15,16,17,21,22,23,24,2000].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
-            <separator title="Display options" colSpan="12"
-              showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
-            <field name="displayOnlyNotCompletelyLetteredMoveLines"
-              hideIf="reportType.typeSelect != 7 &amp;&amp; reportType.typeSelect != 1"/>
-            <field name="displayCodeAccountColumnOnPrinting"
-              showIf="reportType.typeSelect == 7"/>
-            <field name="displayNameAccountColumnOnPrinting"
-              showIf="reportType.typeSelect == 7"/>
-            <field name="displayMoveLineSequenceOnPrinting"
-              showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
-            <field name="displayDetails" widget="inline-checkbox"
-              showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
-          </panel>
-          <panel name="accountingAccountsPanel" title="Accounts"
-            showIf="reportType.typeSelect==7 || (reportType.typeSelect==3000 &amp;&amp; !reportType.useLegacyCustomReports)"
-            colSpan="12" canCollapse="true">
-            <field name="displayCodeAccountColumnOnPrinting" widget="inline-checkbox"
-              showIf="reportType.typeSelect==7"/>
-            <field name="displayNameAccountColumnOnPrinting" widget="inline-checkbox"
-              showIf="reportType.typeSelect==7"/>
-            <field name="displayAnalyticAccountsDetails" widget="inline-checkbox"
-              showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
-          </panel>
-          <field name="reportType.useLegacyCustomReports" hidden="true"/>
-          <field name="reportType.typeSelect" hidden="true"/>
-          <field name="reportType.comparison" hidden="true"/>
+      </panel>
+      <panel name="printingInformationsPanel" title="Printing information"
+        hideIf="[15,16,18,19,20,21,22,25,2000].indexOf(reportType.typeSelect) != -1" colSpan="12">
+        <panel name="amountsPanel" title="Amounts"
+          hideIf="[2,5,6,10,11,12,16,21,22,2000,3000].indexOf(reportType.typeSelect) != -1"
+          colSpan="12" stacked="true" canCollapse="true">
+          <field name="globalByDate"
+            hideIf="[1,2,3,4,5,6,10,11,12,13,14,15,16,17,21,23,24,22,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
+            onChange="action-accounting-report-record-global-by-date" widget="inline-checkbox"/>
+          <field name="globalByPartner"
+            showIf="[3,7,13,23,24].indexOf(reportType.typeSelect) != -1"
+            onChange="action-accounting-report-record-global-by-partner" widget="inline-checkbox"/>
+          <field name="displayCumulativeBalance"
+            showIf="reportType.typeSelect == 1 || reportType.typeSelect == 7 || reportType.typeSelect == 2001"
+            widget="inline-checkbox"/>
+          <field name="detailed" showIf="[4,23,24].indexOf(reportType.typeSelect) != -1"
+            onChange="action-accounting-report-record-detailed" widget="inline-checkbox"/>
+          <field name="global"
+            hideIf="[0,1,2,3,4,5,6,7,10,11,12,13,15,16,17,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
+            onChange="action-accounting-report-record-global" widget="inline-checkbox"/>
+          <field name="subtotalByAnalyticDistribution" showIf="reportType.typeSelect == 17"
+            widget="inline-checkbox"/>
+          <field name="displayDeltaYear"
+            showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"
+            widget="inline-checkbox"/>
+          <field name="displayDeltaYearPercentage"
+            showIf="reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3"
+            widget="inline-checkbox"/>
         </panel>
-
+        <panel name="accountingMovesPanel" title="Moves"
+          hideIf="[17,23,24].indexOf(reportType.typeSelect) != -1" colSpan="12" canCollapse="true"
+          stacked="true">
+          <field name="moveStatusSelect"/>
+          <field name="displayClosingAccountingMoves" widget="inline-checkbox"
+            hideIf="[5,10,12,15,16,17,21,22,23,24,1001,1010,2000].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
+          <field name="displayOpeningAccountingMoves" widget="inline-checkbox"
+            hideIf="[5,10,12,15,16,17,21,22,23,24,2000].indexOf(reportType.typeSelect) != -1 || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison == 3)"/>
+          <separator
+            showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1 || reportType.typeSelect == 3000"/>
+          <field name="displayOnlyNotCompletelyLetteredMoveLines"
+            hideIf="reportType.typeSelect != 7 &amp;&amp; reportType.typeSelect != 1"
+            widget="inline-checkbox"/>
+          <field name="displayMoveLineSequenceOnPrinting"
+            showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"
+            widget="inline-checkbox"/>
+          <field name="displayDetails"
+            showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"
+            widget="inline-checkbox"/>
+          <field name="displaySimulatedMove"
+            showIf="company.accountConfig.isActivateSimulatedMove &amp;&amp; (journal == null || journal.authorizeSimulatedMove)"
+            widget="inline-checkbox"/>
+        </panel>
+        <panel name="accountingAccountsPanel" title="Accounts"
+          showIf="reportType.typeSelect==7 || reportType.typeSelect == 1 || (reportType.typeSelect==3000 &amp;&amp; !reportType.useLegacyCustomReports)"
+          colSpan="12" canCollapse="true">
+          <field name="displayCodeAccountColumnOnPrinting"
+            showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"
+            widget="inline-checkbox"/>
+          <field name="displayNameAccountColumnOnPrinting"
+            showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"
+            widget="inline-checkbox"/>
+          <field name="displayAnalyticAccountsDetails"
+            showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"
+            widget="inline-checkbox"/>
+        </panel>
+      </panel>
+      <panel name="otherPanel" title="Other" readonly="true" hidden="true">
+        <field name="reportType.typeSelect"/>
+        <field name="reportType.useLegacyCustomReports"/>
+        <field name="reportType.comparison"/>
+        <field name="company.accountConfig.isActivateSimulatedMove"/>
         <field name="company.accountConfig" hidden="true"/>
-        <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
       </panel>
       <panel-dashlet name="tracebackPanel" title="Anomalies" hidden="true"
         action="action-accounting-report-view-traceback"/>
     </panel-tabs>
-
-    <panel-related field="accountingReportMoveLineList" hidden="true"
-      grid-view="accounting-report-move-line-grid" form-view="accounting-report-move-line-form"
-      canEdit="false" canNew="false" canRemove="false"/>
-
+    <panel-related hidden="true" field="accountingReportMoveLineList"
+      form-view="accounting-report-move-line-form" grid-view="accounting-report-move-line-grid"
+      canNew="false" canEdit="false" canRemove="false"/>
   </form>
 
 
@@ -288,7 +282,7 @@
 
   <form name="accounting-report-export-form" title="Accounting export"
     model="com.axelor.apps.account.db.AccountingReport"
-    onNew="action-accounting-report-record-default,action-attrs-accounting-report-attrs-move-status-domain">
+    onNew="action-accounting-report-record-default">
 
     <panel name="searchPanel">
       <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
@@ -349,10 +343,6 @@
 
 
   <!-- ACTION GROUPs -->
-  <action-group name="action-group-account-report-on-new">
-    <action name="action-accounting-report-record-default"/>
-    <action name="action-attrs-accounting-report-attrs-move-status-domain"/>
-  </action-group>
 
   <action-group name="action-group-account-accounting-report-reporttype-onchange">
     <action name="action-accounting-report-record-reset"/>
@@ -376,21 +366,9 @@
   <action-group name="action-group-account-accounting-report-company-onchange">
     <action name="action-accounting-report-method-get-account"/>
     <action name="action-accounting-report-record-reset"/>
-    <action name="action-attrs-accounting-report-attrs-move-status-domain"/>
   </action-group>
 
   <!-- ACTION ATTRS -->
-
-  <action-attrs name="action-attrs-accounting-report-attrs-move-status-domain">
-    <attribute name="selection-in" expr="[2,5]" for="moveStatusSelect"
-      if="company?.accountConfig?.accountingDaybook &amp;&amp; company?.accountConfig?.isActivateSimulatedMove"/>
-    <attribute name="selection-in" expr="[2]" for="moveStatusSelect"
-      if="company?.accountConfig?.accountingDaybook &amp;&amp; !company?.accountConfig?.isActivateSimulatedMove"/>
-    <attribute name="selection-in" expr="[5]" for="moveStatusSelect"
-      if="!company?.accountConfig?.accountingDaybook &amp;&amp; company?.accountConfig?.isActivateSimulatedMove"/>
-    <attribute name="hidden" expr="true" for="moveStatusSelect"
-      if="!company?.accountConfig?.accountingDaybook &amp;&amp; !company?.accountConfig?.isActivateSimulatedMove"/>
-  </action-attrs>
 
   <action-attrs name="action-accounting-report-attrs-period-domain">
     <attribute if="eval: year != null" name="domain"
@@ -543,6 +521,12 @@
   <action-record name="action-move-Live-report-record-set-date-to"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="dateTo" expr="eval: dateFrom" if="dateFrom &amp;&amp; !dateTo"/>
+  </action-record>
+
+  <action-record name="action-accounting-report-record-reset-display-simulated-move"
+    model="com.axelor.apps.account.db.AccountingReport">
+    <field name="displaySimulatedMove" expr="eval: false"
+      if="!journal?.authorizeSimulatedMove"/>
   </action-record>
 
   <!-- ACTION METHOD -->
