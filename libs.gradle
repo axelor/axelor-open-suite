@@ -15,8 +15,6 @@ libs.commons_validator = 'commons-validator:commons-validator:1.4.0'
 libs.commons_text = 'org.apache.commons:commons-text:1.9'
 
 libs.pdfbox = 'org.apache.pdfbox:pdfbox:2.0.9'
-libs.itextpdf = 'com.itextpdf:itextpdf:5.5.13.1'
-libs.itext7_core = 'com.itextpdf:itext7-core:7.0.4'
 libs.html2pdf = 'com.itextpdf:html2pdf:2.0.0'
 libs.flying_saucer_pdf = 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
 
@@ -56,3 +54,5 @@ libs.google_api_services_people = dependencies.create('com.google.apis:google-ap
 libs.mockito = 'org.mockito:mockito-core:3.3.3'
 
 libs.pac4j_core = "org.pac4j:pac4j-core:3.8.3"
+
+libs.boxable = 'com.github.dhorions:boxable:1.7.0'
