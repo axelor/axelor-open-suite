@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -75,6 +76,7 @@ public class MoveTemplateService {
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected MoveRecordUpdateService moveRecordUpdateService;
 
   protected List<String> exceptionsList;
 
@@ -91,7 +93,8 @@ public class MoveTemplateService {
       BankDetailsService bankDetailsService,
       MoveTemplateRepository moveTemplateRepo,
       MoveLineTaxService moveLineTaxService,
-      MoveLineInvoiceTermService moveLineInvoiceTermService) {
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      MoveRecordUpdateService moveRecordUpdateService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -105,6 +108,7 @@ public class MoveTemplateService {
     this.moveTemplateRepo = moveTemplateRepo;
     this.moveLineTaxService = moveLineTaxService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.moveRecordUpdateService = moveRecordUpdateService;
 
     this.exceptionsList = Lists.newArrayList();
   }
@@ -274,6 +278,7 @@ public class MoveTemplateService {
             }
 
             moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
+            moveRecordUpdateService.updateDueDate(move, false, false);
 
             counter++;
           }
@@ -387,6 +392,7 @@ public class MoveTemplateService {
                 moveTemplateLine.getAnalyticDistributionTemplate());
 
             moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
+            moveRecordUpdateService.updateDueDate(move, false, false);
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
