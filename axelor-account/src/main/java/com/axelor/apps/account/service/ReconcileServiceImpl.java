@@ -501,7 +501,6 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount,
       boolean updateInvoiceTerms)
       throws AxelorException {
-
     InvoicePayment invoicePayment = null;
     if (invoice != null
         && otherMove.getFunctionalOriginSelect()
@@ -514,17 +513,7 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .orElse(this.getExistingInvoicePayment(invoice, otherMove));
       }
 
-      Currency currency;
-      if (invoicePayment != null) {
-        currency = invoicePayment.getCurrency();
-      } else {
-        currency = otherMove.getCurrency();
-        if (currency == null) {
-          currency = otherMove.getCompanyCurrency();
-        }
-      }
-      boolean isCompanyCurrency = currency.equals(reconcile.getCompany().getCurrency());
-      if (!isCompanyCurrency) {
+      if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
         amount = this.getTotal(moveLine, otherMoveLine, amount, invoicePayment != null);
       }
 
@@ -533,7 +522,10 @@ public class ReconcileServiceImpl implements ReconcileService {
             invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
         invoicePayment.addReconcileListItem(reconcile);
       }
+    } else if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
+      amount = this.getTotal(moveLine, otherMoveLine, amount, false);
     }
+
     List<InvoiceTermPayment> invoiceTermPaymentList = null;
     if (moveLine.getAccount().getUseForPartnerBalance() && updateInvoiceTerms) {
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
@@ -547,6 +539,21 @@ public class ReconcileServiceImpl implements ReconcileService {
     } else if (!ObjectUtils.isEmpty(invoiceTermPaymentList)) {
       invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepo.save(it));
     }
+  }
+
+  protected boolean isCompanyCurrency(
+      Reconcile reconcile, InvoicePayment invoicePayment, Move otherMove) {
+    Currency currency;
+    if (invoicePayment != null) {
+      currency = invoicePayment.getCurrency();
+    } else {
+      currency = otherMove.getCurrency();
+      if (currency == null) {
+        currency = otherMove.getCompanyCurrency();
+      }
+    }
+
+    return currency.equals(reconcile.getCompany().getCurrency());
   }
 
   protected BigDecimal getTotal(
