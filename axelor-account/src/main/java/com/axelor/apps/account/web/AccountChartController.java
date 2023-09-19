@@ -76,15 +76,12 @@ public class AccountChartController {
 
     if (context.get("fiscalYearFromDate") != null) {
       fiscalYearFromDate =
-          LocalDate.parse(
-              (String) context.get("fiscalYearFromDate"),
-              DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+          LocalDate.parse((String) context.get("fiscalYearFromDate"), DateTimeFormatter.ISO_DATE);
     }
 
     if (context.get("fiscalYearToDate") != null) {
       fiscalYearToDate =
-          LocalDate.parse(
-              (String) context.get("fiscalYearToDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+          LocalDate.parse((String) context.get("fiscalYearToDate"), DateTimeFormatter.ISO_DATE);
     }
 
     if (context.get("accountingPeriodDuration") != null) {

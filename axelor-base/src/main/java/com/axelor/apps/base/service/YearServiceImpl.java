@@ -88,7 +88,7 @@ public class YearServiceImpl implements YearService {
       LocalDate fromDate,
       Integer duration)
       throws AxelorException {
-    List<Period> periods = new ArrayList<Period>();
+    List<Period> periods = new ArrayList<>();
     int c = 0;
     int loopLimit = 1000;
     while (periodToDate.isBefore(toDate)) {

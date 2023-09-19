@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountChartRepository;
@@ -42,10 +41,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 
 public class AccountChartService {
@@ -72,17 +69,17 @@ public class AccountChartService {
     this.accountRepository = accountRepository;
   }
 
-  public Boolean installAccountChart(AccountConfig accountConfig) throws AxelorException {
+  public boolean installAccountChart(AccountConfig accountConfig) throws AxelorException {
 
     AccountChart act = accountConfig.getAccountChart();
     Company company = accountConfig.getCompany();
-    List<Account> accountList =
+    long accountCounter =
         accountRepository
             .all()
             .filter("self.company.id = ?1 AND self.parentAccount != null", company.getId())
-            .fetch();
+            .count();
 
-    if (CollectionUtils.isNotEmpty(accountList)) {
+    if (accountCounter > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.ACCOUNT_CHART_3));
     }
@@ -90,7 +87,7 @@ public class AccountChartService {
     return installProcess(accountConfig, act, company);
   }
 
-  protected Boolean installProcess(AccountConfig accountConfig, AccountChart act, Company company)
+  protected boolean installProcess(AccountConfig accountConfig, AccountChart act, Company company)
       throws AxelorException {
     try {
       if (act.getMetaFile() == null) {
