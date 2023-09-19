@@ -10,6 +10,7 @@ import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.utils.date.LocalDateUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -53,6 +54,7 @@ public class ExpenseLimitServiceImpl implements ExpenseLimitService {
     for (ExpenseLimit expenseLimit : expenseLimitList) {
       LocalDate fromDate = expenseLimit.getFromDate();
       LocalDate toDate = expenseLimit.getToDate();
+      L10n dateFormat = L10n.getInstance();
 
       BigDecimal totalAmount =
           expenseLineList.stream()
@@ -64,7 +66,9 @@ public class ExpenseLimitServiceImpl implements ExpenseLimitService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(HumanResourceExceptionMessage.EXPENSE_LIMIT_EXCEEDED), fromDate, toDate));
+                I18n.get(HumanResourceExceptionMessage.EXPENSE_LIMIT_EXCEEDED),
+                dateFormat.format(fromDate),
+                dateFormat.format(toDate)));
       }
     }
   }

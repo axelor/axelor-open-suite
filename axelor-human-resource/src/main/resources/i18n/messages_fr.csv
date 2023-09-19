@@ -983,7 +983,7 @@
 "The employee %s has no %s leave line","L'employé(e) %s n'a pas de ligne de congés pour le motif %s",,
 "The employee %s has no birth date","L'employé(e) %s n'a pas de date de naissance renseignée",,
 "The employee %s has no seniority date","L'employé(e) %s n'a pas de date d'ancienneté renseignée",,
-"The expense limit has been exceeded for the period %s to %s","La limite de note de frais a été dépassé pour la période de %s à %s",,
+"The expense limit has been exceeded for the period %s to %s","La limite de note de frais a été dépassée pour la période de %s à %s",,
 "The expense line amount exceeds the authorized limit of ${expenseProduct?.amountLimit}. Please correct the amount or request the intervention of an HR manager.","Le montant de votre ligne de frais dépasse la limite autorisée de ${expenseProduct?.amountLimit}. Veuillez corriger le montant ou demander l'intervention d'un responsable RH.",,
 "The expense line amount exceeds the authorized limit of %s. Please correct the amount or request the intervention of an HR manager.","Le montant de votre ligne de frais dépasse la limite autorisée de %s. Veuillez corriger le montant ou demander l'intervention d'un responsable RH.",,
 "The field Activity is filled automatically from the field ""Default Activity Product"" from the employee form, on the timesheets panel. You can still modify for each task though","Ce champ est pré-rempli automatiquement à partir de la fiche employé, champ ""Produit pour les temps passés"" de l'onglet ""Feuilles de temps"". Il peut malgré tout être modifié pour chaque tâche.",,
