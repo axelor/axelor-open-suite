@@ -21,21 +21,14 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.YearAccountService;
 import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Singleton
@@ -64,48 +57,5 @@ public class AccountConfigController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
-  }
-
-  public void generateFiscalYearAndPeriod(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Context context = request.getContext();
-    AccountConfig accountConfig = context.asType(AccountConfig.class);
-    LocalDate fiscalYearFromDate = null;
-    LocalDate fiscalYearToDate = null;
-    Integer accountingPeriodDuration = null;
-
-    if (context.get("fiscalYearFromDate") != null) {
-      fiscalYearFromDate =
-          LocalDate.parse(
-              (String) context.get("fiscalYearFromDate"),
-              DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
-
-    if (context.get("fiscalYearToDate") != null) {
-      fiscalYearToDate =
-          LocalDate.parse(
-              (String) context.get("fiscalYearToDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
-
-    if (context.get("accountingPeriodDuration") != null) {
-      accountingPeriodDuration = (Integer) context.get("accountingPeriodDuration");
-    }
-
-    if (fiscalYearFromDate == null
-        || fiscalYearToDate == null
-        || accountingPeriodDuration == null) {
-      return;
-    }
-
-    Beans.get(YearAccountService.class)
-        .generateFiscalYear(
-            accountConfig.getCompany(),
-            fiscalYearFromDate,
-            fiscalYearToDate,
-            accountingPeriodDuration,
-            fiscalYearToDate.plusDays(1L));
-    response.setInfo(
-        I18n.get(AccountExceptionMessage.ACCOUNT_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS));
-    response.setReload(true);
   }
 }

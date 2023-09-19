@@ -3170,6 +3170,7 @@
 "The batch does not exist.","Le batch n'existe pas",,
 "The batch has already been running for this move date. Are you sure to continue ?","Attention, le batch a déjà été lancé pour cette date de mouvement. Êtes-vous sûr de vouloir continuer ?",,
 "The batch to close the annual accounts has already ran. Are you sure you want to continue?","Attention, le batch de clôture annuelle a déjà été lancé. Êtes-vous sûr de vouloir continuer ?",,
+"The chart of account has been loaded and fiscal year/periods have been correctly generated.","Le plan de compte a été chargé et l'année fiscale/périodes ont été générées avec succès.",,
 "The chart of account has been loaded successfully","Le plan de compte a été chargé avec succès",,
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.","La date d'arrêté est antérieure à la date du jour : les écritures enregistrées après cette date ne seront pas prise en compte dans le rapport.",,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book","La clôture d’une année fiscale entraîne l’intégration irréversible d’une écriture comptable dans le Journal des écritures comptables.",,

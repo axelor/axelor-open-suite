@@ -60,7 +60,8 @@
           <button name="generateFiscalYearBtn" title="Generate fiscal year / periods"
             hidden="true"
             showIf="(!accountChart || $existingChartAccount) &amp;&amp; $generateFiscalYear"
-            colSpan="3" onClick="action-account-config-method-generate-fiscal-year-and-period"/>
+            colSpan="3"
+            onClick="action-account-config-method-generate-fiscal-year-and-period-and-reload"/>
         </panel>
         <panel name="installTemplatePanel" hidden="true"
           showIf="(accountChart &amp;&amp; !$existingChartAccount &amp;&amp; (!$existingFiscalYear || $generateFiscalYear)) || !hasChartImported"
@@ -605,15 +606,22 @@
       expr="eval: __repo__(Account).all().filter('self.company = ?1 AND self.parentAccount != null', company).count() > 0"/>
   </action-attrs>
 
-  <action-method name="action-account-config-method-generate-fiscal-year-and-period">
-    <call class="com.axelor.apps.account.web.AccountConfigController"
-      method="generateFiscalYearAndPeriod"/>
+  <action-method
+    name="action-account-config-method-generate-fiscal-year-and-period-and-reload">
+    <call class="com.axelor.apps.account.web.AccountChartController"
+      method="generateFiscalYearAndPeriodAndReload"/>
+  </action-method>
+
+  <action-method
+    name="action-account-config-method-install-chart-and-generate-fiscal-year-and-period">
+    <call class="com.axelor.apps.account.web.AccountChartController"
+      method="installChartGenerateFiscalYear"/>
   </action-method>
 
   <action-group name="action-account-config-group-import-account-config">
     <action name="save"/>
-    <action name="action-method-account-config-install-chart"/>
-    <action name="action-account-config-method-generate-fiscal-year-and-period"/>
+    <action
+      name="action-account-config-method-install-chart-and-generate-fiscal-year-and-period"/>
   </action-group>
 
 </object-views>

@@ -18,16 +18,21 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountChartRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -37,8 +42,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 
 public class AccountChartService {
@@ -50,22 +57,42 @@ public class AccountChartService {
   protected AccountConfigRepository accountConfigRepo;
   protected CompanyRepository companyRepo;
   protected AccountChartRepository accountChartRepository;
+  protected AccountRepository accountRepository;
 
   @Inject
   public AccountChartService(
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo,
-      AccountChartRepository accountChartRepository) {
+      AccountChartRepository accountChartRepository,
+      AccountRepository accountRepository) {
 
     this.accountConfigRepo = accountConfigRepo;
     this.companyRepo = companyRepo;
     this.accountChartRepository = accountChartRepository;
+    this.accountRepository = accountRepository;
   }
 
-  public Boolean installAccountChart(AccountChart act, Company company, AccountConfig accountConfig)
+  public Boolean installAccountChart(AccountConfig accountConfig) throws AxelorException {
+
+    AccountChart act = accountConfig.getAccountChart();
+    Company company = accountConfig.getCompany();
+    List<Account> accountList =
+        accountRepository
+            .all()
+            .filter("self.company.id = ?1 AND self.parentAccount != null", company.getId())
+            .fetch();
+
+    if (CollectionUtils.isNotEmpty(accountList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.ACCOUNT_CHART_3));
+    }
+
+    return installProcess(accountConfig, act, company);
+  }
+
+  protected Boolean installProcess(AccountConfig accountConfig, AccountChart act, Company company)
       throws AxelorException {
     try {
-
       if (act.getMetaFile() == null) {
         return false;
       }

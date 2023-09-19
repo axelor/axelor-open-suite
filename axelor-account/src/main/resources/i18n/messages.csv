@@ -3170,6 +3170,7 @@
 "The batch does not exist.",,,
 "The batch has already been running for this move date. Are you sure to continue ?",,,
 "The batch to close the annual accounts has already ran. Are you sure you want to continue?",,,
+"The chart of account has been loaded and fiscal year/periods have been correctly generated.",,,
 "The chart of account has been loaded successfully",,,
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.",,,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book",,,
