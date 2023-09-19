@@ -13,6 +13,7 @@ import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -25,6 +26,7 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   protected MassStockMoveRepository massStockMoveRepository;
   protected SequenceService sequenceService;
   protected PickedProductRepository pickedProductRepo;
+  protected StoredProductRepository storedProductRepo;
   protected StockLocationLineRepository stockLocationLineRepository;
   protected PickedProductService pickedProductService;
   protected StoredProductService storedProductService;
@@ -34,12 +36,14 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
       MassStockMoveRepository massStockMoveRepository,
       SequenceService sequenceService,
       PickedProductRepository pickedProductRepo,
+      StoredProductRepository storedProductRepo,
       StockLocationLineRepository stockLocationLineRepository,
       PickedProductService pickedProductService,
       StoredProductService storedProductService) {
     this.massStockMoveRepository = massStockMoveRepository;
     this.sequenceService = sequenceService;
     this.pickedProductRepo = pickedProductRepo;
+    this.storedProductRepo = storedProductRepo;
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.pickedProductService = pickedProductService;
     this.storedProductService = storedProductService;
@@ -49,7 +53,11 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   public void realizePicking(MassStockMove massStockMove) {
     for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
       try {
-        pickedProductService.createStockMoveAndStockMoveLine(massStockMove, pickedProduct);
+        if (BigDecimal.ZERO.compareTo(pickedProduct.getPickedQty()) < 0) {
+          massStockMove = massStockMoveRepository.find(massStockMove.getId());
+          pickedProduct = pickedProductRepo.find(pickedProduct.getId());
+          pickedProductService.createStockMoveAndStockMoveLine(massStockMove, pickedProduct);
+        }
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -60,7 +68,10 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   public void realizeStorage(MassStockMove massStockMove) {
     for (StoredProduct storedProduct : massStockMove.getStoredProductList()) {
       try {
-        storedProductService.createStockMoveAndStockMoveLine(storedProduct);
+        if (BigDecimal.ZERO.compareTo(storedProduct.getStoredQty()) < 0) {
+          storedProduct = storedProductRepo.find(storedProduct.getId());
+          storedProductService.createStockMoveAndStockMoveLine(storedProduct);
+        }
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -71,7 +82,9 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   public void cancelPicking(MassStockMove massStockMove) {
     for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
       try {
-        pickedProductService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProduct);
+        if (pickedProduct.getStockMoveLine() != null) {
+          pickedProductService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProduct);
+        }
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }
@@ -82,7 +95,9 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   public void cancelStorage(MassStockMove massStockMove) {
     for (StoredProduct storedProduct : massStockMove.getStoredProductList()) {
       try {
-        storedProductService.cancelStockMoveAndStockMoveLine(storedProduct);
+        if (storedProduct.getStockMoveLine() != null) {
+          storedProductService.cancelStockMoveAndStockMoveLine(storedProduct);
+        }
       } catch (AxelorException e) {
         TraceBackService.trace(e);
       }

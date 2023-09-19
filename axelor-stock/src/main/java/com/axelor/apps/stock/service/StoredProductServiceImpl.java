@@ -2,8 +2,10 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.MassStockMove;
+import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -53,7 +55,9 @@ public class StoredProductServiceImpl implements StoredProductService {
       StockLocation toStockLocation,
       BigDecimal storedQty,
       StockMoveLine stockMoveLine,
-      MassStockMove massStockMove) {
+      MassStockMove massStockMove,
+      PickedProduct pickedProduct,
+      Unit unit) {
     StoredProduct storedProduct = new StoredProduct();
     storedProduct.setStoredProduct(product);
     storedProduct.setTrackingNumber(trackingNumber);
@@ -63,6 +67,7 @@ public class StoredProductServiceImpl implements StoredProductService {
     storedProduct.setStoredQty(storedQty);
     storedProduct.setStockMoveLine(stockMoveLine);
     storedProduct.setMassStockMove(massStockMove);
+    storedProduct.setUnit(unit);
     return storedProduct;
   }
 

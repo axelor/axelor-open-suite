@@ -19,7 +19,8 @@
     model="com.axelor.apps.stock.db.MassStockMove" width="large"
     onNew="action-mass-stock-move-group-onnew">
     <panel name="mainPanel">
-      <field name="statusSelect" widget="NavSelect" required="true" readonly="true"/>
+      <field name="statusSelect" widget="NavSelect" required="true" readonly="true"
+        showTitle="false"/>
       <field name="sequence" readonly="true"/>
       <field name="company" required="true"/>
       <field name="cartStockLocation" required="true"

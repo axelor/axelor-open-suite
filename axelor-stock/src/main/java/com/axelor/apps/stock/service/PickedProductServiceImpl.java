@@ -33,6 +33,7 @@ public class PickedProductServiceImpl implements PickedProductService {
   protected StockLocationLineRepository stockLocationLineRepository;
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
+  protected StoredProductService storedProductService;
 
   @Inject
   public PickedProductServiceImpl(
@@ -43,7 +44,8 @@ public class PickedProductServiceImpl implements PickedProductService {
       StockMoveLineRepository stockMoveLineRepository,
       StockLocationLineRepository stockLocationLineRepository,
       StockMoveService stockMoveService,
-      StockMoveLineService stockMoveLineService) {
+      StockMoveLineService stockMoveLineService,
+      StoredProductService storedProductService) {
     this.pickedProductRepository = pickedProductRepository;
     this.storedProductRepository = storedProductRepository;
     this.massStockMoveRepository = massStockMoveRepository;
@@ -52,6 +54,7 @@ public class PickedProductServiceImpl implements PickedProductService {
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
+    this.storedProductService = storedProductService;
   }
 
   @Override
@@ -120,16 +123,18 @@ public class PickedProductServiceImpl implements PickedProductService {
         pickedProduct.getTrackingNumber() != null
             ? pickedProduct.getTrackingNumber().getTrackingNumberSeq()
             : "";
-    StoredProduct storedProduct = new StoredProduct();
-    storedProduct.setStoredProduct(pickedProduct.getPickedProduct());
 
-    storedProduct.setTrackingNumber(pickedProduct.getTrackingNumber());
-    storedProduct.setCurrentQty(pickedProduct.getPickedQty());
-    storedProduct.setUnit(pickedProduct.getUnit());
-    if (massStockMove.getCommonToStockLocation() != null) {
-      storedProduct.setToStockLocation(massStockMove.getCommonToStockLocation());
-    }
-    storedProduct.setStoredQty(BigDecimal.ZERO);
+    StoredProduct storedProduct =
+        storedProductService.createStoredProduct(
+            pickedProduct.getPickedProduct(),
+            pickedProduct.getTrackingNumber(),
+            pickedProduct.getPickedQty(),
+            massStockMove.getCommonToStockLocation(),
+            BigDecimal.ZERO,
+            null,
+            massStockMove,
+            pickedProduct,
+            pickedProduct.getUnit());
     if (storedProduct.getStoredProduct() == null || storedProduct.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -153,7 +158,9 @@ public class PickedProductServiceImpl implements PickedProductService {
           pickedProduct.getPickedProduct().getFullName(),
           trackingNumberSeq);
     }
+    pickedProduct.addStoredProductListItem(storedProduct);
     storedProductRepository.save(storedProduct);
+    pickedProductRepository.save(pickedProduct);
     massStockMove.addStoredProductListItem(storedProduct);
 
     if (massStockMove.getStatusSelect() != MassStockMoveRepository.STATUS_IN_PROGRESS) {
@@ -228,30 +235,19 @@ public class PickedProductServiceImpl implements PickedProductService {
   @Transactional(rollbackOn = Exception.class)
   public void cancelStockMoveAndStockMoveLine(
       MassStockMove massStockMove, PickedProduct pickedProduct) throws AxelorException {
-    if (pickedProduct.getStockMoveLine() != null) {
-      StoredProduct storedProduct =
-          storedProductRepository
-              .all()
-              .filter(
-                  "self.storedProduct =?1 AND self.currentQty =?2 AND self.massStockMove =?3"
-                      + (pickedProduct.getTrackingNumber() != null
-                          ? " AND self.trackingNumber =?4"
-                          : ""),
-                  pickedProduct.getPickedProduct(),
-                  pickedProduct.getPickedQty(),
-                  massStockMove,
-                  pickedProduct.getTrackingNumber())
-              .fetchOne();
+    if (pickedProduct.getStoredProductList().stream()
+        .anyMatch(it -> it.getStockMoveLine() != null)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.ALREADY_STORED_PRODUCT));
+    }
+    for (StoredProduct storedProduct : pickedProduct.getStoredProductList()) {
       storedProduct.setMassStockMove(null);
       storedProductRepository.remove(storedProduct);
-      StockMove stockMove = pickedProduct.getStockMoveLine().getStockMove();
-      if (stockMove != null) {
-        stockMoveService.cancel(stockMove);
-      }
-      pickedProduct.setStockMoveLine(null);
-      pickedProduct.setPickedQty(BigDecimal.ZERO);
-      massStockMoveRepository.save(massStockMove);
-      pickedProductRepository.save(pickedProduct);
     }
+    pickedProduct.setStockMoveLine(null);
+    pickedProduct.setPickedQty(BigDecimal.ZERO);
+    massStockMoveRepository.save(massStockMove);
+    pickedProductRepository.save(pickedProduct);
   }
 }
