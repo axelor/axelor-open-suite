@@ -19,13 +19,9 @@ libs.commons_validator = 'commons-validator:commons-validator:1.7'
 libs.groovy = 'org.codehaus.groovy:groovy-all:3.0.13'
 libs.itextpdf = 'com.itextpdf:itextpdf:5.5.13.3'
 libs.itext7_core = 'com.itextpdf:itext7-core:7.2.3'
-libs.itext7_io = 'com.itextpdf:io:7.2.3'
-libs.itext7_layout = 'com.itextpdf:layout:7.2.3'
-libs.itext7_kernel = 'com.itextpdf:kernel:7.2.3'
-libs.itext7_signatures = 'com.itextpdf:sign:7.2.3'
-
 
 libs.html2pdf = 'com.itextpdf:html2pdf:4.0.3'
+libs.pdfbox = 'org.apache.pdfbox:pdfbox:3.0.0'
 
 libs.iban4j = 'org.iban4j:iban4j:3.2.3-RELEASE'
 
