@@ -20,7 +20,6 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
-import com.itextpdf.text.DocumentException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
