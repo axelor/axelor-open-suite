@@ -25,11 +25,7 @@ public interface JobApplicationService {
 
   Employee createEmployeeFromJobApplication(JobApplication jobApplication);
 
-  String computeFullName(JobApplication jobApplication);
-
   void setDMSFile(JobApplication jobApplication);
 
   String getInlineUrl(JobApplication jobApplication);
-
-  void setEmployeeFileList(JobApplication jobApplication, Employee employee);
 }

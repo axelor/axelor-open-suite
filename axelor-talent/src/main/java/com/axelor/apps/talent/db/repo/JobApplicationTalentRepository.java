@@ -19,18 +19,22 @@
 package com.axelor.apps.talent.db.repo;
 
 import com.axelor.apps.talent.db.JobApplication;
-import com.axelor.apps.talent.service.JobApplicationService;
+import com.axelor.apps.talent.service.JobApplicationToolService;
 import com.google.inject.Inject;
 
 public class JobApplicationTalentRepository extends JobApplicationRepository {
 
-  @Inject private JobApplicationService jobApplicationService;
+  protected JobApplicationToolService jobApplicationToolService;
+
+  @Inject
+  public JobApplicationTalentRepository(JobApplicationToolService jobApplicationToolService) {
+    this.jobApplicationToolService = jobApplicationToolService;
+  }
 
   @Override
   public JobApplication save(JobApplication entity) {
 
-    entity.setFullName(jobApplicationService.computeFullName(entity));
-    jobApplicationService.setEmployeeFileList(entity, null);
+    entity.setFullName(jobApplicationToolService.computeFullName(entity));
 
     return super.save(entity);
   }

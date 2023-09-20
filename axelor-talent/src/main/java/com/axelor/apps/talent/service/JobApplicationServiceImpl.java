@@ -26,7 +26,6 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -47,6 +46,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   protected DMSFileRepository dmsFileRepo;
   protected AppTalentService appTalentService;
   protected DMSService dmsService;
+  protected JobApplicationToolService jobApplicationToolService;
 
   @Inject
   public JobApplicationServiceImpl(
@@ -55,20 +55,21 @@ public class JobApplicationServiceImpl implements JobApplicationService {
       MetaFiles metaFiles,
       DMSFileRepository dmsFileRepo,
       AppTalentService appTalentService,
-      DMSService dmsService) {
+      DMSService dmsService,
+      JobApplicationToolService jobApplicationToolService) {
     this.jobApplicationRepo = jobApplicationRepo;
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
     this.dmsFileRepo = dmsFileRepo;
     this.appTalentService = appTalentService;
     this.dmsService = dmsService;
+    this.jobApplicationToolService = jobApplicationToolService;
   }
 
   @Transactional
   @Override
   public Employee createEmployeeFromJobApplication(JobApplication jobApplication) {
     Employee employee = createEmployee(jobApplication);
-    jobApplication.setEmployee(employee);
     jobApplicationRepo.save(jobApplication);
     hireCandidate(jobApplication);
     return employee;
@@ -93,21 +94,14 @@ public class JobApplicationServiceImpl implements JobApplicationService {
       employee
           .getMainEmploymentContract()
           .setCompanyDepartment(jobApplication.getJobPosition().getCompanyDepartment());
-    setEmployeeFileList(jobApplication, employee);
     employee.setName(employee.getContactPartner().getName());
+    jobApplication.setEmployee(employee);
+
+    if (jobApplication.getEmployeeFileList() != null) {
+      jobApplication.getEmployeeFileList().forEach(employee::addEmployeeFileListItem);
+    }
 
     return employee;
-  }
-
-  @Override
-  public void setEmployeeFileList(JobApplication jobApplication, Employee employee) {
-    if (ObjectUtils.isEmpty(employee)) {
-      employee = jobApplication.getEmployee();
-      if (ObjectUtils.isEmpty(employee)) return;
-    }
-    if (ObjectUtils.notEmpty(jobApplication.getFileList())) {
-      jobApplication.getFileList().forEach(employee::addEmployeeFileListItem);
-    }
   }
 
   protected Partner createContact(JobApplication jobApplication) {
@@ -132,23 +126,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     Beans.get(PartnerService.class).setPartnerFullName(contact);
 
     return contact;
-  }
-
-  @Override
-  public String computeFullName(JobApplication jobApplication) {
-
-    String fullName = null;
-
-    if (jobApplication.getFirstName() != null) {
-      fullName = jobApplication.getFirstName();
-    }
-    if (fullName == null) {
-      fullName = jobApplication.getLastName();
-    } else {
-      fullName += " " + jobApplication.getLastName();
-    }
-
-    return fullName;
   }
 
   @Override

@@ -34,6 +34,8 @@ import com.axelor.apps.talent.service.AppraisalService;
 import com.axelor.apps.talent.service.AppraisalServiceImpl;
 import com.axelor.apps.talent.service.JobApplicationService;
 import com.axelor.apps.talent.service.JobApplicationServiceImpl;
+import com.axelor.apps.talent.service.JobApplicationToolService;
+import com.axelor.apps.talent.service.JobApplicationToolServiceImpl;
 import com.axelor.apps.talent.service.JobPositionService;
 import com.axelor.apps.talent.service.JobPositionServiceImpl;
 import com.axelor.apps.talent.service.MailAccountServiceTalentImpl;
@@ -61,5 +63,6 @@ public class TalentModule extends AxelorModule {
     bind(AppraisalService.class).to(AppraisalServiceImpl.class);
     bind(AppTalentService.class).to(AppTalentServiceImpl.class);
     bind(TalentDashboardService.class).to(TalentDashboardServiceImpl.class);
+    bind(JobApplicationToolService.class).to(JobApplicationToolServiceImpl.class);
   }
 }

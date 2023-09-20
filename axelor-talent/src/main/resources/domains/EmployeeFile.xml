@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="EmployeeFile" cacheable="true"
+    implements="com.axelor.apps.base.interfaces.PdfViewer">
+    <many-to-one name="jobApplication" title="Job application"
+      ref="com.axelor.apps.talent.db.JobApplication"/>
+  </entity>
+
+</domain-models>
