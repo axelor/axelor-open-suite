@@ -10,8 +10,6 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="computeDistanceWithWebService"/>
-    <many-to-one name="pfxCertificate" title="PFX Certificate"
-      ref="com.axelor.apps.base.db.PfxCertificate"/>
 
     <track>
       <field name="computeDistanceWithWebService" on="UPDATE"/>

@@ -605,4 +605,13 @@ public final class BaseExceptionMessage {
 
   public static final String NO_RECORD_SELECTED_TO_PRINT = /*$$(*/
       "Please select records to print" /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_PASSWORD = /*$$(*/
+      "Error while opening the certificate, please check the password." /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_FILE = /*$$(*/
+      "Error with the certificate, please check if the file is a PFX certificate." /*)*/;
+
+  public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
+      "Error while accessing certificate information." /*)*/;
 }

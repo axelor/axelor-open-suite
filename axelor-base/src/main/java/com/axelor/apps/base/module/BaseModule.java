@@ -116,6 +116,8 @@ import com.axelor.apps.base.service.PaymentModeService;
 import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.PfxCertificateService;
+import com.axelor.apps.base.service.PfxCertificateServiceImpl;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.PricedOrderDomainServiceImpl;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
@@ -373,5 +375,6 @@ public class BaseModule extends AxelorModule {
     bind(PdfSignatureService.class).to(PdfSignatureServiceImpl.class);
     bind(PartnerLinkService.class).to(PartnerLinkServiceImpl.class);
     bind(SignatureService.class).to(SignatureServiceImpl.class);
+    bind(PfxCertificateService.class).to(PfxCertificateServiceImpl.class);
   }
 }
