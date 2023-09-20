@@ -2,13 +2,13 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PfxCertificate;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.base.service.pdf.PdfSignatureService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.db.AppExpense;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -18,16 +18,16 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
 
   protected PdfService pdfService;
   protected PdfSignatureService pdfSignatureService;
-  protected AppHumanResourceService appHumanResourceService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ExpenseProofFileServiceImpl(
       PdfService pdfService,
       PdfSignatureService pdfSignatureService,
-      AppHumanResourceService appHumanResourceService) {
+      AppBaseService appBaseService) {
     this.pdfService = pdfService;
     this.pdfSignatureService = pdfSignatureService;
-    this.appHumanResourceService = appHumanResourceService;
+    this.appBaseService = appBaseService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -59,15 +59,11 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
   }
 
   protected MetaFile getSignedPdf(MetaFile pdfToSign) throws AxelorException {
-    AppExpense appExpense = appHumanResourceService.getAppExpense();
-    PfxCertificate pfxCertificate = appExpense.getPfxCertificate();
+    AppBase appBase = appBaseService.getAppBase();
+    PfxCertificate pfxCertificate = appBase.getPfxCertificate();
     if (pfxCertificate != null) {
       return pdfSignatureService.digitallySignPdf(
-          pdfToSign,
-          pfxCertificate.getCertificate(),
-          pfxCertificate.getPassword(),
-          "Expense",
-          "France");
+          pdfToSign, pfxCertificate.getCertificate(), pfxCertificate.getPassword(), "Expense");
     }
     return pdfToSign;
   }

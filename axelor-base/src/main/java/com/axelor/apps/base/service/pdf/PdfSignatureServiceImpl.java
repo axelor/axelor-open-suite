@@ -23,6 +23,7 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.time.ZoneId;
 import java.util.Calendar;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -42,11 +43,7 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
 
   @Override
   public MetaFile digitallySignPdf(
-      MetaFile metaFile,
-      MetaFile certificate,
-      String certificatePassword,
-      String reason,
-      String location)
+      MetaFile metaFile, MetaFile certificate, String certificatePassword, String reason)
       throws AxelorException {
 
     try {
@@ -55,7 +52,7 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
           FileInputStream inputStream =
               new FileInputStream(String.valueOf(MetaFiles.getPath(certificate)))) {
         try (PDDocument doc = Loader.loadPDF(new File(MetaFiles.getPath(metaFile).toString()))) {
-          getCertificateAndSign(certificatePassword, reason, location, inputStream, doc, outStream);
+          getCertificateAndSign(certificatePassword, reason, inputStream, doc, outStream);
         }
       }
       MetaFile resultFile = metaFiles.upload(tempPdfFile);
@@ -72,7 +69,6 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
   protected void getCertificateAndSign(
       String certificatePassword,
       String reason,
-      String location,
       FileInputStream inputStream,
       PDDocument doc,
       FileOutputStream outStream)
@@ -83,7 +79,7 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
     String alias = keyStore.aliases().nextElement();
     PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, certificatePassword.toCharArray());
     Certificate[] certificateChain = keyStore.getCertificateChain(alias);
-    signDetached(doc, outStream, certificateChain, privateKey, reason, location);
+    signDetached(doc, outStream, certificateChain, privateKey, reason);
   }
 
   protected void signDetached(
@@ -91,11 +87,10 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
       OutputStream output,
       Certificate[] certificateChain,
       PrivateKey privateKey,
-      String reason,
-      String location)
+      String reason)
       throws IOException, AxelorException {
 
-    PDSignature signature = getSignature(reason, location);
+    PDSignature signature = getSignature(reason);
     document.addSignature(signature);
     setExternalSigning(document, output, certificateChain, privateKey);
   }
@@ -112,18 +107,16 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
     externalSigning.setSignature(cmsSignature);
   }
 
-  protected PDSignature getSignature(String reason, String location) {
+  protected PDSignature getSignature(String reason) {
     PDSignature signature = new PDSignature();
     signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE);
     signature.setSubFilter(PDSignature.SUBFILTER_ADBE_PKCS7_DETACHED);
     signature.setSignDate(Calendar.getInstance());
+    signature.setLocation(ZoneId.systemDefault().getId());
     if (StringUtils.notEmpty(reason)) {
       signature.setReason(reason);
     }
 
-    if (StringUtils.notEmpty(location)) {
-      signature.setReason(location);
-    }
     return signature;
   }
 }
