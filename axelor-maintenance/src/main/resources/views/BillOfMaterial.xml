@@ -110,4 +110,8 @@
       expr="eval: __repo__(ManufOrder).TYPE_MAINTENANCE"/>
   </action-attrs>
 
+  <action-method name="action-bill-of-material-method-print">
+    <call class="com.axelor.apps.maintenance.web.BillOfMaterialController" method="print"/>
+  </action-method>
+
 </object-views>

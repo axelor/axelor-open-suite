@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.manuforder;
+package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
@@ -31,8 +31,9 @@ public interface ManufOrderPrintService {
    *
    * @return ReportSettings
    * @throws IOException
+   * @throws AxelorException
    */
-  String printManufOrders(List<Long> ids) throws IOException;
+  String printManufOrders(List<Long> ids) throws IOException, AxelorException;
 
   /**
    * Print a single manuf order
@@ -43,7 +44,7 @@ public interface ManufOrderPrintService {
    */
   String printManufOrder(ManufOrder manufOrder) throws AxelorException;
 
-  ReportSettings prepareReportSettings(ManufOrder manufOrder);
+  ReportSettings prepareReportSettings(ManufOrder manufOrder) throws AxelorException;
 
   /** Returns the filename of a printing with multiple manuf orders. */
   String getManufOrdersFilename();

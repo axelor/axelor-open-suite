@@ -1,0 +1,3 @@
+---
+title: "Leave line: deleting every leave management now correctly computes remaining and acquired value"
+type: fix

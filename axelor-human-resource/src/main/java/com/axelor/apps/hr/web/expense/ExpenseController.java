@@ -427,6 +427,14 @@ public class ExpenseController {
     }
   }
 
+  public void checkLineFile(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    if (Beans.get(ExpenseConfirmationService.class).checkAllLineHaveFile(expense)) {
+      response.setAlert(I18n.get(HumanResourceExceptionMessage.EXPENSE_JUSTIFICATION_FILE_MISSING));
+    }
+  }
+
   public void newExpense(ActionResponse response) {
 
     response.setView(

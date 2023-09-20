@@ -54,7 +54,7 @@
 
     <menubar>
       <menu name="bomReportsMenu" title="Reports">
-        <item name="printItem" title="Print" action="action-bill-of-material-method-print"/>
+        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
 
       <menu name="bomOptionsMenu" title="Options">
@@ -272,10 +272,6 @@
   <action-method name="action-bill-of-material-generate-new-version">
     <call class="com.axelor.apps.production.web.BillOfMaterialController"
       method="generateNewVersion"/>
-  </action-method>
-
-  <action-method name="action-bill-of-material-method-print">
-    <call class="com.axelor.apps.production.web.BillOfMaterialController" method="print"/>
   </action-method>
 
   <action-method name="action-bill-of-material-method-validate-prod-process">
