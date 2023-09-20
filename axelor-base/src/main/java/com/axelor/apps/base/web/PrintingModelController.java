@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -135,7 +136,9 @@ public class PrintingModelController {
       ActionResponse response, BirtTemplate birtTemplate, Class<?> modelClass, Long modelId)
       throws AxelorException {
     Model model = JPA.find((Class<T>) modelClass, modelId);
-    String outputLink = Beans.get(PrintFromBirtTemplateService.class).print(birtTemplate, model);
+    String outputLink =
+        Beans.get(PrintFromBirtTemplateService.class)
+            .print(birtTemplate, EntityHelper.getEntity(model));
     if (outputLink != null) {
       response.setView(
           ActionView.define(I18n.get(birtTemplate.getName())).add("html", outputLink).map());

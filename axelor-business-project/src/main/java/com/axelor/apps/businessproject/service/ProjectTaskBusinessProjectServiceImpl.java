@@ -229,12 +229,14 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setPriceDiscounted(priceDiscounted);
     projectTask.setExTaxTotal(exTaxTotal);
 
-    projectTask.setTotalCosts(
-        projectTask
-            .getProduct()
-            .getCostPrice()
-            .multiply(projectTask.getQuantity())
-            .setScale(2, RoundingMode.HALF_UP));
+    if (projectTask.getProduct() != null) {
+      projectTask.setTotalCosts(
+          projectTask
+              .getProduct()
+              .getCostPrice()
+              .multiply(projectTask.getQuantity())
+              .setScale(2, RoundingMode.HALF_UP));
+    }
 
     return projectTask;
   }

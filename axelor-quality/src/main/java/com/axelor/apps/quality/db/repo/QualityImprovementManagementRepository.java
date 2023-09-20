@@ -25,10 +25,12 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.quality.db.QIAnalysis;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -70,6 +72,7 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
       }
       getOrCreateQIIdentification(qualityImprovement);
       getOrCreateQIResolution(qualityImprovement);
+      getOrCreateQIAnalysis(qualityImprovement);
 
       return super.save(qualityImprovement);
 
@@ -95,5 +98,15 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
       qiResolution.setQi(qualityImprovement);
     }
     return qiResolution;
+  }
+
+  protected QIAnalysis getOrCreateQIAnalysis(QualityImprovement qualityImprovement) {
+    QIAnalysis qiAnalysis = qualityImprovement.getQiAnalysis();
+    if (qiAnalysis == null) {
+      qiAnalysis = new QIAnalysis();
+      qiAnalysis.setQi(qualityImprovement);
+      qiAnalysis.setPlanOwner(AuthUtils.getUser());
+    }
+    return qiAnalysis;
   }
 }

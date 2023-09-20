@@ -117,6 +117,7 @@
   <selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
     <option value="1">Paper format</option>
     <option value="2">Electronic card</option>
+    <option value="3">Both</option>
   </selection>
 
   <selection name="hr.employee.advance.type.select">
@@ -150,6 +151,7 @@
     <option value="1">Standard</option>
     <option value="2">Nibelis</option>
     <option value="3">Silae</option>
+    <option value="4">Sage</option>
   </selection>
 
   <selection name="hr.employee.marital.status">

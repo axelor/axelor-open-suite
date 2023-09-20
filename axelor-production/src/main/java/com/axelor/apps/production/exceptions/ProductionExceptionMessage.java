@@ -82,10 +82,10 @@ public final class ProductionExceptionMessage {
   public static final String PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING = /*$$(*/
       "Your production virtual stock location is not an outsourcing location." /*)*/;
 
-  /** Manuf Order Controller */
-  public static final String MANUF_ORDER_1 = /*$$(*/
-      "Please select the Manufacturing order(s) to print." /*)*/;
+  public static final String UNRECOGNIZED_CAPACITY_FOR_COMPANY_PRODUCTION_CONFIG = /*$$(*/
+      "Unrecognized capacity for company %s production configuration" /*)*/;
 
+  /** Manuf Order Controller */
   public static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
       "Please select more than one manufacturing order." /*)*/;
 
@@ -100,10 +100,6 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE = /*$$(*/
       "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles." /*)*/;
-
-  /** Operation Order Controller */
-  public static final String OPERATION_ORDER_1 = /*$$(*/
-      "Please select the Operation order(s) to print." /*)*/;
 
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
@@ -314,4 +310,10 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
       /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_HOURS_UNIT = /*$$(*/
+      "Outsourcing purchase order cannot be generated. Please fill hours unit in your base configuration." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_END_UNIT = /*$$(*/
+      "Impossible to generate outsourcing purchase order. Please fill unit on your product." /*)*/;
 }

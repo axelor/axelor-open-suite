@@ -206,6 +206,33 @@
         </field>
       </replace>
     </extend>
+    <extend target="//panel[@name='marketingCampaignPanel']">
+      <insert position="after">
+        <panel name="mainInformationPanel" title="General information" showIf="isCollaborator">
+          <panel-related name="collaboratorDomainListPanel"
+            field="collaboratorDomainList" form-view="collaborator-domain-form"
+            grid-view="collaborator-domain-grid"/>
+          <panel-related name="workAreaSetPanel" field="workAreaSet"
+            form-view="country-form" grid-view="country-grid" canNew="false" canEdit="false"/>
+          <field name="fidelity" form-view="fidelity-form" grid-view="fidelity-grid"/>
+          <field name="collaboratorSince"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="/">
+      <insert position="after">
+        <panel name="activityPanel" sidebar="true" showIf="id &amp;&amp; isProspect"
+          hidden="true">
+          <panel-dashlet action="action-partner-view-prospect-activity-custom"
+            title="Activity" height="550"/>
+        </panel>
+        <panel name="followUpPanel" title="Collaborator monitoring" showIf="isCollaborator"
+          sidebar="true" colSpan="12">
+          <field name="takenOpportunities"/>
+          <field name="wonOpportunities"/>
+        </panel>
+      </insert>
+    </extend>
     <extend target="//field[@name='isFactor']">
       <insert position="after">
         <field name="isCorporatePartner" widget="InlineCheckbox" hideIf="$readonly()"/>
@@ -522,6 +549,62 @@
     </panel>
   </form>
 
+  <custom title="Activity" name="partner-form-activity-custom" css="crm-activity-dashlet">
+    <dataset type="rpc">com.axelor.apps.crm.web.PartnerCrmController:getPartnerActivityData</dataset>
+    <template>
+      <![CDATA[
+      <div class="crm-activity-card" ng-repeat="item in data">
+        <div>
+          <span class="crm-activity-date">{{item.date | date}}</span>
+          <span ng-show="item.type == 'event'">
+            <span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial; float:right;" ng-show="item.status == 1" x-translate>Planned</span>
+            <span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 2" x-translate>Realized</span>
+            <span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 3" x-translate>Canceled</span>
+          </span>
+         <span ng-show="item.type == 'opportunity'" style="float: right;">
+            <span class="label label-default" style="background-color: #0285D8;" ng-show="item.status != item.closedWonStatus && item.status != item.closedLostStatus" x-translate>{{item.status}}</span>
+            <span class="label label-success" ng-show="item.status == item.closedWonStatus" x-translate>{{item.status}}</span>
+            <span class="label label-important" ng-show="item.status == item.closedLostStatus" x-translate>{{item.status}}</span>
+          </span>
+        </div>
+        <div class="crm-activity-content">
+          <div>
+            <span ng-show="item.type == 'event' && item.activityName == 1" x-translate>Call</span>
+            <span ng-show="item.type == 'event' && item.activityName == 2" x-translate>Meeting</span>
+            <span ng-show="item.type == 'event' && item.activityName == 3" x-translate>Task</span>
+            <span ng-show="item.type == 'event' && item.activityName == 5" x-translate>Note</span>
+            <span ng-show="item.type == 'creation' || item.type == 'statusChange'" x-translate>{{item.activityName}}</span>
+            <span ng-show="item.type == 'opportunity'">
+              <strong><span x-translate>Score : </span></strong>
+                <span ng-show="item.activityName == 0"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
+                <span ng-show="item.activityName == 1"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
+                <span ng-show="item.activityName == 2"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
+                <span ng-show="item.activityName == 3"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
+                <span ng-show="item.activityName == 4"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
+                <span ng-show="item.activityName == 5"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></span>
+            </span>
+          </div>
+          <div class="crm-activity-icon">
+            <span ng-show="item.type == 'creation'"><i class="fa fa-plus" style=""></i></span>
+            <span ng-show="item.type == 'statusChange'"><i class="fa fa-exchange"></i></span>
+            <span ng-show="item.type == 'opportunity'"><i class="fa fa-handshake-o"></i></span>
+            <span ng-show="item.type == 'event'">
+              <i ng-show="item.activityName == 1" class="fa fa-phone"></i>
+              <i ng-show="item.activityName == 2" class="fa fa-pencil-square-o"></i>
+              <i ng-show="item.activityName == 3" class="fa fa-tasks"></i>
+              <i ng-show="item.activityName == 5" class="fa fa-sticky-note-o"></i>
+            </span>
+           </div>
+        </div>
+        <div ng-show="item.description != ''">
+          <hr/>
+          <span>{{item.description}}</span>
+        </div>
+      </div>
+      ]]>
+    </template>
+  </custom>
+
   <!-- CREATE CRM OBJECT FROM PARTNER -->
 
   <action-view name="action-partner-view-schedule-event"
@@ -812,4 +895,8 @@
     <error message="Please fill default partner status in App CRM configuration."
       if="!__config__.app.getApp('crm')?.partnerDefaultStatus"/>
   </action-validate>
+
+  <action-view name="action-partner-view-prospect-activity-custom" title="Activity">
+    <view type="custom" name="partner-form-activity-custom"/>
+  </action-view>
 </object-views>

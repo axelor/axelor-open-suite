@@ -1,0 +1,30 @@
+.crm-activity-dashlet .dashlet-header{
+    display: none;
+}
+.crm-activity-dashlet .dashlet-body{
+    border: 0;
+}
+.crm-activity-dashlet .crm-activity-card {
+    border:1px solid #0285D8;
+    border-radius:5px;
+    margin:10px;
+    padding:10px;
+}
+.crm-activity-dashlet hr {
+    margin: 2px 0;
+}
+
+.crm-activity-card .crm-activity-date {
+    font-weight:bold;
+    font-size:16px;
+}
+
+.crm-activity-card .crm-activity-content {
+    margin:5px 1px;
+    display:flex;
+    justify-content: space-between;
+}
+.crm-activity-card .crm-activity-icon .fa {
+    font-size:28px;
+    color:#0285D8;
+}

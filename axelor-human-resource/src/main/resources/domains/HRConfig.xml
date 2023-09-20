@@ -108,6 +108,13 @@
     <many-to-one name="healthServiceAddress" title="Health service address"
       ref="com.axelor.apps.base.db.Address"/>
 
+    <many-to-one name="employeeAnnualReportBirtTemplate"
+      title="Employee annual report template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="employeePhoneBookBirtTemplate"
+      title="Employee phone book template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="expenseReportBirtTemplate" title="Expense report template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
+
     <track>
       <field name="company" on="UPDATE"/>
       <field name="kilometricExpenseProduct" on="UPDATE"/>
@@ -165,6 +172,9 @@
       <field name="healthService" on="UPDATE"/>
       <field name="healthServiceAddress" on="UPDATE"/>
       <field name="exportCodeForDuration" on="UPDATE"/>
+      <field name="employeeAnnualReportBirtTemplate" on="UPDATE"/>
+      <field name="employeePhoneBookBirtTemplate" on="UPDATE"/>
+      <field name="expenseReportBirtTemplate" on="UPDATE"/>
     </track>
   </entity>
 

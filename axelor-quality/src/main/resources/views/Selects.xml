@@ -91,4 +91,21 @@
     <option value="5">Partially accepted</option>
   </selection>
 
+  <selection name="quality.qi.analysis.efficiency.select">
+    <option value="1">No checked</option>
+    <option value="2">Yes</option>
+    <option value="3">No</option>
+  </selection>
+
+  <selection name="quality.qi.cause.branch.select">
+    <option value="1">Material</option>
+    <option value="2">Machine</option>
+    <option value="3">Methods</option>
+    <option value="4">Man power</option>
+    <option value="5">Management</option>
+    <option value="6">Medium</option>
+    <option value="7">Measure</option>
+    <option value="8">Financial means</option>
+  </selection>
+
 </object-views>

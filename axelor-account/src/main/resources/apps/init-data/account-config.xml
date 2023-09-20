@@ -41,4 +41,8 @@
   <input file="account_assetDisposalReason.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AssetDisposalReason"/>
 
+  <input file="base_partner_link_type.csv" separator=";"
+    type="com.axelor.apps.base.db.PartnerLinkType"
+    search="self.importId = :importId OR self.typeSelect = :typeSelect"/>
+
 </csv-inputs>

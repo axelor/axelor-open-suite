@@ -13,7 +13,7 @@
     <field name="availableStatusSelect"/>
     <field name="statusSelect"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
-      icon="fa-print" onClick="action-print-stock-move"/>
+      icon="fa-print" onClick="action-stock-move-group-print-stock-move"/>
     <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
       width="32" icon="fa-location-arrow"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -29,7 +29,7 @@
     <field name="availableStatusSelect"/>
     <field name="statusSelect"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
-      icon="fa-print" onClick="action-print-stock-move"/>
+      icon="fa-print" onClick="action-stock-move-group-print-stock-move"/>
     <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
       width="32" icon="fa-location-arrow"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -56,7 +56,7 @@
       <hilite strong="true" color="success" if="statusSelect==3"/>
     </field>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
-      onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
+      onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="fa-location-arrow"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -76,6 +76,22 @@
           <field name="$_xFillProductAvailableQty" type="boolean" readonly="true"/>
         </panel>
       </insert>
+    </extend>
+    <extend target="//panel[@name='outgoingMovePanel']/field[@name='fromStockLocation']">
+      <attribute name="domain"
+        value="self.company = :company AND self.typeSelect = 1 AND (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"/>
+    </extend>
+    <extend target="//panel[@name='incomingMovePanel']/field[@name='toStockLocation']">
+      <attribute name="domain"
+        value="self.company = :company AND self.typeSelect = 1 AND (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"/>
+    </extend>
+    <extend target="//panel[@name='configPanel']/field[@name='fromStockLocation']">
+      <attribute name="domain"
+        value="self.company = :company AND self.typeSelect = 3 AND (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"/>
+    </extend>
+    <extend target="//panel[@name='configPanel']/field[@name='toStockLocation']">
+      <attribute name="domain"
+        value="self.company = :company AND self.typeSelect = 3 AND (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"/>
     </extend>
   </form>
 

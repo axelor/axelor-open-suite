@@ -11,9 +11,9 @@
       <attribute name="onLoad" value="supplychain-action-sale-order-line-group-onload"/>
     </extend>
 
-    <extend target="//panel[@name='statusPanel']">
+    <extend target="//panel[@name='hiddenPanel']">
       <insert position="inside">
-        <field name="$_xFillProductAvailableQty" hidden="true" type="boolean" readonly="true"/>
+        <field name="$_xFillProductAvailableQty" type="boolean" readonly="true"/>
       </insert>
     </extend>
 

@@ -199,6 +199,15 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
       "Total sequence length must be less than 15 characters." /*)*/;
 
+  public static final String SEQUENCE_TYPE_UNHANDLED = /*$$(*/
+      "The sequence type '%s' is not handled." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_IS_NULL = /*$$(*/
+      "The sequence letter type can't be null." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_UNHANDLED = /*$$(*/
+      "The sequence letter type '%s' is not handled." /*)*/;
+
   /** Address controller */
   public static final String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
 
@@ -596,4 +605,13 @@ public final class BaseExceptionMessage {
 
   public static final String NO_RECORD_SELECTED_TO_PRINT = /*$$(*/
       "Please select records to print" /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_PASSWORD = /*$$(*/
+      "Error while opening the certificate, please check the password." /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_FILE = /*$$(*/
+      "Error with the certificate, please check if the file is a PFX certificate." /*)*/;
+
+  public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
+      "Error while accessing certificate information." /*)*/;
 }

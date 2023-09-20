@@ -24,6 +24,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
@@ -35,6 +36,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
@@ -67,7 +69,9 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       SaleOrderCheckAnalyticService saleOrderCheckAnalyticService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      BirtTemplateService birtTemplateService,
+      SaleOrderService saleOrderService) {
     super(
         sequenceService,
         partnerRepo,
@@ -84,7 +88,9 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
         saleConfigService,
         saleOrderCheckAnalyticService,
         productionOrderSaleOrderService,
-        appProductionService);
+        appProductionService,
+        birtTemplateService,
+        saleOrderService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
