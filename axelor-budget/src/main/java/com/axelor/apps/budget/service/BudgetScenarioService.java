@@ -12,7 +12,6 @@ public interface BudgetScenarioService {
   Map<String, Object> getVariableMap(BudgetScenario budgetScenario, int yearNumber)
       throws AxelorException;
 
-  @Transactional
   void validateScenario(BudgetScenario budgetScenario) throws AxelorException;
 
   @Transactional

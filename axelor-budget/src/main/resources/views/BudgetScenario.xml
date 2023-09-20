@@ -14,7 +14,13 @@
   <form model="com.axelor.apps.budget.db.BudgetScenario" title="Budget Scenario"
     name="budget-scenario-form" width="large"
     onLoad="action-budget-scenario-method-change-column-names">
-    <panel name="mainPanel" colSpan="12">
+    <menubar>
+      <menu title="See detail" name="seeDetailBtn">
+        <item action="action-budget-scenario-see-tracebacks" title="Tracebacks"
+          showIf="id &amp;&amp; statusSelect == 1"/>
+      </menu>
+    </menubar>
+    <panel name="statusPanel" colSpan="12">
       <field name="statusSelect" showTitle="false" readonly="true" colSpan="8"
         widget="NavSelect"/>
     </panel>
@@ -64,5 +70,12 @@
       method="removeUnusedColumns"/>
   </action-method>
 
+  <action-view name="action-budget-scenario-see-tracebacks" title="Tracebacks"
+    model="com.axelor.apps.base.db.TraceBack">
+    <view type="grid" name="trace-back-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.ref = 'com.axelor.apps.budget.db.BudgetScenario' AND self.refId = :_scenarioId</domain>
+    <context name="_scenarioId" expr="eval: id"/>
+  </action-view>
 
 </object-views>

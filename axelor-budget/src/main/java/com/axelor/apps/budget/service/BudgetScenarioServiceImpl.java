@@ -1,12 +1,15 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetScenario;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.repo.BudgetScenarioRepository;
 import com.axelor.apps.budget.db.repo.BudgetScenarioVariableRepository;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
@@ -53,7 +56,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
         }
       }
     }
-    computeFormulaVariable(variableAmountMap);
+    computeFormulaVariable(variableAmountMap, yearNumber, budgetScenario);
 
     return variableAmountMap;
   }
@@ -99,7 +102,8 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
     }
   }
 
-  protected Map<String, Object> computeFormulaVariable(Map<String, Object> variableAmountMap)
+  protected Map<String, Object> computeFormulaVariable(
+      Map<String, Object> variableAmountMap, int yearNumber, BudgetScenario budgetScenario)
       throws AxelorException {
     List<BudgetScenarioVariable> variableList =
         budgetScenarioVariableRepository
@@ -113,20 +117,27 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
     if (ObjectUtils.isEmpty(variableList)) {
       return variableAmountMap;
     } else {
-      fillVariableAmountMapWithFormula(variableAmountMap, variableList);
+      fillVariableAmountMapWithFormula(variableAmountMap, variableList, yearNumber, budgetScenario);
       replaceNullValuesInVariableMap(variableAmountMap);
     }
     return variableAmountMap;
   }
 
   protected void fillVariableAmountMapWithFormula(
-      Map<String, Object> variableAmountMap, List<BudgetScenarioVariable> variableList)
+      Map<String, Object> variableAmountMap,
+      List<BudgetScenarioVariable> variableList,
+      int yearNumber,
+      BudgetScenario budgetScenario)
       throws AxelorException {
     for (BudgetScenarioVariable variable : variableList) {
       variableAmountMap.put(variable.getCode(), null);
     }
     int nullCount = -1;
     int previousNullCount;
+
+    if (yearNumber == 1) {
+      checkErrorsOnVariableAmountMap(variableAmountMap, budgetScenario);
+    }
 
     while (nullCount != 0) {
       previousNullCount = nullCount;
@@ -135,6 +146,57 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
 
       if (nullCount == previousNullCount) {
         return;
+      }
+    }
+  }
+
+  protected void checkErrorsOnVariableAmountMap(
+      Map<String, Object> variableAmountMap, BudgetScenario budgetScenario) {
+    Map<String, Object> copyVariableAmountMap = new HashMap<>();
+
+    for (String lineCode : variableAmountMap.keySet().stream().collect(Collectors.toList())) {
+      if (variableAmountMap.get(lineCode) != null) {
+        copyVariableAmountMap.put(lineCode, variableAmountMap.get(lineCode));
+      } else {
+        copyVariableAmountMap.put(lineCode, BigDecimal.ZERO);
+      }
+    }
+
+    traceErrorsOnScenarioMap(copyVariableAmountMap, budgetScenario);
+  }
+
+  protected void traceErrorsOnScenarioMap(
+      Map<String, Object> variableAmountMap, BudgetScenario budgetScenario) {
+    for (String lineCode : variableAmountMap.keySet().stream().collect(Collectors.toList())) {
+
+      BudgetScenarioVariable variable = budgetScenarioVariableRepository.findByCode(lineCode);
+      if (variable != null
+          && variable.getEntryMethod()
+              == BudgetScenarioVariableRepository
+                  .BUDGET_SCENARIO_VARIABLE_ENTRY_METHOD_TYPE_SELECT_FORMULA
+          && variable.getEntryMethod() != null) {
+        Context scriptContext = new Context(variableAmountMap, Object.class);
+        ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+
+        try {
+          Object result = scriptHelper.eval(variable.getFormula());
+          if (result == null) {
+            AxelorException exception =
+                new AxelorException(
+                    new Throwable(String.format("No such field in: %s", variable.getFormula())),
+                    budgetScenario,
+                    TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                    String.format(I18n.get("Budget Scenario Variable") + " %s", lineCode));
+            TraceBackService.trace(exception);
+          }
+        } catch (Exception e) {
+          TraceBackService.trace(
+              new AxelorException(
+                  e.getCause(),
+                  budgetScenario,
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  String.format(I18n.get("Budget Scenario Variable") + " %s", lineCode)));
+        }
       }
     }
   }
@@ -155,7 +217,6 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
         try {
           variableAmountMap.replace(lineCode, scriptHelper.eval(variable.getFormula()));
         } catch (Exception e) {
-          // throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
         }
 
         if (variableAmountMap.get(lineCode) == null) {

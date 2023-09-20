@@ -54,9 +54,9 @@ public class BudgetScenarioController {
   public void validateScenario(ActionRequest request, ActionResponse response) {
     try {
       BudgetScenario budgetScenario = request.getContext().asType(BudgetScenario.class);
-
       Beans.get(BudgetScenarioService.class).validateScenario(budgetScenario);
       response.setValues(budgetScenario);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

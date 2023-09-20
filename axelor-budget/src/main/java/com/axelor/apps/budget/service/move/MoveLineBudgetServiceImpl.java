@@ -20,10 +20,13 @@ package com.axelor.apps.budget.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
@@ -83,5 +86,63 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         }
       }
     }
+  }
+
+  @Override
+  public String getBudgetDomain(Move move, MoveLine moveLine) {
+    String budget = "self.budgetLevel.parentBudgetLevel.globalBudget";
+    String query =
+        String.format(
+            "self.totalAmountExpected > 0 AND self.statusSelect = %d",
+            BudgetRepository.STATUS_VALIDATED);
+    if (move != null) {
+      query =
+          query.concat(
+              String.format(
+                  " AND %s.company.id = %d",
+                  budget, move.getCompany() != null ? move.getCompany().getId() : 0));
+      if (move.getDate() != null) {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.fromDate <= '%s' AND self.toDate >= '%s'",
+                    move.getDate(), move.getDate()));
+      }
+    }
+    if (moveLine != null) {
+      if (AccountTypeRepository.TYPE_INCOME.equals(
+          moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND %s.budgetTypeSelect = %d ",
+                    budget, BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE));
+      } else if (AccountTypeRepository.TYPE_CHARGE.equals(
+          moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND %s.budgetTypeSelect in ("
+                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
+                        + ","
+                        + BudgetLevelRepository
+                            .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
+                        + ")",
+                    budget));
+      } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
+          moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND %s.budgetTypeSelect in ("
+                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
+                        + ","
+                        + BudgetLevelRepository
+                            .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
+                        + ")",
+                    budget));
+      }
+    }
+    return query;
   }
 }

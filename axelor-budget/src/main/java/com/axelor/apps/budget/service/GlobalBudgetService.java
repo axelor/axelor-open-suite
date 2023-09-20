@@ -24,10 +24,8 @@ public interface GlobalBudgetService {
 
   void draftChildren(GlobalBudget globalBudget) throws AxelorException;
 
-  @Transactional(rollbackOn = {RuntimeException.class})
   void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
 
-  @Transactional(rollbackOn = {RuntimeException.class})
   GlobalBudget generateGlobalBudgetWithTemplate(GlobalBudgetTemplate globalBudgetTemplate)
       throws AxelorException;
 

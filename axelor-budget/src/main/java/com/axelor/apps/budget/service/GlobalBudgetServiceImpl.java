@@ -1,7 +1,6 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
@@ -20,7 +19,6 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -207,7 +205,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     fillGlobalBudgetWithLevels(globalBudgetTemplate, globalBudget);
 
     globalBudgetRepository.save(globalBudget);
-    // recomputeGlobalBudgetTotals(globalBudget);
 
     return globalBudget;
   }
@@ -263,47 +260,13 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           Set<BudgetScenarioVariable> variablesList =
               sectionBudgetLevel.getBudgetScenarioVariableSet();
 
-          if (!globalBudgetTemplate.getIsScenario() && !ObjectUtils.isEmpty(budgetList)) {
-            for (Budget budget : budgetList) {
-              Budget optBudget = budgetRepository.copy(budget, true);
-              optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-              optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-              optBudget.setAmountForGeneration(budget.getTotalAmountExpected());
-              optBudget.setAvailableAmount(budget.getTotalAmountExpected());
-              optBudget.setAvailableAmountWithSimulated(budget.getTotalAmountExpected());
-              budgetService.generatePeriods(optBudget);
-              optSectionBudgetLevel.addBudgetListItem(optBudget);
-              globalBudget.addBudgetListItem(optBudget);
-              budgetRepository.save(optBudget);
-            }
-          } else if (globalBudgetTemplate.getIsScenario() && !ObjectUtils.isEmpty(variablesList)) {
-
-            for (BudgetScenarioVariable budgetScenarioVariable : variablesList) {
-              Budget optBudget = new Budget();
-              optBudget.setCode(budgetScenarioVariable.getCode());
-              optBudget.setName(budgetScenarioVariable.getName());
-              optBudget.setFromDate(sectionBudgetLevel.getFromDate());
-              optBudget.setToDate(sectionBudgetLevel.getToDate());
-              optBudget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
-              optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-              optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-              optBudget.setCategory(budgetScenarioVariable.getCategory());
-              BigDecimal calculatedAmount =
-                  ((BigDecimal)
-                          variableAmountMap.getOrDefault(
-                              budgetScenarioVariable.getCode(), BigDecimal.ZERO))
-                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-              optBudget.setAmountForGeneration(calculatedAmount);
-              optBudget.setTotalAmountExpected(calculatedAmount);
-              optBudget.setAvailableAmount(calculatedAmount);
-              optBudget.setAvailableAmountWithSimulated(optBudget.getAmountForGeneration());
-              optBudget.setPeriodDurationSelect(0);
-              budgetService.generatePeriods(optBudget);
-              optSectionBudgetLevel.addBudgetListItem(optBudget);
-              globalBudget.addBudgetListItem(optBudget);
-              budgetRepository.save(optBudget);
-            }
-          }
+          budgetService.generateBudgetsUsingTemplate(
+              globalBudgetTemplate,
+              budgetList,
+              variablesList,
+              optSectionBudgetLevel,
+              globalBudget,
+              variableAmountMap);
         }
       }
     }
@@ -327,7 +290,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           versionExpectedAmountsLineList.stream()
               .filter(version -> version.getBudget().equals(budget))
               .findFirst()
-              .get();
+              .orElse(null);
       if (versionExpectedAmountsLine != null) {
         budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
         budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
