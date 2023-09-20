@@ -54,7 +54,7 @@ public class OperationOrderBusinessController {
     }
   }
 
-  public void checkUsersHaveEmployee(ActionRequest request, ActionResponse response) {
+  public void checkOperationOrder(ActionRequest request, ActionResponse response) {
     try {
 
       OperationOrderBusinessProductionCheckService operationOrderCheckService =
@@ -66,85 +66,24 @@ public class OperationOrderBusinessController {
       if (appProductionService.isApp("production")
           && appProductionService.getAppProduction().getManageBusinessProduction()
           && appProductionService.getAppProduction().getAutoGenerateTimesheetLine()) {
+
         if (!operationOrderCheckService.workingUsersHaveEmployee(operationOrder)) {
           response.setAlert(
               I18n.get(BusinessProductionExceptionMessage.WORKING_USERS_HAVE_NO_EMPLOYEE));
-        }
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkUsersTSImputation(ActionRequest request, ActionResponse response) {
-    try {
-
-      OperationOrderBusinessProductionCheckService operationOrderCheckService =
-          Beans.get(OperationOrderBusinessProductionCheckService.class);
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-
-      AppProductionService appProductionService = Beans.get(AppProductionService.class);
-
-      if (appProductionService.isApp("production")
-          && appProductionService.getAppProduction().getManageBusinessProduction()
-          && appProductionService.getAppProduction().getAutoGenerateTimesheetLine()) {
-        if (!operationOrderCheckService.workingUsersHaveTSImputationSelect(
+        } else if (!operationOrderCheckService.workingUsersHaveTSImputationSelect(
             operationOrder, EmployeeRepository.TIMESHEET_MANUF_ORDER)) {
           response.setAlert(
               I18n.get(
                   BusinessProductionExceptionMessage
                       .WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIMESHEET_IMPUTATION));
-        }
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkUsersTimeLoggingPref(ActionRequest request, ActionResponse response) {
-    try {
-
-      OperationOrderBusinessProductionCheckService operationOrderCheckService =
-          Beans.get(OperationOrderBusinessProductionCheckService.class);
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-
-      AppProductionService appProductionService = Beans.get(AppProductionService.class);
-
-      if (appProductionService.isApp("production")
-          && appProductionService.getAppProduction().getManageBusinessProduction()
-          && appProductionService.getAppProduction().getAutoGenerateTimesheetLine()) {
-        if (!operationOrderCheckService.workingUsersHaveCorrectTimeLoggingPref(operationOrder)) {
+        } else if (!operationOrderCheckService.workingUsersHaveCorrectTimeLoggingPref(
+                operationOrder)
+            || !operationOrderCheckService.workingUsersHaveTSTimeLoggingPrefMatching(
+                operationOrder)) {
           response.setAlert(
               I18n.get(
                   BusinessProductionExceptionMessage
-                      .WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIME_LOGGING_PREF));
-        }
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkUserTimeLoggingMatch(ActionRequest request, ActionResponse response) {
-    try {
-
-      OperationOrderBusinessProductionCheckService operationOrderCheckService =
-          Beans.get(OperationOrderBusinessProductionCheckService.class);
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-
-      AppProductionService appProductionService = Beans.get(AppProductionService.class);
-
-      if (appProductionService.isApp("production")
-          && appProductionService.getAppProduction().getManageBusinessProduction()
-          && appProductionService.getAppProduction().getAutoGenerateTimesheetLine()) {
-        if (!operationOrderCheckService.workingUsersHaveTSTimeLoggingPrefMatching(operationOrder)) {
-          response.setAlert(
-              I18n.get(
-                  BusinessProductionExceptionMessage
-                      .WORKING_USERS_EMPLOYEE_NOT_MATCHING_TIME_LOGGING_WITH_TIMESHEET));
+                      .WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIME_LOGGING));
         }
       }
 

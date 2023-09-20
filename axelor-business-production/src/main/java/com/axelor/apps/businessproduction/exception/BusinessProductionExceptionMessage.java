@@ -36,10 +36,6 @@ public final class BusinessProductionExceptionMessage {
   public static final String WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIMESHEET_IMPUTATION = /*$$(*/
       "Some working employees do not have their timesheet imputation on manuf order, therefore no timesheet line will be generated for those, do you want to continue anyway ?" /*)*/;
 
-  public static final String WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIME_LOGGING_PREF = /*$$(*/
-      "Some working employees have their time logging preference set to days, do you want to continue anyway ?" /*)*/;
-
-  public static final String
-      WORKING_USERS_EMPLOYEE_NOT_MATCHING_TIME_LOGGING_WITH_TIMESHEET = /*$$(*/
-          "Some working employees have their time logging preference not matching with their current timesheet, do you want to continue anyway ?" /*)*/;
+  public static final String WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIME_LOGGING = /*$$(*/
+      "Some working employees have their time logging preference set to 'days' or it is not matching with their current timesheet, do you want to continue anyway ?" /*)*/;
 }

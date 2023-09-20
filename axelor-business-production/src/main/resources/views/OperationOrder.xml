@@ -40,33 +40,13 @@
   </action-group>
 
 
-  <action-method name="action-business-production-operation-order-check-employee">
+  <action-method name="action-business-production-operation-order-check">
     <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
-      method="checkUsersHaveEmployee"/>
-  </action-method>
-
-  <action-method name="action-business-production-operation-order-check-ts-imputation">
-    <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
-      method="checkUsersTSImputation"/>
-  </action-method>
-
-  <action-method
-    name="action-business-production-operation-order-check-time-logging-pref">
-    <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
-      method="checkUsersTimeLoggingPref"/>
-  </action-method>
-
-  <action-method
-    name="action-business-production-operation-order-check-matching-time-logging">
-    <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
-      method="checkUserTimeLoggingMatch"/>
+      method="checkOperationOrder"/>
   </action-method>
 
   <action-group name="action-business-production-operation-order-group-checks">
-    <action name="action-business-production-operation-order-check-employee"/>
-    <action name="action-business-production-operation-order-check-ts-imputation"/>
-    <action name="action-business-production-operation-order-check-time-logging-pref"/>
-    <action name="action-business-production-operation-order-check-matching-time-logging"/>
+    <action name="action-business-production-operation-order-check"/>
   </action-group>
 
   <action-group id="action-business-production-operation-order-group-cancel"
