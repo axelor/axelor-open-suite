@@ -233,6 +233,32 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//field[@name='isFactor']">
+      <insert position="after">
+        <field name="isCorporatePartner" widget="InlineCheckbox" hideIf="$readonly()"/>
+      </insert>
+    </extend>
+    <extend target="/">
+      <insert position="after">
+        <panel name="mainInformationPanel" title="General information"
+          showIf="isCorporatePartner" sidebar="true">
+          <field name="corporatePartnerDomainSet" widget="TagSelect"/>
+          <field name="workAreaSet" widget="TagSelect"/>
+          <panel-related name="fidelityListPanel" field="fidelityList"
+            form-view="fidelity-form" grid-view="fidelity-grid"/>
+          <field name="corporatePartnerSince"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="/">
+      <insert position="after">
+        <panel name="followUpPanel" title="Corporate partner monitoring"
+          showIf="isCorporatePartner" sidebar="true" colSpan="12">
+          <field name="takenOpportunities"/>
+          <field name="wonOpportunities"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form id="crm-partner-customer-form" name="partner-customer-form" title="Customer"
