@@ -74,6 +74,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected MachineService machineService;
   protected ManufOrderService manufOrderService;
   protected ManufOrderWorkflowService manufOrderWorkflowService;
+  protected ManufOrderStockMoveService manufOrderStockMoveService;
 
   @Inject
   public OperationOrderWorkflowServiceImpl(
@@ -86,7 +87,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       ProdProcessLineService prodProcessLineService,
       MachineService machineService,
       ManufOrderService manufOrderService,
-      ManufOrderWorkflowService manufOrderWorkflowService) {
+      ManufOrderWorkflowService manufOrderWorkflowService,
+      ManufOrderStockMoveService manufOrderStockMoveService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -97,6 +99,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     this.machineService = machineService;
     this.manufOrderService = manufOrderService;
     this.manufOrderWorkflowService = manufOrderWorkflowService;
+    this.manufOrderStockMoveService = manufOrderStockMoveService;
   }
 
   /**
@@ -332,7 +335,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
             operationOrder.getManufOrder().getProdProcess().getStockMoveRealizeOrderSelect();
         if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
           for (StockMove stockMove : operationOrder.getInStockMoveList()) {
-            Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
+            manufOrderStockMoveService.finishStockMove(stockMove);
           }
 
           StockMove newStockMove =
