@@ -14,6 +14,7 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -243,6 +244,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
   }
 
   @Override
+  @Transactional
   public void validateScenario(BudgetScenario budgetScenario) throws AxelorException {
     generateFormulaScenarioLines(budgetScenario);
     budgetScenario.setStatusSelect(BudgetScenarioRepository.BUDGET_SCENARIO_STATUS_SELECT_VALID);
@@ -318,6 +320,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
   }
 
   @Override
+  @Transactional
   public void draftScenario(BudgetScenario budgetScenario) {
     List<BudgetScenarioLine> budgetScenarioLineList =
         budgetScenario.getBudgetScenarioLineList().stream()

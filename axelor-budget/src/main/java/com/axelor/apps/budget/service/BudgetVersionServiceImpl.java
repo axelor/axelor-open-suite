@@ -25,7 +25,7 @@ public class BudgetVersionServiceImpl implements BudgetVersionService {
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
+  @Transactional
   public BudgetVersion createNewVersion(GlobalBudget globalBudget, String name) {
     BudgetVersion budgetVersion = new BudgetVersion();
     budgetVersion.setGlobalBudget(globalBudget);

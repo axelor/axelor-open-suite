@@ -19,10 +19,12 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
@@ -84,20 +86,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
-  public void recomputeGlobalBudgetTotals(GlobalBudget globalBudget) {
-
-    if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
-        budgetLevelService.recomputeBudgetLevelTotals(budgetLevel);
-      }
-    }
-
-    computeTotals(globalBudget);
-    globalBudgetRepository.save(globalBudget);
-  }
-
-  @Override
   public void computeTotals(GlobalBudget globalBudget) {
     List<BudgetLevel> budgetLevelList = globalBudget.getBudgetLevelList();
     BigDecimal totalAmountExpected = BigDecimal.ZERO;
@@ -128,77 +116,42 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     globalBudget.setRealizedWithPo(realizedWithPo);
     globalBudget.setTotalAmountAvailable(
         (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
-                    .compareTo(BigDecimal.ZERO)
-                > 0
-            ? totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo)
-            : BigDecimal.ZERO);
+            .max(BigDecimal.ZERO));
     globalBudget.setTotalFirmGap(totalFirmGap);
     globalBudget.setSimulatedAmount(simulatedAmount);
     globalBudget.setAvailableAmountWithSimulated(
-        (globalBudget.getTotalAmountAvailable().subtract(simulatedAmount))
-                    .compareTo(BigDecimal.ZERO)
-                > 0
-            ? (globalBudget.getTotalAmountAvailable().subtract(simulatedAmount))
-            : BigDecimal.ZERO);
+        (globalBudget.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
   }
 
   @Override
-  public void validateChildren(GlobalBudget globalBudget) throws AxelorException {
-    if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
-        budgetLevelService.validateChildren(budgetLevel);
-      }
-    }
-
-    globalBudget.setStatusSelect(GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID);
-  }
-
-  @Override
-  public void archiveChildren(GlobalBudget globalBudget) throws AxelorException {
-    if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
-        budgetLevelService.archiveBudgetLevel(budgetLevel);
-      }
-    }
-
-    changeGlobalBudgetStatus(
-        globalBudget, GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED);
-  }
-
-  @Override
-  public void draftChildren(GlobalBudget globalBudget) throws AxelorException {
-    if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
-        budgetLevelService.draftChildren(budgetLevel);
-      }
-    }
-
-    changeGlobalBudgetStatus(
-        globalBudget, GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void changeGlobalBudgetStatus(GlobalBudget globalBudget, int status) {
-    if (globalBudget != null) {
-      globalBudget.setStatusSelect(status);
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
   public void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException {
-    if (ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+    List<Budget> budgetList = globalBudget.getBudgetList();
+    if (ObjectUtils.isEmpty(budgetList)
+        && !ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      budgetList =
+          globalBudget.getBudgetLevelList().stream()
+              .filter(bl -> !ObjectUtils.isEmpty(bl.getBudgetLevelList()))
+              .map(BudgetLevel::getBudgetLevelList)
+              .flatMap(Collection::stream)
+              .filter(bl -> !ObjectUtils.isEmpty(bl.getBudgetList()))
+              .map(BudgetLevel::getBudgetList)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
+    }
+    if (ObjectUtils.isEmpty(budgetList)) {
       return;
     }
 
-    for (Budget budget : globalBudget.getBudgetList()) {
+    for (Budget budget : budgetList) {
       budgetService.createBudgetKey(budget);
-      budgetRepository.save(budget);
+      if (budget.getGlobalBudget() == null) {
+        globalBudget.addBudgetListItem(budget);
+      }
     }
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public GlobalBudget generateGlobalBudgetWithTemplate(GlobalBudgetTemplate globalBudgetTemplate)
       throws AxelorException {
     GlobalBudget globalBudget = copyGlobalBudgetTemplate(globalBudgetTemplate);
@@ -273,7 +226,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
       throws AxelorException {
     List<Budget> budgets = globalBudget.getBudgetList();

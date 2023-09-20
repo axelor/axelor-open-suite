@@ -6,7 +6,9 @@ import com.axelor.apps.budget.db.BudgetScenarioLine;
 import com.axelor.apps.budget.db.repo.BudgetScenarioLineRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
 public class BudgetScenarioLineServiceImpl implements BudgetScenarioLineService {
   protected BudgetScenarioLineRepository budgetScenarioLineRepository;

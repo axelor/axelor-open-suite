@@ -64,7 +64,9 @@
       column="fromDate"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
       column="toDate"/>
-    <bind column="accountSet" to="accountSet" search="self.code in :accountSet"
+    <bind to="company" search="self.importId in :companyImportId" column="companyImportId"/>
+    <bind column="accountSet" to="accountSet"
+      search="self.code in :accountSet AND self.company.importId = :companyImportId"
       eval="accountSet.split('\\|') as List"/>
   </input>
 

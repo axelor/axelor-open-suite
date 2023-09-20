@@ -71,6 +71,10 @@
     <option value="3">Production</option>
     <option value="4">Results</option>
     <option value="5">Current Expenses</option>
+    <option value="6">Operations</option>
+    <option value="7">Financing</option>
+    <option value="8">Investment</option>
+    <option value="9">Tax</option>
   </selection>
 
   <selection name="app.budget.check.missing.select">
@@ -81,7 +85,7 @@
 
   <selection name="budget.scenario.status.select">
     <option value="0">Draft</option>
-    <option value="1">Validate</option>
+    <option value="1">Validated</option>
   </selection>
 
 </object-views>

@@ -10,13 +10,11 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="totalAmountExpected"/>
-    <field name="totalAmountCommitted"/>
-    <field name="totalFirmGap"/>
-    <field name="realizedWithNoPo" width="200"/>
-    <field name="realizedWithPo" width="200"/>
     <field name="totalAmountAvailable"/>
-    <field name="simulatedAmount"/>
-    <field name="availableAmountWithSimulated"/>
+    <field name="totalAmountCommitted"/>
+    <field name="realizedWithNoPo"/>
+    <field name="realizedWithPo"/>
+    <field name="totalFirmGap"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -86,7 +84,7 @@
           showIf="statusSelect == 0 &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
           colSpan="12" onClick="action-global-budget-group-validate-structure"/>
         <button name="validBtn" title="validateBtn" showIf="statusSelect == 1" colSpan="12"
-          onClick="action-global-budget-group-valid-btn-onClick"/>
+          onClick="action-global-budget-method-validate-children, save"/>
         <button name="archivedBtn" title="archiveBtn" showIf="statusSelect == 2" colSpan="12"
           onClick="action-global-budget-method-archived-btn-onClick, save"/>
 
@@ -113,17 +111,18 @@
             showIf="statusSelect == 2 &amp;&amp; simulatedAmount != 0"/>
         </panel>
       </panel>
-      <panel name="totalAmountPanel" colSpan="12" readonly="true" title="Total amounts">
-        <field name="totalAmountExpected" colSpan="3"/>
-        <field name="totalAmountCommitted" colSpan="3"/>
-        <field name="realizedWithNoPo" colSpan="3"/>
-        <field name="realizedWithPo" colSpan="3"/>
-        <field name="simulatedAmount" colSpan="3"/>
-        <field name="totalAmountAvailable" colSpan="3"/>
-        <field name="availableAmountWithSimulated" colSpan="3" showIf="id"/>
-        <field name="totalFirmGap" colSpan="3"/>
-        <field name="totalAmountRealized" colSpan="3" hidden="true"/>
-        <field name="totalAmountPaid" colSpan="3"/>
+      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
+        title="Total amounts">
+        <field name="totalAmountExpected"/>
+        <field name="totalAmountAvailable"/>
+        <field name="availableAmountWithSimulated"/>
+        <field name="simulatedAmount"/>
+        <field name="totalAmountCommitted"/>
+        <field name="realizedWithNoPo"/>
+        <field name="realizedWithPo"/>
+        <field name="totalAmountPaid"/>
+        <field name="totalFirmGap"/>
+        <field name="totalAmountRealized" hidden="true"/>
       </panel>
     </panel>
 
@@ -166,7 +165,6 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <context name="_globalBudget" expr="eval: __this__"/>
-    <!-- <context name="_statusSelect" expr="eval: statusSelect"/> -->
   </action-view>
 
   <action-view name="action-view-global-budget-budget-version-change"
@@ -177,7 +175,6 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <context name="_globalBudget" expr="eval: __this__"/>
-    <!-- <context name="_budgetVersion" expr="eval: __this__"/> -->
   </action-view>
 
   <action-method name="action-method-global-budget-budget-version-change">
@@ -288,18 +285,17 @@
     <action name="action-global-budget-method-check-budget-dates"/>
   </action-group>
 
-  <action-group name="action-global-budget-group-valid-btn-onClick">
-    <action name="action-global-budget-method-check-budget-dates"/>
-    <action name="action-global-budget-method-recompute-budget-keys"/>
-    <action name="action-global-budget-method-validate-children"/>
-    <action name="save"/>
-  </action-group>
-
   <action-group name="action-global-budget-group-validate-structure">
+    <action name="action-global-budget-method-check-budget-dates"/>
     <action name="action-global-budget-method-validate-structure"/>
     <action name="save"/>
     <action name="action-method-budget-default-version-new"/>
   </action-group>
+
+  <action-method name="action-method-budget-default-version-new">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController"
+      method="createDefaultBudgetVersion"/>
+  </action-method>
 
   <action-method name="action-global-budget-method-set-dates">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="setDates"/>
@@ -315,10 +311,6 @@
 
   <action-method name="action-global-budget-method-validate-structure">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="validateStructure"/>
-  </action-method>
-
-  <action-method name="action-global-budget-method-recompute-budget-keys">
-    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="recomputeBudgetKey"/>
   </action-method>
 
   <action-method name="action-global-budget-method-archived-btn-onClick">

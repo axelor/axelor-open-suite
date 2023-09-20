@@ -242,9 +242,8 @@ public class BudgetServiceImpl implements BudgetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException {
+  @Transactional
+  public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate) {
     budget = budgetRepository.find(budget.getId());
     budget.setFromDate(fromDate);
     budget.setToDate(toDate);
