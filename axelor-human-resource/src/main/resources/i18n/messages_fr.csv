@@ -948,7 +948,7 @@
 "SmicValue.name","Valeur du SMIC",,
 "Social Charges","Charges sociales",,
 "Social security number","Numéro sécurité sociale",,
-"Some lines don't have a justification file. Do you want to proceed ?","Certaines lignes n'ont pas de fichier de justification. Voulez vous continuer ?",,
+"Some lines do not have a justification file. Do you want to proceed ?","Certaines lignes n'ont pas de fichier de justification. Voulez vous continuer ?",,
 "Spent time",,,
 "Standard",,,
 "Start","Démarrer",,

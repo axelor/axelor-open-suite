@@ -949,7 +949,7 @@
 "SmicValue.name",,,
 "Social Charges",,,
 "Social security number",,,
-"Some lines don't have a justification file.",,,
+"Some lines do not have a justification file. Do you want to proceed ?",,,
 "Spent time",,,
 "Standard",,,
 "Start",,,

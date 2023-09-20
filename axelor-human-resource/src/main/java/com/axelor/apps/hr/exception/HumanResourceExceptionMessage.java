@@ -290,5 +290,5 @@ public final class HumanResourceExceptionMessage {
       "The file is not a PDF nor an image. Please keep the original document." /*)*/;
 
   public static final String EXPENSE_JUSTIFICATION_FILE_MISSING = /*$$(*/
-      "Some lines don't have a justification file. Do you want to proceed ?" /*)*/;
+      "Some lines do not have a justification file. Do you want to proceed ?" /*)*/;
 }
