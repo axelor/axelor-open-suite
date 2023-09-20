@@ -61,13 +61,11 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
   protected MetaFile getSignedPdf(MetaFile pdfToSign) throws AxelorException {
     AppExpense appExpense = appHumanResourceService.getAppExpense();
     PfxCertificate pfxCertificate = appExpense.getPfxCertificate();
-    MetaFile signatureLogo = appExpense.getSignatureLogo();
     if (pfxCertificate != null) {
       return pdfSignatureService.digitallySignPdf(
           pdfToSign,
           pfxCertificate.getCertificate(),
           pfxCertificate.getPassword(),
-          signatureLogo,
           "Expense",
           "France");
     }

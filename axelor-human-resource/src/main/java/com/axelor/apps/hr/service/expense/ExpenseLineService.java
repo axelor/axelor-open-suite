@@ -35,4 +35,6 @@ public interface ExpenseLineService {
   void completeExpenseLines(Expense expense);
 
   public boolean isThereOverAmountLimit(Expense expense);
+
+  boolean isFilePdfOrImage(ExpenseLine expenseLine);
 }

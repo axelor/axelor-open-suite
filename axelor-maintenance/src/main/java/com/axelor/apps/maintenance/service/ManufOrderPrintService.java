@@ -31,8 +31,9 @@ public interface ManufOrderPrintService {
    *
    * @return ReportSettings
    * @throws IOException
+   * @throws AxelorException
    */
-  String printManufOrders(List<Long> ids) throws IOException;
+  String printManufOrders(List<Long> ids) throws IOException, AxelorException;
 
   /**
    * Print a single manuf order
@@ -43,7 +44,7 @@ public interface ManufOrderPrintService {
    */
   String printManufOrder(ManufOrder manufOrder) throws AxelorException;
 
-  ReportSettings prepareReportSettings(ManufOrder manufOrder);
+  ReportSettings prepareReportSettings(ManufOrder manufOrder) throws AxelorException;
 
   /** Returns the filename of a printing with multiple manuf orders. */
   String getManufOrdersFilename();

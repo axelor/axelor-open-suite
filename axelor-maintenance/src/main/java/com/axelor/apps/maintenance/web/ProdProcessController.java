@@ -18,11 +18,17 @@
  */
 package com.axelor.apps.maintenance.web;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.ProdProcess;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,13 +40,22 @@ public class ProdProcessController {
   public void print(ActionRequest request, ActionResponse response) {
     try {
       ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      BirtTemplate maintenanceProdProcessBirtTemplate =
+          Beans.get(ProductionConfigService.class)
+              .getProductionConfig(prodProcess.getCompany())
+              .getMaintenanceProdProcessBirtTemplate();
+      if (maintenanceProdProcessBirtTemplate == null
+          || maintenanceProdProcessBirtTemplate.getTemplateMetaFile() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+      }
+
       String title = prodProcess.getName();
       String fileLink =
-          ReportFactory.createReport(IReport.MAINTENANCE_PROD_PROCESS, title + "-${date}")
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam("ProdProcessId", prodProcess.getId().toString())
-              .generate()
-              .getFileLink();
+          Beans.get(BirtTemplateService.class)
+              .generateBirtTemplateLink(maintenanceProdProcessBirtTemplate, prodProcess, title);
 
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {

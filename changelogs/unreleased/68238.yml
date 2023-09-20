@@ -1,0 +1,3 @@
+---
+title: "Production API: Finishing or pausing every operation orders will change the parent manuf order status"
+type: fix
