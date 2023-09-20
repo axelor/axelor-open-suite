@@ -1635,15 +1635,37 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      return moveLine.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) >= 0
-          || moveLine.getInvoiceTermList().stream()
-                  .filter(it -> it.getAmountRemaining().signum() > 0)
-                  .count()
-              != 1;
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
+        && moveLine.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
+      BigDecimal reconcileAmount = this.getReconcileAmount(moveLine);
+      List<InvoiceTerm> unpaidInvoiceTermList =
+          moveLine.getInvoiceTermList().stream()
+              .filter(it -> !it.getIsPaid())
+              .collect(Collectors.toList());
+
+      for (InvoiceTerm invoiceTerm : unpaidInvoiceTermList) {
+        reconcileAmount = reconcileAmount.subtract(invoiceTerm.getCompanyAmountRemaining());
+
+        if (reconcileAmount.signum() <= 0) {
+          return unpaidInvoiceTermList.indexOf(invoiceTerm) != unpaidInvoiceTermList.size() - 1;
+        }
+      }
     }
 
-    return false;
+    return true;
+  }
+
+  protected BigDecimal getReconcileAmount(MoveLine moveLine) {
+    List<Reconcile> reconcileList =
+        moveLine.getDebit().signum() > 0
+            ? moveLine.getDebitReconcileList()
+            : moveLine.getCreditReconcileList();
+
+    return reconcileList.stream()
+        .sorted(Comparator.comparing(Reconcile::getCreatedOn))
+        .reduce((first, second) -> second)
+        .map(Reconcile::getAmount)
+        .orElse(BigDecimal.ZERO);
   }
 
   @Override
