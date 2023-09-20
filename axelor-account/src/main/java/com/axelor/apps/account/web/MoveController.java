@@ -892,4 +892,14 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void checkPeriodPermission(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      Beans.get(MoveCheckService.class).checkPeriodPermission(move);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

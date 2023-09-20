@@ -935,8 +935,7 @@
   </search-filters>
 
   <action-validate name="action-bank-order-validate-set-bank-order-date">
-    <alert
-      message="As the date of your order is in the past, it will be updated to today. We advise you to send your order as soon as possible to avoid any errors."
+    <alert message="As the date of your order is in the past, it will be updated to today."
       if="bankOrderDate != null &amp;&amp; bankOrderDate &lt; __config__.date"/>
   </action-validate>
 

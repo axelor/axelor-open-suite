@@ -571,6 +571,7 @@
 
   <action-group name="action-move-group-date-onchange">
     <action name="action-account-move-method-date-onchange"/>
+    <action name="action-move-method-check-period-permission"/>
     <action name="action-move-method-check-period"/>
   </action-group>
 
@@ -796,6 +797,10 @@
 
   <action-method name="action-move-method-check-period">
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-period-permission">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodPermission"/>
   </action-method>
 
   <!-- ACTION VIEW -->

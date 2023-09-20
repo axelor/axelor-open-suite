@@ -1,0 +1,3 @@
+---
+title : "PRODUCT : economicManufOrderQty should be displayed for the productSubType = 'Semi-finished product' or 'Finished product' only. Currently, this field is also displayed for 'Component'."
+type : fix

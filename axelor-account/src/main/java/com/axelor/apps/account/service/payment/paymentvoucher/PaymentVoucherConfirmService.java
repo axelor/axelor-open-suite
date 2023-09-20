@@ -896,7 +896,7 @@ public class PaymentVoucherConfirmService {
             currencyRate,
             !isDebitToPay,
             paymentDate,
-            moveLineToPay.getDueDate() != null ? moveLineToPay.getDueDate() : paymentDate,
+            paymentDate,
             paymentDate,
             moveLineSeq,
             invoiceName,
