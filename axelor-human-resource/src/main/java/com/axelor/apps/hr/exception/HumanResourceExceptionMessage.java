@@ -291,4 +291,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_JUSTIFICATION_FILE_MISSING = /*$$(*/
       "Some lines do not have a justification file. Do you want to proceed ?" /*)*/;
+
+  public static final String EXPENSE_LIMIT_EXCEEDED = /*$$(*/
+      "The expense limit has been exceeded for the period %s to %s" /*)*/;
 }
