@@ -994,6 +994,7 @@
 "By deactivating simulated moves, all moves (including move lines) in this status will be deleted for the company ${company.name}. Do you wish to continue ?",,,
 "By invoice term",,,
 "By partner",,,
+"By selecting this option, only move lines not lettered or partially lettered are displayed.",,,
 "CC Transaction N°",,,
 "CFONB",,,
 "CFONB Export",,,
