@@ -196,19 +196,19 @@ public class ProjectTaskReportingValuesComputingServiceImpl
           progress
               .multiply(projectTask.getTurnover())
               .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
-      BigDecimal realCosts = computeRealCosts(projectTask, project);
-      projectTask.setRealCosts(realCosts);
-      projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
-      BigDecimal realMarkup = BigDecimal.ZERO;
-      if (projectTask.getRealCosts().signum() > 0) {
-        realMarkup =
-            getPercentValue(
-                projectTask
-                    .getRealMargin()
-                    .divide(projectTask.getRealCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP));
-      }
-      projectTask.setRealMarkup(realMarkup);
     }
+    BigDecimal realCosts = computeRealCosts(projectTask, project, unitIsTimeUnit);
+    projectTask.setRealCosts(realCosts);
+    projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
+    BigDecimal realMarkup = BigDecimal.ZERO;
+    if (projectTask.getRealCosts().signum() > 0) {
+      realMarkup =
+          getPercentValue(
+              projectTask
+                  .getRealMargin()
+                  .divide(projectTask.getRealCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP));
+    }
+    projectTask.setRealMarkup(realMarkup);
 
     // Landing (ex forecast)
     computeLandingValues(projectTask, unitIsTimeUnit, landingUnitCost);
@@ -322,33 +322,36 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
   }
 
-  protected BigDecimal computeRealCosts(ProjectTask projectTask, Project project)
-      throws AxelorException {
+  protected BigDecimal computeRealCosts(
+      ProjectTask projectTask, Project project, boolean unitIsTimeUnit) throws AxelorException {
     BigDecimal unitCost = computeUnitCost(projectTask, project);
     projectTask.setUnitCost(unitCost);
 
     BigDecimal timeSpent = getTaskSpentTime(projectTask);
 
-    BigDecimal realCost =
-        timeSpent
-            .multiply(unitCost)
-            .setScale(RESULT_SCALE, RoundingMode.HALF_UP)
-            .add(
-                projectTask.getPurchaseOrderLineList().stream()
-                    .filter(
-                        purchaseOrderLine -> {
-                          Integer purchaseOrderStatus =
-                              purchaseOrderLine.getPurchaseOrder().getStatusSelect();
-                          return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
-                              || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
-                        })
-                    .map(PurchaseOrderLine::getExTaxTotal)
-                    .reduce(BigDecimal::add)
-                    .orElse(BigDecimal.ZERO));
+    BigDecimal realCost = BigDecimal.ZERO;
+
+    if (unitIsTimeUnit) {
+      realCost = timeSpent.multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP);
+    }
+
+    realCost =
+        realCost.add(
+            projectTask.getPurchaseOrderLineList().stream()
+                .filter(
+                    purchaseOrderLine -> {
+                      Integer purchaseOrderStatus =
+                          purchaseOrderLine.getPurchaseOrder().getStatusSelect();
+                      return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
+                          || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
+                    })
+                .map(PurchaseOrderLine::getExTaxTotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO));
 
     // add subtask real cost
     for (ProjectTask task : projectTask.getProjectTaskList()) {
-      realCost = realCost.add(computeRealCosts(task, project));
+      realCost = realCost.add(computeRealCosts(task, project, unitIsTimeUnit));
     }
     projectTask.setRealCosts(realCost);
     return realCost;
@@ -489,9 +492,9 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       return convertedProductPrice;
     }
 
-    if (projectTaskUnit.equals(daysUnit) && product.getUnit().equals(hoursUnit)) {
+    if (daysUnit.equals(projectTaskUnit) && hoursUnit.equals(product.getUnit())) {
       convertedProductPrice = convertedProductPrice.multiply(defaultHoursADay);
-    } else if (projectTaskUnit.equals(hoursUnit) && product.getUnit().equals(daysUnit)) {
+    } else if (hoursUnit.equals(projectTaskUnit) && daysUnit.equals(product.getUnit())) {
       convertedProductPrice =
           convertedProductPrice.divide(defaultHoursADay, RESULT_SCALE, RoundingMode.HALF_UP);
     }
