@@ -80,17 +80,24 @@ public class EbicsLibConvertUtils {
     ebicsLibBank.setUseX509ExtensionExtendedKeyUsage(
         ebicsBank.getUseX509ExtensionExtendedKeyUsage());
 
-      ebicsLibBank.setSslCertificate(
-          ebicsCertificateService.getBankCertificate(
-              ebicsBank, EbicsCertificateRepository.TYPE_SSL));
+    ebicsLibBank.setSslCertificate(
+        ebicsCertificateService.getBankCertificate(ebicsBank, EbicsCertificateRepository.TYPE_SSL));
 
-     if (ebicsBank.getEbicsCertificateList().stream().anyMatch(ebicsCertificate -> EbicsCertificateRepository.TYPE_ENCRYPTION.equals(ebicsCertificate.getTypeSelect()))) {
+    if (ebicsBank.getEbicsCertificateList().stream()
+        .anyMatch(
+            ebicsCertificate ->
+                EbicsCertificateRepository.TYPE_ENCRYPTION.equals(
+                    ebicsCertificate.getTypeSelect()))) {
       ebicsLibBank.setEncryptionCertificate(
           ebicsCertificateService.getBankCertificate(
               ebicsBank, EbicsCertificateRepository.TYPE_ENCRYPTION));
-      }
+    }
 
-    if(ebicsBank.getEbicsCertificateList().stream().anyMatch(ebicsCertificate -> EbicsCertificateRepository.TYPE_AUTHENTICATION.equals(ebicsCertificate.getTypeSelect()))) {
+    if (ebicsBank.getEbicsCertificateList().stream()
+        .anyMatch(
+            ebicsCertificate ->
+                EbicsCertificateRepository.TYPE_AUTHENTICATION.equals(
+                    ebicsCertificate.getTypeSelect()))) {
       ebicsLibBank.setAuthenticationCertificate(
           ebicsCertificateService.getBankCertificate(
               ebicsBank, EbicsCertificateRepository.TYPE_AUTHENTICATION));

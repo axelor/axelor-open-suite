@@ -188,7 +188,8 @@ public class EbicsService {
 
     } catch (Exception e) {
       TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
     }
   }
 
@@ -232,7 +233,8 @@ public class EbicsService {
       userRepo.save(ebicsUser);
     } catch (IOException | EbicsLibException | JDOMException e) {
       TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
     }
   }
 
@@ -271,7 +273,8 @@ public class EbicsService {
           (KeyManagementResponseElement) response, proxyHost, proxyPort, userName, userPassword);
     } catch (Exception e) {
       TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
     }
   }
 
@@ -309,7 +312,8 @@ public class EbicsService {
       userRepo.save(ebicsUser);
     } catch (Exception e) {
       TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
     }
   }
 
@@ -450,7 +454,8 @@ public class EbicsService {
       userService.getNextOrderId(transportUser);
     } catch (IOException | AxelorException | EbicsLibException e) {
       TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
     }
 
     try {
@@ -546,7 +551,8 @@ public class EbicsService {
 
     } catch (EbicsLibException | IOException e) {
       TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
     }
 
     return file;

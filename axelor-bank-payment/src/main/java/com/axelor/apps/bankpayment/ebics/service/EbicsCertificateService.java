@@ -113,7 +113,7 @@ public class EbicsCertificateService {
       ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
       Beans.get(EbicsUserRepository.class).save(ebicsUser);
     } catch (GeneralSecurityException | IOException | EbicsLibException e) {
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
     }
   }
 
@@ -379,7 +379,7 @@ public class EbicsCertificateService {
    *
    * @throws IOException
    * @throws CertificateEncodingException
-   * @throws EbicsLibException
+   * @throws AxelorException
    */
   public void setUserCertificates(EbicsUser user, CertificateManager certificateManager)
       throws IOException, AxelorException, CertificateEncodingException {

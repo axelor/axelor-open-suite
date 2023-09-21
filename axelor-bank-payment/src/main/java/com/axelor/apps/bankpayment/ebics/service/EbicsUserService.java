@@ -141,16 +141,20 @@ public class EbicsUserService {
   }
 
   private void trace(EbicsRequestLog requestLog, EbicsRootElement[] rootElements)
-      throws JDOMException, IOException, EbicsLibException {
+      throws JDOMException, IOException, AxelorException {
+    try {
+      ByteArrayOutputStream bout = new ByteArrayOutputStream();
+      rootElements[0].save(bout);
+      requestLog.setRequestTraceText(bout.toString());
+      bout.close();
 
-    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    rootElements[0].save(bout);
-    requestLog.setRequestTraceText(bout.toString());
-    bout.close();
-
-    bout = new ByteArrayOutputStream();
-    rootElements[1].save(bout);
-    requestLog.setResponseTraceText(bout.toString());
-    bout.close();
+      bout = new ByteArrayOutputStream();
+      rootElements[1].save(bout);
+      requestLog.setResponseTraceText(bout.toString());
+      bout.close();
+    } catch (EbicsLibException e) {
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+    }
   }
 }
