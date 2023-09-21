@@ -1,3 +1,26 @@
+## [6.5.17] (2023-09-21)
+
+#### Fixed
+
+* Follower: fixed an error occuring when sending a message while adding a follower on any form.
+* Invoice payment: when validating a invoice payment from a bank order, the payment date will now be correctly updated to bank order date.
+* Manufacturing order: fixed purchase order generation with unit name
+* Product: "Economic manufacturing quantity" is now correctly hidden on components.
+* Reconcile: fixed effective date computation when we generate payment move from payment voucher.
+* Leave line: deleting every leave management now correctly computes remaining and acquired value.
+* Invoice: fixed french translation for 'Advance payment invoice'.
+* Manufacturing order: fixed 'No calculation' of production indicators on planned Manufacturing Order.
+* Advanced export: change PDF generation.
+* Accounting: disable financial discount from the application to prevent issues from its instability.
+* Operation Order: On planning, fixed a bug where an operation order could only start at the same time as others with same priority.
+* Production API: finishing or pausing every operation orders will change the parent manuf order status.
+* Stock location: fixed new average price computation in the case of a unit conversion.
+* Manufacturing order: when pausing an operation order, the manufacturing order will be paused if there is no "In progress" operation order
+* BANKDETAILS / COMPANY : Fix prefill company data when creating a bankDetails
+* Invoice: fixed error when modfying an analytic line percentage.
+* Move template: fixed invoice terms not being created on a move template generation by amount.
+* Stock correction: add demo data for Stock correction reason.
+
 ## [6.5.16] (2023-09-11)
 
 #### Fixed
@@ -818,6 +841,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.17]: https://github.com/axelor/axelor-open-suite/compare/v6.5.16...v6.5.17
 [6.5.16]: https://github.com/axelor/axelor-open-suite/compare/v6.5.15...v6.5.16
 [6.5.15]: https://github.com/axelor/axelor-open-suite/compare/v6.5.14...v6.5.15
 [6.5.14]: https://github.com/axelor/axelor-open-suite/compare/v6.5.13...v6.5.14
