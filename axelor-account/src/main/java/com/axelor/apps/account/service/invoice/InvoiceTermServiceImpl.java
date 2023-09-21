@@ -197,7 +197,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
-        this.computeCompanyAmounts(invoiceTerm, false);
+        this.computeCompanyAmounts(invoiceTerm, false, false);
         this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       } else {
         total = total.add(invoiceTerm.getAmount());
@@ -245,7 +245,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return invoiceTerm;
   }
 
-  public void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate) {
+  @Override
+  public void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate, boolean isHoldback) {
     BigDecimal invoiceTermAmount = invoiceTerm.getAmount();
     BigDecimal invoiceTermAmountRemaining = invoiceTerm.getAmountRemaining();
     BigDecimal companyAmount = invoiceTermAmount;
@@ -261,12 +262,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               : moveLine.getDebit().max(moveLine.getCredit());
 
       if (!isUpdate) {
-        ratioPaid = invoiceTermAmountRemaining.divide(invoiceTermAmount, 10, RoundingMode.HALF_UP);
+        ratioPaid =
+            invoiceTermAmountRemaining.divide(
+                invoiceTermAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       }
+
+      BigDecimal percentage = isHoldback ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
+
       companyAmount =
           companyTotal
-              .multiply(invoiceTerm.getPercentage())
-              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+              .multiply(percentage)
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
       companyAmountRemaining =
           companyAmount
               .multiply(ratioPaid)
@@ -371,7 +380,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-    this.computeCompanyAmounts(invoiceTerm, false);
+    this.computeCompanyAmounts(invoiceTerm, false, false);
     this.computeFinancialDiscount(invoiceTerm, invoice);
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
@@ -418,7 +427,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
-    this.computeCompanyAmounts(invoiceTerm, false);
+    this.computeCompanyAmounts(invoiceTerm, false, false);
 
     if (move != null
         && move.getPaymentCondition() != null
@@ -928,7 +937,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       return total.subtract(totalWithoutCurrent);
     } else {
-      this.computeCompanyAmounts(invoiceTerm, true);
+      this.computeCompanyAmounts(invoiceTerm, true, false);
 
       return null;
     }
@@ -1015,7 +1024,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     this.setPfpStatus(newInvoiceTerm);
-    this.computeCompanyAmounts(newInvoiceTerm, false);
+    this.computeCompanyAmounts(newInvoiceTerm, false, isHoldBack);
 
     return newInvoiceTerm;
   }
