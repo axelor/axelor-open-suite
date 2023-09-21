@@ -50,17 +50,20 @@ public class OperationOrderStockMoveService {
   protected StockMoveLineService stockMoveLineService;
   protected StockLocationRepository stockLocationRepo;
   protected ProductCompanyService productCompanyService;
+  protected ManufOrderStockMoveService manufOrderStockMoveService;
 
   @Inject
   public OperationOrderStockMoveService(
       StockMoveService stockMoveService,
       StockMoveLineService stockMoveLineService,
       StockLocationRepository stockLocationRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      ManufOrderStockMoveService manufOrderStockMoveService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationRepo = stockLocationRepo;
     this.productCompanyService = productCompanyService;
+    this.manufOrderStockMoveService = manufOrderStockMoveService;
   }
 
   public void createToConsumeStockMove(OperationOrder operationOrder) throws AxelorException {
@@ -200,7 +203,7 @@ public class OperationOrderStockMoveService {
           stockMove -> CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
 
       for (StockMove stockMove : stockMoveList) {
-        Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
+        manufOrderStockMoveService.finishStockMove(stockMove);
       }
     }
   }
@@ -214,8 +217,6 @@ public class OperationOrderStockMoveService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void partialFinish(OperationOrder operationOrder) throws AxelorException {
-    ManufOrderStockMoveService manufOrderStockMoveService =
-        Beans.get(ManufOrderStockMoveService.class);
     ManufOrder manufOrder = operationOrder.getManufOrder();
     Company company = manufOrder.getCompany();
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
@@ -289,13 +290,12 @@ public class OperationOrderStockMoveService {
     List<ProdProduct> diffProdProductList;
     Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
     diffProdProductList = new ArrayList<>(operationOrder.getDiffConsumeProdProductList());
-    Beans.get(ManufOrderStockMoveService.class)
-        .createNewStockMoveLines(
-            diffProdProductList,
-            stockMove,
-            StockMoveLineService.TYPE_IN_PRODUCTIONS,
-            fromStockLocation,
-            toStockLocation);
+    manufOrderStockMoveService.createNewStockMoveLines(
+        diffProdProductList,
+        stockMove,
+        StockMoveLineService.TYPE_IN_PRODUCTIONS,
+        fromStockLocation,
+        toStockLocation);
   }
 
   public void cancel(OperationOrder operationOrder) throws AxelorException {
@@ -323,8 +323,6 @@ public class OperationOrderStockMoveService {
    */
   public void createNewConsumedStockMoveLineList(
       OperationOrder operationOrder, BigDecimal qtyToUpdate) throws AxelorException {
-    ManufOrderStockMoveService manufOrderStockMoveService =
-        Beans.get(ManufOrderStockMoveService.class);
 
     // find planned stock move
     Optional<StockMove> stockMoveOpt =

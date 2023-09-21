@@ -557,6 +557,7 @@ public class InvoicingProjectService {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
     }
+    invoicingProject = invoicingProjectRepo.save(invoicingProject);
 
     clearLines(invoicingProject);
     setLines(invoicingProject, project, 0);

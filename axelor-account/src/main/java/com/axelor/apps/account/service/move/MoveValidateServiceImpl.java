@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -100,7 +101,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveControlService moveControlService;
-  protected MoveComputeService moveComputeService;
+  protected MoveCutOffService moveCutOffService;
+  protected MoveLineCheckService moveLineCheckService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -120,8 +122,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveLineTaxService moveLineTaxService,
       PeriodServiceAccount periodServiceAccount,
       MoveControlService moveControlService,
-      MoveComputeService moveComputeService) {
-
+      MoveCutOffService moveCutOffService,
+      MoveLineCheckService moveLineCheckService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -138,7 +140,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveControlService = moveControlService;
-    this.moveComputeService = moveComputeService;
+    this.moveCutOffService = moveCutOffService;
+    this.moveLineCheckService = moveLineCheckService;
   }
 
   /**
@@ -220,7 +223,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                 MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
                 MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
             .contains(move.getFunctionalOriginSelect())) {
-      moveComputeService.autoApplyCutOffDates(move);
+      moveCutOffService.autoApplyCutOffDates(move);
 
       if (!moveToolService.checkMoveLinesCutOffDates(move)) {
         throw new AxelorException(
@@ -275,6 +278,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               moveLine.getName());
         }
         moveLineControlService.checkAccountAnalytic(move, moveLine, account);
+        moveLineCheckService.checkAnalyticMoveLinesPercentage(moveLine);
         moveLineControlService.validateMoveLine(moveLine);
         moveLineControlService.checkAccountCompany(moveLine);
         moveLineControlService.checkJournalCompany(moveLine);
@@ -835,12 +839,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     BigDecimal linesTaxAmount =
         moveLineList.stream()
             .filter(
-                moveLine -> {
-                  String accountType =
-                      moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
-                  return accountType.equals(AccountTypeRepository.TYPE_INCOME)
-                      || accountType.equals(AccountTypeRepository.TYPE_CHARGE);
-                })
+                moveLine ->
+                    moveLineTaxService.isGenerateMoveLineForAutoTax(
+                        moveLine.getAccount().getAccountType().getTechnicalTypeSelect()))
             .map(this::getTaxAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -854,7 +855,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                         .getAccountType()
                         .getTechnicalTypeSelect()
                         .equals(AccountTypeRepository.TYPE_TAX))
-            .map(it -> it.getDebit().add(it.getCredit()))
+            .map(this::getMoveLineSignedValue)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
@@ -872,7 +873,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       return BigDecimal.ZERO;
     }
 
-    BigDecimal lineTotal = moveLine.getCredit().add(moveLine.getDebit());
+    BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
 
     return lineTotal
         .multiply(moveLine.getTaxLine().getValue())
@@ -880,6 +881,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             BigDecimal.valueOf(100),
             AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
             RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getMoveLineSignedValue(MoveLine moveLine) {
+    if (moveLine.getCredit().signum() != 0) {
+      return moveLine.getCredit();
+    } else {
+      return moveLine.getDebit().negate();
+    }
   }
 
   protected boolean isReverseCharge(Move move) {

@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -218,13 +217,9 @@ public class AnalyticMoveLineQueryController {
           && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
         company = analyticMoveLine.getAnalyticJournal().getCompany();
       } else {
-        company =
-            Beans.get(AnalyticToolService.class)
-                .getFieldFromContextParent(context, "company", Company.class);
+        company = ContextTool.getFieldFromContextParent(context, "company", Company.class);
         if (company == null) {
-          Move move =
-              Beans.get(AnalyticToolService.class)
-                  .getFieldFromContextParent(context, "move", Move.class);
+          Move move = ContextTool.getFieldFromContextParent(context, "move", Move.class);
           if (move != null) {
             company = move.getCompany();
           }

@@ -50,7 +50,7 @@ public interface MoveRecordSetService {
 
   void setFunctionalOriginSelect(Move move);
 
-  void setPeriod(Move move) throws AxelorException;
+  void setPeriod(Move move);
 
   void setCompanyBankDetails(Move move) throws AxelorException;
 
@@ -59,4 +59,6 @@ public interface MoveRecordSetService {
   void setPfpStatus(Move move);
 
   void setPfpValidatorUser(Move move);
+
+  Map<String, Object> computeTotals(Move move);
 }

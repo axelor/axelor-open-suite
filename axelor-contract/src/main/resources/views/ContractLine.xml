@@ -25,8 +25,7 @@
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
         <field name="product" canEdit="false"
-          onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"
-          domain="self.dtype = 'Product'"/>
+          onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
         <field name="productName"/>
         <field name="qty" readonlyIf="isConsumptionLine"
           onChange="action-method-contract-line-compute-total"/>
@@ -42,7 +41,7 @@
         </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
-        <field name="unit" canEdit="false"/>
+        <field name="unit" canEdit="false" onChange="action-contract-line-validate-unit-type"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
 
@@ -53,7 +52,7 @@
         <field name="contractVersion" hidden="true"/>
       </panel>
 
-      <panel name="pricesPerYear" title="Prices per year">
+      <panel name="pricesPerYearPanel" title="Prices per year">
         <field name="initialPricePerYear" readonly="true"/>
         <field name="yearlyPriceRevalued" readonly="true"/>
         <field name="isToRevaluate"/>
@@ -244,12 +243,26 @@
   </action-group>
 
   <action-method name="action-contract-line-method-hide-date-panel">
-    <call class="com.axelor.apps.contract.web.ContractLineController" method="hideDatePanel"/>
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="hidePanels"/>
   </action-method>
 
   <action-method name="action-contract-line-method-hide-is-to-revaluate">
     <call class="com.axelor.apps.contract.web.ContractLineController"
       method="hideIsToRevaluate"/>
   </action-method>
+
+  <action-group name="action-contract-line-group-product-onchange">
+    <action name="action-method-contract-version-change-product"/>
+    <action name="action-method-contract-line-compute-total"/>
+    <action name="action-contract-line-validate-unit-type"/>
+  </action-group>
+
+  <action-validate name="action-contract-line-validate-unit-type">
+    <alert
+      message="Warning! The yearly price is calculated based on unit price and &quot;Invoicing duration&quot; from the config panel.
+Please be careful when using products with unit being a time unit.
+In case you have contract lines with different invoicing duration, you can activate and use the Addtional Benefits management feature."
+      if="unit?.unitTypeSelect == 3"/>
+  </action-validate>
 
 </object-views>

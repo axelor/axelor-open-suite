@@ -76,7 +76,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
 
         if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())
             && budgetAccountService.checkAccountType(moveLine.getAccount())) {
-          String alertMessage = moveLineBudgetService.computeBudgetDistribution(moveLine);
+          String alertMessage = moveLineBudgetService.computeBudgetDistribution(move, moveLine);
 
           if (!Strings.isNullOrEmpty(alertMessage)) {
             alertMessageTokenList.add(alertMessage);

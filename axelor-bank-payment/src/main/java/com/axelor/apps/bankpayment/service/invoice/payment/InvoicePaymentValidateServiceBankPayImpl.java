@@ -21,6 +21,7 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -76,7 +78,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
-      DateService dateService) {
+      DateService dateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
     super(
         paymentModeService,
         moveCreateService,
@@ -89,7 +92,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         appAccountService,
         accountManagementAccountService,
         invoicePaymentToolService,
-        dateService);
+        dateService,
+        moveLineInvoiceTermService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
     this.invoiceTermService = invoiceTermService;
@@ -99,6 +103,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   protected void setInvoicePaymentStatus(InvoicePayment invoicePayment) throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
+    PaymentSession paymentSession = invoicePayment.getPaymentSession();
     if (paymentMode == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -108,8 +113,12 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if (paymentModeService.isPendingPayment(paymentMode)
         && paymentMode.getGenerateBankOrder()
-        && paymentMode.getAccountingTriggerSelect()
-            != PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
+        && ((paymentSession != null
+                && paymentSession.getAccountingTriggerSelect()
+                    != PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE)
+            || (paymentSession == null
+                && paymentMode.getAccountingTriggerSelect()
+                    != PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE))
         && invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_DRAFT) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
@@ -122,12 +131,17 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
+    PaymentSession paymentSession = invoicePayment.getPaymentSession();
 
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
         && (!paymentMode.getGenerateBankOrder()
-            || paymentMode.getAccountingTriggerSelect()
-                == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE)) {
+            || (paymentSession != null
+                && paymentSession.getAccountingTriggerSelect()
+                    == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE)
+            || (paymentSession == null
+                && paymentMode.getAccountingTriggerSelect()
+                    == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE))) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
@@ -136,7 +150,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     }
     if (paymentMode.getGenerateBankOrder()
         && invoicePayment.getBankOrder() == null
-        && invoicePayment.getPaymentSession() == null) {
+        && paymentSession == null) {
       this.createBankOrder(invoicePayment);
     }
   }
@@ -145,6 +159,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
       throws AxelorException {
 
+    // Payment date has been initialized at creation. But BankOrder may be validate on a later date
+    // So updating paymentDate
+    invoicePayment.setPaymentDate(invoicePayment.getBankOrder().getBankOrderDate());
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     Company company = invoicePayment.getInvoice().getCompany();

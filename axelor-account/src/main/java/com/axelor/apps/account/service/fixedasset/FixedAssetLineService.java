@@ -34,30 +34,10 @@ public interface FixedAssetLineService {
    *
    * @param fixedAsset
    * @param disposalDate
-   * @param previousRealizedLine
    * @return generated {@link FixedAssetLine}
    */
-  FixedAssetLine generateProrataDepreciationLine(
-      FixedAsset fixedAsset,
-      LocalDate disposalDate,
-      FixedAssetLine previousRealizedLine,
-      FixedAssetLine previousPlannedLine)
+  FixedAssetLine generateProrataDepreciationLine(FixedAsset fixedAsset, LocalDate disposalDate)
       throws AxelorException;
-
-  /**
-   * Compute depreciation on fixedAssetLine.
-   *
-   * @param fixedAsset
-   * @param fixedAssetLine
-   * @param previousRealizedLine
-   * @param disposalDate
-   */
-  void computeDepreciationWithProrata(
-      FixedAsset fixedAsset,
-      FixedAssetLine fixedAssetLine,
-      FixedAssetLine previousRealizedLine,
-      FixedAssetLine previousPlannedLine,
-      LocalDate disposalDate);
 
   /**
    * Copy fixedAssetLineList and fiscalFixedAssetLineList from fixedAsset to newFixedAsset.
@@ -115,20 +95,9 @@ public interface FixedAssetLineService {
   void filterListByStatus(List<FixedAssetLine> fixedAssetLineList, int status);
 
   /**
-   * This method will compute on cession closest line from realized lines.
-   *
-   * @param fixedAsset
-   * @param disposalDate
-   * @return computed {@link FixedAssetLine}
-   * @throws AxelorException
-   */
-  FixedAssetLine computeCessionLine(FixedAsset fixedAsset, LocalDate disposalDate)
-      throws AxelorException;
-
-  /**
    * Get Fixed asset of fixedAssetLine.
    *
-   * @param line
+   * @param fixedAssetLine
    * @return fixedAsset : {@link FixedAsset}
    */
   FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException;
@@ -136,7 +105,8 @@ public interface FixedAssetLineService {
   /**
    * Set Fixed asset of fixedAssetLine.
    *
-   * @param line
+   * @param fixedAsset
+   * @param fixedAssetLine
    */
   void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
 }
