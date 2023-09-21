@@ -698,5 +698,7 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticGroupService.class).to(AnalyticGroupServiceImpl.class);
 
     bind(TradingNameAnalyticService.class).to(TradingNameAnalyticServiceImpl.class);
+
+    bind(YearAccountService.class).to(YearAccountServiceImpl.class);
   }
 }

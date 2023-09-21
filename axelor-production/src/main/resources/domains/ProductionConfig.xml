@@ -28,6 +28,8 @@
     <integer name="capacity" title="Capacity" selection="production.config.capacity.select"
       nullable="false" default="1"/>
 
+    <many-to-one name="prodProcessBirtTemplate" title="Prod process template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -49,7 +51,7 @@
       <field name="finishMoMessageTemplate" on="UPDATE"/>
       <field name="partFinishMoAutomaticEmail" on="UPDATE"/>
       <field name="partFinishMoMessageTemplate" on="UPDATE"/>
-
+      <field name="prodProcessBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

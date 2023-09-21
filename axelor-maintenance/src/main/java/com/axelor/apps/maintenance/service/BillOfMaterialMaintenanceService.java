@@ -16,11 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.maintenance.report;
+package com.axelor.apps.maintenance.service;
 
-public interface IReport {
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.production.db.BillOfMaterial;
 
-  public static final String MAINTENANCE_MANUF_ORDER = "MaintenanceManufOrder.rptdesign";
-  public static final String MAINTENANCE_PROD_PROCESS = "MaintenanceProdProcess.rptdesign";
-  public static final String MAINTENANCE_BILL_OF_MATERIAL = "MaintenanceBillOfMaterial.rptdesign";
+public interface BillOfMaterialMaintenanceService {
+
+  public String getFileName(BillOfMaterial billOfMaterial);
+
+  public String getReportLink(BillOfMaterial billOfMaterial, String name) throws AxelorException;
 }

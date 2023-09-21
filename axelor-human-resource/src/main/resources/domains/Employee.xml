@@ -125,6 +125,9 @@
       help="Percentage of lunch voucher in paper format, the rest will be in electronic card."
       min="0" max="100"/>
 
+    <one-to-many name="expenseLimitList" ref="com.axelor.apps.hr.db.ExpenseLimit"
+      title="Expense limit list" mappedBy="employee"/>
+
     <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";

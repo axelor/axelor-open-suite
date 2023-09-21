@@ -43,8 +43,7 @@
       <field name="sequenceTypeSelect"/>
       <field name="sequenceLettersTypeSelect" showIf="sequenceTypeSelect == 'LETTERS'"
         requiredIf="sequenceTypeSelect == 'LETTERS'"/>
-      <field name="padding" onChange="action-sequence-method-compute-fullname"
-        showIf="sequenceTypeSelect == 'NUMBERS'"/>
+      <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
       <field name="toBeAdded" showIf="sequenceTypeSelect == 'NUMBERS'"/>
       <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
         onChange="action-sequence-method-compute-fullname"/>

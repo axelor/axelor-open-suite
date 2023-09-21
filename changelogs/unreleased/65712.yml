@@ -1,0 +1,3 @@
+---
+title: "Stock : fix compute new average price for stockLocationLine in the case of a unit conversion"
+type: fix

@@ -33,6 +33,7 @@
       <panel name="prodProcessPanel" title="Production process">
         <field name="manageProdProcessVersion" widget="boolean-switch"/>
         <field name="manageWorkCenterGroup" widget="boolean-switch"/>
+        <field name="isInputInHundredthHours" widget="boolean-switch"/>
         <field name="manageBusinessProduction"
           onChange="action-app-production-manage-business-production-record-onchange"
           title="Manage business production" if-module="axelor-business-production"
