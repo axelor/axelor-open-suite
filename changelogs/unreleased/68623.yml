@@ -1,3 +1,0 @@
----
-title : " Invoice Payment: When validating a invoice payment from a bank order, the payment date will now be correctly updated to bank order date."
-type: fix
