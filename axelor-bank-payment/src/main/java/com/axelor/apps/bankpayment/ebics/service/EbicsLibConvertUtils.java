@@ -15,10 +15,15 @@ import com.axelor.ebics.dto.EbicsLibRequestLog;
 import com.axelor.ebics.dto.EbicsLibUser;
 import com.axelor.ebics.xml.DefaultResponseElement;
 import com.axelor.inject.Beans;
+import java.util.Optional;
 
 public class EbicsLibConvertUtils {
 
   public static EbicsLibUser convertEbicsUser(EbicsUser ebicsUser) throws AxelorException {
+    if (ebicsUser == null) {
+      return null;
+    }
+
     EbicsLibUser ebicsLibUser = new EbicsLibUser();
 
     ebicsLibUser.setId(ebicsUser.getId());
@@ -26,19 +31,18 @@ public class EbicsLibConvertUtils {
     ebicsLibUser.setPassword(ebicsUser.getPassword());
     ebicsLibUser.setDn(ebicsUser.getDn());
     ebicsLibUser.setUserTypeSelect(ebicsUser.getUserTypeSelect());
-    EbicsCertificate a005Certificate = ebicsUser.getA005Certificate();
-    if (a005Certificate != null) {
-      ebicsLibUser.setA005Certificate(convertEbicsCertificate(a005Certificate));
-    }
-
-    EbicsCertificate e002Certificate = ebicsUser.getE002Certificate();
-    if (e002Certificate != null) {
-      ebicsLibUser.setE002Certificate(convertEbicsCertificate(e002Certificate));
-    }
-    EbicsCertificate x002Certificate = ebicsUser.getX002Certificate();
-    if (x002Certificate != null) {
-      ebicsLibUser.setX002Certificate(convertEbicsCertificate(x002Certificate));
-    }
+    ebicsLibUser.setA005Certificate(
+        Optional.ofNullable(ebicsUser.getA005Certificate())
+            .map(EbicsLibConvertUtils::convertEbicsCertificate)
+            .orElse(null));
+    ebicsLibUser.setE002Certificate(
+        Optional.ofNullable(ebicsUser.getE002Certificate())
+            .map(EbicsLibConvertUtils::convertEbicsCertificate)
+            .orElse(null));
+    ebicsLibUser.setX002Certificate(
+        Optional.ofNullable(ebicsUser.getX002Certificate())
+            .map(EbicsLibConvertUtils::convertEbicsCertificate)
+            .orElse(null));
 
     ebicsLibUser.setSecurityMedium(ebicsUser.getSecurityMedium());
     ebicsLibUser.setNextOrderId(ebicsUser.getNextOrderId());
@@ -50,7 +54,6 @@ public class EbicsLibConvertUtils {
   }
 
   public static EbicsLibCertificate convertEbicsCertificate(EbicsCertificate ebicsCertificate) {
-
     EbicsLibCertificate ebicsLibCertificate = new EbicsLibCertificate();
     ebicsLibCertificate.setCertificate(ebicsCertificate.getCertificate());
     ebicsLibCertificate.setTypeSelect(ebicsCertificate.getTypeSelect());
@@ -107,7 +110,6 @@ public class EbicsLibConvertUtils {
   }
 
   public static EbicsLibPartner convertEbicsPartner(EbicsPartner partner) throws AxelorException {
-
     EbicsLibPartner ebicsLibPartner = new EbicsLibPartner();
     ebicsLibPartner.setPartnerId(partner.getPartnerId());
     ebicsLibPartner.setEbicsLibBank(convertEbicsBank(partner.getEbicsBank()));
