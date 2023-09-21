@@ -15,7 +15,6 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,10 +62,10 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
   }
 
   protected Boolean getToInvoice(Project project, Boolean toInvoice) throws AxelorException {
-    if (toInvoice == null && ObjectUtils.isEmpty(project)) {
+    if (toInvoice == null && project == null) {
       return false;
     }
-    if (toInvoice != null && ObjectUtils.isEmpty(project)) {
+    if (toInvoice != null && project == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_NO_PROJECT));

@@ -32,6 +32,7 @@ import com.axelor.apps.businessproject.service.ExpenseInvoiceLineServiceProjectI
 import com.axelor.apps.businessproject.service.ExpenseLineCreateServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ExpenseLineProjectService;
 import com.axelor.apps.businessproject.service.ExpenseLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.ExpenseLineResponseComputeServiceProjectImpl;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicePaymentValidateProjectServiceImpl;
@@ -78,6 +79,7 @@ import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
@@ -152,5 +154,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectHistoryService.class).to(ProjectHistoryServiceImpl.class);
     bind(PurchaseOrderProjectService.class).to(PurchaseOrderServiceProjectImpl.class);
     bind(ExpenseLineCreateServiceImpl.class).to(ExpenseLineCreateServiceProjectImpl.class);
+    bind(ExpenseLineResponseComputeServiceImpl.class)
+        .to(ExpenseLineResponseComputeServiceProjectImpl.class);
   }
 }
