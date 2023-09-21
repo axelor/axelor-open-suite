@@ -119,4 +119,6 @@ public interface SaleOrderService {
   SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException;
+
+  void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException;
 }

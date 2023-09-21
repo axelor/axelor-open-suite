@@ -185,11 +185,13 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     if (unitIsTimeUnit) {
       // Real
-      BigDecimal progress =
-          projectTask
-              .getSpentTime()
-              .divide(projectTask.getUpdatedTime(), RESULT_SCALE, RoundingMode.HALF_UP);
-
+      BigDecimal progress = BigDecimal.ZERO;
+      if (projectTask.getUpdatedTime().compareTo(BigDecimal.ZERO) != 0) {
+        progress =
+            projectTask
+                .getSpentTime()
+                .divide(projectTask.getUpdatedTime(), RESULT_SCALE, RoundingMode.HALF_UP);
+      }
       projectTask.setRealTurnover(
           progress
               .multiply(projectTask.getTurnover())
@@ -278,7 +280,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     projectTask.setForecastCosts(forecastCosts);
 
     projectTask.setForecastMargin(projectTask.getTurnover().subtract(forecastCosts));
-    if (!forecastCosts.equals(BigDecimal.ZERO)) {
+    if (forecastCosts.compareTo(BigDecimal.ZERO) != 0) {
       projectTask.setForecastMarkup(
           getPercentValue(
               projectTask

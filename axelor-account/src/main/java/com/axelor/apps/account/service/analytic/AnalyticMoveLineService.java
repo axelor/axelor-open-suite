@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
@@ -53,6 +54,7 @@ public interface AnalyticMoveLineService {
       Product product,
       Company company,
       TradingName tradingName,
+      Account account,
       boolean isPurchase)
       throws AxelorException;
 

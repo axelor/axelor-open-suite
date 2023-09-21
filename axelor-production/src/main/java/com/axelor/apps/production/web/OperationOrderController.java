@@ -18,32 +18,24 @@
  */
 package com.axelor.apps.production.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.report.IReport;
-import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +49,7 @@ public class OperationOrderController {
     OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
     operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
 
-    Beans.get(OperationOrderWorkflowService.class).computeDuration(operationOrder);
+    Beans.get(OperationOrderPlanningService.class).computeDuration(operationOrder);
     response.setReload(true);
   }
 
@@ -67,7 +59,7 @@ public class OperationOrderController {
       LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
       LocalDateTime plannedEndDateT = operationOrder.getPlannedEndDateT();
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(OperationOrderWorkflowService.class)
+      Beans.get(OperationOrderPlanningService.class)
           .setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -80,7 +72,7 @@ public class OperationOrderController {
       LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
       LocalDateTime realEndDateT = operationOrder.getRealEndDateT();
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(OperationOrderWorkflowService.class)
+      Beans.get(OperationOrderPlanningService.class)
           .setRealDates(operationOrder, realStartDateT, realEndDateT);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -96,7 +88,7 @@ public class OperationOrderController {
         return;
       }
       Beans.get(OperationOrderWorkflowService.class)
-          .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()), null);
+          .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -130,7 +122,7 @@ public class OperationOrderController {
     try {
       OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-      Beans.get(ManufOrderWorkflowService.class).resume(operationOrder.getManufOrder());
+      Beans.get(OperationOrderWorkflowService.class).resume(operationOrder);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -175,71 +167,6 @@ public class OperationOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  /**
-   * Method that generate a Pdf file for an operation order
-   *
-   * @param request
-   * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
-   */
-  public void print(ActionRequest request, ActionResponse response) {
-    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-    String operationOrderIds = "";
-    try {
-
-      @SuppressWarnings("unchecked")
-      List<Integer> lstSelectedOperationOrder = (List<Integer>) request.getContext().get("_ids");
-      if (lstSelectedOperationOrder != null) {
-        for (Integer it : lstSelectedOperationOrder) {
-          operationOrderIds += it.toString() + ",";
-        }
-      }
-
-      if (!operationOrderIds.equals("")) {
-        operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length() - 1);
-        operationOrder =
-            Beans.get(OperationOrderRepository.class)
-                .find(new Long(lstSelectedOperationOrder.get(0)));
-      } else if (operationOrder.getId() != null) {
-        operationOrderIds = operationOrder.getId().toString();
-      }
-
-      if (!operationOrderIds.equals("")) {
-
-        String name = " ";
-        if (operationOrder.getName() != null) {
-          name += lstSelectedOperationOrder == null ? "Op " + operationOrder.getName() : "Ops";
-        }
-
-        String fileLink =
-            ReportFactory.createReport(IReport.OPERATION_ORDER, name + "-${date}")
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addParam("Timezone", getTimezone(operationOrder))
-                .addParam("OperationOrderId", operationOrderIds)
-                .generate()
-                .getFileLink();
-
-        LOG.debug("Printing " + name);
-
-        response.setView(ActionView.define(name).add("html", fileLink).map());
-      } else {
-        response.setInfo(I18n.get(ProductionExceptionMessage.OPERATION_ORDER_1));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  protected String getTimezone(OperationOrder operationOrder) {
-    if (operationOrder.getManufOrder() == null
-        || operationOrder.getManufOrder().getCompany() == null) {
-      return null;
-    }
-    return operationOrder.getManufOrder().getCompany().getTimezone();
   }
 
   public void chargeByMachineHours(ActionRequest request, ActionResponse response) {

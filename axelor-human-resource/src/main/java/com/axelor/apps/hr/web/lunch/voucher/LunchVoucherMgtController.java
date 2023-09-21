@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
+import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherExportService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -86,7 +87,7 @@ public class LunchVoucherMgtController {
             .find(request.getContext().asType(LunchVoucherMgt.class).getId());
 
     try {
-      Beans.get(LunchVoucherMgtService.class).export(lunchVoucherMgt);
+      Beans.get(LunchVoucherExportService.class).export(lunchVoucherMgt);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

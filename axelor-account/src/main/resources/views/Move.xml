@@ -126,22 +126,21 @@
             onChange="action-account-move-method-partner-onchange"
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
-          <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
-            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
-            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
+          <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
+            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || subrogationPartner"
+            readonlyIf="amountRemaining != inTaxTotal" form-view="partner-form"
+            grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
+          <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
+            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
+            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-method-payment-mode-onchange"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
             onSelect="action-move-method-payment-mode-onselect"/>
-          <field name="partnerBankDetails"
-            showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
-            onChange="action-move-method-partner-bank-details-onchange"
-            onSelect="action-move-method-partner-bank-details-onselect"
-            form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
             readonlyIf="$validatePeriod || statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
@@ -149,7 +148,11 @@
           <field name="dueDate" title="Due date"
             help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."
             hidden="true" readonlyIf="!paymentCondition.isFree" type="date" colSpan="2"/>
-          <spacer/>
+          <field name="partnerBankDetails"
+            showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
+            onChange="action-move-method-partner-bank-details-onchange"
+            onSelect="action-move-method-partner-bank-details-onselect"
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="origin" readonlyIf="$validatePeriod" colSpan="4"
@@ -571,6 +574,7 @@
 
   <action-group name="action-move-group-date-onchange">
     <action name="action-account-move-method-date-onchange"/>
+    <action name="action-move-method-check-period-permission"/>
     <action name="action-move-method-check-period"/>
   </action-group>
 
@@ -796,6 +800,10 @@
 
   <action-method name="action-move-method-check-period">
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-period-permission">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodPermission"/>
   </action-method>
 
   <!-- ACTION VIEW -->

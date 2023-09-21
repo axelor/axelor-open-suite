@@ -1,0 +1,7 @@
+"importId";"birtTemplate.importId";"name";"value";"type"
+82;25;"Timezone";"${PurchaseOrder.company?.timezone}";"string"
+83;25;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale(PurchaseOrder.supplierPartner)}";"string"
+84;25;"PurchaseOrderId";"$PurchaseOrder.id";"decimal"
+85;25;"HeaderHeight";"${PurchaseOrder.printingSettings?.pdfHeaderHeight}";"decimal"
+86;25;"FooterHeight";"${PurchaseOrder.printingSettings?.pdfFooterHeight}";"decimal"
+450;25;"AddressPositionSelect";"${PurchaseOrder.printingSettings?.addressPositionSelect}";"integer"

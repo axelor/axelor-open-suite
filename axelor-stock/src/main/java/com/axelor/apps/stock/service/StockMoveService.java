@@ -179,18 +179,6 @@ public interface StockMoveService {
   Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
 
   /**
-   * Print the given stock move.
-   *
-   * @param stockMove
-   * @param lstSelectedMove
-   * @param reportType true if we print a picking order
-   * @return the link to the PDF file
-   * @throws AxelorException
-   */
-  String printStockMove(StockMove stockMove, List<Integer> lstSelectedMove, String reportType)
-      throws AxelorException;
-
-  /**
    * Update fully spread over logistical forms flag on stock move.
    *
    * @param stockMove
@@ -244,4 +232,6 @@ public interface StockMoveService {
   void changeLinesFromStockLocation(StockMove stockMove, StockLocation stockLocation);
 
   void changeLinesToStockLocation(StockMove stockMove, StockLocation stockLocation);
+
+  void checkPrintingSettings(StockMove stockMove) throws AxelorException;
 }

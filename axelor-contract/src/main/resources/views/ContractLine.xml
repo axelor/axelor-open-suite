@@ -82,7 +82,7 @@
         <field name="contractVersion" hidden="true"/>
       </panel>
 
-      <panel name="pricesPerYear" title="Prices per year">
+      <panel name="pricesPerYearPanel" title="Prices per year">
         <field name="initialPricePerYear" readonly="true"/>
         <field name="yearlyPriceRevalued" readonly="true"/>
         <field name="isToRevaluate"/>
@@ -327,7 +327,7 @@
   </action-method>
 
   <action-method name="action-contract-line-method-hide-date-panel">
-    <call class="com.axelor.apps.contract.web.ContractLineController" method="hideDatePanel"/>
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="hidePanels"/>
   </action-method>
 
   <action-method name="action-contract-line-method-hide-is-to-revaluate">
