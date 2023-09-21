@@ -99,7 +99,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   public BigDecimal getAnalyticAmountFromParent(
       AnalyticLine parent, AnalyticMoveLine analyticMoveLine) {
 
-    if (parent.getLineAmount().signum() > 0) {
+    if (parent != null && parent.getLineAmount().signum() > 0) {
       return analyticMoveLine
           .getPercentage()
           .multiply(parent.getLineAmount())

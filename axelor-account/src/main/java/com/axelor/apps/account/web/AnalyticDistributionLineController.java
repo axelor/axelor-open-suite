@@ -73,9 +73,13 @@ public class AnalyticDistributionLineController {
   public void manageNewAnalyticDistributionLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class)
+              .getParentWithContext(request, response, analyticMoveLine);
+
+      if (parent != null) {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
         response.setValue("analyticJournal", analyticMoveLineService.getAnalyticJournal(parent));
         response.setValue("date", analyticMoveLineService.getDate(parent));
@@ -89,16 +93,15 @@ public class AnalyticDistributionLineController {
   public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
-        response.setValue(
-            "amount",
-            Beans.get(AnalyticLineService.class)
-                .getAnalyticAmountFromParent(parent, analyticMoveLine));
-      }
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
 
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class)
+              .getParentWithContext(request, response, analyticMoveLine);
+      response.setValue(
+          "amount",
+          Beans.get(AnalyticLineService.class)
+              .getAnalyticAmountFromParent(parent, analyticMoveLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
