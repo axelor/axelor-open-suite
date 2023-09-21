@@ -27,6 +27,8 @@
 
     <integer name="capacity" title="Capacity" selection="production.config.capacity.select"
       nullable="false" default="1"/>
+    <integer name="scheduling" title="Scheduling"
+      selection="production.config.scheduling.select" nullable="false" default="1"/>
 
     <many-to-one name="prodProcessBirtTemplate" title="Prod process template"
       ref="com.axelor.apps.base.db.BirtTemplate"/>
@@ -40,6 +42,9 @@
 
    			public static final int INFINITE_CAPACITY_SCHEDULING = 1;
    			public static final int FINITE_CAPACITY_SCHEDULING = 2;
+
+   			public static final int AS_SOON_AS_POSSIBLE_SCHEDULING = 1;
+   			public static final int AT_THE_LATEST_SCHEDULING = 2;
    		]]>
     </extra-code>
 
