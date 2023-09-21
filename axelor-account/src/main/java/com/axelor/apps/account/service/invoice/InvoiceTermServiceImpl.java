@@ -654,11 +654,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
 
       BigDecimal amountRemaining = invoiceTerm.getAmountRemaining().subtract(paidAmount);
-      BigDecimal companyAmountRemaining =
-          invoiceTerm
-              .getCompanyAmountRemaining()
-              .subtract(invoiceTermPayment.getCompanyPaidAmount());
-      invoiceTerm.setPaymentMode(paymentMode);
+      BigDecimal companyAmountRemaining;
+
+      if (amountRemaining.compareTo(BigDecimal.ZERO) == 0) {
+        companyAmountRemaining = BigDecimal.ZERO;
+      } else {
+        companyAmountRemaining =
+            invoiceTerm
+                .getCompanyAmountRemaining()
+                .subtract(invoiceTermPayment.getCompanyPaidAmount());
+      }
 
       if (amountRemaining.signum() <= 0) {
         amountRemaining = BigDecimal.ZERO;
@@ -671,6 +676,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       invoiceTerm.setAmountRemaining(amountRemaining);
       invoiceTerm.setCompanyAmountRemaining(companyAmountRemaining);
+      invoiceTerm.setPaymentMode(paymentMode);
+
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
     }
   }
