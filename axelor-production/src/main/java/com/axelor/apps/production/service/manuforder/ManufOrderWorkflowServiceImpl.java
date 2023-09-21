@@ -629,7 +629,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     Product product = getHrProduct(operationOrder);
-    if (ObjectUtils.notEmpty(product)) {
+    if (product != null) {
       Unit purchaseUnit = product.getPurchasesUnit();
       Unit stockUnit = product.getUnit();
 
@@ -666,13 +666,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     if (isCostPerProcessLine) {
       ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-      if (ObjectUtils.notEmpty(prodProcessLine)
-          && ObjectUtils.notEmpty(prodProcessLine.getHrProduct())) {
+      if (prodProcessLine != null && prodProcessLine.getHrProduct() != null) {
         return prodProcessLine.getHrProduct();
       }
     } else {
       WorkCenter workCenter = operationOrder.getWorkCenter();
-      if (ObjectUtils.notEmpty(workCenter) && ObjectUtils.notEmpty(workCenter.getHrProduct())) {
+      if (workCenter != null && workCenter.getHrProduct() != null) {
         return workCenter.getHrProduct();
       }
     }
