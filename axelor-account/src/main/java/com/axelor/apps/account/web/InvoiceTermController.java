@@ -101,7 +101,7 @@ public class InvoiceTermController {
 
         invoiceTerm.setPercentage(percentage);
         invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
-        invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
+        invoiceTermService.computeCompanyAmounts(invoiceTerm, true, false);
 
         response.setValue("percentage", percentage);
         response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
