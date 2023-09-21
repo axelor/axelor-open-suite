@@ -1,3 +1,19 @@
+## [6.4.23] (2023-09-21)
+
+#### Fixed
+
+* Follower: fixed an error occuring when sending a message while adding a follower on any form.
+* Invoice payment: when validating a invoice payment from a bank order, the payment date will now be correctly updated to bank order date.
+* Product: "Economic manufacturing quantity" is now correctly hidden on components.
+* Reconcile: fixed effective date computation when we generate payment move from payment voucher.
+* Leave line: deleting every leave management now correctly computes remaining and acquired value.
+* Invoice: fixed french translation for 'Advance payment invoice'.
+* Manufacturing order: fixed 'No calculation' of production indicators on planned Manufacturing Order.
+* Advanced export: change PDF generation.
+* Accounting: disable financial discount from the application to prevent issues from its instability.
+* Stock location: fixed new average price computation in the case of a unit conversion.
+* Move template: fixed invoice terms not being created on a move template generation by amount.
+
 ## [6.4.22] (2023-09-11)
 
 #### Fixed
@@ -990,6 +1006,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.23]: https://github.com/axelor/axelor-open-suite/compare/v6.4.22...v6.4.23
 [6.4.22]: https://github.com/axelor/axelor-open-suite/compare/v6.4.21...v6.4.22
 [6.4.21]: https://github.com/axelor/axelor-open-suite/compare/v6.4.20...v6.4.21
 [6.4.20]: https://github.com/axelor/axelor-open-suite/compare/v6.4.19...v6.4.20
