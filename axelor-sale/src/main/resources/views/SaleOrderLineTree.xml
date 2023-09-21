@@ -64,7 +64,7 @@
   <tree name="sale-order-line-tree" title="Sale order line tree">
     <column name="code" type="string" title="Code"/>
     <column name="product" type="reference"/>
-    <column name="quantity" title="sale.quantity"/>
+    <column name="quantity" title="sale.quantity" type="decimal"/>
     <column name="unit" type="reference" title="Unit"/>
     <column name="unitCost" type="decimal" title="Unit cost"/>
     <column name="unitPrice" type="decimal" title="Unit price"/>

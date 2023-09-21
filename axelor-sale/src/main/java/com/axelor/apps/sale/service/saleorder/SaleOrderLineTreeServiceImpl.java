@@ -118,7 +118,7 @@ public class SaleOrderLineTreeServiceImpl implements SaleOrderLineTreeService {
     BigDecimal marginRate = saleOrderLineTree.getMarginRate();
     if (marginRate == null) {
       saleOrderLineTree.setUnitPrice(null);
-    } else if (BigDecimal.ONE.subtract(marginRate).signum() != 0) {
+    } else {
       BigDecimal unitCost = saleOrderLineTree.getUnitCost();
       BigDecimal unitPrice =
           unitCost != null ? unitCost.multiply(BigDecimal.ONE.add(marginRate)) : null;
