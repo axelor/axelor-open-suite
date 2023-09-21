@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="budget-generator-grid" title="Budget Generator"
+    model="com.axelor.apps.budget.db.BudgetGenerator" orderBy="code">
+    <field name="budgetStructure"/>
+    <field name="code"/>
+    <field name="name" required="true"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="budgetScenario"/>
+  </grid>
+
+
+  <form model="com.axelor.apps.budget.db.BudgetGenerator" title="Budget Generator"
+    name="budget-generator-form" width="large">
+
+    <panel name="mainPanel" colSpan="12">
+      <field name="code" required="true"/>
+      <field name="name" required="true"/>
+      <field name="budgetStructure" domain="self.isScenario IS TRUE"/>
+      <field name="fromDate" hideIf="!budgetStructure"/>
+      <field name="budgetScenario"/>
+      <field name="toDate" hideIf="!budgetStructure"/>
+      <field name="yearSet" widget="TagSelect" hideIf="!budgetStructure"
+        domain="self IN :budgetScenario$yearSet"/>
+      <field name="startingYear" hideIf="!yearSet" domain="self IN :yearSet"/>
+      
+    </panel>
+
+    <panel>
+	<field name="$budgetScenarioLine" form-view="budget-scenario-line-form"
+        grid-view="budget-scenario-line-grid"  title="Budget" type="one-to-many" canView="false" hidden="true"
+readonly="true" target="com.axelor.apps.budget.db.BudgetScenarioLine"/>
+    </panel>
+
+    <panel name="actionPanel" sidebar="true">
+    <button name="visualizeAmountsBtn" title="Previsualize"
+        onClick="save,action-budget-generator-method-visualize-amounts"/>
+      <button name="generateGlobalBudgetBtn" title="Generate global budget"
+        onClick="save,action-budget-generator-method-generate-global-budget"/>
+        
+
+    </panel>
+
+  </form>
+
+  <action-method name="action-budget-generator-method-generate-global-budget">
+    <call class="com.axelor.apps.budget.web.BudgetGeneratorController"
+      method="generateGlobalBudget"/>
+  </action-method>
+  
+  <action-method name="action-budget-generator-method-visualize-amounts">
+    <call class="com.axelor.apps.budget.web.BudgetGeneratorController"
+      method="visualizeAmounts"/>
+  </action-method>
+
+</object-views>

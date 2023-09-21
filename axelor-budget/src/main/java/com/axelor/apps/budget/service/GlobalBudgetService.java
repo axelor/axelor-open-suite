@@ -1,7 +1,11 @@
 package com.axelor.apps.budget.service;
 
+import java.util.List;
+
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetGenerator;
+import com.axelor.apps.budget.db.BudgetScenarioLine;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 
@@ -16,4 +20,8 @@ public interface GlobalBudgetService {
 
   GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
       throws AxelorException;
+
+  GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator) throws AxelorException;
+
+  List<BudgetScenarioLine> visualizeVariableAmounts(BudgetGenerator budgetGenerator) throws AxelorException;
 }

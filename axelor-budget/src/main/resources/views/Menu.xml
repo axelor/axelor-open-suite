@@ -105,6 +105,16 @@
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_TEMPLATE"/>
   </action-view>
 
+  <menuitem title="Budget Generator" name="budget-root-budget-generator"
+    parent="budget-root-budget-management-templates" action="budget.root.budget.generator"
+    order="31"/>
+  <action-view name="budget.root.budget.generator" title="Budget Generator"
+    model="com.axelor.apps.budget.db.BudgetGenerator">
+    <view type="grid" name="budget-generator-grid"/>
+    <view type="form" name="budget-generator-form"/>
+
+  </action-view>
+
   <menuitem title="Budget structures using scenario"
     name="budget-root-budget-management-budget-structure-scenario"
     parent="budget-root-budget-management-templates"
