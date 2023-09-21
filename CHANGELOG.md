@@ -1,3 +1,15 @@
+## [6.3.28] (2023-09-21)
+
+#### Fixed
+
+* Follower: fixed an error occuring when sending a message while adding a follower on any form.
+* Product: "Economic manufacturing quantity" is now correctly hidden on components.
+* Leave line: deleting every leave management now correctly computes remaining and acquired value.
+* Invoice: fixed french translation for 'Advance payment invoice'.
+* Manufacturing order: fixed 'No calculation' of production indicators on planned Manufacturing Order.
+* Advanced export: change PDF generation.
+* Stock location: fixed new average price computation in the case of a unit conversion.
+
 ## [6.3.27] (2023-09-11)
 
 #### Fixed
@@ -844,6 +856,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.28]: https://github.com/axelor/axelor-open-suite/compare/v6.3.27...v6.3.28
 [6.3.27]: https://github.com/axelor/axelor-open-suite/compare/v6.3.26...v6.3.27
 [6.3.26]: https://github.com/axelor/axelor-open-suite/compare/v6.3.25...v6.3.26
 [6.3.25]: https://github.com/axelor/axelor-open-suite/compare/v6.3.24...v6.3.25
