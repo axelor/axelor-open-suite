@@ -90,4 +90,9 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
             "UPDATE Partner self SET self.isSubcontractor = FALSE WHERE self.isSubcontractor IS TRUE")
         .executeUpdate();
   }
+
+  @Override
+  public boolean getIsCostPerProcessLine() {
+    return getAppProduction().getIsCostPerProcessLine();
+  }
 }
