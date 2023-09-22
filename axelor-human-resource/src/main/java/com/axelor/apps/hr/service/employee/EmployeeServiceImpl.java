@@ -49,7 +49,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
@@ -261,8 +261,9 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   @Override
-  public Employee getConnectedEmployee() throws AxelorException {
-    User user = Optional.ofNullable(AuthUtils.getUser()).get();
+  public Employee getEmployee(User user) throws AxelorException {
+    Objects.requireNonNull(user);
+
     if (user.getEmployee() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -270,6 +271,12 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           user.getName());
     }
     return user.getEmployee();
+  }
+
+  @Override
+  public Employee getConnectedEmployee() throws AxelorException {
+
+    return getEmployee(AuthUtils.getUser());
   }
 
   @Override
