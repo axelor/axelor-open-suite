@@ -18,10 +18,7 @@
  */
 package com.axelor.apps.contract.service;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -40,14 +37,15 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 public class ContractLineServiceImpl implements ContractLineService {
   protected AppBaseService appBaseService;
@@ -57,6 +55,8 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected ContractVersionRepository contractVersionRepo;
   protected PriceListService priceListService;
   protected DurationService durationService;
+  protected AnalyticLineModelService analyticLineModelService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -66,7 +66,9 @@ public class ContractLineServiceImpl implements ContractLineService {
       ProductCompanyService productCompanyService,
       PriceListService priceListService,
       ContractVersionRepository contractVersionRepo,
-      DurationService durationService) {
+      DurationService durationService,
+      AnalyticLineModelService analyticLineModelService,
+      AppAccountService appAccountService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
@@ -74,6 +76,8 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.priceListService = priceListService;
     this.contractVersionRepo = contractVersionRepo;
     this.durationService = durationService;
+    this.analyticLineModelService = analyticLineModelService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -166,6 +170,7 @@ public class ContractLineServiceImpl implements ContractLineService {
       throws AxelorException {
     contractLine = fill(contractLine, product);
     contractLine = compute(contractLine, contract, product);
+    computeAnalytic(contract, contractLine);
     return contractLine;
   }
 
@@ -192,24 +197,6 @@ public class ContractLineServiceImpl implements ContractLineService {
     BigDecimal inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     contractLine.setInTaxTotal(inTaxTotal);
 
-    return contractLine;
-  }
-
-  @Override
-  public ContractLine createAnalyticDistributionWithTemplate(
-      ContractLine contractLine, Contract contract) {
-
-    AppAccountService appAccountService = Beans.get(AppAccountService.class);
-
-    List<AnalyticMoveLine> analyticMoveLineList =
-        Beans.get(AnalyticMoveLineService.class)
-            .generateLines(
-                contractLine.getAnalyticDistributionTemplate(),
-                contractLine.getExTaxTotal(),
-                AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT,
-                appAccountService.getTodayDate(contract.getCompany()));
-
-    contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;
   }
 
@@ -258,5 +245,13 @@ public class ContractLineServiceImpl implements ContractLineService {
     }
 
     return contractLine;
+  }
+
+  public void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException {
+    if (appAccountService.isApp("supplychain")) {
+      AnalyticLineModel analyticLineModel =
+          new AnalyticLineContractModel(contractLine, null, contract);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    }
   }
 }

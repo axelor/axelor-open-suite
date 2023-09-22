@@ -294,4 +294,10 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LIMIT_EXCEEDED = /*$$(*/
       "The expense limit has been exceeded for the period %s to %s" /*)*/;
+
+  public static final String EXPENSE_LINE_NO_PROJECT = /*$$(*/
+      "This expense cannot be created because no project has been filled in and it has been noted as to be billed." /*)*/;
+
+  public static final String TIMESHEET_LINES_EXCEED_DAILY_LIMIT = /*$$(*/
+      "You can't exceed the daily limit of %s hours on the %s." /*)*/;
 }

@@ -44,6 +44,8 @@ public interface EmployeeService extends UserService {
 
   public User getUser(Employee employee) throws AxelorException;
 
+  Employee getEmployee(User user) throws AxelorException;
+
   public Employee getConnectedEmployee() throws AxelorException;
 
   public BirtTemplate getAnnualReportBirtTemplate(Employee employee) throws AxelorException;

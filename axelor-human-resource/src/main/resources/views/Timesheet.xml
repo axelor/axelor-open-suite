@@ -217,6 +217,7 @@
         if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
         onClick="save,action-timesheet-method-open-timesheet-editor"/>
       <field name="$showActivity" hidden="true" type="boolean"/>
+      <field name="$dailyLimit" hidden="true" type="boolean"/>
       <field name="$enableTimesheetManufOrder" hidden="true" type="boolean"/>
     </panel>
     <panel name="totalsPanel" title="Totals on period">
@@ -611,7 +612,7 @@
   <action-view name="action-timesheet-show-timesheet-line-editor"
     title="Timesheet lines">
     <view type="html"
-      name="hr/timesheet/?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
+      name="hr/timesheet/?timesheetId={{id}}&amp;showActivity={{$showActivity}}&amp;dailyLimit={{$dailyLimit}}"/>
   </action-view>
 
   <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines"

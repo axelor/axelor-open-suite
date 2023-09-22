@@ -45,8 +45,7 @@
         showIf="statusSelect == 1 || !id"
         readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
-        icon="fa-print"
-        onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
+        icon="fa-print" onClick="save,action-method-print-birt"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">

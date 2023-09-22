@@ -40,6 +40,7 @@ import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -250,6 +251,12 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
     prodProcessLine.setDurationPerCycle(durationPerCycle);
     prodProcessLine.setHumanDuration(humanDuration);
+    prodProcessLine.setDurationPerCycleDecimal(
+        BigDecimal.valueOf(prodProcessLine.getDurationPerCycle())
+            .divide(BigDecimal.valueOf(3600), 2, RoundingMode.HALF_UP));
+    prodProcessLine.setHumanDurationDecimal(
+        BigDecimal.valueOf(prodProcessLine.getHumanDuration())
+            .divide(BigDecimal.valueOf(3600), 2, RoundingMode.HALF_UP));
 
     if (isConsProOnOperation) {
       List<ConfiguratorProdProduct> confProdProductLines =
