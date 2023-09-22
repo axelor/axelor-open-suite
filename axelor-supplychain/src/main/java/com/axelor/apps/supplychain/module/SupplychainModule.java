@@ -51,6 +51,8 @@ import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceSupplychainImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeServiceImpl;
@@ -332,5 +334,7 @@ public class SupplychainModule extends AxelorModule {
     bind(PartnerLinkServiceImpl.class).to(PartnerLinkSupplychainServiceImpl.class);
     bind(SaleOrderOnLineChangeServiceImpl.class)
         .to(SaleOrderOnLineChangeSupplyChainServiceImpl.class);
+    bind(SaleOrderLineTreeComputationServiceImpl.class)
+        .to(SaleOrderLineTreeComputationServiceSupplychainImpl.class);
   }
 }
