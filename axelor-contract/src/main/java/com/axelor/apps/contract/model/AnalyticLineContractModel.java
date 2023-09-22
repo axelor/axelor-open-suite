@@ -62,7 +62,9 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
   public <T extends AnalyticLineModel> T getExtension(Class<T> klass) throws AxelorException {
     try {
       if (contractLine != null) {
-        return klass.getDeclaredConstructor(ContractLine.class).newInstance(this.contractLine);
+        return klass
+            .getDeclaredConstructor(ContractLine.class, ContractVersion.class, Contract.class)
+            .newInstance(this.contractLine, this.contractVersion, this.contract);
       } else {
         return super.getExtension(klass);
       }
