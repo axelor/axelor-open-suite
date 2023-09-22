@@ -61,7 +61,6 @@ public class PrintingModelController {
         Beans.get(BirtTemplateConfigLineService.class);
     try {
       Map<String, Object> map = getModelAndId(request);
-
       String modelName = map.get(CONTEXT_MODEL_CLASS).toString();
       Long recordId = (Long) map.get(CONTEXT_MODEL_ID);
 

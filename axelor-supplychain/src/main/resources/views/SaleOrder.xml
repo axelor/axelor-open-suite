@@ -22,7 +22,7 @@
     </extend>
     <extend target="//panel-related[@name='detailLinesPanel']">
       <attribute name="onChange"
-        value="action-sale-order-line-change-group,supplychain-action-create-shipment-cost-line"/>
+        value="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"/>
     </extend>
   </form>
 
@@ -316,13 +316,6 @@
       if="company != null &amp;&amp; clientPartner != null"/>
   </action-record>
 
-  <action-record name="action-sale-order-record-update-timetable-amounts"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="timetableList"
-      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base')?.nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
-      if="timetableList != null"/>
-  </action-record>
-
   <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
     <attribute name="value" for="isIspmRequired"
       expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
@@ -386,6 +379,16 @@
   <action-method name="action-supplychain-sale-order-method-get-to-stock-location">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="getToStockLocation"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-set-advance-payment">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setAdvancePayment"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-update-timetable-amounts">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateTimetableAmounts"/>
   </action-method>
 
 </object-views>

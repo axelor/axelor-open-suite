@@ -336,6 +336,13 @@
     <decimal name="allowedTaxGap" title="Allowed tax gap" default="0.00" initParam="true"
       help="Field allowing a tax gap during the accounting of a move. Its value specifies the tolerance applied during the tax values control and the move balance control."/>
 
+    <many-to-one name="invoiceBirtTemplate" title="Invoice template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="purchaseInvoicesDetailsBirtTemplate"
+      title="Purchase invoices details template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="chequeDepositSlipBirtTemplate"
+      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[
@@ -528,6 +535,10 @@
       <field name="accountAtPayment" on="UPDATE"/>
 
       <field name="retrieveDaybookMovesInPaymentSession" on="UPDATE"/>
+
+      <field name="invoiceBirtTemplate" on="UPDATE"/>
+      <field name="purchaseInvoicesDetailsBirtTemplate" on="UPDATE"/>
+      <field name="chequeDepositSlipBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

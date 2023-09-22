@@ -243,8 +243,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
-  public void pause(ManufOrder manufOrder) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void pause(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
@@ -258,7 +258,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void resume(ManufOrder manufOrder) {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
