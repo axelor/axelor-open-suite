@@ -84,7 +84,7 @@
     search="self.name = :name and self.module = 'axelor-core'" update="true"/>
 
   <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"
-    search="self.code = :code"/>
+    search="self.code = :code" call="com.axelor.auth.AuthService:encrypt"/>
 
   <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
 
