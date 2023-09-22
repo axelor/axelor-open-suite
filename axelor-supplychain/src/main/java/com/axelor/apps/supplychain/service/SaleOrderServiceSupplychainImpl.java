@@ -491,7 +491,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
                   saleOrder
                       .getPaymentCondition()
                       .getAdvancePaymentNeeded()
-                      .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)));
+                      .divide(BigDecimal.valueOf(100)))
+              .setScale(2, RoundingMode.HALF_UP));
     }
   }
 
