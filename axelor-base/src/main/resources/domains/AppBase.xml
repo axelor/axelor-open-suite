@@ -163,6 +163,9 @@
       help="Maximum time before a process called by an user starts running in the background"
       min="1"/>
 
+    <many-to-one name="pfxCertificate" title="PFX Certificate"
+      ref="com.axelor.apps.base.db.PfxCertificate"/>
+
     <many-to-one name="clientSituationBirtTemplate"
       ref="com.axelor.apps.base.db.BirtTemplate" title="Client situation template"/>
     <many-to-one name="companyPhoneBookBirtTemplate"
