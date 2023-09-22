@@ -61,7 +61,7 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
     return expenseLine;
   }
 
-  protected Boolean getToInvoice(Project project, Boolean toInvoice) throws AxelorException {
+  protected boolean getToInvoice(Project project, Boolean toInvoice) throws AxelorException {
     if (toInvoice == null && project == null) {
       return false;
     }
