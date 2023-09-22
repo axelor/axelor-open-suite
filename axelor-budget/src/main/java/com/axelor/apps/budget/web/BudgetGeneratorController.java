@@ -14,6 +14,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -68,12 +69,15 @@ public class BudgetGeneratorController {
 
           positions.add(position);
         }
+        Collections.sort(positions);
 
         if (positions.size() > 0) {
           for (int i : positions) {
-            String fieldName = "$budgetScenarioLine.year" + (i + 1) + "Value";
-            response.setAttr(fieldName, "hidden", false);
-            response.setAttr(fieldName, "title", Integer.toString(fiscalYears.get(i)));
+            if (i >= 0) {
+              String fieldName = "$budgetScenarioLine.year" + (i + 1) + "Value";
+              response.setAttr(fieldName, "hidden", false);
+              response.setAttr(fieldName, "title", Integer.toString(fiscalYears.get(i)));
+            }
           }
         }
         response.setAttr("linePanel", "hidden", false);

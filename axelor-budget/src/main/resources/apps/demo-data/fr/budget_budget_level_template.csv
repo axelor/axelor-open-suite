@@ -1,4 +1,7 @@
 "importId";"code";"name";"parentBudgetLevel.importId";"budgetStructure.importId";"typeSelect";"statusSelect";"company.importId";"variables"
-52;"COUTS";"COUTS";;1;"template";"draft";1;
-53;"MATIERES PREMIERES";"MATIERES PREMIERES";52;;"template";"draft";1;"2|6|7|8|9|10"
-54;"MAIN D’OEUVRE";"MAIN D’OEUVRE";52;;"template";"draft";1;"1|3|4|5|11"
+52;"DEPENSES";"DEPENSES";;1;"template";"draft";1;
+53;"Revenus";"Revenus";52;;"template";"draft";1;"1|4"
+54;"Charges Non courantes";"Charges Non courantes";52;;"template";"draft";1;"2"
+55;"RH";"RH";52;;"template";"draft";1;"3"
+56;"Charges Courantes";"Charges Courantes";52;;"template";"draft";1;"6|7|8|9|10"
+57;"Résultats";"Résultats";52;;"template";"draft";1;"11"

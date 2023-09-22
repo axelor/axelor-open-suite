@@ -229,7 +229,10 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   @Override
   public List<BudgetScenarioLine> visualizeVariableAmounts(BudgetGenerator budgetGenerator) {
-
+    if (budgetGenerator.getBudgetStructure() == null
+        || budgetGenerator.getBudgetScenario() == null) {
+      return new ArrayList<>();
+    }
     BudgetStructure budgetStructure = budgetGenerator.getBudgetStructure();
     List<BudgetScenarioLine> budgetScenarioLineOriginList =
         budgetGenerator.getBudgetScenario().getBudgetScenarioLineList();

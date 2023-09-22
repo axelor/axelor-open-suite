@@ -24,8 +24,9 @@
       <field name="budgetScenario"/>
       <field name="fromDate" hideIf="!budgetStructure"/>
       <field name="toDate" hideIf="!budgetStructure"/>
-      <field name="yearSet" widget="TagSelect" hideIf="!budgetStructure" canNew="false"
-        canEdit="false" domain="self.company = :company AND self.typeSelect = 1"/>
+      <field name="yearSet" widget="TagSelect" hideIf="!budgetScenario" canNew="false"
+        canEdit="false" onSelect="action-budget-generator-attrs-set-year-domain"
+        domain="self.company = :budgetScenario.company AND self.typeSelect = 1"/>
       <field name="startingYear" hideIf="!yearSet" domain="self IN :yearSet"/>
     </panel>
 
@@ -36,16 +37,22 @@
         target="com.axelor.apps.budget.db.BudgetScenarioLine"/>
     </panel>
 
-    <panel name="actionPanel" sidebar="true">
+    <panel name="actionPanel" sidebar="true"
+      showIf="budgetStructure &amp;&amp; budgetScenario">
       <button name="visualizeAmountsBtn" title="Previsualize"
         onClick="save,action-budget-generator-method-visualize-amounts"/>
       <button name="generateGlobalBudgetBtn" title="Generate global budget"
         onClick="save,action-budget-generator-method-generate-global-budget"/>
-
-
     </panel>
-
   </form>
+
+  <action-attrs name="action-budget-generator-attrs-set-year-domain">
+    <attribute for="yearSet" name="domain"
+      expr="eval: &quot;self.company.id = ${budgetScenario?.company?.id} AND self.typeSelect = 1&quot;"
+      if="budgetScenario?.company"/>
+    <attribute for="yearSet" name="domain" expr="eval: self.id = 0"
+      if="!budgetScenario?.company"/>
+  </action-attrs>
 
   <action-method name="action-budget-generator-method-generate-global-budget">
     <call class="com.axelor.apps.budget.web.BudgetGeneratorController"
