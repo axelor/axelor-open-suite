@@ -24,7 +24,7 @@
     </datetime>
     <datetime name="scheduledEventDateT" title="Next scheduled event date" formula="true">
       <![CDATA[
-      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.partner = id AND ICAL_EVENT.start_date_time > NOW() ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.partner = id AND ICAL_EVENT.start_date_time > NOW() AND ICAL_EVENT.status_select = 1 ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
       ]]>
     </datetime>
 
@@ -48,6 +48,22 @@
     <integer name="sequence" title="Sequence"/>
     <boolean name="isMainContact" title="Main Contact"/>
     <boolean name="isAlreadyConvertFromLead"/>
+    <boolean name="isCorporatePartner" title="Corporate partner"/>
+    <many-to-many name="corporatePartnerDomainSet" title="Work domain"
+      ref="com.axelor.apps.crm.db.CorporatePartnerDomain"/>
+    <many-to-many name="workAreaSet" title="Work area"
+      ref="com.axelor.apps.base.db.Country"/>
+    <one-to-many name="fidelityList" title="Fidelity"
+      ref="com.axelor.apps.crm.db.Fidelity" mappedBy="partner"/>
+    <date name="corporatePartnerSince" title="Corporate partner since"/>
+    <integer name="takenOpportunities" title="Sent opportunities" readonly="true"
+      formula="true">
+        <![CDATA[SELECT COUNT(*) FROM crm_opportunity WHERE crm_opportunity.partner = id]]>
+    </integer>
+    <integer name="wonOpportunities" title="Won opportunities" readonly="true"
+      formula="true">
+        <![CDATA[SELECT COUNT(*) FROM crm_opportunity WHERE crm_opportunity.partner = id AND crm_opportunity.opportunity_status = (SELECT studio_app_crm.closed_win_opportunity_status FROM studio_app_crm LIMIT 1)]]>
+    </integer>
 
     <extra-code>
     <![CDATA[

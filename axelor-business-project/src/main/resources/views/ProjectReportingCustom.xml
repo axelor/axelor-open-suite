@@ -310,6 +310,58 @@
     </template>
   </custom>
 
+  <custom title="Total invoiced" name="project-total-invoiced-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.totalInvoiced}} <i class="fa {{first.totalInvoicedProgress}}"></i></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Invoiced this month" name="project-invoiced-this-month-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.invoicedThisMonth}} <i class="fa {{first.invoicedThisMonthProgress}}"></i></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Invoiced last month" name="project-invoiced-last-month-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.invoicedLastMonth}} <i class="fa {{first.invoicedLastMonthProgress}}"></i></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Total paid" name="project-total-paid-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.totalPaid}} <i class="fa {{first.totalPaidProgress}}"></i></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
   <!-- ACTION VIEWS -->
   <action-view name="action-project-view-turnover-custom" title="ProjectTask.Turnover">
     <view type="custom" name="project-turnover-custom"/>
@@ -364,6 +416,20 @@
     <view type="custom" name="project-landing-markup-custom"/>
   </action-view>
 
-
+  <action-view name="action-project-view-total-invoiced-custom" title="Total invoiced">
+    <view type="custom" name="project-total-invoiced-custom"/>
+  </action-view>
+  <action-view name="action-project-view-invoiced-this-month-custom"
+    title="Invoiced this month">
+    <view type="custom" name="project-invoiced-this-month-custom"/>
+  </action-view>
+  <action-view name="action-project-view-invoiced-last-month-custom"
+    title="Invoiced last month">
+    <view type="custom" name="project-invoiced-last-month-custom"/>
+  </action-view>
+  <action-view name="action-project-view-total-paid-custom"
+    title="Total paid (incl. VAT)">
+    <view type="custom" name="project-total-paid-custom"/>
+  </action-view>
 
 </object-views>

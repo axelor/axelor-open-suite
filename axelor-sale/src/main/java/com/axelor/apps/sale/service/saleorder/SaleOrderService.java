@@ -100,5 +100,7 @@ public interface SaleOrderService {
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException;
 
+  void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException;
+
   boolean isIncotermRequired(SaleOrder saleOrder);
 }

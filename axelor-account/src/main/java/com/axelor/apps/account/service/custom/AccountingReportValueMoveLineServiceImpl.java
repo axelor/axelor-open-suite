@@ -41,6 +41,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -411,27 +412,23 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     boolean isGroupResultSelect =
         column.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP
             || line.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP;
+    boolean isSameResultResult =
+        Objects.equals(column.getResultSelect(), line.getResultSelect())
+            && Objects.equals(column.getNegateValue(), line.getNegateValue());
+    boolean isSameSignum = column.getNegateValue() == line.getNegateValue();
 
-    if (isOnlyBasicResultSelect
-        && !Objects.equals(column.getResultSelect(), line.getResultSelect())) {
+    if (isOnlyBasicResultSelect && (!isSameResultResult || !isSameSignum)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT,
-          accountingReport.getReportType().getName(),
-          column.getCode(),
-          line.getCode());
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT));
     } else if (!isBasicResultSelect && !isGroupResultSelect) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT,
-          accountingReport.getReportType().getName(),
-          column.getCode(),
-          line.getCode());
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT));
     } else if (isGroupResultSelect && groupColumn == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP,
-          accountingReport.getReportType().getName());
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP));
     }
   }
 

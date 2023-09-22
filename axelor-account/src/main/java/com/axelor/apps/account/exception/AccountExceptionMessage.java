@@ -1607,16 +1607,19 @@ public final class AccountExceptionMessage {
       "Report type %s doesn't have any line." /*)*/;
 
   public static final String REPORT_TYPE_DIFFERENT_RESULT_SELECT = /*$$(*/
-      "Report type %s has intersecting column %s and line %s with different computation method." /*)*/;
+      "Computation methods are different." /*)*/;
 
   public static final String REPORT_TYPE_NO_RESULT_SELECT = /*$$(*/
-      "Report type %s has intersecting column %s and line %s with no defined computation method." /*)*/;
+      "No computation method is defined." /*)*/;
 
   public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
       "Report type %s has group columns of different types." /*)*/;
 
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
-      "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
+      "Computation method is the same as the group but there is none." /*)*/;
+
+  public static final String REPORT_TYPE_TOTAL_LINE_NOT_EXISTS = /*$$(*/
+      "The given percentage total line does not exist." /*)*/;
 
   public static final String COMPENSATION_ON_SESSION_BY_INVOICE_TERM = /*$$(*/
       "Compensation is not allowed on payment session accounted by invoice term, please unselect them" /*)*/;
@@ -1669,4 +1672,9 @@ public final class AccountExceptionMessage {
 
   public static final String NO_DEPRECIATION_ACCOUNT_FOUND_IN_FIXED_ASSET_CATEGORY = /*$$(*/
       "No depreciation account found in fixed asset category %s." /*)*/;
+
+  public static final String ACCOUNT_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
+      "Fiscal year and periods have been generated successfully." /*)*/;
+  public static final String ACCOUNT_CHART_AND_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
+      "The chart of account has been loaded and fiscal year/periods have been correctly generated." /*)*/;
 }

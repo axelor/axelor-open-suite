@@ -45,7 +45,10 @@ public class SaleOrderLineController {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
       SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
-      if (saleOrder != null) {
+
+      if (saleOrderLine.getProduct() == null) {
+        response.setValue("account", null);
+      } else if (saleOrder != null) {
         Account account =
             Beans.get(AccountManagementAccountService.class)
                 .getProductAccount(

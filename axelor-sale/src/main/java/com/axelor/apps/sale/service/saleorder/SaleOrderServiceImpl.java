@@ -38,6 +38,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -65,6 +66,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   protected SaleOrderRepository saleOrderRepo;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderMarginService saleOrderMarginService;
+  protected SaleConfigService saleConfigService;
 
   @Inject
   public SaleOrderServiceImpl(
@@ -73,13 +75,15 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderRepository saleOrderRepo,
       SaleOrderComputeService saleOrderComputeService,
-      SaleOrderMarginService saleOrderMarginService) {
+      SaleOrderMarginService saleOrderMarginService,
+      SaleConfigService saleConfigService) {
     this.saleOrderLineService = saleOrderLineService;
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
+    this.saleConfigService = saleConfigService;
   }
 
   @Override
@@ -355,5 +359,21 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   public boolean isIncotermRequired(SaleOrder saleOrder) {
     return false;
+  }
+
+  @Override
+  public void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder.getPrintingSettings() == null) {
+      if (saleOrder.getCompany().getPrintingSettings() != null) {
+        saleOrder.setPrintingSettings(saleOrder.getCompany().getPrintingSettings());
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            String.format(
+                I18n.get(SaleExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
+                saleOrder.getSaleOrderSeq()),
+            saleOrder);
+      }
+    }
   }
 }

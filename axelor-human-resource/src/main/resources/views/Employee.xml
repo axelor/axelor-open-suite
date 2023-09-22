@@ -438,6 +438,8 @@
           if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher()"
           canCollapse="true" collapseIf="true">
           <field name="lunchVoucherFormatSelect" colSpan="3"/>
+          <field name="lunchVoucherDistribution" showIf="lunchVoucherFormatSelect == 3"
+            colSpan="3"/>
 
           <panel-dashlet name="lunchVouchersDashletPanel" title="Lunch vouchers"
             action="action-employee-view-show-lunch-voucher" colSpan="12"/>
@@ -459,6 +461,9 @@
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form"
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+          <panel-related name="expenseLimitListPanel" title="Expense limits"
+            field="expenseLimitList" colSpan="12" form-view="expense-limit-form"
+            grid-view="expense-limit-grid"/>
           <panel-related name="employeeAdvanceListPanel" title="Employee advances"
             field="employeeAdvanceList" colSpan="12" form-view="employee-advance-employee-form"
             grid-view="employee-advance-employee-grid"

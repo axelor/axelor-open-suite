@@ -1,4 +1,7 @@
 "key","message","comment","context"
+"Activate invoicing on projects",,,
+"Activate multi currency",,,
+"Allow kilometric expenses",,,
 "Allow users to manage carrier option for customer deliveries.",,,
 "Allows users to fill in the username field on the login page with the qr code present on the user's form view.",,,
 "Allows you to customize the active menus for this application. If the menus are not configured then all the menus of the application are available.",,,

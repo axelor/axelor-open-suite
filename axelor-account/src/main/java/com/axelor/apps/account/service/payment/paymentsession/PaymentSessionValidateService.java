@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.payment.paymentsession;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentSession;
@@ -60,6 +61,7 @@ public interface PaymentSessionValidateService {
       Move move,
       InvoiceTerm invoiceTerm,
       Pair<InvoiceTerm, BigDecimal> pair,
+      AccountConfig accountConfig,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException;

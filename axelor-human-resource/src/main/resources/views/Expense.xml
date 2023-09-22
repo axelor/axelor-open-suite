@@ -53,6 +53,8 @@
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printExpenseItem" title="Print" action="save,action-method-print-birt"/>
+        <item name="printAll" title="Print report and files"
+          action="save,action-expense-method-print-report-and-proof-file"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -173,10 +175,14 @@
         showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12" readonly="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
-        title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
-        form-view="expense-line-form" grid-view="expense-line-grid"
-        onChange="action-expense-group-expense-line-on-change"/>
+      <panel name="generalExpenseLineListMainPanel" title="General expenses">
+        <static name="overAmountLimitText" hidden="true" colSpan="12">
+          <![CDATA[<span class='label label-warning'>At least one line of this expense exceeds the authorised amount for its type of expense.</span>]]></static>
+        <panel-related name="generalExpenseLineListPanel"
+          field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1"
+          colSpan="12" editable="true" form-view="expense-line-form" grid-view="expense-line-grid"
+          onChange="action-expense-group-expense-line-on-change,action-expense-method-check-total-amount"/>
+      </panel>
       <panel-related name="kilometricExpenseLineListPanel"
         field="kilometricExpenseLineList" title="Kilometric Allowances"
         readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
@@ -249,10 +255,12 @@
     <action name="action-expense-attrs-expense-company-cb"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-expense-method-check-total-amount"/>
   </action-group>
 
   <action-group name="action-expense-group-send">
     <action name="save"/>
+    <action name="action-expense-method-check-line-file"/>
     <action name="action-expense-method-send"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
   </action-group>
@@ -421,6 +429,10 @@
       method="updateMoveDateAndPeriod"/>
   </action-method>
 
+  <action-method name="action-expense-method-check-total-amount">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkTotalAmount"/>
+  </action-method>
+
   <action-attrs name="action-expense-attrs-set-total-to-refund">
     <attribute name="value" for="$totalToRefund"
       expr="eval: inTaxTotal - (advanceAmount + withdrawnCash + personalExpenseAmount + paymentAmount)"/>
@@ -430,6 +442,15 @@
     <attribute for="kilometricExpenseLineList" name="hidden"
       expr="eval: currency != company?.currency"/>
   </action-attrs>
+
+  <action-method name="action-expense-method-print-report-and-proof-file">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="printReportAndProofFiles"/>
+  </action-method>
+
+  <action-method name="action-expense-method-check-line-file">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkLineFile"/>
+  </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"
     title="Expense filters">

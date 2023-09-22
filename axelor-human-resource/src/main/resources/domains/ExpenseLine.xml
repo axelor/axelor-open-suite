@@ -67,6 +67,9 @@
 	  	]]>
     </string>
 
+    <!-- Currency is only used for mobile application -->
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+
     <extra-code>
 		<![CDATA[
 			// KILOMETRIC TYPE SELECT

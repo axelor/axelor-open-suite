@@ -32,7 +32,7 @@ public interface PurchaseOrderPrintService {
    * @throws IOException
    * @throws AxelorException
    */
-  String printPurchaseOrders(List<Long> ids) throws IOException;
+  String printPurchaseOrders(List<Long> ids) throws IOException, AxelorException;
 
   String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf) throws AxelorException;
 

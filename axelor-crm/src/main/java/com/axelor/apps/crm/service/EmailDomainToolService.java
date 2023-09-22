@@ -20,7 +20,6 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.message.db.EmailAddress;
@@ -46,7 +45,8 @@ public class EmailDomainToolService<T extends Model> {
    * Warning: this method will fail with a runtime exception if the given model does not have a
    * field called emailAddress which is a EmailAddress.
    *
-   * @param model the model with the email
+   * @param klass the class of model whose records will be queried
+   * @param modelId the Id of the model
    * @param emailAddress the referent email address from which we will query other emails with the
    *     same domain
    * @param supplementaryFilter an optional supplementary filter to exclude more entities in the
@@ -54,10 +54,10 @@ public class EmailDomainToolService<T extends Model> {
    * @return a list of entities with the same domain
    */
   public List<T> getEntitiesWithSameEmailAddress(
-      T model, EmailAddress emailAddress, String supplementaryFilter) {
-    return Query.of(EntityHelper.getEntityClass(model))
+      Class<T> klass, Long modelId, EmailAddress emailAddress, String supplementaryFilter) {
+    return Query.of(klass)
         .filter(this.computeFilterEmailOnDomain(emailAddress, supplementaryFilter))
-        .bind(this.computeParameterForFilter(model, emailAddress))
+        .bind(this.computeParameterForFilter(modelId, emailAddress))
         .fetch();
   }
 
@@ -104,12 +104,12 @@ public class EmailDomainToolService<T extends Model> {
    * Warning: this method will fail with a runtime exception if the given model does not have a
    * field called emailAddress which is a EmailAddress.
    *
-   * @param model the model with the email
+   * @param modelId the Id of the model
    * @param emailAddress the referent email address from which we will query other emails with the
    *     same domain
    * @return a map with the parameters needed to execute the query filter.
    */
-  public Map<String, Object> computeParameterForFilter(T model, EmailAddress emailAddress) {
+  public Map<String, Object> computeParameterForFilter(Long modelId, EmailAddress emailAddress) {
     Map<String, Object> params = new HashMap<>();
 
     if (isEmailAddressEmptyOrInvalid(emailAddress)) {
@@ -117,7 +117,7 @@ public class EmailDomainToolService<T extends Model> {
     }
 
     params.put("domainName", computeEntityDomainNameStr(emailAddress.getName()));
-    params.put("id", model.getId());
+    params.put("id", modelId != null ? modelId : (-1));
     return params;
   }
 

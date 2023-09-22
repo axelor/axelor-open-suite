@@ -86,6 +86,7 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
     return settings.getFile();
   }
 
+  @Override
   public ReportSettings generate(
       BirtTemplate template,
       Model model,
