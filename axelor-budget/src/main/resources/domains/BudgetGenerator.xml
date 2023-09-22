@@ -11,8 +11,7 @@
       title="Budget Structure"/>
     <string name="name" title="Name"/>
     <string name="code" title="Code"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <date name="fromDate"/>
     <date name="toDate"/>
     <many-to-one name="budgetScenario" title="Budget scenario"

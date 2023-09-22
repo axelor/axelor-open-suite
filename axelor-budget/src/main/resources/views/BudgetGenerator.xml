@@ -7,7 +7,7 @@
     model="com.axelor.apps.budget.db.BudgetGenerator" orderBy="code">
     <field name="budgetStructure"/>
     <field name="code"/>
-    <field name="name" required="true"/>
+    <field name="name"/>
     <field name="company"/>
     <field name="fromDate"/>
     <field name="toDate"/>
@@ -22,9 +22,10 @@
     <panel name="mainPanel" colSpan="12">
       <field name="code" required="true"/>
       <field name="name" required="true"/>
-      <field name="company"/>
-      <field name="budgetStructure" domain="self.isScenario IS TRUE"/>
-      <field name="budgetScenario" domain="self.company = :company"/>
+      <field name="company" required="true"/>
+      <field name="budgetStructure"
+        domain="self.isScenario IS TRUE AND self.company = :company" showIf="company"/>
+      <field name="budgetScenario" domain="self.company = :company" showIf="company"/>
       <field name="yearSet" widget="TagSelect" hideIf="!budgetScenario" canNew="false"
         canEdit="false" onSelect="action-budget-generator-attrs-set-year-domain"
         domain="self.company = :budgetScenario.company AND self.typeSelect = 1"/>
@@ -52,10 +53,10 @@
     <panel name="mainPanel" colSpan="12">
       <field name="year" canNew="false"
         domain="self.company = :company AND self.typeSelect = 1"/>
-        
+
 
       <button name="generateGlobalBudgetBtn" title="Generate global budget"
-        onClick="save,action-budget-generator-method-generate-global-budget" showIf="year"/>
+        onClick="save,action-budget-generator-method-generate-global-budget, close" showIf="year"/>
 
 
     </panel>
