@@ -1,0 +1,3 @@
+---
+title: "Fix potential NPE while generating a move from an invoice with empty journal"
+type: fix
