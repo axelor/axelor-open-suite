@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
@@ -48,6 +49,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected AnalyticLineService analyticLineService;
   protected MoveAttrsService moveAttrsService;
   protected AnalyticAttrsService analyticAttrsService;
+  protected MoveCutOffService moveCutOffService;
 
   @Inject
   public MoveLineGroupServiceImpl(
@@ -62,7 +64,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveToolService moveToolService,
       AnalyticLineService analyticLineService,
       MoveAttrsService moveAttrsService,
-      AnalyticAttrsService analyticAttrsService) {
+      AnalyticAttrsService analyticAttrsService,
+      MoveCutOffService moveCutOffService) {
+
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
     this.moveLineRecordService = moveLineRecordService;
@@ -75,6 +79,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.analyticLineService = analyticLineService;
     this.moveAttrsService = moveAttrsService;
     this.analyticAttrsService = analyticAttrsService;
+    this.moveCutOffService = moveCutOffService;
   }
 
   @Override
@@ -149,6 +154,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
+      moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
     }
 
     return attrsMap;
@@ -171,6 +177,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addValidatePeriod(move, attrsMap);
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
+      moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
     }
 
     return attrsMap;
@@ -327,7 +334,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     valuesMap.put("originDate", moveLine.getOriginDate());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-    if (move != null && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+    if (move != null
+        && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
+        && move.getMassEntryManageCutOff()
+        && moveCutOffService.checkManageCutOffDates(move)) {
       valuesMap.put("cutOffStartDate", moveLine.getOriginDate());
       valuesMap.put("deliveryDate", moveLine.getOriginDate());
     }

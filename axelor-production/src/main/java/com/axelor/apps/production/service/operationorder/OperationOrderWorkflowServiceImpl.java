@@ -52,6 +52,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected AppProductionService appProductionService;
   protected MachineToolRepository machineToolRepo;
   protected ManufOrderWorkflowService manufOrderWorkflowService;
+  protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected OperationOrderService operationOrderService;
   protected OperationOrderPlanningService operationOrderPlanningService;
 
@@ -64,7 +65,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       MachineToolRepository machineToolRepo,
       ManufOrderWorkflowService manufOrderWorkflowService,
       OperationOrderService operationOrderService,
-      OperationOrderPlanningService operationOrderPlanningService) {
+      OperationOrderPlanningService operationOrderPlanningService,
+      ManufOrderStockMoveService manufOrderStockMoveService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -73,6 +75,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     this.manufOrderWorkflowService = manufOrderWorkflowService;
     this.operationOrderService = operationOrderService;
     this.operationOrderPlanningService = operationOrderPlanningService;
+    this.manufOrderStockMoveService = manufOrderStockMoveService;
   }
 
   /**
@@ -82,7 +85,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @return
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<OperationOrder> resetPlannedDates(List<OperationOrder> operationOrderList) {
     for (OperationOrder operationOrder : operationOrderList) {
       operationOrder.setPlannedStartDateT(null);
@@ -99,7 +102,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param operationOrder An operation order
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void plan(OperationOrder operationOrder) throws AxelorException {
     operationOrderPlanningService.plan(operationOrder, null);
   }
@@ -110,7 +113,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param operationOrder An operation order
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void replan(OperationOrder operationOrder) throws AxelorException {
     operationOrderPlanningService.replan(operationOrder);
   }
@@ -151,7 +154,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
           operationOrder.getManufOrder().getProdProcess().getStockMoveRealizeOrderSelect();
       if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
         for (StockMove stockMove : operationOrder.getInStockMoveList()) {
-          Beans.get(ManufOrderStockMoveService.class).finishStockMove(stockMove);
+          manufOrderStockMoveService.finishStockMove(stockMove);
         }
 
         StockMove newStockMove =
@@ -166,7 +169,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
     if (operationOrder.getManufOrder().getStatusSelect()
         != ManufOrderRepository.STATUS_IN_PROGRESS) {
-      Beans.get(ManufOrderWorkflowService.class).start(operationOrder.getManufOrder());
+      manufOrderWorkflowService.start(operationOrder.getManufOrder());
     }
   }
 
@@ -174,20 +177,32 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * Pauses the given {@link OperationOrder} and sets its pausing time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void pause(OperationOrder operationOrder) {
+  public void pause(OperationOrder operationOrder) throws AxelorException {
+
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
 
     stopOperationOrderDuration(operationOrder);
 
+    pauseManufOrder(operationOrder);
     operationOrderRepo.save(operationOrder);
   }
 
+  protected void pauseManufOrder(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    if (manufOrder.getOperationOrderList().stream()
+        .allMatch(
+            order -> order.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS)) {
+      manufOrder.setStatusSelect(ManufOrderRepository.STATUS_STANDBY);
+    }
+  }
+
   @Override
-  @Transactional
-  public void pause(OperationOrder operationOrder, User user) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void pause(OperationOrder operationOrder, User user) throws AxelorException {
 
     stopOperationOrderDuration(operationOrder, AuthUtils.getUser());
 
@@ -195,7 +210,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     if (allOperationDurationAreStopped(operationOrder)) {
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
     }
-
+    pauseManufOrder(operationOrder);
     operationOrderRepo.save(operationOrder);
   }
 
@@ -205,12 +220,12 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param operationOrder An operation order
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void resume(OperationOrder operationOrder) {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 
     startOperationOrderDuration(operationOrder, AuthUtils.getUser());
-
+    operationOrder.getManufOrder().setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     operationOrderRepo.save(operationOrder);
   }
 
@@ -267,10 +282,16 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    finishProcess(operationOrder);
+    manufOrderWorkflowService.sendFinishedMail(manufOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void finishProcess(OperationOrder operationOrder) throws AxelorException {
     finish(operationOrder);
-    Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
+    manufOrderWorkflowService.allOpFinished(operationOrder.getManufOrder());
   }
 
   /**
@@ -327,27 +348,29 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void stopOperationOrderDuration(OperationOrder operationOrder) {
+  public void stopOperationOrderDuration(OperationOrder operationOrder) throws AxelorException {
 
     stopAllOperationOrderDuration(operationOrder);
   }
 
-  protected void stopAllOperationOrderDuration(OperationOrder operationOrder) {
+  protected void stopAllOperationOrderDuration(OperationOrder operationOrder)
+      throws AxelorException {
     if (operationOrder.getOperationOrderDurationList() != null) {
-      operationOrder.getOperationOrderDurationList().stream()
-          .filter(ood -> ood.getStoppingDateTime() == null)
-          .forEach(
-              ood -> {
-                stopOperationOrderDuration(ood);
-              });
+      for (OperationOrderDuration ood : operationOrder.getOperationOrderDurationList()) {
+        if (ood.getStoppingDateTime() == null) {
+          stopOperationOrderDuration(ood);
+        }
+      }
     }
   }
 
   @Override
-  public void stopOperationOrderDuration(OperationOrder operationOrder, User user) {
+  public void stopOperationOrderDuration(OperationOrder operationOrder, User user)
+      throws AxelorException {
 
     Map<String, Object> bindingMap = new HashMap<>();
     StringBuilder operationOrderFilter =
@@ -372,7 +395,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void stopOperationOrderDuration(OperationOrderDuration duration) {
+  public void stopOperationOrderDuration(OperationOrderDuration duration) throws AxelorException {
     if (duration != null) {
       duration.setStoppedBy(AuthUtils.getUser());
       duration.setStoppingDateTime(appProductionService.getTodayDateTime().toLocalDateTime());

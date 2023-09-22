@@ -21,6 +21,7 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -51,6 +52,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
       PurchaseOrderService purchaseOrderService,
+      AppBaseService appBaseService,
       OperationOrderService operationOrderService) {
     super(
         operationOrderWorkflowService,
@@ -60,6 +62,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         productCompanyService,
         productionConfigRepo,
         purchaseOrderService,
+        appBaseService,
         operationOrderService);
   }
 

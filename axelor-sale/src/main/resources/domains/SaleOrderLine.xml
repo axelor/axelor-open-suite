@@ -58,6 +58,11 @@
     <date name="estimatedDeliveryDate" title="Estimated delivery date"/>
     <decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
 
+    <!-- Versioning -->
+    <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
+    <datetime name="versionDateT" title="Version date" readonly="true"/>
+    <many-to-one name="oldVersionSaleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
+
     <!-- Complementary Products -->
     <boolean name="isComplementaryProductsUnhandledYet" hidden="true"/>
     <boolean name="isComplementaryPartnerProductsHandled" hidden="true"/>

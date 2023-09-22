@@ -47,6 +47,11 @@
         showIf="defaultEstimatedDateForPurchaseOrder == 2"/>
     </panel>
 
+    <panel name="printingsPanel" title="Printings" colSpan="12">
+      <field name="declarationOfExchGoodsBirtTemplate"/>
+      <field name="declarationOfExchServicesBirtTemplate"/>
+    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>

@@ -41,7 +41,9 @@
         grid-view="workshop-sequence-config-line-grid"
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>
     </panel>
-
+    <panel name="printingsPanel" title="Printings" colSpan="12">
+      <field name="prodProcessBirtTemplate"/>
+    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>

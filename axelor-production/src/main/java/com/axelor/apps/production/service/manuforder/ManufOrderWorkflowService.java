@@ -35,11 +35,13 @@ public interface ManufOrderWorkflowService {
 
   void start(ManufOrder manufOrder) throws AxelorException;
 
-  void pause(ManufOrder manufOrder);
+  void pause(ManufOrder manufOrder) throws AxelorException;
 
   void resume(ManufOrder manufOrder);
 
   boolean finish(ManufOrder manufOrder) throws AxelorException;
+
+  void finishManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   boolean partialFinish(ManufOrder manufOrder) throws AxelorException;
 
@@ -71,4 +73,10 @@ public interface ManufOrderWorkflowService {
   void updatePlannedDates(ManufOrder manufOrder);
 
   void setOperationOrderMaxPriority(ManufOrder manufOrder);
+
+  String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;
+
+  boolean sendPartialFinishMail(ManufOrder manufOrder);
+
+  boolean sendFinishedMail(ManufOrder manufOrder);
 }

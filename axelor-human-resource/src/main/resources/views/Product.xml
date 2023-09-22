@@ -38,6 +38,7 @@
         if="__config__.app.getApp('base')?.getGenerateProductSequence()" readonly="true"/>
       <panel name="productTypologyPanel" title="Product typology" colSpan="12">
         <field name="productTypeSelect" required="true" readonly="true"/>
+        <field name="amountLimit"/>
         <field name="deductLunchVoucher" hideIf="!expense"/>
         <field name="blockExpenseTax"/>
         <field name="personalExpense"/>

@@ -20,29 +20,36 @@ package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.rest.dto.OperationOrderResponse;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.api.ResponseConstructor;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import javax.ws.rs.core.Response;
 
 public class OperationOrderRestServiceImpl implements OperationOrderRestService {
 
   protected OperationOrderWorkflowService operationOrderWorkflowService;
+  protected ManufOrderWorkflowService manufOrderWorkflowService;
 
   @Inject
   public OperationOrderRestServiceImpl(
-      OperationOrderWorkflowService operationOrderWorkflowService) {
+      OperationOrderWorkflowService operationOrderWorkflowService,
+      ManufOrderWorkflowService manufOrderWorkflowService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
+    this.manufOrderWorkflowService = manufOrderWorkflowService;
   }
 
   public Response updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
       throws AxelorException {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
     if ((operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED
             || operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS)
         && targetStatus == OperationOrderRepository.STATUS_IN_PROGRESS) {
@@ -63,7 +70,8 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
     } else if ((operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS
             || operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY)
         && targetStatus == OperationOrderRepository.STATUS_FINISHED) {
-      operationOrderWorkflowService.finish(operationOrder, AuthUtils.getUser());
+      finishProcess(operationOrder, manufOrder);
+      manufOrderWorkflowService.sendFinishedMail(manufOrder);
 
       if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
         return ResponseConstructor.build(
@@ -81,5 +89,12 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
         Response.Status.OK,
         "Operation order status successfully updated.",
         new OperationOrderResponse((operationOrder)));
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void finishProcess(OperationOrder operationOrder, ManufOrder manufOrder)
+      throws AxelorException {
+    operationOrderWorkflowService.finish(operationOrder, AuthUtils.getUser());
+    manufOrderWorkflowService.allOpFinished(manufOrder);
   }
 }

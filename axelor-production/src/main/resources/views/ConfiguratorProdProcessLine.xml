@@ -37,8 +37,19 @@
         <field name="priorityFormula" colSpan="12" height="120" widget="CodeEditor"
           x-code-syntax="groovy" showTitle="false" showIf="defPriorityAsFormula"/>
       </panel>
+      <field name="workCenterTypeSelect" colSpan="6" hidden="true"
+        if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+      <button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
+        onClick="save,action-production-view-configurator-work-center-group-wizard"
+        readonlyIf="workCenterTypeSelect == 0 || workCenterTypeSelect == null" colSpan="6"
+        hidden="true" if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+      <field name="workCenterGroup" canNew="true" canEdit="true" canSelect="false" colSpan="6"
+        form-view="work-center-group-form" grid-view="work-center-group-grid"
+        onChange="action-configurator-prod-process-line-group-work-center-group-onchange"
+        domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"
+        hidden="true" if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
       <panel name="workCenterPanel" title="Work center">
-        <field name="defWorkCenterAsFormula" colSpan="6"
+        <field name="defWorkCenterAsFormula" colSpan="12"
           onChange="action-configurator-prod-process-line-change-work-center-required"/>
         <field name="workCenter" hidden="true" grid-view="work-center-grid"
           form-view="work-center-form"
@@ -47,16 +58,6 @@
         <field name="workCenterFormula" colSpan="12" height="120" widget="CodeEditor"
           x-code-syntax="groovy" requiredIf="defWorkCenterAsFormula" showTitle="false"
           showIf="defWorkCenterAsFormula"/>
-      </panel>
-      <panel name="workCenterGroupPanel" hidden="true" colSpan="12">
-        <field name="workCenterTypeSelect"/>
-        <button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
-          onClick="save,action-production-view-configurator-work-center-group-wizard"
-          readonlyIf="workCenterTypeSelect == 0 || workCenterTypeSelect == null"/>
-        <field name="workCenterGroup" canNew="true" canEdit="true" canSelect="false"
-          colSpan="12" form-view="work-center-group-form" grid-view="work-center-group-grid"
-          onChange="action-configurator-prod-process-line-group-work-center-group-onchange"
-          domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
       </panel>
       <field name="outsourcing"
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
@@ -100,13 +101,6 @@
         <field name="humanDurationFormula" widget="CodeEditor" showIf="defHrDurationFormula"
           x-code-syntax="groovy" height="100" colSpan="12"/>
       </panel>
-      <panel name="timingOfImplementationPanel">
-        <field name="defTimingOfImplementationFormula" colSpan="12"/>
-        <field name="timingOfImplementation" colSpan="6" widget="duration" x-big="true"
-          x-seconds="true" showIf="!defTimingOfImplementationFormula"/>
-        <field name="timingOfImplementationFormula" widget="CodeEditor"
-          showIf="defTimingOfImplementationFormula" x-code-syntax="groovy" height="100" colSpan="12"/>
-      </panel>
     </panel>
     <panel name="configuratorProdProductListPanel" colSpan="12" hidden="true">
       <field name="configuratorProdProductList" colSpan="12"
@@ -131,14 +125,34 @@
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-configurator-prod-process-line-attrs-default">
-    <attribute name="hidden" for="workCenterPanel"
-      expr="eval: __config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="required" for="workCenter"
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; !defWorkCenterAsFormula"/>
-    <attribute name="hidden" for="workCenterGroupPanel"
+    <attribute name="hidden" for="workCenterGroup"
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+    <attribute name="hidden" for="workCenterTypeSelect"
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+    <attribute name="hidden" for="buttonWorkCenterGroupWizard"
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+    <attribute name="domain" for="workCenter"
+      expr="eval: &quot; self.id in (${workCenterGroup?.workCenterSet?.collect{it.id}?.join(',')}) &quot;"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+
     <attribute name="hidden" for="configuratorProdProductListPanel"
       expr="eval: !(__parent__?._model == 'com.axelor.apps.production.db.ConfiguratorProdProcess' &amp;&amp; (__parent__.defIsConsProOnOperationAsFormula || __parent__.isConsProOnOperation))"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-configurator-prod-process-line-set-default-work-center-attrs">
+    <attribute name="value" for="workCenter"
+      expr="eval: workCenterGroup?.workCenterSet?.first()"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; !defWorkCenterAsFormula"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-configurator-prod-process-line-set-work-center-domain-attrs">
+    <attribute name="domain" for="workCenter"
+      expr="eval: &quot; self.id in (${workCenterGroup?.workCenterSet?.collect{it.id}?.join(',')}) &quot;"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
   </action-attrs>
 
   <action-attrs
@@ -153,12 +167,6 @@
     <attribute name="required" for="workCenter" expr="eval: !defWorkCenterAsFormula"/>
   </action-attrs>
 
-  <action-attrs
-    name="action-configurator-prod-process-line-attrs-set-timing-of-implementation">
-    <attribute name="value" for="timingOfImplementation"
-      expr="eval: workCenter?.timingOfImplementation"/>
-  </action-attrs>
-
   <action-record
     name="action-configurator-prod-process-line-record-default-workcenter-type-select"
     model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
@@ -170,12 +178,13 @@
 
   <action-group name="action-configurator-prod-process-line-group-work-center-onchange">
     <action name="action-configurator-prod-process-line-method-duration"/>
-    <action name="action-configurator-prod-process-line-attrs-set-timing-of-implementation"/>
     <action name="action-configurator-prod-process-line-method-capacity-settings"/>
   </action-group>
 
   <action-group
     name="action-configurator-prod-process-line-group-work-center-group-onchange">
+    <action name="action-configurator-prod-process-line-set-default-work-center-attrs"/>
+    <action name="action-configurator-prod-process-line-set-work-center-domain-attrs"/>
     <action
       name="action-configurator-prod-process-line-method-work-center-group-fill-work-center"/>
     <action name="action-configurator-prod-process-line-group-work-center-onchange"/>

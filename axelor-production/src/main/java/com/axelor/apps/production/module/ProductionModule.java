@@ -45,6 +45,8 @@ import com.axelor.apps.production.rest.ManufOrderRestService;
 import com.axelor.apps.production.rest.ManufOrderRestServiceImpl;
 import com.axelor.apps.production.rest.OperationOrderRestService;
 import com.axelor.apps.production.rest.OperationOrderRestServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialLineService;
+import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
@@ -93,8 +95,6 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.machine.MachineServiceImpl;
-import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
-import com.axelor.apps.production.service.manuforder.ManufOrderPrintServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -171,7 +171,6 @@ public class ProductionModule extends AxelorModule {
         .to(ConfiguratorCreatorImportServiceProductionImpl.class);
     bind(ProductStockLocationServiceImpl.class).to(ProductionProductStockLocationServiceImpl.class);
     bind(StockMoveSupplychainRepository.class).to(StockMoveProductionRepository.class);
-    bind(ManufOrderPrintService.class).to(ManufOrderPrintServiceImpl.class);
     bind(MrpForecastProductionService.class).to(MrpForecastProductionServiceImpl.class);
     bind(MpsWeeklyScheduleService.class).to(MpsWeeklyScheduleServiceImpl.class);
     bind(MpsChargeService.class).to(MpsChargeServiceImpl.class);
@@ -190,5 +189,6 @@ public class ProductionModule extends AxelorModule {
     bind(MachineService.class).to(MachineServiceImpl.class);
     bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceImpl.class);
     bind(OperationOrderPlanningService.class).to(OperationOrderPlanningServiceImpl.class);
+    bind(BillOfMaterialLineService.class).to(BillOfMaterialLineServiceImpl.class);
   }
 }

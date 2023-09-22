@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
     <hilite strong="true" color="default" if="typeSelect != 0"/>
     <hilite color="danger" if="deliveryState == 1"/>
     <hilite color="warning" if="deliveryState == 2"/>
@@ -850,7 +850,7 @@
   <action-attrs name="action-sale-order-line-attrs-hide-panel">
     <attribute name="hidden"
       for="stockMoveLineOfSOPanel,projectTaskListPanel,invoicingFollowUpPanel" expr="true"
-      if="__parent__.statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || __parent__.statusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"/>
+      if="__parent__?.statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || __parent__?.statusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">

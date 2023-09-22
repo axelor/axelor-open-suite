@@ -137,7 +137,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
         planPlannedDatesForFiniteCapacityScheduling(operationOrder);
         break;
       case ProductionConfigRepository.INFINITE_CAPACITY_SCHEDULING:
-        operationOrder.setPlannedStartDateT(this.getlastOperationDate(operationOrder));
+        operationOrder.setPlannedStartDateT(this.getLastOperationDate(operationOrder));
         operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 
         operationOrder.setPlannedDuration(
@@ -172,7 +172,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
 
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
-    LocalDateTime lastOperationDate = this.getlastOperationDate(operationOrder);
+    LocalDateTime lastOperationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = LocalDateTimeUtils.max(plannedStartDate, lastOperationDate);
 
     MachineTimeSlot freeMachineTimeSlot =
@@ -192,7 +192,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   protected void planDatesWithoutMachine(OperationOrder operationOrder) throws AxelorException {
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
-    LocalDateTime lastOperationDate = this.getlastOperationDate(operationOrder);
+    LocalDateTime lastOperationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = LocalDateTimeUtils.max(plannedStartDate, lastOperationDate);
 
     operationOrder.setPlannedStartDateT(maxDate);
@@ -212,7 +212,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
       OperationOrder operationOrder, Long cumulatedDuration) throws AxelorException {
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
-    LocalDateTime lastOperationDate = this.getlastOperationDate(operationOrder);
+    LocalDateTime lastOperationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = LocalDateTimeUtils.max(plannedStartDate, lastOperationDate);
     operationOrder.setPlannedStartDateT(maxDate);
 
@@ -417,17 +417,18 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     }
   }
 
-  protected LocalDateTime getlastOperationDate(OperationOrder operationOrder) {
+  protected LocalDateTime getLastOperationDate(OperationOrder operationOrder) {
     ManufOrder manufOrder = operationOrder.getManufOrder();
     OperationOrder lastOperationOrder =
         operationOrderRepository
             .all()
             .filter(
-                "self.manufOrder = :manufOrder AND self.priority <= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+                "self.manufOrder = :manufOrder AND ((self.priority = :priority AND self.machine = :machine) OR self.priority < :priority) AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
             .bind("manufOrder", manufOrder)
             .bind("priority", operationOrder.getPriority())
             .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
             .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("machine", operationOrder.getMachine())
             .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
             .order("-plannedEndDateT")

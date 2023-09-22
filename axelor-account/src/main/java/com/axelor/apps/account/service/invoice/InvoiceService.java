@@ -319,4 +319,6 @@ public interface InvoiceService {
   void updateInvoiceTermsParentFields(Invoice invoice);
 
   Invoice computeEstimatedPaymentDate(Invoice invoice);
+
+  void updateSubrogationPartner(Invoice invoice);
 }
