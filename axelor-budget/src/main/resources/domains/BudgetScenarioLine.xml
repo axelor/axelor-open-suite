@@ -15,6 +15,10 @@
     <decimal name="year4Value" title="Year 4"/>
     <decimal name="year5Value" title="Year 5"/>
     <decimal name="year6Value" title="Year 6"/>
+    <many-to-one name="budgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Section"/>
+    <many-to-one name="parentBudgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Group"/>
 
   </entity>
 

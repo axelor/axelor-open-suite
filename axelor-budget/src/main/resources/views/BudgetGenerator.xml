@@ -21,27 +21,27 @@
       <field name="code" required="true"/>
       <field name="name" required="true"/>
       <field name="budgetStructure" domain="self.isScenario IS TRUE"/>
-      <field name="fromDate" hideIf="!budgetStructure"/>
       <field name="budgetScenario"/>
+      <field name="fromDate" hideIf="!budgetStructure"/>
       <field name="toDate" hideIf="!budgetStructure"/>
-      <field name="yearSet" widget="TagSelect" hideIf="!budgetStructure"
-        domain="self IN :budgetScenario$yearSet"/>
+      <field name="yearSet" widget="TagSelect" hideIf="!budgetStructure" canNew="false"
+        canEdit="false" domain="self.company = :company AND self.typeSelect = 1"/>
       <field name="startingYear" hideIf="!yearSet" domain="self IN :yearSet"/>
-      
     </panel>
 
-    <panel>
-	<field name="$budgetScenarioLine" form-view="budget-scenario-line-form"
-        grid-view="budget-scenario-line-grid"  title="Budget" type="one-to-many" canView="false" hidden="true"
-readonly="true" target="com.axelor.apps.budget.db.BudgetScenarioLine"/>
+    <panel name="linePanel" hidden="true">
+      <field name="$budgetScenarioLine" form-view="budget-scenario-line-form" colSpan="12"
+        grid-view="budget-scenario-line-generator-grid" title="Budgets" type="one-to-many"
+        height="550" canView="false" readonly="true"
+        target="com.axelor.apps.budget.db.BudgetScenarioLine"/>
     </panel>
 
     <panel name="actionPanel" sidebar="true">
-    <button name="visualizeAmountsBtn" title="Previsualize"
+      <button name="visualizeAmountsBtn" title="Previsualize"
         onClick="save,action-budget-generator-method-visualize-amounts"/>
       <button name="generateGlobalBudgetBtn" title="Generate global budget"
         onClick="save,action-budget-generator-method-generate-global-budget"/>
-        
+
 
     </panel>
 
@@ -51,7 +51,7 @@ readonly="true" target="com.axelor.apps.budget.db.BudgetScenarioLine"/>
     <call class="com.axelor.apps.budget.web.BudgetGeneratorController"
       method="generateGlobalBudget"/>
   </action-method>
-  
+
   <action-method name="action-budget-generator-method-visualize-amounts">
     <call class="com.axelor.apps.budget.web.BudgetGeneratorController"
       method="visualizeAmounts"/>

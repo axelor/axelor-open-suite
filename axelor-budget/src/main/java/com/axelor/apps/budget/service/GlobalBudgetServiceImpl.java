@@ -1,7 +1,6 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
@@ -27,7 +26,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -223,38 +221,37 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   public GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator) throws AxelorException {
 
     GlobalBudget globalBudget = copyGlobalBudgetTemplate(budgetGenerator);
-  
+
     fillGlobalBudgetWithLevels(budgetGenerator, globalBudget);
     globalBudgetRepository.save(globalBudget);
-    return null;
+    return globalBudget;
   }
 
   @Override
-  @Transactional
-  public List<BudgetScenarioLine> visualizeVariableAmounts(BudgetGenerator budgetGenerator)
-      throws AxelorException {
+  public List<BudgetScenarioLine> visualizeVariableAmounts(BudgetGenerator budgetGenerator) {
 
-	  budgetGenerator = budgetGeneratorRepository.find(budgetGenerator.getId());
     BudgetStructure budgetStructure = budgetGenerator.getBudgetStructure();
-    Set<BudgetScenarioVariable> allVariables = new HashSet<>();
+    List<BudgetScenarioLine> budgetScenarioLineOriginList =
+        budgetGenerator.getBudgetScenario().getBudgetScenarioLineList();
+    List<BudgetScenarioLine> budgetScenarioLineList = new ArrayList<>();
+    if (ObjectUtils.isEmpty(budgetStructure.getBudgetLevelList())) {
+      return budgetScenarioLineList;
+    }
 
     for (BudgetLevel groupBudgetLevel : budgetStructure.getBudgetLevelList()) {
 
       List<BudgetLevel> sectionBudgetLevelList = groupBudgetLevel.getBudgetLevelList();
       if (!ObjectUtils.isEmpty(sectionBudgetLevelList)) {
         for (BudgetLevel sectionBudgetLevel : sectionBudgetLevelList) {
-          allVariables.addAll(sectionBudgetLevel.getBudgetScenarioVariableSet());
+
+          budgetScenarioLineList =
+              budgetScenarioLineService.getLineUsingSection(
+                  sectionBudgetLevel, budgetScenarioLineOriginList, budgetScenarioLineList);
         }
       }
     }
 
-    List<BudgetScenarioLine> filtredBudgetScerionLines =
-        budgetGenerator.getBudgetScenario().getBudgetScenarioLineList().stream()
-            .filter(it -> allVariables.contains(it.getBudgetScenarioVariable()))
-            .collect(Collectors.toList());
-    
-   return filtredBudgetScerionLines;
-   
+    return budgetScenarioLineList;
   }
 
   protected GlobalBudget copyGlobalBudgetTemplate(BudgetGenerator budgetGenerator) {

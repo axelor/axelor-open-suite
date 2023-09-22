@@ -6,7 +6,6 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.db.repo.BudgetGeneratorRepository;
 import com.axelor.apps.budget.service.BudgetScenarioLineService;
 import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.i18n.I18n;
@@ -45,15 +44,17 @@ public class BudgetGeneratorController {
   public void visualizeAmounts(ActionRequest request, ActionResponse response) {
     try {
       BudgetGenerator budgetGenerator = request.getContext().asType(BudgetGenerator.class);
-      budgetGenerator = Beans.get(BudgetGeneratorRepository.class).find(budgetGenerator.getId());
 
       if (budgetGenerator != null) {
 
-       List<BudgetScenarioLine> myList =  Beans.get(GlobalBudgetService.class).visualizeVariableAmounts(budgetGenerator);
+        List<BudgetScenarioLine> myList =
+            Beans.get(GlobalBudgetService.class).visualizeVariableAmounts(budgetGenerator);
 
         List<Integer> fiscalYears =
             Beans.get(BudgetScenarioLineService.class)
                 .getFiscalYears(budgetGenerator.getBudgetScenario());
+
+        response.setValue("$budgetScenarioLine", myList);
 
         Set<Year> targetYears = budgetGenerator.getYearSet();
 
@@ -67,19 +68,15 @@ public class BudgetGeneratorController {
 
           positions.add(position);
         }
-        
-        response.setValue("$budgetScenarioLine", myList);
+
         if (positions.size() > 0) {
-
           for (int i : positions) {
-
             String fieldName = "$budgetScenarioLine.year" + (i + 1) + "Value";
             response.setAttr(fieldName, "hidden", false);
             response.setAttr(fieldName, "title", Integer.toString(fiscalYears.get(i)));
           }
         }
-        response.setAttr("$budgetScenarioLine", "hidden", false);
-        
+        response.setAttr("linePanel", "hidden", false);
       }
 
     } catch (Exception e) {
