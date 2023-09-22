@@ -6,6 +6,7 @@ import com.axelor.apps.production.db.repo.MachineToolRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
@@ -27,6 +28,7 @@ public class OperationOrderWorkflowBusinessServiceImpl extends OperationOrderWor
       ManufOrderWorkflowService manufOrderWorkflowService,
       OperationOrderService operationOrderService,
       OperationOrderPlanningService operationOrderPlanningService,
+      ManufOrderStockMoveService manufOrderStockMoveService,
       TimesheetLineBusinessProductionService tslBusinessProductionService) {
     super(
         operationOrderStockMoveService,
@@ -36,7 +38,8 @@ public class OperationOrderWorkflowBusinessServiceImpl extends OperationOrderWor
         machineToolRepo,
         manufOrderWorkflowService,
         operationOrderService,
-        operationOrderPlanningService);
+        operationOrderPlanningService,
+        manufOrderStockMoveService);
 
     this.tslBusinessProductionService = tslBusinessProductionService;
   }
