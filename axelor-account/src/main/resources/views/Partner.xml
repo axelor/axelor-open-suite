@@ -40,10 +40,11 @@
     <panel name="bankDetailsPanel" title="Bank details" colSpan="12">
       <field name="bankDetailsList" colSpan="12" showTitle="false">
         <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
-                    <dl>
-                      <dd ng-if="!record.isDefault" ng-style="!record.active && {'color':'orange'}"> {{record.fullName}} </dd>
-                      <dd ng-if="record.isDefault" ng-style="!record.active && {'color':'orange'}"> <b>{{record.fullName}}</b> </dd>
-                    </dl>
+                    <>
+                        <dl>
+                            {<Box as="dd" {...(!active && {color:"warning"})} {...(isDefault && {fontWeight:"bold"})}>{fullName}</Box>}
+                        </dl>
+                    </>
                 ]]></viewer>
         <editor onNew="action-set-default-partner" x-show-on-new="false">
           <field name="ownerName"/>

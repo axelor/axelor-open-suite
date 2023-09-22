@@ -41,24 +41,18 @@
     <panel name="totalPanel" showIf="id &amp;&amp; journalType.isDisplayBalances">
       <field name="$totalDebit" title="Total Debit" type="decimal" colSpan="4" readonly="true">
         <viewer>
-					<![CDATA[
-						<h3>{{$fmt('$totalDebit')}}</h3>
-					]]>
+		  <![CDATA[<><h3>{$fmt('$totalDebit')}</h3></>]]>
         </viewer>
       </field>
       <field name="$totalCredit" title="Total Credit" type="decimal" colSpan="4"
         readonly="true">
         <viewer>
-					<![CDATA[
-						<h3>{{$fmt('$totalCredit')}}</h3>
-					]]>
+		  <![CDATA[<><h3>{$fmt('$totalCredit')}</h3></>]]>
         </viewer>
       </field>
       <field name="$balance" title="Balance" type="decimal" colSpan="4" readonly="true">
         <viewer>
-					<![CDATA[
-						<h3>{{$fmt('$balance')}}</h3>
-					]]>
+		  <![CDATA[<><h3>{$fmt('$balance')}</h3></>]]>
         </viewer>
       </field>
     </panel>
