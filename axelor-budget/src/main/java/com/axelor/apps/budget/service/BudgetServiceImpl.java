@@ -911,7 +911,7 @@ public class BudgetServiceImpl implements BudgetService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateBudgetsUsingTemplate(
       GlobalBudgetTemplate globalBudgetTemplate,
       List<Budget> budgetList,

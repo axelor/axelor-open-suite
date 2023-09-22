@@ -33,7 +33,6 @@ import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.GlobalBudgetTemplate;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -316,7 +315,6 @@ public interface BudgetService {
 
   public BigDecimal computeTotalAmountRealized(Budget budget);
 
-  @Transactional
   void generateBudgetsUsingTemplate(
       GlobalBudgetTemplate globalBudgetTemplate,
       List<Budget> budgetList,

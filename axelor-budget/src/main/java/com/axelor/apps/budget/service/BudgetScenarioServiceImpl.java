@@ -8,6 +8,7 @@ import com.axelor.apps.budget.db.BudgetScenarioLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.repo.BudgetScenarioRepository;
 import com.axelor.apps.budget.db.repo.BudgetScenarioVariableRepository;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
@@ -187,7 +188,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
                     new Throwable(String.format("No such field in: %s", variable.getFormula())),
                     budgetScenario,
                     TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                    String.format(I18n.get("Budget Scenario Variable") + " %s", lineCode));
+                    String.format(I18n.get(BudgetExceptionMessage.BUDGET_VARIABLE), lineCode));
             TraceBackService.trace(exception);
           }
         } catch (Exception e) {
@@ -196,7 +197,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
                   e.getCause(),
                   budgetScenario,
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                  String.format(I18n.get("Budget Scenario Variable") + " %s", lineCode)));
+                  String.format(I18n.get(BudgetExceptionMessage.BUDGET_VARIABLE), lineCode)));
         }
       }
     }
@@ -218,6 +219,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
         try {
           variableAmountMap.replace(lineCode, scriptHelper.eval(variable.getFormula()));
         } catch (Exception e) {
+          // Exceptions will be throwed in traceErrorsOnScenarioMap and will be traced
         }
 
         if (variableAmountMap.get(lineCode) == null) {
@@ -244,7 +246,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void validateScenario(BudgetScenario budgetScenario) throws AxelorException {
     generateFormulaScenarioLines(budgetScenario);
     budgetScenario.setStatusSelect(BudgetScenarioRepository.BUDGET_SCENARIO_STATUS_SELECT_VALID);

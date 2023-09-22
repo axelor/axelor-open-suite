@@ -228,7 +228,7 @@
     <view type="grid" name="purchase-order-budget-distribution-grid"/>
     <view type="form" name="purchase-order-budget-distribution-form"/>
     <view-param name="limit" value="200"/>
-    <domain>self.purchaseOrderLine.purchaseOrder.id = :_purchaseOrderId</domain>
+    <domain><![CDATA[self.purchaseOrderLine.purchaseOrder.id = :_purchaseOrderId]]></domain>
     <context name="_purchaseOrderId" expr="eval: __this__.id"/>
   </action-view>
 
@@ -236,7 +236,7 @@
     title="See budget distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="purchase-order-budget-distribution-complete-grid"/>
     <view type="form" name="purchase-order-budget-distribution-complete-form"/>
-    <domain>self.purchaseOrderLine.purchaseOrder.statusSelect != 5</domain>
+    <domain><![CDATA[self.purchaseOrderLine.purchaseOrder.statusSelect != 5]]></domain>
   </action-view>
 
 </object-views>

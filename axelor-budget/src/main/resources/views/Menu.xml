@@ -20,7 +20,7 @@
     <view type="grid" name="global-budget-grid"/>
     <view type="form" name="global-budget-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.budgetTypeSelect = :_budgetTypeSelect</domain>
+    <domain><![CDATA[self.budgetTypeSelect = :_budgetTypeSelect]]></domain>
     <context name="_budgetTypeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE"/>
   </action-view>
@@ -34,7 +34,7 @@
     <view type="grid" name="global-budget-grid"/>
     <view type="form" name="global-budget-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.budgetTypeSelect = :_budgetTypeSelect</domain>
+    <domain><![CDATA[self.budgetTypeSelect = :_budgetTypeSelect]]></domain>
     <context name="_budgetTypeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE"/>
   </action-view>
@@ -49,7 +49,7 @@
     <view type="grid" name="global-budget-grid"/>
     <view type="form" name="global-budget-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.budgetTypeSelect = :_budgetTypeSelect</domain>
+    <domain><![CDATA[self.budgetTypeSelect = :_budgetTypeSelect]]></domain>
     <context name="_budgetTypeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT"/>
   </action-view>
@@ -64,7 +64,7 @@
     <view type="grid" name="global-budget-grid"/>
     <view type="form" name="global-budget-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.budgetTypeSelect = :_budgetTypeSelect</domain>
+    <domain><![CDATA[self.budgetTypeSelect = :_budgetTypeSelect]]></domain>
     <context name="_budgetTypeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT"/>
   </action-view>
@@ -78,7 +78,7 @@
     <view type="form" name="budget-form"/>
     <view-param name="forceTitle" value="true"/>
     <view-param name="limit" value="200"/>
-    <domain>self.typeSelect = :_typeSelect</domain>
+    <domain><![CDATA[self.typeSelect = :_typeSelect]]></domain>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET"/>
     <context name="_domain"
@@ -99,7 +99,7 @@
     <view type="grid" name="global-budget-template-grid"/>
     <view type="form" name="global-budget-template-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.isScenario is false</domain>
+    <domain><![CDATA[self.isScenario is false]]></domain>
     <context name="_isScenario" expr="eval: false"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_TEMPLATE"/>
@@ -114,7 +114,7 @@
     <view type="grid" name="global-budget-template-grid"/>
     <view type="form" name="global-budget-template-form"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.isScenario is true</domain>
+    <domain><![CDATA[self.isScenario is true]]></domain>
     <context name="_isScenario" expr="eval: true"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_TEMPLATE"/>

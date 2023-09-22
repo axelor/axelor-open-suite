@@ -450,7 +450,7 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.id= :_budgetId</domain>
+    <domain><![CDATA[self.budget.id= :_budgetId]]></domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
 
@@ -461,14 +461,14 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.id= :_budgetId AND
+    <domain><![CDATA[self.budget.id= :_budgetId AND
       (self.invoiceLine.invoice.purchaseOrder is null AND
       self.invoiceLine.invoice.saleOrder is null AND
       self.invoiceLine.invoice.statusSelect = 3)
       OR
       (self.moveLine IS NOT NULL AND
       self.moveLine.move.statusSelect in (2,3) AND
-      self.moveLine.move.invoice IS NULL)</domain>
+      self.moveLine.move.invoice IS NULL)]]></domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
   <action-view
@@ -478,11 +478,11 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.id= :_budgetId AND
+    <domain><![CDATA[self.budget.id= :_budgetId AND
       (self.invoiceLine.invoice.purchaseOrder is not null OR
       self.invoiceLine.invoice.saleOrder is not null)
       AND
-      self.invoiceLine.invoice.statusSelect = 3
+      self.invoiceLine.invoice.statusSelect = 3]]>
     </domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
@@ -492,7 +492,7 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.id= :_budgetId and self.moveLine.move.statusSelect = 5</domain>
+    <domain><![CDATA[self.budget.id= :_budgetId and self.moveLine.move.statusSelect = 5]]></domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
 

@@ -74,7 +74,7 @@
     model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-grid"/>
     <view type="form" name="trace-back-form"/>
-    <domain>self.ref = 'com.axelor.apps.budget.db.BudgetScenario' AND self.refId = :_scenarioId</domain>
+    <domain><![CDATA[self.ref = 'com.axelor.apps.budget.db.BudgetScenario' AND self.refId = :_scenarioId]]></domain>
     <context name="_scenarioId" expr="eval: id"/>
   </action-view>
 

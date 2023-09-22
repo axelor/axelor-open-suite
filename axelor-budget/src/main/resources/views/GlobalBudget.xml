@@ -204,8 +204,8 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId and
-      self.moveLine.move.statusSelect = 5</domain>
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId and
+      self.moveLine.move.statusSelect = 5]]></domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
 
@@ -216,10 +216,10 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId AND
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId AND
       (self.invoiceLine.invoice.purchaseOrder is not null OR self.invoiceLine.invoice.saleOrder is
       not null) AND self.invoiceLine.invoice.statusSelect =
-      3
+      3]]>
     </domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
@@ -231,12 +231,12 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId AND
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId AND
       (self.invoiceLine.invoice.purchaseOrder is null AND self.invoiceLine.invoice.saleOrder is null
       AND self.invoiceLine.invoice.statusSelect = 3)
       OR (self.moveLine IS NOT NULL AND
       self.moveLine.move.statusSelect in (2,3) AND
-      self.moveLine.move.invoice IS NULL)
+      self.moveLine.move.invoice IS NULL)]]>
     </domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
@@ -248,7 +248,7 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId</domain>
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId]]></domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
 
@@ -263,10 +263,10 @@
     title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-purchase-order-line-global-dashlet-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
-    <domain>self.purchaseOrderLine != null and
+    <domain><![CDATA[self.purchaseOrderLine != null and
       self.purchaseOrderLine.purchaseOrder.statusSelect in
       (2,3,4) and
-      self.budget.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId</domain>
+      self.budget.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId]]></domain>
     <context name="_globalId" expr="eval:__this__.id"/>
   </action-view>
 
@@ -274,9 +274,9 @@
     title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
-    <domain>self.saleOrderLine != null and
+    <domain><![CDATA[self.saleOrderLine != null and
       self.saleOrderLine.saleOrder.statusSelect in (3,4) and
-      self.budget.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId</domain>
+      self.budget.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId]]></domain>
     <context name="_globalId" expr="eval:__this__.id"/>
   </action-view>
 
@@ -341,7 +341,7 @@
     <view type="grid" name="budget-level-node-grid"/>
     <view type="form" name="budget-section-budget-level-form"/>
     <view-param name="showArchived" value="true"/>
-    <domain>self.parentBudgetLevel.globalBudget.id = :_globalId</domain>
+    <domain><![CDATA[self.parentBudgetLevel.globalBudget.id = :_globalId]]></domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_isParent" expr="false"/>
   </action-view>
@@ -351,7 +351,7 @@
     <view type="grid" name="budget-version-grid"/>
     <view type="form" name="budget-version-form"/>
     <view-param name="showArchived" value="true"/>
-    <domain>self.globalBudget.id = :_globalId</domain>
+    <domain><![CDATA[self.globalBudget.id = :_globalId]]></domain>
     <context name="_globalId" expr="eval: id"/>
   </action-view>
 
@@ -361,7 +361,7 @@
     <view type="form" name="budget-included-form"/>
     <view-param name="details-view" value="true"/>
     <view-param name="showArchived" value="true"/>
-    <domain>self.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId</domain>
+    <domain><![CDATA[self.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId]]></domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_globalCode" expr="eval:__this__.code"/>
     <context
@@ -375,7 +375,7 @@
     <view type="grid" name="budget-level-included-grid"/>
     <view type="form" name="budget-group-budget-level-form"/>
     <view-param name="showArchived" value="true"/>
-    <domain>self.globalBudget.id = :_globalId</domain>
+    <domain><![CDATA[self.globalBudget.id = :_globalId]]></domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_isParent" expr="false"/>
   </action-view>

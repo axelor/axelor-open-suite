@@ -516,10 +516,10 @@
     <view type="form" name="budget-included-form"/>
     <view-param name="details-view" value="true"/>
     <domain>
-      (:_sectionId IS NOT NULL AND self.budgetLevel.id = :_sectionId)
+      <![CDATA[(:_sectionId IS NOT NULL AND self.budgetLevel.id = :_sectionId)
       OR
       (:_groupId IS NOT NULL
-      AND self.budgetLevel.parentBudgetLevel.id = :_groupId)
+      AND self.budgetLevel.parentBudgetLevel.id = :_groupId)]]>
     </domain>
     <context name="_sectionId" expr="eval: id"
       if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION"/>
@@ -551,9 +551,9 @@
     title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-purchase-order-line-group-dashlet-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.id = :_groupId and self.purchaseOrderLine !=
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.id = :_groupId and self.purchaseOrderLine !=
       null and
-      self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)</domain>
+      self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)]]></domain>
     <context name="_groupId" expr="eval:__this__.id"/>
     <context name="_fromGroup" expr="eval:true"/>
   </action-view>
@@ -562,10 +562,10 @@
     title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.id = :_groupId and self.saleOrderLine !=
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.id = :_groupId and self.saleOrderLine !=
       null
       and
-      self.saleOrderLine.saleOrder.statusSelect in (3,4)</domain>
+      self.saleOrderLine.saleOrder.statusSelect in (3,4)]]></domain>
     <context name="_groupId" expr="eval:__this__.id"/>
     <context name="_fromGroup" expr="eval:true"/>
   </action-view>
@@ -582,9 +582,9 @@
     <view type="grid"
       name="budget-budget-distribution-purchase-order-line-section-dashlet-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
-    <domain>self.budget.budgetLevel.id = :_sectionId and self.purchaseOrderLine != null
+    <domain><![CDATA[self.budget.budgetLevel.id = :_sectionId and self.purchaseOrderLine != null
       and
-      self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)</domain>
+      self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)]]></domain>
     <context name="_sectionId" expr="eval:__this__.id"/>
     <context name="_fromSection" expr="eval:true"/>
   </action-view>
@@ -593,9 +593,9 @@
     title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
-    <domain>self.budget.budgetLevel.id = :_sectionId and self.saleOrderLine != null
+    <domain><![CDATA[self.budget.budgetLevel.id = :_sectionId and self.saleOrderLine != null
       and
-      self.saleOrderLine.saleOrder.statusSelect in (3,4)</domain>
+      self.saleOrderLine.saleOrder.statusSelect in (3,4)]]></domain>
     <context name="_sectionId" expr="eval:__this__.id"/>
     <context name="_fromSection" expr="eval:true"/>
   </action-view>
@@ -612,9 +612,9 @@
     model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-grid-purchase-order-line-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
-    <domain>self.budget.id = :_budgetId and self.purchaseOrderLine != null
+    <domain><![CDATA[self.budget.id = :_budgetId and self.purchaseOrderLine != null
       and
-      self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)</domain>
+      self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)]]></domain>
     <context name="_budgetId" expr="eval: __this__.id"/>
     <context name="_fromBudget" expr="eval:true"/>
   </action-view>
@@ -623,9 +623,9 @@
     title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
-    <domain>self.budget.id = :_budgetId and self.saleOrderLine != null
+    <domain><![CDATA[self.budget.id = :_budgetId and self.saleOrderLine != null
       and
-      self.saleOrderLine.saleOrder.statusSelect in (3,4)</domain>
+      self.saleOrderLine.saleOrder.statusSelect in (3,4)]]></domain>
     <context name="_budgetId" expr="eval: __this__.id"/>
     <context name="_fromBudget" expr="eval:true"/>
   </action-view>
@@ -655,7 +655,7 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.id= :_sectionId</domain>
+    <domain><![CDATA[self.budget.budgetLevel.id= :_sectionId]]></domain>
     <context name="_sectionId" expr="eval: id"/>
   </action-view>
 
@@ -666,12 +666,12 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.id= :_sectionId AND (self.invoiceLine.invoice.purchaseOrder is
+    <domain><![CDATA[self.budget.budgetLevel.id= :_sectionId AND (self.invoiceLine.invoice.purchaseOrder is
       null AND self.invoiceLine.invoice.saleOrder is
       null AND self.invoiceLine.invoice.statusSelect =
       3) OR (self.moveLine IS NOT NULL AND
       self.moveLine.move.statusSelect in (2,3) AND
-      self.moveLine.move.invoice IS NULL)
+      self.moveLine.move.invoice IS NULL)]]>
     </domain>
     <context name="_sectionId" expr="eval: id"/>
   </action-view>
@@ -683,10 +683,10 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.id= :_sectionId AND (self.invoiceLine.invoice.purchaseOrder is
+    <domain><![CDATA[self.budget.budgetLevel.id= :_sectionId AND (self.invoiceLine.invoice.purchaseOrder is
       not null OR self.invoiceLine.invoice.saleOrder is
       not null) AND
-      self.invoiceLine.invoice.statusSelect = 3
+      self.invoiceLine.invoice.statusSelect = 3]]>
     </domain>
     <context name="_sectionId" expr="eval: id"/>
   </action-view>
@@ -698,7 +698,7 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.id= :_sectionId and self.moveLine.move.statusSelect = 5</domain>
+    <domain><![CDATA[self.budget.budgetLevel.id= :_sectionId and self.moveLine.move.statusSelect = 5]]></domain>
     <context name="_sectionId" expr="eval: id"/>
   </action-view>
 
@@ -709,7 +709,7 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.id= :_groupId</domain>
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.id= :_groupId]]></domain>
     <context name="_groupId" expr="eval: id"/>
   </action-view>
 
@@ -720,13 +720,13 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.id= :_groupId AND
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.id= :_groupId AND
       (self.invoiceLine.invoice.purchaseOrder is
       null AND self.invoiceLine.invoice.saleOrder is null
       AND self.invoiceLine.invoice.statusSelect = 3)
       OR (self.moveLine IS NOT NULL AND
       self.moveLine.move.statusSelect in (2,3) AND
-      self.moveLine.move.invoice IS NULL)
+      self.moveLine.move.invoice IS NULL)]]>
     </domain>
     <context name="_groupId" expr="eval: id"/>
   </action-view>
@@ -738,10 +738,10 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.id= :_groupId AND
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.id= :_groupId AND
       (self.invoiceLine.invoice.purchaseOrder is not null OR self.invoiceLine.invoice.saleOrder is
       not null) AND self.invoiceLine.invoice.statusSelect =
-      3
+      3]]>
     </domain>
     <context name="_groupId" expr="eval: id"/>
   </action-view>
@@ -753,8 +753,8 @@
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
-    <domain>self.budget.budgetLevel.parentBudgetLevel.id= :_groupId and
-      self.moveLine.move.statusSelect = 5</domain>
+    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.id= :_groupId and
+      self.moveLine.move.statusSelect = 5]]></domain>
     <context name="_groupId" expr="eval: id"/>
   </action-view>
 

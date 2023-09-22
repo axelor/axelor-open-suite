@@ -18,16 +18,17 @@
  */
 package com.axelor.apps.budget.service.invoice;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
@@ -36,7 +37,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
@@ -51,6 +51,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequestScoped
 public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
@@ -162,60 +163,24 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
 
   @Override
   public String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) {
-    String budget = "self.budgetLevel.parentBudgetLevel.globalBudget";
-    String query =
-        String.format(
-            "self.totalAmountExpected > 0 AND self.statusSelect = %d AND %s.company.id = %d ",
-            BudgetRepository.STATUS_VALIDATED,
-            budget,
-            invoice.getCompany() != null ? invoice.getCompany().getId() : 0);
-
-    if (invoice.getOperationTypeSelect() >= InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
-      query =
-          query.concat(
-              String.format(
-                  " AND %s.budgetTypeSelect = %d ",
-                  budget, BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE));
-    } else {
-
-      if (AccountTypeRepository.TYPE_CHARGE.equals(
-          invoiceLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-        query =
-            query.concat(
-                String.format(
-                    " AND %s.budgetTypeSelect in ("
-                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
-                        + ","
-                        + BudgetLevelRepository
-                            .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
-                        + ")",
-                    budget));
-      } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
-          invoiceLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-        query =
-            query.concat(
-                String.format(
-                    " AND %s.budgetTypeSelect in ("
-                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
-                        + ","
-                        + BudgetLevelRepository
-                            .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
-                        + ")",
-                    budget));
-      } else {
-        query = "self.id = 0";
+    Company company = null;
+    LocalDate date = null;
+    if (invoice != null) {
+      if (invoice.getCompany() != null) {
+        company = invoice.getCompany();
+        date = appBaseService.getTodayDate(invoice.getCompany());
+      }
+      if (invoice.getInvoiceDate() != null) {
+        date = invoice.getInvoiceDate();
       }
     }
-    LocalDate date =
-        invoice.getInvoiceDate() != null
-            ? invoice.getInvoiceDate()
-            : appBaseService.getTodayDate(invoice.getCompany());
-    if (date != null) {
-      query =
-          query.concat(
-              String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
-    }
+    String technicalTypeSelect =
+        Optional.of(invoiceLine)
+            .map(InvoiceLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(null);
 
-    return query;
+    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
   }
 }

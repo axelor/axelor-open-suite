@@ -64,7 +64,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
+  @Transactional
   public void computeBudgetLevelTotals(Budget budget) {
 
     budgetLevelService.computeBudgetLevelTotals(budget);

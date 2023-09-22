@@ -181,7 +181,7 @@
     id="budget-purchase-order-see-purchase-order-lines">
     <view type="grid" name="purchase-order-line-grid"/>
     <view type="form" name="purchase-order-line-all-form"/>
-    <domain>self.purchaseOrder.project = :_project OR self.purchaseOrder.statusSelect IN (:status)</domain>
+    <domain><![CDATA[self.purchaseOrder.project = :_project OR self.purchaseOrder.statusSelect IN (:status)]]></domain>
     <context name="_project" expr="eval: _project"/>
     <context name="status" expr="eval: _status"/>
   </action-view>
