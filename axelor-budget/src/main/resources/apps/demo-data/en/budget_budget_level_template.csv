@@ -1,4 +1,4 @@
-"importId";"code";"name";"parentBudgetLevel.importId";"globalBudgetTemplate.importId";"fromDate";"toDate";"typeSelect";"statusSelect";"company.importId";"variables"
-52;"COSTS";"COSTS";;1;"TODAY[1d]";"TODAY[30d]";"template";"draft";1;
-53;"RAW MATERIALS";"RAW MATERIALS";52;;"TODAY[1d]";"TODAY[30d]";"template";"draft";1;"2|6|7|8|9|10"
-54;"WORKFORCE";"WORKFORCE";52;;"TODAY[1d]";"TODAY[30d]";"template";"draft";1;"1|3|4|5|11"
+"importId";"code";"name";"parentBudgetLevel.importId";"budgetStructure.importId";"typeSelect";"statusSelect";"company.importId";"variables"
+52;"COSTS";"COSTS";;1;"template";"draft";1;
+53;"RAW MATERIALS";"RAW MATERIALS";52;;"template";"draft";1;"2|6|7|8|9|10"
+54;"WORKFORCE";"WORKFORCE";52;;"template";"draft";1;"1|3|4|5|11"

@@ -1,5 +1,6 @@
 package com.axelor.apps.budget.web;
 
+import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetScenario;
 import com.axelor.apps.budget.service.BudgetScenarioLineService;
 import com.axelor.inject.Beans;
@@ -9,7 +10,14 @@ import java.util.ArrayList;
 
 public class BudgetScenarioLineController {
   public void changeColumnsNames(ActionRequest request, ActionResponse response) {
-    BudgetScenario budgetScenario = request.getContext().getParent().asType(BudgetScenario.class);
+    BudgetScenario budgetScenario;
+    try {
+      budgetScenario = request.getContext().getParent().asType(BudgetScenario.class);
+    } catch (IllegalArgumentException e) {
+      budgetScenario =
+          request.getContext().getParent().asType(BudgetGenerator.class).getBudgetScenario();
+    }
+
     ArrayList<Integer> yearsList =
         Beans.get(BudgetScenarioLineService.class).getFiscalYears(budgetScenario);
 

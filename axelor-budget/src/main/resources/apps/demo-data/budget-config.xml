@@ -19,12 +19,8 @@
     type="com.axelor.apps.budget.db.BudgetScenarioLine" search="self.importId = :importId">
   </input>
 
-  <input file="budget_global_budget_template.csv" separator=";"
-    type="com.axelor.apps.budget.db.GlobalBudgetTemplate" search="self.importId = :importId">
-    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
-      column="fromDate"/>
-    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
-      column="toDate"/>
+  <input file="budget_budget_structure.csv" separator=";"
+    type="com.axelor.apps.budget.db.BudgetStructure" search="self.importId = :importId">
   </input>
 
   <input file="budget_global_budget.csv" separator=";"
@@ -50,10 +46,6 @@
 
   <input file="budget_budget_level_template.csv" separator=";"
     type="com.axelor.apps.budget.db.BudgetLevel" search="self.importId = :importId">
-    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
-      column="fromDate"/>
-    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
-      column="toDate"/>
     <bind column="variables" to="budgetScenarioVariableSet"
       search="self.importId in :variables" eval="variables.split('\\|') as List"/>
   </input>

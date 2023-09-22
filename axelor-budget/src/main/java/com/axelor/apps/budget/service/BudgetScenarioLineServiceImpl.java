@@ -1,13 +1,17 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetScenario;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
+import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.repo.BudgetScenarioLineRepository;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class BudgetScenarioLineServiceImpl implements BudgetScenarioLineService {
@@ -51,5 +55,28 @@ public class BudgetScenarioLineServiceImpl implements BudgetScenarioLineService 
     if (size <= 0) {
       budgetScenarioLine.setYear1Value(BigDecimal.ZERO);
     }
+  }
+
+  @Override
+  public List<BudgetScenarioLine> getLineUsingSection(
+      BudgetLevel section,
+      List<BudgetScenarioLine> budgetScenarioLineOriginList,
+      List<BudgetScenarioLine> budgetScenarioLineList) {
+    if (!ObjectUtils.isEmpty(section.getBudgetScenarioVariableSet())) {
+      for (BudgetScenarioVariable budgetScenarioVariable : section.getBudgetScenarioVariableSet()) {
+        BudgetScenarioLine budgetScenarioLine =
+            budgetScenarioLineOriginList.stream()
+                .filter(line -> budgetScenarioVariable.equals(line.getBudgetScenarioVariable()))
+                .findFirst()
+                .orElse(null);
+        if (budgetScenarioLine != null) {
+          BudgetScenarioLine optLine = budgetScenarioLineRepository.copy(budgetScenarioLine, false);
+          optLine.setBudgetLevel(section);
+          optLine.setParentBudgetLevel(section.getParentBudgetLevel());
+          budgetScenarioLineList.add(optLine);
+        }
+      }
+    }
+    return budgetScenarioLineList;
   }
 }
