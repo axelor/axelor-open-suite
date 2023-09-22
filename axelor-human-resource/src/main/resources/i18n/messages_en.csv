@@ -1002,6 +1002,7 @@
 "There is no year selected for the allowance.",,,
 "This contact is referenced from employee %s - %s",,,
 "This date is invalid. It must be included in the timesheet's period.",,,
+"This expense cannot be created because no project has been filled in and it has been noted as to be billed.",,,
 "Thursday",,,
 "Time %",,,
 "Time Sheet",,,

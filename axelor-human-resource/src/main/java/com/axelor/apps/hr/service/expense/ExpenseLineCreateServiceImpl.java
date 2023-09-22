@@ -60,7 +60,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       MetaFile justificationMetaFile,
       String comments,
       Employee employee,
-      Currency currency)
+      Currency currency,
+      Boolean toInvoice)
       throws AxelorException {
 
     if (expenseProduct == null) {
@@ -70,7 +71,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     }
 
     ExpenseLine expenseLine =
-        createBasicExpenseLine(project, employee, expenseDate, comments, currency);
+        createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
     setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     expenseProofFileService.convertProofFileToPdf(expenseLine);
@@ -90,14 +91,15 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       String comments,
       Employee employee,
       Company company,
-      Currency currency)
+      Currency currency,
+      Boolean toInvoice)
       throws AxelorException {
 
     checkKilometricLineRequiredValues(
         kilometricAllowParam, kilometricType, fromCity, toCity, company);
 
     ExpenseLine expenseLine =
-        createBasicExpenseLine(project, employee, expenseDate, comments, currency);
+        createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
     setKilometricExpenseLineInfo(
         kilometricAllowParam, kilometricType, fromCity, toCity, company, expenseLine);
 
@@ -191,7 +193,12 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   }
 
   protected ExpenseLine createBasicExpenseLine(
-      Project project, Employee employee, LocalDate expenseDate, String comments, Currency currency)
+      Project project,
+      Employee employee,
+      LocalDate expenseDate,
+      String comments,
+      Currency currency,
+      Boolean toInvoice)
       throws AxelorException {
     ExpenseLine expenseLine = new ExpenseLine();
     if (expenseDate.isAfter(appBaseService.getTodayDate(null))) {
