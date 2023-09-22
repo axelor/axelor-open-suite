@@ -64,7 +64,7 @@ public class SaleOrderLineTreeComputationServiceImpl
     setInTaxPrice(saleOrderLine);
   }
 
-  private void setInTaxPrice(SaleOrderLine saleOrderLine) {
+  protected void setInTaxPrice(SaleOrderLine saleOrderLine) {
     BigDecimal exTaxPrice = saleOrderLine.getPrice();
     TaxLine taxLine = saleOrderLine.getTaxLine();
     BigDecimal intaxPrice =
@@ -98,7 +98,7 @@ public class SaleOrderLineTreeComputationServiceImpl
     tree.setTotalPrice(totalPrice);
   }
 
-  private BigDecimal computeTotalCost(List<SaleOrderLineTree> childSaleOrderLineTrees) {
+  protected BigDecimal computeTotalCost(List<SaleOrderLineTree> childSaleOrderLineTrees) {
     List<BigDecimal> totalCosts =
         childSaleOrderLineTrees.stream()
             .map(SaleOrderLineTree::getTotalCost)
@@ -107,7 +107,7 @@ public class SaleOrderLineTreeComputationServiceImpl
     return sumDecimal(totalCosts);
   }
 
-  private BigDecimal computeTotalPrice(List<SaleOrderLineTree> childSaleOrderLineTrees) {
+  protected BigDecimal computeTotalPrice(List<SaleOrderLineTree> childSaleOrderLineTrees) {
     List<BigDecimal> totalPrices =
         childSaleOrderLineTrees.stream()
             .map(SaleOrderLineTree::getTotalPrice)
@@ -116,7 +116,7 @@ public class SaleOrderLineTreeComputationServiceImpl
     return sumDecimal(totalPrices);
   }
 
-  private BigDecimal sumDecimal(List<BigDecimal> decimals) {
+  protected BigDecimal sumDecimal(List<BigDecimal> decimals) {
     return decimals.stream().anyMatch(Objects::isNull)
         ? null
         : decimals.stream().filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
