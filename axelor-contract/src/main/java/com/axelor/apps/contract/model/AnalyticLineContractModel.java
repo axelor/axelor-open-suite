@@ -28,8 +28,7 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
 
   public AnalyticLineContractModel(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
-    // TODO uncomment after merge ticket #66646
-    // super(purchaseOrderLine, purchaseOrder);
+    super(purchaseOrderLine, purchaseOrder);
   }
 
   public AnalyticLineContractModel(
