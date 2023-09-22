@@ -11,13 +11,14 @@
       title="Budget Structure"/>
     <string name="name" title="Name"/>
     <string name="code" title="Code"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
     <date name="fromDate"/>
     <date name="toDate"/>
     <many-to-one name="budgetScenario" title="Budget scenario"
       ref="com.axelor.apps.budget.db.BudgetScenario"/>
     <many-to-many ref="com.axelor.apps.base.db.Year" name="yearSet" title="Years"/>
-    <many-to-one ref="com.axelor.apps.base.db.Year" name="startingYear"
-      title="Starting Year"/>
+    <many-to-one ref="com.axelor.apps.base.db.Year" name="year" title="Year"/>
 
   </entity>
 

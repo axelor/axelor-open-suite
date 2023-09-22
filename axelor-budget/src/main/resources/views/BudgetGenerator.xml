@@ -8,6 +8,7 @@
     <field name="budgetStructure"/>
     <field name="code"/>
     <field name="name" required="true"/>
+    <field name="company"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="budgetScenario"/>
@@ -15,19 +16,18 @@
 
 
   <form model="com.axelor.apps.budget.db.BudgetGenerator" title="Budget Generator"
-    name="budget-generator-form" width="large">
+    name="budget-generator-form" onLoad="action-budget-generator-method-visualize-amounts"
+    width="large">
 
     <panel name="mainPanel" colSpan="12">
       <field name="code" required="true"/>
       <field name="name" required="true"/>
+      <field name="company"/>
       <field name="budgetStructure" domain="self.isScenario IS TRUE"/>
-      <field name="budgetScenario"/>
-      <field name="fromDate" hideIf="!budgetStructure"/>
-      <field name="toDate" hideIf="!budgetStructure"/>
+      <field name="budgetScenario" domain="self.company = :company"/>
       <field name="yearSet" widget="TagSelect" hideIf="!budgetScenario" canNew="false"
         canEdit="false" onSelect="action-budget-generator-attrs-set-year-domain"
         domain="self.company = :budgetScenario.company AND self.typeSelect = 1"/>
-      <field name="startingYear" hideIf="!yearSet" domain="self IN :yearSet"/>
     </panel>
 
     <panel name="linePanel" hidden="true">
@@ -42,8 +42,25 @@
       <button name="visualizeAmountsBtn" title="Previsualize"
         onClick="save,action-budget-generator-method-visualize-amounts"/>
       <button name="generateGlobalBudgetBtn" title="Generate global budget"
-        onClick="save,action-budget-generator-method-generate-global-budget"/>
+        onClick="save,action-budget-generator-method-popup-generate"/>
     </panel>
+  </form>
+
+  <form model="com.axelor.apps.budget.db.BudgetGenerator" title="Generate Global Budget"
+    name="global-budget-generator-form" width="large">
+
+    <panel name="mainPanel" colSpan="12">
+      <field name="year" canNew="false"
+        domain="self.company = :company AND self.typeSelect = 1"/>
+        
+
+      <button name="generateGlobalBudgetBtn" title="Generate global budget"
+        onClick="save,action-budget-generator-method-generate-global-budget" showIf="year"/>
+
+
+    </panel>
+
+
   </form>
 
   <action-attrs name="action-budget-generator-attrs-set-year-domain">
@@ -62,6 +79,10 @@
   <action-method name="action-budget-generator-method-visualize-amounts">
     <call class="com.axelor.apps.budget.web.BudgetGeneratorController"
       method="visualizeAmounts"/>
+  </action-method>
+
+  <action-method name="action-budget-generator-method-popup-generate">
+    <call class="com.axelor.apps.budget.web.BudgetGeneratorController" method="popupView"/>
   </action-method>
 
 </object-views>

@@ -260,8 +260,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected GlobalBudget copyGlobalBudgetTemplate(BudgetGenerator budgetGenerator) {
     GlobalBudget globalBudget =
         new GlobalBudget(budgetGenerator.getCode(), budgetGenerator.getName());
-    globalBudget.setFromDate(budgetGenerator.getFromDate());
-    globalBudget.setToDate(budgetGenerator.getToDate());
+    globalBudget.setFromDate(budgetGenerator.getYear().getFromDate());
+    globalBudget.setToDate(budgetGenerator.getYear().getToDate());
     globalBudget.setCompany(budgetGenerator.getBudgetStructure().getCompany());
     globalBudget.setBudgetTypeSelect(budgetGenerator.getBudgetStructure().getBudgetTypeSelect());
 
@@ -290,6 +290,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     for (BudgetLevel groupBudgetLevel : budgetStructure.getBudgetLevelList()) {
       BudgetLevel optGroupBudgetLevel =
           budgetLevelManagementRepository.copy(groupBudgetLevel, false);
+      optGroupBudgetLevel.setFromDate(budgetGenerator.getYear().getFromDate());
+      optGroupBudgetLevel.setToDate(budgetGenerator.getYear().getToDate());
       optGroupBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
       optGroupBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
       budgetGenerator.getBudgetStructure().removeBudgetLevelListItem(optGroupBudgetLevel);
@@ -302,6 +304,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
           BudgetLevel optSectionBudgetLevel =
               budgetLevelManagementRepository.copy(sectionBudgetLevel, false);
+          optSectionBudgetLevel.setFromDate(budgetGenerator.getYear().getFromDate());
+          optSectionBudgetLevel.setToDate(budgetGenerator.getYear().getToDate());
           optSectionBudgetLevel.setTypeSelect(
               BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
           optSectionBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
@@ -313,6 +317,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           if (!budgetStructure.getIsScenario() && !ObjectUtils.isEmpty(budgetList)) {
             for (Budget budget : budgetList) {
               Budget optBudget = budgetRepository.copy(budget, true);
+              optBudget.setFromDate(budgetGenerator.getYear().getFromDate());
+              optBudget.setToDate(budgetGenerator.getYear().getToDate());
               optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
               optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
               optBudget.setAmountForGeneration(budget.getTotalAmountExpected());
