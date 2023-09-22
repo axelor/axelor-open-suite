@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.production.service.productionorder;
 
-import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE;
-
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -27,10 +25,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.config.ProductionConfigService;
@@ -161,23 +157,9 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
           manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
         }
-        if (saleOrderLine != null) {
-          if (!Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
-            manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
-          }
-          ProductionConfig productionConfig =
-              productionConfigService.getProductionConfig(manufOrder.getCompany());
-          if (productionConfig.getScheduling()
-              == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING) {
-            if (saleOrderLine.getEstimatedShippingDate() == null) {
-              throw new AxelorException(
-                  TraceBackRepository.CATEGORY_INCONSISTENCY,
-                  I18n.get(
-                      YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE),
-                  saleOrderLine.getSequence());
-            }
-            manufOrder.setPlannedEndDateT(saleOrderLine.getEstimatedShippingDate().atStartOfDay());
-          }
+        if (saleOrderLine != null
+            && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
+          manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
       }
       productionOrder.addManufOrderSetItem(manufOrder);
