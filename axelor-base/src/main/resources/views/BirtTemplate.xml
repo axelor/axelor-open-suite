@@ -33,7 +33,7 @@
           </viewer>
           <editor x-show-titles="false" itemSpan="4">
             <field name="name"/>
-            <field name="value"/>
+            <field name="value" widget="CodeEditor" height="60"/>
             <field name="type"/>
           </editor>
         </field>
@@ -106,5 +106,4 @@
     <call method="setStandardReportTemplate"
       class="com.axelor.apps.base.web.BirtTemplateController"/>
   </action-method>
-
 </object-views>

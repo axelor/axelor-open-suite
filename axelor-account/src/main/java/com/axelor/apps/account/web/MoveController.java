@@ -26,7 +26,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -775,7 +775,7 @@ public class MoveController {
   public void applyCutOffDatesInEmptyLines(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
+      MoveCutOffService moveCutOffService = Beans.get(MoveCutOffService.class);
 
       if (request.getContext().get("cutOffStartDate") != null
           && request.getContext().get("cutOffEndDate") != null) {
@@ -784,8 +784,8 @@ public class MoveController {
         LocalDate cutOffEndDate =
             LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
 
-        if (moveComputeService.checkManageCutOffDates(move)) {
-          moveComputeService.applyCutOffDatesInEmptyLines(move, cutOffStartDate, cutOffEndDate);
+        if (moveCutOffService.checkManageCutOffDates(move)) {
+          moveCutOffService.applyCutOffDatesInEmptyLines(move, cutOffStartDate, cutOffEndDate);
 
           response.setValue("moveLineList", move.getMoveLineList());
         }
@@ -862,6 +862,16 @@ public class MoveController {
 
         response.setAttrs(attrsMap);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkPeriodPermission(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      Beans.get(MoveCheckService.class).checkPeriodPermission(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

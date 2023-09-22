@@ -1671,4 +1671,9 @@ public final class AccountExceptionMessage {
 
   public static final String NO_DEPRECIATION_ACCOUNT_FOUND_IN_FIXED_ASSET_CATEGORY = /*$$(*/
       "No depreciation account found in fixed asset category %s." /*)*/;
+
+  public static final String ACCOUNT_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
+      "Fiscal year and periods have been generated successfully." /*)*/;
+  public static final String ACCOUNT_CHART_AND_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
+      "The chart of account has been loaded and fiscal year/periods have been correctly generated." /*)*/;
 }

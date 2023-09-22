@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.KilometricAllowParam;
@@ -55,6 +56,9 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
 
   private String toCity;
 
+  @Min(0)
+  private Long currencyId;
+
   @NotNull
   @Pattern(
       regexp = EXPENSE_LINE_TYPE_GENERAL + "|" + EXPENSE_LINE_TYPE_KILOMETRIC,
@@ -63,6 +67,8 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
 
   @Min(0)
   private Long companyId;
+
+  private Boolean toInvoice;
 
   public Long getProjectId() {
     return projectId;
@@ -184,6 +190,22 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
     this.companyId = companyId;
   }
 
+  public Long getCurrencyId() {
+    return currencyId;
+  }
+
+  public void setCurrencyId(Long currencyId) {
+    this.currencyId = currencyId;
+  }
+
+  public Boolean getToInvoice() {
+    return toInvoice;
+  }
+
+  public void setToInvoice(Boolean toInvoice) {
+    this.toInvoice = toInvoice;
+  }
+
   public Project fetchProject() {
     if (projectId == null || projectId == 0L) {
       return null;
@@ -225,5 +247,12 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
+  }
+
+  public Currency fetchCurrency() {
+    if (currencyId == null || currencyId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
   }
 }

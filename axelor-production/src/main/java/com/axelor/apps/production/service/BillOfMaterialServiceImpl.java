@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -33,7 +32,6 @@ import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
@@ -234,31 +232,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     } while (up != null && deep);
 
     return latestVersion;
-  }
-
-  @Override
-  public String getFileName(BillOfMaterial billOfMaterial) {
-
-    return I18n.get("Bill of Materials")
-        + "-"
-        + billOfMaterial.getName()
-        + ((billOfMaterial.getVersionNumber() > 1) ? "-V" + billOfMaterial.getVersionNumber() : "");
-  }
-
-  @Override
-  public String getReportLink(
-      BillOfMaterial billOfMaterial, String name, String language, String format)
-      throws AxelorException {
-
-    return ReportFactory.createReport(IReport.BILL_OF_MATERIAL, name + "-${date}")
-        .addParam("Locale", language)
-        .addParam(
-            "Timezone",
-            billOfMaterial.getCompany() != null ? billOfMaterial.getCompany().getTimezone() : null)
-        .addParam("BillOfMaterialId", billOfMaterial.getId())
-        .addFormat(format)
-        .generate()
-        .getFileLink();
   }
 
   @Override
