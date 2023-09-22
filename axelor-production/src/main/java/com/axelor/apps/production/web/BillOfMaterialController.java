@@ -28,7 +28,6 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -150,23 +149,6 @@ public class BillOfMaterialController {
         }
       }
     }
-  }
-
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-    BillOfMaterialService billOfMaterialService = Beans.get(BillOfMaterialService.class);
-    String language = ReportSettings.getPrintingLocale(null);
-
-    String name = billOfMaterialService.getFileName(billOfMaterial);
-
-    String fileLink =
-        billOfMaterialService.getReportLink(
-            billOfMaterial, name, language, ReportSettings.FORMAT_PDF);
-
-    LOG.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   public void openBomTree(ActionRequest request, ActionResponse response) {

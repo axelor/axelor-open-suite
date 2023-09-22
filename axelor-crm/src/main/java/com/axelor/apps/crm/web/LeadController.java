@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.crm.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -26,14 +25,12 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
-import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.CrmActivityService;
 import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.LeadDuplicateService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.translation.ITranslation;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -46,81 +43,15 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class LeadController {
 
   // using provider for the injection of a parameterized service
   @Inject private Provider<EmailDomainToolService<Lead>> emailDomainToolServiceProvider;
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  /**
-   * Method to generate Lead as a Pdf
-   *
-   * @param request
-   * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
-   */
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    Lead lead = request.getContext().asType(Lead.class);
-    String leadIds = "";
-
-    @SuppressWarnings("unchecked")
-    List<Integer> lstSelectedleads = (List<Integer>) request.getContext().get("_ids");
-    if (lstSelectedleads != null) {
-      for (Integer it : lstSelectedleads) {
-        leadIds += it.toString() + ",";
-      }
-    }
-
-    if (!leadIds.equals("")) {
-      leadIds = leadIds.substring(0, leadIds.length() - 1);
-      lead = Beans.get(LeadRepository.class).find(new Long(lstSelectedleads.get(0)));
-    } else if (lead.getId() != null) {
-      leadIds = lead.getId().toString();
-    }
-
-    if (!leadIds.equals("")) {
-      String title = " ";
-      if (lead.getFirstName() != null) {
-        title +=
-            lstSelectedleads == null
-                ? "Lead "
-                    + lead.getName()
-                    + " "
-                    + lead.getFirstName()
-                    + " - "
-                    + lead.getEnterpriseName()
-                : "Leads";
-      }
-
-      String fileLink =
-          ReportFactory.createReport(IReport.LEAD, title + "-${date}")
-              .addParam("LeadId", leadIds)
-              .addParam("Timezone", getTimezone(lead))
-              .addParam("Locale", ReportSettings.getPrintingLocale(lead.getPartner()))
-              .generate()
-              .getFileLink();
-
-      logger.debug("Printing " + title);
-
-      response.setView(ActionView.define(title).add("html", fileLink).map());
-
-    } else {
-      response.setInfo(I18n.get(CrmExceptionMessage.LEAD_1));
-    }
-  }
 
   protected String getTimezone(Lead lead) {
     if (lead.getUser() == null || lead.getUser().getActiveCompany() == null) {

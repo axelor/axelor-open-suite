@@ -22,8 +22,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -50,7 +50,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveAttrsService moveAttrsService;
   protected PeriodServiceAccount periodAccountService;
   protected MoveCheckService moveCheckService;
-  protected MoveComputeService moveComputeService;
+  protected MoveCutOffService moveCutOffService;
   protected MoveRecordUpdateService moveRecordUpdateService;
   protected MoveRecordSetService moveRecordSetService;
   protected MoveToolService moveToolService;
@@ -71,7 +71,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveAttrsService moveAttrsService,
       PeriodServiceAccount periodAccountService,
       MoveCheckService moveCheckService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       MoveRecordUpdateService moveRecordUpdateService,
       MoveRecordSetService moveRecordSetService,
       MoveToolService moveToolService,
@@ -89,7 +89,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
     this.moveCheckService = moveCheckService;
-    this.moveComputeService = moveComputeService;
+    this.moveCutOffService = moveCutOffService;
     this.moveRecordUpdateService = moveRecordUpdateService;
     this.moveRecordSetService = moveRecordSetService;
     this.moveToolService = moveToolService;
@@ -214,7 +214,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
   @Override
   public Map<String, Object> getOnLoadValuesMap(Move move) throws AxelorException {
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     valuesMap.put(
         "$validatePeriod",
@@ -240,16 +240,18 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      moveCheckService.checkPeriodPermission(move);
       moveRecordSetService.setPeriod(move);
     }
+
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
     moveRecordSetService.setOriginDate(move);
 
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+
+    this.addPeriodDummyFields(move, valuesMap);
 
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("dueDate", move.getDueDate());
@@ -371,7 +373,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getMoveLineListOnChangeValuesMap(
       Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -630,7 +632,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveLineTaxService.autoTaxLineGenerateNoSave(move);
     moveCounterPartService.generateCounterpartMoveLine(move, dueDate);
 
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     valuesMap.put("moveLineList", move.getMoveLineList());
 
@@ -641,7 +643,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getGenerateTaxLinesOnClickValuesMap(Move move) throws AxelorException {
     moveLineTaxService.autoTaxLineGenerateNoSave(move);
 
-    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+    Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     valuesMap.put("moveLineList", move.getMoveLineList());
 
@@ -652,7 +654,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getApplyCutOffDatesOnClickValuesMap(
       Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) throws AxelorException {
     moveCheckService.checkManageCutOffDates(move);
-    moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
+    moveCutOffService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
 
     Map<String, Object> valuesMap = new HashMap<>();
 

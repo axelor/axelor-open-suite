@@ -274,9 +274,27 @@ public final class HumanResourceExceptionMessage {
   public static final String MEDICAL_VISIT_CANCEL_WRONG_STATUS = /*$$(*/
       "Can only cancel planned or realized medical visit." /*)*/;
 
+  public static final String EXPENSE_BIRT_TEMPLATE_MISSING = /*$$(*/
+      "Please configure a birt template for expense report." /*)*/;
+
   public static final String EXPENSE_ADD_LINE_WRONG_STATUS = /*$$(*/
       "Can only add expense line to drafted expense." /*)*/;
 
   public static final String EXPENSE_LINE_VALIDATE_TOTAL_AMOUNT = /*$$(*/
       "The expense line amount exceeds the authorized limit of %s. Please correct the amount or request the intervention of an HR manager." /*)*/;
+
+  public static final String EXPENSE_LINE_CURRENCY_NOT_EQUAL = /*$$(*/
+      "Not all expenses are in the same currency. You can only create or add lines to an expense report when they have the same currency." /*)*/;
+
+  public static final String EXPENSE_LINE_JUSTIFICATION_FILE_NOT_CORRECT_FORMAT = /*$$(*/
+      "The file is not a PDF nor an image. Please keep the original document." /*)*/;
+
+  public static final String EXPENSE_JUSTIFICATION_FILE_MISSING = /*$$(*/
+      "Some lines do not have a justification file. Do you want to proceed ?" /*)*/;
+
+  public static final String EXPENSE_LIMIT_EXCEEDED = /*$$(*/
+      "The expense limit has been exceeded for the period %s to %s" /*)*/;
+
+  public static final String EXPENSE_LINE_NO_PROJECT = /*$$(*/
+      "This expense cannot be created because no project has been filled in and it has been noted as to be billed." /*)*/;
 }
