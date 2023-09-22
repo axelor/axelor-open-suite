@@ -5,7 +5,7 @@
 "4";"Employee";"Employee.rptdesign";"com.axelor.apps.hr.db.Employee";1;"pdf"
 "5";"Expense";"Expense.rptdesign";"com.axelor.apps.hr.db.Expense";1;"pdf"
 "6";"Inventory";"Inventory.rptdesign";"com.axelor.apps.stock.db.Inventory";1;"pdf"
-"7";"Invoice";"Invoice.rptdesign";"com.axelor.apps.account.db.Invoice";1;"pdf"
+"7";"Invoice";"Invoice.rptdesign";"com.axelor.apps.account.db.Invoice";2;"pdf"
 "8";"Lead";"Lead.rptdesign";"com.axelor.apps.crm.db.Lead";1;"pdf"
 "9";"ManufOrder";"ManufOrder.rptdesign";"com.axelor.apps.production.db.ManufOrder";1;"pdf"
 "10";"Journal des encaissements";"AccountingReportType1.rptdesign";"com.axelor.apps.account.db.AccountingReport";1;"pdf"
