@@ -155,6 +155,4 @@ public interface TimesheetService {
   Timesheet getOrCreateOpenTimesheet(Employee employee, LocalDate date) throws AxelorException;
 
   Timesheet getDraftTimesheet(Employee employee, LocalDate date);
-
-  Timesheet save(Timesheet timesheet);
 }

@@ -28,7 +28,7 @@ public final class BusinessProductionExceptionMessage {
       "There are timesheet still waiting validation on this manuf order, do you want to continue anyway ?" /*)*/;
 
   public static final String EMPLOYEE_TIME_PREFERENCE_INVALID_VALUE = /*$$(*/
-      "Time preference for employee %s is not yet take into account for duration computation" /*)*/;
+      "Time logging preference for employee %s is not yet taken into account for duration computation" /*)*/;
 
   public static final String WORKING_USERS_HAVE_NO_EMPLOYEE = /*$$(*/
       "Some working users have no employee associated, therefore no timesheet line will be generated for those, do you want to continue anyway ?" /*)*/;

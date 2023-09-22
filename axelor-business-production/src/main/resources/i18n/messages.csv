@@ -18,7 +18,7 @@
 "Some working users have no employee associated, therefore no timesheet line will be generated for those, do you want to continue anyway ?",,,
 "There are timesheet still waiting validation on this manuf order, do you want to continue anyway ?",,,
 "There are timesheet still waiting validation on this operation order, do you want to continue anyway ?",,,
-"Time preference for employee %s is not yet take into account for duration computation",,,
+"Time logging preference for employee %s is not yet taken into account for duration computation",,,
 "Timesheet Line",,,
 "Timesheet Lines",,,
 "Timesheet imputed on",,,

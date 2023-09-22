@@ -82,7 +82,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @return
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<OperationOrder> resetPlannedDates(List<OperationOrder> operationOrderList) {
     for (OperationOrder operationOrder : operationOrderList) {
       operationOrder.setPlannedStartDateT(null);
@@ -99,7 +99,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param operationOrder An operation order
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void plan(OperationOrder operationOrder) throws AxelorException {
     operationOrderPlanningService.plan(operationOrder, null);
   }
@@ -110,7 +110,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param operationOrder An operation order
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void replan(OperationOrder operationOrder) throws AxelorException {
     operationOrderPlanningService.replan(operationOrder);
   }
@@ -198,7 +198,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void pause(OperationOrder operationOrder, User user) throws AxelorException {
 
     stopOperationOrderDuration(operationOrder, AuthUtils.getUser());
@@ -217,7 +217,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param operationOrder An operation order
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void resume(OperationOrder operationOrder) {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 

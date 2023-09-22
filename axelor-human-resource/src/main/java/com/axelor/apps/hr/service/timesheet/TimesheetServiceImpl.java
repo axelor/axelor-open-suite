@@ -1238,10 +1238,4 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     }
     return projectIdsSet;
   }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public Timesheet save(Timesheet timesheet) {
-    return timeSheetRepository.save(timesheet);
-  }
 }

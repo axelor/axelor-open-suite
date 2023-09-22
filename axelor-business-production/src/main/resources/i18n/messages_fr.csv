@@ -18,7 +18,7 @@
 "Some working users have no employee associated, therefore no timesheet line will be generated for those, do you want to continue anyway ?","Certains utilisateurs actifs n'ont aucun employé associé, donc aucune ligne de feuille de temps ne sera générée pour ces derniers, souhaitez-vous quand même continuer ?",,
 "There are timesheet still waiting validation on this manuf order, do you want to continue anyway ?","Il y a des feuilles de temps en attente de validation sur cet OF, voulez vous quand même continuer ?",,
 "There are timesheet still waiting validation on this operation order, do you want to continue anyway ?","Il y a des feuilles de temps en attente de validation sur cet opération, voulez vous quand même continuer ?",,
-"Time preference for employee %s is not yet take into account for duration computation",,,
+"Time logging preference for employee %s is not yet taken into account for duration computation","La préférence d'unité de saisie de temps de l'employé %s n'est pas prise en compte pour le calcul de durée",,
 "Timesheet Line","Ligne de feuille de temps",,
 "Timesheet Lines","Lignes de feuille de temps",,
 "Timesheet imputed on","Feuilles de temps imputées sur",,
