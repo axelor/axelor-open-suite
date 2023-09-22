@@ -840,8 +840,6 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   public Budget resetBudget(Budget entity) {
 
-    entity.setCode(entity.getCode() + " (" + I18n.get("copy") + ")");
-
     entity.setStatusSelect(BudgetRepository.STATUS_DRAFT);
     entity.setArchived(false);
 

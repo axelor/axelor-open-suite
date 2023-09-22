@@ -20,7 +20,7 @@
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
     name="global-budget-form" width="large" onNew="action-global-budget-record-set-defaults"
-    onSave="action-global-budget-group-onsave" canCopy="false">
+    onSave="action-global-budget-group-onsave" >
 
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
@@ -52,7 +52,7 @@
           <button name="updateDatesBtn" colSpan="2" title="Update dates"
             onClick="save,action-global-budget-method-set-dates"
             readonlyIf="fromDate == null || toDate == null"/>
-          <field name="budgetTypeSelect" colSpan="4" readonly="true"/>
+          <field name="budgetTypeSelect" colSpan="4"/>
           <field name="companyDepartment" colSpan="4" showIf="company"
             domain="self.company = :company OR self.company IS NULL"/>
           <field name="budgetManager" colSpan="4" showIf="company"
