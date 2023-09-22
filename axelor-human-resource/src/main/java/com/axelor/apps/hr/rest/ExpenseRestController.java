@@ -1,7 +1,6 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.rest.dto.ExpensePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpensePutRequest;
@@ -56,10 +55,7 @@ public class ExpenseRestController {
                 requestBody.getCompanyCbSelect(),
                 requestBody.fetchExpenseLines());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        Beans.get(ResponseComputeService.class).compute(expense),
-        new ExpenseResponse(expense));
+    return ResponseConstructor.buildCreateResponse(expense, new ExpenseResponse(expense));
   }
 
   @Operation(
