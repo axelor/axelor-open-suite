@@ -27,6 +27,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ExpenseLineServiceImpl implements ExpenseLineService {
@@ -63,8 +64,10 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
 
     // removing expense from one O2M also remove the link
     for (ExpenseLine expenseLine : expenseLineList) {
-      if (!kilometricExpenseLineList.contains(expenseLine)
-          && !generalExpenseLineList.contains(expenseLine)) {
+      if ((CollectionUtils.isEmpty(kilometricExpenseLineList)
+              || !kilometricExpenseLineList.contains(expenseLine))
+          && (CollectionUtils.isEmpty(generalExpenseLineList)
+              || !generalExpenseLineList.contains(expenseLine))) {
         expenseLine.setExpense(null);
         expenseLineRepository.remove(expenseLine);
       }
