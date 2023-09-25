@@ -374,7 +374,7 @@ public class MoveLineController {
       if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
         readonly = true;
       }
-      if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
+      if (moveLine.getAccount() != null && !moveLine.getAccount().getUseForPartnerBalance()) {
         readonly = true;
       }
       response.setAttr("partner", "readonly", readonly);
