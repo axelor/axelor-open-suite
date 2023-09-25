@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Move" lang="java">
+  <entity sequential="true" name="Move">
 
     <boolean name="budgetDistributionGenerated" title="Budget distribution generated"/>
 

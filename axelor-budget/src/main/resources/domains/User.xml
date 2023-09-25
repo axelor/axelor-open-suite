@@ -5,7 +5,7 @@
 
   <module name="auth" package="com.axelor.auth.db"/>
 
-  <entity name="User" sequential="true" lang="java">
+  <entity name="User" sequential="true">
     <many-to-one name="companyDepartment"
       ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department"/>
   </entity>
