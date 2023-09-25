@@ -309,10 +309,10 @@
         <field name="originDate"/>
       </panel>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
-        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
+        grid-view="partner-grid" onSelect="action-account-move-line-partner-group" canEdit="false"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
-        onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
+        onChange="action-account-move-line-account-group-on-change"/>
       <field name="debit"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange"
@@ -478,7 +478,7 @@
         readonlyIf="amountPaid &gt; 0"
         onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-move-line-attrs-domain-partner"
+        onSelect="action-account-move-line-partner-group"
         onChange="action-move-line-record-reset-partner-details" canEdit="false"
         readonlyIf="amountPaid &gt; 0"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
