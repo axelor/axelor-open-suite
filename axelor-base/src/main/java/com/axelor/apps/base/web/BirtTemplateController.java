@@ -18,9 +18,13 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,7 +33,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class BirtTemplateController {
 
-  public void setStandardReportTemplate(ActionRequest request, ActionResponse response) {
+  public void setStandardReportTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     try {
       String birtTemplateId = request.getContext().get("_birtId").toString();
       String templateName = (String) request.getContext().get("templateFileName");
@@ -40,6 +45,9 @@ public class BirtTemplateController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.THE_FILE_COULD_NOT_BE_GENERATED));
     }
   }
 }

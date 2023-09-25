@@ -1,0 +1,3 @@
+---
+title: "BirtTemplate: fix exception management if the rptdesign file is incorrect"
+type: fix
