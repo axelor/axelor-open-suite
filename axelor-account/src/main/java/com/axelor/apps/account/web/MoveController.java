@@ -416,9 +416,11 @@ public class MoveController {
 
       boolean paymentConditionChange =
           this.getChangeDummyBoolean(context, "paymentConditionChange");
+      boolean dateChange = this.getChangeDummyBoolean(context, "dateChange");
       boolean headerChange = this.getChangeDummyBoolean(context, "headerChange");
 
-      Beans.get(MoveGroupService.class).onSave(move, paymentConditionChange, headerChange);
+      Beans.get(MoveGroupService.class)
+          .onSave(move, paymentConditionChange, dateChange, headerChange);
 
       response.setReload(true);
     } catch (Exception e) {

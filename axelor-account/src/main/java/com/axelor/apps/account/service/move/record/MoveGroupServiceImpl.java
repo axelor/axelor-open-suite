@@ -121,7 +121,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void onSave(Move move, boolean paymentConditionChange, boolean headerChange)
+  public void onSave(
+      Move move, boolean paymentConditionChange, boolean dateChange, boolean headerChange)
       throws AxelorException {
     moveRecordUpdateService.updatePartner(move);
 
@@ -132,7 +133,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
           move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
     }
 
-    moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange);
+    moveRecordUpdateService.updateInvoiceTerms(
+        move, paymentConditionChange || dateChange, headerChange);
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
 
     moveRepository.save(move);
