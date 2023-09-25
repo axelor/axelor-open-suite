@@ -90,12 +90,10 @@ public class BatchInvoicingProjectService extends AbstractBatch {
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
-                    project.getId()),
-                e),
-            ExceptionOriginRepository.INVOICE_ORIGIN,
+            e,
+            String.format(
+                I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
+                project.getId()),
             batch.getId());
       }
     }
