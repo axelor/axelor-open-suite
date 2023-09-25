@@ -55,6 +55,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       PurchaseOrderService purchaseOrderService,
       AppBaseService appBaseService,
       OperationOrderService operationOrderService,
+      AppProductionService appProductionService,
       ProductionConfigService productionConfigService) {
     super(
         operationOrderWorkflowService,
@@ -66,6 +67,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         purchaseOrderService,
         appBaseService,
         operationOrderService,
+        appProductionService,
         productionConfigService);
   }
 

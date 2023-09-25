@@ -40,6 +40,9 @@
           widget="boolean-switch"/>
         <field name="enableTimesheetOnManufOrder" widget="boolean-switch"
           if-module="axelor-business-production" showIf="manageBusinessProduction"/>
+        <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
+          widget="boolean-switch"
+          showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
         <field name="operationContinuitySelect"/>
       </panel>
       <panel name="barcodeTypeConfigPanel">
@@ -60,6 +63,7 @@
           domain="self.costTypeSelect = 2"/>
         <field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom"
           widget="boolean-switch"/>
+        <field name="isCostPerProcessLine" widget="boolean-switch"/>
       </panel>
       <panel name="printingPanel" title="Printings">
         <field name="printPlannedDateOnManufOrder"/>

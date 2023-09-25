@@ -6,11 +6,11 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLineResponse;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
-import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,6 +46,7 @@ public class ExpenseLineRestController {
     Employee employee = requestBody.fetchEmployee();
     String comments = requestBody.getComments();
     String expenseLineType = requestBody.getExpenseLineType();
+    Boolean toInvoice = requestBody.getToInvoice();
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
@@ -58,7 +59,8 @@ public class ExpenseLineRestController {
               requestBody.fetchjustificationMetaFile(),
               comments,
               employee,
-              requestBody.fetchCurrency());
+              requestBody.fetchCurrency(),
+              toInvoice);
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
@@ -74,12 +76,15 @@ public class ExpenseLineRestController {
               comments,
               employee,
               requestBody.fetchCompany(),
-              requestBody.fetchCurrency());
+              requestBody.fetchCurrency(),
+              toInvoice);
     }
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Expense line successfully created.",
-        new ExpenseLineResponse(expenseLine));
+    return Beans.get(ExpenseLineResponseComputeService.class)
+        .computeCreateResponse(
+            expenseLine,
+            requestBody.fetchProject(),
+            requestBody.getToInvoice(),
+            new ExpenseLineResponse(expenseLine));
   }
 }

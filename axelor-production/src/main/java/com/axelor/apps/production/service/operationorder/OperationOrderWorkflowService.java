@@ -72,8 +72,9 @@ public interface OperationOrderWorkflowService {
    * Pauses the given {@link OperationOrder} and sets its pausing time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
-  void pause(OperationOrder operationOrder);
+  void pause(OperationOrder operationOrder) throws AxelorException;
 
   /**
    * Resumes the given {@link OperationOrder} and sets its resuming time
@@ -112,8 +113,9 @@ public interface OperationOrderWorkflowService {
    * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
-  void stopOperationOrderDuration(OperationOrder operationOrder);
+  void stopOperationOrderDuration(OperationOrder operationOrder) throws AxelorException;
 
   boolean canStartOperationOrder(OperationOrder operationOrder);
 
@@ -123,8 +125,9 @@ public interface OperationOrderWorkflowService {
    * operationOrderDuration of the user.
    *
    * @param operationOrder
+   * @throws AxelorException
    */
-  void pause(OperationOrder operationOrder, User user);
+  void pause(OperationOrder operationOrder, User user) throws AxelorException;
 
   /**
    * Ends the last {@link OperationOrderDuration} started by User and sets the real duration of
@@ -132,8 +135,9 @@ public interface OperationOrderWorkflowService {
    * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
    *
    * @param operationOrder An operation order @Param user
+   * @throws AxelorException
    */
-  void stopOperationOrderDuration(OperationOrder operationOrder, User user);
+  void stopOperationOrderDuration(OperationOrder operationOrder, User user) throws AxelorException;
 
   /**
    * Mostly work the same as finish method. But it will only finish (by stopping) operation order
@@ -147,5 +151,5 @@ public interface OperationOrderWorkflowService {
 
   void start(OperationOrder operationOrder, User user) throws AxelorException;
 
-  void stopOperationOrderDuration(OperationOrderDuration duration);
+  void stopOperationOrderDuration(OperationOrderDuration duration) throws AxelorException;
 }

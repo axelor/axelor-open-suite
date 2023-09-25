@@ -23,7 +23,8 @@ public interface ExpenseLineCreateService {
       MetaFile justificationMetaFile,
       String comments,
       Employee employee,
-      Currency currency)
+      Currency currency,
+      Boolean toInvoice)
       throws AxelorException;
 
   ExpenseLine createKilometricExpenseLine(
@@ -37,6 +38,7 @@ public interface ExpenseLineCreateService {
       String comments,
       Employee employee,
       Company company,
-      Currency currency)
+      Currency currency,
+      Boolean toInvoice)
       throws AxelorException;
 }

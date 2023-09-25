@@ -32,9 +32,7 @@
   </grid>
 
   <form name="employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee"
-    width="large"
-    onLoad="action-employee-method-set-social-network-url,action-attrs-employee-step-by-step-select-selection-in"
-    onNew="action-employee-record-default,action-attrs-employee-step-by-step-select-selection-in">
+    width="large" onLoad="action-group-employee-on-load" onNew="action-group-employee-on-new">
 
     <toolbar>
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id"
@@ -194,14 +192,16 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')"
       showIf="stepByStepSelect == 3">
-      <field name="timeLoggingPreferenceSelect" colSpan="3"/>
+      <field name="timeLoggingPreferenceSelect" colSpan="3"
+        validIf="(timesheetImputationSelect == 2 &amp;&amp; timeLoggingPreferenceSelect != 'days') || timesheetImputationSelect != 2"/>
       <field name="product" canEdit="false" colSpan="3"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
         grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
       <field name="timesheetImputationSelect" colSpan="3"
         if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
-        if-module="axelor-business-production"/>
+        if-module="axelor-business-production"
+        onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
 
@@ -420,14 +420,16 @@
       </panel>
 
       <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
-        <field name="timeLoggingPreferenceSelect" colSpan="3"/>
+        <field name="timeLoggingPreferenceSelect" colSpan="3"
+          validIf="(timesheetImputationSelect == 2 &amp;&amp; timeLoggingPreferenceSelect != 'days') || timesheetImputationSelect != 2"/>
         <field name="product" canEdit="false" colSpan="3"
           domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
           grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
         <field name="timesheetImputationSelect" colSpan="3"
           if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
-          if-module="axelor-business-production"/>
+          if-module="axelor-business-production"
+          onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
 
         <panel-dashlet name="employeeUserTimesheetsPanel"
           action="action-employee-view-user-timesheets" colSpan="12"/>
@@ -542,6 +544,13 @@
     model="com.axelor.apps.hr.db.Employee">
     <field name="stepByStepSelect" expr="eval: stepByStepSelect - 1"/>
   </action-record>
+
+  <action-attrs name="action-employee-attrs-timesheet-imputation-select-selection-in">
+    <attribute name="selection-in" for="timeLoggingPreferenceSelect"
+      expr="eval:['hours', 'minutes']" if="timesheetImputationSelect == 2"/>
+    <attribute name="selection-in" for="timeLoggingPreferenceSelect"
+      expr="eval:['days','hours','minutes']" if="timesheetImputationSelect != 2"/>
+  </action-attrs>
 
   <action-record name="action-employee-record-next-step"
     model="com.axelor.apps.hr.db.Employee">
@@ -709,6 +718,18 @@
       if="user == null"/>
     <attribute name="selection-in" for="stepByStepSelect" expr="eval: [1, 2, 3]" if="user"/>
   </action-attrs>
+
+  <action-group name="action-group-employee-on-load">
+    <action name="action-employee-method-set-social-network-url"/>
+    <action name="action-attrs-employee-step-by-step-select-selection-in"/>
+    <action name="action-employee-attrs-timesheet-imputation-select-selection-in"/>
+  </action-group>
+
+  <action-group name="action-group-employee-on-new">
+    <action name="action-employee-record-default"/>
+    <action name="action-attrs-employee-step-by-step-select-selection-in"/>
+    <action name="action-employee-attrs-timesheet-imputation-select-selection-in"/>
+  </action-group>
 
   <action-view name="action-employee-user-show-employee" title="Employee"
     model="com.axelor.apps.hr.db.Employee">

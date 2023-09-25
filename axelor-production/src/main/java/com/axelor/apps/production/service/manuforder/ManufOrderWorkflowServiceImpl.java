@@ -94,6 +94,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected PurchaseOrderService purchaseOrderService;
   protected AppBaseService appBaseService;
   protected OperationOrderService operationOrderService;
+  protected AppProductionService appProductionService;
   protected ProductionConfigService productionConfigService;
 
   @Inject
@@ -107,6 +108,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       PurchaseOrderService purchaseOrderService,
       AppBaseService appBaseService,
       OperationOrderService operationOrderService,
+      AppProductionService appProductionService,
       ProductionConfigService productionConfigService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
@@ -117,6 +119,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.purchaseOrderService = purchaseOrderService;
     this.appBaseService = appBaseService;
     this.operationOrderService = operationOrderService;
+    this.appProductionService = appProductionService;
     this.productionConfigService = productionConfigService;
   }
 
@@ -268,8 +271,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
-  public void pause(ManufOrder manufOrder) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void pause(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
@@ -283,7 +286,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void resume(ManufOrder manufOrder) {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -329,7 +332,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
               && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
             operationOrderWorkflowService.start(operationOrder);
           }
-
           operationOrderWorkflowService.finish(operationOrder);
         }
       }
@@ -674,11 +676,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT));
     }
 
-    WorkCenter workCenter = operationOrder.getWorkCenter();
-
-    if (ObjectUtils.notEmpty(workCenter) && ObjectUtils.notEmpty(workCenter.getHrProduct())) {
-
-      Product product = workCenter.getHrProduct();
+    Product product = getHrProduct(operationOrder);
+    if (product != null) {
       Unit purchaseUnit = product.getPurchasesUnit();
       Unit stockUnit = product.getUnit();
 
@@ -694,7 +693,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           unitConversionService.convert(
               startUnit,
               endUnit,
-              new BigDecimal(workCenter.getHrDurationPerCycle())
+              new BigDecimal(operationOrder.getWorkCenter().getHrDurationPerCycle())
                   .divide(BigDecimal.valueOf(3600), COMPUTATION_SCALE, RoundingMode.HALF_UP),
               appBaseService.getNbDecimalDigitForQty(),
               product);
@@ -708,6 +707,24 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
       purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
     }
+  }
+
+  protected Product getHrProduct(OperationOrder operationOrder) {
+    boolean isCostPerProcessLine = appProductionService.getIsCostPerProcessLine();
+
+    if (isCostPerProcessLine) {
+      ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+      if (prodProcessLine != null && prodProcessLine.getHrProduct() != null) {
+        return prodProcessLine.getHrProduct();
+      }
+    } else {
+      WorkCenter workCenter = operationOrder.getWorkCenter();
+      if (workCenter != null && workCenter.getHrProduct() != null) {
+        return workCenter.getHrProduct();
+      }
+    }
+
+    return null;
   }
 
   protected PurchaseOrder setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)

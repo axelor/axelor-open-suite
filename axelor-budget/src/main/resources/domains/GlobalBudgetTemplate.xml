@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module package="com.axelor.apps.budget.db" name="budget"/>
+
+  <entity name="GlobalBudgetTemplate">
+
+    <string name="code" title="Code"/>
+    <string name="name" title="Name"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
+    <integer name="budgetTypeSelect" selection="global.budget.budget.type.select"
+      default="4" title="Budget type select"/>
+
+    <many-to-one name="budgetScenario" title="Budget scenario"
+      ref="com.axelor.apps.budget.db.BudgetScenario"/>
+
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+    <boolean name="isScenario" title="Scenario"/>
+
+    <one-to-many name="budgetLevelList" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Budget Level" mappedBy="globalBudgetTemplate"/>
+
+    <extra-code>
+            <![CDATA[
+            //budget level budget type select
+				public static final int GLOBAL_BUDGET_TEMPLATE_BUDGET_TYPE_SELECT_PURCHASE = 1;
+				public static final int GLOBAL_BUDGET_TEMPLATE_BUDGET_TYPE_SELECT_SALE = 2;
+				public static final int GLOBAL_BUDGET_TEMPLATE_BUDGET_TYPE_SELECT_INVESTMENT = 3;
+				public static final int GLOBAL_BUDGET_TEMPLATE_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT = 4;
+	      ]]>
+    </extra-code>
+
+  </entity>
+
+</domain-models>

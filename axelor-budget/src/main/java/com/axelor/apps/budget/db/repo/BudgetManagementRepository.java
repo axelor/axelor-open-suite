@@ -19,7 +19,7 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 
@@ -29,22 +29,21 @@ public class BudgetManagementRepository extends BudgetRepository {
   public Budget save(Budget entity) {
     entity.setAvailableAmount(
         (entity
-                        .getTotalAmountExpected()
-                        .subtract(entity.getRealizedWithPo())
-                        .subtract(entity.getRealizedWithNoPo()))
-                    .compareTo(BigDecimal.ZERO)
-                > 0
-            ? entity
                 .getTotalAmountExpected()
                 .subtract(entity.getRealizedWithPo())
-                .subtract(entity.getRealizedWithNoPo())
-            : BigDecimal.ZERO);
+                .subtract(entity.getRealizedWithNoPo()))
+            .max(BigDecimal.ZERO));
 
-    BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
+    entity.setAvailableAmountWithSimulated(
+        entity.getAvailableAmount().subtract(entity.getSimulatedAmount()).max(BigDecimal.ZERO));
 
+    GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
+    if (entity.getBudgetLevel() != null && entity.getBudgetLevel().getParentBudgetLevel() != null) {
+      entity.setGlobalBudget(entity.getBudgetLevel().getParentBudgetLevel().getGlobalBudget());
+    }
     entity = super.save(entity);
 
-    budgetLevelService.computeBudgetLevelTotals(entity);
+    globalBudgetService.computeBudgetLevelTotals(entity);
 
     return entity;
   }
