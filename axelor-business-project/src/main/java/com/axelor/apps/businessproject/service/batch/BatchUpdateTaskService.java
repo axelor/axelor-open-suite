@@ -97,16 +97,14 @@ public class BatchUpdateTaskService extends AbstractBatch {
       findBatch();
       for (ProjectTask projectTask : taskList) {
         try {
-          projectTask = projectTaskBusinessProjectService.setProjectTaskValues(projectTask);
+          projectTaskBusinessProjectService.setProjectTaskValues(projectTask);
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1),
-                      projectTask.getId()),
-                  e),
-              "task",
+              e,
+              String.format(
+                  I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1),
+                  projectTask.getId()),
               batch.getId());
         }
       }

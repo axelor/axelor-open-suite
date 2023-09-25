@@ -19,7 +19,6 @@
 package com.axelor.apps.businessproject.service.batch;
 
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -91,12 +90,10 @@ public class BatchInvoicingProjectService extends AbstractBatch {
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
-                    project.getId()),
-                e),
-            ExceptionOriginRepository.INVOICE_ORIGIN,
+            e,
+            String.format(
+                I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
+                project.getId()),
             batch.getId());
       }
     }
