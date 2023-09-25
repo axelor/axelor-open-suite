@@ -8,6 +8,7 @@
     search="self.product.code = :Product_code and self.unitCostCalculation.id = :_unitCostCalculation"
     update="true">
     <bind to="costToApply" column="Cost_to_apply"/>
+    <bind to="computedCost" column="Computed_cost"/>
   </input>
 
 </csv-inputs>
