@@ -5,7 +5,7 @@
 
   <module package="com.axelor.apps.budget.db" name="budget"/>
 
-  <entity name="VersionExpectedAmountsLine" lang="java">
+  <entity name="VersionExpectedAmountsLine">
     <many-to-one name="budgetVersion" ref="com.axelor.apps.budget.db.BudgetVersion"
       title="Budget Version" readonly="true"/>
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"
