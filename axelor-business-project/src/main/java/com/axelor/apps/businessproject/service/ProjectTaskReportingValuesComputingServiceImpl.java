@@ -390,7 +390,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       case ProjectRepository.COMPUTATION_METHOD_EMPLOYEE:
         unitCost = getAverageHourCostFromTimesheetLines(projectTask);
 
-        if (timeUnit.equals(daysUnit)) {
+        if (daysUnit.equals(timeUnit)) {
           unitCost = unitCost.multiply(defaultHoursADay);
         }
         break;
@@ -489,9 +489,9 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       return convertedProductPrice;
     }
 
-    if (projectTaskUnit.equals(daysUnit) && product.getUnit().equals(hoursUnit)) {
+    if (daysUnit.equals(projectTaskUnit) && hoursUnit.equals(product.getUnit())) {
       convertedProductPrice = convertedProductPrice.multiply(defaultHoursADay);
-    } else if (projectTaskUnit.equals(hoursUnit) && product.getUnit().equals(daysUnit)) {
+    } else if (hoursUnit.equals(projectTaskUnit) && daysUnit.equals(product.getUnit())) {
       convertedProductPrice =
           convertedProductPrice.divide(defaultHoursADay, RESULT_SCALE, RoundingMode.HALF_UP);
     }

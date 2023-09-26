@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -38,13 +39,15 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      ProductionConfigService productionConfigService) {
     super(
         unitConversionService,
         productionOrderService,
         productionOrderRepo,
         appProductionService,
-        billOfMaterialService);
+        billOfMaterialService,
+        productionConfigService);
   }
 
   @Override

@@ -228,7 +228,6 @@ public class InvoicePaymentController {
           Beans.get(InvoicePaymentToolService.class).changeAmount(invoicePayment, invoiceId);
 
       response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
-
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

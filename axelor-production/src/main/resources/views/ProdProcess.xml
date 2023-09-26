@@ -23,7 +23,7 @@
 
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-production-process-print"/>
+        onClick="save,action-method-print-birt"/>
       <button name="newVersionBtn" title="Generate new version"
         if="__config__.app.getApp('production')?.manageProdProcessVersion"
         onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
@@ -184,10 +184,6 @@
   <action-method name="action-prod-process-method-change-prodprocesslist-outsourcing">
     <call class="com.axelor.apps.production.web.ProdProcessController"
       method="changeProdProcessListOutsourcing"/>
-  </action-method>
-
-  <action-method name="action-production-process-print">
-    <call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
   </action-method>
 
   <action-method name="action-production-process-check-other-version">

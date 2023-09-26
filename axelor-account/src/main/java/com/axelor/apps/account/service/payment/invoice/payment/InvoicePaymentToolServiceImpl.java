@@ -462,7 +462,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
         invoicePayment.clearInvoiceTermPaymentList();
         invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-            invoicePayment, invoiceTerms, amount);
+            invoicePayment, invoiceTerms, amount, amount);
 
         this.computeFinancialDiscount(invoicePayment);
       }
@@ -524,7 +524,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       }
       invoicePayment.clearInvoiceTermPaymentList();
       invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-          invoicePayment, invoiceTerms, invoicePayment.getAmount());
+          invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
 
       this.computeFinancialDiscount(invoicePayment);
 

@@ -21,6 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.db.Model;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,4 +32,7 @@ public interface PrintFromBirtTemplateService {
   public <T extends Model> String getPrintFileLink(
       List<Integer> idList, Class<T> contextClass, BirtTemplate birtTemplate)
       throws IOException, AxelorException;
+
+  <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
+      throws AxelorException, IOException;
 }

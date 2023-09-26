@@ -5,7 +5,7 @@
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrderLine" lang="java">
+  <entity name="PurchaseOrderLine">
 
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"/>
     <one-to-many name="budgetDistributionList"

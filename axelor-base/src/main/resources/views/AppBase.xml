@@ -163,6 +163,10 @@
         <field name="contactPhoneBookBirtTemplate"/>
         <field name="productCatalogPGQLBirtTemplate"/>
       </panel>
+      <panel name="signaturePanel" title="Signature">
+        <field name="pfxCertificate" canNew="true" canEdit="true"
+          form-view="pfx-certificate-form"/>
+      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

@@ -24,6 +24,7 @@
       <field name="isAlertManufOrderFinish" widget="boolean-switch"/>
       <field name="displayTaskColumnInPrinting" widget="boolean-switch"/>
       <field name="displayActivityColumnInPrinting" widget="boolean-switch"/>
+      <field name="dailyLimit"/>
     </panel>
 
     <panel-mail name="mailPanel">
