@@ -33,6 +33,7 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppCrm;
 import com.axelor.studio.db.repo.AppRepository;
@@ -54,9 +55,16 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsStudioService,
+      MetaModuleRepository metaModuleRepo,
       CompanyRepository companyRepo,
       CrmConfigRepository crmConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsStudioService,
+        metaModuleRepo);
     this.companyRepo = companyRepo;
     this.crmConfigRepo = crmConfigRepo;
   }

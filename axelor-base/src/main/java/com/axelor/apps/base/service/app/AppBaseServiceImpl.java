@@ -30,6 +30,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBase;
@@ -58,8 +59,9 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+      AppSettingsStudioService appSettingsService,
+      MetaModuleRepository metaModuleRepo) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsService, metaModuleRepo);
   }
 
   @Override

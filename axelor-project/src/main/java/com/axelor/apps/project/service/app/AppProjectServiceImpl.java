@@ -21,6 +21,7 @@ package com.axelor.apps.project.service.app;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.repo.AppProjectRepository;
@@ -41,8 +42,15 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsStudioService,
+      MetaModuleRepository metaModuleRepo,
       AppProjectRepository appProjectRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsStudioService,
+        metaModuleRepo);
     this.appProjectRepo = appProjectRepo;
   }
 

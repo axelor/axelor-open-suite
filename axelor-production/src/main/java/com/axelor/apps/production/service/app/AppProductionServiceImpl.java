@@ -27,6 +27,7 @@ import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.repo.AppRepository;
@@ -47,8 +48,15 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+      AppSettingsStudioService appSettingsStudioService,
+      MetaModuleRepository metaModuleRepo) {
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsStudioService,
+        metaModuleRepo);
   }
 
   @Override

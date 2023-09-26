@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppRepository;
@@ -51,10 +52,17 @@ public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleSer
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsStudioService,
+      MetaModuleRepository metaModuleRepo,
       AppSaleRepository appSaleRepo,
       CompanyRepository companyRepo,
       SaleConfigRepository saleConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsStudioService,
+        metaModuleRepo);
     this.appSaleRepo = appSaleRepo;
     this.companyRepo = companyRepo;
     this.saleConfigRepo = saleConfigRepo;
