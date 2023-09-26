@@ -20,6 +20,8 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -59,14 +61,35 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
 
   protected BigDecimal computeFinancialDiscountTotalAmount(
       Invoice invoice, FinancialDiscount financialDiscount) {
+    if (financialDiscount.getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return financialDiscount
+          .getDiscountRate()
+          .multiply(invoice.getInTaxTotal())
+          .divide(
+              new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    } else {
+      BigDecimal financialDiscountAmountWithoutTax =
+          financialDiscount
+              .getDiscountRate()
+              .multiply(invoice.getExTaxTotal())
+              .divide(
+                  new BigDecimal(100),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP);
 
-    // the scale is the default scale for a decimal field, so 2.
-    int financialDiscountTotalAmountScale = 2;
+      BigDecimal financialDiscountTaxAmount =
+          invoice
+              .getTaxTotal()
+              .multiply(invoice.getExTaxTotal())
+              .multiply(financialDiscount.getDiscountRate())
+              .divide(
+                  invoice.getInTaxTotal().multiply(BigDecimal.valueOf(100)),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP);
 
-    return financialDiscount
-        .getDiscountRate()
-        .multiply(invoice.getInTaxTotal())
-        .divide(new BigDecimal(100), financialDiscountTotalAmountScale, RoundingMode.HALF_UP);
+      return financialDiscountAmountWithoutTax.add(financialDiscountTaxAmount);
+    }
   }
 
   @Override
