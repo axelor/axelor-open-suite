@@ -80,10 +80,11 @@
       <separator colSpan="12"/>
       <field name="numberOfPeriods" showIf="$readonly()" colSpan="4">
         <viewer><![CDATA[
-		                  <span>{{record.numberOfPeriods}}</span>
-		                  <span> </span>
-		                  <span ng-show="record.periodicityTypeSelect == 1" x-translate>day(s)</span>
-		                  <span ng-show="record.periodicityTypeSelect == 2" x-translate>month(s)</span>
+		              <>
+		                  <span>{numberOfPeriods}</span>
+		                  {periodicityTypeSelect == 1 && <span> {_t('day(s)')} </span>}
+		                  {periodicityTypeSelect == 2 && <span> {_t('month(s)')} </span>}
+		              </>
 				]]></viewer>
       </field>
       <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4"
