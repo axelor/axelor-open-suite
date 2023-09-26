@@ -659,11 +659,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     data.put("forecastCosts", projectTask.getForecastCosts());
     data.put("forecastMargin", projectTask.getForecastMargin());
     data.put("forecastMarkup", projectTask.getForecastMarkup());
-    if (projectTask.getProject() != null
-        && projectTask.getProject().getCompany() != null
-        && projectTask.getProject().getCompany().getCurrency() != null) {
-      data.put("currencySymbol", projectTask.getProject().getCompany().getCurrency().getSymbol());
-    }
+    Optional.ofNullable(projectTask.getProject())
+        .map(Project::getCompany)
+        .map(Company::getCurrency)
+        .ifPresent(currency -> data.put("currencySymbol", currency.getSymbol()));
 
     return data;
   }

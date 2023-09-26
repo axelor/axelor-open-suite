@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.repo.ProjectHistoryLineRepository;
@@ -68,12 +69,10 @@ public class ProjectHistoryServiceImpl implements ProjectHistoryService {
     data.put("landingCosts", projectHistoryLine.getLandingCosts());
     data.put("landingMargin", projectHistoryLine.getLandingMargin());
     data.put("landingMarkup", projectHistoryLine.getLandingMarkup());
-    if (projectHistoryLine.getProject() != null
-        && projectHistoryLine.getProject().getCompany() != null
-        && projectHistoryLine.getProject().getCompany().getCurrency() != null) {
-      data.put(
-          "currencySymbol", projectHistoryLine.getProject().getCompany().getCurrency().getSymbol());
-    }
+    Optional.ofNullable(projectHistoryLine.getProject())
+        .map(Project::getCompany)
+        .map(Company::getCurrency)
+        .ifPresent(currency -> data.put("currencySymbol", currency.getSymbol()));
 
     return data;
   }
