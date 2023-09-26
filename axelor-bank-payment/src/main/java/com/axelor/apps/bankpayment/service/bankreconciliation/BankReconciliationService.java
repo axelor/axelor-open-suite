@@ -440,12 +440,8 @@ public class BankReconciliationService {
     offset = 0;
     JPA.clear();
     bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
-    moveLines =
-        moveLineRepository
-            .all()
-            .filter("self.account = :cashAccount")
-            .bind("cashAccount", bankReconciliation.getCashAccount())
-            .fetch(limit, offset);
+    moveLines = this.getMoveLines(bankReconciliation.getCashAccount(), limit, offset);
+
     do {
       for (MoveLine moveLine : moveLines) {
         movesReconciledLineBalance =
@@ -456,12 +452,8 @@ public class BankReconciliationService {
       offset += limit;
       JPA.clear();
       bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
-      moveLines =
-          moveLineRepository
-              .all()
-              .filter("self.account = :cashAccount")
-              .bind("cashAccount", bankReconciliation.getCashAccount())
-              .fetch(limit, offset);
+      moveLines = this.getMoveLines(bankReconciliation.getCashAccount(), limit, offset);
+
     } while (moveLines.size() != 0);
     JPA.clear();
     bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
@@ -486,6 +478,16 @@ public class BankReconciliationService {
         movesReconciledLineBalance.add(movesOngoingReconciledBalance));
     bankReconciliation = computeEndingBalance(bankReconciliation);
     return saveBR(bankReconciliation);
+  }
+
+  protected List<MoveLine> getMoveLines(Account cashAccount, int limit, int offset) {
+    return moveLineRepository
+        .all()
+        .filter("self.account = :cashAccount AND self.move.statusSelect IN (:daybook, :accounted)")
+        .bind("cashAccount", cashAccount)
+        .bind("daybook", MoveRepository.STATUS_DAYBOOK)
+        .bind("accounted", MoveRepository.STATUS_ACCOUNTED)
+        .fetch(limit, offset);
   }
 
   protected BigDecimal computeMovesReconciledLineBalance(
