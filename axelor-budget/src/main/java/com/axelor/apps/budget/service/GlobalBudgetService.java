@@ -20,6 +20,4 @@ public interface GlobalBudgetService {
 
   GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
       throws AxelorException;
-
-  void resetGlobalBudget(GlobalBudget globalBudget);
 }

@@ -16,11 +16,8 @@ import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.collections.CollectionUtils;
-
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
@@ -278,31 +275,4 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     budgetLine.setFirmGap(budget.getTotalFirmGap());
     budgetLine.setAmountPaid(budget.getTotalAmountPaid());
   }
-
-  @Transactional
-  public void resetGlobalBudget(GlobalBudget globalBudget) {
-    globalBudget.setCode(globalBudget.getCode() + " (" + I18n.get("copy") + ")");
-    globalBudget.setStatusSelect(GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT);
-    globalBudget.setArchived(false);
-
-    globalBudget.setTotalAmountCommitted(BigDecimal.ZERO);
-    globalBudget.setTotalAmountAvailable(globalBudget.getTotalAmountExpected());
-    globalBudget.setAvailableAmountWithSimulated(globalBudget.getTotalAmountExpected());
-    globalBudget.setRealizedWithNoPo(BigDecimal.ZERO);
-    globalBudget.setRealizedWithPo(BigDecimal.ZERO);
-    globalBudget.setSimulatedAmount(BigDecimal.ZERO);
-    globalBudget.setTotalFirmGap(BigDecimal.ZERO);
-    globalBudget.setTotalAmountPaid(BigDecimal.ZERO);
-
-    globalBudget.clearBudgetList();
-    List<BudgetLevel> budgetLevels = globalBudget.getBudgetLevelList();
-
-    if (ObjectUtils.notEmpty(budgetLevels)) {
-      budgetLevels.forEach(child -> budgetLevelService.resetBudgetLevel(child));
-    } else if (CollectionUtils.isNotEmpty(budgetLevels)) {
-      globalBudget.getBudgetList().forEach(child -> budgetService.resetBudget(child));
-    }
-  }
-  
-
 }
