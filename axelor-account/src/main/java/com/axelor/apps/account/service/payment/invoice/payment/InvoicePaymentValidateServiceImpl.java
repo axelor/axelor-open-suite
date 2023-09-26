@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -84,6 +85,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected DateService dateService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -99,7 +101,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       AccountManagementAccountService accountManagementAccountService,
       InvoicePaymentToolService invoicePaymentToolService,
       DateService dateService,
-      MoveLineInvoiceTermService moveLineInvoiceTermService) {
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoiceTermService invoiceTermService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -114,6 +117,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.dateService = dateService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -360,7 +364,22 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (maxAmount != null) {
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
+
     BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+    companyPaymentAmount =
+        companyPaymentAmount.subtract(
+            invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));
+
+    companyPaymentAmount =
+        invoiceTermService.adjustAmountInCompanyCurrency(
+            invoice.getInvoiceTermList(),
+            invoice.getCompanyInTaxTotalRemaining(),
+            companyPaymentAmount,
+            paymentAmount,
+            invoice.getMove().getMoveLineList().stream()
+                .map(MoveLine::getCurrencyRate)
+                .findAny()
+                .orElse(BigDecimal.ONE));
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
