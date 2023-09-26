@@ -63,33 +63,37 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
       Invoice invoice, FinancialDiscount financialDiscount) {
     if (financialDiscount.getDiscountBaseSelect()
         == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
-      return financialDiscount
-          .getDiscountRate()
-          .multiply(invoice.getInTaxTotal())
-          .divide(
-              new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      return this.getFinancialDiscountAmount(financialDiscount, invoice.getInTaxTotal());
     } else {
       BigDecimal financialDiscountAmountWithoutTax =
-          financialDiscount
-              .getDiscountRate()
-              .multiply(invoice.getExTaxTotal())
-              .divide(
-                  new BigDecimal(100),
-                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                  RoundingMode.HALF_UP);
+          this.getFinancialDiscountAmount(financialDiscount, invoice.getExTaxTotal());
 
       BigDecimal financialDiscountTaxAmount =
-          invoice
-              .getTaxTotal()
-              .multiply(invoice.getExTaxTotal())
-              .multiply(financialDiscount.getDiscountRate())
-              .divide(
-                  invoice.getInTaxTotal().multiply(BigDecimal.valueOf(100)),
-                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                  RoundingMode.HALF_UP);
+          this.getFinancialDiscountTaxAmount(invoice, financialDiscount);
 
       return financialDiscountAmountWithoutTax.add(financialDiscountTaxAmount);
     }
+  }
+
+  protected BigDecimal getFinancialDiscountAmount(
+      FinancialDiscount financialDiscount, BigDecimal amount) {
+    return financialDiscount
+        .getDiscountRate()
+        .multiply(amount)
+        .divide(
+            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getFinancialDiscountTaxAmount(
+      Invoice invoice, FinancialDiscount financialDiscount) {
+    return invoice
+        .getTaxTotal()
+        .multiply(invoice.getExTaxTotal())
+        .multiply(financialDiscount.getDiscountRate())
+        .divide(
+            invoice.getInTaxTotal().multiply(BigDecimal.valueOf(100)),
+            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+            RoundingMode.HALF_UP);
   }
 
   @Override

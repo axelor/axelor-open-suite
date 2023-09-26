@@ -834,24 +834,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return BigDecimal.ZERO;
     }
 
-    BigDecimal taxTotal;
-
-    if (invoiceTerm.getInvoice() != null) {
-      taxTotal = invoiceTerm.getInvoice().getTaxTotal();
-    } else {
-      taxTotal =
-          invoiceTerm.getMoveLine().getMove().getMoveLineList().stream()
-              .filter(
-                  it ->
-                      it.getAccount()
-                          .getAccountType()
-                          .getTechnicalTypeSelect()
-                          .equals(AccountTypeRepository.TYPE_TAX))
-              .map(MoveLine::getCurrencyAmount)
-              .map(BigDecimal::abs)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-    }
+    BigDecimal taxTotal = this.getTaxTotal(invoiceTerm);
 
     if (taxTotal.signum() == 0) {
       return BigDecimal.ZERO;
@@ -881,6 +864,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               taxTotal.add(exTaxTotal).multiply(BigDecimal.valueOf(10000)),
               AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
               RoundingMode.HALF_UP);
+    }
+  }
+
+  protected BigDecimal getTaxTotal(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() != null) {
+      return invoiceTerm.getInvoice().getTaxTotal();
+    } else {
+      return invoiceTerm.getMoveLine().getMove().getMoveLineList().stream()
+          .filter(
+              it ->
+                  it.getAccount()
+                      .getAccountType()
+                      .getTechnicalTypeSelect()
+                      .equals(AccountTypeRepository.TYPE_TAX))
+          .map(MoveLine::getCurrencyAmount)
+          .map(BigDecimal::abs)
+          .reduce(BigDecimal::add)
+          .orElse(BigDecimal.ZERO);
     }
   }
 
