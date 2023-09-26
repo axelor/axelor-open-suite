@@ -33,7 +33,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
-import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -829,42 +829,58 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException {
-    if (invoiceTerm.getFinancialDiscount() != null
-        && invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
-            == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
-      BigDecimal total = BigDecimal.ZERO;
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getFinancialDiscount() == null) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal taxTotal;
+
+    if (invoiceTerm.getInvoice() != null) {
+      taxTotal = invoiceTerm.getInvoice().getTaxTotal();
+    } else {
+      taxTotal =
+          invoiceTerm.getMoveLine().getMove().getMoveLineList().stream()
+              .filter(
+                  it ->
+                      it.getAccount()
+                          .getAccountType()
+                          .getTechnicalTypeSelect()
+                          .equals(AccountTypeRepository.TYPE_TAX))
+              .map(MoveLine::getCurrencyAmount)
+              .map(BigDecimal::abs)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+    }
+
+    if (taxTotal.signum() == 0) {
+      return BigDecimal.ZERO;
+    } else if (invoiceTerm.getFinancialDiscount().getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return taxTotal
+          .multiply(invoiceTerm.getPercentage())
+          .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
+          .divide(
+              BigDecimal.valueOf(10000),
+              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              RoundingMode.HALF_UP);
+    } else {
+      BigDecimal exTaxTotal;
 
       if (invoiceTerm.getInvoice() != null) {
-        total = invoiceTerm.getInvoice().getTaxTotal();
-      }
-
-      if (total.signum() > 0) {
-        return total
-            .multiply(invoiceTerm.getPercentage())
-            .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
-            .divide(BigDecimal.valueOf(10000), 2, RoundingMode.HALF_UP);
+        exTaxTotal = invoiceTerm.getInvoice().getExTaxTotal();
       } else {
-        Tax financialDiscountTax =
-            this.isPurchase(invoiceTerm)
-                ? accountConfigService.getPurchFinancialDiscountTax(
-                    accountConfigService.getAccountConfig(this.getCompany(invoiceTerm)))
-                : accountConfigService.getSaleFinancialDiscountTax(
-                    accountConfigService.getAccountConfig(this.getCompany(invoiceTerm)));
-        BigDecimal taxRate = financialDiscountTax.getActiveTaxLine().getValue();
-
-        return invoiceTerm
-            .getFinancialDiscountAmount()
-            .multiply(taxRate)
-            .divide(
-                BigDecimal.ONE
-                    .add(taxRate.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP))
-                    .multiply(BigDecimal.valueOf(100)),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+        exTaxTotal = invoiceTerm.getMoveLine().getCurrencyAmount().abs().subtract(taxTotal);
       }
-    } else {
-      return BigDecimal.ZERO;
+
+      return taxTotal
+          .multiply(exTaxTotal)
+          .multiply(invoiceTerm.getPercentage())
+          .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
+          .divide(
+              taxTotal.add(exTaxTotal).multiply(BigDecimal.valueOf(10000)),
+              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              RoundingMode.HALF_UP);
     }
   }
 
