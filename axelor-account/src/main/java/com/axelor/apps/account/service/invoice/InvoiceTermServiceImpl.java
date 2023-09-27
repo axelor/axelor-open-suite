@@ -326,16 +326,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         && financialDiscount != null) {
       BigDecimal percentage =
           this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), totalAmount)
-              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
 
       invoiceTerm.setApplyFinancialDiscount(true);
       invoiceTerm.setFinancialDiscount(financialDiscount);
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setFinancialDiscountAmount(
-          financialDiscountAmount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
+          financialDiscountAmount
+              .multiply(percentage)
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
-          remainingAmountAfterFinDiscount.multiply(percentage).setScale(2, RoundingMode.HALF_UP));
+          remainingAmountAfterFinDiscount
+              .multiply(percentage)
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
 
       invoiceTerm.setFinancialDiscountDeadlineDate(

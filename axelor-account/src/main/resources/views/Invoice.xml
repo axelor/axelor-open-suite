@@ -976,10 +976,10 @@ InvoiceSet.length > 0))"
 							</font>
 						</dt>
 						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount > 0">
-							-{{$fmt('financialDiscountTotalAmount')| currency: record.currency.symbol}}
+							-{{record.financialDiscountTotalAmount | currency: record.currency.symbol}}
 						</dd>
 						<dd ng-if="record.applyFinancialDiscount == true && record.financialDiscountTaxAmount == 0">
-							-{{$fmt('financialDiscountAmount') | currency: record.currency.symbol}}
+							-{{record.financialDiscountAmount | currency: record.currency.symbol}}
 						</dd>
 					</dl>
 				</div>

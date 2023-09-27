@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.rpc.Context;
 import java.util.List;
 
@@ -66,4 +67,6 @@ public interface MoveLineToolService {
   void setAmountRemainingReconciliableMoveLines(Context context);
 
   boolean isCutOffActive(MoveLine moveLine);
+
+  boolean isFinancialDiscountLine(MoveLine moveLine, Company company) throws AxelorException;
 }

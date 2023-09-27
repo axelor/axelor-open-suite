@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
@@ -371,5 +372,23 @@ public class InvoiceToolService {
         && invoice.getCurrency() != null
         && invoice.getCompany() != null
         && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
+  }
+
+  public static Account getFinancialDiscountAccount(Invoice invoice, Company company)
+      throws AxelorException {
+    return InvoiceToolService.getFinancialDiscountAccount(
+        company, InvoiceToolService.isPurchase(invoice));
+  }
+
+  public static Account getFinancialDiscountAccount(Company company, boolean isPurchase)
+      throws AxelorException {
+    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    if (isPurchase) {
+      return accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
+    } else {
+      return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
+    }
   }
 }

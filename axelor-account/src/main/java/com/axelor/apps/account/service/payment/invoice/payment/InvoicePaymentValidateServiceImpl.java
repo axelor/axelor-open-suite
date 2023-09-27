@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -351,8 +350,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     int counter = 1;
     boolean financialDiscountVat =
         invoicePayment.getFinancialDiscount() != null
-            && invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
-                == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
+            && invoicePayment.getFinancialDiscountTaxAmount().signum() > 0;
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
@@ -403,7 +401,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
           moveLineCreateService.createMoveLine(
               move,
               partner,
-              this.getFinancialDiscountAccount(invoice, company),
+              InvoiceToolService.getFinancialDiscountAccount(invoice, company),
               invoicePayment.getFinancialDiscountAmount(),
               isDebitInvoice,
               paymentDate,
@@ -507,16 +505,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     return invoicePayment.getApplyFinancialDiscount()
         && invoicePayment.getFinancialDiscount() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount();
-  }
-
-  protected Account getFinancialDiscountAccount(Invoice invoice, Company company)
-      throws AxelorException {
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    if (InvoiceToolService.isPurchase(invoice)) {
-      return accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
-    } else {
-      return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
-    }
   }
 
   protected Account getFinancialDiscountVATAccount(

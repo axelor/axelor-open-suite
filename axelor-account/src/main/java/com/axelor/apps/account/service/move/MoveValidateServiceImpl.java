@@ -848,7 +848,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkTaxAmount(Move move) throws AxelorException {
-    if (this.isReverseCharge(move)) {
+    if (this.isReverseCharge(move) || this.isFinancialDiscount(move)) {
       return;
     }
 
@@ -922,6 +922,16 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           .filter(Objects::nonNull)
           .anyMatch(TaxEquiv::getReverseCharge);
     }
+  }
+
+  protected boolean isFinancialDiscount(Move move) throws AxelorException {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLineToolService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   protected void checkMoveLineDescription(Move move) throws AxelorException {

@@ -289,7 +289,10 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
   protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
     BigDecimal ratio =
-        invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+        invoiceTerm
+            .getCompanyAmount()
+            .divide(
+                invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
 
     return paidAmount
         .multiply(ratio)
@@ -298,7 +301,12 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
   protected BigDecimal computePaidAmount(InvoiceTerm invoiceTerm, BigDecimal companyPaidAmount) {
     BigDecimal ratio =
-        invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
+        invoiceTerm
+            .getAmount()
+            .divide(
+                invoiceTerm.getCompanyAmount(),
+                AppBaseService.COMPUTATION_SCALING,
+                RoundingMode.HALF_UP);
 
     return companyPaidAmount
         .multiply(ratio)
@@ -317,13 +325,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       BigDecimal ratioPaid =
           invoiceTermPayment
               .getPaidAmount()
-              .divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+              .divide(
+                  invoiceTerm.getAmount(),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
 
       invoiceTermPayment.setFinancialDiscountAmount(
           invoiceTerm
               .getFinancialDiscountAmount()
               .multiply(ratioPaid)
-              .setScale(2, RoundingMode.HALF_UP));
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
       invoiceTermPayment.setPaidAmount(
           invoiceTermPayment
