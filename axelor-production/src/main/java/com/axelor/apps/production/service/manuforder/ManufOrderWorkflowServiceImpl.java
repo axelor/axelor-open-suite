@@ -218,6 +218,14 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         // Updating plannedStartDate since, it may be differents now that operation orders are
         // planned
         manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
+        if (manufOrder
+            .getPlannedStartDateT()
+            .isBefore(appBaseService.getTodayDateTime(manufOrder.getCompany()).toLocalDateTime())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(ProductionExceptionMessage.PLAN_IS_BEFORE_TODAY_DATE),
+              String.format("%s %s", manufOrder.getQty(), manufOrder.getProduct().getFullName()));
+        }
       }
     }
 
