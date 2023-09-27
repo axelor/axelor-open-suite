@@ -786,7 +786,7 @@ InvoiceSet.length > 0))"
           onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
       </panel>
       <panel name="financialDiscountPanel" colSpan="12" title="Financial discount">
-        <field name="financialDiscount" readonlyIf="statusSelect == 3"
+        <field name="financialDiscount" readonlyIf="[3,4].includes(statusSelect)"
           onChange="action-invoice-group-financial-discount"/>
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
         <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
