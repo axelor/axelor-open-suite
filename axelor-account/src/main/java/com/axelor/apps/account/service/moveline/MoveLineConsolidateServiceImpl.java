@@ -97,7 +97,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
   @Override
   public List<MoveLine> consolidateMoveLines(List<MoveLine> moveLines) {
 
-    Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
+    Map<List<Object>, MoveLine> map = new HashMap<>();
     MoveLine consolidateMoveLine = null;
     boolean haveHoldBack =
         moveLines.stream()
@@ -109,9 +109,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
     for (MoveLine moveLine : moveLines) {
 
-      List<Object> keys = new ArrayList<Object>();
+      List<Object> keys = new ArrayList<>();
 
-      keys.add(moveLine.getCounter());
       keys.add(moveLine.getAccount());
       keys.add(moveLine.getTaxLine());
       keys.add(moveLine.getAnalyticDistributionTemplate());
@@ -124,7 +123,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
       if (consolidateMoveLine != null) {
 
-        BigDecimal consolidateCurrencyAmount = BigDecimal.ZERO;
+        BigDecimal consolidateCurrencyAmount;
 
         log.debug(
             "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
@@ -173,8 +172,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       }
     }
 
-    BigDecimal credit = null;
-    BigDecimal debit = null;
+    BigDecimal credit, debit;
 
     int moveLineId = 1;
     moveLines.clear();
