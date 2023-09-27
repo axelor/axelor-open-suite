@@ -24,9 +24,6 @@
 
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
-        <item action="action-global-budget-view-group-lines" title="Groups" showIf="id"/>
-        <item action="action-budget-global-budget-level-view-section-lines" title="Sections"
-          showIf="id"/>
         <item action="action-global-budget-view-budget-lines" title="Lines" showIf="id"/>
         <item action="action-budget-global-view-show-version" title="Versions"
           showIf="statusSelect != 0"/>
@@ -128,10 +125,14 @@
 
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
       showIf="code &amp;&amp; name &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; budgetTypeSelect">
-      <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Groups"
-        colSpan="12" form-view="budget-level-intermediate-form"
-        grid-view="budget-level-included-grid" canEdit="statusSelect == 0"
-        canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
+      <field name="budgetLevelList" title="Groups" colSpan="12"
+        showIf="(budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0"
+        form-view="budget-level-intermediate-form" grid-view="budget-level-included-grid"
+        canEdit="statusSelect == 0" canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
+      <field name="budgetList" title="Budgets" colSpan="12"
+        showIf="!budgetLevelList || budgetLevelList.length == 0" form-view="budget-included-form"
+        grid-view="budget-lines-grid" canEdit="statusSelect == 0" canNew="statusSelect == 0"
+        canRemove="statusSelect == 0"/>
     </panel>
   </form>
 
@@ -361,7 +362,11 @@
     <view type="form" name="budget-included-form"/>
     <view-param name="details-view" value="true"/>
     <view-param name="showArchived" value="true"/>
-    <domain>self.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId</domain>
+    <domain>self.globalBudget.id = :_globalId OR self.budgetLevel.globalBudget.id = :_globalId OR
+      self.budgetLevel.parentBudgetLevel.globalBudget.id = :_globalId OR
+      self.budgetLevel.parentBudgetLevel.parentBudgetLevel.globalBudget.id = :_globalId OR
+      self.budgetLevel.parentBudgetLevel.parentBudgetLevel.parentBudgetLevel.globalBudget.id =
+      :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
     <context name="_globalCode" expr="eval:__this__.code"/>
     <context

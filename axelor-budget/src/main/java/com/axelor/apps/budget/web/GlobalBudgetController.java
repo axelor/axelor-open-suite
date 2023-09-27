@@ -7,7 +7,6 @@ import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
-import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.GlobalBudgetService;
@@ -34,11 +33,7 @@ public class GlobalBudgetController {
   public void setDates(ActionRequest request, ActionResponse response) throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
 
-    Beans.get(BudgetLevelService.class)
-        .getUpdatedGroupBudgetLevelList(
-            globalBudget.getBudgetLevelList(),
-            globalBudget.getFromDate(),
-            globalBudget.getToDate());
+    Beans.get(GlobalBudgetService.class).updateGlobalBudgetDates(globalBudget);
     response.setReload(true);
   }
 

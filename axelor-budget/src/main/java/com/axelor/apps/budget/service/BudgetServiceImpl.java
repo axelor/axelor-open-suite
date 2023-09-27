@@ -38,6 +38,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
@@ -237,7 +238,6 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   @Transactional
   public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate) {
-    budget = budgetRepository.find(budget.getId());
     budget.setFromDate(fromDate);
     budget.setToDate(toDate);
     budgetRepository.save(budget);
@@ -437,6 +437,7 @@ public class BudgetServiceImpl implements BudgetService {
   public void draftBudget(Budget budget) {
     if (budget != null) {
       budget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
+      budget.setActiveVersionExpectedAmountsLine(null);
       budgetRepository.save(budget);
     }
   }
@@ -772,8 +773,22 @@ public class BudgetServiceImpl implements BudgetService {
 
   @Override
   public void checkDatesOnBudget(Budget budget) throws AxelorException {
-    if (budget != null && budget.getBudgetLevel() != null) {
+    if (budget == null) {
+      return;
+    }
+    if (budget.getBudgetLevel() != null) {
       checkBudgetParentDates(budget);
+    } else if (budget.getGlobalBudget() != null) {
+      GlobalBudget globalBudget = budget.getGlobalBudget();
+      if (budget.getFromDate() == null
+          || budget.getToDate() == null
+          || (budget.getFromDate().isBefore(globalBudget.getFromDate()))
+          || (budget.getToDate().isAfter(globalBudget.getToDate()))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET_GLOBAL), budget.getCode()));
+      }
     }
     if (budget != null && !CollectionUtils.isEmpty(budget.getBudgetLineList())) {
       checkBudgetLinesDates(budget);
@@ -901,5 +916,34 @@ public class BudgetServiceImpl implements BudgetService {
         }
       }
     }
+  }
+
+  @Override
+  public GlobalBudget getGlobalBudgetUsingBudget(Budget budget) {
+
+    if (budget == null) {
+      return null;
+    }
+
+    if (budget.getGlobalBudget() != null) {
+      return budget.getGlobalBudget();
+    }
+    if (budget.getBudgetLevel() != null) {
+      return getGlobalBudgetUsingBudgetLevel(budget.getBudgetLevel());
+    }
+
+    return null;
+  }
+
+  protected GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel) {
+    if (budgetLevel == null) {
+      return null;
+    }
+
+    if (budgetLevel.getGlobalBudget() != null) {
+      return budgetLevel.getGlobalBudget();
+    }
+
+    return getGlobalBudgetUsingBudgetLevel(budgetLevel.getParentBudgetLevel());
   }
 }

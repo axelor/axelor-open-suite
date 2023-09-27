@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.GlobalBudget;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -308,4 +309,6 @@ public interface BudgetService {
   public List<BudgetLine> updateLines(Budget budget);
 
   public BigDecimal computeTotalAmountRealized(Budget budget);
+
+  GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
 }

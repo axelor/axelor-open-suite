@@ -163,8 +163,8 @@
           onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
           readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
           domain="self.parentBudgetLevel != null AND self.parentBudgetLevel.globalBudget.id = :globalId"/>
-        <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
-          colSpan="3" grid-view="global-budget-grid" form-view="global-budget-form"/>
+        <field name="globalBudget" title="Global budget" readonlyIf="$popup()" colSpan="3"
+          grid-view="global-budget-grid" form-view="global-budget-form"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
         <field name="category" colSpan="4"/>
         <field name="fromDate" colSpan="4" readonlyIf="statusSelect == 2"
@@ -230,7 +230,7 @@
     <panel-related name="budgetLineListPanel" field="budgetLineList"
       onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect != 1"
       colSpan="12"/>
-    <panel colSpan="12" readonlyIf="statusSelect != 1">
+    <panel colSpan="12" name="budgetKeyPanel" showTitle="false" readonlyIf="statusSelect != 1">
       <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
         canEdit="false" readonlyIf="statusSelect != 1" colSpan="12"
         onSelect="action-budget-method-set-account-set-domain"/>
@@ -356,8 +356,10 @@
       if="(_typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET) || (_parent?.typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET)"/>
     <field name="fromDate" expr="eval: _parent?.fromDate"/>
     <field name="toDate" expr="eval: _parent?.toDate"/>
-    <field name="budgetLevel" expr="eval: _parent"
-      if="!budgetLevel &amp;&amp; (_parent?.code != null || _parent?.name != null)"/>
+    <field name="budgetLevel" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
+    <field name="globalBudget" expr="eval: __parent__"
+      if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
     <field name="$globalId" expr="eval: _globalId" if="_globalId"/>
     <field name="$globalId" expr="eval: 0" if="!_globalId"/>
   </action-record>

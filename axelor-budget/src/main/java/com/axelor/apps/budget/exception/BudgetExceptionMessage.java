@@ -69,6 +69,9 @@ public final class BudgetExceptionMessage {
   public static final String WRONG_DATES_ON_BUDGET = /*$$(*/
       "Please select valid dates for budget %s, dates needs to be in the section period" /*)*/;
 
+  public static final String WRONG_DATES_ON_BUDGET_GLOBAL = /*$$(*/
+      "Please select valid dates for budget %s, dates needs to be in the global budget period" /*)*/;
+
   public static final String WRONG_DATES_ON_BUDGET_LINE = /*$$(*/
       "Please select valid dates for budget lines in budget %s, dates need to be in the budget period" /*)*/;
 

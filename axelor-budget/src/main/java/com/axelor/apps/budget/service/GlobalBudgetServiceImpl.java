@@ -25,12 +25,10 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
@@ -44,6 +42,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected BudgetLevelRepository budgetLevelRepository;
   protected BudgetScenarioLineService budgetScenarioLineService;
   protected BudgetGeneratorRepository budgetGeneratorRepository;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public GlobalBudgetServiceImpl(
@@ -56,7 +55,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       BudgetScenarioService budgetScenarioService,
       BudgetLevelRepository budgetLevelRepository,
       BudgetScenarioLineService budgetScenarioLineService,
-      BudgetGeneratorRepository budgetGeneratorRepository) {
+      BudgetGeneratorRepository budgetGeneratorRepository,
+      AppBudgetService appBudgetService) {
     this.budgetGeneratorRepository = budgetGeneratorRepository;
     this.budgetLevelService = budgetLevelService;
     this.globalBudgetRepository = globalBudgetRepository;
@@ -67,6 +67,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     this.budgetScenarioService = budgetScenarioService;
     this.budgetLevelRepository = budgetLevelRepository;
     this.budgetScenarioLineService = budgetScenarioLineService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -74,6 +75,10 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevelChild : globalBudget.getBudgetLevelList()) {
         budgetLevelService.validateDates(budgetLevelChild);
+      }
+    } else if (!CollectionUtils.isEmpty(globalBudget.getBudgetList())) {
+      for (Budget budget : globalBudget.getBudgetList()) {
+        budgetService.checkDatesOnBudget(budget);
       }
     }
   }
@@ -87,11 +92,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     GlobalBudget globalBudget = budget.getGlobalBudget();
 
     if (globalBudget == null) {
-      globalBudget =
-          Optional.ofNullable(budget.getBudgetLevel())
-              .map(BudgetLevel::getParentBudgetLevel)
-              .map(BudgetLevel::getGlobalBudget)
-              .orElse(null);
+      globalBudget = budgetService.getGlobalBudgetUsingBudget(budget);
     }
 
     if (globalBudget != null) {
@@ -103,6 +104,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   @Override
   public void computeTotals(GlobalBudget globalBudget) {
     List<BudgetLevel> budgetLevelList = globalBudget.getBudgetLevelList();
+    List<Budget> budgetList = globalBudget.getBudgetList();
     BigDecimal totalAmountExpected = BigDecimal.ZERO;
     BigDecimal totalAmountCommitted = BigDecimal.ZERO;
     BigDecimal totalAmountRealized = BigDecimal.ZERO;
@@ -111,7 +113,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     BigDecimal totalAmountPaid = BigDecimal.ZERO;
     BigDecimal totalFirmGap = BigDecimal.ZERO;
     BigDecimal simulatedAmount = BigDecimal.ZERO;
-    if (budgetLevelList != null) {
+    if (!ObjectUtils.isEmpty(budgetLevelList)) {
       for (BudgetLevel budgetLevelObj : budgetLevelList) {
         totalAmountExpected = totalAmountExpected.add(budgetLevelObj.getTotalAmountExpected());
         totalAmountCommitted = totalAmountCommitted.add(budgetLevelObj.getTotalAmountCommitted());
@@ -121,6 +123,17 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
         realizedWithNoPo = realizedWithNoPo.add(budgetLevelObj.getRealizedWithNoPo());
         totalFirmGap = totalFirmGap.add(budgetLevelObj.getTotalFirmGap());
         simulatedAmount = simulatedAmount.add(budgetLevelObj.getSimulatedAmount());
+      }
+    } else if (!ObjectUtils.isEmpty(budgetList)) {
+      for (Budget budget : budgetList) {
+        totalAmountExpected = totalAmountExpected.add(budget.getTotalAmountExpected());
+        totalAmountCommitted = totalAmountCommitted.add(budget.getTotalAmountCommitted());
+        totalAmountPaid = totalAmountPaid.add(budget.getTotalAmountPaid());
+        totalAmountRealized = totalAmountRealized.add(budget.getTotalAmountRealized());
+        realizedWithPo = realizedWithPo.add(budget.getRealizedWithPo());
+        realizedWithNoPo = realizedWithNoPo.add(budget.getRealizedWithNoPo());
+        totalFirmGap = totalFirmGap.add(budget.getTotalFirmGap());
+        simulatedAmount = simulatedAmount.add(budget.getSimulatedAmount());
       }
     }
     globalBudget.setTotalAmountExpected(totalAmountExpected);
@@ -143,15 +156,9 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     List<Budget> budgetList = globalBudget.getBudgetList();
     if (ObjectUtils.isEmpty(budgetList)
         && !ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      budgetList =
-          globalBudget.getBudgetLevelList().stream()
-              .filter(bl -> !ObjectUtils.isEmpty(bl.getBudgetLevelList()))
-              .map(BudgetLevel::getBudgetLevelList)
-              .flatMap(Collection::stream)
-              .filter(bl -> !ObjectUtils.isEmpty(bl.getBudgetList()))
-              .map(BudgetLevel::getBudgetList)
-              .flatMap(Collection::stream)
-              .collect(Collectors.toList());
+      for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
+        budgetLevelService.getAllBudgets(budgetLevel, budgetList);
+      }
     }
     if (ObjectUtils.isEmpty(budgetList)) {
       return;
@@ -359,6 +366,58 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           }
         }
       }
+    }
+  }
+
+  @Override
+  public void fillGlobalBudgetOnBudget(GlobalBudget globalBudget) {
+    if (globalBudget == null || ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      return;
+    }
+
+    List<Budget> budgetList = new ArrayList<>();
+    for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
+      budgetLevelService.getAllBudgets(budgetLevel, budgetList);
+    }
+
+    if (!ObjectUtils.isEmpty(budgetList)) {
+      for (Budget budget : budgetList) {
+        budget.setGlobalBudget(globalBudget);
+      }
+    }
+  }
+
+  @Override
+  public void updateGlobalBudgetDates(GlobalBudget globalBudget) throws AxelorException {
+    if (globalBudget == null
+        || globalBudget.getFromDate() == null
+        || globalBudget.getToDate() == null) {
+      return;
+    }
+
+    if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      budgetLevelService.getUpdatedBudgetLevelList(
+          globalBudget.getBudgetLevelList(), globalBudget.getFromDate(), globalBudget.getToDate());
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      budgetLevelService.getUpdatedBudgetList(
+          globalBudget.getBudgetList(), globalBudget.getFromDate(), globalBudget.getToDate());
+    }
+  }
+
+  @Override
+  public Integer getBudgetControlLevel(Budget budget) {
+
+    if (appBudgetService.getAppBudget() == null
+        || !appBudgetService.getAppBudget().getCheckAvailableBudget()) {
+      return null;
+    }
+    GlobalBudget globalBudget = budgetService.getGlobalBudgetUsingBudget(budget);
+    if (globalBudget != null && globalBudget.getCheckAvailableSelect() != 0) {
+      return globalBudget.getCheckAvailableSelect();
+    } else {
+      return appBudgetService.getAppBudget().getCheckAvailableBudget()
+          ? GlobalBudgetRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE
+          : null;
     }
   }
 }

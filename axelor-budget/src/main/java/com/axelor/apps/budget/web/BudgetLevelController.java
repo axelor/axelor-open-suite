@@ -25,12 +25,12 @@ import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -39,7 +39,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 public class BudgetLevelController {
@@ -117,34 +116,24 @@ public class BudgetLevelController {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void setDates(ActionRequest request, ActionResponse response) throws AxelorException {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    List<BudgetLevel> budgetLevelList = budgetLevel.getBudgetLevelList();
-    String levelTypeSelect = budgetLevel.getLevelTypeSelect();
     LocalDate fromDate = budgetLevel.getFromDate();
     LocalDate toDate = budgetLevel.getToDate();
     BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
-
-    switch (levelTypeSelect) {
-      case "group":
-        budgetLevelService.getUpdatedSectionBudgetList(budgetLevelList, fromDate, toDate);
-        response.setReload(true);
-        break;
-      case "section":
-        List<Budget> budgetList = (List<Budget>) request.getContext().get("budgetList");
-        budgetLevelService.getUpdatedBudgetList(budgetList, fromDate, toDate);
-        response.setReload(true);
-        break;
-      default:
-        break;
+    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      budgetLevelService.getUpdatedBudgetLevelList(
+          budgetLevel.getBudgetLevelList(), fromDate, toDate);
+    } else if (!ObjectUtils.isEmpty(budgetLevel.getBudgetList())) {
+      budgetLevelService.getUpdatedBudgetList(budgetLevel.getBudgetList(), fromDate, toDate);
     }
+    response.setReload(true);
   }
 
   public void setProjectBudget(ActionRequest request, ActionResponse response) {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
     budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
-    if (budgetLevel.getProject() != null) {
+    if (budgetLevel != null && budgetLevel.getProject() != null) {
       Beans.get(BudgetLevelService.class).setProjectBudget(budgetLevel);
     }
   }

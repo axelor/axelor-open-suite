@@ -24,4 +24,16 @@ public interface GlobalBudgetService {
 
   List<BudgetScenarioLine> visualizeVariableAmounts(BudgetGenerator budgetGenerator)
       throws AxelorException;
+
+  void fillGlobalBudgetOnBudget(GlobalBudget globalBudget);
+
+  void updateGlobalBudgetDates(GlobalBudget globalBudget) throws AxelorException;
+
+  /**
+   * Return the global budget check available select
+   *
+   * @param budget
+   * @return Integer
+   */
+  public Integer getBudgetControlLevel(Budget budget);
 }

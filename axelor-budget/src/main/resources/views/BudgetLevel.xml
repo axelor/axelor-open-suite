@@ -76,15 +76,15 @@
       </panel>
 
       <panel name="generalPanel" colSpan="12" itemSpan="4">
-        <field name="code" colSpan="4"
-          readonlyIf="globalBudget.statusSelect != 0 || !$popup()"/>
-        <field name="name" colSpan="4"
-          readonlyIf="globalBudget.statusSelect != 0 || !$popup()"/>
-        <field name="globalBudget" readonly="true" form-view="global-budget-form"/>
-        <field name="globalBudget.statusSelect" hidden="true"/>
+        <field name="code" readonlyIf="statusSelect != 'draft'"/>
+        <field name="name" readonlyIf="statusSelect != 'draft'"/>
+        <field name="globalBudget" hideIf="!globalBudget" readonly="true"
+          form-view="global-budget-form"/>
+        <field name="parentBudgetLevel" readonly="true" hideIf="!parentBudgetLevel"
+          form-view="budget-level-intermediate-form"/>
+        <field name="statusSelect" hidden="true"/>
       </panel>
-      <panel name="groupOrderLineBtnPanel"
-        hideIf="$popup() || globalBudget == null || globalBudget.statusSelect == 0" colSpan="3"
+      <panel name="groupOrderLineBtnPanel" hideIf="statusSelect == 'draft'" colSpan="3"
         stacked="true">
         <button name="showGroupOrderLineBtn" title="Display committed lines"
           onClick="action-budget-level-group-view-group-order-line"
@@ -103,14 +103,14 @@
           onClick="action-group-budget-line-distribution-view-show-simulated-moves-lines"
           title="Display simulated moves" colSpan="12"/>
       </panel>
-      <panel name="datesPanel" colSpan="12" showIf="$popup()">
+      <panel name="datesPanel" colSpan="12">
         <field name="fromDate" colSpan="4" required="true"
           onChange="action-budget-level-validate-from-to-dates"/>
         <field name="toDate" colSpan="4" required="true"
           onChange="action-budget-level-validate-from-to-dates"/>
         <button name="updateDatesBtn" colSpan="4" title="Update dates"
           onClick="save,action-budget-budget-level-method-set-dates"
-          readonlyIf="code == null || name == null || parentBudgetLevel == null || globalBudget.statusSelect == 2"/>
+          readonlyIf="code == null || name == null || statusSelect != 'draft'"/>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
         title="Total amounts">
@@ -128,10 +128,17 @@
 
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy">
-      <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Sections"
-        form-view="budget-level-node-form" grid-view="budget-level-node-grid" colSpan="12"
-        canEdit="globalBudget.statusSelect == 0" canNew="globalBudget.statusSelect == 0"
-        canRemove="globalBudget.statusSelect == 0"/>
+      <field name="budgetLevelList" title="Sections"
+        form-view="budget-level-intermediate-form" grid-view="budget-level-node-grid" colSpan="12"
+        canEdit="statusSelect == 'draft'" canNew="statusSelect == 'draft'"
+        canRemove="statusSelect == 'draft'"
+        hideIf="budgetList != null &amp;&amp; budgetList.length &gt;= 1"/>
+      <field name="budgetList" title="Lines" colSpan="12" form-view="budget-included-form"
+        grid-view="budget-lines-grid"
+        hideIf="budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1"
+        canNew="statusSelect == 'draft'" canEdit="statusSelect == 'draft'"
+        canRemove="statusSelect == 'draft'"
+        onChange="action-budget-level-method-compute-children-key"/>
     </panel>
   </form>
 
@@ -439,9 +446,7 @@
   <action-record name="action-budget-level-record-set-defaults"
     model="com.axelor.apps.budget.db.BudgetLevel">
     <field name="statusSelect"
-      expr="eval: _typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET ? com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT : null"
-      if="_typeSelect"/>
-    <field name="statusSelect" expr="eval: __parent__.statusSelect" if="__parent__"/>
+      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT"/>
     <field name="parentBudgetLevel" expr="eval: __parent__"
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <field name="globalBudget" expr="eval: __parent__"
@@ -455,6 +460,8 @@
     <field name="project" expr="eval: __parent__?.project"/>
     <field name="startDate" expr="eval: __parent__?.startDate"/>
     <field name="endDate" expr="eval: __parent__?.endDate"/>
+    <field name="fromDate" expr="eval: fromDate == null ? __parent__?.fromDate : fromDate"/>
+    <field name="toDate" expr="eval: toDate == null ? __parent__?.toDate : toDate"/>
     <field name="companyDepartment"
       expr="eval: levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_GLOBAL &amp;&amp; _typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_TEMPLATE ? __user__?.companyDepartment : null"/>
     <field name="budgetManager"
@@ -482,7 +489,6 @@
   </action-record>
 
   <action-group name="action-budget-level-defaults-groups-onnew">
-    <action name="action-budget-level-record-set-group-defaults"/>
     <action name="action-budget-level-group-onnew"/>
   </action-group>
 

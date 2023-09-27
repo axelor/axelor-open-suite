@@ -34,8 +34,6 @@
   <selection name="budget.budget.level.check.available">
     <option value="1">Budget Line</option>
     <option value="2">budget.Budget</option>
-    <option value="3">Budget section</option>
-    <option value="4">Budget group</option>
     <option value="5">Global budget</option>
   </selection>
 
