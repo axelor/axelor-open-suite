@@ -581,9 +581,6 @@ public class PaymentVoucherConfirmService {
       // Then Use Excess payment on old invoices / moveLines
       if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0) {
         BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
-        /*if (hasFinancialDiscount) {
-          remainingPaidAmount = remainingPaidAmount.add(financialDiscountAmount);
-        }*/
 
         // TODO rajouter le process d'imputation automatique
         // if(paymentVoucher.getHasAutoInput()) {
