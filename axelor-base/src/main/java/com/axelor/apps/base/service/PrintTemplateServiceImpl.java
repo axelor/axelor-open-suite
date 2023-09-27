@@ -138,7 +138,6 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
         print.setFooterFontSize(printTemplate.getFooterFontSize());
         print.setFooterFontType(printTemplate.getFooterFontType());
         print.setFooterTextAlignment(printTemplate.getFooterTextAlignment());
-        print.setIsFooterUnderLine(printTemplate.getIsFooterUnderLine());
         print.setFooterFontColor(printTemplate.getFooterFontColor());
       }
 
