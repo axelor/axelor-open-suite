@@ -1026,7 +1026,7 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.contract.project.id = :_id</domain>
+    <domain>:_id IN self.contractSet.project.id</domain>
   </action-view>
 
   <action-attrs name="action-project-gantt-user-wizard-user-domain">
