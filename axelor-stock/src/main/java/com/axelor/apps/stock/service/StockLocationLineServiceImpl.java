@@ -420,7 +420,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
       throws AxelorException {
 
-    if (!product.getStockManaged()) {
+    if (Boolean.FALSE.equals(product.getStockManaged())) {
       return;
     }
 
