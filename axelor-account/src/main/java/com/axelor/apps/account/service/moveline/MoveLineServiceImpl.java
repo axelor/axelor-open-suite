@@ -39,6 +39,8 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -342,10 +344,13 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     BigDecimal prorata = BigDecimal.ONE;
     if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-      prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+      prorata =
+          daysProrata.divide(daysTotal, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     }
 
-    return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
+    return prorata
+        .multiply(moveLine.getCurrencyAmount())
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -360,7 +365,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     Query<MoveLine> moveLineQuery =
         cutOffService.getMoveLines(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
-    while (!(moveLineList = moveLineQuery.fetch(10, offset)).isEmpty()) {
+    while (!(moveLineList = moveLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       for (MoveLine moveLine : moveLineList) {
         ++offset;
@@ -387,11 +392,15 @@ public class MoveLineServiceImpl implements MoveLineService {
       if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
         BigDecimal prorata = BigDecimal.ONE;
         if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-          prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+          prorata =
+              daysProrata.divide(
+                  daysTotal, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
         }
 
         moveLine.setCutOffProrataAmount(
-            prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP));
+            prorata
+                .multiply(moveLine.getCurrencyAmount())
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
         moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
         moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
       }
@@ -434,7 +443,10 @@ public class MoveLineServiceImpl implements MoveLineService {
           amount.multiply(
               financialDiscount
                   .getDiscountRate()
-                  .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+                  .divide(
+                      BigDecimal.valueOf(100),
+                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                      RoundingMode.HALF_UP)));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
     } else {
