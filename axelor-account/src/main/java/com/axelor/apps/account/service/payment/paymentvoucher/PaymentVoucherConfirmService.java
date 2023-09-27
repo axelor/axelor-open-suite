@@ -42,7 +42,6 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -506,8 +505,7 @@ public class PaymentVoucherConfirmService {
                 financialDiscountAmount
                     .add(payVoucherElementToPay.getFinancialDiscountAmount())
                     .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
-            this.updateInvoiceTermAmountRemaining(
-                payVoucherElementToPay.getInvoiceTerm(), financialDiscountAmount);
+
             paidLineTotal = paidLineTotal.subtract(financialDiscountAmount);
           }
         }
@@ -916,21 +914,6 @@ public class PaymentVoucherConfirmService {
       return moveLineToPay.getMove().getInvoice().getInvoiceId();
     } else {
       return payVoucherElementToPay.getPaymentVoucher().getRef();
-    }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void updateInvoiceTermAmountRemaining(InvoiceTerm invoiceTerm, BigDecimal paidAmount)
-      throws AxelorException {
-    invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(paidAmount));
-    if (invoiceTerm.getAmountRemaining().signum() > 0) {
-      invoiceTerm.setIsPaid(false);
-
-      Invoice invoice = invoiceTerm.getInvoice();
-      if (invoice != null) {
-        invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
-      }
-      invoiceTermRepository.save(invoiceTerm);
     }
   }
 }
