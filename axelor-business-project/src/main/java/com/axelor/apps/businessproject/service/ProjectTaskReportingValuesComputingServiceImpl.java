@@ -329,22 +329,22 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     BigDecimal timeSpent = getTaskSpentTime(projectTask);
 
-    BigDecimal realCost =
-        timeSpent
-            .multiply(unitCost)
-            .setScale(RESULT_SCALE, RoundingMode.HALF_UP)
-            .add(
-                projectTask.getPurchaseOrderLineList().stream()
-                    .filter(
-                        purchaseOrderLine -> {
-                          Integer purchaseOrderStatus =
-                              purchaseOrderLine.getPurchaseOrder().getStatusSelect();
-                          return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
-                              || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
-                        })
-                    .map(PurchaseOrderLine::getExTaxTotal)
-                    .reduce(BigDecimal::add)
-                    .orElse(BigDecimal.ZERO));
+    BigDecimal realCost = timeSpent.multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP);
+    if (projectTask.getPurchaseOrderLineList() != null) {
+      realCost =
+          realCost.add(
+              projectTask.getPurchaseOrderLineList().stream()
+                  .filter(
+                      purchaseOrderLine -> {
+                        Integer purchaseOrderStatus =
+                            purchaseOrderLine.getPurchaseOrder().getStatusSelect();
+                        return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
+                            || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
+                      })
+                  .map(PurchaseOrderLine::getExTaxTotal)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO));
+    }
 
     // add subtask real cost
     for (ProjectTask task : projectTask.getProjectTaskList()) {
