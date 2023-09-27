@@ -1,4 +1,4 @@
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.print;
 
 import com.axelor.apps.base.db.Print;
 

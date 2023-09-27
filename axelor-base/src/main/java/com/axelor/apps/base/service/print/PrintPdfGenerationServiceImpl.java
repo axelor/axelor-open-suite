@@ -1,4 +1,4 @@
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.print;
 
 import be.quodlibet.boxable.BaseTable;
 import be.quodlibet.boxable.Cell;
