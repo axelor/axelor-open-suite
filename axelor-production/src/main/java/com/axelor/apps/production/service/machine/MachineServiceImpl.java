@@ -291,7 +291,8 @@ public class MachineServiceImpl implements MachineService {
             .filter(
                 "self.machine = :machine"
                     + " AND ((self.plannedStartDateT <= :startDate AND self.plannedEndDateT > :startDateWithTime)"
-                    + " OR (self.plannedStartDateT <= :endDate AND self.plannedEndDateT > :endDateWithTime))"
+                    + " OR (self.plannedStartDateT < :endDate AND self.plannedEndDateT > :endDateWithTime) "
+                    + " OR (self.plannedStartDateT >= :startDate AND self.plannedEndDateT <= :endDateWithTime))"
                     + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
                     + " AND self.id != :operationOrderId")
             .bind("startDate", plannedStartDateT)
@@ -312,10 +313,10 @@ public class MachineServiceImpl implements MachineService {
 
       return getFurthestAvailableTimeSlotFrom(
           machine,
-          firstOperationOrder.getPlannedStartDateT().plusSeconds(timeBeforeNextOperation),
           firstOperationOrder
-              .getPlannedEndDateT()
-              .plusSeconds(timeBeforeNextOperation + initialDuration),
+              .getPlannedStartDateT()
+              .minusSeconds(initialDuration + timeBeforeNextOperation),
+          firstOperationOrder.getPlannedStartDateT().minusSeconds(timeBeforeNextOperation),
           operationOrder,
           initialDuration);
     }
