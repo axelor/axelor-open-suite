@@ -23,6 +23,7 @@ public class PrintPdfGenerationServiceImpl implements PrintPdfGenerationService 
   public static final int BOTTOM_MARGIN = 0;
   public static final float HEIGHT_FOOTER = 5;
   public static final float DEFAULT_FONT_SIZE = 10;
+  public static final float FOOTER_Y_POS = 40;
 
   public File generateFile(Print print, String html, ByteArrayOutputStream pdfOutputStream)
       throws IOException {
@@ -47,7 +48,8 @@ public class PrintPdfGenerationServiceImpl implements PrintPdfGenerationService 
     float yStartNewPage = page.getMediaBox().getHeight() - (2 * MARGIN);
 
     BaseTable baseTable =
-        new BaseTable(50, yStartNewPage, BOTTOM_MARGIN, tableWidth, MARGIN, doc, page, false, true);
+        new BaseTable(
+            FOOTER_Y_POS, yStartNewPage, BOTTOM_MARGIN, tableWidth, MARGIN, doc, page, false, true);
 
     row = baseTable.createRow(HEIGHT_FOOTER);
     createFooterCell(print, row);
