@@ -76,10 +76,10 @@
       <field name="dateFrom"
         readonlyIf="(statusSelect == 2 &amp;&amp; [18,19].includes(reportType.typeSelect)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
         onChange="action-move-Live-report-record-set-date-to"
-        requiredIf="[12,15,19,20,21,22,23,24].includes(reportType.typeSelect)"/>
+        requiredIf="[12,15,19,20,21,22,23,24,25].includes(reportType.typeSelect)"/>
       <field name="dateTo"
         readonlyIf="(statusSelect == 2 &amp;&amp; [18,19].includes(reportType.typeSelect)) || (reportType.typeSelect == 3000 &amp;&amp; reportType.comparison != 4)"
-        requiredIf="[12,15,19,20,21,22,23,24].includes(reportType.typeSelect)"/>
+        requiredIf="[12,15,19,20,21,22,23,24,25].includes(reportType.typeSelect)"/>
       <field name="isComparativeBalance" widget="inline-checkbox" colSpan="12"
         showIf="reportType.typeSelect == 2"/>
       <panel name="otherPeriodPanel" title="Comparative period"
@@ -99,7 +99,8 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="filterPanel" title="Filter">
-        <panel name="accountingPanel" title="Accounting" colSpan="12" canCollapse="true">
+        <panel name="accountingPanel" title="Accounting" colSpan="12" canCollapse="true"
+          hideIf="reportType.typeSelect == 25">
           <field name="currency"/>
           <field name="minAmountExcl"
             showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
@@ -173,7 +174,7 @@
         </panel>
       </panel>
       <panel name="printingInformationsPanel" title="Printing information" colSpan="12"
-        hideIf="[16,18,19,20,21,22].indexOf(reportType.typeSelect) != -1">
+        hideIf="[16,18,19,20,21,22,25].indexOf(reportType.typeSelect) != -1">
         <panel name="amountsPanel" title="Amounts" colSpan="12" canCollapse="true"
           stacked="true"
           hideIf="[2,5,6,10,11,12,15,16,21,22,2000].indexOf(reportType.typeSelect) != -1">
