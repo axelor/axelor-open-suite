@@ -192,8 +192,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     Company company =
         orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
     childTask.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
-    childTask.setTimeUnit(
-        product != null ? (Unit) productCompanyService.get(product, "unit", company) : null);
+    childTask.setTimeUnit((Unit) productCompanyService.get(product, "unit", company));
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);
       childTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
