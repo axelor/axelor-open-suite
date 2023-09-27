@@ -95,7 +95,7 @@
         <panel name="purchasePanel" title="Purchase" colSpan="12"
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
           <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
-            onClick="action-project-task-generate-purchase-order"/>
+            onClick="action-project-task-method-generate-purchase-order"/>
           <field name="purchaseOrderList" colSpan="12" canNew="false"/>
           <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
         </panel>
