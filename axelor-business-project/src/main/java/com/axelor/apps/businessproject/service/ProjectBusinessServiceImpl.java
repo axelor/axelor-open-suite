@@ -554,11 +554,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected BigDecimal getConvertedTime(
       BigDecimal duration, Unit fromUnit, Unit toUnit, BigDecimal numberHoursADay)
       throws AxelorException {
-    if (fromUnit.equals(appBusinessProjectService.getDaysUnit())
-        && toUnit.equals(appBusinessProjectService.getHoursUnit())) {
+    if (appBusinessProjectService.getDaysUnit().equals(fromUnit)
+        && appBusinessProjectService.getHoursUnit().equals(toUnit)) {
       return duration.multiply(numberHoursADay);
-    } else if (fromUnit.equals(appBusinessProjectService.getHoursUnit())
-        && toUnit.equals(appBusinessProjectService.getDaysUnit())) {
+    } else if (appBusinessProjectService.getHoursUnit().equals(fromUnit)
+        && appBusinessProjectService.getDaysUnit().equals(toUnit)) {
       return duration.divide(numberHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
     } else {
       return duration;
@@ -668,6 +668,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     data.put("invoicedThisMonth", invoicedThisMonth);
     data.put("invoicedLastMonth", invoicedLastMonth);
     data.put("totalPaid", totalPaid);
+    if (project.getCompany() != null && project.getCompany().getCurrency() != null) {
+      data.put("currencySymbol", project.getCompany().getCurrency().getSymbol());
+    }
 
     List<ProjectHistoryLine> projectHistoryLineList = project.getProjectHistoryLineList();
 

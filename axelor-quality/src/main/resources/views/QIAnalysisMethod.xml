@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="qi-analysis-method-grid" title="Analysis Method"
+    model="com.axelor.apps.quality.db.QIAnalysisMethod">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="company"/>
+    <field name="isCritical"/>
+    <field name="isMajor"/>
+    <field name="isMinor"/>
+    <field name="isProduct"/>
+    <field name="isSystem"/>
+    <field name="qiAnalysisMethodItemList"/>
+  </grid>
+
+  <form name="qi-analysis-method-form" title="Analysis Method"
+    model="com.axelor.apps.quality.db.QIAnalysisMethod">
+    <panel name="mainPanel">
+      <field name="code"/>
+      <field name="name"/>
+      <field name="company"/>
+      <field name="isCritical"/>
+      <field name="isMajor"/>
+      <field name="isMinor"/>
+      <field name="isProduct"/>
+      <field name="isSystem"/>
+      <panel-related field="qiAnalysisMethodItemList"
+        form-view="qi-analysis-method-item-form" grid-view="qi-analysis-method-item-grid"
+        colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>

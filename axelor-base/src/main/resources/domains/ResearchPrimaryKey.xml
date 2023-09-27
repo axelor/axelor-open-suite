@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ResearchPrimaryKey" lang="java">
+  <entity name="ResearchPrimaryKey">
 
     <string name="name" title="Name" namecolumn="true"/>
     <string name="code" title="Code" unique="true"/>

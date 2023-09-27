@@ -26,6 +26,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
+import com.axelor.apps.hr.service.expense.ExpenseLimitService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
@@ -53,6 +54,7 @@ public class ExpenseHRRepository extends ExpenseRepository {
         Beans.get(ExpenseLineService.class).completeExpenseLines(expense);
       }
       Beans.get(ExpenseProofFileService.class).convertProofFilesInPdf(expense);
+      Beans.get(ExpenseLimitService.class).checkExpenseLimit(expense);
       return expense;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

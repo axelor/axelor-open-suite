@@ -310,4 +310,18 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
       /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_HOURS_UNIT = /*$$(*/
+      "Outsourcing purchase order cannot be generated. Please fill hours unit in your base configuration." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_END_UNIT = /*$$(*/
+      "Impossible to generate outsourcing purchase order. Please fill unit on your product." /*)*/;
+
+  public static final String
+      YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE =
+          /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the estimated shipping date to be able to plan your manufacturing orders." /*)*/;
+
+  public static final String
+      YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE =
+          /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders." /*)*/;
 }

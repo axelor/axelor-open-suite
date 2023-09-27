@@ -5,7 +5,7 @@
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" lang="java">
+  <entity name="SaleOrderLine">
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"/>
     <decimal name="unassignedAmt" title="Unassigned amount" readonly="true"/>
     <many-to-one name="groupBudget" ref="com.axelor.apps.budget.db.BudgetLevel"

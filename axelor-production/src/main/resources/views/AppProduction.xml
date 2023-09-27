@@ -33,12 +33,16 @@
       <panel name="prodProcessPanel" title="Production process">
         <field name="manageProdProcessVersion" widget="boolean-switch"/>
         <field name="manageWorkCenterGroup" widget="boolean-switch"/>
+        <field name="isInputInHundredthHours" widget="boolean-switch"/>
         <field name="manageBusinessProduction"
           onChange="action-app-production-manage-business-production-record-onchange"
           title="Manage business production" if-module="axelor-business-production"
           widget="boolean-switch"/>
         <field name="enableTimesheetOnManufOrder" widget="boolean-switch"
           if-module="axelor-business-production" showIf="manageBusinessProduction"/>
+        <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
+          widget="boolean-switch"
+          showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
         <field name="operationContinuitySelect"/>
       </panel>
       <panel name="barcodeTypeConfigPanel">
@@ -59,6 +63,7 @@
           domain="self.costTypeSelect = 2"/>
         <field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom"
           widget="boolean-switch"/>
+        <field name="isCostPerProcessLine" widget="boolean-switch"/>
       </panel>
       <panel name="printingPanel" title="Printings">
         <field name="printPlannedDateOnManufOrder"/>

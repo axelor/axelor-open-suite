@@ -31,6 +31,7 @@
     </panel>
     <panel name="planificationPanel" title="Planification">
       <field name="capacity"/>
+      <field name="scheduling"/>
     </panel>
     <panel name="manufOrderSeqPanel" title="Manufacturing order sequence">
       <field name="manufOrderSequence" canEdit="true" canNew="true"

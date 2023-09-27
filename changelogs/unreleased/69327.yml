@@ -1,0 +1,3 @@
+---
+title: "ProjectTask : fix NPE when computing project totals when timeUnit is empty"
+type: fix

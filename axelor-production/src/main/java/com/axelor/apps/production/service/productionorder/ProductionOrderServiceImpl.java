@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
@@ -48,15 +49,18 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
   protected ProductionOrderRepository productionOrderRepo;
+  protected ProductionConfigService productionConfigService;
 
   @Inject
   public ProductionOrderServiceImpl(
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
-      ProductionOrderRepository productionOrderRepo) {
+      ProductionOrderRepository productionOrderRepo,
+      ProductionConfigService productionConfigService) {
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
     this.productionOrderRepo = productionOrderRepo;
+    this.productionConfigService = productionConfigService;
   }
 
   public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {

@@ -41,6 +41,9 @@
     <decimal name="nonConformingQuantity" title="Non-Conforming quantity"/>
     <many-to-one name="qualityControl" title="Quality Control"
       ref="com.axelor.apps.quality.db.QualityControl"/>
+    <many-to-one ref="com.axelor.apps.project.db.Project" name="project" title="Project"/>
+    <one-to-many ref="com.axelor.apps.quality.db.QualityImprovement" name="sourceQIList"
+      title="Source QI"/>
     <many-to-one name="writtenBy" title="Written by" ref="com.axelor.auth.db.User"/>
     <datetime name="writtenOn" title="Written on"/>
   </entity>

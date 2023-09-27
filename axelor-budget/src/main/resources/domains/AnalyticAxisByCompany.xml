@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticAxisByCompany" lang="java">
+  <entity name="AnalyticAxisByCompany">
 
     <boolean name="includeInBudgetKey" title="Include in budget key"/>
 

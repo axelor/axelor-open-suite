@@ -134,4 +134,7 @@
     <bind to="useFakeData" column="useFakeData"/>
   </input>
 
+  <input file="stock_stockCorrectionReason.csv" separator=";"
+    type="com.axelor.apps.stock.db.StockCorrectionReason" search="self.importId = :importId"/>
+
 </csv-inputs>

@@ -260,6 +260,7 @@
 
   <action-group name="action-expense-group-send">
     <action name="save"/>
+    <action name="action-expense-method-check-line-file"/>
     <action name="action-expense-method-send"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
   </action-group>
@@ -445,6 +446,10 @@
   <action-method name="action-expense-method-print-report-and-proof-file">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController"
       method="printReportAndProofFiles"/>
+  </action-method>
+
+  <action-method name="action-expense-method-check-line-file">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkLineFile"/>
   </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"

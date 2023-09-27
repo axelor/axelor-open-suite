@@ -121,7 +121,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void onSave(Move move, boolean paymentConditionChange, boolean headerChange)
+  public void onSave(
+      Move move, boolean paymentConditionChange, boolean dateChange, boolean headerChange)
       throws AxelorException {
     moveRecordUpdateService.updatePartner(move);
 
@@ -132,7 +133,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
           move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
     }
 
-    moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange);
+    moveRecordUpdateService.updateInvoiceTerms(
+        move, paymentConditionChange || dateChange, headerChange);
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
     moveRecordUpdateService.updateSubrogationPartner(move);
 
@@ -240,9 +242,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      moveCheckService.checkPeriodPermission(move);
       moveRecordSetService.setPeriod(move);
     }
+
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
     moveRecordSetService.setOriginDate(move);
@@ -250,6 +252,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+
+    this.addPeriodDummyFields(move, valuesMap);
 
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("dueDate", move.getDueDate());

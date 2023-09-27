@@ -196,19 +196,19 @@ public class ProjectTaskReportingValuesComputingServiceImpl
           progress
               .multiply(projectTask.getTurnover())
               .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
-      BigDecimal realCosts = computeRealCosts(projectTask, project);
-      projectTask.setRealCosts(realCosts);
-      projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
-      BigDecimal realMarkup = BigDecimal.ZERO;
-      if (projectTask.getRealCosts().signum() > 0) {
-        realMarkup =
-            getPercentValue(
-                projectTask
-                    .getRealMargin()
-                    .divide(projectTask.getRealCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP));
-      }
-      projectTask.setRealMarkup(realMarkup);
     }
+    BigDecimal realCosts = computeRealCosts(projectTask, project);
+    projectTask.setRealCosts(realCosts);
+    projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
+    BigDecimal realMarkup = BigDecimal.ZERO;
+    if (projectTask.getRealCosts().signum() > 0) {
+      realMarkup =
+          getPercentValue(
+              projectTask
+                  .getRealMargin()
+                  .divide(projectTask.getRealCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP));
+    }
+    projectTask.setRealMarkup(realMarkup);
 
     // Landing (ex forecast)
     computeLandingValues(projectTask, unitIsTimeUnit, landingUnitCost);
@@ -293,20 +293,19 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       ProjectTask projectTask, boolean unitIsTimeUnit, BigDecimal landingUnitCost) {
     BigDecimal landingCosts;
 
-    if (unitIsTimeUnit) {
-      landingCosts =
-          projectTask
-              .getRealCosts()
-              .add(
-                  projectTask
-                      .getUpdatedTime()
-                      .subtract(projectTask.getSpentTime())
-                      .multiply(landingUnitCost))
-              .setScale(RESULT_SCALE, RoundingMode.HALF_UP);
+    if (projectTask.getStatus().getIsCompleted()) {
+      landingCosts = projectTask.getRealCosts();
     } else {
       landingCosts =
-          projectTask.getStatus().getIsCompleted()
-              ? projectTask.getRealCosts()
+          unitIsTimeUnit
+              ? projectTask
+                  .getRealCosts()
+                  .add(
+                      projectTask
+                          .getUpdatedTime()
+                          .subtract(projectTask.getSpentTime())
+                          .multiply(landingUnitCost))
+                  .setScale(RESULT_SCALE, RoundingMode.HALF_UP)
               : projectTask.getInitialCosts();
     }
 
@@ -329,22 +328,25 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     BigDecimal timeSpent = getTaskSpentTime(projectTask);
 
-    BigDecimal realCost =
-        timeSpent
-            .multiply(unitCost)
-            .setScale(RESULT_SCALE, RoundingMode.HALF_UP)
-            .add(
-                projectTask.getPurchaseOrderLineList().stream()
-                    .filter(
-                        purchaseOrderLine -> {
-                          Integer purchaseOrderStatus =
-                              purchaseOrderLine.getPurchaseOrder().getStatusSelect();
-                          return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
-                              || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
-                        })
-                    .map(PurchaseOrderLine::getExTaxTotal)
-                    .reduce(BigDecimal::add)
-                    .orElse(BigDecimal.ZERO));
+    BigDecimal realCost = BigDecimal.ZERO;
+
+    if (projectTaskBusinessProjectService.isTimeUnitValid(projectTask.getTimeUnit())) {
+      realCost = timeSpent.multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP);
+    }
+
+    realCost =
+        realCost.add(
+            projectTask.getPurchaseOrderLineList().stream()
+                .filter(
+                    purchaseOrderLine -> {
+                      Integer purchaseOrderStatus =
+                          purchaseOrderLine.getPurchaseOrder().getStatusSelect();
+                      return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
+                          || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
+                    })
+                .map(PurchaseOrderLine::getExTaxTotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO));
 
     // add subtask real cost
     for (ProjectTask task : projectTask.getProjectTaskList()) {
@@ -390,7 +392,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       case ProjectRepository.COMPUTATION_METHOD_EMPLOYEE:
         unitCost = getAverageHourCostFromTimesheetLines(projectTask);
 
-        if (timeUnit.equals(daysUnit)) {
+        if (daysUnit.equals(timeUnit)) {
           unitCost = unitCost.multiply(defaultHoursADay);
         }
         break;
@@ -489,9 +491,9 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       return convertedProductPrice;
     }
 
-    if (projectTaskUnit.equals(daysUnit) && product.getUnit().equals(hoursUnit)) {
+    if (daysUnit.equals(projectTaskUnit) && hoursUnit.equals(product.getUnit())) {
       convertedProductPrice = convertedProductPrice.multiply(defaultHoursADay);
-    } else if (projectTaskUnit.equals(hoursUnit) && product.getUnit().equals(daysUnit)) {
+    } else if (hoursUnit.equals(projectTaskUnit) && daysUnit.equals(product.getUnit())) {
       convertedProductPrice =
           convertedProductPrice.divide(defaultHoursADay, RESULT_SCALE, RoundingMode.HALF_UP);
     }

@@ -27,7 +27,27 @@ import java.util.List;
 
 public interface YearService {
 
-  public Year getYear(LocalDate date, Company company, Integer type);
+  Year getYear(LocalDate date, Company company, Integer type);
+
+  void generatePeriodsForYear(Year year) throws AxelorException;
+
+  Year createYear(
+      Company company,
+      String name,
+      String code,
+      LocalDate fromDate,
+      LocalDate toDate,
+      Integer periodDuration,
+      int typeSelect);
 
   List<Period> generatePeriods(Year year) throws AxelorException;
+
+  List<Period> generatePeriods(
+      Year year,
+      LocalDate periodToDate,
+      LocalDate toDate,
+      Integer periodNumber,
+      LocalDate fromDate,
+      Integer duration)
+      throws AxelorException;
 }

@@ -60,7 +60,6 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderService bankOrderService;
-  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
@@ -93,10 +92,10 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         accountManagementAccountService,
         invoicePaymentToolService,
         dateService,
-        moveLineInvoiceTermService);
+        moveLineInvoiceTermService,
+        invoiceTermService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
-    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -159,6 +158,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
       throws AxelorException {
 
+    // Payment date has been initialized at creation. But BankOrder may be validate on a later date
+    // So updating paymentDate
+    invoicePayment.setPaymentDate(invoicePayment.getBankOrder().getBankOrderDate());
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     Company company = invoicePayment.getInvoice().getCompany();

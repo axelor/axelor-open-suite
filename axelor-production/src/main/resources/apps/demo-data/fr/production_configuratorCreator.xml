@@ -68,9 +68,6 @@
             <durationPerCycle>1800</durationPerCycle>
             <durationPerCycleFormula></durationPerCycleFormula>
             <defDurationFormula>false</defDurationFormula>
-            <timingOfImplementation></timingOfImplementation>
-            <timingOfImplementationFormula></timingOfImplementationFormula>
-            <defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
             <configuratorProdProductList></configuratorProdProductList>
           </configuratorProdProcessLine>
 
@@ -94,9 +91,6 @@
             <durationPerCycle>1800</durationPerCycle>
             <durationPerCycleFormula></durationPerCycleFormula>
             <defDurationFormula>false</defDurationFormula>
-            <timingOfImplementation></timingOfImplementation>
-            <timingOfImplementationFormula></timingOfImplementationFormula>
-            <defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
             <configuratorProdProductList></configuratorProdProductList>
           </configuratorProdProcessLine>
 
@@ -120,9 +114,6 @@
             <durationPerCycle>3600</durationPerCycle>
             <durationPerCycleFormula></durationPerCycleFormula>
             <defDurationFormula>false</defDurationFormula>
-            <timingOfImplementation></timingOfImplementation>
-            <timingOfImplementationFormula></timingOfImplementationFormula>
-            <defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
             <configuratorProdProductList></configuratorProdProductList>
           </configuratorProdProcessLine>
         </configuratorProdProcessLineList>
@@ -1051,6 +1042,7 @@ return cp*nbOrdi_1
 
       <authorizedUserSet>
         <authorizedUser>admin</authorizedUser>
+        <authorizedUser>admin-fr</authorizedUser>
       </authorizedUserSet>
 
       <authorizedGroupSet>
@@ -1545,6 +1537,7 @@ return cp*nbOrdi_1
 
       <authorizedUserSet>
         <authorizedUser>admin</authorizedUser>
+        <authorizedUser>admin-fr</authorizedUser>
       </authorizedUserSet>
 
       <authorizedGroupSet>

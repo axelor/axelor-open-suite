@@ -11,6 +11,8 @@
         onChange="action-app-sale-attrs-manage-sale-order-version-onchange"/>
       <field name="printingOnSOFinalization" widget="boolean-switch"
         readonlyIf="manageSaleOrderVersion"/>
+      <field name="isPastVersionRecovery" widget="boolean-switch"
+        readonlyIf="!manageSaleOrderVersion"/>
       <field name="enableConfigurator" widget="boolean-switch"/>
       <field name="allowPendingOrderModification" widget="boolean-switch"/>
       <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
@@ -33,6 +35,7 @@
           widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
           showIf="enablePricingScale"/>
       </panel>
+      <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
@@ -57,6 +60,8 @@
   <action-attrs name="action-app-sale-attrs-manage-sale-order-version-onchange">
     <attribute name="value" expr="eval: true" for="printingOnSOFinalization"
       if="manageSaleOrderVersion"/>
+    <attribute name="value" expr="eval: false" for="isPastVersionRecovery"
+      if="!manageSaleOrderVersion"/>
   </action-attrs>
 
   <action-attrs name="action-sale-attrs-set-hidden"

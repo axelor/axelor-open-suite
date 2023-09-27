@@ -87,6 +87,7 @@
 "Expense",,,
 "Expense Lines",,,
 "Expense Lines Priority",,,
+"Expense line successfully created. The project is configured as billable, so the charge has been marked as billable by default.",,,
 "Expense lines",,,
 "Expenses",,,
 "ExpensesTotal",,,

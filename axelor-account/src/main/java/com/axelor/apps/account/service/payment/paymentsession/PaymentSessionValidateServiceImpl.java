@@ -1133,13 +1133,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected void recomputeAmountPaid(MoveLine moveLine) {
     if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      Optional<BigDecimal> amountPaid =
-          moveLine.getInvoiceTermList().stream()
-              .map(it -> it.getPaymentAmount())
-              .reduce(BigDecimal::add);
-      if (amountPaid.isPresent()) {
-        moveLine.setAmountPaid(amountPaid.get());
-      }
+      moveLine.getInvoiceTermList().stream()
+          .filter(InvoiceTerm::getIsPaid)
+          .map(InvoiceTerm::getPaymentAmount)
+          .reduce(BigDecimal::add)
+          .ifPresent(moveLine::setAmountPaid);
     }
   }
 }
