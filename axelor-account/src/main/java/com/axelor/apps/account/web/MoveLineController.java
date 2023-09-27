@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -255,7 +256,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+      Beans.get(MoveLineFinancialDiscountService.class).computeFinancialDiscount(moveLine);
 
       response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
       response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());

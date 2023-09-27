@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -50,6 +51,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineRecordService moveLineRecordService;
   protected AnalyticAttrsService analyticAttrsService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineMassEntryGroupServiceImpl(
@@ -63,7 +65,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineCheckService moveLineCheckService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveLineRecordService moveLineRecordService,
-      AnalyticAttrsService analyticAttrsService) {
+      AnalyticAttrsService analyticAttrsService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.massEntryService = massEntryService;
     this.moveLineGroupService = moveLineGroupService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -75,6 +78,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineRecordService = moveLineRecordService;
     this.analyticAttrsService = analyticAttrsService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   public MoveLineMassEntry initializeValues(MoveLineMassEntry moveLine, Move move)
@@ -101,7 +105,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
 
     valuesMap.put("inputAction", moveLine.getInputAction());
     valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
@@ -167,7 +171,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
 
     Map<String, Object> valuesMap = new HashMap<>();
 

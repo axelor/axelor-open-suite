@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -55,6 +56,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
@@ -63,13 +65,15 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       MoveLineService moveLineService,
       MoveLineCreateService moveLineCreateService,
       MoveLineToolService moveLineToolService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineService = moveLineService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   @Override
@@ -190,7 +194,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (moveLine.getPartner() != null
         && appAccountService.getAppAccount().getManageFinancialDiscount()) {
       moveLine.setFinancialDiscount(moveLine.getPartner().getFinancialDiscount());
-      moveLineService.computeFinancialDiscount(moveLine);
+      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
     }
   }
 

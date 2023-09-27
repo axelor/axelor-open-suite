@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -57,15 +58,18 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineControlServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineService moveLineService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   @Override
@@ -178,7 +182,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
       if (!isCompanyAmount) {
         if (invoiceAttached == null) {
-          moveLineService.computeFinancialDiscount(moveLine);
+          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
         } else {
           invoiceTermList.forEach(
               it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
