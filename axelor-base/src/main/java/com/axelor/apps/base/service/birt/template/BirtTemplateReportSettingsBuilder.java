@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -98,9 +99,16 @@ class BirtTemplateReportSettingsBuilder {
   }
 
   public ReportSettings build() throws AxelorException {
-    computeBirtParameters();
-    settings.generate();
-    return settings;
+    try {
+      computeBirtParameters();
+      settings.generate();
+      return settings;
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
   }
 
   private void computeBirtParameters() throws AxelorException {
@@ -115,7 +123,7 @@ class BirtTemplateReportSettingsBuilder {
         settings.addParam(
             birtTemplateParameter.getName(),
             convertValue(birtTemplateParameter.getType(), parseValue));
-      } catch (BirtException e) {
+      } catch (Exception e) {
         throw new AxelorException(
             e,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

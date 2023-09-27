@@ -21,6 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -94,7 +95,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
     if (errorCount > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get("The file could not be generated"));
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
     String fileName = getOutputFileName(birtTemplate);
 
