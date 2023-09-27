@@ -138,9 +138,11 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
       deprecationValue =
           fixedAsset
               .getGrossValue()
-              .divide(BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()))
               .multiply(prorataTemporis)
-              .setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
+              .divide(
+                  BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
+                  FixedAssetServiceImpl.RETURNED_SCALE,
+                  RoundingMode.HALF_UP);
     } else {
       deprecationValue =
           firstPlannedLine
