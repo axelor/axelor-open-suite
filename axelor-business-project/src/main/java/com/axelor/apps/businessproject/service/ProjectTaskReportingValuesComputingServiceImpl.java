@@ -293,20 +293,19 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       ProjectTask projectTask, boolean unitIsTimeUnit, BigDecimal landingUnitCost) {
     BigDecimal landingCosts;
 
-    if (unitIsTimeUnit) {
-      landingCosts =
-          projectTask
-              .getRealCosts()
-              .add(
-                  projectTask
-                      .getUpdatedTime()
-                      .subtract(projectTask.getSpentTime())
-                      .multiply(landingUnitCost))
-              .setScale(RESULT_SCALE, RoundingMode.HALF_UP);
+    if (projectTask.getStatus().getIsCompleted()) {
+      landingCosts = projectTask.getRealCosts();
     } else {
       landingCosts =
-          projectTask.getStatus().getIsCompleted()
-              ? projectTask.getRealCosts()
+          unitIsTimeUnit
+              ? projectTask
+                  .getRealCosts()
+                  .add(
+                      projectTask
+                          .getUpdatedTime()
+                          .subtract(projectTask.getSpentTime())
+                          .multiply(landingUnitCost))
+                  .setScale(RESULT_SCALE, RoundingMode.HALF_UP)
               : projectTask.getInitialCosts();
     }
 
