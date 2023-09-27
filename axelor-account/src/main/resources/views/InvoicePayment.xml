@@ -58,11 +58,12 @@
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
       <field name="invoice" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
+      <field name="$isPartialPayment" type="boolean" hidden="true"/>
     </panel>
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()"
       readonlyIf="statusSelect > 0 || invoice.amountPaid > 0" showIf="financialDiscount">
-      <field name="applyFinancialDiscount"
+      <field name="applyFinancialDiscount" readonlyIf="$isPartialPayment"
         onChange="action-invoice-payment-group-apply-financial-discount-on-change"/>
       <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"
         requiredIf="applyFinancialDiscount"/>
@@ -145,11 +146,13 @@
     <action name="action-invoice-payment-method-set-is-multi-currency"/>
     <action name="action-invoice-payment-method-filter-payment-mode"/>
     <action name="action-invoice-payment-method-load-invoice-terms"/>
+    <action name="action-invoice-payment-attrs-set-is-partial-payment"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-change-amounts">
     <action name="action-invoice-payment-record-manual-change"/>
     <action name="action-invoice-payment-method-change-amount"/>
+    <action name="action-invoice-payment-attrs-set-is-partial-payment"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-mass-payment-new">
@@ -205,6 +208,11 @@
       expr="eval: _invoice?.operationSubTypeSelect == 2"/>
     <attribute for="currency" name="readonly"
       expr="eval: _invoice?.operationSubTypeSelect == 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-payment-attrs-set-is-partial-payment">
+    <attribute name="value" for="$isPartialPayment"
+      expr="call: com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService:isPartialPayment(__this__)"/>
   </action-attrs>
 
   <action-method name="action-invoice-payment-method-filter-payment-mode">

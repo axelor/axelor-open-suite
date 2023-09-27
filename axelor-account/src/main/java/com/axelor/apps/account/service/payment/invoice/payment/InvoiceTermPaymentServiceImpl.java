@@ -121,16 +121,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       List<InvoiceTerm> invoiceTermsToPay,
       BigDecimal availableAmount,
       BigDecimal reconcileAmount) {
-    int invoiceTermCount = invoiceTermsToPay.size();
-    InvoicePaymentToolService invoicePaymentToolService =
-        Beans.get(InvoicePaymentToolService.class);
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     InvoiceTerm invoiceTermToPay;
     InvoiceTermPayment invoiceTermPayment;
     BigDecimal baseAvailableAmount = availableAmount;
     BigDecimal availableAmountUnchanged = availableAmount;
-
+    int invoiceTermCount = invoiceTermsToPay.size();
     boolean isCompanyCurrency;
+
+    InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService =
+        Beans.get(InvoicePaymentFinancialDiscountService.class);
 
     if (invoicePayment != null) {
       invoicePayment.clearInvoiceTermPaymentList();
@@ -168,7 +168,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         if (invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
           BigDecimal previousAmount =
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
-          invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
+          invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
           availableAmount =
               baseAvailableAmount.subtract(this.getCurrentInvoicePaymentAmount(invoicePayment));
           invoicePayment.setAmount(

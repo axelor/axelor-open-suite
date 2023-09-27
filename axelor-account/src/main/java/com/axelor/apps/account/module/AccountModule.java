@@ -279,6 +279,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
@@ -706,5 +708,8 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineFinancialDiscountService.class).to(MoveLineFinancialDiscountServiceImpl.class);
 
     bind(FinancialDiscountService.class).to(FinancialDiscountServiceImpl.class);
+
+    bind(InvoicePaymentFinancialDiscountService.class)
+        .to(InvoicePaymentFinancialDiscountServiceImpl.class);
   }
 }
