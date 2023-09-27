@@ -356,6 +356,7 @@
   <action-group name="action-group-account-accounting-report-company-onchange">
     <action name="action-accounting-report-method-get-account"/>
     <action name="action-accounting-report-record-reset"/>
+    <action name="action-attrs-accounting-report-attrs-move-status-domain"/>
   </action-group>
 
   <!-- ACTION ATTRS -->
