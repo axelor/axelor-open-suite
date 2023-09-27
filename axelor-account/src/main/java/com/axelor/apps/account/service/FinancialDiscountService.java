@@ -5,5 +5,5 @@ import java.math.BigDecimal;
 
 public interface FinancialDiscountService {
   BigDecimal computeFinancialDiscountTotalAmount(
-      FinancialDiscount financialDiscount, BigDecimal exTaxTotal, BigDecimal taxTotal);
+      FinancialDiscount financialDiscount, BigDecimal inTaxTotal, BigDecimal taxTotal);
 }

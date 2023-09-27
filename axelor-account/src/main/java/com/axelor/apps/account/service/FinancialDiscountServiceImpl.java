@@ -9,8 +9,8 @@ import java.math.RoundingMode;
 public class FinancialDiscountServiceImpl implements FinancialDiscountService {
   @Override
   public BigDecimal computeFinancialDiscountTotalAmount(
-      FinancialDiscount financialDiscount, BigDecimal exTaxTotal, BigDecimal taxTotal) {
-    BigDecimal inTaxTotal = exTaxTotal.add(taxTotal);
+      FinancialDiscount financialDiscount, BigDecimal inTaxTotal, BigDecimal taxTotal) {
+    BigDecimal exTaxTotal = inTaxTotal.subtract(taxTotal);
 
     if (financialDiscount.getDiscountBaseSelect()
         == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {

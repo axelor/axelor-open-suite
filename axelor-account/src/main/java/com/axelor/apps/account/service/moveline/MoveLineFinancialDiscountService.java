@@ -9,6 +9,4 @@ public interface MoveLineFinancialDiscountService {
   LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine);
 
   void computeFinancialDiscount(MoveLine moveLine);
-
-  void computeInvoiceTermsFinancialDiscount(MoveLine moveLine);
 }

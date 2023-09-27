@@ -1,26 +1,32 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.FinancialDiscount;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDiscountService {
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
+  protected FinancialDiscountService financialDiscountService;
 
   @Inject
   public MoveLineFinancialDiscountServiceImpl(
-      AppAccountService appAccountService, InvoiceTermService invoiceTermService) {
+      AppAccountService appAccountService,
+      InvoiceTermService invoiceTermService,
+      FinancialDiscountService financialDiscountService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
+    this.financialDiscountService = financialDiscountService;
   }
 
   @Override
@@ -50,17 +56,11 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
         && moveLine.getAccount().getUseForPartnerBalance()
         && moveLine.getFinancialDiscount() != null) {
       FinancialDiscount financialDiscount = moveLine.getFinancialDiscount();
-      BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());
+      BigDecimal amount = moveLine.getCurrencyAmount().abs();
 
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
-          amount.multiply(
-              financialDiscount
-                  .getDiscountRate()
-                  .divide(
-                      BigDecimal.valueOf(100),
-                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                      RoundingMode.HALF_UP)));
+          this.computeFinancialDiscountTotalAmount(financialDiscount, moveLine, amount));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
     } else {
@@ -73,8 +73,27 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     this.computeInvoiceTermsFinancialDiscount(moveLine);
   }
 
-  @Override
-  public void computeInvoiceTermsFinancialDiscount(MoveLine moveLine) {
+  protected BigDecimal computeFinancialDiscountTotalAmount(
+      FinancialDiscount financialDiscount, MoveLine moveLine, BigDecimal amount) {
+    BigDecimal taxAmount =
+        Optional.of(moveLine).map(MoveLine::getMove).map(Move::getMoveLineList).stream()
+            .flatMap(Collection::stream)
+            .filter(
+                it ->
+                    it.getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))
+            .map(MoveLine::getCurrencyAmount)
+            .map(BigDecimal::abs)
+            .findFirst()
+            .orElse(BigDecimal.ZERO);
+
+    return financialDiscountService.computeFinancialDiscountTotalAmount(
+        financialDiscount, amount, taxAmount);
+  }
+
+  protected void computeInvoiceTermsFinancialDiscount(MoveLine moveLine) {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       moveLine.getInvoiceTermList().stream()
           .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
