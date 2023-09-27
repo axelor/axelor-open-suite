@@ -514,10 +514,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   public List<Long> computeDatasForFinancialDiscount(InvoicePayment invoicePayment, Long invoiceId)
       throws AxelorException {
     List<Long> invoiceTermIdList = null;
+
     if (invoiceId > 0) {
       List<InvoiceTerm> invoiceTerms =
-          Beans.get(InvoiceTermService.class)
-              .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+          invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+
+      invoiceTermIdList =
+          invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
 
       if (!invoicePayment.getApplyFinancialDiscount()) {
         invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
