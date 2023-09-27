@@ -249,6 +249,8 @@ import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
@@ -700,5 +702,9 @@ public class AccountModule extends AxelorModule {
     bind(TradingNameAnalyticService.class).to(TradingNameAnalyticServiceImpl.class);
 
     bind(YearAccountService.class).to(YearAccountServiceImpl.class);
+
+    bind(MoveLineFinancialDiscountService.class).to(MoveLineFinancialDiscountServiceImpl.class);
+
+    bind(FinancialDiscountService.class).to(FinancialDiscountServiceImpl.class);
   }
 }

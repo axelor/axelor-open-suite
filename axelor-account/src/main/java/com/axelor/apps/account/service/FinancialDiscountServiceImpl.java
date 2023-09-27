@@ -1,0 +1,51 @@
+package com.axelor.apps.account.service;
+
+import com.axelor.apps.account.db.FinancialDiscount;
+import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class FinancialDiscountServiceImpl implements FinancialDiscountService {
+  @Override
+  public BigDecimal computeFinancialDiscountTotalAmount(
+      FinancialDiscount financialDiscount, BigDecimal exTaxTotal, BigDecimal taxTotal) {
+    BigDecimal inTaxTotal = exTaxTotal.add(taxTotal);
+
+    if (financialDiscount.getDiscountBaseSelect()
+        == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
+      return this.getFinancialDiscountAmount(financialDiscount, inTaxTotal);
+    } else {
+      BigDecimal financialDiscountAmountWithoutTax =
+          this.getFinancialDiscountAmount(financialDiscount, exTaxTotal);
+
+      BigDecimal financialDiscountTaxAmount =
+          this.getFinancialDiscountTaxAmount(financialDiscount, inTaxTotal, exTaxTotal, taxTotal);
+
+      return financialDiscountAmountWithoutTax.add(financialDiscountTaxAmount);
+    }
+  }
+
+  protected BigDecimal getFinancialDiscountAmount(
+      FinancialDiscount financialDiscount, BigDecimal amount) {
+    return financialDiscount
+        .getDiscountRate()
+        .multiply(amount)
+        .divide(
+            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getFinancialDiscountTaxAmount(
+      FinancialDiscount financialDiscount,
+      BigDecimal inTaxTotal,
+      BigDecimal exTaxTotal,
+      BigDecimal taxTotal) {
+    return taxTotal
+        .multiply(exTaxTotal)
+        .multiply(financialDiscount.getDiscountRate())
+        .divide(
+            inTaxTotal.multiply(BigDecimal.valueOf(100)),
+            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+            RoundingMode.HALF_UP);
+  }
+}
