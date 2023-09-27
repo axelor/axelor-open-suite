@@ -215,7 +215,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         for (OperationOrder operationOrder : operationOrders) {
           operationOrderWorkflowService.plan(operationOrder, useAsapScheduling);
         }
-        //Updating plannedStartDate since, it may be differents now that operation orders are planned
+        // Updating plannedStartDate since, it may be differents now that operation orders are
+        // planned
         manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
       }
     }
