@@ -334,9 +334,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .map(InvoiceTerm::getCompanyAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-      if (totalMoveLineInvoiceTerm.compareTo(
-              moveLine.getDebit().max(moveLine.getCredit()).add(financialDiscount))
-          != 0) {
+      if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_INCONSISTENCY,

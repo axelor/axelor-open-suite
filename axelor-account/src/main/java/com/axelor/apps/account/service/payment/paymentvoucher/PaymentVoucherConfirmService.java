@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
@@ -450,6 +449,7 @@ public class PaymentVoucherConfirmService {
       // Create move lines for payment lines
       BigDecimal paidLineTotal = BigDecimal.ZERO;
       BigDecimal financialDiscountAmount = BigDecimal.ZERO;
+      BigDecimal companyPaidAmount = BigDecimal.ZERO;
       int moveLineNo = 1;
 
       boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
@@ -468,22 +468,25 @@ public class PaymentVoucherConfirmService {
 
         if (amountToPay.compareTo(BigDecimal.ZERO) > 0) {
           paidLineTotal = paidLineTotal.add(amountToPay);
-          this.payMoveLine(
-              move,
-              moveLineNo++,
-              payerPartner,
-              moveLineToPay,
-              amountToPay,
-              payVoucherElementToPay,
-              isDebitToPay,
-              paymentDate);
+          MoveLine payMoveLine =
+              this.payMoveLine(
+                  move,
+                  moveLineNo++,
+                  payerPartner,
+                  moveLineToPay,
+                  amountToPay,
+                  payVoucherElementToPay,
+                  isDebitToPay,
+                  paymentDate);
+
+          companyPaidAmount =
+              companyPaidAmount.add(payMoveLine.getDebit().max(payMoveLine.getCredit()));
 
           if (payVoucherElementToPay.getApplyFinancialDiscount()
               && payVoucherElementToPay.getFinancialDiscount() != null) {
             hasFinancialDiscount = true;
             boolean financialDiscountVat =
-                payVoucherElementToPay.getFinancialDiscount().getDiscountBaseSelect()
-                    == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
+                payVoucherElementToPay.getFinancialDiscountTaxAmount().signum() > 0;
 
             moveLineNo =
                 this.createFinancialDiscountMoveLines(
@@ -518,12 +521,6 @@ public class PaymentVoucherConfirmService {
       // on the same account as the moveLine (excess payment)
       // in the else case we create a classical balance on the bank account of the
       // payment mode
-      BigDecimal companyPaidAmount =
-          move.getMoveLineList().stream()
-              .map(ml -> ml.getCredit().add(ml.getDebit()))
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
       if (paymentVoucher.getRemainingAmount().signum() > 0) {
         companyPaidAmount =
@@ -582,11 +579,11 @@ public class PaymentVoucherConfirmService {
       move.getMoveLineList().add(moveLine);
       // Check if the paid amount is > paid lines total
       // Then Use Excess payment on old invoices / moveLines
-      if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0 || hasFinancialDiscount) {
+      if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0) {
         BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
-        if (hasFinancialDiscount) {
+        /*if (hasFinancialDiscount) {
           remainingPaidAmount = remainingPaidAmount.add(financialDiscountAmount);
-        }
+        }*/
 
         // TODO rajouter le process d'imputation automatique
         // if(paymentVoucher.getHasAutoInput()) {
