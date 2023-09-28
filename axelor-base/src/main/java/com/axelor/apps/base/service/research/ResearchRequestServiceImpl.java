@@ -374,7 +374,7 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(BaseExceptionMessage.RESEARCH_RESULT_NO_VIEW_PARAMETRIZED), simpleName));
+                I18n.get(BaseExceptionMessage.RESEARCH_RESULT_NO_VIEW_CONFIGURED), simpleName));
       }
 
       return ActionView.define(I18n.get(viewTitle))
