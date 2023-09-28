@@ -126,7 +126,7 @@ public class PeriodServiceImpl implements PeriodService {
     }
   }
 
-  public void close(Period period) throws AxelorException {
+  public void close(Period period) {
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       adjustHistoryService.setEndDate(period);
     }
