@@ -249,6 +249,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
     prodProcessLine.setDurationPerCycle(durationPerCycle);
+    prodProcessLine.setHumanDuration(humanDuration);
 
     if (isConsProOnOperation) {
       List<ConfiguratorProdProduct> confProdProductLines =

@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.purchaseorder;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
@@ -201,7 +202,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         String alertMessage =
-            purchaseOrderLineBudgetService.computeBudgetDistribution(purchaseOrderLine);
+            purchaseOrderLineBudgetService.computeBudgetDistribution(
+                purchaseOrder, purchaseOrderLine);
         if (Strings.isNullOrEmpty(alertMessage)) {
           purchaseOrder.setBudgetDistributionGenerated(true);
         } else {
@@ -218,10 +220,11 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       throws AxelorException {
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
-        budgetService.validateBudgetDistributionAmounts(
-            poLine.getBudgetDistributionList(),
-            poLine.getCompanyExTaxTotal(),
-            poLine.getProduct().getCode());
+        Product product = poLine.getProduct();
+        if (product != null) {
+          budgetService.validateBudgetDistributionAmounts(
+              poLine.getBudgetDistributionList(), poLine.getCompanyExTaxTotal(), product.getCode());
+        }
       }
     }
   }

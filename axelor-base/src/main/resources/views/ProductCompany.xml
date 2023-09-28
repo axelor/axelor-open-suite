@@ -20,7 +20,8 @@
     onLoad="action-product-company-attrs-scale-and-precision,action-product-company-attrs-change-title-based-on-inAti,action-product-company-attrs-company-domain">
     <panel name="mainPanel" colSpan="12">
       <field name="product" readonly="true" form-view="product-form"/>
-      <field name="company" required="true"/>
+      <field name="company" required="true"
+        onChange="action-product-company-record-set-currency"/>
     </panel>
     <panel name="overridePanel" title="Company-specific information">
       <field name="sellable"/>
@@ -93,5 +94,11 @@
     <attribute name="domain" for="defaultBillOfMaterial"
       expr="eval: &quot;self.product.id = ${product?.id} AND self.company.id = ${company?.id} AND self.defineSubBillOfMaterial = true&quot;"/>
   </action-attrs>
+
+  <action-record name="action-product-company-record-set-currency"
+    model="com.axelor.apps.base.db.ProductCompany">
+    <field name="saleCurrency,purchaseCurrency" expr="eval: company?.currency"
+      if="company?.currency"/>
+  </action-record>
 
 </object-views>

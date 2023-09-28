@@ -41,8 +41,10 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -82,6 +84,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AccountManagementAccountService accountManagementAccountService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected DateService dateService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -96,7 +100,9 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
       InvoicePaymentToolService invoicePaymentToolService,
-      DateService dateService) {
+      DateService dateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoiceTermService invoiceTermService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -110,6 +116,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.accountManagementAccountService = accountManagementAccountService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.dateService = dateService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -250,6 +258,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             getOriginFromInvoicePayment(invoicePayment),
             description,
             invoice.getCompanyBankDetails());
+    move.setPaymentCondition(null);
 
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
@@ -355,7 +364,22 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (maxAmount != null) {
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
+
     BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+    companyPaymentAmount =
+        companyPaymentAmount.subtract(
+            invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));
+
+    companyPaymentAmount =
+        invoiceTermService.adjustAmountInCompanyCurrency(
+            invoice.getInvoiceTermList(),
+            invoice.getCompanyInTaxTotalRemaining(),
+            companyPaymentAmount,
+            paymentAmount,
+            invoice.getMove().getMoveLineList().stream()
+                .map(MoveLine::getCurrencyRate)
+                .findAny()
+                .orElse(BigDecimal.ONE));
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -470,6 +494,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, paymentDate, false);
+    }
+
     return move;
   }
 

@@ -808,13 +808,25 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     copyStockMoveLines(newStockMove, stockMoveLines, split);
 
-    if (ObjectUtils.isEmpty(newStockMove.getStockMoveLineList())) {
+    List<StockMoveLine> newStockMoveLineList = newStockMove.getStockMoveLineList();
+
+    if (ObjectUtils.isEmpty(newStockMoveLineList)) {
       return Optional.empty();
     }
+
+    reverseStockMoveLineStockLocation(stockMove, newStockMoveLineList);
 
     fillNewStockMoveFields(newStockMove, stockMove);
 
     return Optional.of(stockMoveRepo.save(newStockMove));
+  }
+
+  protected void reverseStockMoveLineStockLocation(
+      StockMove stockMove, List<StockMoveLine> newStockMoveLineList) {
+    for (StockMoveLine stockMoveLine : newStockMoveLineList) {
+      stockMoveLine.setFromStockLocation(stockMove.getToStockLocation());
+      stockMoveLine.setToStockLocation(stockMove.getFromStockLocation());
+    }
   }
 
   protected void copyStockMoveLines(
@@ -1442,7 +1454,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (fromStockLocation == null) {
-        fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          fromStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        } else {
+          fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        }
       }
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
       fromStockLocation =
@@ -1450,7 +1466,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (fromStockLocation == null) {
-        fromStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          fromStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        } else {
+          fromStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        }
       }
     }
     return fromStockLocation;
@@ -1471,7 +1491,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (toStockLocation == null) {
-        toStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          toStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        } else {
+          toStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        }
       }
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
       toStockLocation =
@@ -1479,7 +1503,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (toStockLocation == null) {
-        toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          toStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        } else {
+          toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        }
       }
     }
     return toStockLocation;

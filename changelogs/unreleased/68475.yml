@@ -1,0 +1,3 @@
+---
+title: "Invoice term : Fix wrong amount computation at invoice term generation with hold back"
+type: fix

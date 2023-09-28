@@ -672,13 +672,17 @@ public class DebtRecoveryService {
       throw new AxelorException(
           debtRecovery,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "%s :\n" + I18n.get("Partner") + " %s, " + I18n.get("Company") + " %s : " + tradingName
-                  != null
-              ? I18n.get("Trading name") + " %s : "
-              : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
+          "%s :\n"
+              + I18n.get("Partner")
+              + " %s, "
+              + I18n.get("Company")
+              + " %s : "
+              + (tradingName != null ? I18n.get("Trading name") + " %s : " : "")
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName(),
-          company.getName());
+          company.getName(),
+          tradingName != null ? tradingName.getName() : "");
     }
   }
 

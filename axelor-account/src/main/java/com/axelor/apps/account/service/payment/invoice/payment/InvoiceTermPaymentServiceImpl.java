@@ -110,7 +110,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
     if (CollectionUtils.isNotEmpty(invoiceTerms)) {
       this.initInvoiceTermPaymentsWithAmount(
-          invoicePayment, invoiceTerms, invoicePayment.getAmount());
+          invoicePayment, invoiceTerms, invoicePayment.getAmount(), invoicePayment.getAmount());
     }
   }
 
@@ -118,7 +118,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
-      BigDecimal availableAmount) {
+      BigDecimal availableAmount,
+      BigDecimal reconcileAmount) {
     int invoiceTermCount = invoiceTermsToPay.size();
     InvoicePaymentToolService invoicePaymentToolService =
         Beans.get(InvoicePaymentToolService.class);
@@ -126,8 +127,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     InvoiceTerm invoiceTermToPay;
     InvoiceTermPayment invoiceTermPayment;
     BigDecimal baseAvailableAmount = availableAmount;
+    BigDecimal availableAmountUnchanged = availableAmount;
 
-    boolean isCompanyCurrency = false;
+    boolean isCompanyCurrency;
 
     if (invoicePayment != null) {
       invoicePayment.clearInvoiceTermPaymentList();
@@ -139,10 +141,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           this.getInvoiceTermToPay(
               invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
 
-      if (invoicePayment != null) {
-        isCompanyCurrency =
-            invoicePayment.getCurrency().equals(invoiceTermToPay.getCompany().getCurrency());
-      }
+      isCompanyCurrency =
+          invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
 
       BigDecimal invoiceTermAmount =
           isCompanyCurrency
@@ -175,6 +175,19 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           invoicePayment.setTotalAmountWithFinancialDiscount(
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
         }
+      }
+
+      if (availableAmountUnchanged.compareTo(reconcileAmount) != 0
+          && availableAmount.signum() <= 0) {
+        BigDecimal totalInCompanyCurrency =
+            invoiceTermPaymentList.stream()
+                .map(InvoiceTermPayment::getCompanyPaidAmount)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        BigDecimal diff = reconcileAmount.subtract(totalInCompanyCurrency);
+        BigDecimal companyPaidAmount = invoiceTermPayment.getCompanyPaidAmount().add(diff);
+
+        invoiceTermPayment.setCompanyPaidAmount(companyPaidAmount);
       }
     }
 
@@ -259,8 +272,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
 
     boolean isCompanyCurrency =
-        invoicePayment == null
-            || invoicePayment.getCurrency().equals(invoiceTermToPay.getCompany().getCurrency());
+        invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
     invoiceTermPayment.setPaidAmount(
         isCompanyCurrency ? this.computePaidAmount(invoiceTermToPay, paidAmount) : paidAmount);
     invoiceTermPayment.setCompanyPaidAmount(

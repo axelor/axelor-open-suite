@@ -101,8 +101,7 @@
 
   <!-- Search results -->
   <grid model="com.axelor.utils.db.Wizard" title="result" name="search-result-grid"
-    canEdit="false" edit-icon="false">
-    <field name="selected" widget="RadioSelect"/>
+    canEdit="false" edit-icon="false" x-selector="checkbox">
     <field name="type"/>
     <field name="typeClass" hidden="true"/>
     <field name="lastName"/>

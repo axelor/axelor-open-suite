@@ -124,10 +124,14 @@ import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductCompanyServiceImpl;
+import com.axelor.apps.base.service.ProductConversionService;
+import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
+import com.axelor.apps.base.service.ProductUpdateService;
+import com.axelor.apps.base.service.ProductUpdateServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
@@ -154,6 +158,8 @@ import com.axelor.apps.base.service.advanced.imports.SearchCallService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallServiceImpl;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
+import com.axelor.apps.base.service.api.ResponseComputeService;
+import com.axelor.apps.base.service.api.ResponseComputeServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
@@ -343,5 +349,8 @@ public class BaseModule extends AxelorModule {
     bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
     bind(DayPlanningService.class).to(DayPlanningServiceImpl.class);
     bind(AnonymizerLineService.class).to(AnonymizerLineServiceImpl.class);
+    bind(ProductUpdateService.class).to(ProductUpdateServiceImpl.class);
+    bind(ProductConversionService.class).to(ProductConversionServiceImpl.class);
+    bind(ResponseComputeService.class).to(ResponseComputeServiceImpl.class);
   }
 }

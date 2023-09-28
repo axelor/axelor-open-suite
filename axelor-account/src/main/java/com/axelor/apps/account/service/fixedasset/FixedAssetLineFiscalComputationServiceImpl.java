@@ -42,7 +42,8 @@ public class FixedAssetLineFiscalComputationServiceImpl
 
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && fixedAsset.getFailoverDate().isAfter(fixedAsset.getFirstDepreciationDate())) {
       return fixedAsset.getFailoverDate();
     }
     return fixedAsset.getFiscalFirstDepreciationDate();

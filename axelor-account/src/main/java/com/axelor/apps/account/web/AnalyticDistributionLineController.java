@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -38,6 +37,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ContextTool;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -71,9 +71,13 @@ public class AnalyticDistributionLineController {
   public void manageNewAnalyticDistributionLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class)
+              .getParentWithContext(request, response, analyticMoveLine);
+
+      if (parent != null) {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
         response.setValue("analyticJournal", analyticMoveLineService.getAnalyticJournal(parent));
         response.setValue("date", analyticMoveLineService.getDate(parent));
@@ -87,16 +91,15 @@ public class AnalyticDistributionLineController {
   public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
-        response.setValue(
-            "amount",
-            Beans.get(AnalyticLineService.class)
-                .getAnalyticAmountFromParent(parent, analyticMoveLine));
-      }
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
 
+      AnalyticLine parent =
+          Beans.get(AnalyticControllerUtils.class)
+              .getParentWithContext(request, response, analyticMoveLine);
+      response.setValue(
+          "amount",
+          Beans.get(AnalyticLineService.class)
+              .getAnalyticAmountFromParent(parent, analyticMoveLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -113,8 +116,7 @@ public class AnalyticDistributionLineController {
       company = analyticDistributionTemplate.getCompany();
     } else {
       company =
-          Beans.get(AnalyticToolService.class)
-              .getFieldFromContextParent(request.getContext(), "company", Company.class);
+          ContextTool.getFieldFromContextParent(request.getContext(), "company", Company.class);
     }
     if (company != null) {
       response.setAttr(
