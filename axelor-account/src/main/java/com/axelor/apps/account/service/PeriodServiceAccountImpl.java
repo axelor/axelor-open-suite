@@ -63,8 +63,10 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     this.moveRemoveService = moveRemoveService;
   }
 
+  @Override
+  // must not rollback on AxelorException
   @Transactional
-  public void close(Period period) throws AxelorException {
+  public void close(Period period) {
     try {
       if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
         moveValidateService.accountingMultiple(

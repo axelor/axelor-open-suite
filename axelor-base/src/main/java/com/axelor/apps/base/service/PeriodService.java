@@ -44,7 +44,7 @@ public interface PeriodService {
 
   public void testOpenPeriod(Period period) throws AxelorException;
 
-  public void close(Period period) throws AxelorException;
+  public void close(Period period);
 
   public void closeTemporarily(Period period) throws AxelorException;
 
