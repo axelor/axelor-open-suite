@@ -10,7 +10,10 @@
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true"/>
     <integer name="origin" title="Origin" required="true"
-      selection="quality.qi.detection.origin.select" default="1"/>
+      selection="quality.qi.detection.origin.select"/>
+    <boolean name="isProductOrigin" title="Product"/>
+    <boolean name="isSystemOrigin" title="System"/>
+    <boolean name="isCausalAnalysis" title="Causal analysis"/>
 
     <extra-code><![CDATA[
 	    public static final int ORIGIN_SUPPLIER = 1;

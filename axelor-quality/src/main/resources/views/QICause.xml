@@ -7,9 +7,7 @@
     <field name="code"/>
     <field name="name"/>
     <field name="company"/>
-    <field name="branchSelect"/>
-    <field name="isProductCause"/>
-    <field name="isSystemCause"/>
+    <field name="branch"/>
   </grid>
 
   <form name="qi-cause-form" title="Cause" model="com.axelor.apps.quality.db.QICause">
@@ -17,9 +15,8 @@
       <field name="code"/>
       <field name="name"/>
       <field name="company" grid-view="company-grid" form-view="company-form"/>
-      <field name="branchSelect"/>
-      <field name="isProductCause"/>
-      <field name="isSystemCause"/>
+      <field name="branch" grid-view="qi-analysis-method-grid"
+        form-view="qi-analysis-method-form"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
