@@ -417,16 +417,22 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
+  public void checkIfEnoughStock(
+      StockLocation stockLocation, Product product, Unit unit, BigDecimal qty)
       throws AxelorException {
 
-    if (Boolean.FALSE.equals(product.getStockManaged())) {
+    if (!product.getStockManaged()) {
       return;
     }
 
     StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
+    if (stockLocationLine == null) {
+      return;
+    }
+    BigDecimal convertedQty =
+        unitConversionService.convert(unit, stockLocationLine.getUnit(), qty, qty.scale(), product);
 
-    if (stockLocationLine != null && stockLocationLine.getCurrentQty().compareTo(qty) < 0) {
+    if (stockLocationLine.getCurrentQty().compareTo(convertedQty) < 0) {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
