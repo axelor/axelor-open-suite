@@ -780,8 +780,7 @@
     model="com.axelor.apps.account.db.Move">
     <field name="companyCurrency" expr="eval: company?.currency"/>
     <field name="$companyCurrencyCodeIso" expr="eval: company?.currency?.codeISO"/>
-    <field name="currency" expr="eval: company?.currency"
-      if="partner != null &amp;&amp; company != null &amp;&amp; !partner.companySet.contains(company)"/>
+    <field name="currency" expr="eval: company?.currency"/>
     <field name="partner" expr="null"
       if="partner != null &amp;&amp; company != null &amp;&amp; !partner.companySet.contains(company)"/>
     <field name="currencyCode" expr="eval: company?.currency?.codeISO"/>
