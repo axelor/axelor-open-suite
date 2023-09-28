@@ -1061,14 +1061,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     if (moveLine != null) {
-      if (out) {
-        moveLine.setCredit(moveLine.getCredit().add(pair.getRight()));
-      } else {
-        moveLine.setDebit(moveLine.getDebit().add(pair.getRight()));
-      }
-
-      moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(pair.getRight()));
-
+      this.updateMoveLine(moveLine, pair.getRight(), out);
     } else {
       moveLine =
           this.generateMoveLine(
@@ -1107,6 +1100,28 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         invoiceTerm.getMoveLine().getMove(),
         paymentSession,
         true);
+  }
+
+  protected void updateMoveLine(MoveLine moveLine, BigDecimal amountToAdd, boolean out) {
+    if (out) {
+      moveLine.setCredit(moveLine.getCredit().add(amountToAdd));
+    } else {
+      moveLine.setDebit(moveLine.getDebit().add(amountToAdd));
+    }
+
+    moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(amountToAdd));
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      InvoiceTerm invoiceTerm = moveLine.getInvoiceTermList().get(0);
+
+      BigDecimal newAmount = moveLine.getCurrencyAmount();
+      BigDecimal amountPaid = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
+
+      invoiceTerm.setAmountRemaining(newAmount.subtract(amountPaid));
+      invoiceTerm.setAmount(newAmount);
+      invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getAmountRemaining());
+      invoiceTerm.setCompanyAmount(invoiceTerm.getAmount());
+    }
   }
 
   @Override
