@@ -144,7 +144,8 @@ public class DebtRecoveryService {
                       .map(User::getActiveCompany)
                       .orElse(null));
       for (MoveLine moveLine : moveLineList) {
-        if (minMoveLineDate.isAfter(moveLine.getDueDate())) {
+        LocalDate moveLineDueDate = moveLine.getDueDate();
+        if (moveLineDueDate != null && minMoveLineDate.isAfter(moveLineDueDate)) {
           minMoveLineDate = moveLine.getDueDate();
         }
       }
