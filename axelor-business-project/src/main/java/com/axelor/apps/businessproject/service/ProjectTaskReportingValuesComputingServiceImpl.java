@@ -334,19 +334,21 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       realCost = timeSpent.multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP);
     }
 
-    realCost =
-        realCost.add(
-            projectTask.getPurchaseOrderLineList().stream()
-                .filter(
-                    purchaseOrderLine -> {
-                      Integer purchaseOrderStatus =
-                          purchaseOrderLine.getPurchaseOrder().getStatusSelect();
-                      return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
-                          || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
-                    })
-                .map(PurchaseOrderLine::getExTaxTotal)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO));
+    if (projectTask.getPurchaseOrderLineList() != null) {
+      realCost =
+          realCost.add(
+              projectTask.getPurchaseOrderLineList().stream()
+                  .filter(
+                      purchaseOrderLine -> {
+                        Integer purchaseOrderStatus =
+                            purchaseOrderLine.getPurchaseOrder().getStatusSelect();
+                        return purchaseOrderStatus == PurchaseOrderRepository.STATUS_VALIDATED
+                            || purchaseOrderStatus == PurchaseOrderRepository.STATUS_FINISHED;
+                      })
+                  .map(PurchaseOrderLine::getExTaxTotal)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO));
+    }
 
     // add subtask real cost
     for (ProjectTask task : projectTask.getProjectTaskList()) {

@@ -173,6 +173,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     ProjectTask task = super.create(subject, project, assignedTo);
     task.setProjectTaskList(new ArrayList<>());
     task.setProjectPlanningTimeList(new ArrayList<>());
+    task.setPurchaseOrderLineList(new ArrayList<>());
     task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
