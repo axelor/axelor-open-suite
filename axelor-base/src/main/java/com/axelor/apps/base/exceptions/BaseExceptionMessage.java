@@ -614,4 +614,7 @@ public final class BaseExceptionMessage {
 
   public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
       "Error while accessing certificate information." /*)*/;
+
+  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
+      "No view configured for model %s." /*)*/;
 }
