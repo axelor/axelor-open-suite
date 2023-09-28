@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -38,6 +39,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -244,7 +246,12 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
               || reconcile.getCreditMoveLine().getMove().getFunctionalOriginSelect()
                   == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT;
     }
-    if (!invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
+    if (!invoicePayment.getApplyFinancialDiscount()
+        && !invoicePayment.getManualChange()
+        && Optional.of(invoicePayment)
+            .map(InvoicePayment::getMove)
+            .map(Move::getPaymentVoucher)
+            .isEmpty()) {
       invoicePayment.setApplyFinancialDiscount(
           invoiceTerm.getFinancialDiscountDeadlineDate() != null
               && invoiceTerm.getApplyFinancialDiscount()

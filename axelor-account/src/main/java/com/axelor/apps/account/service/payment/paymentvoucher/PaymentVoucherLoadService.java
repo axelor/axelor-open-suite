@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -297,7 +298,7 @@ public class PaymentVoucherLoadService {
                 payVoucherElementToPay.getCurrency(),
                 amountRemaining,
                 paymentDate)
-            .setScale(2, RoundingMode.HALF_UP);
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     BigDecimal amountImputedInElementCurrency =
         amountRemainingInElementCurrency.min(payVoucherElementToPay.getRemainingAmount());
@@ -309,7 +310,7 @@ public class PaymentVoucherLoadService {
                 paymentVoucher.getCurrency(),
                 amountImputedInElementCurrency,
                 paymentDate)
-            .setScale(2, RoundingMode.HALF_UP);
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     payVoucherElementToPay.setAmountToPay(amountImputedInElementCurrency);
     payVoucherElementToPay.setAmountToPayCurrency(amountImputedInPayVouchCurrency);
