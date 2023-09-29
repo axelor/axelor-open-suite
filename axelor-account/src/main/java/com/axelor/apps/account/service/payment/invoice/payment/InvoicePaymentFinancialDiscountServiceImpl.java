@@ -46,6 +46,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
                 it ->
                     it.getInvoiceTerm() != null
                         && it.getInvoiceTerm().getApplyFinancialDiscount()
+                        && !invoiceTermService.isPartiallyPaid(it.getInvoiceTerm())
                         && !invoicePayment
                             .getPaymentDate()
                             .isAfter(it.getInvoiceTerm().getFinancialDiscountDeadlineDate()))

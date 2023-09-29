@@ -391,8 +391,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       invoicePayment.setInvoice(invoice);
 
       List<InvoiceTerm> invoiceTerms =
-          Beans.get(InvoiceTermService.class)
-              .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+          invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
 
       if (CollectionUtils.isEmpty(invoiceTerms)) {
         return invoiceTermIdList;
@@ -401,6 +400,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       invoicePayment =
           invoiceTermPaymentService.initInvoiceTermPayments(
               invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
+
+      if (this.isPartialPayment(invoicePayment)) {
+        invoicePayment.setApplyFinancialDiscount(false);
+
+        invoicePayment.clearInvoiceTermPaymentList();
+        invoiceTermPaymentService.initInvoiceTermPayments(
+            invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
+      }
 
       invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
 
