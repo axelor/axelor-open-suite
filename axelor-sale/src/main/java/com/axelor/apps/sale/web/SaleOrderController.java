@@ -541,9 +541,9 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
     try {
-      saleOrder.setSaleOrderLineList(
-          Beans.get(SaleOrderService.class).handleComplementaryProducts(saleOrder));
-      response.setValues(saleOrder);
+      List<SaleOrderLine> saleOrderLineList =
+          Beans.get(SaleOrderService.class).handleComplementaryProducts(saleOrder);
+      response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
