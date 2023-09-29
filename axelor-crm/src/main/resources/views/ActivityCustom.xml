@@ -47,7 +47,7 @@
     <dataset type="rpc">com.axelor.apps.crm.web.PartnerCrmController:getRecentPartnerActivityData</dataset>
     <template>
       <![CDATA[
-      <span class="crm-activity-title">Recent activity</span>
+      <span class="crm-activity-title" x-translate>Recent activity</span>
       <div class="crm-activity-card" ng-repeat="item in data">
         <div>
           <span class="crm-activity-date">{{item.date | date}}</span>
@@ -101,7 +101,7 @@
     <dataset type="rpc">com.axelor.apps.crm.web.PartnerCrmController:getPastPartnerActivityData</dataset>
     <template>
       <![CDATA[
-      <span class="crm-activity-title">Past activity</span>
+      <span class="crm-activity-title" x-translate>Past activity</span>
       <div class="crm-activity-card" ng-repeat="item in data">
         <div>
           <span class="crm-activity-date">{{item.date | date}}</span>
