@@ -287,8 +287,7 @@ public class DebtRecoveryService {
               .createQuery(computeQuery(tradingName, true))
               .setParameter("partner", partner)
               .setParameter("company", company)
-              .setParameter("todayDate", todayDate)
-              .setParameter("cancelStatus", MoveRepository.STATUS_CANCELED);
+              .setParameter("todayDate", todayDate);
 
       moveLineWithInvoiceTermQuery =
           addTradingNameBinding(tradingName, moveLineWithInvoiceTermQuery);
@@ -322,24 +321,24 @@ public class DebtRecoveryService {
     query.append("AND ml.debit > 0 ");
     query.append("AND ml.dueDate IS NOT NULL ");
     query.append("AND (ml.dueDate <= :todayDate) ");
+    query.append("AND account.id IS NOT NULL ");
     query.append("AND account.useForPartnerBalance IS TRUE ");
     query.append("AND ml.amountRemaining > 0 ");
     query.append("AND move.ignoreInDebtRecoveryOk IS FALSE ");
-    query.append("AND move.statusSelect != :cancelStatus ");
 
     if (tradingName != null) {
       query.append("AND move.tradingName = :tradingName ");
     }
 
     if (!allowMultiInvoiceTerms) {
+      query.append("AND move.statusSelect != :cancelStatus ");
       query.append("AND invoice.id IS NOT NULL ");
       query.append("AND invoice.debtRecoveryBlockingOk IS FALSE ");
       query.append("AND invoice.schedulePaymentOk IS FALSE ");
       query.append("AND invoice.invoiceDate < :todayDateMinusTransitTime");
     } else {
-      query.append("OR invoice.id IS NULL ");
-      query.append("OR invoiceterm.id IS NOT NULL ");
-      query.append("OR ml.paymentScheduleLine IS NOT NULL");
+      query.append("AND ((invoice.id IS NULL OR invoiceterm.id IS NOT NULL) ");
+      query.append("AND (ml.paymentScheduleLine IS NOT NULL OR invoiceterm.id IS NOT NULL))");
     }
   }
 
