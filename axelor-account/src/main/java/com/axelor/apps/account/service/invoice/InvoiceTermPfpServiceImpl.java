@@ -45,6 +45,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected AccountConfigService accountConfigService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
@@ -53,11 +54,13 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Inject
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       AccountConfigService accountConfigService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
       MoveRepository moveRepo) {
     this.invoiceTermService = invoiceTermService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.accountConfigService = accountConfigService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
@@ -253,7 +256,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getIsHoldBack());
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermService.computeFinancialDiscount(invoiceTerm, invoice);
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm, invoice);
     }
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
@@ -375,7 +378,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
                     .max(originalInvoiceTerm.getMoveLine().getDebit())));
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermService.computeFinancialDiscount(
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(
           originalInvoiceTerm, originalInvoiceTerm.getInvoice());
     }
 

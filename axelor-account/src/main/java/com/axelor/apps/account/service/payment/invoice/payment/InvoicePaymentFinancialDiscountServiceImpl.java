@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
@@ -17,12 +18,16 @@ public class InvoicePaymentFinancialDiscountServiceImpl
     implements InvoicePaymentFinancialDiscountService {
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
-      InvoiceTermService invoiceTermService, InvoiceTermPaymentService invoiceTermPaymentService) {
+      InvoiceTermService invoiceTermService,
+      InvoiceTermPaymentService invoiceTermPaymentService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
   }
 
   @Override
@@ -95,7 +100,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
         .map(
             it -> {
               try {
-                return invoiceTermService
+                return invoiceTermFinancialDiscountService
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
                     .divide(

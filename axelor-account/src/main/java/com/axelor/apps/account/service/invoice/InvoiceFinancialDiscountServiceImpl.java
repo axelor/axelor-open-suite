@@ -20,20 +20,26 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDiscountService {
 
   protected InvoiceService invoiceService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
 
   @Inject
   public InvoiceFinancialDiscountServiceImpl(
-      InvoiceService invoiceService, FinancialDiscountService financialDiscountService) {
+      InvoiceService invoiceService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      FinancialDiscountService financialDiscountService) {
     this.invoiceService = invoiceService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
   }
 
@@ -75,5 +81,14 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
     invoice.setFinancialDiscountRate(BigDecimal.ZERO);
     invoice.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
     invoice.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+  }
+
+  @Override
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> it.getAmountRemaining().compareTo(it.getAmount()) == 0)
+        .forEach(it -> invoiceTermFinancialDiscountService.computeFinancialDiscount(it, invoice));
+
+    return invoice.getInvoiceTermList();
   }
 }

@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -17,15 +18,18 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDiscountService {
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
 
   @Inject
   public MoveLineFinancialDiscountServiceImpl(
       AppAccountService appAccountService,
       InvoiceTermService invoiceTermService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       FinancialDiscountService financialDiscountService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
   }
 
@@ -99,7 +103,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
           .filter(it -> !it.getIsPaid() && it.getAmountRemaining().compareTo(it.getAmount()) == 0)
           .forEach(
               it ->
-                  invoiceTermService.computeFinancialDiscount(
+                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
                       it,
                       moveLine.getCredit().max(moveLine.getDebit()),
                       moveLine.getFinancialDiscount(),

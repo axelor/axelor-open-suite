@@ -161,6 +161,7 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -711,5 +712,8 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoicePaymentFinancialDiscountService.class)
         .to(InvoicePaymentFinancialDiscountServiceImpl.class);
+
+    bind(InvoiceTermFinancialDiscountService.class)
+        .to(InvoiceTermFinancialDiscountServiceImpl.class);
   }
 }

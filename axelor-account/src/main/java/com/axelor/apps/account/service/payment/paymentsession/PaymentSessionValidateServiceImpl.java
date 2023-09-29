@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
@@ -97,6 +98,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected PartnerService partnerService;
   protected PaymentModeService paymentModeService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected int counter = 0;
 
   @Inject
@@ -119,7 +121,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       AccountConfigService accountConfigService,
       PartnerService partnerService,
       PaymentModeService paymentModeService,
-      MoveLineInvoiceTermService moveLineInvoiceTermService) {
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -139,6 +142,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.partnerService = partnerService;
     this.paymentModeService = paymentModeService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
   }
 
   @Override
@@ -851,7 +855,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     Account financialDiscountAccount =
         this.getFinancialDiscountAccount(paymentSession.getCompany(), out);
     BigDecimal financialDiscountTaxAmount =
-        invoiceTermService.getFinancialDiscountTaxAmount(invoiceTerm);
+        invoiceTermFinancialDiscountService.getFinancialDiscountTaxAmount(invoiceTerm);
 
     MoveLine moveLine =
         this.generateMoveLine(

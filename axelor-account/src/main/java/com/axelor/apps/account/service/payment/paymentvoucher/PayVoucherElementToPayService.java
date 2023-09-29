@@ -27,10 +27,11 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -45,21 +46,18 @@ public class PayVoucherElementToPayService {
   protected CurrencyService currencyService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected AccountConfigService accountConfigService;
-  protected InvoiceTermService invoiceTermService;
-
-  private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
 
   @Inject
   public PayVoucherElementToPayService(
       CurrencyService currencyService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       AccountConfigService accountConfigService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
     this.currencyService = currencyService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.accountConfigService = accountConfigService;
-    this.invoiceTermService = invoiceTermService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
   }
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -186,19 +184,19 @@ public class PayVoucherElementToPayService {
             .getAmountToPay()
             .divide(
                 invoiceTerm.getRemainingAmountAfterFinDiscount(),
-                CALCULATION_SCALE,
+                AppBaseService.COMPUTATION_SCALING,
                 RoundingMode.HALF_UP);
 
     payVoucherElementToPay.setFinancialDiscountTotalAmount(
         invoiceTerm
             .getFinancialDiscountAmount()
             .multiply(percentagePaid)
-            .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     payVoucherElementToPay.setFinancialDiscountTaxAmount(
-        invoiceTermService
+        invoiceTermFinancialDiscountService
             .getFinancialDiscountTaxAmount(payVoucherElementToPay.getInvoiceTerm())
             .multiply(percentagePaid)
-            .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     payVoucherElementToPay.setFinancialDiscountAmount(
         payVoucherElementToPay
             .getFinancialDiscountTotalAmount()
