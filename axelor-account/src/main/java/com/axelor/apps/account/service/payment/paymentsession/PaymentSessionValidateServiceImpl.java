@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
@@ -49,7 +50,6 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -101,6 +101,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected FinancialDiscountService financialDiscountService;
   protected int counter = 0;
 
   @Inject
@@ -125,7 +126,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PaymentModeService paymentModeService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
-      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      FinancialDiscountService financialDiscountService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -147,6 +149,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.financialDiscountService = financialDiscountService;
   }
 
   @Override
@@ -853,15 +856,34 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         + (isGlobal ? moveDateMap.values().size() : 0);
   }
 
-  protected MoveLine createFinancialDiscountMoveLine(
+  protected void createFinancialDiscountMoveLine(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, Move move, boolean out)
       throws AxelorException {
     Account financialDiscountAccount =
-        this.getFinancialDiscountAccount(paymentSession.getCompany(), out);
+        financialDiscountService.getFinancialDiscountAccount(paymentSession.getCompany(), out);
     BigDecimal financialDiscountTaxAmount =
         invoiceTermFinancialDiscountService.getFinancialDiscountTaxAmount(invoiceTerm);
+    BigDecimal financialDiscountAmount =
+        invoiceTerm.getFinancialDiscountAmount().subtract(financialDiscountTaxAmount);
+    Tax tax = moveLineFinancialDiscountService.getFinancialDiscountTax(invoiceTerm.getMoveLine());
 
-    MoveLine moveLine =
+    counter =
+        moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
+            move,
+            paymentSession.getCompany(),
+            null,
+            tax,
+            financialDiscountAccount,
+            move.getOrigin(),
+            move.getDescription(),
+            financialDiscountAmount,
+            financialDiscountTaxAmount,
+            move.getDate(),
+            counter,
+            !out,
+            financialDiscountTaxAmount.signum() > 0);
+
+    /*MoveLine moveLine =
         this.generateMoveLine(
             move,
             null,
@@ -880,18 +902,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         moveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
         moveLine.setTaxCode(financialDiscountTax.getCode());
       }
-    }
-
-    return moveLine;
-  }
-
-  protected Account getFinancialDiscountAccount(Company company, boolean out)
-      throws AxelorException {
-    return out
-        ? accountConfigService.getPurchFinancialDiscountAccount(
-            accountConfigService.getAccountConfig(company))
-        : accountConfigService.getSaleFinancialDiscountAccount(
-            accountConfigService.getAccountConfig(company));
+    }*/
   }
 
   @Override

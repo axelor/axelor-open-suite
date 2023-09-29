@@ -44,8 +44,7 @@ public interface MoveLineFinancialDiscountService {
       LocalDate paymentDate,
       int counter,
       boolean isDebit,
-      boolean financialDiscountVat,
-      boolean taxCondition)
+      boolean financialDiscountVat)
       throws AxelorException;
 
   Tax getFinancialDiscountTax(MoveLine moveLine);

@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -117,6 +118,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      FinancialDiscountService financialDiscountService,
       BankOrderService bankOrderService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
@@ -147,7 +149,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         paymentModeService,
         moveLineInvoiceTermService,
         invoiceTermFinancialDiscountService,
-        moveLineFinancialDiscountService);
+        moveLineFinancialDiscountService,
+        financialDiscountService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;

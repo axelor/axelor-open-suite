@@ -162,10 +162,6 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
         financialDiscountService.getFinancialDiscountAccount(
             invoice.getCompany(), InvoiceToolService.isPurchase(invoice));
 
-    boolean taxCondition =
-        invoicePayment.getFinancialDiscount() != null
-            && invoicePayment.getFinancialDiscountTaxAmount().signum() > 0;
-
     return this.createFinancialDiscountMoveLine(
         move,
         invoice.getCompany(),
@@ -179,8 +175,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
         invoicePayment.getPaymentDate(),
         counter,
         isDebit,
-        financialDiscountVat,
-        taxCondition);
+        financialDiscountVat);
   }
 
   @Override
@@ -197,8 +192,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       LocalDate paymentDate,
       int counter,
       boolean isDebit,
-      boolean financialDiscountVat,
-      boolean taxCondition)
+      boolean financialDiscountVat)
       throws AxelorException {
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
@@ -221,7 +215,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
 
     move.addMoveLineListItem(moveLine);
 
-    if (moveLine != null && financialDiscountVat && taxCondition) {
+    if (moveLine != null && financialDiscountVat) {
       counter =
           this.createFinancialDiscountTaxMoveLine(
               move,

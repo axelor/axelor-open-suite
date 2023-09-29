@@ -683,8 +683,6 @@ public class PaymentVoucherConfirmService {
     Tax financialDiscountTax =
         moveLineFinancialDiscountService.getFinancialDiscountTax(moveLineToPay);
 
-    boolean taxCondition = payVoucherElementToPay.getFinancialDiscountTaxAmount().signum() > 0;
-
     moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
         move,
         company,
@@ -698,8 +696,7 @@ public class PaymentVoucherConfirmService {
         dueDate,
         moveLineNo,
         isDebitToPay,
-        financialDiscountVat,
-        taxCondition);
+        financialDiscountVat);
 
     moveCutOffService.autoApplyCutOffDates(move);
 
