@@ -103,9 +103,8 @@ public class BatchUpdateTaskService extends AbstractBatch {
         incrementAnomaly();
         TraceBackService.trace(
             e,
-                String.format(
-                    I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1), projectTaskId),
-
+            String.format(
+                I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1), projectTaskId),
             batch.getId());
       }
       if (offset % FETCH_LIMIT == 0) {
