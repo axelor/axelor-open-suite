@@ -26,6 +26,8 @@
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
         <item action="action-global-budget-method-view-budget-lines" title="Lines" showIf="id"/>
+        <item action="action-global-budget-view-see-budget-levels" title="Budget Levels"
+          showIf="id"/>
         <item action="action-budget-global-view-show-version" title="Versions"
           showIf="statusSelect != 0"/>
       </menu>
@@ -85,8 +87,6 @@
           onClick="action-global-budget-method-validate-children, save"/>
         <button name="archivedBtn" title="archiveBtn" showIf="statusSelect == 2" colSpan="12"
           onClick="action-global-budget-method-archived-btn-onClick, save"/>
-        <button onClick="action-global-budget-view-see-budget-levels" name="seeBudgetLevels"
-          title="Budget Levels"/>
 
         <panel name="showBudgetDistributionPanel">
           <button name="showGlobalOrderLineBtn"

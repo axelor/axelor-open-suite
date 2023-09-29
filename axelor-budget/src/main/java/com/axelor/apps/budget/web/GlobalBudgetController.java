@@ -145,7 +145,9 @@ public class GlobalBudgetController {
   public void clearBudgetList(ActionRequest request, ActionResponse response) {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      response.setValue("budgetList", new ArrayList<>());
+      Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+      globalBudget.setBudgetList(new ArrayList<>());
+      response.setValues(globalBudget);
     }
   }
 
