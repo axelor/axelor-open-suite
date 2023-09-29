@@ -1749,4 +1749,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .add(diff)
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
+
+  @Override
+  public boolean isPartiallyPaid(InvoiceTerm invoiceTerm) {
+    return invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0;
+  }
 }

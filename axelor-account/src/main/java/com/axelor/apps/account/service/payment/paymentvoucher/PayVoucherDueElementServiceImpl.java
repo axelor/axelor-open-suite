@@ -106,8 +106,8 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   public boolean applyFinancialDiscount(InvoiceTerm invoiceTerm, PaymentVoucher paymentVoucher) {
     return invoiceTerm.getFinancialDiscount() != null
         && invoiceTerm.getFinancialDiscountDeadlineDate() != null
-        && invoiceTerm.getFinancialDiscountDeadlineDate().compareTo(paymentVoucher.getPaymentDate())
-            >= 0;
+        && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(paymentVoucher.getPaymentDate())
+        && !invoiceTermService.isPartiallyPaid(invoiceTerm);
   }
 
   @Override

@@ -123,10 +123,7 @@ public class PayVoucherElementToPayService {
       throws AxelorException {
     if (!payVoucherDueElement.getApplyFinancialDiscount()
         || payVoucherDueElement.getFinancialDiscount() == null
-        || payVoucherElementToPay
-                .getAmountToPay()
-                .compareTo(payVoucherElementToPay.getInvoiceTerm().getAmount())
-            != 0) {
+        || this.isPartialPayment(payVoucherDueElement, payVoucherElementToPay)) {
       if (payVoucherDueElement.getApplyFinancialDiscount()) {
         this.resetRemainingAmounts(
             payVoucherElementToPay, payVoucherDueElement.getFinancialDiscountTotalAmount());
@@ -153,6 +150,15 @@ public class PayVoucherElementToPayService {
     }
 
     return payVoucherElementToPay;
+  }
+
+  protected boolean isPartialPayment(
+      PayVoucherDueElement payVoucherDueElement, PayVoucherElementToPay payVoucherElementToPay) {
+    return payVoucherElementToPay
+            .getAmountToPay()
+            .add(payVoucherDueElement.getFinancialDiscountTotalAmount())
+            .compareTo(payVoucherElementToPay.getInvoiceTerm().getAmount())
+        != 0;
   }
 
   protected void resetRemainingAmounts(

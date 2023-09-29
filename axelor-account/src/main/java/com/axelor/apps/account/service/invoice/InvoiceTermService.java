@@ -340,4 +340,6 @@ public interface InvoiceTermService {
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
       BigDecimal currencyRate);
+
+  boolean isPartiallyPaid(InvoiceTerm invoiceTerm);
 }
