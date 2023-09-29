@@ -64,6 +64,44 @@
     <field name="toDate"/>
   </grid>
 
+
+  <tree name="budget-tree" title="Budget">
+    <column name="name" type="string"/>
+    <column name="code" type="string"/>
+    <column name="totalAmountExpected"/>
+    <column name="totalAmountCommitted"/>
+    <column name="totalFirmGap"/>
+    <column name="realizedWithNoPo"/>
+    <column name="realizedWithPo"/>
+    <column name="simulatedAmount"/>
+    <column name="availableAmountWithSimulated"/>
+
+    <node model="com.axelor.apps.budget.db.BudgetLevel" domain="self.parentBudgetLevel is null"
+      onClick="action-budget-view-budget-level">
+      <field as="name" name="name"/>
+      <field as="code" name="code"/>
+      <field name="totalAmountExpected"/>
+      <field name="totalAmountCommitted"/>
+      <field name="totalFirmGap"/>
+      <field name="realizedWithNoPo"/>
+      <field name="realizedWithPo"/>
+      <field name="simulatedAmount"/>
+      <field name="availableAmountWithSimulated"/>
+    </node>
+    <node model="com.axelor.apps.budget.db.BudgetLevel" parent="parentBudgetLevel"
+      draggable="true" onClick="action-budget-view-budget-level">
+      <field as="name" name="name"/>
+      <field as="code" name="code"/>
+      <field name="totalAmountExpected"/>
+      <field name="totalAmountCommitted"/>
+      <field name="totalFirmGap"/>
+      <field name="realizedWithNoPo"/>
+      <field name="realizedWithPo"/>
+      <field name="simulatedAmount"/>
+      <field name="availableAmountWithSimulated"/>
+    </node>
+  </tree>
+
   <form name="budget-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
     width="large" onNew="budget-action-budget-group-onnew"
     onLoad="budget-action-budget-group-onload"
@@ -210,7 +248,7 @@
       </panel>
 
       <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" itemSpan="3"
-        title="Total amounts">
+        title="Total amounts" showIf="id">
         <field name="totalAmountExpected"/>
         <field name="availableAmount"/>
         <field name="availableAmountWithSimulated"/>
@@ -493,6 +531,17 @@
     <domain>self.budget.id= :_budgetId and self.moveLine.move.statusSelect = 5</domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
+
+  <action-view name="action-budget-view-budget-level" title="Budget Level"
+    model="com.axelor.apps.budget.db.Budget">
+    <view type="form" name="budget-included-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
 
 
   <search-filters name="budget-filters" model="com.axelor.apps.budget.db.Budget"

@@ -68,7 +68,8 @@
 
   <form model="com.axelor.apps.budget.db.BudgetLevel" title="Group line"
     name="budget-level-intermediate-form" width="large"
-    onNew="action-budget-level-defaults-groups-onnew" onLoad="action-budget-level-group-onload">
+    onNew="action-budget-level-defaults-groups-onnew,action-global-budget-method-hide-amounts"
+    onLoad="action-budget-level-group-onload">
     <panel name="overViewPanel" title="Overview" canCollapse="true" collapseIf="!$popup()">
       <panel name="budgetLevelHiddenPanel" hidden="true" colSpan="12">
         <field name="globalBudget.statusSelect"/>
@@ -94,7 +95,7 @@
           readonlyIf="code == null || name == null || statusSelect != 'draft'"/>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
-        title="Total amounts">
+        title="Total amounts" showIf="id">
         <field name="totalAmountExpected"/>
         <field name="totalAmountAvailable"/>
         <field name="availableAmountWithSimulated"/>
@@ -495,6 +496,11 @@
 
   <action-method name="action-budget-level-method-compute-children-key">
     <call class="com.axelor.apps.budget.web.BudgetLevelController" method="computeChildrenKey"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-hide-amounts">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController"
+      method="hideBudgetLevelAmounts"/>
   </action-method>
 
   <action-view name="action-view-budget-budget-level-export" title="Budget level export"
