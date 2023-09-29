@@ -118,7 +118,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.dateService = dateService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermService = invoiceTermService;
-    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   /**
