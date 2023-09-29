@@ -7,16 +7,17 @@ import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
-import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class GlobalBudgetController {
@@ -34,11 +35,7 @@ public class GlobalBudgetController {
   public void setDates(ActionRequest request, ActionResponse response) throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
 
-    Beans.get(BudgetLevelService.class)
-        .getUpdatedGroupBudgetLevelList(
-            globalBudget.getBudgetLevelList(),
-            globalBudget.getFromDate(),
-            globalBudget.getToDate());
+    Beans.get(GlobalBudgetService.class).updateGlobalBudgetDates(globalBudget);
     response.setReload(true);
   }
 
@@ -143,5 +140,34 @@ public class GlobalBudgetController {
               "self.isActive = false  AND self.globalBudget.id = %s", globalBudget.getId());
     }
     response.setAttr("$budgetVersion", "domain", domain);
+  }
+
+  public void clearBudgetList(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+      globalBudget.setBudgetList(new ArrayList<>());
+      response.setValues(globalBudget);
+    }
+  }
+
+  public void hideBudgetLevelAmounts(ActionRequest request, ActionResponse response) {
+
+    String[] attributesToHide = {
+      "budgetLevelList.totalAmountExpected",
+      "budgetLevelList.totalAmountAvailable",
+      "budgetLevelList.totalAmountCommitted",
+      "budgetLevelList.realizedWithNoPo",
+      "budgetLevelList.realizedWithPo",
+      "budgetLevelList.totalFirmGap",
+      "budgetList.totalAmountExpected",
+      "budgetList.totalAmountCommitted",
+      "budgetList.totalAmountRealized",
+      "budgetList.availableAmount"
+    };
+
+    for (String attribute : attributesToHide) {
+      response.setAttr(attribute, "hidden", true);
+    }
   }
 }

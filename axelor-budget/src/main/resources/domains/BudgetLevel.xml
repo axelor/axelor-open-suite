@@ -84,9 +84,6 @@
       help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
     </decimal>
 
-    <integer name="checkAvailableSelect" title="Check available amount"
-      selection="budget.budget.level.check.available"/>
-
     <string name="parentId" search="parentBudgetLevel">
          <![CDATA[
          if (parentBudgetLevel != null && parentBudgetLevel.getId() != null){
@@ -151,13 +148,6 @@
 				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_GLOBAL = "global";
 				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP = "group";
 				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION = "section";
-
-				//budget level type select
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET = 2;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION = 3;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP = 4;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_GLOBAL_BUDGET = 5;
 	      ]]>
     </extra-code>
   </entity>

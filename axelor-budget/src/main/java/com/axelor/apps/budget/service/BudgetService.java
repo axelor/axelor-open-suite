@@ -28,7 +28,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.GlobalBudget;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -124,6 +126,8 @@ public interface BudgetService {
    * @return String
    */
   public String computeBudgetKey(Budget budget, Company company);
+
+  void archiveBudget(Budget budget);
 
   /**
    * Check that account set, analytic distribution list and their percentages and return if there is
@@ -308,4 +312,8 @@ public interface BudgetService {
   public List<BudgetLine> updateLines(Budget budget);
 
   public BigDecimal computeTotalAmountRealized(Budget budget);
+
+  GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
+
+  GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
 }

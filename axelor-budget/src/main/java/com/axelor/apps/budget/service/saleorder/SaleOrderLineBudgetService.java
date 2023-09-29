@@ -39,10 +39,4 @@ public interface SaleOrderLineBudgetService {
   void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
 
   void computeBudgetDistributionSumAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getGroupBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getSectionBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getLineBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isBudget);
 }

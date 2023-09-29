@@ -47,19 +47,10 @@
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="budgetDistributionSumAmount" readonly="true" colSpan="6"/>
-          <field name="groupBudget" title="Group" colSpan="4"
-            onSelect="action-budget-sale-order-line-method-group-domain"
-            form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
-          <field name="section" title="Section" colSpan="4"
-            onSelect="action-budget-sale-order-line-method-section-domain"
-            form-view="budget-section-budget-level-form" grid-view="budget-level-node-grid"/>
-          <field name="line" title="Line" colSpan="4"
-            onSelect="action-budget-sale-order-line-method-line-domain" form-view="budget-line-form"
-            grid-view="budget-line-grid"/>
           <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
             onChange="action-budget-sale-order-line-method-set-account,action-budget-sale-order-line-method-fill-budget-str"
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
-          <panel name="accountPanel" colSpan="12">
+          <panel name="accountPanel" colSpan="6">
             <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"
               onChange="action-sale-order-line-method-set-analytic-distribution-panel-hidden"/>
           </panel>
@@ -91,21 +82,6 @@
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
   </action-group>
-
-  <action-method name="action-budget-sale-order-line-method-group-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
-      method="setGroupBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-sale-order-line-method-section-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
-      method="setSectionBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-sale-order-line-method-line-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
-      method="setLineBudgetDomain"/>
-  </action-method>
 
   <action-method name="action-budget-sale-order-line-method-budget-domain">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setBudgetDomain"/>

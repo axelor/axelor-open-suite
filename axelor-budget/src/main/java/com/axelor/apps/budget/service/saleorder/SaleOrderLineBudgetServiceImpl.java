@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -128,21 +128,11 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   @Override
   public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     String query =
-        "self.totalAmountExpected > 0 AND self.statusSelect = 2 AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect = 2";
+        String.format(
+            "self.totalAmountExpected > 0 AND self.statusSelect = %d AND self.globalBudget.budgetTypeSelect = %s ",
+            BudgetRepository.STATUS_VALIDATED,
+            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE);
     if (saleOrderLine != null) {
-      if (saleOrderLine.getLine() != null) {
-        query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getLine().getId()));
-      } else if (saleOrderLine.getSection() != null) {
-        query =
-            query.concat(
-                String.format(" AND self.budgetLevel.id = %d", saleOrderLine.getSection().getId()));
-      } else if (saleOrderLine.getGroupBudget() != null) {
-        query =
-            query.concat(
-                String.format(
-                    " AND self.budgetLevel.parentBudgetLevel.id = %d",
-                    saleOrderLine.getGroupBudget().getId()));
-      }
       LocalDate date = null;
       if (saleOrder != null) {
         date =
@@ -192,104 +182,5 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       }
     }
     saleOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
-  }
-
-  @Override
-  public String getGroupBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-
-    if (saleOrderLine == null || saleOrder == null || saleOrder.getCompany() == null) {
-      return "self.id = 0";
-    }
-
-    String query =
-        String.format(
-            "self.globalBudget.budgetTypeSelect = %d AND self.parentBudgetLevel IS NULL AND self.statusSelect = '%s'",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
-            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
-
-    if (saleOrderLine.getBudget() != null
-        && saleOrderLine.getBudget().getBudgetLevel() != null
-        && saleOrderLine.getBudget().getBudgetLevel().getParentBudgetLevel() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.id = %d",
-                  saleOrderLine.getBudget().getBudgetLevel().getParentBudgetLevel().getId()));
-    } else {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.globalBudget.company.id = %d", saleOrder.getCompany().getId()));
-    }
-    return query;
-  }
-
-  @Override
-  public String getSectionBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-
-    if (saleOrderLine == null || saleOrder == null || saleOrder.getCompany() == null) {
-      return "self.id = 0";
-    }
-
-    String query =
-        String.format(
-            "self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.globalBudget.budgetTypeSelect = %d AND self.statusSelect = '%s'",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
-            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
-    if (saleOrderLine.getBudget() != null && saleOrderLine.getBudget().getBudgetLevel() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.id = %d", saleOrderLine.getBudget().getBudgetLevel().getId()));
-    } else if (saleOrderLine.getGroupBudget() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.parentBudgetLevel.id = %d", saleOrderLine.getGroupBudget().getId()));
-    } else {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.parentBudgetLevel.globalBudget.company.id = %d",
-                  saleOrder.getCompany().getId()));
-    }
-    return query;
-  }
-
-  @Override
-  public String getLineBudgetDomain(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isBudget) {
-
-    if (saleOrderLine == null || saleOrder == null || saleOrder.getCompany() == null) {
-      return "self.id = 0";
-    }
-
-    String query =
-        String.format(
-            "self.budgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect = %d AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect = %d",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
-            GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID);
-    if (saleOrderLine.getBudget() != null && !isBudget) {
-      query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getBudget().getId()));
-    } else if (saleOrderLine.getLine() != null && isBudget) {
-      query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getLine().getId()));
-    } else if (saleOrderLine.getSection() != null) {
-      query =
-          query.concat(
-              String.format(" AND self.budgetLevel.id = %d", saleOrderLine.getSection().getId()));
-    } else if (saleOrderLine.getGroupBudget() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.id = %d",
-                  saleOrderLine.getGroupBudget().getId()));
-    } else {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.globalBudget.company.id = %d",
-                  saleOrder.getCompany().getId()));
-    }
-    return query;
   }
 }

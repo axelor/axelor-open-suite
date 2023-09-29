@@ -17,6 +17,10 @@ public interface GlobalBudgetService {
 
   void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
 
+  List<Budget> getAllBudgets(GlobalBudget globalBudget);
+
+  List<Long> getAllBudgetIds(GlobalBudget globalBudget);
+
   GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
       throws AxelorException;
 
@@ -24,4 +28,16 @@ public interface GlobalBudgetService {
 
   List<BudgetScenarioLine> visualizeVariableAmounts(BudgetGenerator budgetGenerator)
       throws AxelorException;
+
+  void fillGlobalBudgetOnBudget(GlobalBudget globalBudget);
+
+  void updateGlobalBudgetDates(GlobalBudget globalBudget) throws AxelorException;
+
+  /**
+   * Return the global budget check available select
+   *
+   * @param budget
+   * @return Integer
+   */
+  public Integer getBudgetControlLevel(Budget budget);
 }

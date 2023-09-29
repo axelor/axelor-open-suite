@@ -36,13 +36,6 @@ public interface BudgetLevelService {
   public void computeTotals(BudgetLevel budgetLevel);
 
   /**
-   * This function computes all totalAmounts of {@link Budget} list.
-   *
-   * @param budgetLevel
-   */
-  public void computeBudgetTotals(BudgetLevel budgetLevel);
-
-  /**
    * This function imports and updates BudgetLevel.
    *
    * @param budgetLevel
@@ -62,13 +55,7 @@ public interface BudgetLevelService {
    */
   public void computeBudgetLevel(BudgetLevel budgetLevel) throws AxelorException;
 
-  /**
-   * Archive the global budget and archive all related budget levels and budgets
-   *
-   * @param budgetLevel
-   * @return BudgetLevel
-   */
-  public void archiveBudgetLevel(BudgetLevel budgetLevel);
+  void archiveChildren(BudgetLevel budgetLevel);
 
   /**
    * Find the budget level in database then set their dates and save it
@@ -101,14 +88,6 @@ public interface BudgetLevelService {
   public void draftChildren(BudgetLevel budgetLevel);
 
   /**
-   * Return the global budget check available select
-   *
-   * @param budget
-   * @return Integer
-   */
-  public Integer getBudgetControlLevel(Budget budget);
-
-  /**
    * Create budget key for each budget related to this section
    *
    * @param section
@@ -132,12 +111,8 @@ public interface BudgetLevelService {
    */
   public void validateBudgetLevelDates(BudgetLevel budgetLevel) throws AxelorException;
 
-  void getUpdatedGroupBudgetLevelList(
-      List<BudgetLevel> groupBudgetLevelList, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException;
-
-  void getUpdatedSectionBudgetList(
-      List<BudgetLevel> sectionBudgetLevelList, LocalDate fromDate, LocalDate toDate)
+  void getUpdatedBudgetLevelList(
+      List<BudgetLevel> budgetLevelList, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
 
   void getUpdatedBudgetList(List<Budget> budgetList, LocalDate fromDate, LocalDate toDate)
@@ -150,7 +125,7 @@ public interface BudgetLevelService {
    */
   public void computeBudgetLevelTotals(Budget budget);
 
-  void recomputeBudgetLevelTotals(BudgetLevel budgetLevel);
-
   void resetBudgetLevel(BudgetLevel budgetLevel);
+
+  List<Budget> getAllBudgets(BudgetLevel budgetLevel, List<Budget> budgetList);
 }

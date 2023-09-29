@@ -183,14 +183,17 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     for (InvoiceLine invoiceLine : invoiceLines) {
       if (saleOrderLine != null) {
         invoiceLine.setBudget(saleOrderLine.getBudget());
-        this.copyBudgetDistributionList(saleOrderLine.getBudgetDistributionList(), invoiceLine);
+        this.copyBudgetDistributionList(
+            saleOrderLine.getBudgetDistributionList(), invoiceLine, saleOrderLine);
       }
     }
     return invoiceLines;
   }
 
   public void copyBudgetDistributionList(
-      List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine) {
+      List<BudgetDistribution> originalBudgetDistributionList,
+      InvoiceLine invoiceLine,
+      SaleOrderLine saleOrderLine) {
 
     if (CollectionUtils.isEmpty(originalBudgetDistributionList)) {
       return;
@@ -198,6 +201,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
 
     for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
       BudgetDistribution budgetDistribution = new BudgetDistribution();
+      budgetDistribution.setSaleOrderLine(saleOrderLine);
       budgetDistribution.setBudget(budgetDistributionIt.getBudget());
       budgetDistribution.setAmount(budgetDistributionIt.getAmount());
       budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());

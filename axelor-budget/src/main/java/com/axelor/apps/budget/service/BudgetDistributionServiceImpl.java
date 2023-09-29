@@ -27,9 +27,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -53,7 +54,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected BudgetLineService budgetLineService;
-  protected BudgetLevelService budgetLevelService;
+  protected GlobalBudgetService globalBudgetService;
   protected BudgetRepository budgetRepo;
 
   protected BudgetService budgetService;
@@ -64,13 +65,13 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   public BudgetDistributionServiceImpl(
       BudgetDistributionRepository budgetDistributionRepository,
       BudgetLineService budgetLineService,
-      BudgetLevelService budgetLevelService,
+      GlobalBudgetService globalBudgetService,
       BudgetRepository budgetRepo,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService) {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
-    this.budgetLevelService = budgetLevelService;
+    this.globalBudgetService = globalBudgetService;
     this.budgetRepo = budgetRepo;
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
@@ -91,15 +92,16 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
     String budgetExceedAlert = "";
 
-    Integer budgetControlLevel = budgetLevelService.getBudgetControlLevel(budget);
-    if (budget == null || budgetControlLevel == null) {
+    Integer budgetControlLevel = globalBudgetService.getBudgetControlLevel(budget);
+    GlobalBudget globalBudget = budgetService.getGlobalBudgetUsingBudget(budget);
+    if (budget == null || budgetControlLevel == null || globalBudget == null) {
       return budgetExceedAlert;
     }
     BigDecimal budgetToCompare = BigDecimal.ZERO;
     String budgetName = budget.getName();
 
     switch (budgetControlLevel) {
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
+      case GlobalBudgetRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
           if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
             budgetToCompare = budgetLine.getAvailableAmount();
@@ -109,26 +111,12 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
           }
         }
         break;
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET:
+      case GlobalBudgetRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET:
         budgetToCompare = budget.getAvailableAmount();
         break;
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION:
-        budgetToCompare = budget.getBudgetLevel().getTotalAmountAvailable();
-        budgetName = budget.getBudgetLevel().getName();
-        break;
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP:
-        budgetToCompare = budget.getBudgetLevel().getParentBudgetLevel().getTotalAmountAvailable();
-        budgetName = budget.getBudgetLevel().getParentBudgetLevel().getName();
-        break;
       default:
-        budgetToCompare =
-            budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getParentBudgetLevel()
-                .getTotalAmountAvailable();
-        budgetName =
-            budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getName();
+        budgetToCompare = globalBudget.getTotalAmountAvailable();
+        budgetName = globalBudget.getName();
         break;
     }
     if (budgetToCompare.compareTo(amount) < 0) {
@@ -137,13 +125,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               I18n.get(BudgetExceptionMessage.BUGDET_EXCEED_ERROR),
               budgetName,
               budgetToCompare,
-              budget
-                  .getBudgetLevel()
-                  .getParentBudgetLevel()
-                  .getParentBudgetLevel()
-                  .getCompany()
-                  .getCurrency()
-                  .getSymbol());
+              globalBudget.getCompany().getCurrency().getSymbol());
     }
     return budgetExceedAlert;
   }
