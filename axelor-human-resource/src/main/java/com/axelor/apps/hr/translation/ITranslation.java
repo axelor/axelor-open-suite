@@ -77,4 +77,6 @@ public interface ITranslation {
   public static final String EDITOR_ADD_A_LINE = /*$$(*/ "ADD A LINE"; /*)*/
 
   String MEDICAL_VISIT = /*$$(*/ "Medical visit"; /*)*/
+
+  String DISTANCE_BETWEEN_CITIES = /*$$(*/ "The distance between %s and %s." /*)*/;
 }

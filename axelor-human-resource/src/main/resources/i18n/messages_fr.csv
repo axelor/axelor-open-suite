@@ -988,6 +988,7 @@
 "Template","Modèle",,
 "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled","L’ordre bancaire liée à cette dépense a déjà été exécuté/rejeté, et ne peut donc pas être annulé.",,
 "The date of timesheet line %d can't be empty","La date de la ligne %d de la feuille de temps ne peut pas être vide",,
+"The distance between %s and %s.","La distance entre %s et %s.",,
 "The employee %s has multiple %s leave lines","L'employé(e) %s a plusieurs lignes de congés pour le motif %s",,
 "The employee %s has no %s leave line","L'employé(e) %s n'a pas de ligne de congés pour le motif %s",,
 "The employee %s has no birth date","L'employé(e) %s n'a pas de date de naissance renseignée",,
