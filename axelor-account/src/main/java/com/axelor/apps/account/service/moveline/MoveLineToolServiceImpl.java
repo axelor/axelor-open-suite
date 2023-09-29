@@ -28,10 +28,8 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -406,14 +404,5 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     return moveLine.getCutOffStartDate() != null
         && moveLine.getCutOffEndDate() != null
         && !functionalOriginList.contains(moveLine.getMove().getFunctionalOriginSelect());
-  }
-
-  @Override
-  public boolean isFinancialDiscountLine(MoveLine moveLine, Company company)
-      throws AxelorException {
-    Account financialDiscountAccount =
-        InvoiceToolService.getFinancialDiscountAccount(company, moveLine.getCredit().signum() > 0);
-
-    return moveLine.getAccount().equals(financialDiscountAccount);
   }
 }

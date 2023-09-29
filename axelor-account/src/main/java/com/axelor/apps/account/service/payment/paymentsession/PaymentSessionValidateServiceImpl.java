@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -99,6 +100,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected PaymentModeService paymentModeService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected int counter = 0;
 
   @Inject
@@ -122,7 +124,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PartnerService partnerService,
       PaymentModeService paymentModeService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -143,6 +146,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.paymentModeService = paymentModeService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   @Override
@@ -868,7 +872,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             !out);
 
     if (financialDiscountTaxAmount.signum() > 0) {
-      Tax financialDiscountTax = this.getFinancialDiscountTax(paymentSession.getCompany(), out);
+      Tax financialDiscountTax =
+          moveLineFinancialDiscountService.getFinancialDiscountTax(invoiceTerm.getMoveLine());
 
       if (financialDiscountTax != null && financialDiscountTax.getActiveTaxLine() != null) {
         moveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
@@ -886,14 +891,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         ? accountConfigService.getPurchFinancialDiscountAccount(
             accountConfigService.getAccountConfig(company))
         : accountConfigService.getSaleFinancialDiscountAccount(
-            accountConfigService.getAccountConfig(company));
-  }
-
-  protected Tax getFinancialDiscountTax(Company company, boolean out) throws AxelorException {
-    return out
-        ? accountConfigService.getPurchFinancialDiscountTax(
-            accountConfigService.getAccountConfig(company))
-        : accountConfigService.getSaleFinancialDiscountTax(
             accountConfigService.getAccountConfig(company));
   }
 

@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -104,6 +105,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveControlService moveControlService;
   protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -124,7 +126,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       PeriodServiceAccount periodServiceAccount,
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
-      MoveLineCheckService moveLineCheckService) {
+      MoveLineCheckService moveLineCheckService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -143,6 +146,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveControlService = moveControlService;
     this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   /**
@@ -924,7 +928,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected boolean isFinancialDiscount(Move move) throws AxelorException {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineToolService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
         return true;
       }
     }

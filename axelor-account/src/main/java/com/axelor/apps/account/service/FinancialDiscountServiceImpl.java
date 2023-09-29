@@ -1,12 +1,19 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class FinancialDiscountServiceImpl implements FinancialDiscountService {
+  AccountConfigService accountConfigService;
+
   @Override
   public BigDecimal computeFinancialDiscountTotalAmount(
       FinancialDiscount financialDiscount, BigDecimal inTaxTotal, BigDecimal taxTotal) {
@@ -47,5 +54,17 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
             inTaxTotal.multiply(BigDecimal.valueOf(100)),
             AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
             RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public Account getFinancialDiscountAccount(Company company, boolean isPurchase)
+      throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    if (isPurchase) {
+      return accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
+    } else {
+      return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
+    }
   }
 }

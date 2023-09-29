@@ -19,8 +19,6 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
@@ -38,15 +36,15 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.AxelorException;
@@ -87,14 +85,14 @@ public class PaymentVoucherConfirmService {
   protected PaymentVoucherSequenceService paymentVoucherSequenceService;
   protected PaymentVoucherControlService paymentVoucherControlService;
   protected PaymentVoucherToolService paymentVoucherToolService;
-  protected AccountConfigService accountConfigService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
-  protected AccountManagementAccountService accountManagementAccountService;
   protected CurrencyService currencyService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermRepository invoiceTermRepository;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected FinancialDiscountService financialDiscountService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -108,14 +106,14 @@ public class PaymentVoucherConfirmService {
       PaymentVoucherSequenceService paymentVoucherSequenceService,
       PaymentVoucherControlService paymentVoucherControlService,
       PaymentVoucherToolService paymentVoucherToolService,
-      AccountConfigService accountConfigService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       PaymentVoucherRepository paymentVoucherRepository,
-      AccountManagementAccountService accountManagementAccountService,
       CurrencyService currencyService,
       InvoiceTermService invoiceTermService,
-      InvoiceTermRepository invoiceTermRepository) {
+      InvoiceTermRepository invoiceTermRepository,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      FinancialDiscountService financialDiscountService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -127,14 +125,14 @@ public class PaymentVoucherConfirmService {
     this.paymentVoucherSequenceService = paymentVoucherSequenceService;
     this.paymentVoucherControlService = paymentVoucherControlService;
     this.paymentVoucherToolService = paymentVoucherToolService;
-    this.accountConfigService = accountConfigService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
-    this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermRepository = invoiceTermRepository;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.financialDiscountService = financialDiscountService;
   }
 
   /**
@@ -672,99 +670,36 @@ public class PaymentVoucherConfirmService {
       boolean isDebitToPay,
       boolean financialDiscountVat)
       throws AxelorException {
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     boolean isPurchase =
         paymentVoucher.getOperationTypeSelect()
                 == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || paymentVoucher.getOperationTypeSelect()
                 == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND;
-
     LocalDate dueDate =
         moveLineToPay.getDueDate() != null ? moveLineToPay.getDueDate() : paymentDate;
-    Account financialDiscountAccount = null;
-
-    if (isPurchase) {
-      financialDiscountAccount =
-          accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
-    } else {
-      financialDiscountAccount =
-          accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
-    }
-
+    Account financialDiscountAccount =
+        financialDiscountService.getFinancialDiscountAccount(company, isPurchase);
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
+    Tax financialDiscountTax =
+        moveLineFinancialDiscountService.getFinancialDiscountTax(moveLineToPay);
 
-    MoveLine financialDiscountMoveLine =
-        moveLineCreateService.createMoveLine(
-            move,
-            payerPartner,
-            financialDiscountAccount,
-            financialDiscountAmount,
-            isDebitToPay,
-            paymentDate,
-            dueDate,
-            moveLineNo++,
-            invoiceName,
-            null);
+    boolean taxCondition = payVoucherElementToPay.getFinancialDiscountTaxAmount().signum() > 0;
 
-    Tax financialDiscountTax = null;
-    if (financialDiscountVat) {
-      financialDiscountTax =
-          isPurchase
-              ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
-              : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
-
-      if (financialDiscountTax.getActiveTaxLine() != null) {
-        financialDiscountMoveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
-        financialDiscountMoveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
-        financialDiscountMoveLine.setTaxCode(financialDiscountTax.getCode());
-      }
-    }
-
-    move.addMoveLineListItem(financialDiscountMoveLine);
-
-    if (financialDiscountVat
-        && BigDecimal.ZERO.compareTo(payVoucherElementToPay.getFinancialDiscountTaxAmount()) != 0) {
-      AccountManagement accountManagement =
-          financialDiscountTax.getAccountManagementList().stream()
-              .filter(it -> it.getCompany().equals(company))
-              .findFirst()
-              .orElse(null);
-      if (accountManagement != null) {
-        if (financialDiscountAccount.getVatSystemSelect() == null
-            || financialDiscountAccount.getVatSystemSelect() == 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
-              financialDiscountAccount.getCode());
-        }
-        int vatSystem = financialDiscountAccount.getVatSystemSelect();
-        MoveLine financialDiscountVatMoveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                payerPartner,
-                accountManagementAccountService.getTaxAccount(
-                    accountManagement,
-                    financialDiscountTax,
-                    company,
-                    move.getJournal(),
-                    vatSystem,
-                    move.getFunctionalOriginSelect(),
-                    false,
-                    true),
-                payVoucherElementToPay.getFinancialDiscountTaxAmount(),
-                isDebitToPay,
-                paymentDate,
-                dueDate,
-                moveLineNo++,
-                invoiceName,
-                null);
-        financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
-        financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
-        financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
-        financialDiscountVatMoveLine.setVatSystemSelect(vatSystem);
-        move.addMoveLineListItem(financialDiscountVatMoveLine);
-      }
-    }
+    moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
+        move,
+        company,
+        payerPartner,
+        financialDiscountTax,
+        financialDiscountAccount,
+        invoiceName,
+        null,
+        financialDiscountAmount,
+        payVoucherElementToPay.getFinancialDiscountTaxAmount(),
+        dueDate,
+        moveLineNo,
+        isDebitToPay,
+        financialDiscountVat,
+        taxCondition);
 
     moveCutOffService.autoApplyCutOffDates(move);
 
