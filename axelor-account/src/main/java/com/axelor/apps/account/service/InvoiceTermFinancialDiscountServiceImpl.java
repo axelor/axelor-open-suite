@@ -9,6 +9,7 @@ import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -16,6 +17,11 @@ import java.time.LocalDate;
 public class InvoiceTermFinancialDiscountServiceImpl
     implements InvoiceTermFinancialDiscountService {
   protected AppAccountService appAccountService;
+
+  @Inject
+  public InvoiceTermFinancialDiscountServiceImpl(AppAccountService appAccountService) {
+    this.appAccountService = appAccountService;
+  }
 
   @Override
   public void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice) {
@@ -47,14 +53,13 @@ public class InvoiceTermFinancialDiscountServiceImpl
       invoiceTerm.setFinancialDiscount(financialDiscount);
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
-      invoiceTerm.setFinancialDiscountAmount(
-          financialDiscountAmount
-              .multiply(percentage)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
           remainingAmountAfterFinDiscount
               .multiply(percentage)
               .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      invoiceTerm.setFinancialDiscountAmount(
+          invoiceTerm.getAmount().subtract(invoiceTerm.getRemainingAmountAfterFinDiscount()));
+
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
 
       invoiceTerm.setFinancialDiscountDeadlineDate(
@@ -88,7 +93,10 @@ public class InvoiceTermFinancialDiscountServiceImpl
           invoiceTerm
               .getAmountRemaining()
               .multiply(invoiceTerm.getRemainingAmountAfterFinDiscount())
-              .divide(invoiceTerm.getAmount(), 2, RoundingMode.HALF_UP));
+              .divide(
+                  invoiceTerm.getAmount(),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP));
     }
   }
 
