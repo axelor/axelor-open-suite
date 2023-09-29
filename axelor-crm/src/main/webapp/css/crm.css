@@ -14,6 +14,12 @@
     margin: 2px 0;
 }
 
+.crm-activity-dashlet .crm-activity-title {
+    margin-left:16px;
+    font-weight:bold;
+    font-size:16px;
+}
+
 .crm-activity-card .crm-activity-date {
     font-weight:bold;
     font-size:16px;

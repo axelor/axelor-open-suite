@@ -8,6 +8,9 @@ import java.util.Map;
 public interface CrmActivityService {
   List<Map<String, Object>> getLeadActivityData(Long id) throws JsonProcessingException;
 
-  List<Map<String, Object>> getPartnerActivityData(Long id)
+  List<Map<String, Object>> getRecentPartnerActivityData(Long id)
+      throws JsonProcessingException, AxelorException;
+
+  List<Map<String, Object>> getPastPartnerActivityData(Long id)
       throws JsonProcessingException, AxelorException;
 }

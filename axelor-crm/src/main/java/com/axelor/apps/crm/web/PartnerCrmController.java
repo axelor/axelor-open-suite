@@ -119,7 +119,7 @@ public class PartnerCrmController {
     }
   }
 
-  public void getPartnerActivityData(ActionRequest request, ActionResponse response)
+  public void getRecentPartnerActivityData(ActionRequest request, ActionResponse response)
       throws JsonProcessingException, AxelorException {
     List<Map<String, Object>> dataList;
     String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
@@ -128,7 +128,20 @@ public class PartnerCrmController {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.CRM_PROSPECT_NOT_FOUND));
     }
-    dataList = Beans.get(CrmActivityService.class).getPartnerActivityData(Long.valueOf(id));
+    dataList = Beans.get(CrmActivityService.class).getRecentPartnerActivityData(Long.valueOf(id));
+    response.setData(dataList);
+  }
+
+  public void getPastPartnerActivityData(ActionRequest request, ActionResponse response)
+      throws JsonProcessingException, AxelorException {
+    List<Map<String, Object>> dataList;
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.CRM_PROSPECT_NOT_FOUND));
+    }
+    dataList = Beans.get(CrmActivityService.class).getPastPartnerActivityData(Long.valueOf(id));
     response.setData(dataList);
   }
 }
