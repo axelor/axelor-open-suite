@@ -21,7 +21,12 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.auth.db.User;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 public interface BudgetToolsService {
 
@@ -35,4 +40,7 @@ public interface BudgetToolsService {
   boolean checkBudgetKeyAndRole(Company company, User user) throws AxelorException;
 
   boolean checkBudgetKeyAndRoleForMove(Move move) throws AxelorException;
+
+  Map<String, BigDecimal> buildMapWithAmounts(
+      List<Budget> budgetList, List<BudgetLevel> budgetLevelList);
 }

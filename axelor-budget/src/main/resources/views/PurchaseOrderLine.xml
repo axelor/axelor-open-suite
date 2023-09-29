@@ -70,15 +70,6 @@
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
             onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
-          <field name="groupBudget" title="Group" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-method-group-domain"
-            form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
-          <field name="section" title="Section" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-method-section-domain"
-            form-view="budget-section-budget-level-form" grid-view="budget-level-node-grid"/>
-          <field name="line" title="Line" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-method-line-domain"
-            form-view="budget-line-form" grid-view="budget-line-grid"/>
           <field name="$global" title="Global budget" type="many-to-one"
             target="com.axelor.apps.budget.db.GlobalBudget" readonly="true" colSpan="12"
             hidden="true"/>
@@ -150,21 +141,6 @@
     <field name="$section" expr="eval: budget?.budgetLevel"
       if="__config__.app.isApp('budget') &amp;&amp; budget != null"/>
   </action-record>
-
-  <action-method name="action-budget-purchase-order-line-method-group-domain">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="setGroupBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-purchase-order-line-method-section-domain">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="setSectionBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-purchase-order-line-method-line-domain">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="setLineBudgetDomain"/>
-  </action-method>
 
   <action-method name="action-budget-purchase-order-line-method-budget-domain">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"

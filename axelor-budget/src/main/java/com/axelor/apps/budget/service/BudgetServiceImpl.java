@@ -412,10 +412,9 @@ public class BudgetServiceImpl implements BudgetService {
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
       if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey())) {
+        GlobalBudget globalBudget = getGlobalBudgetUsingBudget(budget);
         String error =
-            computeBudgetKey(
-                budget,
-                budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getCompany());
+            computeBudgetKey(budget, globalBudget != null ? globalBudget.getCompany() : null);
         if (!Strings.isNullOrEmpty(error)) {
           throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, error);
         }
@@ -543,7 +542,7 @@ public class BudgetServiceImpl implements BudgetService {
           budgetRepository
               .all()
               .filter(
-                  "self.budgetKey != null and self.id != ?1 AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect != ?2",
+                  "self.budgetKey != null and self.id != ?1 AND self.globalBudget.statusSelect != ?2",
                   budget.getId() != null ? budget.getId() : new Long(0),
                   GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED)
               .fetch();
@@ -935,7 +934,8 @@ public class BudgetServiceImpl implements BudgetService {
     return null;
   }
 
-  protected GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel) {
+  @Override
+  public GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel) {
     if (budgetLevel == null) {
       return null;
     }

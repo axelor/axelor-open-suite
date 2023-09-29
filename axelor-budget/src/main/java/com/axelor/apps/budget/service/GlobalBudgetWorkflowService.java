@@ -7,7 +7,7 @@ public interface GlobalBudgetWorkflowService {
 
   void validateChildren(GlobalBudget globalBudget, int status) throws AxelorException;
 
-  void archiveChildren(GlobalBudget globalBudget);
+  void archiveChildren(GlobalBudget globalBudget) throws AxelorException;
 
-  void draftChildren(GlobalBudget globalBudget);
+  void draftChildren(GlobalBudget globalBudget) throws AxelorException;
 }

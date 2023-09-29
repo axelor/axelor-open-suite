@@ -11,11 +11,13 @@ import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class GlobalBudgetController {
@@ -46,13 +48,16 @@ public class GlobalBudgetController {
     response.setValues(globalBudget);
   }
 
-  public void archiveChildren(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void archiveChildren(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     Beans.get(GlobalBudgetWorkflowService.class).archiveChildren(globalBudget);
     response.setValues(globalBudget);
   }
 
-  public void draftChildren(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void draftChildren(ActionRequest request, ActionResponse response) throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     Beans.get(GlobalBudgetWorkflowService.class).draftChildren(globalBudget);
     response.setValues(globalBudget);
@@ -138,5 +143,12 @@ public class GlobalBudgetController {
               "self.isActive = false  AND self.globalBudget.id = %s", globalBudget.getId());
     }
     response.setAttr("$budgetVersion", "domain", domain);
+  }
+
+  public void clearBudgetList(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      response.setValue("budgetList", new ArrayList<>());
+    }
   }
 }

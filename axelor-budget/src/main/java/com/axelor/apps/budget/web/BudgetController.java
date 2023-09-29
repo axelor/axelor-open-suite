@@ -278,12 +278,15 @@ public class BudgetController {
     if (globalBudget != null) {
       return globalBudget;
     }
+    if (context == null) {
+      return null;
+    }
 
-    if (context.getParent() != null
+    if (context.getOrDefault("parent", null) != null
         && GlobalBudget.class.isAssignableFrom(context.getParent().getContextClass())) {
       return context.getParent().asType(GlobalBudget.class);
     }
-    if (context.getParent() != null
+    if (context.getOrDefault("parent", null) != null
         && BudgetLevel.class.isAssignableFrom(context.getParent().getContextClass())) {
       return getGlobalBudgetUsingBudgetLevel(context.getParent());
     }
@@ -296,7 +299,7 @@ public class BudgetController {
       return null;
     }
 
-    if (context.getParent() != null
+    if (context.getOrDefault("parent", null) != null
         && GlobalBudget.class.isAssignableFrom(context.getParent().getContextClass())) {
       return context.getParent().asType(GlobalBudget.class);
     }

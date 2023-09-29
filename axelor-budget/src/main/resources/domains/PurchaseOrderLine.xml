@@ -14,11 +14,6 @@
     <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"/>
     <decimal name="unassignedAmt" title="Unassigned amount" readonly="true"/>
-    <many-to-one name="groupBudget" ref="com.axelor.apps.budget.db.BudgetLevel"
-      title="Group"/>
-    <many-to-one name="section" ref="com.axelor.apps.budget.db.BudgetLevel"
-      title="Section"/>
-    <many-to-one name="line" ref="com.axelor.apps.budget.db.Budget" title="Line"/>
     <string name="budgetStr" title="Budgets related"/>
   </entity>
 

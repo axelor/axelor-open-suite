@@ -17,6 +17,10 @@ public interface GlobalBudgetService {
 
   void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
 
+  List<Budget> getAllBudgets(GlobalBudget globalBudget);
+
+  List<Long> getAllBudgetIds(GlobalBudget globalBudget);
+
   GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
       throws AxelorException;
 

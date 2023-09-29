@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.AdvancedImportBudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
@@ -47,6 +48,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -63,6 +65,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   protected BudgetManagementRepository budgetRepository;
   protected AppBudgetService appBudgetService;
   protected BudgetLevelRepository budgetLevelRepository;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetLevelServiceImpl(
@@ -75,7 +78,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       BudgetService budgetService,
       BudgetManagementRepository budgetRepository,
       AppBudgetService appBudgetService,
-      BudgetLevelRepository budgetLevelRepository) {
+      BudgetLevelRepository budgetLevelRepository,
+      BudgetToolsService budgetToolsService) {
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
     this.advancedImportRepo = advancedImportRepo;
     this.advancedImportService = advancedImportService;
@@ -86,56 +90,33 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     this.budgetRepository = budgetRepository;
     this.appBudgetService = appBudgetService;
     this.budgetLevelRepository = budgetLevelRepository;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
   public void computeTotals(BudgetLevel budgetLevel) {
     List<Budget> budgetList = budgetLevel.getBudgetList();
     List<BudgetLevel> budgetLevelList = budgetLevel.getBudgetLevelList();
-    BigDecimal totalAmountExpected = BigDecimal.ZERO;
-    BigDecimal totalAmountCommitted = BigDecimal.ZERO;
-    BigDecimal totalAmountRealized = BigDecimal.ZERO;
-    BigDecimal realizedWithPo = BigDecimal.ZERO;
-    BigDecimal realizedWithNoPo = BigDecimal.ZERO;
-    BigDecimal totalAmountPaid = BigDecimal.ZERO;
-    BigDecimal totalFirmGap = BigDecimal.ZERO;
-    BigDecimal simulatedAmount = BigDecimal.ZERO;
-    if (!ObjectUtils.isEmpty(budgetList)) {
-      for (Budget budget : budgetList) {
-        totalAmountExpected = totalAmountExpected.add(budget.getTotalAmountExpected());
-        totalAmountCommitted = totalAmountCommitted.add(budget.getTotalAmountCommitted());
-        totalAmountPaid = totalAmountPaid.add(budget.getTotalAmountPaid());
-        totalAmountRealized = totalAmountRealized.add(budget.getTotalAmountRealized());
-        realizedWithPo = realizedWithPo.add(budget.getRealizedWithPo());
-        realizedWithNoPo = realizedWithNoPo.add(budget.getRealizedWithNoPo());
-        totalFirmGap = totalFirmGap.add(budget.getTotalFirmGap());
-        simulatedAmount = simulatedAmount.add(budget.getSimulatedAmount());
-      }
-    } else if (!ObjectUtils.isEmpty(budgetLevelList)) {
-      for (BudgetLevel budgetLevelObj : budgetLevelList) {
-        totalAmountExpected = totalAmountExpected.add(budgetLevelObj.getTotalAmountExpected());
-        totalAmountCommitted = totalAmountCommitted.add(budgetLevelObj.getTotalAmountCommitted());
-        totalAmountPaid = totalAmountPaid.add(budgetLevelObj.getTotalAmountPaid());
-        totalAmountRealized = totalAmountRealized.add(budgetLevelObj.getTotalAmountRealized());
-        realizedWithPo = realizedWithPo.add(budgetLevelObj.getRealizedWithPo());
-        realizedWithNoPo = realizedWithNoPo.add(budgetLevelObj.getRealizedWithNoPo());
-        totalFirmGap = totalFirmGap.add(budgetLevelObj.getTotalFirmGap());
-        simulatedAmount = simulatedAmount.add(budgetLevelObj.getSimulatedAmount());
-      }
-    }
-    budgetLevel.setTotalAmountExpected(totalAmountExpected);
-    budgetLevel.setTotalAmountCommitted(totalAmountCommitted);
-    budgetLevel.setTotalAmountPaid(totalAmountPaid);
-    budgetLevel.setTotalAmountRealized(totalAmountRealized);
-    budgetLevel.setRealizedWithNoPo(realizedWithNoPo);
-    budgetLevel.setRealizedWithPo(realizedWithPo);
+    Map<String, BigDecimal> amountByField =
+        budgetToolsService.buildMapWithAmounts(budgetList, budgetLevelList);
+
+    budgetLevel.setTotalAmountExpected(amountByField.get("totalAmountExpected"));
+    budgetLevel.setTotalAmountCommitted(amountByField.get("totalAmountCommitted"));
+    budgetLevel.setTotalAmountPaid(amountByField.get("totalAmountPaid"));
+    budgetLevel.setTotalAmountRealized(amountByField.get("totalAmountRealized"));
+    budgetLevel.setRealizedWithNoPo(amountByField.get("realizedWithNoPo"));
+    budgetLevel.setRealizedWithPo(amountByField.get("realizedWithPo"));
     budgetLevel.setTotalAmountAvailable(
-        (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
+        (amountByField
+                .get("totalAmountExpected")
+                .subtract(amountByField.get("realizedWithPo"))
+                .subtract(amountByField.get("realizedWithNoPo")))
             .max(BigDecimal.ZERO));
-    budgetLevel.setTotalFirmGap(totalFirmGap);
-    budgetLevel.setSimulatedAmount(simulatedAmount);
+    budgetLevel.setTotalFirmGap(amountByField.get("totalFirmGap"));
+    budgetLevel.setSimulatedAmount(amountByField.get("simulatedAmount"));
     budgetLevel.setAvailableAmountWithSimulated(
-        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
+        (budgetLevel.getTotalAmountAvailable().subtract(amountByField.get("simulatedAmount")))
+            .max(BigDecimal.ZERO));
   }
 
   @Override
@@ -191,8 +172,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     List<Budget> budgetList =
         budgetRepository
             .all()
-            .filter(
-                "self.budgetLevel.parentBudgetLevel.globalBudget.id = ?", globalBudgetLevel.getId())
+            .filter("self.globalBudget.id = ?", globalBudgetLevel.getId())
             .fetch();
 
     for (Budget budget : budgetList) {
@@ -290,9 +270,9 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     } else {
       if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
         boolean checkBudgetKey = false;
-        if (budgetLevel.getParentBudgetLevel() != null
-            && budgetLevel.getParentBudgetLevel().getGlobalBudget() != null) {
-          Company company = budgetLevel.getParentBudgetLevel().getGlobalBudget().getCompany();
+        GlobalBudget globalBudget = budgetService.getGlobalBudgetUsingBudgetLevel(budgetLevel);
+        if (globalBudget != null) {
+          Company company = globalBudget.getCompany();
           checkBudgetKey = budgetService.checkBudgetKeyInConfig(company);
         }
         for (Budget budget : budgetLevel.getBudgetList()) {

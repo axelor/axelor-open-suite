@@ -99,6 +99,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
           for (BudgetDistribution budgetDistribution :
               purchaseOrderLine.getBudgetDistributionList()) {
             BudgetDistribution copyBudgetDistribution = new BudgetDistribution();
+            copyBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
             copyBudgetDistribution.setBudget(budgetDistribution.getBudget());
             copyBudgetDistribution.setAmount(budgetDistribution.getAmount());
             copyBudgetDistribution.setBudgetAmountAvailable(
