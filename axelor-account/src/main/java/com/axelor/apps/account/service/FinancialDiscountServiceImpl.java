@@ -8,11 +8,17 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class FinancialDiscountServiceImpl implements FinancialDiscountService {
   AccountConfigService accountConfigService;
+
+  @Inject
+  public FinancialDiscountServiceImpl(AccountConfigService accountConfigService) {
+    this.accountConfigService = accountConfigService;
+  }
 
   @Override
   public BigDecimal computeFinancialDiscountTotalAmount(
