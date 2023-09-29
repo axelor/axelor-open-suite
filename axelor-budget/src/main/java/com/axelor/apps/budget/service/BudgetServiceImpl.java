@@ -407,8 +407,8 @@ public class BudgetServiceImpl implements BudgetService {
         && accountConfigService.getAccountConfig(company).getEnableBudgetKey());
   }
 
-  @Transactional
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
       if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey())) {
@@ -431,12 +431,20 @@ public class BudgetServiceImpl implements BudgetService {
     }
   }
 
-  @Transactional
   @Override
+  @Transactional
   public void draftBudget(Budget budget) {
     if (budget != null) {
       budget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
       budget.setActiveVersionExpectedAmountsLine(null);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void archiveBudget(Budget budget) {
+    if (budget != null) {
+      budget.setArchived(true);
       budgetRepository.save(budget);
     }
   }

@@ -206,6 +206,7 @@
 
   <action-group name="action-global-budget-group-validate-structure">
     <action name="action-global-budget-method-check-budget-dates"/>
+    <action name="save"/>
     <action name="action-global-budget-method-validate-structure"/>
     <action name="save"/>
     <action name="action-method-budget-default-version-new"/>

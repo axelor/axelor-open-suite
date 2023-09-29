@@ -127,6 +127,8 @@ public interface BudgetService {
    */
   public String computeBudgetKey(Budget budget, Company company);
 
+  void archiveBudget(Budget budget);
+
   /**
    * Check that account set, analytic distribution list and their percentages and return if there is
    * an error

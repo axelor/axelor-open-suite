@@ -182,30 +182,32 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   }
 
   @Override
-  @Transactional
-  public void archiveBudgetLevel(BudgetLevel globalBudgetLevel) {
-    globalBudgetLevel = budgetLevelManagementRepository.find(globalBudgetLevel.getId());
+  public void archiveChildren(BudgetLevel budgetLevel) {
 
-    if (globalBudgetLevel == null) {
+    if (budgetLevel == null) {
       return;
     }
-    globalBudgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
-    globalBudgetLevel.setArchived(true);
 
-    if (!CollectionUtils.isEmpty(globalBudgetLevel.getBudgetLevelList())) {
-      for (BudgetLevel section : globalBudgetLevel.getBudgetLevelList()) {
-        section.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
-        section.setArchived(true);
-
-        if (!CollectionUtils.isEmpty(section.getBudgetList())) {
-          for (Budget budget : section.getBudgetList()) {
-            budget.setArchived(true);
-            budgetRepository.save(budget);
-          }
-        }
+    if (!CollectionUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
+        archiveChildren(child);
+      }
+    } else if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
+      for (Budget budget : budgetLevel.getBudgetList()) {
+        budgetService.archiveBudget(budget);
       }
     }
-    budgetLevelManagementRepository.save(globalBudgetLevel);
+
+    archiveBudgetLevel(budgetLevel);
+  }
+
+  @Transactional
+  protected void archiveBudgetLevel(BudgetLevel budgetLevel) {
+    if (budgetLevel != null) {
+      budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
+      budgetLevel.setArchived(true);
+      budgetLevelRepository.save(budgetLevel);
+    }
   }
 
   @Override
@@ -283,11 +285,11 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     validateLevel(budgetLevel);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void validateLevel(BudgetLevel budgetLevel) {
     if (budgetLevel != null) {
       budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
-      budgetLevelManagementRepository.save(budgetLevel);
+      budgetLevelRepository.save(budgetLevel);
     }
   }
 
@@ -307,11 +309,9 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     draftLevel(budgetLevel);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void draftLevel(BudgetLevel budgetLevel) {
     if (budgetLevel != null) {
       budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
-      budgetLevelManagementRepository.save(budgetLevel);
     }
   }
 

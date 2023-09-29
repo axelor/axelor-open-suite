@@ -43,16 +43,14 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void archiveChildren(GlobalBudget globalBudget) throws AxelorException {
+  public void archiveChildren(GlobalBudget globalBudget) {
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
-        budgetLevelService.archiveBudgetLevel(budgetLevel);
+        budgetLevelService.archiveChildren(budgetLevel);
       }
     } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
       for (Budget budget : globalBudget.getBudgetList()) {
-        budget.setArchived(true);
-        budgetRepository.save(budget);
+        budgetService.archiveBudget(budget);
       }
     }
 
@@ -61,7 +59,7 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void draftChildren(GlobalBudget globalBudget) throws AxelorException {
+  public void draftChildren(GlobalBudget globalBudget) {
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
         budgetLevelService.draftChildren(budgetLevel);

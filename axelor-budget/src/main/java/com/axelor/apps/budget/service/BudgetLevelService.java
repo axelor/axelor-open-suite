@@ -55,13 +55,7 @@ public interface BudgetLevelService {
    */
   public void computeBudgetLevel(BudgetLevel budgetLevel) throws AxelorException;
 
-  /**
-   * Archive the global budget and archive all related budget levels and budgets
-   *
-   * @param budgetLevel
-   * @return BudgetLevel
-   */
-  public void archiveBudgetLevel(BudgetLevel budgetLevel);
+  void archiveChildren(BudgetLevel budgetLevel);
 
   /**
    * Find the budget level in database then set their dates and save it

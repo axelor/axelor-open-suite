@@ -147,7 +147,10 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   @Override
   public List<Budget> getAllBudgets(GlobalBudget globalBudget) {
-    List<Budget> budgetList = globalBudget.getBudgetList();
+    List<Budget> budgetList = new ArrayList<>();
+    if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      budgetList = globalBudget.getBudgetList();
+    }
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
         budgetLevelService.getAllBudgets(budgetLevel, budgetList);
@@ -198,7 +201,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           BudgetLine budgetLine = budgetLineList.get(0);
           recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
         }
-        budgetRepository.save(budget);
       }
     }
 

@@ -48,16 +48,13 @@ public class GlobalBudgetController {
     response.setValues(globalBudget);
   }
 
-  @ErrorException
-  public void archiveChildren(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void archiveChildren(ActionRequest request, ActionResponse response) {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     Beans.get(GlobalBudgetWorkflowService.class).archiveChildren(globalBudget);
     response.setValues(globalBudget);
   }
 
-  @ErrorException
-  public void draftChildren(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void draftChildren(ActionRequest request, ActionResponse response) {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     Beans.get(GlobalBudgetWorkflowService.class).draftChildren(globalBudget);
     response.setValues(globalBudget);
