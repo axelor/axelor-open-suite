@@ -156,6 +156,8 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
         expense.addKilometricExpenseLineListItem(expenseLine);
       }
     }
+
+    expenseRepository.save(expense);
   }
 
   protected void checkCurrency(Expense expense, List<ExpenseLine> expenseLineList)

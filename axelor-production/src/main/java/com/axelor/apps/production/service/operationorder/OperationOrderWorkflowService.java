@@ -43,6 +43,18 @@ public interface OperationOrderWorkflowService {
   void plan(OperationOrder operationOrder) throws AxelorException;
 
   /**
+   * Plans the given {@link OperationOrder} and sets its planned dates for successive calls, must be
+   * called by order of operation order priority. The order must be ascending if useAsapScheduling
+   * is true and descending if not.
+   *
+   * @param operationOrder
+   * @param useAsapScheduling
+   * @return
+   * @throws AxelorException
+   */
+  void plan(OperationOrder operationOrder, boolean useAsapScheduling) throws AxelorException;
+
+  /**
    * re-plans the given {@link OperationOrder} and sets its planned dates
    *
    * @param operationOrder An operation order

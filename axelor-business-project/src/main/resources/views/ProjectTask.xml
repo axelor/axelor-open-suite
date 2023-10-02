@@ -95,7 +95,7 @@
         <panel name="purchasePanel" title="Purchase" colSpan="12"
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
           <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
-            onClick="action-project-task-generate-purchase-order"/>
+            onClick="action-project-task-method-generate-purchase-order"/>
           <field name="purchaseOrderList" colSpan="12" canNew="false"/>
           <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
         </panel>
@@ -244,60 +244,6 @@
         onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
     </node>
   </tree>
-
-  <action-view name="action-project-task-view-percentage-progress-custom"
-    title="% of progress">
-    <view type="custom" name="project-task-percentage-progress-custom"/>
-  </action-view>
-
-  <action-view name="action-project-task-view-percentage-consumption-custom"
-    title="% of consumption">
-    <view type="custom" name="project-task-percentage-consumption-custom"/>
-  </action-view>
-
-  <action-view name="action-project-task-view-remaining-to-do-custom"
-    title="Remaining amount to do">
-    <view type="custom" name="project-task-remaining-to-do-custom"/>
-  </action-view>
-
-  <custom title="% of progress" name="project-task-percentage-progress-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfProgress</dataset>
-    <template>
-      <![CDATA[
-        <i class='report-icon fa fa-line-chart' style='font-size:30px;top:40px;'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.progress}}</h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="% of consumption" name="project-task-percentage-consumption-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfConsumption</dataset>
-    <template>
-      <![CDATA[
-        <i class='report-icon fa fa-hourglass-half' style='font-size:30px;top:40px;'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.consumption}}</h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="Remaining amount to do" name="project-task-remaining-to-do-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getRemainingToDo</dataset>
-    <template>
-      <![CDATA[
-        <i class='report-icon fa fa-tasks' style='font-size:30px;top:40px;'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.remaining}}</h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
 
   <action-method name="action-project-task-method-update-to-invoice">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"

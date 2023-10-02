@@ -145,6 +145,19 @@
       expr="eval: workCenter?.durationPerCycle"/>
     <attribute name="value" for="humanDuration"
       expr="eval: workCenter?.hrDurationPerCycle"/>
+    <attribute name="value" for="product" expr="eval: workCenter?.product"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <attribute name="value" for="costTypeSelect" expr="eval: workCenter?.costTypeSelect"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <attribute name="value" for="costAmount" expr="eval: workCenter?.costAmount"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <attribute name="value" for="hrProduct" expr="eval: workCenter?.hrProduct"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <attribute name="value" for="hrCostTypeSelect"
+      expr="eval: workCenter?.hrCostTypeSelect"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <attribute name="value" for="hrCostAmount" expr="eval: workCenter?.hrCostAmount"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
   </action-attrs>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">

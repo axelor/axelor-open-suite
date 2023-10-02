@@ -196,10 +196,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
     Company company =
         orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
-    childTask.setUnitPrice(
-        product != null
-            ? (BigDecimal) productCompanyService.get(product, "salePrice", company)
-            : null);
+    childTask.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     Unit orderLineUnit = orderLine.getUnit();
     if (projectTaskBusinessProjectService.isTimeUnitValid(orderLineUnit)) {
       childTask.setTimeUnit(orderLineUnit);

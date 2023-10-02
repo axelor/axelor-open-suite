@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
+import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE;
+
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.CancelReason;
@@ -50,6 +52,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -92,6 +95,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected AppBaseService appBaseService;
   protected OperationOrderService operationOrderService;
   protected AppProductionService appProductionService;
+  protected ProductionConfigService productionConfigService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -104,7 +108,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       PurchaseOrderService purchaseOrderService,
       AppBaseService appBaseService,
       OperationOrderService operationOrderService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      ProductionConfigService productionConfigService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -115,6 +120,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.appBaseService = appBaseService;
     this.operationOrderService = operationOrderService;
     this.appProductionService = appProductionService;
+    this.productionConfigService = productionConfigService;
   }
 
   @Override
@@ -187,8 +193,27 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     for (ManufOrder manufOrder : manufOrderList) {
       if (manufOrder.getOperationOrderList() != null) {
-        for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-          operationOrderWorkflowService.plan(operationOrder);
+        ProductionConfig productionConfig =
+            productionConfigService.getProductionConfig(manufOrder.getCompany());
+        boolean useAsapScheduling =
+            productionConfig.getScheduling()
+                == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING;
+
+        if (!useAsapScheduling && manufOrder.getPlannedEndDateT() == null) {
+          throw new AxelorException(
+              manufOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(
+                  YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE));
+        }
+
+        List<OperationOrder> operationOrders =
+            useAsapScheduling
+                ? getSortedOperationOrderList(manufOrder)
+                : getReversedSortedOperationOrderList(manufOrder);
+
+        for (OperationOrder operationOrder : operationOrders) {
+          operationOrderWorkflowService.plan(operationOrder, useAsapScheduling);
         }
       }
     }
@@ -370,7 +395,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     BigDecimal qty = manufOrder.getQty();
     if (qty.signum() != 0) {
       int scale = Beans.get(AppProductionService.class).getNbDecimalDigitForUnitPrice();
-      return manufOrder.getCostPrice().divide(qty, scale, BigDecimal.ROUND_HALF_UP);
+      return manufOrder.getCostPrice().divide(qty, scale, RoundingMode.HALF_UP);
     } else {
       return BigDecimal.ZERO;
     }
@@ -563,7 +588,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   public void updatePlannedDates(ManufOrder manufOrder) {
 
     manufOrder.setPlannedStartDateT(computePlannedStartDateT(manufOrder));
-    ;
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
   }
 
@@ -583,6 +607,30 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     Comparator<OperationOrder> byId =
         Comparator.comparing(
             OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
+
+    return operationOrderList.stream()
+        .sorted(byPriority.thenComparing(byId))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Get a list of operation orders reverse sorted by priority and id from the specified
+   * manufacturing order.
+   *
+   * @param manufOrder
+   * @return
+   */
+  protected List<OperationOrder> getReversedSortedOperationOrderList(ManufOrder manufOrder) {
+    List<OperationOrder> operationOrderList =
+        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
+    Comparator<OperationOrder> byPriority =
+        Comparator.comparing(
+                OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .reversed();
+    Comparator<OperationOrder> byId =
+        Comparator.comparing(
+                OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .reversed();
 
     return operationOrderList.stream()
         .sorted(byPriority.thenComparing(byId))

@@ -287,10 +287,10 @@
 
   <action-attrs name="action-contract-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account') || __repo__(AccountConfig).findByCompany(__parent__.contract.company)?.analyticDistributionTypeSelect != 1"
+      expr="eval: !__config__.app.isApp('account') || __repo__(AccountConfig).findByCompany(__parent__?.contract?.company)?.analyticDistributionTypeSelect != 1"
       if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.contract.db.ContractVersion'"/>
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('account') || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"
+      expr="eval: !__config__.app.isApp('account') || __repo__(AccountConfig).findByCompany(__parent__?.company)?.analyticDistributionTypeSelect != 1"
       if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.contract.db.Contract'"/>
   </action-attrs>
 

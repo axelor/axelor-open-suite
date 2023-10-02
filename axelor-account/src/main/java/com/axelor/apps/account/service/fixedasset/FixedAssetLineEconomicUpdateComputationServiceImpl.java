@@ -209,8 +209,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           "You can not declare a number of depreciation smaller or equal than number of realized lines + 1 (The first planned line)");
     }
-    recomputeFirstPlannedLine(
-        fixedAssetLineList, firstPlannedFixedAssetLine, correctedAccountingValue);
+    recomputeFirstPlannedLine(fixedAsset, firstPlannedFixedAssetLine, correctedAccountingValue);
     this.firstPlannedFixedAssetLine = firstPlannedFixedAssetLine;
     this.canGenerateLines = true;
   }
@@ -229,7 +228,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   protected void recomputeFirstPlannedLine(
-      List<FixedAssetLine> fixedAssetLineList,
+      FixedAsset fixedAsset,
       FixedAssetLine firstPlannedFixedAssetLine,
       BigDecimal correctedAccountingValue) {
     firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
@@ -241,7 +240,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     BigDecimal depreciation = firstPlannedFixedAssetLine.getDepreciation();
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
-            fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
+            fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
     if (previousLastRealizedFAL.isPresent()) {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
           previousLastRealizedFAL

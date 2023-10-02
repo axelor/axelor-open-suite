@@ -108,6 +108,23 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   }
 
   /**
+   * Plans the given {@link OperationOrder} and sets its planned dates for successive calls, must be
+   * called by order of operation order priority. The order must be ascending if useAsapScheduling
+   * is true and descending if not.
+   *
+   * @param operationOrder
+   * @param useAsapScheduling
+   * @return
+   * @throws AxelorException
+   */
+  @Override
+  @Transactional
+  public void plan(OperationOrder operationOrder, boolean useAsapScheduling)
+      throws AxelorException {
+    operationOrderPlanningService.plan(operationOrder, null, useAsapScheduling);
+  }
+
+  /**
    * re-plans the given {@link OperationOrder} and sets its planned dates
    *
    * @param operationOrder An operation order

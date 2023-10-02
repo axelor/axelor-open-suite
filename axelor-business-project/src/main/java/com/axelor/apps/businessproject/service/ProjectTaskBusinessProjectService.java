@@ -71,5 +71,7 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
   Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException;
 
+  Map<String, Object> processRequestToDisplayFinancialReporting(Long id) throws AxelorException;
+
   boolean isTimeUnitValid(Unit unit);
 }
