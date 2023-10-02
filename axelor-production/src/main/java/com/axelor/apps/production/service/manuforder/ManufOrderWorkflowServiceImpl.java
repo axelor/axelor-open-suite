@@ -198,6 +198,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       if (CollectionUtils.isNotEmpty(operationOrders)) {
         operationOrderPlanningService.plan(operationOrders);
       }
+      // Updating plannedStartDate since, it may be different now that operation orders are
+      // planned
+      manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
