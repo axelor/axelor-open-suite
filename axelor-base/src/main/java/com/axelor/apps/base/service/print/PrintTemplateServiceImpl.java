@@ -132,8 +132,11 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
         print.setPrintPdfHeader(maker.make());
       }
 
-      if (StringUtils.notEmpty(printTemplate.getPrintTemplatePdfFooter())) {
-        maker.setTemplate(printTemplate.getPrintTemplatePdfFooter());
+      String footerContent = printTemplate.getPrintTemplatePdfFooter();
+
+      if (StringUtils.notEmpty(footerContent)) {
+        String formattedContent = getFormattedFooter(footerContent);
+        maker.setTemplate(formattedContent);
         print.setPrintPdfFooter(maker.make());
         print.setFooterFontSize(printTemplate.getFooterFontSize());
         print.setFooterFontType(printTemplate.getFooterFontType());
@@ -188,6 +191,10 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
 
     return print;
+  }
+
+  protected String getFormattedFooter(String footerContent) {
+    return footerContent.replace("\n", "<br>");
   }
 
   protected void processPrintTemplateLineList(
