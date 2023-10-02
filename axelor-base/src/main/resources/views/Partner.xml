@@ -191,8 +191,7 @@
       <field name="isSubcontractor" colSpan="12" widget="InlineCheckbox"
         if-module="axelor-production"
         if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
-      <field name="isInternal" colSpan="12" widget="InlineCheckbox"
-        if="__config__.app.getApp('crm')?.isInternalPartnerEnabled"/>
+      <field name="isInternal" colSpan="12" widget="InlineCheckbox"/>
       <field name="isCarrier" colSpan="12" widget="InlineCheckbox"
         hideIf="isContact ||  isEmployee" if="__config__.app.isApp('stock')"
         onChange="action-partner-record-unset-factor"/>

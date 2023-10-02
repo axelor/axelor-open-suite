@@ -21,7 +21,8 @@
     <boolean name="crmProcessOnPartner" title="Manage status on prospect" default="false"/>
     <boolean name="isSearchFunctionalityEnabled" title="Enable search functionality"
       default="false"/>
-    <boolean name="isInternalPartnerEnabled" title="Enable internal partner" default="false"/>
+    <boolean name="isCorporatePartnerEnabled" title="Enable corporate partner"
+      default="false"/>
     <many-to-one name="closedWinOpportunityStatus"
       ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"/>
     <many-to-one name="closedLostOpportunityStatus"

@@ -230,7 +230,8 @@
     </extend>
     <extend target="//field[@name='isFactor']">
       <insert position="after">
-        <field name="isCorporatePartner" widget="InlineCheckbox" hideIf="$readonly()"/>
+        <field name="isCorporatePartner" widget="InlineCheckbox" hideIf="$readonly()"
+          if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled"/>
       </insert>
     </extend>
     <extend target="/">
