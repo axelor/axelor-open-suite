@@ -183,6 +183,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
               operationOrderService.computeEntireCycleDuration(
                   order, order.getManufOrder().getQty()); // in seconds
         }
+        // This is a estimation only, it will be updated later
+        // It does not take into configuration such as machine planning etc...
         manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
       }
       manufOrder.setRealStartDateT(null);
@@ -190,6 +192,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
+      LocalDateTime todayDateT =
+          appBaseService.getTodayDateTime(manufOrder.getCompany()).toLocalDateTime();
       List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
       if (CollectionUtils.isNotEmpty(operationOrders)) {
         operationOrderPlanningService.plan(operationOrders);
@@ -197,6 +201,17 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       // Updating plannedStartDate since, it may be different now that operation orders are
       // planned
       manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
+
+      ProductionConfig productionConfig =
+          productionConfigService.getProductionConfig(manufOrder.getCompany());
+
+      if (productionConfig.getScheduling() == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING
+          && manufOrder.getPlannedStartDateT().isBefore(todayDateT)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(ProductionExceptionMessage.PLAN_IS_BEFORE_TODAY_DATE),
+            String.format("%s %s", manufOrder.getQty(), manufOrder.getProduct().getFullName()));
+      }
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
