@@ -1665,4 +1665,13 @@ public final class AccountExceptionMessage {
 
   public static final String NO_DEPRECIATION_ACCOUNT_FOUND_IN_FIXED_ASSET_CATEGORY = /*$$(*/
       "No depreciation account found in fixed asset category %s." /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to debt recoveries:<br> %s" /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to payments voucher:<br> %s" /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to invoice payment(s) related to invoices: <br> %s" /*)*/;
 }
