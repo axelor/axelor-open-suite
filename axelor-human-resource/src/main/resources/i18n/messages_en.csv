@@ -989,6 +989,7 @@
 "Template",,,
 "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled",,,
 "The date of timesheet line %d can't be empty",,,
+"The distance between %s and %s.",,,
 "The employee %s has multiple %s leave lines",,,
 "The employee %s has no %s leave line",,,
 "The employee %s has no birth date",,,
