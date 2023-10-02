@@ -98,7 +98,9 @@ public class BatchUpdateTaskService extends AbstractBatch {
       offset++;
       try {
         projectTaskBusinessProjectService.setProjectTaskValues(projectTaskRepo.find(projectTaskId));
-        incrementDone();
+        if (appBusinessProjectService.getAppBusinessProject().getAutomaticInvoicing()) {
+          incrementDone();
+        }
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(
