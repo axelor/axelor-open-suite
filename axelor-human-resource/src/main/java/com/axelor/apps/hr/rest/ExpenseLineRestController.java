@@ -81,10 +81,6 @@ public class ExpenseLineRestController {
     }
 
     return Beans.get(ExpenseLineResponseComputeService.class)
-        .computeCreateResponse(
-            expenseLine,
-            requestBody.fetchProject(),
-            requestBody.getToInvoice(),
-            new ExpenseLineResponse(expenseLine));
+        .computeCreateResponse(expenseLine, requestBody, new ExpenseLineResponse(expenseLine));
   }
 }
