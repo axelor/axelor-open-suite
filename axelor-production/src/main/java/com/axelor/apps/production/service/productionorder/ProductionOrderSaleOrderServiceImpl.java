@@ -203,6 +203,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
               saleOrderLine.getSequence());
         }
         endDate = saleOrderLine.getEstimatedShippingDate().atStartOfDay();
+        // Start date will be filled at plan
+        startDate = null;
       }
 
       List<BillOfMaterial> tempChildBomList = new ArrayList<>();
