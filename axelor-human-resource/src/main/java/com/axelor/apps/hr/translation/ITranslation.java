@@ -78,5 +78,8 @@ public interface ITranslation {
 
   String MEDICAL_VISIT = /*$$(*/ "Medical visit"; /*)*/
 
+  String SET_TOTAL_TAX_ZERO = /*$$(*/
+      "The total tax has been set to zero since the expense type blocks taxes."; /*)*/
+
   String DISTANCE_BETWEEN_CITIES = /*$$(*/ "The distance between %s and %s." /*)*/;
 }

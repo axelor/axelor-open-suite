@@ -164,15 +164,52 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       BigDecimal totalAmount,
       BigDecimal totalTax,
       MetaFile justificationMetaFile,
-      ExpenseLine expenseLine) {
+      ExpenseLine expenseLine)
+      throws AxelorException {
+
+    checkExpenseProduct(expenseProduct);
+
     expenseLine.setIsAloneMeal(expenseProduct.getDeductLunchVoucher());
     expenseLine.setExpenseProduct(expenseProduct);
     expenseLine.setJustificationMetaFile(justificationMetaFile);
 
-    if (totalAmount != null && totalTax != null) {
+    setAmountAndTax(expenseProduct, totalAmount, totalTax, expenseLine);
+  }
+
+  protected void setAmountAndTax(
+      Product expenseProduct,
+      BigDecimal totalAmount,
+      BigDecimal totalTax,
+      ExpenseLine expenseLine) {
+    if (totalAmount != null) {
       expenseLine.setTotalAmount(totalAmount);
+    }
+
+    if (totalTax != null) {
       expenseLine.setTotalTax(totalTax);
-      expenseLine.setUntaxedAmount(totalAmount.subtract(totalTax));
+
+      if (totalAmount != null) {
+        expenseLine.setUntaxedAmount(totalAmount.subtract(totalTax));
+      }
+
+      if (expenseProduct.getBlockExpenseTax()) {
+        expenseLine.setTotalTax(BigDecimal.ZERO);
+        expenseLine.setUntaxedAmount(totalAmount);
+      }
+    }
+  }
+
+  protected void checkExpenseProduct(Product expenseProduct) throws AxelorException {
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      Employee userEmployee = user.getEmployee();
+      if (userEmployee != null
+          && !userEmployee.getHrManager()
+          && expenseProduct.getUnavailableToUsers()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_EXPENSE_TYPE_NOT_ALLOWED));
+      }
     }
   }
 
