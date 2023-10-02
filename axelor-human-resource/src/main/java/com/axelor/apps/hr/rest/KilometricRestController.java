@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.KilometricGetRequest;
 import com.axelor.apps.hr.rest.dto.KilometricResponse;
 import com.axelor.apps.hr.service.KilometricService;
@@ -10,6 +11,7 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
+import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.servers.Server;
@@ -31,8 +33,10 @@ public class KilometricRestController {
   @Path("/distance")
   @GET
   @HttpExceptionHandler
-  public Response createExpenseLine(KilometricGetRequest requestBody) throws AxelorException {
+  public Response computeDistance(KilometricGetRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(ExpenseLine.class).createAccess(ExpenseLine.class).check();
+
     String fromCity = requestBody.getFromCity();
     String toCity = requestBody.getToCity();
 
