@@ -1204,18 +1204,24 @@ where AccountingReport.id = ?
 	COALESCE(SUM(
 		CASE 
 			WHEN 
-				AccountingReport.date_from IS NULL 
-				OR AssetLine.depreciation_date <= AccountingReport.date_from
+				AccountingReport.date_from IS NULL
+				OR AssetLine.depreciation_date < AccountingReport.date_from
    			THEN assetLine.depreciation 
    		END
-   	), 0) AS year_start_value,
+    ), 0)
+    + (CASE WHEN Asset.failover_date < date_from THEN Asset.already_depreciated_amount ELSE 0 END)
+    AS year_start_value,
+
 	SUM(
 		CASE 
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
 				AND (date_to IS NULL OR depreciation_date <= date_to)
    			THEN depreciation 
    		END
-   	) AS depreciation_charge,
+    )
+    + (CASE WHEN Asset.failover_date >= date_from AND Asset.failover_date <= date_to THEN Asset.already_depreciated_amount ELSE 0 END)
+    AS depreciation_charge,
+
     COALESCE(SUM(
         CASE
             WHEN
@@ -1265,6 +1271,7 @@ WHERE
    	AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
    	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
    	AND (AccountingReport.date_to IS NULL OR AssetLine.depreciation_date <= AccountingReport.date_to)
+	AND AssetLine.status_select = 2
    	
 GROUP BY Asset.id, Account.code, Account.name, AccountingReport.date_from, AccountingReport.date_to, 
 		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name 
