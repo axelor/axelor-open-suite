@@ -174,34 +174,6 @@
       </menu>
     </menubar>
     <panel-include view="incl-event-actions-partner-form"/>
-    <panel name="propertiesPanel" title="Properties" canCollapse="true" sidebar="true"
-      hideIf="$readonly()">
-      <field name="isEmployee" colSpan="12" widget="InlineCheckbox"
-        hideIf="!_showIsEmployee || partnerTypeSelect != 2 || isCustomer || isSupplier || isCarrier || isFactor || isProspect || isCompensation || isContact || isInternal || isPartner || isSubcontractor"
-        onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
-      <field name="isProspect" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact || isCustomer || isEmployee || isSubcontractor || isInternal || isCarrier || isFactor"
-        onChange="action-partner-group-unset-customer,action-partner-record-unset-factor"/>
-      <field name="isCustomer" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact ||  isEmployee"
-        onChange="action-partner-group-check-can-change-customer,action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
-      <field name="isSupplier" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact ||  isEmployee"
-        onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
-      <field name="isSubcontractor" colSpan="12" widget="InlineCheckbox"
-        if-module="axelor-production"
-        if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
-      <field name="isInternal" colSpan="12" widget="InlineCheckbox"/>
-      <field name="isCarrier" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact ||  isEmployee" if="__config__.app.isApp('stock')"
-        onChange="action-partner-record-unset-factor"/>
-      <field name="isFactor" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact ||  isEmployee"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
-        if-module="axelor-account"
-        onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
-      <field name="isContact" hidden="true" colSpan="12"/>
-    </panel>
     <panel name="mainPanel">
       <panel name="imagePanel" colSpan="2">
         <field name="picture" showTitle="false" widget="Image" colSpan="12">
@@ -311,6 +283,40 @@
         <field name="$customerCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
         <field name="$supplierCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
         <field name="$factorCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
+      </panel>
+    </panel>
+    <panel name="propertiesPanel" title="Properties" canCollapse="true"
+      collapseIf="$readonly()">
+      <panel name="leftPanel" colSpan="4" hideIf="$readonly()">
+        <field name="isEmployee" colSpan="12" widget="InlineCheckbox"
+          hideIf="!_showIsEmployee || partnerTypeSelect != 2 || isCustomer || isSupplier || isCarrier || isFactor || isProspect || isCompensation || isContact || isInternal || isPartner || isSubcontractor"
+          onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
+        <field name="isProspect" colSpan="12" widget="InlineCheckbox"
+          hideIf="isContact || isCustomer || isEmployee || isSubcontractor || isInternal || isCarrier || isFactor"
+          onChange="action-partner-group-unset-customer,action-partner-record-unset-factor"/>
+        <field name="isCustomer" colSpan="12" widget="InlineCheckbox"
+          hideIf="isContact ||  isEmployee"
+          onChange="action-partner-group-check-can-change-customer,action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
+        <field name="isSupplier" colSpan="12" widget="InlineCheckbox"
+          hideIf="isContact ||  isEmployee"
+          onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
+      </panel>
+      <panel name="middlePanel" colSpan="4" hideIf="$readonly()">
+        <field name="isInternal" colSpan="12" widget="InlineCheckbox"/>
+        <field name="isFactor" colSpan="12" widget="InlineCheckbox"
+          hideIf="isContact ||  isEmployee"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
+          if-module="axelor-account"
+          onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
+        <field name="isContact" hidden="true" colSpan="12"/>
+      </panel>
+      <panel name="rightPanel" colSpan="4" hideIf="$readonly()">
+        <field name="isCarrier" colSpan="12" widget="InlineCheckbox"
+          hideIf="isContact ||  isEmployee" if="__config__.app.isApp('stock')"
+          onChange="action-partner-record-unset-factor"/>
+        <field name="isSubcontractor" colSpan="12" widget="InlineCheckbox"
+          if-module="axelor-production"
+          if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
       </panel>
     </panel>
     <panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
@@ -473,11 +479,16 @@
           <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
-      <panel-related name="accountingSituationListPanel" if-module="axelor-account"
-        if="__config__.app.isApp('account')" field="accountingSituationList"
-        title="Accounting situation" hideIf="isContact" colSpan="12"
-        grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form"
-        onSelect="action-account-accounting-situation-method-update-customer-account"/>
+      <panel name="accountingSituationPanel" if-module="axelor-account"
+        if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact"
+        onSelect="action-account-accounting-situation-method-update-customer-account">
+        <field name="isCompensation" colSpan="12" widget="boolean-switch"
+          showIf="isCustomer &amp;&amp; isSupplier"/>
+        <panel-related name="accountingSituationListPanel"
+          field="accountingSituationList" title="Accounting situation" hideIf="isContact"
+          colSpan="12" grid-view="accounting-situation-partner-grid"
+          form-view="accounting-situation-partner-form"/>
+      </panel>
       <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
         if="__config__.app.isApp('account')"/>
       <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
