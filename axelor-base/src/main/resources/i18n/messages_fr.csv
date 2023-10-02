@@ -1001,6 +1001,7 @@
 "Helvetica-Bold","Helvetica-Gras",,
 "Helvetica-BoldOblique","Helvetica-GrasItalic",,
 "Helvetica-Oblique","Helvetica-Italic",,
+"Here is the list of the warnings and errors","Voici la liste des avertissements et des erreurs",,
 "Here you can write display conditions in groovy. For example : contractType?.name = ""CDI"" && partTime","Ici vous pouvez écrire des conditions d'affichage du contenu en groovy. Par exemple : contractType?.name = ""CDI"" && partTime",,
 "Here you can write text using string template method (as in email models). This text will display in the generated PDF. For example : The company $EmploymentContrat.payCompany$ and the employee $EmploymentContract.employee$ agreed on the following points.","Vous pouvez ici rédiger du texte en utilisant la méthode string template (comme pour les modèles d'email). Le texte renseigné sera affiché dans le PDF généré. Par exemple : La société $EmploymentContrat.payCompany$ et l'employee $EmploymentContract.employee$ conviennent ce qui suit.",,
 "Here you can write the title of the PDF to print using string template method. For example : A look at $EmploymentContrat.company.name$ 's potential future projects.","Vous pouvez ici écire le titre du fichier PDF à imprimer en utilisant la méthode string template (comme pour les modèles d'email). Par exemple : Un regard sur les projets potentiels de $EmploymentContrat.company.name$.",,

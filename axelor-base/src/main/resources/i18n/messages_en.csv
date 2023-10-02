@@ -1001,6 +1001,7 @@
 "Helvetica-Bold",,,
 "Helvetica-BoldOblique",,,
 "Helvetica-Oblique",,,
+"Here is the list of the warnings and errors",,,
 "Here you can write display conditions in groovy. For example : contractType?.name = ""CDI"" && partTime",,,
 "Here you can write text using string template method (as in email models). This text will display in the generated PDF. For example : The company $EmploymentContrat.payCompany$ and the employee $EmploymentContract.employee$ agreed on the following points.",,,
 "Here you can write the title of the PDF to print using string template method. For example : A look at $EmploymentContrat.company.name$ 's potential future projects.",,,

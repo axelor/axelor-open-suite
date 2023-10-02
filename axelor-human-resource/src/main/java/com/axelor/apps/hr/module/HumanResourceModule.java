@@ -35,8 +35,6 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractHRRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
-import com.axelor.apps.hr.db.repo.ExpenseLineHRRepository;
-import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
@@ -82,6 +80,8 @@ import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
 import com.axelor.apps.hr.service.expense.ExpenseAnalyticServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseCancellationService;
 import com.axelor.apps.hr.service.expense.ExpenseCancellationServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseCheckResponseService;
+import com.axelor.apps.hr.service.expense.ExpenseCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseComputationServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
@@ -117,6 +117,8 @@ import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
@@ -248,9 +250,10 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveExportService.class).to(LeaveExportServiceImpl.class);
     bind(LunchVoucherExportService.class).to(LunchVoucherExportServiceImpl.class);
     bind(ExpenseCreateService.class).to(ExpenseCreateServiceImpl.class);
-    bind(ExpenseLineRepository.class).to(ExpenseLineHRRepository.class);
     bind(ExpensePrintService.class).to(ExpensePrintServiceImpl.class);
     bind(ExpenseLimitService.class).to(ExpenseLimitServiceImpl.class);
     bind(ExpenseLineResponseComputeService.class).to(ExpenseLineResponseComputeServiceImpl.class);
+    bind(ExpenseLineCheckResponseService.class).to(ExpenseLineCheckResponseServiceImpl.class);
+    bind(ExpenseCheckResponseService.class).to(ExpenseCheckResponseServiceImpl.class);
   }
 }
