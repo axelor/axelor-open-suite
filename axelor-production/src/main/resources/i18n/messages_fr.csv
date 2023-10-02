@@ -310,6 +310,7 @@
 "Information",,,
 "Input file","Fichier entrée",,
 "Invalid date","Date invalide",,
+"Invalid scheduling and capacity configuration.","La configuration d'ordonnancement et capacité non valides.",,
 "Is closed","Est terminé",,
 "Is generated",,,
 "Is with difference","Avec différence",,
