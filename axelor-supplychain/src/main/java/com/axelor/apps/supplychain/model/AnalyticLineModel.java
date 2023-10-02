@@ -92,11 +92,13 @@ public class AnalyticLineModel implements AnalyticLine {
   public <T extends AnalyticLineModel> T getExtension(Class<T> klass) throws AxelorException {
     try {
       if (saleOrderLine != null) {
-        return klass.getDeclaredConstructor(SaleOrderLine.class).newInstance(this.saleOrderLine);
+        return klass
+            .getDeclaredConstructor(SaleOrderLine.class, SaleOrder.class)
+            .newInstance(this.saleOrderLine, this.saleOrder);
       } else if (purchaseOrderLine != null) {
         return klass
-            .getDeclaredConstructor(PurchaseOrderLine.class)
-            .newInstance(this.purchaseOrderLine);
+            .getDeclaredConstructor(PurchaseOrderLine.class, PurchaseOrder.class)
+            .newInstance(this.purchaseOrderLine, this.purchaseOrder);
       }
 
       return null;
