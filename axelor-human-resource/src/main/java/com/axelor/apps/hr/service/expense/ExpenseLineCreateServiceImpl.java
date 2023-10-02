@@ -203,7 +203,9 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     User user = AuthUtils.getUser();
     if (user != null) {
       Employee userEmployee = user.getEmployee();
-      if (!userEmployee.getHrManager() && expenseProduct.getUnavailableToUsers()) {
+      if (userEmployee != null
+          && !userEmployee.getHrManager()
+          && expenseProduct.getUnavailableToUsers()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_EXPENSE_TYPE_NOT_ALLOWED));
