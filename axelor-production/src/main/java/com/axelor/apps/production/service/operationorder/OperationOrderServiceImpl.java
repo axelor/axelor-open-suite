@@ -48,6 +48,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -650,10 +651,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   /**
-   * Get a list of operation orders sorted by priority and id from the specified manufacturing
-   * order.
+   * Sort operationOrders list by priority and id.
    *
-   * @param manufOrder
+   * @param operationOrders
    * @return
    */
   @Override
@@ -672,27 +672,15 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   /**
-   * Get a list of operation orders reverse sorted by priority and id from the specified
-   * manufacturing order.
+   * Reverse sort operationOrders list by priority and id.
    *
-   * @param manufOrder
+   * @param operationOrders
    * @return
    */
   @Override
   public List<OperationOrder> getReversedSortedOperationOrderList(
       List<OperationOrder> operationOrders) {
 
-    Comparator<OperationOrder> byPriority =
-        Comparator.comparing(
-                OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()))
-            .reversed();
-    Comparator<OperationOrder> byId =
-        Comparator.comparing(
-                OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()))
-            .reversed();
-
-    return operationOrders.stream()
-        .sorted(byPriority.thenComparing(byId))
-        .collect(Collectors.toList());
+    return Lists.reverse(getSortedOperationOrderList(operationOrders));
   }
 }

@@ -68,7 +68,6 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.EmailAccountRepository;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -77,10 +76,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService {
@@ -571,30 +567,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     manufOrder.setPlannedStartDateT(computePlannedStartDateT(manufOrder));
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
-  }
-
-  /**
-   * Get a list of operation orders reverse sorted by priority and id from the specified
-   * manufacturing order.
-   *
-   * @param manufOrder
-   * @return
-   */
-  protected List<OperationOrder> getReversedSortedOperationOrderList(ManufOrder manufOrder) {
-    List<OperationOrder> operationOrderList =
-        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
-    Comparator<OperationOrder> byPriority =
-        Comparator.comparing(
-                OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()))
-            .reversed();
-    Comparator<OperationOrder> byId =
-        Comparator.comparing(
-                OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()))
-            .reversed();
-
-    return operationOrderList.stream()
-        .sorted(byPriority.thenComparing(byId))
-        .collect(Collectors.toList());
   }
 
   protected boolean sendMail(ManufOrder manufOrder, Template template) {
