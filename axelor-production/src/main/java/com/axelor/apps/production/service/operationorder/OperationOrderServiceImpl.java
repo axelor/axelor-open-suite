@@ -57,12 +57,15 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,17 +76,20 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ProdProcessLineService prodProcessLineService;
+  protected OperationOrderRepository operationOrderRepository;
 
   @Inject
   public OperationOrderServiceImpl(
       BarcodeGeneratorService barcodeGeneratorService,
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
-      ProdProcessLineService prodProcessLineService) {
+      ProdProcessLineService prodProcessLineService,
+      OperationOrderRepository operationOrderRepository) {
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.prodProcessLineService = prodProcessLineService;
+    this.operationOrderRepository = operationOrderRepository;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -554,5 +560,139 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     }
 
     return totalDuration;
+  }
+
+  @Override
+  public LocalDateTime getNextOperationDate(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    OperationOrder nextOperationOrder =
+        operationOrderRepository
+            .all()
+            .filter(
+                "self.manufOrder = :manufOrder AND self.priority >= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+            .bind("manufOrder", manufOrder)
+            .bind("priority", operationOrder.getPriority())
+            .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
+            .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("operationOrderId", operationOrder.getId())
+            .order("priority")
+            .order("plannedStartDateT")
+            .fetchOne();
+
+    LocalDateTime manufOrderPlannedEndDateT = manufOrder.getPlannedEndDateT();
+    if (nextOperationOrder == null) {
+      return manufOrderPlannedEndDateT;
+    }
+
+    LocalDateTime plannedStartDateT = nextOperationOrder.getPlannedStartDateT();
+
+    if (Objects.equals(nextOperationOrder.getPriority(), operationOrder.getPriority())) {
+      LocalDateTime plannedEndDateT = nextOperationOrder.getPlannedEndDateT();
+      if (plannedEndDateT != null && plannedEndDateT.isBefore(manufOrderPlannedEndDateT)) {
+        boolean isOnSameMachine =
+            Objects.equals(nextOperationOrder.getMachine(), operationOrder.getMachine());
+        return isOnSameMachine ? plannedStartDateT : plannedEndDateT;
+      }
+
+    } else if (plannedStartDateT != null && plannedStartDateT.isBefore(manufOrderPlannedEndDateT)) {
+      return plannedStartDateT;
+    }
+
+    return manufOrderPlannedEndDateT;
+  }
+
+  @Override
+  public LocalDateTime getLastOperationDate(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    OperationOrder lastOperationOrder =
+        operationOrderRepository
+            .all()
+            .filter(
+                "self.manufOrder = :manufOrder AND ((self.priority = :priority AND self.machine = :machine) OR self.priority < :priority) AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+            .bind("manufOrder", manufOrder)
+            .bind("priority", operationOrder.getPriority())
+            .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
+            .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("machine", operationOrder.getMachine())
+            .bind("operationOrderId", operationOrder.getId())
+            .order("-priority")
+            .order("-plannedEndDateT")
+            .fetchOne();
+
+    LocalDateTime manufOrderPlannedStartDateT = manufOrder.getPlannedStartDateT();
+    if (lastOperationOrder == null) {
+      return manufOrderPlannedStartDateT;
+    }
+
+    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndDateT();
+
+    if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
+      LocalDateTime plannedStartDateT = lastOperationOrder.getPlannedStartDateT();
+      if (plannedStartDateT != null && plannedStartDateT.isAfter(manufOrderPlannedStartDateT)) {
+        boolean isOnSameMachine =
+            Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine());
+        return isOnSameMachine ? plannedEndDateT : plannedStartDateT;
+      }
+
+    } else if (plannedEndDateT != null && plannedEndDateT.isAfter(manufOrderPlannedStartDateT)) {
+      return plannedEndDateT;
+    }
+
+    return manufOrderPlannedStartDateT;
+  }
+
+  @Override
+  public long getDuration(OperationOrder operationOrder) throws AxelorException {
+    if (operationOrder.getWorkCenter() != null) {
+      return computeEntireCycleDuration(operationOrder, operationOrder.getManufOrder().getQty());
+    }
+    return 0;
+  }
+
+  /**
+   * Get a list of operation orders sorted by priority and id from the specified manufacturing
+   * order.
+   *
+   * @param manufOrder
+   * @return
+   */
+  @Override
+  public List<OperationOrder> getSortedOperationOrderList(List<OperationOrder> operationOrders) {
+
+    Comparator<OperationOrder> byPriority =
+        Comparator.comparing(
+            OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()));
+    Comparator<OperationOrder> byId =
+        Comparator.comparing(
+            OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
+
+    return operationOrders.stream()
+        .sorted(byPriority.thenComparing(byId))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Get a list of operation orders reverse sorted by priority and id from the specified
+   * manufacturing order.
+   *
+   * @param manufOrder
+   * @return
+   */
+  @Override
+  public List<OperationOrder> getReversedSortedOperationOrderList(
+      List<OperationOrder> operationOrders) {
+
+    Comparator<OperationOrder> byPriority =
+        Comparator.comparing(
+                OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .reversed();
+    Comparator<OperationOrder> byId =
+        Comparator.comparing(
+                OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()))
+            .reversed();
+
+    return operationOrders.stream()
+        .sorted(byPriority.thenComparing(byId))
+        .collect(Collectors.toList());
   }
 }

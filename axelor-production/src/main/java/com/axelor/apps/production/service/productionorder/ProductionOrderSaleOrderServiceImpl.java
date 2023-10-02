@@ -191,11 +191,10 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       }
       ProductionConfig productionConfig =
           productionConfigService.getProductionConfig(saleOrder.getCompany());
-      boolean useAsapScheduling =
-          productionConfig.getScheduling()
-              == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING;
+
       LocalDateTime endDate = null;
-      if (!useAsapScheduling) {
+      if (productionConfig.getScheduling()
+          != ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
         if (saleOrderLine.getEstimatedShippingDate() == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,

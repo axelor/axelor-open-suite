@@ -324,4 +324,7 @@ public final class ProductionExceptionMessage {
   public static final String
       YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE =
           /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders." /*)*/;
+
+  public static final String INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION =
+      /*$$(*/ "Invalid scheduling and capacity configuration." /*)*/;
 }
