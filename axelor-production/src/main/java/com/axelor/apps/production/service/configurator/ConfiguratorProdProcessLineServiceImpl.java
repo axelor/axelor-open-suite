@@ -83,7 +83,6 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     BigDecimal maxCapacityPerCycle;
     long durationPerCycle;
     long humanDuration;
-    long timingOfImplementation;
 
     if (confProdProcessLine.getDefNameAsFormula()) {
       Object computedName =
@@ -218,16 +217,6 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
                   .toString());
     } else {
       humanDuration = confProdProcessLine.getHumanDuration();
-    }
-    if (confProdProcessLine.getDefTimingOfImplementationFormula()) {
-      timingOfImplementation =
-          Long.decode(
-              configuratorService
-                  .computeFormula(
-                      confProdProcessLine.getTimingOfImplementationFormula(), attributes)
-                  .toString());
-    } else {
-      timingOfImplementation = confProdProcessLine.getTimingOfImplementation();
     }
 
     if (confProdProcessLine.getDefStockLocationAsFormula()) {

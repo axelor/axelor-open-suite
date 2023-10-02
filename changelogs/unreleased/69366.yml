@@ -1,0 +1,3 @@
+---
+title: "Move : Fix multi invoice term due dates being wrongly updated when accounting"
+type: fix

@@ -19,7 +19,7 @@ libs.commons_validator = 'commons-validator:commons-validator:1.7'
 libs.groovy = 'org.codehaus.groovy:groovy-all:3.0.13'
 
 libs.html2pdf = 'com.itextpdf:html2pdf:4.0.3'
-libs.pdfbox = 'org.apache.pdfbox:pdfbox:3.0.0'
+libs.pdfbox = 'org.apache.pdfbox:pdfbox:2.0.26'
 
 libs.iban4j = 'org.iban4j:iban4j:3.2.3-RELEASE'
 

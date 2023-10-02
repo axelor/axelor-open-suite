@@ -1337,6 +1337,7 @@
 "No imported data to reset","Aucune donnée importée à supprimer. ",,
 "No period found or it has been closed for the company %s for the date %s","Aucune période trouvée ou celle-ci clôturée pour la société : %s et la date : %s",,
 "No tax found for product %s","Aucune taxe trouvée pour le produit %s",,
+"No view configured for model %s.","Aucune vue paramétrée pour le modèle %s.",,
 "Non-negotiable price list","Liste de prix non négociable",,
 "Non-unique key","Clé non unique",,
 "None","Aucun",,

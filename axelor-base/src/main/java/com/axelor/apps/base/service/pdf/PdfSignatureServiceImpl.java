@@ -25,7 +25,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.time.ZoneId;
 import java.util.Calendar;
-import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.ExternalSigningSupport;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
@@ -51,7 +50,7 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
       try (FileOutputStream outStream = new FileOutputStream(tempPdfFile);
           FileInputStream inputStream =
               new FileInputStream(String.valueOf(MetaFiles.getPath(certificate)))) {
-        try (PDDocument doc = Loader.loadPDF(new File(MetaFiles.getPath(metaFile).toString()))) {
+        try (PDDocument doc = PDDocument.load(new File(MetaFiles.getPath(metaFile).toString()))) {
           getCertificateAndSign(certificatePassword, reason, inputStream, doc, outStream);
         }
       }

@@ -36,7 +36,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -127,22 +126,18 @@ public class ProjectTaskController {
     response.setData(List.of(data));
   }
 
-  public void getProjectTaskFinancialReportingData(ActionRequest request, ActionResponse response) {
-    Map<String, Object> data = new HashMap<>();
-    data.put("turnover", request.getData().get("turnover"));
-    data.put("initialCosts", request.getData().get("initialCosts"));
-    data.put("initialMargin", request.getData().get("initialMargin"));
-    data.put("initialMarkup", request.getData().get("initialMarkup"));
-    data.put("realTurnover", request.getData().get("realTurnover"));
-    data.put("realCosts", request.getData().get("realCosts"));
-    data.put("realMargin", request.getData().get("realMargin"));
-    data.put("realMarkup", request.getData().get("realMarkup"));
-    data.put("landingCosts", request.getData().get("landingCosts"));
-    data.put("landingMargin", request.getData().get("landingMargin"));
-    data.put("landingMarkup", request.getData().get("landingMarkup"));
-    data.put("forecastCosts", request.getData().get("forecastCosts"));
-    data.put("forecastMargin", request.getData().get("forecastMargin"));
-    data.put("forecastMarkup", request.getData().get("forecastMarkup"));
+  public void getProjectTaskFinancialReportingData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          BusinessProjectExceptionMessage.PROJECT_TASK_REPORT_NO_ID_FOUND);
+    }
+    Map<String, Object> data =
+        Beans.get(ProjectTaskBusinessProjectService.class)
+            .processRequestToDisplayFinancialReporting(Long.valueOf(id));
     response.setData(List.of(data));
   }
 
