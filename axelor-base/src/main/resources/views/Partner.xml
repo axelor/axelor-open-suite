@@ -286,8 +286,8 @@
       </panel>
     </panel>
     <panel name="propertiesPanel" title="Properties" canCollapse="true"
-      collapseIf="$readonly()">
-      <panel name="leftPanel" colSpan="4" hideIf="$readonly()">
+      collapseIf="true" hidden="true" showIf="$readonly()">
+      <panel name="leftPanel" colSpan="4">
         <field name="isEmployee" colSpan="12" widget="InlineCheckbox"
           hideIf="!_showIsEmployee || partnerTypeSelect != 2 || isCustomer || isSupplier || isCarrier || isFactor || isProspect || isCompensation || isContact || isInternal || isPartner || isSubcontractor"
           onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
@@ -301,7 +301,7 @@
           hideIf="isContact ||  isEmployee"
           onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
       </panel>
-      <panel name="middlePanel" colSpan="4" hideIf="$readonly()">
+      <panel name="middlePanel" colSpan="4">
         <field name="isInternal" colSpan="12" widget="InlineCheckbox"/>
         <field name="isFactor" colSpan="12" widget="InlineCheckbox"
           hideIf="isContact ||  isEmployee"
@@ -310,7 +310,7 @@
           onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
         <field name="isContact" hidden="true" colSpan="12"/>
       </panel>
-      <panel name="rightPanel" colSpan="4" hideIf="$readonly()">
+      <panel name="rightPanel" colSpan="4">
         <field name="isCarrier" colSpan="12" widget="InlineCheckbox"
           hideIf="isContact ||  isEmployee" if="__config__.app.isApp('stock')"
           onChange="action-partner-record-unset-factor"/>
