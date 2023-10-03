@@ -240,7 +240,7 @@
           <field name="simpleFullName" colSpan="7" showTitle="false"
             css="label-bold bold large">
             <hilite strong="true" if="true" color="primary"/>
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="partnerTypeSelect" showTitle="false"
                 onChange="action-partner-group-type-select-onchange" colSpan="12"
                 placeholder="Partner Type"/>
@@ -378,7 +378,7 @@
         <panel name="employeeAddressPanel" title="Contact address" colSpan="12"
           showIf="isEmployee">
           <field name="mainAddress" form-view="address-form" grid-view="address-grid">
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="addressL2" x-bind="{{addressL2|uppercase}}"
                 placeholder="e.g. Financial department, CEO"/>
               <field name="addressL3" x-bind="{{addressL3|uppercase}}"
@@ -401,7 +401,8 @@
           </static>
           <field name="partnerAddressList" colSpan="12" form-view="partner-address-form"
             grid-view="partner-address-grid">
-            <editor x-show-titles="false" onNew="action-partner-address-attrs-set-canselect">
+            <editor x-show-titles="false" onNew="action-partner-address-attrs-set-canselect"
+              x-viewer="true">
               <panel colSpan="12" css="field-append">
                 <field name="$canSelect" hidden="true" colSpan="12"/>
                 <label colSpan="12"
@@ -434,7 +435,7 @@
           <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"/>
           <field name="emailAddress" canSelect="false" colSpan="6"
             form-view="email-address-simple-form" x-show-icons="false">
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="12" placeholder="whatever@example.com"
                 pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
             </editor>
@@ -688,7 +689,7 @@
       </panel>
       <panel name="namePanel" colSpan="9">
         <field name="simpleFullName" css="bold" showTitle="false" colSpan="12">
-          <editor x-show-titles="false">
+          <editor x-show-titles="false" x-viewer="true">
             <field name="titleSelect" placeholder="Civility" colSpan="2"/>
             <field name="name" css="highlight" placeholder="Name"
               onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
@@ -725,7 +726,7 @@
         <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
-          <editor x-show-titles="false">
+          <editor x-show-titles="false" x-viewer="true">
             <field name="address" placeholder="whatever@example.com"
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"
               colSpan="12"/>
@@ -976,7 +977,7 @@
         <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
-          <editor x-show-titles="false">
+          <editor x-show-titles="false" x-viewer="true">
             <field name="address" placeholder="whatever@example.com"
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
           </editor>
