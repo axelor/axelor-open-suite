@@ -918,7 +918,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         log.debug("Threshold respected");
 
         MoveLine creditAdjustMoveLine =
-            moveAdjustementService.createAdjustmentCreditMove(debitMoveLine);
+            moveAdjustementService.createAdjustmentMove(debitMoveLine, true);
 
         // Création de la réconciliation
         Reconcile newReconcile =
@@ -958,7 +958,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           log.debug("Threshold respected");
 
           MoveLine debitAdjustmentMoveLine =
-              moveAdjustementService.createAdjustmentCreditMove(creditMoveLine);
+              moveAdjustementService.createAdjustmentMove(creditMoveLine, false);
 
           // Création de la réconciliation
           Reconcile newReconcile =
