@@ -719,7 +719,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             moveLine.setCredit(moveLine.getCredit().add(companyAmount));
             moveLine.setCurrencyAmount(currencyAmount);
           }
-          moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(invoiceTerm.getAmount()));
         }
       }
     }
