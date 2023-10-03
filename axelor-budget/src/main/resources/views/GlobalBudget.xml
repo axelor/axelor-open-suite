@@ -326,8 +326,7 @@
   <action-view name="action-global-budget-view-see-budget-levels" title="Budget Levels"
     model="com.axelor.apps.budget.db.BudgetLevel">
     <view type="tree" name="budget-tree"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
+    <view-param name="showArchived" value="true"/>
     <domain>self.globalBudget.id= :_globalId</domain>
     <context name="_globalId" expr="eval: id"/>
   </action-view>

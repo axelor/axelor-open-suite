@@ -91,4 +91,7 @@ public final class BudgetExceptionMessage {
       "Warning : There is a budget overrun for %s. The available balance is %.2f %s. If you click OK you will be in excess, do you want to continue ?"; /*)*/
 
   public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
+
+  public static final String VERSION_LINE_EXCEED_REALIZED = /*$$(*/
+      "On these lines, the realized already on the budget exceed the expected amount : %s" /*)*/;
 }

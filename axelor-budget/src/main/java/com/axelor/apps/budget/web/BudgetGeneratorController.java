@@ -28,13 +28,17 @@ public class BudgetGeneratorController {
       if (budgetGenerator != null) {
         GlobalBudget globalBudget =
             Beans.get(GlobalBudgetService.class).generateGlobalBudget(budgetGenerator);
-        if (globalBudget != null) {
+        if (globalBudget != null && budgetGenerator.getBudgetScenario() != null) {
           response.setView(
               ActionView.define(I18n.get("Global budget"))
                   .model(GlobalBudget.class.getName())
                   .add("grid", "global-budget-grid")
                   .add("form", "global-budget-form")
+                  .domain(String.format("self.id >= %s", globalBudget.getId()))
                   .context("_showRecord", String.valueOf(globalBudget.getId()))
+                  .context(
+                      "_budgetTypeSelect",
+                      budgetGenerator.getBudgetStructure().getBudgetTypeSelect())
                   .map());
         }
       }

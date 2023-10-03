@@ -11,9 +11,9 @@ public class GlobalBudgetManagementRepository extends GlobalBudgetRepository {
 
     GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
 
-    entity = super.save(entity);
-
     globalBudgetService.fillGlobalBudgetOnBudget(entity);
+
+    entity = super.save(entity);
 
     return entity;
   }

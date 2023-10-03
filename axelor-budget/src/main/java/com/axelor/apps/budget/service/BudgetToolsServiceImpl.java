@@ -92,32 +92,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     amountByField.put("totalAmountPaid", BigDecimal.ZERO);
     amountByField.put("totalFirmGap", BigDecimal.ZERO);
     amountByField.put("simulatedAmount", BigDecimal.ZERO);
-    if (!ObjectUtils.isEmpty(budgetList)) {
-      for (Budget budget : budgetList) {
-        amountByField.replace(
-            "totalAmountExpected",
-            amountByField.get("totalAmountExpected").add(budget.getTotalAmountExpected()));
-        amountByField.replace(
-            "totalAmountCommitted",
-            amountByField.get("totalAmountCommitted").add(budget.getTotalAmountCommitted()));
-        amountByField.replace(
-            "totalAmountRealized",
-            amountByField.get("totalAmountRealized").add(budget.getTotalAmountCommitted()));
-        amountByField.replace(
-            "realizedWithPo", amountByField.get("realizedWithPo").add(budget.getRealizedWithPo()));
-        amountByField.replace(
-            "realizedWithNoPo",
-            amountByField.get("realizedWithNoPo").add(budget.getRealizedWithNoPo()));
-        amountByField.replace(
-            "totalAmountPaid",
-            amountByField.get("totalAmountPaid").add(budget.getTotalAmountPaid()));
-        amountByField.replace(
-            "totalFirmGap", amountByField.get("totalFirmGap").add(budget.getTotalFirmGap()));
-        amountByField.replace(
-            "simulatedAmount",
-            amountByField.get("simulatedAmount").add(budget.getSimulatedAmount()));
-      }
-    } else if (!ObjectUtils.isEmpty(budgetLevelList)) {
+    if (!ObjectUtils.isEmpty(budgetLevelList)) {
       for (BudgetLevel budgetLevelObj : budgetLevelList) {
         amountByField.replace(
             "totalAmountExpected",
@@ -145,6 +120,31 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
         amountByField.replace(
             "simulatedAmount",
             amountByField.get("simulatedAmount").add(budgetLevelObj.getSimulatedAmount()));
+      }
+    } else if (!ObjectUtils.isEmpty(budgetList)) {
+      for (Budget budget : budgetList) {
+        amountByField.replace(
+            "totalAmountExpected",
+            amountByField.get("totalAmountExpected").add(budget.getTotalAmountExpected()));
+        amountByField.replace(
+            "totalAmountCommitted",
+            amountByField.get("totalAmountCommitted").add(budget.getTotalAmountCommitted()));
+        amountByField.replace(
+            "totalAmountRealized",
+            amountByField.get("totalAmountRealized").add(budget.getTotalAmountCommitted()));
+        amountByField.replace(
+            "realizedWithPo", amountByField.get("realizedWithPo").add(budget.getRealizedWithPo()));
+        amountByField.replace(
+            "realizedWithNoPo",
+            amountByField.get("realizedWithNoPo").add(budget.getRealizedWithNoPo()));
+        amountByField.replace(
+            "totalAmountPaid",
+            amountByField.get("totalAmountPaid").add(budget.getTotalAmountPaid()));
+        amountByField.replace(
+            "totalFirmGap", amountByField.get("totalFirmGap").add(budget.getTotalFirmGap()));
+        amountByField.replace(
+            "simulatedAmount",
+            amountByField.get("simulatedAmount").add(budget.getSimulatedAmount()));
       }
     }
     return amountByField;

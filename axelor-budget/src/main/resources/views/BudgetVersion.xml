@@ -12,6 +12,7 @@
   </grid>
 
   <form title="Budget version" name="budget-version-form"
+    onSave="action-budget-version-method-notify-line-amounts"
     model="com.axelor.apps.budget.db.BudgetVersion" canDelete="false" canNew="false">
     <panel readonlyIf="isActive">
       <field name="name" colSpan="5"/>
@@ -24,5 +25,9 @@
 
     </panel>
   </form>
+
+  <action-method name="action-budget-version-method-notify-line-amounts">
+    <call class="com.axelor.apps.budget.web.BudgetVersionController" method="notifyLineAmounts"/>
+  </action-method>
 
 </object-views>

@@ -112,8 +112,7 @@
          ]]>
     </string>
 
-    <unique-constraint
-      columns="code,parentId,globalId,typeSelect,company,fromDate,toDate"/>
+    <unique-constraint columns="code,parentId,globalId,company,fromDate,toDate"/>
 
     <extra-code>
 	      <![CDATA[

@@ -1,7 +1,6 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
@@ -23,11 +22,9 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -88,8 +85,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
   public void computeBudgetLevelTotals(Budget budget) {
+    budgetService.computeAvailableFields(budget);
 
     budgetLevelService.computeBudgetLevelTotals(budget);
 
@@ -101,7 +98,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
     if (globalBudget != null) {
       computeTotals(globalBudget);
-      globalBudgetRepository.save(globalBudget);
     }
   }
 
@@ -201,6 +197,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           BudgetLine budgetLine = budgetLineList.get(0);
           recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
         }
+        computeBudgetLevelTotals(budget);
       }
     }
 
@@ -217,7 +214,11 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     budgetLine.setAmountRealized(budget.getTotalAmountRealized());
     budgetLine.setRealizedWithNoPo(budget.getRealizedWithNoPo());
     budgetLine.setRealizedWithPo(budget.getRealizedWithPo());
-    budgetLine.setFirmGap(budget.getTotalFirmGap());
+    BigDecimal firmGap =
+        budgetLine
+            .getAmountExpected()
+            .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
+    budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
     budgetLine.setAmountPaid(budget.getTotalAmountPaid());
   }
 
@@ -228,6 +229,9 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     GlobalBudget globalBudget = copyGlobalBudgetTemplate(budgetGenerator);
 
     fillGlobalBudgetWithLevels(budgetGenerator, globalBudget);
+
+    computeTotals(globalBudget);
+
     globalBudgetRepository.save(globalBudget);
     return globalBudget;
   }
@@ -283,7 +287,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   protected void fillGlobalBudgetWithLevels(
       BudgetGenerator budgetGenerator, GlobalBudget globalBudget) throws AxelorException {
-    if (ObjectUtils.isEmpty(budgetGenerator.getBudgetStructure().getBudgetLevelList())) {
+    if (budgetGenerator.getBudgetStructure() == null
+        || budgetGenerator.getBudgetScenario() == null) {
       return;
     }
 
@@ -292,77 +297,20 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     Map<String, Object> variableAmountMap =
         budgetScenarioService.getVariableMap(budgetGenerator.getBudgetScenario(), 1);
 
-    for (BudgetLevel groupBudgetLevel : budgetStructure.getBudgetLevelList()) {
-      BudgetLevel optGroupBudgetLevel =
-          budgetLevelManagementRepository.copy(groupBudgetLevel, false);
-      optGroupBudgetLevel.setFromDate(budgetGenerator.getYear().getFromDate());
-      optGroupBudgetLevel.setToDate(budgetGenerator.getYear().getToDate());
-      optGroupBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
-      optGroupBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-      budgetGenerator.getBudgetStructure().removeBudgetLevelListItem(optGroupBudgetLevel);
-      optGroupBudgetLevel.setBudgetStructure(null);
-      globalBudget.addBudgetLevelListItem(optGroupBudgetLevel);
-
-      List<BudgetLevel> sectionBudgetLevelList = groupBudgetLevel.getBudgetLevelList();
-      if (!ObjectUtils.isEmpty(sectionBudgetLevelList)) {
-        for (BudgetLevel sectionBudgetLevel : sectionBudgetLevelList) {
-
-          BudgetLevel optSectionBudgetLevel =
-              budgetLevelManagementRepository.copy(sectionBudgetLevel, false);
-          optSectionBudgetLevel.setFromDate(budgetGenerator.getYear().getFromDate());
-          optSectionBudgetLevel.setToDate(budgetGenerator.getYear().getToDate());
-          optSectionBudgetLevel.setTypeSelect(
-              BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
-          optSectionBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-          optGroupBudgetLevel.addBudgetLevelListItem(optSectionBudgetLevel);
-          List<Budget> budgetList = sectionBudgetLevel.getBudgetList();
-          Set<BudgetScenarioVariable> variablesList =
-              sectionBudgetLevel.getBudgetScenarioVariableSet();
-
-          if (!budgetStructure.getIsScenario() && !ObjectUtils.isEmpty(budgetList)) {
-            for (Budget budget : budgetList) {
-              Budget optBudget = budgetRepository.copy(budget, true);
-              optBudget.setFromDate(budgetGenerator.getYear().getFromDate());
-              optBudget.setToDate(budgetGenerator.getYear().getToDate());
-              optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-              optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-              optBudget.setAmountForGeneration(budget.getTotalAmountExpected());
-              optBudget.setAvailableAmount(budget.getTotalAmountExpected());
-              optBudget.setAvailableAmountWithSimulated(budget.getTotalAmountExpected());
-              budgetService.generatePeriods(optBudget);
-              optSectionBudgetLevel.addBudgetListItem(optBudget);
-              globalBudget.addBudgetListItem(optBudget);
-              budgetRepository.save(optBudget);
-            }
-          } else if (budgetStructure.getIsScenario() && !ObjectUtils.isEmpty(variablesList)) {
-
-            for (BudgetScenarioVariable budgetScenarioVariable : variablesList) {
-              Budget optBudget = new Budget();
-              optBudget.setCode(budgetScenarioVariable.getCode());
-              optBudget.setName(budgetScenarioVariable.getName());
-              optBudget.setFromDate(globalBudget.getFromDate());
-              optBudget.setToDate(globalBudget.getToDate());
-              optBudget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
-              optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-              optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-              optBudget.setCategory(budgetScenarioVariable.getCategory());
-              BigDecimal calculatedAmount =
-                  ((BigDecimal)
-                          variableAmountMap.getOrDefault(
-                              budgetScenarioVariable.getCode(), BigDecimal.ZERO))
-                      .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-              optBudget.setAmountForGeneration(calculatedAmount);
-              optBudget.setTotalAmountExpected(calculatedAmount);
-              optBudget.setAvailableAmount(calculatedAmount);
-              optBudget.setAvailableAmountWithSimulated(optBudget.getAmountForGeneration());
-              optBudget.setPeriodDurationSelect(0);
-              budgetService.generatePeriods(optBudget);
-              optSectionBudgetLevel.addBudgetListItem(optBudget);
-              globalBudget.addBudgetListItem(optBudget);
-              budgetRepository.save(optBudget);
-            }
-          }
-        }
+    if (!ObjectUtils.isEmpty(budgetStructure.getBudgetLevelList())) {
+      for (BudgetLevel budgetLevel : budgetStructure.getBudgetLevelList()) {
+        budgetLevelService.generateBudgetLevelFromGenerator(
+            budgetLevel, null, budgetGenerator, globalBudget, variableAmountMap, true);
+      }
+    } else if (!ObjectUtils.isEmpty(budgetStructure.getBudgetList())) {
+      for (Budget budget : budgetStructure.getBudgetList()) {
+        budgetService.generateLineFromGenerator(budget, null, budgetGenerator, globalBudget);
+      }
+    } else if (!ObjectUtils.isEmpty(budgetStructure.getBudgetScenarioVariableSet())) {
+      for (BudgetScenarioVariable budgetScenarioVariable :
+          budgetStructure.getBudgetScenarioVariableSet()) {
+        budgetService.generateLineFromGenerator(
+            budgetScenarioVariable, null, variableAmountMap, globalBudget);
       }
     }
   }

@@ -31,9 +31,11 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -111,7 +113,8 @@ public class BudgetController {
     try {
       Budget budget = request.getContext().asType(Budget.class);
       BudgetService budgetService = Beans.get(BudgetService.class);
-      response.setValue("totalFirmGap", budgetService.computeFirmGap(budget));
+      budgetService.computeTotalFirmGap(budget);
+      response.setValue("totalFirmGap", budget.getTotalFirmGap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -269,6 +272,18 @@ public class BudgetController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setLevelDomain(ActionRequest request, ActionResponse response) {
+    Budget budget = request.getContext().asType(Budget.class);
+
+    String globalId = request.getContext().get("_globalId").toString();
+    if (ObjectUtils.isEmpty(globalId)) {
+      return;
+    }
+    GlobalBudget globalBudget =
+        Beans.get(GlobalBudgetRepository.class).find(Long.valueOf(globalId));
+    if (globalBudget != null) {}
   }
 
   public GlobalBudget getGlobalBudget(ActionRequest request, ActionResponse response) {

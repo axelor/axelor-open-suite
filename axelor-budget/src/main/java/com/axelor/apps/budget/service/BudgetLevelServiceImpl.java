@@ -29,7 +29,9 @@ import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.AdvancedImportBudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
@@ -285,11 +287,9 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     validateLevel(budgetLevel);
   }
 
-  @Transactional
   protected void validateLevel(BudgetLevel budgetLevel) {
     if (budgetLevel != null) {
       budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
-      budgetLevelRepository.save(budgetLevel);
     }
   }
 
@@ -402,6 +402,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setSimulatedAmount(BigDecimal.ZERO);
     budgetLevel.setTotalFirmGap(BigDecimal.ZERO);
     budgetLevel.setTotalAmountPaid(BigDecimal.ZERO);
+    budgetLevel.setBudgetStructure(null);
 
     if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
       budgetLevel.getBudgetLevelList().forEach(child -> resetBudgetLevel(child));
@@ -426,5 +427,47 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       }
     }
     return budgetList;
+  }
+
+  @Override
+  public void generateBudgetLevelFromGenerator(
+      BudgetLevel budgetLevel,
+      BudgetLevel parent,
+      BudgetGenerator budgetGenerator,
+      GlobalBudget globalBudget,
+      Map<String, Object> variableAmountMap,
+      boolean linkToGlobal)
+      throws AxelorException {
+    BudgetLevel optBudgetLevel = budgetLevelManagementRepository.copy(budgetLevel, false);
+    optBudgetLevel.setFromDate(budgetGenerator.getYear().getFromDate());
+    optBudgetLevel.setToDate(budgetGenerator.getYear().getToDate());
+    optBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
+    optBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
+    optBudgetLevel.setBudgetTypeSelect(globalBudget.getBudgetTypeSelect());
+    optBudgetLevel.setBudgetStructure(null);
+    if (parent != null) {
+      parent.addBudgetLevelListItem(optBudgetLevel);
+    }
+    if (linkToGlobal) {
+      globalBudget.addBudgetLevelListItem(optBudgetLevel);
+    }
+
+    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
+        generateBudgetLevelFromGenerator(
+            child, optBudgetLevel, budgetGenerator, globalBudget, variableAmountMap, false);
+      }
+    } else if (!ObjectUtils.isEmpty(budgetLevel.getBudgetList())) {
+      for (Budget budget : budgetLevel.getBudgetList()) {
+        budgetService.generateLineFromGenerator(
+            budget, optBudgetLevel, budgetGenerator, globalBudget);
+      }
+    } else if (!ObjectUtils.isEmpty(budgetLevel.getBudgetScenarioVariableSet())) {
+      for (BudgetScenarioVariable budgetScenarioVariable :
+          budgetLevel.getBudgetScenarioVariableSet()) {
+        budgetService.generateLineFromGenerator(
+            budgetScenarioVariable, optBudgetLevel, variableAmountMap, globalBudget);
+      }
+    }
   }
 }

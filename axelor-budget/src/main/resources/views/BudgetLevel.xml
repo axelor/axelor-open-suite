@@ -306,14 +306,15 @@
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red">
       <field name="budgetLevelList" title="Sections"
-        hideIf="budgetList != null &amp;&amp; budgetList.length &gt;= 1" colSpan="12"
-        form-view="budget-level-template-form" grid-view="budget-level-children-template-grid"/>
+        hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetScenarioVariableSet != null &amp;&amp; budgetScenarioVariableSet.length &gt;= 1)"
+        colSpan="12" form-view="budget-level-template-form"
+        grid-view="budget-level-children-template-grid"/>
       <field name="budgetList" title="Lines"
-        hideIf="budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1 &amp;&amp; !$isScenario"
+        hideIf="(budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1) || $isScenario"
         colSpan="12" form-view="budget-included-template-form"
         grid-view="budget-lines-template-grid"/>
       <field name="budgetScenarioVariableSet" title="Variables"
-        hideIf="budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1 &amp;&amp; $isScenario"
+        hideIf="(budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1) || !$isScenario"
         colSpan="12" form-view="budget-scenario-variable-form"
         grid-view="budget-scenario-variable-grid" canNew="false" canEdit="false" canSelect="true"/>
     </panel>
@@ -511,6 +512,16 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_budgetLevel" expr="eval: __this__"/>
+  </action-view>
+
+  <action-view name="action-budget-view-budget-level" title="Budget Level"
+    model="com.axelor.apps.budget.db.BudgetLevel">
+    <view type="form" name="budget-level-intermediate-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
 </object-views>

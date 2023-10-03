@@ -28,12 +28,15 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface BudgetService {
 
@@ -85,13 +88,7 @@ public interface BudgetService {
    */
   public BigDecimal computeToBeCommittedAmount(Budget budget);
 
-  /**
-   * Compute all firm gap amount in budget lines, set the total firm gap on budget and return it
-   *
-   * @param budget
-   * @return BigDecimal
-   */
-  public BigDecimal computeFirmGap(Budget budget);
+  void computeAvailableFields(Budget budget);
 
   /**
    * Check if budget key are enabled in account config of company
@@ -232,9 +229,9 @@ public interface BudgetService {
    * Compute all available with simulated amount in budget lines, set the total available with
    * simulated on budget and set on budget
    *
-   * @param move, budget
+   * @param budget
    */
-  public void computeTotalAvailableWithSimulatedAmount(Move move, Budget budget);
+  public void computeTotalAvailableWithSimulatedAmount(Budget budget);
 
   /**
    * If budget key is allowed (via config), check that analytic and account are filled then compute
@@ -316,4 +313,15 @@ public interface BudgetService {
   GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
 
   GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
+
+  void generateLineFromGenerator(
+      Budget budget, BudgetLevel parent, BudgetGenerator budgetGenerator, GlobalBudget globalBudget)
+      throws AxelorException;
+
+  void generateLineFromGenerator(
+      BudgetScenarioVariable budgetScenarioVariable,
+      BudgetLevel parent,
+      Map<String, Object> variableAmountMap,
+      GlobalBudget globalBudget)
+      throws AxelorException;
 }

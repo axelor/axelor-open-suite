@@ -65,7 +65,7 @@
   </grid>
 
 
-  <tree name="budget-tree" title="Budget">
+  <tree name="budget-tree" title="Budget Levels">
     <column name="name" type="string"/>
     <column name="code" type="string"/>
     <column name="totalAmountExpected"/>
@@ -89,7 +89,7 @@
       <field name="availableAmountWithSimulated"/>
     </node>
     <node model="com.axelor.apps.budget.db.BudgetLevel" parent="parentBudgetLevel"
-      draggable="true" onClick="action-budget-view-budget-level">
+      onClick="action-budget-view-budget-level">
       <field as="name" name="name"/>
       <field as="code" name="code"/>
       <field name="totalAmountExpected"/>

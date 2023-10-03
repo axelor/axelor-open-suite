@@ -56,7 +56,7 @@
 
 
       <button name="generateGlobalBudgetBtn" title="Generate global budget"
-        onClick="save,action-budget-generator-method-generate-global-budget, close" showIf="year"/>
+        onClick="action-budget-generator-method-generate-global-budget, close" showIf="year"/>
 
 
     </panel>
