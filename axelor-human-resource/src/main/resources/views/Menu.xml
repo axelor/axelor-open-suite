@@ -7,7 +7,7 @@
 
   <menuitem name="my-hr-root" order="-1600" title="MyHR" icon="fa-user"
     if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.isMyHrEnabled"
-    icon-background="#84429f"/>
+    icon-background="#525252"/>
 
   <menuitem name="my-hr-dashboard" parent="my-hr-root" title="Employee dashboard"
     action="my.hr.dashboard.view" order="100" icon="fa-address-card-o" icon-background="#84429f"/>
@@ -75,7 +75,7 @@
   <!-- RH -->
 
   <menuitem name="hr-root" order="-1600" title="HR" icon="fa-sitemap"
-    if="__config__.app.isApp('employee')" icon-background="#84429f"/>
+    if="__config__.app.isApp('employee')" icon-background="#525252"/>
 
   <menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management"
     icon="fa-address-card-o" icon-background="#84429f" order="100"/>
@@ -637,5 +637,9 @@
 
   <menuitem name="top-menu-hr-my-extra-hours" parent="top-menu-hr" title="My extra hours"
     action="edit.extra.hours" top="true" if="__config__.app.isApp('exthrs')"/>
+
+  <!--Help Menu Item-->
+  <menuitem name="menu-hr-help" title="Help" parent="hr-root" icon="fa-question-circle"
+            order="1500" />
 
 </object-views>

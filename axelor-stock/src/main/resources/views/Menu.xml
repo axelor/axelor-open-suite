@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="stock-root" title="Stock management" order="-700"
-    if="__config__.app.isApp('stock')" icon="fa-cubes" icon-background="#b6473f"/>
+    if="__config__.app.isApp('stock')" icon="fa-cubes" icon-background="#525252"/>
 
 
   <menuitem title="Deliveries" name="stock-root-deliveries" parent="stock-root" order="100"/>
@@ -326,5 +326,8 @@
     <view type="grid" name="stock-batch-grid"/>
     <view type="form" name="stock-batch-form"/>
   </action-view>
+  
+  <menuitem name="menu-stock-help" title="Help" parent="stock-root" order="1500"
+            icon="fa-question-circle" />
 
 </object-views>

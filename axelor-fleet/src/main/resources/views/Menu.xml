@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="fleet-root" title="Fleet" order="-400" if="__config__.app.isApp('fleet')"
-    icon="fa-car" icon-background="orange"/>
+    icon="fa-car" icon-background="#525252"/>
 
   <menuitem name="fleet-root-vehicle" title="Vehicle" action="fleet.root.vehicle"
     parent="fleet-root" order="100"/>
@@ -126,5 +126,8 @@
     <view type="grid" name="vehicle-repair-cause-grid"/>
     <view type="form" name="vehicle-repair-cause-form"/>
   </action-view>
+  
+  <menuitem name="menu-fleet-help" title="Help" icon="fa-question-circle" parent="fleet-root"
+            order="1500" />
 
 </object-views>

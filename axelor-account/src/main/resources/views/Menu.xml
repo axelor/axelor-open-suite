@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="invoice-root" title="Invoicing" order="-1000"
-    if="__config__.app.isApp('invoice')" icon="fa-file-text-o" icon-background="#31b4a9"/>
+    if="__config__.app.isApp('invoice')" icon="fa-file-text-o" icon-background="#525252"/>
 
   <menuitem name="invoice-root-custinvoices" parent="invoice-root" order="100"
     title="Cust. Invoices" action="invoice.root.custinvoices"/>
@@ -106,6 +106,10 @@
     <view type="form" name="invoice-term-form"/>
   </action-view>
 
+  <!-- Help Menu Item For Invoicing-->
+  <menuitem name="menu-invoicing-help" title="Help" icon="fa-question-circle"
+            parent="invoice-root" order="1500" icon-background="#525252" />
+
   <menuitem name="account-root-payment-schedule" title="Payment Schedule" order="800"
     if-module="axelor-bank-payment" parent="invoice-root"
     if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
@@ -137,7 +141,7 @@
     icon="fa-bar-chart" title="Reportings"/>
 
   <menuitem name="account-root" title="Accounting" order="-900"
-    if="__config__.app.isApp('account')" icon="fa-calculator" icon-background="#2fa042"/>
+    if="__config__.app.isApp('account')" icon="fa-calculator" icon-background="#525252"/>
   <menuitem name="account-root-move" parent="account-root" title="Moves" order="100"/>
 
   <menuitem name="account-root-move-move" parent="account-root-move" title="Moves"
@@ -1083,4 +1087,8 @@
     <view type="grid" name="analytic-move-line-query-grid"/>
     <view type="form" name="analytic-move-line-query-form"/>
   </action-view>
+
+  <!-- Menu Item for Help Docs For Accounting-->
+  <menuitem name="menu-accounting-help" title="Help" parent="account-root" order="1500"
+            icon="fa-question-circle" icon-background="#525252"/>
 </object-views>

@@ -28,7 +28,7 @@
   </action-view>
 
   <menuitem name="project-task-customer" title="Tickets" order="-1100"
-    if="__config__.app.isApp('business-support')" icon="fa-tasks" icon-background="#3f6bb9"/>
+    if="__config__.app.isApp('business-support')" icon="fa-tasks" icon-background="#525252"/>
 
   <menuitem name="project-task-customer-my-task" title="My Tickets"
     parent="project-task-customer" action="project.task.customer.my.task" order="100"/>

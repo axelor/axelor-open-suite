@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="crm-root" title="CRM" order="-2100" if="__config__.app.isApp('crm')"
-    icon="fa-user" icon-background="#2fa042"/>
+    icon="fa-user" icon-background="#525252"/>
 
   <menuitem name="crm-root-lead" parent="crm-root" title="Leads" order="100"/>
 
@@ -625,5 +625,8 @@
     <view type="grid" name="research-parameter-config-grid"/>
     <view type="form" name="research-parameter-config-form"/>
   </action-view>
+  
+  <menuitem name="menu-crm-help" title="Help" parent="crm-root" icon="fa-question-circle"
+            order="1500" />
 
 </object-views>

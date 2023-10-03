@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="gdpr-root" title="GDPR" icon="fa-gavel" icon-background="#004aad"
+  <menuitem name="gdpr-root" title="GDPR" icon="fa-gavel" icon-background="#525252"
     if="__config__.app.isApp('gdpr')" order="-200"/>
 
   <menuitem name="gdpr-root-request" parent="gdpr-root" title="Request"

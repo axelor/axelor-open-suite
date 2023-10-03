@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="menu-quality-root" order="-1700" if="__config__.app.isApp('quality')"
-    title="Quality" icon="fa fa-check" icon-background="#3f6bb9"/>
+    title="Quality" icon="fa fa-check" icon-background="#525252"/>
 
   <menuitem name="quality-controls-root" parent="menu-quality-root"
     title="Quality controls" order="100"/>
@@ -124,5 +124,8 @@
     <view type="grid" name="quality-control-point-type-grid"/>
     <view type="form" name="quality-control-point-type-form"/>
   </action-view>
+
+  <menuitem name="menu-quality-help" title="Help" parent="menu-quality-root" order="1500"
+            icon="fa-question-circle" />
 
 </object-views>

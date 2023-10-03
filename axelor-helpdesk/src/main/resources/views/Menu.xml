@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="helpdesk-root" title="Helpdesk" order="-300"
-    if="__config__.app.isApp('helpdesk')" icon="fa-life-ring" icon-background="#b6473f"/>
+    if="__config__.app.isApp('helpdesk')" icon="fa-life-ring" icon-background="#525252"/>
 
   <menuitem title="Current tickets" name="helpdesk-ticket-current"
     action="helpdesk.ticket.current" order="100" parent="helpdesk-root"/>
@@ -137,5 +137,8 @@
     <view type="grid" name="ticket-type-grid"/>
     <view type="form" name="ticket-type-form"/>
   </action-view>
+
+  <menuitem name="menu-helpdesk-help" title="Help" parent="helpdesk-root" order="1500"
+            icon="fa-question-circle" />
 
 </object-views>

@@ -5,7 +5,7 @@
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
-    hidden="false" order="-2500" title="Messaging" icon="fa-users" icon-background="#84429f"/>
+    hidden="false" order="-2500" title="Messaging" icon="fa-users" icon-background="#525252"/>
 
   <menuitem title="Mailing lists" name="menu-mail-mailing-list" parent="menu-mail"
     order="-75"/>
@@ -31,14 +31,14 @@
 
   <menuitem id="abs-menu-dms" name="menu-dms"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getDocument()"
-    hidden="false" order="-2200" title="Documents" icon="fa-archive" icon-background="#3f6bb9"/>
+    hidden="false" order="-2200" title="Documents" icon="fa-archive" icon-background="#525252"/>
 
   <menuitem id="abs-menu-dms-config" name="menu-dms-config" title="Configuration"
     parent="menu-dms" order="-70" icon="fa-cog"/>
 
   <menuitem id="abs-menu-team" name="menu-team"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getTeamManagement()"
-    hidden="false" order="-2400" title="Teamwork" icon="fa-user" icon-background="blue"/>
+    hidden="false" order="-2400" title="Teamwork" icon="fa-user" icon-background="#525252"/>
 
   <menuitem id="abs-menu-team-tasks-due" name="menu-team-tasks-due" hidden="true"
     title="Tasks due"/>
@@ -60,7 +60,7 @@
 
   <menuitem id="calendar.root.menu"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnableCalendars()"
-    name="menu-calendar" order="-2300" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
+    name="menu-calendar" order="-2300" title="Calendar" icon="fa-calendar" icon-background="#525252"/>
 
   <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events"
     parent="menu-calendar" action="calendar.root.menu.my.calendar" order="100"/>
@@ -95,7 +95,7 @@
   </action-view>
 
   <menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
-    icon="fa-wrench" icon-background="#2fa042"/>
+    icon="fa-wrench" icon-background="#525252"/>
 
   <menuitem name="admin-root-general" parent="admin-root" order="200"
     if="__config__.app.isApp('base')" title="General data"/>
@@ -967,7 +967,7 @@
   </action-view>
 
   <menuitem name="admin-root" title="Application Config" order="-100" icon="fa-gear"
-    icon-background="#31b4a9"/>
+    icon-background="#525252"/>
 
   <menuitem id="admin-menu-admin-app-management" name="menu-admin-app-management"
     parent="admin-root" order="100" title="Apps management" action="menu.admin.app.management"/>
@@ -1027,6 +1027,17 @@
   </action-view>
 
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
-    icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('studio')"/>
+    icon="fa-pencil-square-o" icon-background="#525252" if="__config__.app.isApp('studio')"/>
+
+  <!--Help Menu Section-->
+  <menuitem name="menu-messaging-help" title="Help" parent="menu-mail" icon="fa-question-circle" order="1500"/>
+
+  <menuitem name="menu-teamwork-help" title="Help" parent="menu-team" icon="fa-question-circle" order="1500"/>
+
+  <menuitem name="menu-calendar-help" title="Help" parent="menu-calendar" icon="fa-question-circle" order="1500"/>
+
+  <menuitem name="menu-document-help" title="Help" parent="menu-dms" icon="fa-question-circle" order="1500"/>
+
+  <menuitem name="menu-appconfig-help" title="Help" parent="admin-root" icon="fa-question-circle" order="1500"/>
 
 </object-views>

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="business-project-root" title="Job costing" order="-1300"
-    icon="fa-list-alt" icon-background="blue" if="__config__.app.isApp('business-project')"/>
+    icon="fa-list-alt" icon-background="#525252" if="__config__.app.isApp('business-project')"/>
 
   <menuitem name="business-project-folder" parent="business-project-root"
     title="Project Folder" action="business.project.folder" order="100"/>
@@ -30,7 +30,7 @@
 
   <menuitem name="business-project-root-invoicing-project" order="-1200"
     title="Invoicing project" action="business.project.root.invoicing.project" icon="fa-tasks"
-    icon-background="#3f6bb9" if="__config__.app.isApp('business-project')"/>
+    icon-background="#525252" if="__config__.app.isApp('business-project')"/>
 
   <action-view name="business.project.root.invoicing.project" title="Invoicing project"
     model="com.axelor.apps.businessproject.db.InvoicingProject">
@@ -51,5 +51,8 @@
     <view type="form" name="business-project-batch-form"/>
     <view-param name="search-filters" value="business-project-batch-filters"/>
   </action-view>
+
+  <menuitem name="menu-jobcosting-help" title="Help" parent="business-project-root" order="1500"
+            icon="fa-question-circle" />
 
 </object-views>

@@ -5,7 +5,7 @@
 
 
   <menuitem name="manufacturing-root" title="Manufacturing" order="-600"
-    if="__config__.app.isApp('production')" icon="fa-cogs" icon-background="#84429f"/>
+    if="__config__.app.isApp('production')" icon="fa-cogs" icon-background="#525252"/>
 
   <menuitem name="manufacturing-root-products" parent="manufacturing-root" order="100"
     title="Products" action="manufacturing.root.products"/>
@@ -553,4 +553,7 @@
     <domain>self.template IS TRUE</domain>
     <context name="_template" expr="eval: true"/>
   </action-view>
+
+  <menuitem name="menu-manufacturing-help" title="Help" parent="manufacturing-root" order="2000"
+            icon="fa-question-circle" />
 </object-views>

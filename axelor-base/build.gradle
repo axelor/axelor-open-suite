@@ -58,4 +58,7 @@ dependencies {
 
 	implementation libs.swagger_jaxrs;
 	implementation libs.boxable
+
+	implementation 'org.seleniumhq.selenium:selenium-java:4.13.0'
+
 }

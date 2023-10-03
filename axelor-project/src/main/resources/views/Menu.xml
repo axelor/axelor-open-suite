@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="menu-project-root" order="-1400" title="Projects" icon="fa-tasks"
-    if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
+    if="__config__.app.isApp('project')" icon-background="#525252"/>
 
   <menuitem name="project-folder" parent="menu-project-root" title="Project Folder"
     action="project.folder" order="100"/>
@@ -231,5 +231,8 @@
     <view type="grid" name="wiki-folder-grid"/>
     <view type="form" name="wiki-folder-form"/>
   </action-view>
+  
+  <menuitem name="menu-project-help" title="Help" parent="menu-project-root" order="1500"
+            icon="fa-question-circle" />
 
 </object-views>

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem title="Budget management" name="budget-root-budget-management"
-    icon="fa-pie-chart" order="-850" if="__config__.app.isApp('budget')"/>
+    icon="fa-pie-chart" order="-850" if="__config__.app.isApp('budget')" icon-background="#525252"/>
 
   <menuitem title="Budgets" name="budget-root-budget-management-budgets"
     parent="budget-root-budget-management" order="10"/>

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="forecast-root" title="Cash management" order="-800"
-    if="__config__.app.isApp('cash-management')" icon="fa-money" icon-background="#e0a83c"/>
+    if="__config__.app.isApp('cash-management')" icon="fa-money" icon-background="#525252"/>
 
   <menuitem name="forecast-config-manual-forecast" order="300" parent="forecast-conf"
     title="Manual forecasts" action="forecast-config-manual-forecast"/>
@@ -69,5 +69,9 @@
     <view type="form" name="forecast-dashboard-form"/>
     <context name="_userId" expr="eval: 0"/>
   </action-view>
+
+  <!--Help for Cash Management-->
+  <menuitem name="menu-cashmanagement-help" title="Help" icon="fa-question-circle" parent="forecast-root"
+    order="1500"/>
 
 </object-views>

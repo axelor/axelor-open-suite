@@ -5,7 +5,7 @@
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
-    if="__config__.app.isApp('purchase')" icon="fa-shopping-cart" icon-background="#b6473f"/>
+    if="__config__.app.isApp('purchase')" icon="fa-shopping-cart" icon-background="#525252"/>
 
   <menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="100"
     title="Suppliers" action="sc.root.purchase.suppliers"/>
@@ -207,6 +207,9 @@
   <action-view name="purchase.dashboard.2" title="Purchase Manager">
     <view type="dashboard" name="purchase.dashboard.2"/>
   </action-view>
+  
+  <menuitem name="menu-purchase-help" title="Help" parent="sc-root-purchase" order="1500"
+            icon="fa-question-circle" />
 
 
 </object-views>

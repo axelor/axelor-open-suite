@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem title="Contracts" name="contracts-root" order="-1500"
-    if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="blue"/>
+    if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="#525252"/>
 
   <menuitem title="Customer contracts" name="contracts-root-customer-all"
     action="contracts.root.customer.all" parent="contracts-root" order="100"/>
@@ -93,5 +93,8 @@
     <view type="form" name="contract-batch-form"/>
     <view-param name="search-filters" value="contract-batch-filters"/>
   </action-view>
+  
+  <menuitem name="menu-contract-help" title="Help" parent="contracts-root" icon="fa-question-circle"
+            order="1500" />
 
 </object-views>

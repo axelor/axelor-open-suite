@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="marketing-root" order="-2000" title="Marketing" icon="fa fa-bullseye"
-    if="__config__.app.isApp('marketing')" icon-background="violet"/>
+    if="__config__.app.isApp('marketing')" icon-background="#525252"/>
 
   <menuitem name="targets-all" parent="marketing-root" title="Targets" action="targets.all"
     order="100"/>
@@ -47,6 +47,9 @@
     <domain>self.mediaTypeSelect IN (4)</domain>
     <context name="_mediaType" expr="eval:4"/>
   </action-view>
+
+  <menuitem name="menu-marketing-help" title="Help" parent="marketing-root" order="1500"
+            icon="fa-question-circle" />
 
 
 </object-views>

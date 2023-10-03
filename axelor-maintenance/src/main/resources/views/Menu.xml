@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="maintenance-root" title="Maintenance" order="-500"
-    if="__config__.app.isApp('maintenance')" icon="fa-recycle" icon-background="olive"/>
+    if="__config__.app.isApp('maintenance')" icon="fa-recycle" icon-background="#525252"/>
 
   <menuitem name="maintenance-root-equipement-maintenances" parent="maintenance-root"
     title="Equipement maintenances" action="maintenance.root.equipement.maintenances" order="100"/>
