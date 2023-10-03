@@ -30,14 +30,13 @@ public class PrintPdfGenerationServiceImpl implements PrintPdfGenerationService 
     createPdfFromHtml(html, pdfOutputStream);
     ByteArrayInputStream inputStream = new ByteArrayInputStream(pdfOutputStream.toByteArray());
     File exportFile = File.createTempFile("printTemplate", ".pdf");
-
-    if (print.getPrintPdfFooter() != null && !print.getHidePrintSettings()) {
-      try (PDDocument doc = PDDocument.load(inputStream)) {
+    try (PDDocument doc = PDDocument.load(inputStream)) {
+      if (print.getPrintPdfFooter() != null && !print.getHidePrintSettings()) {
         for (PDPage page : doc.getPages()) {
           createFooter(print, page, doc);
         }
-        doc.save(exportFile);
       }
+      doc.save(exportFile);
     }
     return exportFile;
   }
