@@ -8,6 +8,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -20,23 +21,33 @@ import java.util.stream.Collectors;
 public class ExpenseLineCheckResponseServiceImpl implements ExpenseLineCheckResponseService {
   protected AppBaseService appBaseService;
   protected ExpenseLineService expenseLineService;
+  protected ExpenseToolService expenseToolService;
 
   @Inject
   public ExpenseLineCheckResponseServiceImpl(
-      AppBaseService appBaseService, ExpenseLineService expenseLineService) {
+      AppBaseService appBaseService,
+      ExpenseLineService expenseLineService,
+      ExpenseToolService expenseToolService) {
     this.appBaseService = appBaseService;
     this.expenseLineService = expenseLineService;
+    this.expenseToolService = expenseToolService;
   }
 
   @Override
   public CheckResponse createResponse(ExpenseLine expenseLine) {
     List<CheckResponseLine> checkResponseLineList = new ArrayList<>();
-    checkResponseLineList.add(checkExpenseDate(expenseLine));
-    checkResponseLineList.add(checkTotalAmount(expenseLine));
-    checkResponseLineList.add(checkJustificationFile(expenseLine));
+    checkExpenseLine(expenseLine, checkResponseLineList);
     List<CheckResponseLine> filteredList =
         checkResponseLineList.stream().filter(Objects::nonNull).collect(Collectors.toList());
     return new CheckResponse(expenseLine, filteredList);
+  }
+
+  protected void checkExpenseLine(
+      ExpenseLine expenseLine, List<CheckResponseLine> checkResponseLineList) {
+    checkResponseLineList.add(checkExpenseDate(expenseLine));
+    checkResponseLineList.add(checkTotalAmount(expenseLine));
+    checkResponseLineList.add(checkJustificationFile(expenseLine));
+    checkResponseLineList.add(checkKilometricExpenseLineDistance(expenseLine));
   }
 
   /**
@@ -95,6 +106,19 @@ public class ExpenseLineCheckResponseServiceImpl implements ExpenseLineCheckResp
           I18n.get(
               HumanResourceExceptionMessage.EXPENSE_LINE_JUSTIFICATION_FILE_NOT_CORRECT_FORMAT),
           CheckResponseLine.CHECK_TYPE_ALERT);
+    }
+    return null;
+  }
+
+  protected CheckResponseLine checkKilometricExpenseLineDistance(ExpenseLine expenseLine) {
+    if (!expenseToolService.isKilometricExpenseLine(expenseLine)) {
+      return null;
+    }
+    if (expenseLine.getDistance().compareTo(BigDecimal.ZERO) == 0) {
+      return new CheckResponseLine(
+          expenseLine,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_DISTANCE_ERROR),
+          CheckResponseLine.CHECK_TYPE_ERROR);
     }
     return null;
   }

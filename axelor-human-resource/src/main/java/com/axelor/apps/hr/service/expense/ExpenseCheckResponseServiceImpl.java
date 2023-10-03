@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseCheckResponseServiceImpl implements ExpenseCheckResponseService {
   protected ExpenseLineService expenseLineService;
@@ -39,10 +40,23 @@ public class ExpenseCheckResponseServiceImpl implements ExpenseCheckResponseServ
 
   protected List<CheckResponse> getExpenseLineCheckResponseList(Expense expense) {
     List<CheckResponse> expenseLineCheckResponseList = new ArrayList<>();
-    for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
-      expenseLineCheckResponseList.add(expenseLineCheckResponseService.createResponse(expenseLine));
-    }
+    List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
+    List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
+
+    addExpenseLineCheckResponse(generalExpenseLineList, expenseLineCheckResponseList);
+    addExpenseLineCheckResponse(kilometricExpenseLineList, expenseLineCheckResponseList);
     return expenseLineCheckResponseList;
+  }
+
+  protected void addExpenseLineCheckResponse(
+      List<ExpenseLine> expenseLineList, List<CheckResponse> expenseLineCheckResponseList) {
+    for (ExpenseLine expenseLine : expenseLineList) {
+      CheckResponse expenseLineCheckResponse =
+          expenseLineCheckResponseService.createResponse(expenseLine);
+      if (CollectionUtils.isNotEmpty(expenseLineCheckResponse.getChecks())) {
+        expenseLineCheckResponseList.add(expenseLineCheckResponse);
+      }
+    }
   }
 
   /**

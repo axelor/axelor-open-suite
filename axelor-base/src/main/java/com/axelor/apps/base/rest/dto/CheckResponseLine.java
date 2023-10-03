@@ -5,8 +5,8 @@ import com.axelor.utils.api.ResponseStructure;
 
 public class CheckResponseLine extends ResponseStructure {
 
-  public static final String CHECK_TYPE_ALERT = "Alert";
-  public static final String CHECK_TYPE_ERROR = "Error";
+  public static final String CHECK_TYPE_ALERT = "alert";
+  public static final String CHECK_TYPE_ERROR = "error";
 
   private String message;
   private String checkType;

@@ -306,4 +306,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_AMOUNT_LIMIT_ERROR = /*$$(*/
       "At least one line of this expense exceeds the authorised amount for its type of expense." /*)*/;
+
+  public static final String EXPENSE_LINE_DISTANCE_ERROR = /*$$(*/
+      "This is a kilometric expense line. Distance must be greater than 0." /*)*/;
 }

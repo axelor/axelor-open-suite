@@ -7,33 +7,31 @@ import java.util.List;
 public class CheckResponse extends ResponseStructure {
   private Long modelId;
   private String modelName;
-  private final List<CheckResponseLine> checkReponseLineList;
-  private List<CheckResponse> modelLineCheckResponseList;
+  private final List<CheckResponseLine> checks;
+  private List<CheckResponse> otherChecks;
 
-  public CheckResponse(Model model, List<CheckResponseLine> checkReponseLineList) {
+  public CheckResponse(Model model, List<CheckResponseLine> checks) {
     super(model.getVersion());
     this.modelId = model.getId();
     this.modelName = model.getClass().getSimpleName();
-    this.checkReponseLineList = checkReponseLineList;
+    this.checks = checks;
   }
 
   public CheckResponse(
-      Model model,
-      List<CheckResponseLine> checkReponseLineList,
-      List<CheckResponse> modelLineCheckResponse) {
+      Model model, List<CheckResponseLine> checks, List<CheckResponse> otherChecks) {
     super(model.getVersion());
     this.modelId = model.getId();
     this.modelName = model.getClass().getSimpleName();
-    this.checkReponseLineList = checkReponseLineList;
-    this.modelLineCheckResponseList = modelLineCheckResponse;
+    this.checks = checks;
+    this.otherChecks = otherChecks;
   }
 
-  public List<CheckResponseLine> getCheckReponseLineList() {
-    return checkReponseLineList;
+  public List<CheckResponseLine> getChecks() {
+    return checks;
   }
 
-  public List<CheckResponse> getModelLineCheckResponseList() {
-    return modelLineCheckResponseList;
+  public List<CheckResponse> getOtherChecks() {
+    return otherChecks;
   }
 
   public Long getModelId() {
