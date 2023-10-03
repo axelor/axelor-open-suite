@@ -31,7 +31,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -41,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BatchUpdateTaskService extends AbstractBatch {
 
@@ -84,120 +84,126 @@ public class BatchUpdateTaskService extends AbstractBatch {
   }
 
   protected void updateTasks() {
-    QueryBuilder<ProjectTask> taskQueryBuilder =
-        projectTaskBusinessProjectService.getTaskInvoicingFilter();
-
-    Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
+    List<Long> projectTaskIdList =
+        projectTaskBusinessProjectService.getTaskInvoicingFilter().build().order("id").select("id")
+            .fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
     int offset = 0;
-    List<ProjectTask> taskList;
+    findBatch();
 
-    while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      findBatch();
-      for (ProjectTask projectTask : taskList) {
-        try {
-          projectTaskBusinessProjectService.setProjectTaskValues(projectTask);
-        } catch (Exception e) {
-          incrementAnomaly();
-          TraceBackService.trace(
-              e,
-              String.format(
-                  I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1),
-                  projectTask.getId()),
-              batch.getId());
+    for (Long projectTaskId : projectTaskIdList) {
+      offset++;
+      try {
+        projectTaskBusinessProjectService.setProjectTaskValues(projectTaskRepo.find(projectTaskId));
+        if (appBusinessProjectService.getAppBusinessProject().getAutomaticInvoicing()) {
+          incrementDone();
         }
+      } catch (Exception e) {
+        incrementAnomaly();
+        TraceBackService.trace(
+            e,
+            String.format(
+                I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1), projectTaskId),
+            batch.getId());
       }
-      offset += taskList.size();
-      JPA.clear();
+      if (offset % FETCH_LIMIT == 0) {
+        JPA.clear();
+        findBatch();
+      }
     }
   }
 
   protected void updateTaskToInvoice(
       Map<String, Object> contextValues, AppBusinessProject appBusinessProject) {
-
-    QueryBuilder<ProjectTask> taskQueryBuilder =
+    List<Object> updatedTaskList = new ArrayList<>();
+    QueryBuilder<ProjectTask> projectTaskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
-
     if (!Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())) {
       String filter = "NOT (" + appBusinessProject.getExculdeTaskInvoicing() + ")";
-      taskQueryBuilder = taskQueryBuilder.add(filter);
+      projectTaskQueryBuilder = projectTaskQueryBuilder.add(filter);
     }
-    Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
+    List<Long> projectTaskIdList =
+        projectTaskQueryBuilder.build().order("id").select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
     int offset = 0;
-    List<ProjectTask> taskList;
-    List<Object> updatedTaskList = new ArrayList<Object>();
-
-    while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      findBatch();
-      offset += taskList.size();
-      for (ProjectTask projectTask : taskList) {
-        try {
-          projectTask =
-              projectTaskBusinessProjectService.updateTaskToInvoice(
-                  projectTask, appBusinessProject);
-
-          if (projectTask.getToInvoice()) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", projectTask.getId());
-            updatedTaskList.add(map);
-          }
-        } catch (Exception e) {
-          incrementAnomaly();
-          TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1),
-                      projectTask.getId()),
-                  e),
-              ExceptionOriginRepository.INVOICE_ORIGIN,
-              batch.getId());
-        }
-      }
-      JPA.clear();
-    }
+    ProjectTask projectTask;
     findBatch();
-    ProjectInvoicingAssistantBatchService.updateJsonObject(
-        batch, updatedTaskList, "updatedTaskSet", contextValues);
+
+    for (Long projectTaskId : projectTaskIdList) {
+      offset++;
+      try {
+        projectTask =
+            projectTaskBusinessProjectService.updateTaskToInvoice(
+                projectTaskRepo.find(projectTaskId), appBusinessProject);
+        if (projectTask.getToInvoice()) {
+          Map<String, Object> map = new HashMap<>();
+          map.put("id", projectTask.getId());
+          updatedTaskList.add(map);
+        }
+        incrementDone();
+      } catch (Exception e) {
+        incrementAnomaly();
+        TraceBackService.trace(
+            new Exception(
+                String.format(
+                    I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_1), projectTaskId),
+                e),
+            ExceptionOriginRepository.INVOICE_ORIGIN,
+            batch.getId());
+      }
+      if (offset % FETCH_LIMIT == 0) {
+        JPA.clear();
+        findBatch();
+      }
+      ProjectInvoicingAssistantBatchService.updateJsonObject(
+          batch, updatedTaskList, "updatedTaskSet", contextValues);
+    }
   }
 
   protected void updateTimesheetLines(Map<String, Object> contextValues) {
-
-    List<Object> updatedTimesheetLineList = new ArrayList<Object>();
-
-    QueryBuilder<TimesheetLine> timesheetLineQueryBuilder =
-        timesheetLineBusinessService.getTimesheetLineInvoicingFilter();
-    Query<TimesheetLine> timesheetLineQuery = timesheetLineQueryBuilder.build().order("id");
+    List<Object> updatedTimesheetLineList = new ArrayList<>();
+    List<Long> timesheetLineIdList =
+        timesheetLineBusinessService.getTimesheetLineInvoicingFilter().build().order("id")
+            .select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
     int offset = 0;
-    List<TimesheetLine> timesheetLineList;
-
-    while (!(timesheetLineList = timesheetLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      findBatch();
-      offset += timesheetLineList.size();
-      for (TimesheetLine timesheetLine : timesheetLineList) {
-        try {
-          timesheetLine = timesheetLineBusinessService.updateTimesheetLines(timesheetLine);
-          if (timesheetLine.getToInvoice()) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("id", timesheetLine.getId());
-            updatedTimesheetLineList.add(map);
-          }
-        } catch (Exception e) {
-          incrementAnomaly();
-          TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get(BusinessProjectExceptionMessage.BATCH_TIMESHEETLINE_UPDATION_1),
-                      timesheetLine.getId()),
-                  e),
-              ExceptionOriginRepository.INVOICE_ORIGIN,
-              batch.getId());
-        }
-      }
-      JPA.clear();
-    }
+    TimesheetLine timesheetLine;
     findBatch();
+
+    for (Long timesheetLineId : timesheetLineIdList) {
+      offset++;
+      try {
+        timesheetLine =
+            timesheetLineBusinessService.updateTimesheetLines(
+                timesheetLineRepo.find(timesheetLineId));
+        if (timesheetLine.getToInvoice()) {
+          Map<String, Object> map = new HashMap<>();
+          map.put("id", timesheetLine.getId());
+          updatedTimesheetLineList.add(map);
+        }
+        incrementDone();
+      } catch (Exception e) {
+        incrementAnomaly();
+        TraceBackService.trace(
+            new Exception(
+                String.format(
+                    I18n.get(BusinessProjectExceptionMessage.BATCH_TIMESHEETLINE_UPDATION_1),
+                    timesheetLineId),
+                e),
+            ExceptionOriginRepository.INVOICE_ORIGIN,
+            batch.getId());
+      }
+      if (offset % FETCH_LIMIT == 0) {
+        JPA.clear();
+        findBatch();
+      }
+    }
     ProjectInvoicingAssistantBatchService.updateJsonObject(
         batch, updatedTimesheetLineList, "updatedTimesheetLineSet", contextValues);
   }
