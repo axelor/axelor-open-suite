@@ -66,8 +66,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -680,14 +682,14 @@ public class PaymentVoucherConfirmService {
     Account financialDiscountAccount =
         financialDiscountService.getFinancialDiscountAccount(company, isPurchase);
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
-    Tax financialDiscountTax =
-        moveLineFinancialDiscountService.getFinancialDiscountTax(moveLineToPay);
+    Map<Tax, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
+        moveLineFinancialDiscountService.getFinancialDiscountTaxMap(moveLineToPay);
 
     moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
         move,
         company,
         payerPartner,
-        financialDiscountTax,
+        financialDiscountTaxMap,
         financialDiscountAccount,
         invoiceName,
         null,
@@ -794,7 +796,10 @@ public class PaymentVoucherConfirmService {
 
     InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
     BigDecimal ratio =
-        invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+        invoiceTerm
+            .getCompanyAmount()
+            .divide(
+                invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     BigDecimal companyAmountToPay =
         payVoucherElementToPay
             .getAmountToPayCurrency()

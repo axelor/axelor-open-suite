@@ -12,6 +12,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface MoveLineFinancialDiscountService {
   @CallMethod
@@ -35,7 +37,7 @@ public interface MoveLineFinancialDiscountService {
       Move move,
       Company company,
       Partner partner,
-      Tax tax,
+      Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap,
       Account financialDiscountAccount,
       String origin,
       String description,
@@ -47,5 +49,5 @@ public interface MoveLineFinancialDiscountService {
       boolean financialDiscountVat)
       throws AxelorException;
 
-  Tax getFinancialDiscountTax(MoveLine moveLine);
+  Map<Tax, Pair<BigDecimal, BigDecimal>> getFinancialDiscountTaxMap(MoveLine moveLine);
 }

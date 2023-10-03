@@ -4,11 +4,11 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -21,13 +21,18 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDiscountService {
   protected AppAccountService appAccountService;
@@ -152,10 +157,10 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean isDebit,
       boolean financialDiscountVat)
       throws AxelorException {
-    Tax tax = null;
+    Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap = null;
 
     if (financialDiscountVat) {
-      tax = this.getFinancialDiscountTax(invoice);
+      taxMap = this.getFinancialDiscountTaxMap(invoice);
     }
 
     Account financialDiscountAccount =
@@ -166,7 +171,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
         move,
         invoice.getCompany(),
         invoice.getPartner(),
-        tax,
+        taxMap,
         financialDiscountAccount,
         origin,
         invoicePayment.getDescription(),
@@ -183,7 +188,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       Move move,
       Company company,
       Partner partner,
-      Tax tax,
+      Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap,
       Account financialDiscountAccount,
       String origin,
       String description,
@@ -194,6 +199,53 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean isDebit,
       boolean financialDiscountVat)
       throws AxelorException {
+    for (Tax tax : taxMap.keySet()) {
+      counter =
+          this.createFinancialDiscountMoveLine(
+              move,
+              company,
+              partner,
+              tax,
+              financialDiscountAccount,
+              origin,
+              description,
+              financialDiscountAmount,
+              financialDiscountTaxAmount,
+              taxMap.get(tax),
+              paymentDate,
+              counter,
+              isDebit,
+              financialDiscountVat);
+    }
+
+    return counter;
+  }
+
+  protected int createFinancialDiscountMoveLine(
+      Move move,
+      Company company,
+      Partner partner,
+      Tax tax,
+      Account financialDiscountAccount,
+      String origin,
+      String description,
+      BigDecimal financialDiscountAmount,
+      BigDecimal financialDiscountTaxAmount,
+      Pair<BigDecimal, BigDecimal> prorata,
+      LocalDate paymentDate,
+      int counter,
+      boolean isDebit,
+      boolean financialDiscountVat)
+      throws AxelorException {
+    financialDiscountAmount =
+        financialDiscountAmount
+            .multiply(prorata.getLeft())
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    financialDiscountTaxAmount =
+        financialDiscountTaxAmount
+            .multiply(prorata.getRight())
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
@@ -305,27 +357,77 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   }
 
   @Override
-  public Tax getFinancialDiscountTax(MoveLine moveLine) {
+  public Map<Tax, Pair<BigDecimal, BigDecimal>> getFinancialDiscountTaxMap(MoveLine moveLine) {
     Invoice invoice = moveLine.getMove().getInvoice();
 
     if (invoice != null) {
-      return this.getFinancialDiscountTax(invoice);
+      return this.getFinancialDiscountTaxMap(invoice);
     } else {
-      return moveLine.getMove().getMoveLineList().stream()
-          .filter(
-              it ->
-                  it.getAccount()
-                      .getAccountType()
-                      .getTechnicalTypeSelect()
-                      .equals(AccountTypeRepository.TYPE_TAX))
-          .map(MoveLine::getTaxLine)
-          .map(TaxLine::getTax)
-          .findFirst()
-          .orElse(null);
+      Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap = new HashMap<>();
+      BigDecimal baseTotal = BigDecimal.ZERO;
+      BigDecimal taxTotal = BigDecimal.ZERO;
+
+      for (MoveLine moveLineIt : moveLine.getMove().getMoveLineList()) {
+        if (moveLineIt
+            .getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_TAX)) {
+          BigDecimal baseAmount =
+              moveLine.getMove().getMoveLineList().stream()
+                  .filter(
+                      it ->
+                          it.getTaxLine().equals(moveLineIt.getTaxLine()) && !it.equals(moveLineIt))
+                  .map(MoveLine::getCurrencyAmount)
+                  .map(BigDecimal::abs)
+                  .findFirst()
+                  .orElse(BigDecimal.ONE);
+          BigDecimal taxAmount = moveLineIt.getCurrencyAmount().abs();
+
+          taxMap.put(moveLineIt.getTaxLine().getTax(), Pair.of(baseAmount, taxAmount));
+
+          baseTotal = baseTotal.add(baseAmount);
+          taxTotal = taxTotal.add(taxAmount);
+        }
+      }
+
+      for (Tax tax : taxMap.keySet()) {
+        Pair<BigDecimal, BigDecimal> pair = taxMap.get(tax);
+
+        taxMap.replace(
+            tax,
+            Pair.of(
+                pair.getLeft()
+                    .divide(baseTotal, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
+                pair.getRight()
+                    .divide(taxTotal, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)));
+      }
+
+      return taxMap;
     }
   }
 
-  protected Tax getFinancialDiscountTax(Invoice invoice) {
-    return invoice.getInvoiceLineTaxList().get(0).getTaxLine().getTax();
+  protected Map<Tax, Pair<BigDecimal, BigDecimal>> getFinancialDiscountTaxMap(Invoice invoice) {
+    Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap = new HashMap<>();
+    BigDecimal taxTotal = invoice.getTaxTotal();
+
+    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+      BigDecimal amountProrata =
+          invoiceLineTax
+              .getExTaxBase()
+              .divide(
+                  invoice.getExTaxTotal(),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+
+      BigDecimal taxProrata =
+          invoiceLineTax
+              .getTaxTotal()
+              .divide(taxTotal, AppAccountService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+
+      taxMap.put(invoiceLineTax.getTaxLine().getTax(), Pair.of(amountProrata, taxProrata));
+    }
+
+    return taxMap;
   }
 }
