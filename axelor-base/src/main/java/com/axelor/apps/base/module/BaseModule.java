@@ -203,6 +203,8 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
+import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -373,5 +375,6 @@ public class BaseModule extends AxelorModule {
     bind(PartnerLinkService.class).to(PartnerLinkServiceImpl.class);
     bind(SignatureService.class).to(SignatureServiceImpl.class);
     bind(PfxCertificateService.class).to(PfxCertificateServiceImpl.class);
+    bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
   }
 }
