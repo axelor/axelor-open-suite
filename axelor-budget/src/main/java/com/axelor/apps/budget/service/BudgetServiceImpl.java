@@ -37,7 +37,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
@@ -951,11 +950,10 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void generateLineFromGenerator(
-      Budget budget, BudgetLevel parent, BudgetGenerator budgetGenerator, GlobalBudget globalBudget)
-      throws AxelorException {
+      Budget budget, BudgetLevel parent, GlobalBudget globalBudget) throws AxelorException {
     Budget optBudget = budgetRepository.copy(budget, true);
-    optBudget.setFromDate(budgetGenerator.getYear().getFromDate());
-    optBudget.setToDate(budgetGenerator.getYear().getToDate());
+    optBudget.setFromDate(globalBudget.getFromDate());
+    optBudget.setToDate(globalBudget.getToDate());
     optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
     optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
     optBudget.setAmountForGeneration(budget.getTotalAmountExpected());

@@ -128,7 +128,7 @@
 
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
       showIf="code &amp;&amp; name &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; budgetTypeSelect">
-      <field name="budgetLevelList" title="Groups" colSpan="12"
+      <field name="budgetLevelList" title="Sections" colSpan="12"
         onChange="action-global-budget-method-clear-budget-list"
         showIf="(budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0"
         form-view="budget-level-intermediate-form" grid-view="budget-level-included-grid"
@@ -323,7 +323,7 @@
       method="viewRealizedWithoutPo"/>
   </action-method>
 
-  <action-view name="action-global-budget-view-see-budget-levels" title="Budget Levels"
+  <action-view name="action-global-budget-view-see-budget-levels" title="Sections"
     model="com.axelor.apps.budget.db.BudgetLevel">
     <view type="tree" name="budget-tree"/>
     <view-param name="showArchived" value="true"/>

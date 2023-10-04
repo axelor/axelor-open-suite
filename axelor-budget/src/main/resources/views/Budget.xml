@@ -24,6 +24,7 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
+    <field name="category"/>
   </grid>
 
   <grid model="com.axelor.apps.budget.db.Budget" title="Budgets" name="budget-detailed-grid"
@@ -146,12 +147,10 @@
       <separator colSpan="12"/>
     </panel>
 
-    <panel>
-      <static name="$periodNotAvailable" colSpan="12" hidden="true">
-        <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
-    </panel>
     <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
       colSpan="12" readonlyIf="statusSelect != 1">
+      <static name="$periodNotAvailable" colSpan="12" hidden="true">
+        <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
       <field name="periodDurationSelect" colSpan="4"/>
       <field name="amountForGeneration" colSpan="4"/>
       <button name="generatePeriodsBtn" title="Generate periods"
@@ -236,17 +235,6 @@
           title="Display simulated moves" colSpan="12"/>
       </panel>
 
-      <static name="$periodNotAvailable" colSpan="12" hidden="true">
-        <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
-      <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
-        colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
-        <field name="periodDurationSelect" colSpan="4"/>
-        <field name="amountForGeneration" colSpan="4"/>
-        <button name="generatePeriodsBtn" title="Generate periods"
-          onClick="action-group-budget-generateperiod-click" colSpan="4" readonlyIf="!id"/>
-        <separator colSpan="12"/>
-      </panel>
-
       <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" itemSpan="3"
         title="Total amounts" showIf="id">
         <field name="totalAmountExpected"/>
@@ -264,6 +252,18 @@
       </panel>
 
     </panel>
+
+    <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
+      colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
+      <static name="$periodNotAvailable" colSpan="12" hidden="true">
+        <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
+      <field name="periodDurationSelect" colSpan="4"/>
+      <field name="amountForGeneration" colSpan="4"/>
+      <button name="generatePeriodsBtn" title="Generate periods"
+        onClick="action-group-budget-generateperiod-click" colSpan="4" readonlyIf="!id"/>
+      <separator colSpan="12"/>
+    </panel>
+
     <panel-related name="budgetLineListPanel" field="budgetLineList"
       onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect != 1"
       colSpan="12"/>
@@ -304,7 +304,7 @@
       <field name="budgetLevel" readonly="true" requiredIf="!$popup()" colSpan="3"/>
       <field name="category" required="true" colSpan="3"/>
     </panel>
-    <panel colSpan="12" name="keyPanel">
+    <panel colSpan="12" name="budgetKeyPanel">
       <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
         canEdit="false" colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"

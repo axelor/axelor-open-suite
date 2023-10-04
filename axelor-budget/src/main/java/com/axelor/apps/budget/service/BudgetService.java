@@ -28,7 +28,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
@@ -314,8 +313,7 @@ public interface BudgetService {
 
   GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
 
-  void generateLineFromGenerator(
-      Budget budget, BudgetLevel parent, BudgetGenerator budgetGenerator, GlobalBudget globalBudget)
+  void generateLineFromGenerator(Budget budget, BudgetLevel parent, GlobalBudget globalBudget)
       throws AxelorException;
 
   void generateLineFromGenerator(

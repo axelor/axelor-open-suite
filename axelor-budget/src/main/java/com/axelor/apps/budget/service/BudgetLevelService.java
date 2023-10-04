@@ -20,7 +20,6 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.meta.db.MetaFile;
@@ -135,7 +134,6 @@ public interface BudgetLevelService {
   void generateBudgetLevelFromGenerator(
       BudgetLevel budgetLevel,
       BudgetLevel parent,
-      BudgetGenerator budgetGenerator,
       GlobalBudget globalBudget,
       Map<String, Object> variableAmountMap,
       boolean linkToGlobal)

@@ -29,7 +29,6 @@ import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
@@ -433,14 +432,13 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   public void generateBudgetLevelFromGenerator(
       BudgetLevel budgetLevel,
       BudgetLevel parent,
-      BudgetGenerator budgetGenerator,
       GlobalBudget globalBudget,
       Map<String, Object> variableAmountMap,
       boolean linkToGlobal)
       throws AxelorException {
     BudgetLevel optBudgetLevel = budgetLevelManagementRepository.copy(budgetLevel, false);
-    optBudgetLevel.setFromDate(budgetGenerator.getYear().getFromDate());
-    optBudgetLevel.setToDate(budgetGenerator.getYear().getToDate());
+    optBudgetLevel.setFromDate(globalBudget.getFromDate());
+    optBudgetLevel.setToDate(globalBudget.getToDate());
     optBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
     optBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
     optBudgetLevel.setBudgetTypeSelect(globalBudget.getBudgetTypeSelect());
@@ -455,12 +453,11 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
       for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
         generateBudgetLevelFromGenerator(
-            child, optBudgetLevel, budgetGenerator, globalBudget, variableAmountMap, false);
+            child, optBudgetLevel, globalBudget, variableAmountMap, false);
       }
     } else if (!ObjectUtils.isEmpty(budgetLevel.getBudgetList())) {
       for (Budget budget : budgetLevel.getBudgetList()) {
-        budgetService.generateLineFromGenerator(
-            budget, optBudgetLevel, budgetGenerator, globalBudget);
+        budgetService.generateLineFromGenerator(budget, optBudgetLevel, globalBudget);
       }
     } else if (!ObjectUtils.isEmpty(budgetLevel.getBudgetScenarioVariableSet())) {
       for (BudgetScenarioVariable budgetScenarioVariable :

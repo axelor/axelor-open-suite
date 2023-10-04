@@ -1,6 +1,7 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
@@ -24,7 +25,8 @@ public interface GlobalBudgetService {
   GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
       throws AxelorException;
 
-  GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator) throws AxelorException;
+  GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator, Year year)
+      throws AxelorException;
 
   List<BudgetScenarioLine> visualizeVariableAmounts(BudgetGenerator budgetGenerator)
       throws AxelorException;
