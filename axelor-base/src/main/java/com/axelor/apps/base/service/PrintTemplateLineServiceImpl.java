@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.print;
+package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;

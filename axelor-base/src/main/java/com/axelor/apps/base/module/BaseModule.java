@@ -112,6 +112,12 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.PricedOrderDomainServiceImpl;
+import com.axelor.apps.base.service.PrintService;
+import com.axelor.apps.base.service.PrintServiceImpl;
+import com.axelor.apps.base.service.PrintTemplateLineService;
+import com.axelor.apps.base.service.PrintTemplateLineServiceImpl;
+import com.axelor.apps.base.service.PrintTemplateService;
+import com.axelor.apps.base.service.PrintTemplateServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryDomainCreatorService;
 import com.axelor.apps.base.service.ProductCategoryDomainCreatorServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryService;
@@ -177,16 +183,6 @@ import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.pricing.PricingServiceImpl;
-import com.axelor.apps.base.service.print.PrintHtmlGenerationService;
-import com.axelor.apps.base.service.print.PrintHtmlGenerationServiceImpl;
-import com.axelor.apps.base.service.print.PrintPdfGenerationService;
-import com.axelor.apps.base.service.print.PrintPdfGenerationServiceImpl;
-import com.axelor.apps.base.service.print.PrintService;
-import com.axelor.apps.base.service.print.PrintServiceImpl;
-import com.axelor.apps.base.service.print.PrintTemplateLineService;
-import com.axelor.apps.base.service.print.PrintTemplateLineServiceImpl;
-import com.axelor.apps.base.service.print.PrintTemplateService;
-import com.axelor.apps.base.service.print.PrintTemplateServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
 import com.axelor.apps.base.service.research.ResearchRequestServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -356,7 +352,5 @@ public class BaseModule extends AxelorModule {
     bind(ProductUpdateService.class).to(ProductUpdateServiceImpl.class);
     bind(ProductConversionService.class).to(ProductConversionServiceImpl.class);
     bind(ResponseComputeService.class).to(ResponseComputeServiceImpl.class);
-    bind(PrintHtmlGenerationService.class).to(PrintHtmlGenerationServiceImpl.class);
-    bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
   }
 }
