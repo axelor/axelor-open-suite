@@ -20,7 +20,7 @@
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
     name="global-budget-form" width="large" onNew="action-global-budget-record-set-defaults"
-    onSave="action-global-budget-group-onsave" canCopy="false">
+    onSave="action-global-budget-group-onsave">
 
     <menubar>
       <menu title="See detail" name="seeDetailBtn">

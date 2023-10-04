@@ -838,34 +838,6 @@ public class BudgetServiceImpl implements BudgetService {
   }
 
   @Override
-  public Budget resetBudget(Budget entity) {
-
-    entity.setCode(entity.getCode() + " (" + I18n.get("copy") + ")");
-
-    entity.setStatusSelect(BudgetRepository.STATUS_DRAFT);
-    entity.setArchived(false);
-
-    entity.setTotalAmountExpected(entity.getTotalAmountExpected());
-    entity.setTotalAmountCommitted(BigDecimal.ZERO);
-    entity.setRealizedWithNoPo(BigDecimal.ZERO);
-    entity.setRealizedWithPo(BigDecimal.ZERO);
-    entity.setSimulatedAmount(BigDecimal.ZERO);
-    entity.setAvailableAmount(entity.getTotalAmountExpected());
-    entity.setAvailableAmountWithSimulated(entity.getTotalAmountExpected());
-    entity.setTotalAmountRealized(BigDecimal.ZERO);
-    entity.setTotalFirmGap(BigDecimal.ZERO);
-    entity.setTotalAmountPaid(BigDecimal.ZERO);
-
-    if (!CollectionUtils.isEmpty(entity.getBudgetLineList())) {
-      for (BudgetLine child : entity.getBudgetLineList()) {
-        child = budgetLineService.resetBudgetLine(child);
-      }
-    }
-
-    return entity;
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void getUpdatedBudgetLineList(Budget budget, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
