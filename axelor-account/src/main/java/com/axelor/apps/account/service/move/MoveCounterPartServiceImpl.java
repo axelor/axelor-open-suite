@@ -140,15 +140,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   }
 
   protected BigDecimal getSignedCurrencyAmount(MoveLine moveLine, boolean isDebit) {
-    BigDecimal currencyAmount;
-
-    if (moveLine.getDebit().signum() > 0) {
-      currencyAmount = moveLine.getDebit();
-    } else {
-      currencyAmount = moveLine.getCredit();
-    }
-
-    return isDebit ? currencyAmount : currencyAmount.negate();
+    return isDebit ? moveLine.getCurrencyAmount() : moveLine.getCurrencyAmount().negate();
   }
 
   protected Account getAccountingAccountFromJournal(Move move) throws AxelorException {
