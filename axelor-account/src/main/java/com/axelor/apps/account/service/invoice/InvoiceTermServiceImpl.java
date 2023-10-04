@@ -199,16 +199,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         new HashSet<>(invoice.getPaymentCondition().getPaymentConditionLineList());
     Iterator<PaymentConditionLine> iterator = paymentConditionLines.iterator();
     BigDecimal total = BigDecimal.ZERO;
+    BigDecimal companyTotal = BigDecimal.ZERO;
+
     while (iterator.hasNext()) {
       PaymentConditionLine paymentConditionLine = iterator.next();
       InvoiceTerm invoiceTerm = computeInvoiceTerm(invoice, paymentConditionLine);
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
-        this.computeCompanyAmounts(invoiceTerm, false, false);
+
+        invoiceTerm.setCompanyAmount(invoice.getCompanyInTaxTotal().subtract(companyTotal));
+        invoiceTerm.setCompanyAmountRemaining(
+            invoice.getCompanyInTaxTotal().subtract(companyTotal));
+
         this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       } else {
         total = total.add(invoiceTerm.getAmount());
+        companyTotal = companyTotal.add(invoiceTerm.getCompanyAmount());
       }
       invoice.addInvoiceTermListItem(invoiceTerm);
     }
@@ -276,7 +283,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 invoiceTermAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       }
 
-      BigDecimal percentage = isHoldback ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
+      BigDecimal percentage =
+          isHoldback && invoice != null ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
 
       companyAmount =
           companyTotal
