@@ -8,14 +8,14 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.google.inject.Inject;
 
-public abstract class OperationOrderPlanningCommon {
+public abstract class OperationOrderPlanningCommonService {
 
   protected OperationOrderService operationOrderService;
   protected OperationOrderStockMoveService operationOrderStockMoveService;
   protected OperationOrderRepository operationOrderRepository;
 
   @Inject
-  protected OperationOrderPlanningCommon(
+  protected OperationOrderPlanningCommonService(
       OperationOrderService operationOrderService,
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository) {
@@ -27,14 +27,15 @@ public abstract class OperationOrderPlanningCommon {
   protected abstract void planWithStrategy(OperationOrder operationOrder) throws AxelorException;
 
   public OperationOrder plan(OperationOrder operationOrder) throws AxelorException {
+
     planWithStrategy(operationOrder);
 
     ManufOrder manufOrder = operationOrder.getManufOrder();
     if (manufOrder != null && Boolean.TRUE.equals(manufOrder.getIsConsProOnOperation())) {
       operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
     }
-    operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
 
+    operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
     return operationOrderRepository.save(operationOrder);
   }
 }

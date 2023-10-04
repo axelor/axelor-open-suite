@@ -17,20 +17,23 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class OperationOrderPlanningAsapInfiniteCapacity extends OperationOrderPlanningCommon {
+public class OperationOrderPlanningAsapInfiniteCapacityService
+    extends OperationOrderPlanningCommonService {
 
-  protected OperationOrderPlanningInfiniteCapacity operationOrderPlanningInfiniteCapacity;
+  protected OperationOrderPlanningInfiniteCapacityService
+      operationOrderPlanningInfiniteCapacityService;
   protected WeeklyPlanningService weeklyPlanningService;
 
   @Inject
-  protected OperationOrderPlanningAsapInfiniteCapacity(
+  protected OperationOrderPlanningAsapInfiniteCapacityService(
       OperationOrderService operationOrderService,
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
-      OperationOrderPlanningInfiniteCapacity operationOrderPlanningInfiniteCapacity,
+      OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
       WeeklyPlanningService weeklyPlanningService) {
     super(operationOrderService, operationOrderStockMoveService, operationOrderRepository);
-    this.operationOrderPlanningInfiniteCapacity = operationOrderPlanningInfiniteCapacity;
+    this.operationOrderPlanningInfiniteCapacityService =
+        operationOrderPlanningInfiniteCapacityService;
     this.weeklyPlanningService = weeklyPlanningService;
   }
 
@@ -53,7 +56,7 @@ public class OperationOrderPlanningAsapInfiniteCapacity extends OperationOrderPl
     }
 
     operationOrder.setPlannedEndDateT(
-        operationOrderPlanningInfiniteCapacity.computePlannedEndDateT(operationOrder));
+        operationOrderPlanningInfiniteCapacityService.computePlannedEndDateT(operationOrder));
 
     Long plannedDuration =
         DurationTool.getSecondsDuration(
@@ -119,7 +122,7 @@ public class OperationOrderPlanningAsapInfiniteCapacity extends OperationOrderPl
           || (secondPeriodTo != null
               && (startDateTime.isAfter(secondPeriodTo) || startDateTime.equals(secondPeriodTo)))
           || (firstPeriodFrom == null && secondPeriodFrom == null)) {
-        operationOrderPlanningInfiniteCapacity.searchForNextWorkingDay(
+        operationOrderPlanningInfiniteCapacityService.searchForNextWorkingDay(
             operationOrder, weeklyPlanning, startDate);
       }
     }
@@ -156,7 +159,7 @@ public class OperationOrderPlanningAsapInfiniteCapacity extends OperationOrderPl
           otherOperationOrder.setPlannedStartDateT(
               startDate.toLocalDate().atTime(secondPeriodFrom));
         } else {
-          operationOrderPlanningInfiniteCapacity.searchForNextWorkingDay(
+          operationOrderPlanningInfiniteCapacityService.searchForNextWorkingDay(
               otherOperationOrder, weeklyPlanning, plannedEndDate);
         }
         operationOrderRepository.save(otherOperationOrder);

@@ -14,12 +14,13 @@ import com.google.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class OperationOrderPlanningAsapFiniteCapacity extends OperationOrderPlanningCommon {
+public class OperationOrderPlanningAsapFiniteCapacityService
+    extends OperationOrderPlanningCommonService {
 
   protected MachineService machineService;
 
   @Inject
-  protected OperationOrderPlanningAsapFiniteCapacity(
+  protected OperationOrderPlanningAsapFiniteCapacityService(
       OperationOrderService operationOrderService,
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,

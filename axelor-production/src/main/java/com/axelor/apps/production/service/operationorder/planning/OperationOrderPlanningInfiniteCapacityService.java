@@ -9,13 +9,13 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.google.inject.Inject;
 import java.time.LocalDateTime;
 
-public class OperationOrderPlanningInfiniteCapacity {
+public class OperationOrderPlanningInfiniteCapacityService {
 
   protected OperationOrderService operationOrderService;
   protected WeeklyPlanningService weeklyPlanningService;
 
   @Inject
-  public OperationOrderPlanningInfiniteCapacity(
+  public OperationOrderPlanningInfiniteCapacityService(
       OperationOrderService operationOrderService, WeeklyPlanningService weeklyPlanningService) {
     this.operationOrderService = operationOrderService;
     this.weeklyPlanningService = weeklyPlanningService;

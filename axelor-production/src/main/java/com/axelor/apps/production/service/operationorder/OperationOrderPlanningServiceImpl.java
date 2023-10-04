@@ -16,12 +16,12 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
-import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAsapFiniteCapacity;
-import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAsapInfiniteCapacity;
-import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAtTheLatestFiniteCapacity;
-import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAtTheLatestInfiniteCapacity;
-import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningCommon;
-import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningInfiniteCapacity;
+import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAsapFiniteCapacityService;
+import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAsapInfiniteCapacityService;
+import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAtTheLatestFiniteCapacityService;
+import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAtTheLatestInfiniteCapacityService;
+import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningCommonService;
+import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningInfiniteCapacityService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.date.DurationTool;
@@ -42,7 +42,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   protected OperationOrderRepository operationOrderRepository;
   protected ManufOrderService manufOrderService;
   protected OperationOrderService operationOrderService;
-  protected OperationOrderPlanningInfiniteCapacity operationOrderPlanningInfiniteCapacity;
+  protected OperationOrderPlanningInfiniteCapacityService
+      operationOrderPlanningInfiniteCapacityService;
 
   @Inject
   public OperationOrderPlanningServiceImpl(
@@ -53,7 +54,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
       WeeklyPlanningService weeklyPlanningService,
       ManufOrderService manufOrderService,
       OperationOrderService operationOrderService,
-      OperationOrderPlanningInfiniteCapacity operationOrderPlanningInfiniteCapacity) {
+      OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService) {
     this.productionConfigService = productionConfigService;
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.machineService = machineService;
@@ -61,7 +62,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     this.weeklyPlanningService = weeklyPlanningService;
     this.manufOrderService = manufOrderService;
     this.operationOrderService = operationOrderService;
-    this.operationOrderPlanningInfiniteCapacity = operationOrderPlanningInfiniteCapacity;
+    this.operationOrderPlanningInfiniteCapacityService =
+        operationOrderPlanningInfiniteCapacityService;
   }
 
   @Override
@@ -90,21 +92,23 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     OperationOrderPlanningStrategy operationOrderPlanningStrategy =
         getOperationOrderPlanningStrategy(scheduling, capacity);
 
-    OperationOrderPlanningCommon operationOrderPlanningCommon;
+    OperationOrderPlanningCommonService operationOrderPlanningCommonService;
     switch (operationOrderPlanningStrategy) {
       case OperationOrderPlanningAsapFiniteCapacity:
-        operationOrderPlanningCommon = Beans.get(OperationOrderPlanningAsapFiniteCapacity.class);
+        operationOrderPlanningCommonService =
+            Beans.get(OperationOrderPlanningAsapFiniteCapacityService.class);
         break;
       case OperationOrderPlanningAsapInfiniteCapacity:
-        operationOrderPlanningCommon = Beans.get(OperationOrderPlanningAsapInfiniteCapacity.class);
+        operationOrderPlanningCommonService =
+            Beans.get(OperationOrderPlanningAsapInfiniteCapacityService.class);
         break;
       case OperationOrderPlanningAtTheLatestFiniteCapacity:
-        operationOrderPlanningCommon =
-            Beans.get(OperationOrderPlanningAtTheLatestFiniteCapacity.class);
+        operationOrderPlanningCommonService =
+            Beans.get(OperationOrderPlanningAtTheLatestFiniteCapacityService.class);
         break;
       case OperationOrderPlanningAtTheLatestInfiniteCapacity:
-        operationOrderPlanningCommon =
-            Beans.get(OperationOrderPlanningAtTheLatestInfiniteCapacity.class);
+        operationOrderPlanningCommonService =
+            Beans.get(OperationOrderPlanningAtTheLatestInfiniteCapacityService.class);
         break;
       default:
         throw new AxelorException(
@@ -118,7 +122,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
             : operationOrderService.getReversedSortedOperationOrderList(operationOrders);
 
     for (OperationOrder operationOrder : sortedOperationOrders) {
-      operationOrderPlanningCommon.plan(operationOrder);
+      operationOrderPlanningCommonService.plan(operationOrder);
     }
   }
 
@@ -143,7 +147,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
         operationOrder.setPlannedStartDateT(
             operationOrderService.getLastOperationDate(operationOrder));
         operationOrder.setPlannedEndDateT(
-            operationOrderPlanningInfiniteCapacity.computePlannedEndDateT(operationOrder));
+            operationOrderPlanningInfiniteCapacityService.computePlannedEndDateT(operationOrder));
 
         operationOrder.setPlannedDuration(
             DurationTool.getSecondsDuration(

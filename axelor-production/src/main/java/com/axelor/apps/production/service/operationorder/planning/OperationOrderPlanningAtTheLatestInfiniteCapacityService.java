@@ -17,21 +17,22 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class OperationOrderPlanningAtTheLatestInfiniteCapacity
-    extends OperationOrderPlanningCommon {
+public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
+    extends OperationOrderPlanningCommonService {
 
-  OperationOrderPlanningInfiniteCapacity operationOrderPlanningInfiniteCapacity;
+  OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService;
   WeeklyPlanningService weeklyPlanningService;
 
   @Inject
-  protected OperationOrderPlanningAtTheLatestInfiniteCapacity(
+  protected OperationOrderPlanningAtTheLatestInfiniteCapacityService(
       OperationOrderService operationOrderService,
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
-      OperationOrderPlanningInfiniteCapacity operationOrderPlanningInfiniteCapacity,
+      OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
       WeeklyPlanningService weeklyPlanningService) {
     super(operationOrderService, operationOrderStockMoveService, operationOrderRepository);
-    this.operationOrderPlanningInfiniteCapacity = operationOrderPlanningInfiniteCapacity;
+    this.operationOrderPlanningInfiniteCapacityService =
+        operationOrderPlanningInfiniteCapacityService;
     this.weeklyPlanningService = weeklyPlanningService;
   }
 
@@ -125,7 +126,7 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacity
        */
       else if (firstPeriodFrom != null
           && (endDateTime.isBefore(firstPeriodFrom) || endDateTime.equals(firstPeriodFrom))) {
-        operationOrderPlanningInfiniteCapacity.searchForPreviousWorkingDay(
+        operationOrderPlanningInfiniteCapacityService.searchForPreviousWorkingDay(
             operationOrder, weeklyPlanning, endDate);
       }
     }
@@ -161,7 +162,7 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacity
         if (firstPeriodTo != null) {
           otherOperationOrder.setPlannedEndDateT(startDate.toLocalDate().atTime(firstPeriodTo));
         } else {
-          operationOrderPlanningInfiniteCapacity.searchForPreviousWorkingDay(
+          operationOrderPlanningInfiniteCapacityService.searchForPreviousWorkingDay(
               otherOperationOrder, weeklyPlanning, plannedStartDate);
         }
         operationOrderRepository.save(otherOperationOrder);
