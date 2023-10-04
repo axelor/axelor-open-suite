@@ -85,12 +85,15 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   @Override
   public MoveLine createCounterpartMoveLine(Move move) throws AxelorException {
     Account accountingAccount = getAccountingAccountFromJournal(move);
-    boolean isDebit;
     BigDecimal amount = getCounterpartAmount(move);
+
     if (amount.signum() == 0) {
       return null;
     }
-    isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
+
+    boolean isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
+    BigDecimal currencyAmount = this.getCounterpartCurrencyAmount(move, isDebit);
+
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
@@ -108,8 +111,14 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             move.getDescription());
 
     moveLine.setDueDate(move.getOriginDate());
-    moveLine = moveLineToolService.setCurrencyAmount(moveLine);
+    moveLine.setCurrencyAmount(currencyAmount);
     moveLine.setDescription(move.getDescription());
+    moveLine.setCurrencyRate(
+        move.getMoveLineList().stream()
+            .map(MoveLine::getCurrencyRate)
+            .findAny()
+            .orElse(BigDecimal.ONE));
+
     return moveLine;
   }
 
@@ -120,6 +129,18 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
       amount = amount.subtract(line.getDebit());
     }
     return amount;
+  }
+
+  protected BigDecimal getCounterpartCurrencyAmount(Move move, boolean isDebit) {
+    return move.getMoveLineList().stream()
+        .map(it -> this.getSignedCurrencyAmount(it, isDebit))
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO)
+        .abs();
+  }
+
+  protected BigDecimal getSignedCurrencyAmount(MoveLine moveLine, boolean isDebit) {
+    return isDebit ? moveLine.getCurrencyAmount() : moveLine.getCurrencyAmount().negate();
   }
 
   protected Account getAccountingAccountFromJournal(Move move) throws AxelorException {

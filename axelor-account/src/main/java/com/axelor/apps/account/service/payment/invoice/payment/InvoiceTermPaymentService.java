@@ -47,7 +47,8 @@ public interface InvoiceTermPaymentService {
   public List<InvoiceTermPayment> initInvoiceTermPaymentsWithAmount(
       InvoicePayment invoicePayment,
       List<InvoiceTerm> invoiceTermsToPay,
-      BigDecimal availableAmount);
+      BigDecimal availableAmount,
+      BigDecimal reconcileAmount);
 
   /**
    * Method to create invoiceTermPayments for an invoicePayment
