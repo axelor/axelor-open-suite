@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
-import com.axelor.apps.base.service.PrintTemplateLineService;
+import com.axelor.apps.base.service.print.PrintTemplateLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;

@@ -18,7 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Print;
-import com.axelor.apps.base.service.PrintService;
+import com.axelor.apps.base.service.print.PrintService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
