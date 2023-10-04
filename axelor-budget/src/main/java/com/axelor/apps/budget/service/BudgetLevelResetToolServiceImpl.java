@@ -9,11 +9,11 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolService {
 
-  private final BudgetService budgetService;
+  private final BudgetResetToolService budgetService;
 
   @Inject
-  public BudgetLevelResetToolServiceImpl(BudgetService budgetService) {
-    this.budgetService = budgetService;
+  public BudgetLevelResetToolServiceImpl(BudgetResetToolService budgetResetToolService) {
+    this.budgetService = budgetResetToolService;
   }
 
   @Override

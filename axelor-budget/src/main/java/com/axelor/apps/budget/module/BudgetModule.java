@@ -50,8 +50,12 @@ import com.axelor.apps.budget.service.BudgetLevelResetToolService;
 import com.axelor.apps.budget.service.BudgetLevelResetToolServiceImpl;
 import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetLevelServiceImpl;
+import com.axelor.apps.budget.service.BudgetLineResetToolService;
+import com.axelor.apps.budget.service.BudgetLineResetToolServiceImpl;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetLineServiceImpl;
+import com.axelor.apps.budget.service.BudgetResetToolService;
+import com.axelor.apps.budget.service.BudgetResetToolServiceImpl;
 import com.axelor.apps.budget.service.BudgetScenarioLineService;
 import com.axelor.apps.budget.service.BudgetScenarioLineServiceImpl;
 import com.axelor.apps.budget.service.BudgetScenarioService;
@@ -162,6 +166,7 @@ public class BudgetModule extends AxelorModule {
     bind(GlobalBudgetRepository.class).to(GlobalBudgetManagementRepository.class);
     bind(GlobalBudgetResetToolService.class).to(GlobalBudgetResetToolServiceImpl.class);
     bind(BudgetLevelResetToolService.class).to(BudgetLevelResetToolServiceImpl.class);
-    
+    bind(BudgetResetToolService.class).to(BudgetResetToolServiceImpl.class);
+    bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
   }
 }
