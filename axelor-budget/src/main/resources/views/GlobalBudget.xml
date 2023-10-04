@@ -292,11 +292,6 @@
     <action name="action-method-budget-default-version-new"/>
   </action-group>
 
-  <action-method name="action-method-budget-default-version-new">
-    <call class="com.axelor.apps.budget.web.GlobalBudgetController"
-      method="createDefaultBudgetVersion"/>
-  </action-method>
-
   <action-method name="action-global-budget-method-set-dates">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="setDates"/>
   </action-method>
