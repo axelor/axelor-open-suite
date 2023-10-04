@@ -97,12 +97,7 @@
       <field name="invoiced" colSpan="3"
         showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
         <viewer>
-                    <![CDATA[
-                        <h4>
-                            <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
-                            <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                        </h4>
-                    ]]>
+          <![CDATA[<><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
         </viewer>
       </field>
       <field name="justificationMetaFile" widget="binary-link"
