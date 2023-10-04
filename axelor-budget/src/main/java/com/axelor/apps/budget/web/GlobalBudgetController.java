@@ -58,9 +58,11 @@ public class GlobalBudgetController {
   }
 
   public void draftChildren(ActionRequest request, ActionResponse response) {
-    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    GlobalBudget globalBudget =
+        Beans.get(GlobalBudgetRepository.class)
+            .find(request.getContext().asType(GlobalBudget.class).getId());
     Beans.get(GlobalBudgetWorkflowService.class).draftChildren(globalBudget);
-    response.setValues(globalBudget);
+    response.setReload(true);
   }
 
   @ErrorException
