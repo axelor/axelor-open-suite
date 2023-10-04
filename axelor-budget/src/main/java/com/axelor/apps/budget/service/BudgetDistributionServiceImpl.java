@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
@@ -126,7 +127,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getParentBudgetLevel()
+                .getGlobalBudget()
                 .getTotalAmountAvailable();
         budgetName =
             budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getName();
@@ -141,7 +142,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               budget
                   .getBudgetLevel()
                   .getParentBudgetLevel()
-                  .getParentBudgetLevel()
+                  .getGlobalBudget()
                   .getCompany()
                   .getCurrency()
                   .getSymbol());
@@ -301,5 +302,39 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     }
 
     return query;
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(
+      List<AnalyticMoveLine> analyticMoveLineList,
+      Account account,
+      Company company,
+      LocalDate date,
+      BigDecimal amount,
+      AuditableModel object) {
+    if (ObjectUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      String key = budgetService.computeKey(account, company, analyticMoveLine);
+
+      if (!Strings.isNullOrEmpty(key)) {
+        Budget budget = budgetService.findBudgetWithKey(key, date);
+
+        if (budget != null) {
+          GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
+          if (globalBudget != null && globalBudget.getAutomaticBudgetComputation()) {
+            BudgetDistribution budgetDistribution =
+                createDistributionFromBudget(
+                    budget,
+                    amount
+                        .multiply(analyticMoveLine.getPercentage())
+                        .divide(new BigDecimal(100))
+                        .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+            linkBudgetDistributionWithParent(budgetDistribution, object);
+          }
+        }
+      }
+    }
   }
 }

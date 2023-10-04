@@ -62,12 +62,8 @@
   </form>
 
   <action-group name="action-budget-invoice-group-ventilate-button">
-    <action name="action-method-invoice-budget-no-compute-budget-distribution"
-      if="__config__.app.isApp('budget')"/>
-    <action name="action-budget-invoice-record-get-budget-balance"
-      if="__config__.app.isApp('budget')"/>
-    <action name="action-budget-invoice-validate-budget-balance"
-      if="__config__.app.isApp('budget')"/>
+    <action name="action-invoice-method-budget-auto-compute-budget-distribution"/>
+    <action name="action-invoice-method-budget-validate-ventilation"/>
     <action name="action-invoice-group-ventilate-button"/>
   </action-group>
 
@@ -79,6 +75,20 @@
     <action name="save"/>
   </action-group>
 
+  <action-method name="action-invoice-method-budget-auto-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.InvoiceController"
+      method="autoComputeBudgetDistribution"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-budget-auto-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.InvoiceController"
+      method="autoComputeBudgetDistribution"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-budget-validate-ventilation">
+    <call class="com.axelor.apps.budget.web.InvoiceController" method="validateVentilation"/>
+  </action-method>
+
   <action-method name="action-method-budget-invoice-compute-budget-distribution">
     <call class="com.axelor.apps.budget.web.InvoiceController"
       method="computeBudgetDistribution"/>
@@ -88,10 +98,6 @@
     name="action-method-budget-invoice-compute-budget-distribution-sum-amount">
     <call class="com.axelor.apps.budget.web.InvoiceController"
       method="computeInvoiceBudgetDistributionSumAmount"/>
-  </action-method>
-
-  <action-method name="action-method-invoice-budget-no-compute-budget-distribution">
-    <call class="com.axelor.apps.budget.web.InvoiceController" method="checkNoComputeBudget"/>
   </action-method>
 
   <action-validate name="action-validate-budget-recompute-budget-distribution">
