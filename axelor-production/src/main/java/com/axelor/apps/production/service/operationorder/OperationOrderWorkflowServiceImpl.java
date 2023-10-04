@@ -105,6 +105,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Transactional(rollbackOn = {Exception.class})
   public void plan(OperationOrder operationOrder) throws AxelorException {
     operationOrderPlanningService.plan(operationOrder, null);
+    manufOrderWorkflowService.setOperationOrderMaxPriority(operationOrder.getManufOrder());
   }
 
   /**
@@ -122,6 +123,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   public void plan(OperationOrder operationOrder, boolean useAsapScheduling)
       throws AxelorException {
     operationOrderPlanningService.plan(operationOrder, null, useAsapScheduling);
+    manufOrderWorkflowService.setOperationOrderMaxPriority(operationOrder.getManufOrder());
   }
 
   /**
