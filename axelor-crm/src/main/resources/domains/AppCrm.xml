@@ -19,6 +19,8 @@
     <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
     <boolean name="agenciesManagement" title="Agencies management"/>
     <boolean name="crmProcessOnPartner" title="Manage status on prospect" default="false"/>
+    <boolean name="isSearchFunctionalityEnabled" title="Enable search functionality"
+      default="false"/>
     <many-to-one name="closedWinOpportunityStatus"
       ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"/>
     <many-to-one name="closedLostOpportunityStatus"
