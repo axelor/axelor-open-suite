@@ -17,7 +17,6 @@ libs.commons_math3 = 'org.apache.commons:commons-math3:3.6.1'
 libs.commons_validator = 'commons-validator:commons-validator:1.7'
 
 libs.groovy = 'org.codehaus.groovy:groovy-all:3.0.13'
-libs.html2pdf = 'com.itextpdf:html2pdf:4.0.3'
 libs.iban4j = 'org.iban4j:iban4j:3.2.3-RELEASE'
 
 libs.ical4j = 'org.mnode.ical4j:ical4j:2.2.0'
@@ -71,3 +70,4 @@ libs.logback = 'ch.qos.logback:logback-classic:1.4.5'
 libs.swagger_jaxrs = 'io.swagger.core.v3:swagger-jaxrs2:2.2.8'
 
 libs.boxable = 'com.github.dhorions:boxable:1.7.0'
+libs.flyingsaucer_openpdf = 'org.xhtmlrenderer:flying-saucer-pdf-openpdf:9.2.2'
