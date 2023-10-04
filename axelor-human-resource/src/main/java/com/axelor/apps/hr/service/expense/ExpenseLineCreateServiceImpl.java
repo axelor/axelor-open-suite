@@ -238,11 +238,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Boolean toInvoice)
       throws AxelorException {
     ExpenseLine expenseLine = new ExpenseLine();
-    if (expenseDate.isAfter(appBaseService.getTodayDate(null))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          HumanResourceExceptionMessage.EXPENSE_LINE_DATE_ERROR);
-    }
 
     setCurrency(currency, expenseLine);
     expenseLine.setProject(project);
