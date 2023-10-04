@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.print;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;
@@ -132,13 +132,15 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
         print.setPrintPdfHeader(maker.make());
       }
 
-      if (StringUtils.notEmpty(printTemplate.getPrintTemplatePdfFooter())) {
-        maker.setTemplate(printTemplate.getPrintTemplatePdfFooter());
+      String footerContent = printTemplate.getPrintTemplatePdfFooter();
+
+      if (StringUtils.notEmpty(footerContent)) {
+        String formattedContent = getFormattedFooter(footerContent);
+        maker.setTemplate(formattedContent);
         print.setPrintPdfFooter(maker.make());
         print.setFooterFontSize(printTemplate.getFooterFontSize());
         print.setFooterFontType(printTemplate.getFooterFontType());
         print.setFooterTextAlignment(printTemplate.getFooterTextAlignment());
-        print.setIsFooterUnderLine(printTemplate.getIsFooterUnderLine());
         print.setFooterFontColor(printTemplate.getFooterFontColor());
       }
 
@@ -189,6 +191,10 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
 
     return print;
+  }
+
+  protected String getFormattedFooter(String footerContent) {
+    return footerContent.replace("\n", "<br>");
   }
 
   protected void processPrintTemplateLineList(

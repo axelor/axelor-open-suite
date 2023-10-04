@@ -1,0 +1,5 @@
+---
+title: "Print Template: iText has been replaced by Boxable and PDFBox"
+type: change
+description: |
+  Text in footer can no longer be underlined.
