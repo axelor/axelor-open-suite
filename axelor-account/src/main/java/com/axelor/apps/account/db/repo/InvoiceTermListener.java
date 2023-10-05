@@ -24,12 +24,12 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.repo.AppAccountRepository;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Objects;
@@ -63,7 +63,11 @@ public class InvoiceTermListener {
     LOG.debug("Deleting {}", invoiceTerm);
 
     boolean allowMultiInvoiceTerm =
-        Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms();
+        Beans.get(AppAccountRepository.class)
+            .all()
+            .autoFlush(false)
+            .fetchOne()
+            .getAllowMultiInvoiceTerms();
     checkDebtRecovery(invoiceTerm, allowMultiInvoiceTerm);
     checkPayVoucherDueElement(invoiceTerm, allowMultiInvoiceTerm);
     checkPayVoucherElementToPay(invoiceTerm, allowMultiInvoiceTerm);
