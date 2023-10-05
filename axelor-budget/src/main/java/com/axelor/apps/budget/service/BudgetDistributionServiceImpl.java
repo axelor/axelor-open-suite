@@ -23,12 +23,14 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
@@ -236,5 +238,52 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     } else {
       budgetDistribution.setBudgetAmountAvailable(BigDecimal.ZERO);
     }
+  }
+
+  @Override
+  public String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect) {
+    String budget = "self.globalBudget";
+    String query =
+        String.format(
+            "self.totalAmountExpected > 0 AND self.statusSelect = %d AND self.globalBudget.statusSelect = %d ",
+            BudgetRepository.STATUS_VALIDATED,
+            GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID);
+
+    if (company != null) {
+      query.concat(
+          String.format(" AND %s.company.id = %d", budget, company != null ? company.getId() : 0));
+    }
+    if (date != null) {
+      query =
+          query.concat(
+              String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+    }
+    if (AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect)) {
+      query =
+          query.concat(
+              String.format(
+                  " AND %s.budgetTypeSelect = %d ",
+                  budget, BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE));
+    } else if (AccountTypeRepository.TYPE_CHARGE.equals(technicalTypeSelect)) {
+      query =
+          query.concat(
+              String.format(
+                  " AND %s.budgetTypeSelect in (%d,%d) ",
+                  budget,
+                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+    } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(technicalTypeSelect)) {
+      query =
+          query.concat(
+              String.format(
+                  " AND %s.budgetTypeSelect in (%d,%d) ",
+                  budget,
+                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+    } else {
+      query = "self.id = 0";
+    }
+
+    return query;
   }
 }

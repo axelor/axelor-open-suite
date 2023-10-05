@@ -24,6 +24,7 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
+    <field name="globalBUdget"/>
   </grid>
 
   <grid model="com.axelor.apps.budget.db.Budget" title="Budgets" name="budget-detailed-grid"
