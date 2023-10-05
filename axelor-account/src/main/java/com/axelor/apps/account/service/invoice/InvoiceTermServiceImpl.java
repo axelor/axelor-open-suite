@@ -1677,6 +1677,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             ? moveLine.getDebitReconcileList()
             : moveLine.getCreditReconcileList();
 
+    if (reconcileList == null) {
+      return BigDecimal.ZERO;
+    }
+
     return reconcileList.stream()
         .sorted(Comparator.comparing(Reconcile::getCreatedOn))
         .reduce((first, second) -> second)
