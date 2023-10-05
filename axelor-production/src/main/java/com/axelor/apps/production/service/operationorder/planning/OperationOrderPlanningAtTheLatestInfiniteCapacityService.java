@@ -44,8 +44,8 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
     LocalDateTime plannedEndDate = operationOrder.getPlannedEndDateT();
 
     LocalDateTime nextOperationDate = operationOrderService.getNextOperationDate(operationOrder);
-    LocalDateTime maxDate = LocalDateTimeUtils.max(plannedEndDate, nextOperationDate);
-    operationOrder.setPlannedEndDateT(maxDate);
+    LocalDateTime minDate = LocalDateTimeUtils.min(plannedEndDate, nextOperationDate);
+    operationOrder.setPlannedEndDateT(minDate);
 
     if (machine != null) {
       weeklyPlanning = machine.getWeeklyPlanning();

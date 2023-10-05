@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class OperationOrderPlanningServiceImpl implements OperationOrderPlanningService {
 
@@ -206,31 +207,85 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     ProductionConfig productionConfig =
         productionConfigService.getProductionConfig(manufOrder.getCompany());
 
-    if (productionConfig.getCapacity() == ProductionConfigRepository.FINITE_CAPACITY_SCHEDULING) {
-      if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(ProductionExceptionMessage.OPERATION_ORDER_ALREADY_FINISHED));
+    boolean useAsapScheduling =
+        productionConfig.getScheduling()
+            == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING;
+
+    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.OPERATION_ORDER_ALREADY_FINISHED));
+    }
+
+    List<OperationOrder> operationOrders =
+        (useAsapScheduling
+                ? getNextOrderedOperationOrders(operationOrder)
+                : getPreviousOrderedOperationOrders(operationOrder))
+            .stream()
+                .filter(oo -> oo.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED)
+                .collect(Collectors.toList());
+
+    plan(operationOrders);
+    manufOrderService.updatePlannedDates(operationOrder.getManufOrder());
+
+    if (willPlannedEndDateOverflow(operationOrder)) {
+      Integer capacity = productionConfig.getCapacity();
+      OperationOrderPlanningCommonService operationOrderPlanningCommonService;
+      if (capacity == ProductionConfigRepository.FINITE_CAPACITY_SCHEDULING) {
+        operationOrderPlanningCommonService =
+            Beans.get(OperationOrderPlanningAsapFiniteCapacityService.class);
+      } else {
+        operationOrderPlanningCommonService =
+            Beans.get(OperationOrderPlanningAsapInfiniteCapacityService.class);
       }
-
-      List<OperationOrder> nextOperationOrders =
-          getNextOrderedOperationOrders(operationOrder).stream()
-              .filter(oo -> oo.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED)
-              .collect(Collectors.toList());
-
-      plan(nextOperationOrders);
-      manufOrderService.updatePlannedDates(operationOrder.getManufOrder());
+      for (OperationOrder oo : getNextOrderedOperationOrders(operationOrder)) {
+        operationOrderPlanningCommonService.plan(oo);
+      }
     }
 
     return computeDuration(operationOrder);
+  }
+
+  @Override
+  public boolean willPlannedEndDateOverflow(OperationOrder operationOrder) throws AxelorException {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    ProductionConfig productionConfig =
+        productionConfigService.getProductionConfig(manufOrder.getCompany());
+
+    if (productionConfig.getScheduling() != ProductionConfigRepository.AT_THE_LATEST_SCHEDULING) {
+      return false;
+    }
+
+    List<OperationOrder> nextOperationOrders = getNextOrderedOperationOrders(operationOrder);
+    if (CollectionUtils.isEmpty(nextOperationOrders)) {
+      return false;
+    }
+    OperationOrder nextOperationOrder = nextOperationOrders.get(0);
+    return nextOperationOrder.getPlannedStartDateT().isBefore(operationOrder.getPlannedEndDateT());
   }
 
   protected List<OperationOrder> getNextOrderedOperationOrders(OperationOrder operationOrder) {
     ManufOrder manufOrder = operationOrder.getManufOrder();
 
     return manufOrder.getOperationOrderList().stream()
-        .filter(oo -> oo.getPriority() > operationOrder.getPriority() && !oo.equals(operationOrder))
-        .sorted(Comparator.comparingInt(OperationOrder::getPriority))
+        .filter(
+            oo -> oo.getPriority() >= operationOrder.getPriority() && !oo.equals(operationOrder))
+        .sorted(
+            Comparator.comparingInt(OperationOrder::getPriority)
+                .thenComparing(OperationOrder::getId))
+        .collect(Collectors.toList());
+  }
+
+  protected List<OperationOrder> getPreviousOrderedOperationOrders(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+
+    return manufOrder.getOperationOrderList().stream()
+        .filter(
+            oo -> oo.getPriority() <= operationOrder.getPriority() && !oo.equals(operationOrder))
+        .sorted(
+            Comparator.comparingInt(OperationOrder::getPriority)
+                .thenComparing(OperationOrder::getId)
+                .reversed())
         .collect(Collectors.toList());
   }
 

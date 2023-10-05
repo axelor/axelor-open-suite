@@ -34,13 +34,13 @@ public class OperationOrderPlanningAtTheLatestFiniteCapacityService
     Machine machine = operationOrder.getMachine();
     LocalDateTime plannedEndDate = operationOrder.getPlannedEndDateT();
     LocalDateTime nextOperationDate = operationOrderService.getNextOperationDate(operationOrder);
-    LocalDateTime maxDate = LocalDateTimeUtils.max(plannedEndDate, nextOperationDate);
+    LocalDateTime minDate = LocalDateTimeUtils.min(plannedEndDate, nextOperationDate);
     if (machine != null) {
       MachineTimeSlot freeMachineTimeSlot =
           machineService.getFurthestAvailableTimeSlotFrom(
               machine,
-              maxDate.minusSeconds(operationOrderService.getDuration(operationOrder)),
-              maxDate,
+              minDate.minusSeconds(operationOrderService.getDuration(operationOrder)),
+              minDate,
               operationOrder);
       operationOrder.setPlannedStartDateT(freeMachineTimeSlot.getStartDateT());
       operationOrder.setPlannedEndDateT(freeMachineTimeSlot.getEndDateT());
@@ -51,7 +51,7 @@ public class OperationOrderPlanningAtTheLatestFiniteCapacityService
                   operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
       operationOrder.setPlannedDuration(plannedDuration);
     } else {
-      operationOrder.setPlannedEndDateT(maxDate);
+      operationOrder.setPlannedEndDateT(minDate);
       operationOrder.setPlannedStartDateT(
           operationOrder
               .getPlannedEndDateT()

@@ -49,6 +49,8 @@ public interface OperationOrderPlanningService {
       OperationOrder operationOrder, LocalDateTime realStartDateT, LocalDateTime realEndDateT)
       throws AxelorException;
 
+  boolean willPlannedEndDateOverflow(OperationOrder operationOrder) throws AxelorException;
+
   OperationOrder computeDuration(OperationOrder operationOrder);
 
   /**
