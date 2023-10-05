@@ -600,15 +600,18 @@
           colSpan="12" field="timetableList" form-view="timetable-form" grid-view="timetable-grid"
           onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"/>
       </panel>
-      <panel-related name="advancePaymentListPanel"
-        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
-        if-module="axelor-supplychain" readonly="true" colSpan="12" field="advancePaymentList"
-        form-view="advance-payment-form" grid-view="advance-payment-grid"/>
-      <panel name="advancePaymentNeededPanel" title="Advance payments"
-        if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions">
-        <field name="advancePaymentNeeded" readonlyIf="statusSelect &gt; 1"/>
-        <field name="advancePaymentAmountNeeded" showIf="advancePaymentNeeded"
-          readonlyIf="statusSelect &gt; 1"/>
+      <panel name="advancePaymentPanel" title="Advance payments"
+        if="__config__.app.isApp('supplychain') &amp;&amp; (__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions ||  !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice())">
+        <panel name="advancePaymentNeededPanel"
+          if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions">
+          <field name="advancePaymentNeeded" readonlyIf="statusSelect &gt; 1"/>
+          <field name="advancePaymentAmountNeeded" showIf="advancePaymentNeeded"
+            readonlyIf="statusSelect &gt; 1"/>
+        </panel>
+        <field name="advancePaymentList"
+          if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
+          if-module="axelor-supplychain" readonly="true" colSpan="12"
+          form-view="advance-payment-form" grid-view="advance-payment-grid"/>
       </panel>
       <panel if="__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"
         name="printingPanel" title="Printing">
