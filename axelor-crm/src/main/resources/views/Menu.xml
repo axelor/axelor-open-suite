@@ -628,7 +628,8 @@
   </action-view>
 
   <menuitem name="crm-conf-internal" parent="crm-conf"
-    if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled" title="Partner" order="1200"/>
+    if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled" title="Corporate partner"
+    order="1200"/>
 
   <menuitem name="crm-conf-corporate-partner-domain" parent="crm-conf-internal"
     title="Corporate partner work domain" action="crm.conf.corporate.partner.domain" order="100"/>
