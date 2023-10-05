@@ -918,12 +918,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     BigDecimal customizedAmount =
         this.getCustomizedAmount(invoiceTerm, invoiceTermList, total, isLastInvoiceTerm);
-    BigDecimal customizedCompanyAmount =
-        this.getCustomizedCompanyAmount(
-            invoiceTerm, invoiceTermList, companyTotal, isLastInvoiceTerm);
 
     invoiceTerm.setAmount(customizedAmount);
     invoiceTerm.setAmountRemaining(customizedAmount);
+
+    BigDecimal customizedCompanyAmount =
+        this.getCustomizedCompanyAmount(
+            invoiceTerm, invoiceTermList, companyTotal, isLastInvoiceTerm);
 
     if (customizedCompanyAmount != null) {
       invoiceTerm.setCompanyAmount(customizedCompanyAmount);
