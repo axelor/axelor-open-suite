@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -61,15 +62,18 @@ public class InvoiceTermListener {
 
     LOG.debug("Deleting {}", invoiceTerm);
 
-    checkDebtRecovery(invoiceTerm);
-    checkPayVoucherDueElement(invoiceTerm);
-    checkPayVoucherElementToPay(invoiceTerm);
-    checkInvoiceTermPayment(invoiceTerm);
+    boolean allowMultiInvoiceTerm =
+        Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms();
+    checkDebtRecovery(invoiceTerm, allowMultiInvoiceTerm);
+    checkPayVoucherDueElement(invoiceTerm, allowMultiInvoiceTerm);
+    checkPayVoucherElementToPay(invoiceTerm, allowMultiInvoiceTerm);
+    checkInvoiceTermPayment(invoiceTerm, allowMultiInvoiceTerm);
 
     LOG.debug("Deleted {}", invoiceTerm);
   }
 
-  protected void checkDebtRecovery(InvoiceTerm invoiceTerm) throws AxelorException {
+  protected void checkDebtRecovery(InvoiceTerm invoiceTerm, boolean allowMultiInvoiceTerm)
+      throws AxelorException {
     LOG.debug("Checking linked debt recovery");
     List<DebtRecovery> linkedDebtRecoveries =
         Beans.get(DebtRecoveryRepository.class)
@@ -80,17 +84,27 @@ public class InvoiceTermListener {
             .fetch();
 
     if (!linkedDebtRecoveries.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES),
-          invoiceTerm.getName(),
-          linkedDebtRecoveries.stream()
-              .map(DebtRecovery::getName)
-              .collect(Collectors.joining("<br>")));
+      if (allowMultiInvoiceTerm) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES),
+            invoiceTerm.getName(),
+            linkedDebtRecoveries.stream()
+                .map(DebtRecovery::getName)
+                .collect(Collectors.joining("<br>")));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MONO_INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES),
+            linkedDebtRecoveries.stream()
+                .map(DebtRecovery::getName)
+                .collect(Collectors.joining("<br>")));
+      }
     }
   }
 
-  protected void checkInvoiceTermPayment(InvoiceTerm invoiceTerm) throws AxelorException {
+  protected void checkInvoiceTermPayment(InvoiceTerm invoiceTerm, boolean allowMultiInvoiceTerm)
+      throws AxelorException {
     LOG.debug("Checking invoice term payment");
     List<InvoiceTermPayment> linkedInvoiceTermPayment =
         Beans.get(InvoiceTermPaymentRepository.class)
@@ -101,25 +115,44 @@ public class InvoiceTermListener {
             .fetch();
 
     if (!linkedInvoiceTermPayment.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT),
-          invoiceTerm.getName(),
-          linkedInvoiceTermPayment.stream()
-              .map(
-                  itp -> {
-                    if (itp.getInvoicePayment() != null
-                        && itp.getInvoicePayment().getInvoice() != null) {
-                      return itp.getInvoicePayment().getInvoice().getInvoiceId();
-                    }
-                    return null;
-                  })
-              .filter(Objects::nonNull)
-              .collect(Collectors.joining("<br>")));
+
+      if (allowMultiInvoiceTerm) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT),
+            invoiceTerm.getName(),
+            linkedInvoiceTermPayment.stream()
+                .map(
+                    itp -> {
+                      if (itp.getInvoicePayment() != null
+                          && itp.getInvoicePayment().getInvoice() != null) {
+                        return itp.getInvoicePayment().getInvoice().getInvoiceId();
+                      }
+                      return null;
+                    })
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("<br>")));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MONO_INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT),
+            linkedInvoiceTermPayment.stream()
+                .map(
+                    itp -> {
+                      if (itp.getInvoicePayment() != null
+                          && itp.getInvoicePayment().getInvoice() != null) {
+                        return itp.getInvoicePayment().getInvoice().getInvoiceId();
+                      }
+                      return null;
+                    })
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("<br>")));
+      }
     }
   }
 
-  protected void checkPayVoucherDueElement(InvoiceTerm invoiceTerm) throws AxelorException {
+  protected void checkPayVoucherDueElement(InvoiceTerm invoiceTerm, boolean allowMultiInvoiceTerm)
+      throws AxelorException {
     LOG.debug("Checking linked payVoucherDueElement");
     List<PayVoucherDueElement> linkedPayVoucherDueElement =
         Beans.get(PayVoucherDueElementRepository.class)
@@ -130,18 +163,29 @@ public class InvoiceTermListener {
             .fetch();
 
     if (!linkedPayVoucherDueElement.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER),
-          invoiceTerm.getName(),
-          linkedPayVoucherDueElement.stream()
-              .map(pvde -> pvde.getPaymentVoucher().getRef())
-              .distinct()
-              .collect(Collectors.joining("<br>")));
+      if (allowMultiInvoiceTerm) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER),
+            invoiceTerm.getName(),
+            linkedPayVoucherDueElement.stream()
+                .map(pvde -> pvde.getPaymentVoucher().getRef())
+                .distinct()
+                .collect(Collectors.joining("<br>")));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MONO_INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER),
+            linkedPayVoucherDueElement.stream()
+                .map(pvde -> pvde.getPaymentVoucher().getRef())
+                .distinct()
+                .collect(Collectors.joining("<br>")));
+      }
     }
   }
 
-  protected void checkPayVoucherElementToPay(InvoiceTerm invoiceTerm) throws AxelorException {
+  protected void checkPayVoucherElementToPay(InvoiceTerm invoiceTerm, boolean allowMultiInvoiceTerm)
+      throws AxelorException {
     LOG.debug("Checking linked payVoucherElementToPay");
     List<PayVoucherElementToPay> linkedPayVoucherElementToPay =
         Beans.get(PayVoucherElementToPayRepository.class)
@@ -152,14 +196,25 @@ public class InvoiceTermListener {
             .fetch();
 
     if (!linkedPayVoucherElementToPay.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER),
-          invoiceTerm.getName(),
-          linkedPayVoucherElementToPay.stream()
-              .map(pvetp -> pvetp.getPaymentVoucher().getRef())
-              .distinct()
-              .collect(Collectors.joining("<br>")));
+
+      if (allowMultiInvoiceTerm) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER),
+            invoiceTerm.getName(),
+            linkedPayVoucherElementToPay.stream()
+                .map(pvetp -> pvetp.getPaymentVoucher().getRef())
+                .distinct()
+                .collect(Collectors.joining("<br>")));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MONO_INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER),
+            linkedPayVoucherElementToPay.stream()
+                .map(pvetp -> pvetp.getPaymentVoucher().getRef())
+                .distinct()
+                .collect(Collectors.joining("<br>")));
+      }
     }
   }
 }
