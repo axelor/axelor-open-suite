@@ -1,3 +1,25 @@
+## [6.3.29] (2023-10-06)
+
+#### Fixed
+
+* Move template: fixed description not being filled on moves generated from a percentage based template.
+* Sale order line: fixed error when emptying product if the 'check stock' feature was enabled for sale orders.
+* Sale order line: fixed an issue where updating quantity on a line did not updated the quantity of complementary products.
+* Stock move: filled correct default stock locations on creating a new stock move.
+* Stock move: fixed wrong french translation on stock move creation and cancelation.
+* User: encrypt password when importing user data-init.
+* Print template: iText dependency has been replaced by Boxable and PDFBox.
+* Cost calculation: fixed the import of cost price calculation.
+* HR: fixed an issue preventing people from creating a required new training.
+* Task: improved performance of the batch used to update project tasks.
+* Sale order: fixed an error occurring when generating analytic move line of complementary product.
+* Invoicing dashboard: fixed error on turnover per month charts.
+* Account move: fixed default currency not automatically filled on a new accounting move.
+* Move line: fixed wrong condition on partner based on partner balance usage account config.
+* Debt recovery: fixed missing letter template error message.
+* Project: fixed tracebacks not showing on project totals batch anomalies.
+* Bank reconciliation: fixed balance not considering move status.
+
 ## [6.3.28] (2023-09-21)
 
 #### Fixed
@@ -856,6 +878,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.29]: https://github.com/axelor/axelor-open-suite/compare/v6.3.28...v6.3.29
 [6.3.28]: https://github.com/axelor/axelor-open-suite/compare/v6.3.27...v6.3.28
 [6.3.27]: https://github.com/axelor/axelor-open-suite/compare/v6.3.26...v6.3.27
 [6.3.26]: https://github.com/axelor/axelor-open-suite/compare/v6.3.25...v6.3.26
