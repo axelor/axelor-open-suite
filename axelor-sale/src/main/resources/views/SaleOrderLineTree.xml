@@ -114,8 +114,9 @@
     <panel name="mainPanel" title="Product composition" colSpan="12">
       <button name="computePrices" onClick="action-sale-order-line-tree-group-onchange-price"
         title="Compute prices"/>
-      <button name="addSubElement" onClick="action-sale-order-line-tree-view-add-sub-element"
-        title="Add sub element"/>
+      <button name="addSubElement"
+        onClick="save, action-sale-order-line-tree-view-add-sub-element"
+        title="Save and add sub element"/>
       <panel-dashlet action="action-sale-order-line-tree-view-dashlet-display-tree"
         colSpan="12"/>
     </panel>

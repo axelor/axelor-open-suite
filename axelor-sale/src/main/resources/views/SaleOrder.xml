@@ -496,10 +496,6 @@
           title="Details Lines" orderBy="sequence" onChange="action-sale-order-line-change-group"
           onClick="action-orderSaleLine-tree" canMove="true"
           if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
-
-          title="Details Lines" orderBy="sequence"
-          onChange="action-sale-order-method-on-line-change" onClick="action-orderSaleLine-tree"
-          canMove="true" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
