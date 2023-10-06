@@ -507,7 +507,7 @@
           domain=":company MEMBER OF self.companySet" form-view="partner-form"
           grid-view="partner-grid"/>
         <field name="incoterm" canEdit="false" form-view="incoterm-form"
-          grid-view="incoterm-grid"/>
+          grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
         <field name="isNeedingConformityCertificate" colSpan="3"/>
         <field name="isIspmRequired" readonly="true" colSpan="3"/>
         <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
@@ -1972,7 +1972,7 @@
     <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="forwarderPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <field name="incoterm" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="incoterm" hidden="true" if="!__config__.app.isApp('supplychain') || !__config__.app.getApp('stock')?.isIncotermEnabled"/>
     <field name="isNeedingConformityCertificate" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('supplychain')"/>

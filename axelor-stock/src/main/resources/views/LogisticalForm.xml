@@ -87,8 +87,9 @@
           form-view="partner-form" grid-view="partner-grid" canEdit="false"
           readonlyIf="statusSelect > 1" colSpan="4"/>
         <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid"
-          canEdit="false" readonlyIf="statusSelect > 1" colSpan="4"/>
+          canEdit="false" readonlyIf="statusSelect > 1" colSpan="4" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
         <field name="tracking" readonlyIf="statusSelect == 3" colSpan="4"/>
+        <spacer colSpan="4" if="!__config__.app.getApp('stock')?.isIncotermEnabled"/>
         <field name="totalGrossMass" colSpan="4"/>
         <field name="totalNetMass" colSpan="4"/>
         <field name="totalVolume" colSpan="4"/>

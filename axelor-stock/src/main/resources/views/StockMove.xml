@@ -590,7 +590,7 @@
 
         <panel itemSpan="3">
           <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid"
-            canEdit="false"/>
+            canEdit="false" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
           <field name="trackingNumber"/>
           <field name="modeOfTransport"/>
           <field name="deliveryCondition" height="3"
