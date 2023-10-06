@@ -46,8 +46,7 @@ public class PurchaseConfigService {
   public BirtTemplate getPurchaseOrderBirtTemplate(Company company) throws AxelorException {
     BirtTemplate purchaseOrderBirtTemplate =
         getPurchaseConfig(company).getPurchaseOrderBirtTemplate();
-    if (purchaseOrderBirtTemplate == null
-        || purchaseOrderBirtTemplate.getTemplateMetaFile() == null) {
+    if (purchaseOrderBirtTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

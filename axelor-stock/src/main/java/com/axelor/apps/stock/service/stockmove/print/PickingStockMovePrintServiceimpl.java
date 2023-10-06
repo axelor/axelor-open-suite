@@ -95,8 +95,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
     stockMoveService.checkPrintingSettings(stockMove);
     BirtTemplate pickingStockMoveBirtTemplate =
         stockConfigService.getStockConfig(stockMove.getCompany()).getPickingStockMoveBirtTemplate();
-    if (ObjectUtils.isEmpty(pickingStockMoveBirtTemplate)
-        || ObjectUtils.isEmpty(pickingStockMoveBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(pickingStockMoveBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
