@@ -285,7 +285,7 @@
         <field name="$factorCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
       </panel>
     </panel>
-    <panel name="propertiesPanel" title="Properties" canCollapse="true" collapseIf="true"
+    <panel name="propertiesPanel" title="Properties" canCollapse="true" collapseIf="id"
       hidden="true" showIf="!$readonly()" itemSpan="4">
       <panel name="leftPanel" itemSpan="12">
         <field name="isEmployee" widget="InlineCheckbox"
