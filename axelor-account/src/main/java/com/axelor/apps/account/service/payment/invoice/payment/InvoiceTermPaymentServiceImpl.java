@@ -252,6 +252,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             .map(InvoicePayment::getMove)
             .map(Move::getPaymentVoucher)
             .isEmpty()
+        && (!invoiceTerm.getIsSelectedOnPaymentSession()
+            || invoiceTerm.getApplyFinancialDiscountOnPaymentSession())
         && !invoiceTermService.isPartiallyPaid(invoiceTerm)) {
       invoicePayment.setApplyFinancialDiscount(
           invoiceTerm.getFinancialDiscountDeadlineDate() != null

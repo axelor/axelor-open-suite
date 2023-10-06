@@ -242,8 +242,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" readonly="true"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="origin" hidden="true"/>
@@ -338,9 +337,11 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
-          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
-        <field name="financialDiscountAmount"
+        <field name="applyFinancialDiscountOnPaymentSession"
+          readonlyIf="!_openFromPaymentSession"
+          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
+          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="financialDiscountAmount" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
@@ -404,8 +405,7 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" hideIf="isPaid || amountRemaining != amount"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscount" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
@@ -574,8 +574,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" hideIf="isPaid || amountRemaining != amount"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="origin" hidden="true"/>
@@ -744,8 +743,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" readonly="true"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="origin" hidden="true"/>
@@ -1017,11 +1015,11 @@
   <action-record name="action-invoice-term-record-set-amount-paid"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="amountPaid" expr="eval: 0"
-      if="!applyFinancialDiscount &amp;&amp; !isSelectedOnPaymentSession"/>
+      if="!applyFinancialDiscountOnPaymentSession &amp;&amp; !isSelectedOnPaymentSession"/>
     <field name="amountPaid" expr="eval: paymentAmount"
-      if="!applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
+      if="!applyFinancialDiscountOnPaymentSession &amp;&amp; isSelectedOnPaymentSession"/>
     <field name="amountPaid" expr="eval: paymentAmount - financialDiscountAmount"
-      if="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
+      if="applyFinancialDiscountOnPaymentSession &amp;&amp; isSelectedOnPaymentSession"/>
   </action-record>
 
   <action-method name="action-invoice-term-method-validate-pfp">
@@ -1135,6 +1133,7 @@
     <view type="form" name="invoice-term-form"/>
     <domain>self.paymentSession.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
+    <context name="_openFromPaymentSession" expr="eval: true"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-group-by-partner-dashlet"
