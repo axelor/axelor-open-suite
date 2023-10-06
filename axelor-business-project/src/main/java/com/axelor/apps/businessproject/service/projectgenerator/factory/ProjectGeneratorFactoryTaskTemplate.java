@@ -108,6 +108,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       Product product = orderLine.getProduct();
       String rootName =
           saleOrder.getSaleOrderSeq() + " - " + orderLine.getSequence() + " - " + product.getName();
+      orderLine.setProject(project);
       ProjectTask root =
           projectTaskRepository
               .all()
@@ -190,12 +191,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
     Company company =
         orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
-    childTask.setUnitPrice(
-        product != null
-            ? (BigDecimal) productCompanyService.get(product, "salePrice", company)
-            : null);
-    childTask.setTimeUnit(
-        product != null ? (Unit) productCompanyService.get(product, "unit", company) : null);
+    childTask.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
+    childTask.setTimeUnit((Unit) productCompanyService.get(product, "unit", company));
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);
       childTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);

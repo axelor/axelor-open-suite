@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -59,7 +60,6 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderService bankOrderService;
-  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
@@ -77,7 +77,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
-      DateService dateService) {
+      DateService dateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
     super(
         paymentModeService,
         moveCreateService,
@@ -90,10 +91,11 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         appAccountService,
         accountManagementAccountService,
         invoicePaymentToolService,
-        dateService);
+        dateService,
+        moveLineInvoiceTermService,
+        invoiceTermService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
-    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -156,6 +158,9 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
       throws AxelorException {
 
+    // Payment date has been initialized at creation. But BankOrder may be validate on a later date
+    // So updating paymentDate
+    invoicePayment.setPaymentDate(invoicePayment.getBankOrder().getBankOrderDate());
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     Company company = invoicePayment.getInvoice().getCompany();

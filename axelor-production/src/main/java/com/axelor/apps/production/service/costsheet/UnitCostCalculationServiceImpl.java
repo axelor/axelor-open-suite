@@ -157,7 +157,6 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     String[] headers = {
       I18n.get("Product_code"),
       I18n.get("Product_name"),
-      I18n.get("Product_currency"),
       I18n.get("Computed_cost"),
       I18n.get("Cost_to_apply")
     };

@@ -191,6 +191,10 @@ public class MovePfpServiceImpl implements MovePfpService {
 
   protected boolean _getJournalTypePurchaseCondition(Move move) throws AxelorException {
     Company company = move.getCompany();
+    if (move.getJournal() == null) {
+      return false;
+    }
+
     boolean isSupplierPurchase =
         move.getJournal().getJournalType().getTechnicalTypeSelect()
             == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE;
