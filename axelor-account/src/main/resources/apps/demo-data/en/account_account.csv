@@ -925,7 +925,7 @@
 924;763100;763000;"Revenue from trade debtors";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 925;763800;763000;"Revenue from miscellaneous claims";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 926;764000;76;"Income from securities investment";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
-927;765000;76;"Discounts obtained";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+927;765000;76;"Discounts obtained";"income";;1;;;"true";;1;"NDAS";;1;"true";"false";"false";0
 928;766000;76;"Foreign exchange gains";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 929;767000;76;"Net gains on sale of marketable securities";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 930;768000;76;"Other financial";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
@@ -938,7 +938,7 @@
 937;771700;771000;"Tax relief other than taxes on profits";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 938;771800;771000;"Other extraordinary income on management operations";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 939;772000;77;"Products in previous years (during the year only)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
-940;775000;77;"Proceeds from sale of assets";"income";;1;;;"true";;1;"NDAS";;1;"true";"false";"false";0
+940;775000;77;"Proceeds from sale of assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 941;775100;775000;"Intangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 942;775200;775000;"Tangible assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 943;775600;775000;"Financial assets";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0

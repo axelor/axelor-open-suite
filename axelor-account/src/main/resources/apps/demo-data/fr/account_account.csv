@@ -925,7 +925,7 @@
 924;763100;763000;"Revenus des créances commerciales ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 925;763800;763000;"Revenus des créances diverses";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 926;764000;760;"Revenus des valeurs mobilières de placement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
-927;765000;760;"Escomptes obtenus";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+927;765000;760;"Escomptes obtenus";"income";;1;;;"true";;1;"NDAS";;1;"true";"false";"false";0
 928;766000;760;"Gains de change";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 929;767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 930;768000;760;"Autres produits financiers";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
@@ -938,7 +938,7 @@
 937;771700;771000;"Dégrèvements d'impôts autres qu'impôts sur les bénéfices";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 938;771800;771000;"Autres produits exceptionnels sur opérations de gestion";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 939;772000;770;"Produits sur exercices antérieurs (en cours d'exercice seulement)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
-940;775000;770;"Produits des cessions d'éléments d'actif";"income";;1;;;"true";;1;"NDAS";;1;"true";"false";"false";0
+940;775000;770;"Produits des cessions d'éléments d'actif";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 941;775100;775000;"Immobilisations incorporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 942;775200;775000;"Immobilisations corporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
 943;775600;775000;"Immobilisations financières";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
