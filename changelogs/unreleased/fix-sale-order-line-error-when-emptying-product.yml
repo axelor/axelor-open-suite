@@ -1,3 +1,0 @@
----
-title: "Sale order line: fixed error when emptying product if the 'check stock' feature was enabled for sale orders."
-type: fix

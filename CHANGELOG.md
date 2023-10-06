@@ -1,3 +1,31 @@
+## [6.4.24] (2023-10-06)
+
+#### Fixed
+
+* Move template: fixed description not being filled on moves generated from a percentage based template.
+* Invoice term: on removal, improved error message if invoice term is still linked to an object.
+* Sale order line: fixed error when emptying product if the 'check stock' feature was enabled for sale orders.
+* Sale order line: fixed an issue where updating quantity on a line did not updated the quantity of complementary products.
+* Stock move: filled correct default stock locations on creating a new stock move.
+* Stock move: fixed wrong french translation on stock move creation and cancelation.
+* User: encrypt password when importing user data-init.
+* Print template: iText dependency has been replaced by Boxable and PDFBox.
+* Cost calculation: fixed the import of cost price calculation.
+* HR: fixed an issue preventing people from creating a required new training.
+* Task: improved performance of the batch used to update project tasks.
+* Sale order: fixed an error occurring when generating analytic move line of complementary product.
+* Invoicing dashboard: fixed error on turnover per month charts.
+* Account move: fixed default currency not automatically filled on a new accounting move.
+* Debt recovery: fixed missing letter template error message.
+* Project: fixed tracebacks not showing on project totals batch anomalies.
+* Reconcile: fixed multiple move lines reconciliation.
+* Move: fixed move lines consolidation.
+* Irrecoverable: fixed tax computing.
+* Move: fixed multi invoice term due dates being wrongly updated when accounting.
+* Debt recovery batch: reduced the execution time.
+* Bank reconciliation: fixed balance not considering move status.
+* Payment session: fixed session total amount computation.
+
 ## [6.4.23] (2023-09-21)
 
 #### Fixed
@@ -1006,6 +1034,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.24]: https://github.com/axelor/axelor-open-suite/compare/v6.4.23...v6.4.24
 [6.4.23]: https://github.com/axelor/axelor-open-suite/compare/v6.4.22...v6.4.23
 [6.4.22]: https://github.com/axelor/axelor-open-suite/compare/v6.4.21...v6.4.22
 [6.4.21]: https://github.com/axelor/axelor-open-suite/compare/v6.4.20...v6.4.21
