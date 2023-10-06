@@ -383,7 +383,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
 
     computeLevelTotals(budgetLevel.getParentBudgetLevel());
 
-    budgetLevelRepository.save(budgetLevel);
+    //budgetLevelRepository.save(budgetLevel);
   }
 
   @Override

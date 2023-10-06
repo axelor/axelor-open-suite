@@ -79,6 +79,7 @@
       <panel name="generalPanel" colSpan="12" itemSpan="4">
         <field name="code" readonlyIf="statusSelect != 'draft'"/>
         <field name="name" readonlyIf="statusSelect != 'draft'"/>
+        <field name="statusSelect"/>
         <field name="globalBudget" hideIf="!globalBudget" readonly="true"
           form-view="global-budget-form"/>
         <field name="parentBudgetLevel" readonly="true" hideIf="!parentBudgetLevel"
@@ -115,6 +116,9 @@
         canEdit="statusSelect == 'draft'" canNew="statusSelect == 'draft'"
         canRemove="statusSelect == 'draft'"
         hideIf="budgetList != null &amp;&amp; budgetList.length &gt;= 1"/>
+      <spacer colSpan="12"/>
+      <label name="orLabel" title="Or" colSpan="12" hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1)"/>
+      <spacer colSpan="12"/>
       <field name="budgetList" title="Lines" colSpan="12" form-view="budget-included-form"
         grid-view="budget-lines-grid"
         hideIf="budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1"

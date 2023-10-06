@@ -117,8 +117,6 @@
       <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
         onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
         domain="self.parentBudgetLevel != null" form-view="budget-section-budget-level-form"/>
-      <field name="globalBudget" title="Global budget" colSpan="3"
-        grid-view="global-budget-grid" form-view="global-budget-form"/>
       <field name="typeSelect" colSpan="3"/>
       <field name="sourceSelect" colSpan="3"/>
       <field name="budgetKey" colSpan="6" readonly="true"/>
