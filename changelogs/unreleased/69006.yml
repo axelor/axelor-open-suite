@@ -1,3 +1,0 @@
----
-title: "Invoice term: On removal, improved error message if invoice term is still linked to a object"
-type: fix
