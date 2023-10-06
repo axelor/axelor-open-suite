@@ -933,7 +933,8 @@ public class IrrecoverableService {
           if (invoiceMoveLine.getVatSystemSelect() == null
               || invoiceMoveLine.getVatSystemSelect() == 0) {
             throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, "No VAT system");
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_INVOICE_TAX);
           }
           debitMoveLine =
               moveLineCreateService.createMoveLine(
