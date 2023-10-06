@@ -262,8 +262,8 @@
           </field>
           <field name="partnerSeq" showTitle="false" colSpan="2" css="label-bold bold large"/>
           <button if="__config__.app.isApp('account')" name="$positiveBalanceBtn"
-            title="Balance" colSpan="3" icon="fa-balance-scale"
-            onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
+            title="Balance" colSpan="3" icon="balance" onClick="action-partner-view-show-move-lines"
+            widget="info-button" showIf="id"/>
           <field name="$balance" hidden="true"/>
           <static name="duplicatePartnerText" hidden="true" colSpan="12">
               <![CDATA[<><Badge bg="warning">There is already a partner with this name.</Badge></>]]>

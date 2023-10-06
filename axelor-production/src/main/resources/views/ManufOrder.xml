@@ -7,7 +7,7 @@
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="action-method-print-birt-list"/>
-      <button name="mergeBtn" title="Merge" icon="fa-object-ungroup"
+      <button name="mergeBtn" title="Merge" icon="back"
         onClick="action-manuf-order-group-merge"/>
     </toolbar>
     <hilite color="danger" if="prioritySelect == 4"/>

@@ -88,7 +88,7 @@
       <button onClick="action-sale-order-line-tree-group-add-sub-element" name="add"
         title="+"/>
       <button onClick="action-group-sale-order-line-tree-method-remove-sub-element"
-        name="remove" icon="fa-solid fa-trash"/>
+        name="remove" icon="fa-trash-o"/>
     </node>
     <node model="com.axelor.apps.sale.db.SaleOrderLineTree" parent="parentSaleOrderLineTree"
       onClick="action-sale-order-line-tree-view-show-sub-element-in-popup-form-view"
@@ -105,7 +105,7 @@
       <button onClick="action-sale-order-line-tree-group-add-sub-element" name="add"
         title="+"/>
       <button onClick="action-group-sale-order-line-tree-method-remove-sub-element"
-        name="remove" icon="fa-solid fa-trash"/>
+        name="remove" icon="fa-trash-o"/>
     </node>
   </tree>
 
