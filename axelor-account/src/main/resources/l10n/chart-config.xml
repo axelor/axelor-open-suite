@@ -84,22 +84,6 @@
     <bind search="self.code = :chequeDepositJournal_code and self.company.id = :_companyId"
       to="chequeDepositJournal" update="true" if="chequeDepositJournal_code"/>
     <bind
-      search="self.code = :allowedFinDiscountTaxVatSystem1Account_code and self.company.id = :_companyId"
-      to="allowedFinDiscountTaxVatSystem1Account" update="true"
-      if="allowedFinDiscountTaxVatSystem1Account_code"/>
-    <bind
-      search="self.code = :allowedFinDiscountTaxVatSystem2Account_code and self.company.id = :_companyId"
-      to="allowedFinDiscountTaxVatSystem2Account" update="true"
-      if="allowedFinDiscountTaxVatSystem2Account_code"/>
-    <bind
-      search="self.code = :obtainedFinDiscountTaxVatSystem1Account_code and self.company.id = :_companyId"
-      to="obtainedFinDiscountTaxVatSystem1Account" update="true"
-      if="obtainedFinDiscountTaxVatSystem1Account_code"/>
-    <bind
-      search="self.code = :obtainedFinDiscountTaxVatSystem2Account_code and self.company.id = :_companyId"
-      to="obtainedFinDiscountTaxVatSystem2Account" update="true"
-      if="obtainedFinDiscountTaxVatSystem2Account_code"/>
-    <bind
       search="self.code = :purchFixedAssetsTaxVatSystem1Account_code and self.company.id = :_companyId"
       to="purchFixedAssetsTaxVatSystem1Account" update="true"
       if="purchFixedAssetsTaxVatSystem1Account_code"/>

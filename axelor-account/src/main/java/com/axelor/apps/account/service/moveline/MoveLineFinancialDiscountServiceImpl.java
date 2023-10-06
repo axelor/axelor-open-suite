@@ -345,8 +345,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
         move.getJournal(),
         vatSystem,
         move.getFunctionalOriginSelect(),
-        false,
-        true);
+        false);
   }
 
   protected AccountManagement getAccountManagement(Company company, Tax tax) {
