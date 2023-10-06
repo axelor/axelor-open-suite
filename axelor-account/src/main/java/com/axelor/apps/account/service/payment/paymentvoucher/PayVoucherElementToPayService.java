@@ -32,6 +32,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -121,7 +122,8 @@ public class PayVoucherElementToPayService {
       throws AxelorException {
     if (!payVoucherDueElement.getApplyFinancialDiscount()
         || payVoucherDueElement.getFinancialDiscount() == null
-        || this.isPartialPayment(payVoucherDueElement, payVoucherElementToPay)) {
+        || this.isPartialPayment(
+            payVoucherElementToPay, payVoucherDueElement.getFinancialDiscountTotalAmount())) {
       if (payVoucherDueElement.getApplyFinancialDiscount()) {
         this.resetRemainingAmounts(
             payVoucherElementToPay, payVoucherDueElement.getFinancialDiscountTotalAmount());
@@ -150,11 +152,11 @@ public class PayVoucherElementToPayService {
     return payVoucherElementToPay;
   }
 
-  protected boolean isPartialPayment(
-      PayVoucherDueElement payVoucherDueElement, PayVoucherElementToPay payVoucherElementToPay) {
+  public boolean isPartialPayment(
+      PayVoucherElementToPay payVoucherElementToPay, BigDecimal financialDiscountAmount) {
     return payVoucherElementToPay
             .getAmountToPay()
-            .add(payVoucherDueElement.getFinancialDiscountTotalAmount())
+            .add(financialDiscountAmount)
             .compareTo(payVoucherElementToPay.getInvoiceTerm().getAmount())
         != 0;
   }
@@ -179,23 +181,13 @@ public class PayVoucherElementToPayService {
 
     InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
 
-    BigDecimal percentagePaid =
-        payVoucherElementToPay
-            .getAmountToPay()
-            .divide(
-                invoiceTerm.getRemainingAmountAfterFinDiscount(),
-                AppBaseService.COMPUTATION_SCALING,
-                RoundingMode.HALF_UP);
-
     payVoucherElementToPay.setFinancialDiscountTotalAmount(
         invoiceTerm
             .getFinancialDiscountAmount()
-            .multiply(percentagePaid)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     payVoucherElementToPay.setFinancialDiscountTaxAmount(
         invoiceTermFinancialDiscountService
             .getFinancialDiscountTaxAmount(payVoucherElementToPay.getInvoiceTerm())
-            .multiply(percentagePaid)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     payVoucherElementToPay.setFinancialDiscountAmount(
         payVoucherElementToPay
@@ -205,5 +197,23 @@ public class PayVoucherElementToPayService {
         payVoucherElementToPay
             .getAmountToPay()
             .add(payVoucherElementToPay.getFinancialDiscountTotalAmount()));
+  }
+
+  public void resetFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay) {
+    payVoucherElementToPay.setApplyFinancialDiscount(false);
+    this.resetRemainingAmounts(
+        payVoucherElementToPay, payVoucherElementToPay.getFinancialDiscountTotalAmount());
+  }
+
+  @CallMethod
+  public boolean isFinancialDiscountReadonly(PayVoucherElementToPay payVoucherElementToPay) {
+    InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
+    BigDecimal amount =
+        payVoucherElementToPay.getApplyFinancialDiscount()
+            ? invoiceTerm.getRemainingAmountAfterFinDiscount()
+            : invoiceTerm.getAmount();
+
+    return invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0
+        || payVoucherElementToPay.getAmountToPay().compareTo(amount) != 0;
   }
 }

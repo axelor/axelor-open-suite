@@ -48,9 +48,15 @@ public class PayVoucherElementToPayController {
     try {
       PayVoucherElementToPay payVoucherElementToPay =
           request.getContext().asType(PayVoucherElementToPay.class);
+      PayVoucherElementToPayService payVoucherElementToPayService =
+          Beans.get(PayVoucherElementToPayService.class);
 
-      Beans.get(PayVoucherElementToPayService.class)
-          .updateFinancialDiscount(payVoucherElementToPay);
+      if (payVoucherElementToPayService.isPartialPayment(
+          payVoucherElementToPay, payVoucherElementToPay.getFinancialDiscountTotalAmount())) {
+        payVoucherElementToPayService.resetFinancialDiscount(payVoucherElementToPay);
+      } else {
+        payVoucherElementToPayService.updateFinancialDiscount(payVoucherElementToPay);
+      }
 
       response.setValues(payVoucherElementToPay);
     } catch (Exception e) {
