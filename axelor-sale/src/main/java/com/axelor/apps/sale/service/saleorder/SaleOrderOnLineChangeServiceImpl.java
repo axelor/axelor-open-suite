@@ -11,6 +11,7 @@ import com.axelor.db.JpaSequence;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,8 +85,11 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
             newSoLine = new SaleOrderLine();
             newSoLine.setProduct(compProductSelected.getProduct());
             newSoLine.setSaleOrder(saleOrder);
-            newSoLine.setQty(compProductSelected.getQty());
-
+            newSoLine.setQty(
+                originSoLine
+                    .getQty()
+                    .multiply(compProductSelected.getQty())
+                    .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
             saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
             saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
 
@@ -95,7 +99,11 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
             saleOrderLineList.add(targetIndex, newSoLine);
           }
         } else {
-          newSoLine.setQty(compProductSelected.getQty());
+          newSoLine.setQty(
+              originSoLine
+                  .getQty()
+                  .multiply(compProductSelected.getQty())
+                  .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
 
           saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
           saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);

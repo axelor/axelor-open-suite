@@ -1543,7 +1543,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
-        && moveLine.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
+        && moveLine.getAmountRemaining().abs().compareTo(thresholdDistanceFromRegulation) <= 0) {
       BigDecimal reconcileAmount = this.getReconcileAmount(moveLine);
       List<InvoiceTerm> unpaidInvoiceTermList =
           moveLine.getInvoiceTermList().stream()
@@ -1583,7 +1583,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountToPay,
       BigDecimal currencyRate) {
     BigDecimal moveLineAmountRemaining =
-        companyAmountRemaining.subtract(amountToPayInCompanyCurrency);
+        companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
     BigDecimal invoiceTermAmountRemaining =
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmountRemaining)

@@ -230,11 +230,6 @@
     <field name="unit" expr="eval: _product?.unit"/>
   </action-record>
 
-  <action-record name="action-bill-of-material-line-default-record"
-    model="com.axelor.apps.production.db.BillOfMaterial">
-    <field name="qty" expr="1"/>
-  </action-record>
-
   <action-record name="action-bill-of-material-record-product"
     model="com.axelor.apps.production.db.BillOfMaterial">
     <field name="defineSubBillOfMaterial" expr="product?.productSubTypeSelect != 3"/>

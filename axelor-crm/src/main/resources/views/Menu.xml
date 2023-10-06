@@ -598,7 +598,8 @@
     <view type="form" name="agency-form"/>
   </action-view>
 
-  <menuitem name="crm-search" parent="crm-root" title="Search" order="60" icon="fa-search"/>
+  <menuitem name="crm-search" parent="crm-root" title="Search" order="700" icon="fa-search"
+    if="__config__.app.getApp('crm')?.isSearchFunctionalityEnabled"/>
 
   <menuitem name="crm-search-request" parent="crm-search" title="Request"
     action="crm.root.crm.search.request" order="1"/>
