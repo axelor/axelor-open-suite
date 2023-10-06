@@ -6,7 +6,7 @@
   <calendar name="operation-order-planned-calendar"
     model="com.axelor.apps.production.db.OperationOrder" eventStart="plannedStartDateT"
     eventStop="plannedEndDateT" title="Planned operations" colorBy="machine" mode="week"
-    onChange="action-operation-order-method-set-planned-dates">
+    onChange="action-operation-order-group-set-planned-dates">
     <field name="name"/>
   </calendar>
 
@@ -286,10 +286,21 @@
       method="computeDuration"/>
   </action-method>
 
+  <action-method
+    name="action-operation-order-method-alert-if-planned-end-date-overflow">
+    <call class="com.axelor.apps.production.web.OperationOrderController"
+      method="alertPlannedEndDateOverflow"/>
+  </action-method>
+
   <action-method name="action-operation-order-method-set-planned-dates">
     <call class="com.axelor.apps.production.web.OperationOrderController"
       method="setPlannedDates"/>
   </action-method>
+
+  <action-group name="action-operation-order-group-set-planned-dates">
+    <action name="action-operation-order-method-alert-if-planned-end-date-overflow"/>
+    <action name="action-operation-order-method-set-planned-dates"/>
+  </action-group>
 
   <action-method name="action-operation-order-method-set-real-dates">
     <call class="com.axelor.apps.production.web.OperationOrderController" method="setRealDates"/>

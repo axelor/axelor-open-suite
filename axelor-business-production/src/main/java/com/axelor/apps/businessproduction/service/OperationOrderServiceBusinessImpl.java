@@ -53,12 +53,14 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       BarcodeGeneratorService barcodeGeneratorService,
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
-      ProdProcessLineService prodProcessLineService) {
+      ProdProcessLineService prodProcessLineService,
+      OperationOrderRepository operationOrderRepository) {
     super(
         barcodeGeneratorService,
         appProductionService,
         manufOrderStockMoveService,
-        prodProcessLineService);
+        prodProcessLineService,
+        operationOrderRepository);
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

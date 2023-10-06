@@ -32,6 +32,7 @@ import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
@@ -56,7 +57,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       AppBaseService appBaseService,
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
-      ProductionConfigService productionConfigService) {
+      ProductionConfigService productionConfigService,
+      OperationOrderPlanningService operationOrderPlanningService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
@@ -68,7 +70,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         appBaseService,
         operationOrderService,
         appProductionService,
-        productionConfigService);
+        productionConfigService,
+        operationOrderPlanningService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -102,9 +105,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     }
 
-    for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-      operationOrderWorkflowService.plan(operationOrder);
-    }
+    operationOrderPlanningService.plan(manufOrder.getOperationOrderList());
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
 
