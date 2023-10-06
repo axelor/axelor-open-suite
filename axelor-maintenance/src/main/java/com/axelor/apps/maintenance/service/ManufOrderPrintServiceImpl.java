@@ -115,8 +115,7 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
               .getProductionConfig(company)
               .getMaintenanceManufOrderBirtTemplate();
     }
-    if (maintenanceManufOrderBirtTemplate == null
-        || maintenanceManufOrderBirtTemplate.getTemplateMetaFile() == null) {
+    if (maintenanceManufOrderBirtTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
