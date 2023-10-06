@@ -927,24 +927,17 @@ public class IrrecoverableService {
             invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
         if (AccountTypeRepository.TYPE_TAX.equals(
             invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-          if (invoiceMoveLine.getAccount().getVatSystemSelect() == null
-              || invoiceMoveLine.getAccount().getVatSystemSelect() == 0) {
+          if (invoiceMoveLine.getVatSystemSelect() == null
+              || invoiceMoveLine.getVatSystemSelect() == 0) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
-                invoiceMoveLine.getAccount().getCode());
+                AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_INVOICE_TAX);
           }
           debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   payerPartner,
-                  taxAccountService.getAccount(
-                      invoiceMoveLine.getTaxLine().getTax(),
-                      company,
-                      move.getJournal(),
-                      invoiceMoveLine.getAccount().getVatSystemSelect(),
-                      false,
-                      move.getFunctionalOriginSelect()),
+                  invoiceMoveLine.getAccount(),
                   amount,
                   true,
                   invoiceMoveLine.getTaxLine(),
