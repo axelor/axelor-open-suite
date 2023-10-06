@@ -43,7 +43,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,12 +51,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BankOrderMergeServiceImpl implements BankOrderMergeService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;

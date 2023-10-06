@@ -22,7 +22,6 @@ public final class PurchaseExceptionMessage {
 
   private PurchaseExceptionMessage() {}
 
-  public static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   public static final String PURCHASE_ORDER_LINE_MIN_QTY = /*$$(*/
       "The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one." /*)*/;
   public static final String PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG = /*$$(*/

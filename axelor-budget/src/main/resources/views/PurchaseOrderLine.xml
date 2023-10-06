@@ -171,11 +171,6 @@
       method="setBudgetDomain"/>
   </action-method>
 
-  <action-method name="action-budget-purchase-order-line-method-account-domain">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="getAccountDomain"/>
-  </action-method>
-
   <action-view name="purchase-order-see-purchase-order-lines"
     title="See purchase order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine"
     id="budget-purchase-order-see-purchase-order-lines">

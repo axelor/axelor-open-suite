@@ -111,10 +111,6 @@
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setBudgetDomain"/>
   </action-method>
 
-  <action-method name="action-budget-sale-order-line-method-account-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="getAccountDomain"/>
-  </action-method>
-
   <action-method name="action-budget-sale-order-line-method-set-account">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccount"/>
   </action-method>

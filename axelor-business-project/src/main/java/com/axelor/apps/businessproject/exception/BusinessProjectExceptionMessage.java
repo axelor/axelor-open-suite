@@ -22,15 +22,12 @@ public final class BusinessProjectExceptionMessage {
 
   private BusinessProjectExceptionMessage() {}
 
-  public static final String FOLDER_TEMPLATE = /*$$(*/ "You must add a sale order template" /*)*/;
   public static final String INVOICING_PROJECT_EMPTY = /*$$(*/
       "You haven't select any element to invoice" /*)*/;
   public static final String INVOICING_PROJECT_PROJECT = /*$$(*/
       "You must select a project/task" /*)*/;
   public static final String INVOICING_PROJECT_PROJECT_PARTNER = /*$$(*/
       "There is no customer for this project/task" /*)*/;
-  public static final String INVOICING_PROJECT_PROJECT_PRODUCT = /*$$(*/
-      "You haven't select a product to invoice for the task %s" /*)*/;
   public static final String INVOICING_PROJECT_PROJECT_COMPANY = /*$$(*/
       "You haven't select a company on the main project" /*)*/;
   public static final String FACTORY_NO_FOUND = /*$$(*/
@@ -65,17 +62,8 @@ public final class BusinessProjectExceptionMessage {
   public static final String BATCH_COMPUTE_PROJECT_TOTALS_2 = /*$$(*/
       "Compute project totals" /*)*/;
 
-  public static final String SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR = /*$$(*/
-      "%s is in %s and should be in Days or Hours as they are defined in Business Project module configuration" /*)*/;
-
   public static final String PROJECT_UPDATE_TOTALS_SUCCESS = /*$$(*/
       "Totals have been updated" /*)*/;
-
-  public static final String PROJECT_TASK_PRODUCT_SALE_ORDER_LINE_UNIT_ERROR = /*$$(*/
-      "The order line unit of the product %s is not compatible with the configuration." /*)*/;
-
-  public static final String PROJECT_TASK_PRODUCT_STOCK_UNIT_ERROR = /*$$(*/
-      "The storage unit of the product %s is not compatible with the configuration." /*)*/;
 
   public static final String PROJECT_TASK_SOLD_TIME_ERROR = /*$$(*/
       "Sold time value error for project task %s." /*)*/;

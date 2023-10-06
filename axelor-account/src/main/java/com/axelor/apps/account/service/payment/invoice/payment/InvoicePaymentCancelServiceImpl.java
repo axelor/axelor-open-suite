@@ -28,9 +28,6 @@ import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelService {
 
@@ -39,8 +36,6 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   protected MoveCancelService moveCancelService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentToolService invoicePaymentToolService;
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public InvoicePaymentCancelServiceImpl(

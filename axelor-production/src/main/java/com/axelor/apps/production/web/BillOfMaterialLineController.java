@@ -28,13 +28,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class BillOfMaterialLineController {
-
-  private static final Logger LOG = LoggerFactory.getLogger(BillOfMaterialLineController.class);
 
   public void productOnChange(ActionRequest request, ActionResponse response) {
 

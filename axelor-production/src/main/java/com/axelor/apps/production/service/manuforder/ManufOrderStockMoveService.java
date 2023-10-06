@@ -47,7 +47,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -56,8 +55,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ManufOrderStockMoveService {
 
@@ -65,7 +62,6 @@ public class ManufOrderStockMoveService {
   public static final int PART_FINISH_OUT = 2;
   public static final int STOCK_LOCATION_IN = 1;
   public static final int STOCK_LOCATION_OUT = 2;
-  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
   protected AppBaseService appBaseService;

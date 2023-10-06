@@ -41,8 +41,6 @@ import java.util.List;
 
 public class BatchUpdateStockHistory extends BatchStrategy {
 
-  private static final Integer ITERATIONS = 100;
-
   protected StockHistoryService stockHistoryService;
   protected ProductCategoryRepository productCategoryRepository;
 

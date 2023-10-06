@@ -22,8 +22,6 @@ public final class AccountExceptionMessage {
 
   private AccountExceptionMessage() {}
 
-  public static final String INVOICE_DUPLICATED_WITHIN_SAME_YEAR =
-      /*$$(*/ "An invoice with the same number (%s) already exists for this supplier %s and the year %s." /*)*/;
   public static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   public static final String IMMO_FIXED_ASSET_DEPRECIATIONS_NOT_ACCOUNTED_BEFORE_DISPOSAL_DATE =
@@ -62,19 +60,11 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   public static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
-  public static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
-      /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
   public static final String
       IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE =
           /*$$(*/ "The input past depreciation amount cannot be greater than the gross value of the fixed asset." /*)*/;
-  public static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_NON_CONSISTENT_VALUES =
-      /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
   public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
       /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
-  public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
-  /** Bank statement service */
-  public static final String BANK_STATEMENT_1 = /*$$(*/
-      "%s : Computed balance and Ending Balance must be equal" /*)*/;
 
   public static final String BANK_STATEMENT_2 = /*$$(*/
       "%s : MoveLine amount is not equals with bank statement line %s" /*)*/;
@@ -96,7 +86,6 @@ public final class AccountExceptionMessage {
   public static final String MOVE_ACCOUNTING_OK = /*$$(*/
       "The selected moves have been successfully, if activated set to daybook, or else accounted." /*)*/;
   public static final String MOVE_SIMULATION_OK = /*$$(*/ "Moves simulated successfully" /*)*/;
-  public static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
   public static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
   public static final String MOVE_REMOVED_OK = /*$$(*/ "Move has been removed successfully" /*)*/;
   public static final String MOVE_ARCHIVE_OK = /*$$(*/
@@ -105,8 +94,6 @@ public final class AccountExceptionMessage {
       "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
       "Selected move(s) successfully removed" /*)*/;
-  public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
-      "Error in move deleting or archiving, please check the log" /*)*/;
   public static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move %s can not be archived because it is linked to another piece named %s." /*)*/;
   public static final String MOVE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
@@ -138,9 +125,6 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
 
-  public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/
-      "Account of financial discount is missing for company: %s (tax: %s)" /*)*/;
-
   /** AccountingSituationService * */
   public static final String ACCOUNTING_SITUATION_1 = /*$$(*/
       "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s" /*)*/;
@@ -157,10 +141,6 @@ public final class AccountExceptionMessage {
       "You have to enter a prefix for automatic employee account creation in accounting application parameters of company %s" /*)*/;
   public static final String ACCOUNTING_SITUATION_7 = /*$$(*/
       "You have to select a sequence for automatic employee account creation in accounting application parameters of company %s" /*)*/;
-
-  /** Mail service */
-  public static final String MAIL_1 = /*$$(*/
-      "%s : Please define an email template for cash register (company: %s)" /*)*/;
 
   /** Account clearance service and controller */
   public static final String ACCOUNT_CLEARANCE_1 = /*$$(*/
@@ -229,8 +209,6 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Lines recovered" /*)*/;
   public static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/;
   public static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/;
-  public static final String ACCOUNTING_REPORT_7 = /*$$(*/
-      "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
   public static final String ACCOUNTING_REPORT_8 = /*$$(*/ "Accounting export" /*)*/;
   public static final String ACCOUNTING_REPORT_9 = /*$$(*/
       "Error : Missing accounting report type for %s" /*)*/;
@@ -242,7 +220,6 @@ public final class AccountExceptionMessage {
       "%s : Error : You must configure an analytic report sequence for the company %s" /*)*/;
   public static final String ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND = /*$$(*/
       "Report type not found" /*)*/;
-  public static final String ACCOUNTING_REPORT_ANOMALIES = /*$$(*/ "Anomalies generated" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER = /*$$(*/
       "DAS2 declarant company %s : Company partner is missing" /*)*/;
@@ -307,8 +284,6 @@ public final class AccountExceptionMessage {
       "Partner account missing on the invoice %s" /*)*/;
   public static final String MOVE_LINE_4 = /*$$(*/
       "Account missing on configuration for line : %s (company : %s)" /*)*/;
-  public static final String MOVE_LINE_5 = /*$$(*/
-      "Analytic account %s associated to sales account for the product %s is not configured : (company : %s)" /*)*/;
   public static final String MOVE_LINE_6 = /*$$(*/
       "Account missing on the tax line : %s (company : %s)" /*)*/;
   public static final String ANALYTIC_DISTRIBUTION_MISSING = /*$$(*/
@@ -327,10 +302,6 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
       "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
-
-  /* Invoice payment controller */
-  public static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
-      "You must select at least one invoice term line to pay" /*)*/;
 
   /* Invoice term controller */
   public static final String INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT = /*$$(*/
@@ -391,8 +362,6 @@ public final class AccountExceptionMessage {
       "The currency is missing on the account move %s" /*)*/;
   public static final String MOVE_13 = /*$$(*/
       "The journal %s is in the 'journals to close' of the period %s, please remove it." /*)*/;
-  public static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
-      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
   public static final String MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL = /*$$(*/
       "The partner which was already selected is not compatible with the selected journal. Please reselect a compatible partner or modify the journal settings accordingly." /*)*/;
 
@@ -400,15 +369,9 @@ public final class AccountExceptionMessage {
       "Accounting move can not be daybooked because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
-  public static final String PAYMENT_SCHEDULE_1 = /*$$(*/
-      "%s : You must configure a RIB for payment timetable %s" /*)*/;
-
   public static final String PAYMENT_SCHEDULE_2 = /*$$(*/
       "%s : You must configure a RIB for the partner %s" /*)*/;
-  public static final String PAYMENT_SCHEDULE_3 = /*$$(*/
-      "%s : Error : You must configure a direct debit date for the %s batch configuration" /*)*/;
-  public static final String PAYMENT_SCHEDULE_4 = /*$$(*/
-      "%s : You must configure a direct debit reject sequence\n for the company %s for the journal %s" /*)*/;
+
   public static final String PAYMENT_SCHEDULE_5 = /*$$(*/
       "You must configure a timetable sequence for the company %s" /*)*/;
   public static final String PAYMENT_SCHEDULE_6 = /*$$(*/
@@ -491,28 +454,6 @@ public final class AccountExceptionMessage {
   public static final String BATCH_PAYMENT_SCHEDULE_1 = /*$$(*/
       "Unknowned data type for the treatment %s" /*)*/;
 
-  public static final String BATCH_PAYMENT_SCHEDULE_2 = /*$$(*/
-      "Direct debit's export batch %s" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_3 = /*$$(*/ "Due date's direct debit %s" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_4 = /*$$(*/
-      "Export reporting to invoices direct debits :" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_5 = /*$$(*/
-      "Invoice(s) direct debit(s) treated" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_6 = /*$$(*/
-      "Export reporting to monthly direct debits :" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_7 = /*$$(*/
-      "Monthly direct debit(s) treated" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_8 = /*$$(*/
-      "%s : No timetable nor invoice found for the direct debit number : %s" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_9 = /*$$(*/ "Reject %s" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_10 = /*$$(*/
-      "Timetable's reject move's creation %s" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_11 = /*$$(*/
-      "Invoice's reject move's creation %s" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_12 = /*$$(*/
-      "Reporting to direct debit reject's import :" /*)*/;
-  public static final String BATCH_PAYMENT_SCHEDULE_13 = /*$$(*/ "Direct debit(s) rejected" /*)*/;
-
   /** Batch reimbursement export/import */
   public static final String BATCH_REIMBURSEMENT_1 = /*$$(*/
       "Bug(Anomaly) generated during SEPA export - Batch %s" /*)*/;
@@ -548,8 +489,6 @@ public final class AccountExceptionMessage {
       "%d reimbursement created successfully," /*)*/;
   public static final String BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL = /*$$(*/
       "%d reimbursements created successfully," /*)*/;
-  public static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
-  public static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
 
   public static final String BATCH_CREDIT_TRANSFER_BANK_DETAILS_MISSING = /*$$(*/
       "%s : Please, fill bank details in batch %s" /*)*/;
@@ -636,17 +575,6 @@ public final class AccountExceptionMessage {
   public static final String CFONB_TOOL_EMPTY_ZONE = /*$$(*/ "Zone %s is empty" /*)*/;
   public static final String CFONB_TOOL_DIGITAL_ZONE_NOT_CORRECT = /*$$(*/
       "Zone %s (%s) must be of the numeric type" /*)*/;
-  public static final String CFONB_TOOL_1 = /*$$(*/
-      "%s : Anomaly detected (value isn't numeric : %s) for sender" /*)*/;
-  public static final String CFONB_TOOL_2 = /*$$(*/
-      "%s : Anomaly detected (value isn't numeric : %s) for the receiver" /*)*/;
-  public static final String CFONB_TOOL_3 = /*$$(*/
-      "%s : Anomaly detected (value isn't numeric : %s) for the total" /*)*/;
-  public static final String CFONB_TOOL_4 = /*$$(*/
-      "%s : Anomaly detected (the record doesn't have %s characters : %s) for the record %s, company %s" /*)*/;
-
-  public static final String COMPANY_CURRENCY = /*$$(*/
-      "%s : Please, configure a currency for the company %s" /*)*/;
 
   public static final String ACCOUNT_CONFIG_1 = /*$$(*/
       "%s : You must configure account's information for the company %s" /*)*/;
@@ -654,18 +582,6 @@ public final class AccountExceptionMessage {
       "%s : You must configure a CFONB format reimbursement's export's folder for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_3 = /*$$(*/
       "%s : You must configure a CFONB format direct debit's export's folder for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_4 = /*$$(*/
-      "%s : You must configure a TIP and cheque TIP payment's import path for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_5 = /*$$(*/
-      "%s : You must configure a TIP and cheque TIP temporary import path for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_6 = /*$$(*/
-      "%s : You must configure a TIP and cheque TIP payment rejects path for the import file for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_7 = /*$$(*/
-      "%s : You must configure a TIP and cheque TIP temporary path for the payment reject's file for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_8 = /*$$(*/
-      "%s : You must configure a path for the reject's file for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_9 = /*$$(*/
-      "%s : You must configure a path for the temporary reject's file for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_10 = /*$$(*/
       "%s : You must configure a path for the reimbursements rejects import's file for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_11 = /*$$(*/
@@ -738,14 +654,6 @@ public final class AccountExceptionMessage {
       "%s : You must configure a reported balance journal for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_46 = /*$$(*/
       "%s : You must configure an supplier advance payment account for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_47 = /*$$(*/
-      "%s : You must configure a purchase financial discount tax for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_48 = /*$$(*/
-      "%s : You must configure a sale financial discount tax for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_49 = /*$$(*/
-      "%s : You must configure a purchase financial discount account for the company %s" /*)*/;
-  public static final String ACCOUNT_CONFIG_50 = /*$$(*/
-      "%s : You must configure a sale financial discount account for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_51 = /*$$(*/
       "%s : You must configure a cash difference credit account for the company %s" /*)*/;
 
@@ -793,12 +701,6 @@ public final class AccountExceptionMessage {
       "%s : You must configure a CFONB rejected direct debit code for the company %s" /*)*/;
   public static final String CFONB_CONFIG_13 = /*$$(*/
       "%s : You must configure a CFONB unpaid direct debit code fir the company %s" /*)*/;
-  public static final String CFONB_CONFIG_14 = /*$$(*/
-      "%s : You must configure a CFONB unpaid TIP code for the company %s" /*)*/;
-  public static final String CFONB_CONFIG_15 = /*$$(*/
-      "%s : You must configure a CFONB TIP and cheque TIP code for the company %s" /*)*/;
-  public static final String CFONB_CONFIG_16 = /*$$(*/
-      "%s : You must configure a CFONB TIP code for the company %s" /*)*/;
 
   /** Payer quality service */
   public static final String PAYER_QUALITY_1 = /*$$(*/
@@ -978,8 +880,6 @@ public final class AccountExceptionMessage {
       "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
   public static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
-  public static final String PAYMENT_MODE_4 = /*$$(*/
-      "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
 
   public static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
       "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
@@ -1020,10 +920,6 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_VOUCHER_PFP_NOT_VALIDATED = /*$$(*/
       "Some imported invoice terms are not PFP validated." /*)*/;
 
-  /** Payment schedule line service */
-  public static final String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
-      "Missing direct debit payment mode in the company's account configuration" /*)*/;
-
   /** Account chart controller */
   public static final String ACCOUNT_CHART_1 = /*$$(*/
       "The chart of account has been loaded successfully" /*)*/;
@@ -1032,11 +928,6 @@ public final class AccountExceptionMessage {
       "Error in account chart import please check the log" /*)*/;
   public static final String ACCOUNT_CHART_3 = /*$$(*/
       "A chart or chart structure of accounts already exists, please delete the hierarchy between accounts in order to import a new chart." /*)*/;
-
-  /** Address controller */
-  public static final String ADDRESS_1 = /*$$(*/ "Sales map" /*)*/;
-
-  public static final String ADDRESS_2 = /*$$(*/ "Not implemented for OSM" /*)*/;
 
   /** Invoice controller */
   public static final String INVOICE_1 = /*$$(*/ "Invoice canceled" /*)*/;
@@ -1091,7 +982,6 @@ public final class AccountExceptionMessage {
   /** Move template controller */
   public static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
 
-  public static final String MOVE_TEMPLATE_2 = /*$$(*/ "Error in move generation" /*)*/;
   public static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   public static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
 
@@ -1117,8 +1007,6 @@ public final class AccountExceptionMessage {
       "Missing deposit slip sequence for company %s" /*)*/;
   public static final String DEPOSIT_SLIP_CANNOT_DELETE = /*$$(*/
       "You cannot delete this deposit slip." /*)*/;
-  public static final String DEPOSIT_SLIP_ALREADY_PUBLISHED = /*$$(*/
-      "The deposit slip has already been published." /*)*/;
   public static final String DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO = /*$$(*/
       "The deposit slip contains payment voucher with missing infos (cheque number, cheque bank, cheque owner, deposit date)." /*)*/;
 
@@ -1190,10 +1078,6 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
       "Note: there are existing not imputed supplier refunds."; /*)*/
 
-  public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_1 = /*$$(*/
-      "Disposal date must be after the date of the last depreciation." /*)*/;
-  public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
-      "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
   public static final String FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED = /*$$(*/
       "The disposal of the asset cannot be executed while depreciation has already been accounted." /*)*/;
 
@@ -1269,9 +1153,6 @@ public final class AccountExceptionMessage {
       "The selected date is out of the accounting period." /*)*/;
 
   /* FEC IMPORT */
-  public static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
-      "The import failed: the move %s already exist." /*)*/;
-
   public static final String FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING = /*$$(*/
       "Please fill analytic accounts in all analytic distribution lines." /*)*/;
 
@@ -1394,14 +1275,8 @@ public final class AccountExceptionMessage {
   public static final String SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
       "Specific Analytic Distribution Template" /*)*/;
 
-  public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
-      "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
-
   public static final String EXCEPTION_GENERATE_COUNTERPART = /*$$(*/
       "Please select a payment mode to generate the counterpart" /*)*/;
-
-  public static final String FIXED_ASSET_SEQUENCE_ALREADY_EXISTS = /*$$(*/
-      "A sequence already exists on this code for this company and this sequence have to be unique" /*)*/;
 
   public static final String FIXED_ASSET_PARTIAL_TO_TOTAL_DISPOSAL = /*$$(*/
       "The quantity selected is the same as that of the fixed asset. The disposal will therefore be treated as a total disposal" /*)*/;

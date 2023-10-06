@@ -23,10 +23,4 @@ public interface ITranslation {
   /*Manufacturing Orders*/
   public static String MANUF_ORDER_MACHINE = /*$$(*/ "ManufOrder.machine"; /*)*/
   public static String MANUF_ORDER_MACHINE_TYPE = /*$$(*/ "ManufOrder.machineType"; /*)*/
-
-  /*Bill of Materials*/
-  public static String BOM_MACHINE = /*$$(*/ "BOM.machine"; /*)*/
-
-  /*Production Processes*/
-  public static String PROD_PROCESS_MACHINE = /*$$(*/ "ProdProcess.machine"; /*)*/
 }

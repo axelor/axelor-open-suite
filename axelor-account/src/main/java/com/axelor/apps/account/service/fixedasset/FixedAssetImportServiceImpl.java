@@ -27,17 +27,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.utils.date.DateTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FixedAssetImportServiceImpl implements FixedAssetImportService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected FixedAssetLineComputationService fixedAssetLineComputationService;
   protected FixedAssetLineGenerationService fixedAssetLineGenerationService;

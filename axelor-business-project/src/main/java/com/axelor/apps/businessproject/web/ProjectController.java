@@ -40,17 +40,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ProjectController {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {

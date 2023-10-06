@@ -30,16 +30,11 @@ import com.axelor.message.db.Message;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TimesheetReportController {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void fillTimesheetReportReminderEmployees(ActionRequest request, ActionResponse response) {
     TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);

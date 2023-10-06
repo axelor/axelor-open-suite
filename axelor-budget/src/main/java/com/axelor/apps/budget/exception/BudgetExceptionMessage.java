@@ -27,9 +27,6 @@ public final class BudgetExceptionMessage {
 
   public static final String BUDGET_IS_MISSING = /*$$(*/ "Please select a budget with Id." /*)*/;
 
-  public static final String MISSING_ACCOUNTS_IN_COMPANY = /*$$(*/
-      "Error : Following accounts are not found %s" /*)*/;
-
   public static final String BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE = /*$$(*/
       "The budget distribution amount for budget %s exceeds the amount of the invoice line %s, please correct it" /*)*/;
 
@@ -77,9 +74,6 @@ public final class BudgetExceptionMessage {
 
   public static final String WRONG_DATES_ON_BUDGET_LEVEL = /*$$(*/
       "Please select valid dates for budget level %s, dates needs to be in the parent period" /*)*/;
-
-  public static final String ADVANCED_IMPORT_IMPORT_DATA = /*$$(*/
-      "Data imported successfully" /*)*/;
 
   public static final String NO_BUDGET_VALUES_FOUND_ERROR = /*$$(*/
       "Budget distribution has not been configured. It is required for the rest of the process." /*)*/;

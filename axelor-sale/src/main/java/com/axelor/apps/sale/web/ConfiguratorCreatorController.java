@@ -29,15 +29,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ConfiguratorCreatorController {
-
-  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   /**
    * Called from the configurator creator form on formula changes
    *

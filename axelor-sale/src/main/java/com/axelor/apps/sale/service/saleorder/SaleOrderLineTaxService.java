@@ -41,7 +41,6 @@ public class SaleOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private SaleOrderService saleOrderService;
   @Inject private SaleOrderToolService saleOrderToolService;
 
   /**

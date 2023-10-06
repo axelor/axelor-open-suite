@@ -41,7 +41,6 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -53,8 +52,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -75,8 +72,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected DateService dateService;
 
   protected FixedAssetLineService fixedAssetLineService;
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final int CALCULATION_SCALE = 20;
   protected static final int RETURNED_SCALE = 2;

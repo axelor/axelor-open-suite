@@ -29,15 +29,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import org.eclipse.birt.core.exception.BirtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MessageController extends com.axelor.message.web.MessageController {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * Method that generate message as a pdf

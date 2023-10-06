@@ -91,7 +91,6 @@ public class WorkflowVentilationProjectServiceImpl
         saleOrderRepository,
         purchaseOrderRepository,
         accountingSituationSupplychainService,
-        appSupplychainService,
         stockMoveInvoiceService,
         unitConversionService,
         appBaseService,

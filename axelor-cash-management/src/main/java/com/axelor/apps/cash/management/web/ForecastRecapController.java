@@ -30,13 +30,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.lang.invoke.MethodHandles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ForecastRecapController {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void populate(ActionRequest request, ActionResponse response) {
     try {

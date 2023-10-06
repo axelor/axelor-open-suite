@@ -30,7 +30,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.utils.date.DateTool;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -38,8 +37,6 @@ import java.time.Month;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
@@ -49,7 +46,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractFixedAssetLineComputationServiceImpl
     implements FixedAssetLineComputationService {
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
   protected AppBaseService appBaseService;
 

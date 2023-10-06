@@ -72,7 +72,6 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   protected AppBaseService appBaseService;
   protected AccountingSituationService accountingSituationService;
   private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
 
   @Inject
   public AnalyticMoveLineServiceImpl(

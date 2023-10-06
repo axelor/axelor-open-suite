@@ -329,7 +329,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
     if (partnerAccount != null) {
-      Partner partner = invoice.getPartner();
       FiscalPosition fiscalPosition = null;
       if (saleOrder != null) {
         fiscalPosition = saleOrder.getFiscalPosition();

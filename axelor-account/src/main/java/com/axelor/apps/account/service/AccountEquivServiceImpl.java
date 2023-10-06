@@ -21,14 +21,9 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountEquiv;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.common.StringUtils;
-import java.lang.invoke.MethodHandles;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AccountEquivServiceImpl implements AccountEquivService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Override
   public String getFromAccountDomain(AccountEquiv accountEquiv, FiscalPosition fiscalPosition) {

@@ -38,7 +38,6 @@ import com.google.inject.servlet.RequestScoped;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -46,13 +45,9 @@ import java.util.Optional;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class UnitConversionService {
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private static final char TEMPLATE_DELIMITER = '$';
   private static final int DEFAULT_COEFFICIENT_SCALE = 12;

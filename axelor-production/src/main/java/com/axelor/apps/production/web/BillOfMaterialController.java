@@ -38,13 +38,9 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class BillOfMaterialController {
-
-  private static final Logger LOG = LoggerFactory.getLogger(BillOfMaterialController.class);
 
   public void computeCostPrice(ActionRequest request, ActionResponse response)
       throws AxelorException {

@@ -31,27 +31,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MassEntryMoveController {
-
-  private LocalDate extractDueDate(ActionRequest request) {
-    if (!request.getContext().containsKey("dueDate")
-        || request.getContext().get("dueDate") == null) {
-      return null;
-    }
-
-    Object dueDateObj = request.getContext().get("dueDate");
-    if (dueDateObj.getClass() == LocalDate.class) {
-      return (LocalDate) dueDateObj;
-    } else {
-      return LocalDate.parse((String) dueDateObj);
-    }
-  }
 
   public void controlMassEntryMoves(ActionRequest request, ActionResponse response) {
     try {

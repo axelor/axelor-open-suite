@@ -24,8 +24,6 @@ public final class BaseExceptionMessage {
 
   public static final String EXCEPTION = /*$$(*/ "Warning !" /*)*/;
 
-  public static final String NOT_IMPLEMENTED_METHOD = /*$$(*/ "Not implemented yet!" /*)*/;
-
   public static final String BIRT_EXTERNAL_REPORT_NO_URL = /*$$(*/
       "Impossible to generate report, url toward Birt viewer is not correctly configured (%s)" /*)*/;
 
@@ -46,8 +44,6 @@ public final class BaseExceptionMessage {
       "WARNING : For the specified currencies %s/%s, please first close the current open conversion period starting %3$tm/%3$td/%3$tY (by filling the end date) to then create a new one. Periods dates shouldn't overlap." /*)*/;
   public static final String CURRENCY_4 = /*$$(*/
       "The end date has to be greater than or equal to the start date." /*)*/;
-  public static final String CURRENCY_5 = /*$$(*/
-      "Both currencies must be saved before currency rate apply" /*)*/;
   public static final String CURRENCY_6 = /*$$(*/
       "Currency conversion webservice not working" /*)*/;
   public static final String CURRENCY_7 = /*$$(*/
@@ -74,11 +70,6 @@ public final class BaseExceptionMessage {
       "Conversion impossible because of no unit." /*)*/;
 
   public static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
-
-  public static final String CURRENCY_CONVERSION_1 = /*$$(*/
-      "WARNING : Please close the current conversion period before creating new one" /*)*/;
-  public static final String CURRENCY_CONVERSION_2 = /*$$(*/
-      "WARNING : To Date must be after or equals to From Date" /*)*/;
 
   /** Account management service */
   public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "No tax found for product %s" /*)*/;
@@ -172,9 +163,6 @@ public final class BaseExceptionMessage {
   public static final String IMPORTER_LISTERNER_5 = /*$$(*/ "- Not null :" /*)*/;
 
   /** Template message service base impl */
-  public static final String TEMPLATE_MESSAGE_BASE_1 = /*$$(*/
-      "%s : Path to Birt template is incorrect" /*)*/;
-
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
@@ -188,9 +176,6 @@ public final class BaseExceptionMessage {
 
   public static final String TAX_DATE_MISSING = /*$$(*/
       "There is no date to determine which rate to take for the tax. Please define a tax active version for : %s." /*)*/;
-
-  /** Template rule service */
-  public static final String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
 
   /** Sequence service */
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
@@ -217,8 +202,6 @@ public final class BaseExceptionMessage {
       "There is no matching address in the QAS base" /*)*/;
   public static final String ADDRESS_4 = /*$$(*/ "NA" /*)*/;
   public static final String ADDRESS_5 = /*$$(*/ "<B>%s</B> not found" /*)*/;
-  public static final String ADDRESS_6 = /*$$(*/
-      "Feature currently not available with Open Street Maps." /*)*/;
   public static final String ADDRESS_7 = /*$$(*/
       "Current user's active company address is not set" /*)*/;
   public static final String ADDRESS_8 = /*$$(*/
@@ -244,7 +227,6 @@ public final class BaseExceptionMessage {
       "Attachment directory OR Application source does not exist" /*)*/;
   public static final String GENERAL_5 = /*$$(*/ "Export Object" /*)*/;
   public static final String GENERAL_6 = /*$$(*/ "Connection successful" /*)*/;
-  public static final String GENERAL_7 = /*$$(*/ "Error in Connection" /*)*/;
   public static final String GENERAL_8 = /*$$(*/
       "Duplicate finder field '%s' is not found inside model '%s'" /*)*/;
   public static final String GENERAL_9 = /*$$(*/
@@ -460,8 +442,6 @@ public final class BaseExceptionMessage {
   /* Print template */
   public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
       "The groovy condition result must be a boolean" /*)*/;
-  public static final String PRINT_ERROR = /*$$(*/
-      "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
 
@@ -484,14 +464,8 @@ public final class BaseExceptionMessage {
   public static final String INVALID_FIELD = /*$$(*/ "'%s' field for '%s' is invalid." /*)*/;
 
   /* Pricing scale */
-  public static final String PRICING_1 = /*$$(*/
-      "Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected." /*)*/;
-
   public static final String PRICING_2 = /*$$(*/
       "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
-
-  public static final String PRICING_3 = /*$$(*/
-      "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
       "The previous period is not closed or temporarily closed while it should be." /*)*/;

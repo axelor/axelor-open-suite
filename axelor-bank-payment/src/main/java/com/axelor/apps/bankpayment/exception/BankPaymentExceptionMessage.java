@@ -22,15 +22,6 @@ public final class BankPaymentExceptionMessage {
 
   private BankPaymentExceptionMessage() {}
 
-  /** Bank statement service */
-  public static final String BANK_STATEMENT_1 = /*$$(*/
-      "%s : Computed balance and Ending Balance must be equal" /*)*/;
-
-  public static final String BANK_STATEMENT_2 = /*$$(*/
-      "%s : MoveLine amount is not equals with bank statement line %s" /*)*/;
-  public static final String BANK_STATEMENT_3 = /*$$(*/
-      "%s : Bank statement line %s amount can't be null" /*)*/;
-
   /** Account config Bank Payment Service */
   public static final String ACCOUNT_CONFIG_41 = /*$$(*/
       "%s : Please, configure a default signer for the company %s" /*)*/;
@@ -75,8 +66,6 @@ public final class BankPaymentExceptionMessage {
       "Please fill the bank details" /*)*/;
   public static final String BANK_ORDER_CURRENCY_MISSING = /*$$(*/
       "Please fill currency for the bank order" /*)*/;
-  public static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/
-      "Amount value of the bank order is not valid" /*)*/;
   public static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/
       "Please select a payment mode" /*)*/;
   public static final String BANK_ORDER_SIGNATORY_MISSING = /*$$(*/
@@ -191,7 +180,6 @@ public final class BankPaymentExceptionMessage {
   public static final String EBICS_WRONG_PASSWORD = /*$$(*/
       "Incorrect password, please try again" /*)*/;
 
-  public static final String EBICS_MISSING_PASSWORD = /*$$(*/ "Please insert a password" /*)*/;
   public static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
   public static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/
       "Test mode is not enabled or test file is missing" /*)*/;
@@ -228,8 +216,6 @@ public final class BankPaymentExceptionMessage {
       "Current bank statement's initial balance does not match previous bank statement's final balance" /*)*/;
   public static final String BANK_STATEMENT_INCOHERENT_BALANCE = /*$$(*/
       "The balances of the bank statement are incoherent and are not following. The bankStatement file can't be imported." /*)*/;
-  public static final String BANK_STATEMENT_NO_INITIAL_LINE_ON_IMPORT = /*$$(*/
-      "Current bank statement doesn't contain an initial line" /*)*/;
 
   /*
    * Batch direct debit
@@ -244,9 +230,6 @@ public final class BankPaymentExceptionMessage {
       "Please add an Active UMR to the partner." /*)*/;
 
   /** Generate bank order from invoices */
-  public static final String INVOICE_BANK_ORDER_ALREADY_EXIST = /*$$(*/
-      "A bank order %s already exist for the invoice %s." /*)*/;
-
   public static final String
       MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_BANK_RECONCILIATION_AMOUNT = /*$$(*/
           "This move line %s can not be archived because its bank reconciliation amount is superior to 0." /*)*/;
@@ -261,11 +244,6 @@ public final class BankPaymentExceptionMessage {
   /** Bank reconciliation */
   public static final String BANK_RECONCILIATION_MISSING_CASH_ACCOUNT = /*$$(*/
       "Some entries from the reconciliation have an empty moveLine and an account filled. The cash account is required to generate automatically the counterpart Move Lines for those entries." /*)*/;
-
-  public static final String BANK_RECONCILIATION_UNRECONCILE_NO_SELECT = /*$$(*/
-      "Please select a reconciliation line" /*)*/;
-  public static final String BANK_RECONCILIATION_INCOMPLETE_LINE = /*$$(*/
-      "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Account, Third party). A move line will be generated automatically on the account and journal associated with the reconciliation session." /*)*/;
 
   public static final String
       BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE = /*$$(*/

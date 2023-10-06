@@ -31,15 +31,10 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServiceImpl {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public SaleOrderComputeServiceSupplychainImpl(

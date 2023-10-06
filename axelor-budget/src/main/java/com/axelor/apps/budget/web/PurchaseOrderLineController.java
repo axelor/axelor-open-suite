@@ -21,7 +21,6 @@ package com.axelor.apps.budget.web;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -35,34 +34,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.utils.StringTool;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseOrderLineController {
-
-  public void getAccountDomain(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-    PurchaseOrder purchaseOrder;
-    Company company = null;
-
-    if (context.getParent() != null) {
-      purchaseOrder = context.getParent().asType(PurchaseOrder.class);
-      company = purchaseOrder.getCompany();
-    }
-
-    String domain = "self.id IN (0)";
-    Set<Account> accountsSet =
-        purchaseOrderLine.getBudget() != null
-            ? purchaseOrderLine.getBudget().getAccountSet()
-            : null;
-    if (!CollectionUtils.isEmpty(accountsSet)) {
-      domain = domain.replace("(0)", "(" + StringTool.getIdListString(accountsSet) + ")");
-    }
-    response.setAttr("account", "domain", domain);
-  }
 
   public void setAccount(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();

@@ -22,16 +22,7 @@ public final class ProjectExceptionMessage {
 
   private ProjectExceptionMessage() {}
 
-  public static final String PROJECT_PLANNING_NO_TASK = /*$$(*/
-      "You have no projects or tasks bound to you, your planning can't be generated." /*)*/;
-  public static final String PROJECT_PLANNING_NO_TASK_TEAM = /*$$(*/
-      "Your team has no projects or tasks bound to it, the planning can't be generated." /*)*/;
-  public static final String PROJECT_NO_ACTIVE_TEAM = /*$$(*/
-      "You have no active team, the planning can't be generated" /*)*/;
-  public static final String PROJECT_NO_TEAM = /*$$(*/
-      "You have selected no team for this project" /*)*/;
   public static final String JSON_FIELD_MODEL_INVALID = /*$$(*/ "Invalid model name" /*)*/;
-  public static final String JSON_FIELD_SELECTION_NULL = /*$$(*/ "Invalid selection name" /*)*/;
   public static final String PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE = /*$$(*/
       "Frequency end date cannot be before task date." /*)*/;
 

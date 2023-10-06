@@ -32,5 +32,4 @@ public interface ITranslation {
   public static final String LEAD_STATUS = /*$$(*/ "Lead.status"; /*)*/
   public static final String LEAD_ADDRESS_INFORMATION = /*$$(*/ "Lead.address_information"; /*)*/
   public static final String LEAD_PRIMARY_ADDRESS = /*$$(*/ "Lead.primary_address"; /*)*/
-  public static final String LEAD_OTHER_ADDRESS = /*$$(*/ "Lead.other_address"; /*)*/
 }

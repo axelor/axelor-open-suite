@@ -33,7 +33,6 @@ public final class StockExceptionMessage {
       "An error occurred while importing the file data, product not found with code :" /*)*/;
   public static final String INVENTORY_5 = /*$$(*/
       "There is currently no such file in the specified folder or the folder may not exists." /*)*/;
-  public static final String INVENTORY_6 = /*$$(*/ "Company missing for stock location %s" /*)*/;
   public static final String INVENTORY_7 = /*$$(*/ "Incorrect product in inventory line" /*)*/;
   public static final String INVENTORY_8 = /*$$(*/ "File %s successfully imported." /*)*/;
   public static final String INVENTORY_9 = /*$$(*/ "There's no product in stock location." /*)*/;
@@ -89,19 +88,11 @@ public final class StockExceptionMessage {
   public static final String STOCK_MOVE_3 = /*$$(*/
       "There's no configured sequence for stock's delivery for the company %s" /*)*/;
   public static final String STOCK_MOVE_4 = /*$$(*/ "Stock's movement's type undefined" /*)*/;
-  public static final String STOCK_MOVE_5 = /*$$(*/
-      "There's no source stock location selected for the stock's movement %s" /*)*/;
-  public static final String STOCK_MOVE_6 = /*$$(*/
-      "There's no destination stock location selected for the stock's movement %s" /*)*/;
   public static final String STOCK_MOVE_7 = /*$$(*/ "Partial stock move (From" /*)*/;
   public static final String STOCK_MOVE_8 = /*$$(*/ "%s Reverse stock move (From %s)" /*)*/;
   public static final String STOCK_MOVE_9 = /*$$(*/
       "A partial stock move has been generated (%s)" /*)*/;
-  public static final String STOCK_MOVE_10 = /*$$(*/
-      "Please select the StockMove(s) to print." /*)*/;
   public static final String STOCK_MOVE_11 = /*$$(*/ "Company address is empty." /*)*/;
-  public static final String STOCK_MOVE_12 = /*$$(*/
-      "Feature currently not available with Open Street Maps." /*)*/;
   public static final String STOCK_MOVE_13 = /*$$(*/ "<B>%s or %s</B> not found" /*)*/;
   public static final String STOCK_MOVE_14 = /*$$(*/ "No move lines to split" /*)*/;
   public static final String STOCK_MOVE_15 = /*$$(*/ "Please select lines to split" /*)*/;
@@ -168,9 +159,6 @@ public final class StockExceptionMessage {
       "Please add a quality control default stock location for company %s in the app stock configuration" /*)*/;
 
   /** Stock Location Controller */
-  public static final String LOCATION_1 = /*$$(*/
-      "There's already an existing storage, you must deactivate it first" /*)*/;
-
   public static final String LOCATION_2 = /*$$(*/
       "Please select the Stock Location(s) to print." /*)*/;
 
@@ -195,10 +183,6 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_CONFIGURATION_MISSING = /*$$(*/
       "Configuration is missing in stock configuration to see financial data" /*)*/;
-
-  /** Partner Product Quality Rating Service */
-  public static final String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/
-      "Partner is missing." /*)*/;
 
   /*
    * Logistical form
@@ -275,6 +259,4 @@ public final class StockExceptionMessage {
 
   public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATION_REQUIRED = /*$$(*/
       "Error: %s field is required and can not be null" /*)*/;
-  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
-      "Error: %s and %s fields are required and can not be null" /*)*/;
 }

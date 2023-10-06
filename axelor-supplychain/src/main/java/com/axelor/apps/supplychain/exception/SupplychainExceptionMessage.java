@@ -52,8 +52,6 @@ public final class SupplychainExceptionMessage {
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
   public static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/
       "The amount to invoice is superior than the amount in the sale order" /*)*/;
-  public static final String SO_INVOICE_MISSING_INVOICING_PRODUCT = /*$$(*/
-      "Please configure the sale order invoicing product" /*)*/;
   public static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
       "Please configure the advance payment product" /*)*/;
   public static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/
@@ -98,8 +96,6 @@ public final class SupplychainExceptionMessage {
       "Unit prices in A.T.I and in W.T. can't be mix" /*)*/;
   public static final String STOCK_MOVE_MULTI_INVOICE_INCOTERM = /*$$(*/
       "The incoterm must be the same for all sale orders." /*)*/;
-  public static final String STOCK_MOVE_NO_INVOICE_GENERATED = /*$$(*/
-      "No invoice was generated" /*)*/;
   public static final String STOCK_MOVE_GENERATE_INVOICE = /*$$(*/
       "The invoice for the stock move %s can't be generated because of this following error : %s" /*)*/;
   public static final String OUTGOING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/
@@ -193,8 +189,6 @@ public final class SupplychainExceptionMessage {
   public static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this sale order" /*)*/;
 
-  public static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS = /*$$(*/
-      "An active stock move (%s) already exists for the sale order %s." /*)*/;
   public static final String SO_CANT_REMOVED_DELIVERED_LINE = /*$$(*/
       "Can't remove delivered detail line %s." /*)*/;
   public static final String SO_CANT_DECREASE_QTY_ON_DELIVERED_LINE = /*$$(*/
@@ -218,10 +212,6 @@ public final class SupplychainExceptionMessage {
 
   public static final String TIMETABLE_SALE_ORDER_NOT_CONFIRMED = /*$$(*/
       "Please confirm the sale order before invoicing." /*)*/;
-
-  /** Ventilate State Service */
-  public static final String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/
-      "Please configure the advance payment account for the company %s" /*)*/;
 
   /** Supply Chain Config */
   public static final String SUPPLY_CHAIN_CONFIG = /*$$(*/
@@ -283,9 +273,6 @@ public final class SupplychainExceptionMessage {
       "You must configure a forecasted invoiced supplier account for the company %s" /*)*/;
 
   /** Accounting cut off service */
-  public static final String ACCOUNTING_CUT_OFF_GENERATION_REPORT = /*$$(*/
-      "Accounting cut off generation report :" /*)*/;
-
   public static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
       "Stock move(s) processed" /*)*/;
 

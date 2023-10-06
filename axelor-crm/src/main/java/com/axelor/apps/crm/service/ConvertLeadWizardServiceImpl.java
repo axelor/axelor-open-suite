@@ -152,7 +152,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     }
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public Address createPrimaryAddress(Lead lead) {
 
@@ -292,7 +291,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     return partner;
   }
 
-  @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
   protected Partner createPartnerData(
       Integer leadToPartnerSelect, Partner partner, Map<String, Object> partnerMap, Lead lead)
@@ -323,7 +321,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     return partner;
   }
 
-  @SuppressWarnings("unchecked")
   protected List<Partner> createContactData(
       Lead lead, List<Partner> contactPartnerList, Map<String, Object> contactPartnerMap)
       throws AxelorException {

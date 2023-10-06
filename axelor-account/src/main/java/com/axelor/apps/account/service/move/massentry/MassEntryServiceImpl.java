@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -126,20 +125,7 @@ public class MassEntryServiceImpl implements MassEntryService {
               .getMoveLineMassEntryList()
               .get(parentMove.getMoveLineMassEntryList().size() - 1);
       int inputAction = lastLine.getInputAction();
-      String technicalTypeSelect =
-          lastLine.getAccount() != null
-              ? lastLine.getAccount().getAccountType().getTechnicalTypeSelect()
-              : null;
-      int journalTechnicalTypeSelect =
-          parentMove.getJournal() != null
-              ? parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
-              : 0;
       int temporaryMoveNumber = lastLine.getTemporaryMoveNumber();
-      int[] technicalTypeSelectArray = {
-        JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
-        JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
-        JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
-      };
 
       if ((ObjectUtils.notEmpty(inputAction)
           && inputAction == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART)) {

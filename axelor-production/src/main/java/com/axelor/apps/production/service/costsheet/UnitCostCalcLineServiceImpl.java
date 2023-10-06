@@ -28,14 +28,9 @@ import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected ProductRepository productRepository;
   protected UnitCostCalcLineRepository unitCostCalcLineRepository;

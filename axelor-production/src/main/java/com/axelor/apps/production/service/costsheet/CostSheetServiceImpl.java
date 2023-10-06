@@ -52,7 +52,6 @@ import com.axelor.studio.db.AppProduction;
 import com.axelor.utils.date.DurationTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
@@ -64,12 +63,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CostSheetServiceImpl implements CostSheetService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected UnitConversionService unitConversionService;
   protected CostSheetLineService costSheetLineService;

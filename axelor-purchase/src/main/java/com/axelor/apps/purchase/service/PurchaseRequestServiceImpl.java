@@ -25,9 +25,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.PurchaseRequestLine;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -38,13 +36,10 @@ import java.util.stream.Collectors;
 
 public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
-  @Inject private PurchaseRequestRepository purchaseRequestRepo;
   @Inject private PurchaseOrderService purchaseOrderService;
   @Inject private PurchaseOrderLineService purchaseOrderLineService;
   @Inject private PurchaseOrderRepository purchaseOrderRepo;
-  @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
   @Inject private AppBaseService appBaseService;
-  @Inject private PurchaseRequestWorkflowService purchaseRequestWorkflowService;
 
   @Transactional(rollbackOn = {Exception.class})
   @Override

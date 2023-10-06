@@ -47,7 +47,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -58,8 +57,6 @@ import javax.validation.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
 import org.apache.shiro.session.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
@@ -87,9 +84,6 @@ public class UserServiceImpl implements UserService {
   private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
   private static final int GEN_LOOP_LIMIT = 1000;
   private static final SecureRandom random = new SecureRandom();
-
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * Method that return the current connected user

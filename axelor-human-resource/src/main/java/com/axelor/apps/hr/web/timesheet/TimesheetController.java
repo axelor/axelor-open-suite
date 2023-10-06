@@ -55,20 +55,15 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TimesheetController {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void prefillLines(ActionRequest request, ActionResponse response) {
     try {

@@ -35,18 +35,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWizardServiceImpl {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected ProductionOrderServiceBusinessImpl productionOrderServiceBusinessImpl;
 

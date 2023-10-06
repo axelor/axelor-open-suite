@@ -22,22 +22,12 @@ public interface ITranslation {
 
   public static final String PURCHASE_ORDER_PURCHASE_REFERENCE = /*$$(*/
       "PurchaseOrder.reference"; /*)*/
-  public static final String PURCHASE_ORDER_PURCHASE_INFO = /*$$(*/
-      "PurchaseOrder.purchaseInfo"; /*)*/
-
-  public static final String PURCHASE_ORDER_ORDER = /*$$(*/ "PurchaseOrder.order"; /*)*/
-  public static final String PURCHASE_ORDER_QUOTE = /*$$(*/ "PurchaseOrder.quote"; /*)*/
   public static final String PURCHASE_ORDER_DELIVERY_DATE = /*$$(*/
       "PurchaseOrder.estimatedReceiptDate"; /*)*/
   public static final String PURCHASE_ORDER_PAYMENT_CONDITION = /*$$(*/
       "PurchaseOrder.paymentCondition"; /*)*/
   public static final String PURCHASE_ORDER_PAYMENT_MODE = /*$$(*/
       "PurchaseOrder.paymentMode"; /*)*/
-  public static final String PURCHASE_ORDER_SUPPLY_REF = /*$$(*/ "PurchaseOrder.supplyRef"; /*)*/
-  public static final String PURCHASE_ORDER_CUSTOMER_REF = /*$$(*/
-      "PurchaseOrder.customerRef"; /*)*/
-  public static final String PURCHASE_ORDER_SUPPLIER = /*$$(*/ "PurchaseOrder.supplier"; /*)*/
-  public static final String PURCHASE_ORDER_CUSTOMER = /*$$(*/ "PurchaseOrder.customer"; /*)*/
   public static final String PURCHASE_ORDER_REF = /*$$(*/ "PurchaseOrder.ref"; /*)*/
   public static final String PURCHASE_ORDER_DESCRIPTION = /*$$(*/ "PurchaseOrder.description"; /*)*/
   public static final String PURCHASE_ORDER_TAX = /*$$(*/ "PurchaseOrder.tax"; /*)*/

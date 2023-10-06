@@ -36,16 +36,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancelServiceImpl
     implements InvoicePaymentBankPaymentCancelService {
 
   protected BankOrderService bankOrderService;
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public InvoicePaymentCancelServiceBankPayImpl(

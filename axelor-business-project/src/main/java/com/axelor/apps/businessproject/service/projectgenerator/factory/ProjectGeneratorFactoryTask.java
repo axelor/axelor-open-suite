@@ -26,7 +26,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -52,7 +51,6 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   private ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   private ProjectTaskRepository projectTaskRepo;
   private ProductCompanyService productCompanyService;
-  private AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProjectGeneratorFactoryTask(
@@ -60,14 +58,12 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       ProjectRepository projectRepository,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskRepository projectTaskRepo,
-      ProductCompanyService productCompanyService,
-      AppBusinessProjectService appBusinessProjectService) {
+      ProductCompanyService productCompanyService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
-    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override

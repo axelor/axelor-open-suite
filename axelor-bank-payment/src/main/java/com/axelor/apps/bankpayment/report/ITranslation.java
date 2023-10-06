@@ -70,7 +70,6 @@ public interface ITranslation {
   public static final String BANK_STATEMENT_YES = /*$$(*/ "BankStatement.yes"; /*)*/
   public static final String BANK_STATEMENT_INITIAL_BALANCE = /*$$(*/
       "BankStatement.initialBalance"; /*)*/;
-  public static final String BANK_STATEMENT_MOVEMENT = /*$$(*/ "BankStatement.movement"; /*)*/;
   public static final String BANK_STATEMENT_FINAL_BALANCE = /*$$(*/
       "BankStatement.finalBalance"; /*)*/;
   public static final String BANK_STATEMENT_TOTAL_OF_OPERATIONS = /*$$(*/
@@ -81,8 +80,6 @@ public interface ITranslation {
   public static final String BANK_STATEMENT_ACCOUNT_CURRENCY = /*$$(*/
       "BankStatement.accountCurrency"; /*)*/;
 
-  public static final String BANK_RECONCILIATION_REPORT_EDITION_DATE = /*$$(*/
-      "BankReconciliation.report_edition_date"; /*)*/;
   public static final String BANK_RECONCILIATION_PAGE1_TITLE = /*$$(*/
       "BankReconciliation.page1Title"; /*)*/;
   public static final String BANK_RECONCILIATION_PAGE2_TITLE = /*$$(*/
@@ -100,7 +97,6 @@ public interface ITranslation {
   public static final String BANK_RECONCILIATION_CASH_ACCOUNT = /*$$(*/
       "BankReconciliation.cash_account"; /*)*/;
 
-  public static final String BANK_RECONCILIATION_TYPE = /*$$(*/ "BankReconciliation.type"; /*)*/;
   public static final String BANK_RECONCILIATION_CODE = /*$$(*/ "BankReconciliation.code"; /*)*/;
   public static final String BANK_RECONCILIATION_TO_DATE = /*$$(*/
       "BankReconciliation.to_date"; /*)*/;
@@ -129,8 +125,6 @@ public interface ITranslation {
       "BankReconciliationStatement.page1Title"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_PAGE2TITLE = /*$$(*/
       "BankReconciliationStatement.page2Title"; /*)*/;
-  public static final String BANK_RECONCILIATION_STATEMENT_CODE = /*$$(*/
-      "BankReconciliationStatement.code"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_REFERENCE = /*$$(*/
       "BankReconciliationStatement.reference"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_DESCRIPTION = /*$$(*/
@@ -147,8 +141,6 @@ public interface ITranslation {
       "BankReconciliationStatement.accountCode"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_JOURNAL_CODE = /*$$(*/
       "BankReconciliationStatement.journalCode"; /*)*/;
-  public static final String BANK_RECONCILIATION_STATEMENT_LINE = /*$$(*/
-      "BankReconciliationStatement.line"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_AMOUNT_TO_RECONCILE = /*$$(*/
       "BankReconciliationStatement.amountToReconcile"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_NO_LINE_FOUND_MESSAGE = /*$$(*/
@@ -205,8 +197,6 @@ public interface ITranslation {
       "BankReconciliationStatementNew.accountingBalanceOn"; /*)*/
   public static final String BANK_RECONCILIATION_NEW_BALANCE_EXTRACT_ON = /*$$(*/
       "BankReconciliationStatementNew.balanceExtractOn"; /*)*/
-  public static final String BANK_RECONCILIATION_TO_BE_CONFIRMED = /*$$(*/
-      "BankReconciliationStatementNew.toBeConfirmed"; /*)*/
   public static final String BANK_RECONCILIATION_BANK_STATEMENT_EXTRACT = /*$$(*/
       "BankReconciliationStatementNew.bankStatementExtract"; /*)*/
   public static final String BANK_RECONCILIATION_ACCOUNTING_EXTRACT = /*$$(*/

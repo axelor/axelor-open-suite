@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagem
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
@@ -174,7 +173,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     InvoiceLine invoiceLine = new InvoiceLine();
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
-    Partner partner = invoice.getPartner();
     Company company = invoice.getCompany();
 
     invoiceLine.setInvoice(invoice);
@@ -245,7 +243,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (product != null) {
 
       Company company = invoice.getCompany();
-      Partner partner = invoice.getPartner();
       FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
       taxLine =

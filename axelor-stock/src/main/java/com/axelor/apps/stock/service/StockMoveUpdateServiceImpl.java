@@ -30,14 +30,9 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected StockMoveLineService stockMoveLineService;
   protected StockMoveService stockMoveService;

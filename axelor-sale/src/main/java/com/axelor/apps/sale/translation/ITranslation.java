@@ -22,8 +22,6 @@ public interface ITranslation {
 
   public static final String SALE_APP_NAME = /*$$(*/ "value:Sale"; /*)*/
 
-  public static final String ABC_ANALYSIS_START_DATE = /*$$(*/ "AbcAnalysis.startDate"; /*)*/
-  public static final String ABC_ANALYSIS_END_DATE = /*$$(*/ "AbcAnalysis.endDate"; /*)*/
   public static final String SALE_ORDER_LINE_END_OF_PACK = /*$$(*/ "SaleOrderLine.endOfPack"; /*)*/
   public static final String SALE_ORDER_LINE_TOTAL = /*$$(*/ "SaleOrderLine.total"; /*)*/
 

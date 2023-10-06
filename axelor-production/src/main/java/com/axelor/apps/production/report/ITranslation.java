@@ -41,10 +41,6 @@ public interface ITranslation {
   public static final String OPERATION_ORDER_MACHINE = /*$$(*/ "OperationOrder.machine"; /*)*/
   public static final String OPERATION_ORDER_CYCLE_DURATION = /*$$(*/
       "OperationOrder.cycleDuration"; /*)*/
-  public static final String OPERATION_ORDER_START_TIME = /*$$(*/ "OperationOrder.startTime"; /*)*/
-  public static final String OPERATION_ORDER_STOP_TIME = /*$$(*/ "OperationOrder.stopTime"; /*)*/
-  public static final String OPERATION_ORDER_DELAY_BTW_CYCLE = /*$$(*/
-      "OperationOrder.delayBtwCycle"; /*)*/
   public static final String OPERATION_ORDER_OPERATION_DETAILS = /*$$(*/
       "OperationOrder.operationDetails"; /*)*/
   public static final String OPERATION_ORDER_PRODUCT_PREPARE = /*$$(*/
@@ -56,12 +52,10 @@ public interface ITranslation {
   public static final String OPERATION_ORDER_QTY = /*$$(*/ "OperationOrder.qty"; /*)*/
   public static final String OPERATION_ORDER_TRACKING_NUMBER = /*$$(*/
       "OperationOrder.trackingNumber"; /*)*/
-  public static final String OPERATION_ORDER_NUM = /*$$(*/ "OperationOrder.num"; /*)*/
 
   public static final String WORK_IN_PROGRESS_VALUATION_TITLE = /*$$(*/
       "WorkInProgressValuation.title"; /*)*/
 
-  public static final String MANUF_ORDER_COMPANY = /*$$(*/ "ManufOrder.company"; /*)*/
   public static final String MANUF_ORDER_TITLE = /*$$(*/ "ManufOrder.title"; /*)*/
   public static final String MANUF_ORDER_PLANNED_START_DATE = /*$$(*/
       "ManufOrder.plannedStartDate"; /*)*/
@@ -95,8 +89,6 @@ public interface ITranslation {
       "ManufOrder.productBarcode"; /*)*/
   public static final String MANUF_ORDER_TRACKING_NUMBER = /*$$(*/
       "ManufOrder.trackingNumber"; /*)*/
-  public static final String MANUF_ORDER_FROM = /*$$(*/ "ManufOrder.from"; /*)*/
-  public static final String MANUF_ORDER_TO = /*$$(*/ "ManufOrder.to"; /*)*/
   public static final String MANUF_ORDER_SERIAL = /*$$(*/ "ManufOrder.serial"; /*)*/
   public static final String MANUF_ORDER_STOCK_LOCATION = /*$$(*/ "ManufOrder.stockLocation"; /*)*/
   public static final String MANUF_ORDER_NO_LOCATION = /*$$(*/ "ManufOrder.noLocation"; /*)*/
@@ -110,7 +102,6 @@ public interface ITranslation {
       "ManufOrder.moCommentFromSaleOrder"; /*)*/
 
   public static final String PRODUCTION_PROCESS_LABEL = /*$$(*/ "ProdProcess.label"; /*)*/
-  public static final String PRODUCTION_PROCESS_NAME = /*$$(*/ "ProdProcess.name"; /*)*/
   public static final String PRODUCTION_PROCESS_STOCK_LOCATION = /*$$(*/
       "ProdProcess.stockLocation"; /*)*/
   public static final String PRODUCTION_PROCESS_FINAL_STOCK_LOCATION = /*$$(*/
@@ -153,7 +144,6 @@ public interface ITranslation {
   String RAW_MATERIAL_REQUIREMENT_COMPANY = /*$$(*/ "RawMaterialRequirement.company"; /*)*/
   String RAW_MATERIAL_REQUIREMENT_FROM = /*$$(*/ "RawMaterialRequirement.from"; /*)*/
   String RAW_MATERIAL_REQUIREMENT_TO = /*$$(*/ "RawMaterialRequirement.to"; /*)*/
-  String RAW_MATERIAL_REQUIREMENT_PRODUCT = /*$$(*/ "RawMaterialRequirement.product"; /*)*/
   String RAW_MATERIAL_REQUIREMENT_MANUF_ORDER = /*$$(*/ "RawMaterialRequirement.manufOrder"; /*)*/
   String RAW_MATERIAL_REQUIREMENT_STOCK_LOCATION = /*$$(*/
       "RawMaterialRequirement.stockLocation"; /*)*/
@@ -169,7 +159,6 @@ public interface ITranslation {
   public static final String COST_SHEET_COST_PRICE = /*$$(*/ "CostSheet.costPrice"; /*)*/
   public static final String COST_SHEET_COMPANY = /*$$(*/ "CostSheet.company"; /*)*/
   public static final String COST_SHEET_MANUF_ORDER = /*$$(*/ "CostSheet.manufOrder"; /*)*/
-  public static final String COST_SHEET_COST_SHEET_LINES = /*$$(*/ "CostSheet.costSheetLines"; /*)*/
   public static final String COST_SHEET_COST_SHEET_LINE_CODE = /*$$(*/
       "CostSheet.costSheetLineCode"; /*)*/
   public static final String COST_SHEET_COST_SHEET_LINE_NAME = /*$$(*/
@@ -184,7 +173,6 @@ public interface ITranslation {
       "CostSheet.costSheetLineUnit"; /*)*/
   public static final String COST_SHEET_CREATED_ON = /*$$(*/ "CostSheet.createdOn"; /*)*/
   public static final String COST_SHEET_CREATED_BY = /*$$(*/ "CostSheet.createdBy"; /*)*/
-  public static final String COST_SHEET_DATE_OF_EDITION = /*$$(*/ "CostSheet.dateOfEdition"; /*)*/
   public static final String COST_SHEET_MO_NUMBER = /*$$(*/ "CostSheet.ManufOrderNumber"; /*)*/
   public static final String COST_SHEET_BILL_OF_MATERIAL = /*$$(*/ "CostSheet.billOfMaterial"; /*)*/
   public static final String COST_SHEET_COST_SHEET_LINE_TYPE = /*$$(*/ "CostSheet.lineType"; /*)*/

@@ -50,7 +50,6 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -77,8 +76,6 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   private AccountingSituationSupplychainService accountingSituationSupplychainService;
 
-  private AppSupplychainService appSupplychainService;
-
   private StockMoveInvoiceService stockMoveInvoiceService;
 
   private UnitConversionService unitConversionService;
@@ -100,7 +97,6 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
-      AppSupplychainService appSupplychainService,
       StockMoveInvoiceService stockMoveInvoiceService,
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
@@ -123,7 +119,6 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
-    this.appSupplychainService = appSupplychainService;
     this.stockMoveInvoiceService = stockMoveInvoiceService;
     this.unitConversionService = unitConversionService;
     this.appBaseService = appBaseService;

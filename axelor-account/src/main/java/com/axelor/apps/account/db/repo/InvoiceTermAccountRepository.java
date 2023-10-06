@@ -43,8 +43,6 @@ public class InvoiceTermAccountRepository extends InvoiceTermRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     if (context.containsKey("_model")
         && context.get("_model").equals(InvoicePayment.class.getName())) {
-      long id = (long) json.get("id");
-      InvoiceTerm invoiceTerm = this.find(id);
       BigDecimal amountRemaining = BigDecimal.ZERO;
 
       if (json.containsKey("applyFinancialDiscount")

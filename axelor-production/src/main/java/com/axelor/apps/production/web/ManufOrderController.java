@@ -58,7 +58,6 @@ import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -66,13 +65,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ManufOrderController {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void start(ActionRequest request, ActionResponse response) {
 

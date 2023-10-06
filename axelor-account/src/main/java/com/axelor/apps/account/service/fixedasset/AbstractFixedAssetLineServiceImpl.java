@@ -28,7 +28,6 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -41,8 +40,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class of FixedAssetLineService. This class is not supposed to be directly used. Please
@@ -51,7 +48,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLineService {
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected FixedAssetLineRepository fixedAssetLineRepository;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected YearService yearService;

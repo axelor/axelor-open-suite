@@ -72,7 +72,6 @@ public class MachineServiceImpl implements MachineService {
         DurationTool.getSecondsDuration(Duration.between(startDateT, endDateT)));
   }
 
-  @SuppressWarnings("unchecked")
   protected MachineTimeSlot getClosestAvailableTimeSlotFrom(
       Machine machine,
       LocalDateTime startDateT,
@@ -204,7 +203,6 @@ public class MachineServiceImpl implements MachineService {
         DurationTool.getSecondsDuration(Duration.between(startDateT, endDateT)));
   }
 
-  @SuppressWarnings("unchecked")
   protected MachineTimeSlot getFurthestAvailableTimeSlotFrom(
       Machine machine,
       LocalDateTime startDateT,

@@ -34,14 +34,6 @@ public final class HumanResourceExceptionMessage {
       "Please configure the refused expense template in HR config for the company %s" /*)*/;
   public static final String HR_CONFIG_CANCELED_EXPENSE_TEMPLATE = /*$$(*/
       "Please configure the canceled expense template in HR config for the company %s" /*)*/;
-  public static final String HR_CONFIG_SENT_TIMESHEET_TEMPLATE = /*$$(*/
-      "Please configure the sent timehsheet template in HR config for the company %s" /*)*/;
-  public static final String HR_CONFIG_VALIDATED_TIMESHEET_TEMPLATE = /*$$(*/
-      "Please configure the validated timehsheet template in HR config for the company %s" /*)*/;
-  public static final String HR_CONFIG_REFUSED_TIMESHEET_TEMPLATE = /*$$(*/
-      "Please configure the refused timehsheet template in HR config for the company %s" /*)*/;
-  public static final String HR_CONFIG_CANCELED_TIMESHEET_TEMPLATE = /*$$(*/
-      "Please configure the canceled timehsheet template in HR config for the company %s" /*)*/;
   public static final String HR_CONFIG_SENT_LEAVE_TEMPLATE = /*$$(*/
       "Please configure the sent leave template in HR config for the company %s" /*)*/;
   public static final String HR_CONFIG_VALIDATED_LEAVE_TEMPLATE = /*$$(*/
@@ -60,8 +52,6 @@ public final class HumanResourceExceptionMessage {
       "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
   public static final String HR_CONFIG_LEAVE_REASON = /*$$(*/
       "Please configure the unjustified absence reason in HR config for the company %s" /*)*/;
-  public static final String HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH = /*$$(*/
-      "Please configure the lunch voucher export path in HR config for the company %s" /*)*/;
   public static final String HR_CONFIG_NO_EXPENSE_SEQUENCE = /*$$(*/
       "Company %s does not have any expense's sequence" /*)*/;
   public static final String HR_CONFIG_FORMULA_VARIABLE_MISSING = /*$$(*/
@@ -76,16 +66,12 @@ public final class HumanResourceExceptionMessage {
   public static final String TIMESHEET_PRODUCT = /*$$(*/ "Please add a product" /*)*/;
   public static final String TIMESHEET_EMPLOYEE_DAY_PLANNING = /*$$(*/
       "Please add an employee's planning related to user %s" /*)*/;
-  public static final String TIMESHEET_EMPLOYEE_DAILY_WORK_HOURS = /*$$(*/
-      "Please, enter the number of daily work hours per employee %s" /*)*/;
   public static final String TIMESHEET_DAILY_WORK_HOURS = /*$$(*/
       "Please, configure the number of daily work hours." /*)*/;
   public static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
   public static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
   public static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/
       "The date of timesheet line %d can't be empty" /*)*/;
-  public static final String GENERAL_EMPLOYEE_ACTIVITY = /*$$(*/
-      "Please, enter an activity for the employee %s" /*)*/;
   public static final String TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING = /*$$(*/
       "Please add an employee's public holiday events planning related to user %s" /*)*/;
   public static final String TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY = /*$$(*/
@@ -142,8 +128,6 @@ public final class HumanResourceExceptionMessage {
       "Employees' leaves failed to be computed due to missing data : %s" /*)*/;
   public static final String BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS = /*$$(*/
       "Qty must be lower than %d." /*)*/;
-  public static final String BATCH_SENIORITY_LEAVE_MANAGEMENT_FORMULA = /*$$(*/
-      "There is an error in a formula" /*)*/;
   public static final String BATCH_PAYROLL_PREPARATION_GENERATION_RECAP = /*$$(*/
       "Payroll preparations attempted to be generated : %s" /*)*/;
   public static final String BATCH_PAYROLL_PREPARATION_SUCCESS_RECAP = /*$$(*/
@@ -169,17 +153,8 @@ public final class HumanResourceExceptionMessage {
   public static final String LUNCH_VOUCHER_MIN_STOCK = /*$$(*/
       "Minimum stock of lunch vouchers will be reached for the company %s. Minimum Stock allowed : %s. Available Stock : %s" /*)*/;
 
-  public static final String KILOMETRIC_LOG_NO_YEAR = /*$$(*/
-      "There is no year for society %s which includes date %s" /*)*/;
-
   public static final String KILOMETRIC_LOG_NO_CIVIL_YEAR = /*$$(*/
       "There is no civil year for society %s which includes date %s" /*)*/;
-
-  public static final String KILOMETRIC_LOG_NO_FISCAL_YEAR = /*$$(*/
-      "There is no fiscal year for society %s which includes date %s" /*)*/;
-
-  public static final String KILOMETRIC_LOG_NO_PAYROLL_YEAR = /*$$(*/
-      "There is no payroll for society %s which includes date %s" /*)*/;
 
   public static final String KILOMETRIC_ALLOWANCE_NO_RULE = /*$$(*/
       "There is no matching condition for the allowance %s" /*)*/;
@@ -200,7 +175,6 @@ public final class HumanResourceExceptionMessage {
   public static final String EXPENSE_CANCEL_MOVE = /*$$(*/
       "Move already used, you must unreconcile it first" /*)*/;
 
-  public static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
   public static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
   public static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/
       "Please fill the payment mode." /*)*/;
@@ -232,9 +206,6 @@ public final class HumanResourceExceptionMessage {
 
   public static final String BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP = /*$$(*/
       "Employment contracts exported : %s" /*)*/;
-
-  public static final String UNIT_SELECT_FOR_LEAVE_REASON = /*$$(*/
-      "Please configure the unit for this type of absence" /*)*/;
 
   public static final String EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE = /*$$(*/
       "Please configure the template for email reminder" /*)*/;

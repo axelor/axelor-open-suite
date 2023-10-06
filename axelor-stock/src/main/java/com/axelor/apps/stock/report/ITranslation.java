@@ -82,8 +82,6 @@ public interface ITranslation {
   public static final String STOCK_MOVE_DATE = /*$$(*/ "StockMove.date"; /*)*/
   public static final String STOCK_MOVE_REFERENCE = /*$$(*/ "StockMove.reference"; /*)*/
   public static final String STOCK_MOVE_PURCHASE_ORDER = /*$$(*/ "StockMove.purchaseOrder"; /*)*/
-  public static final String STOCK_MOVE_MASS = /*$$(*/ "StockMove.mass"; /*)*/
-  public static final String STOCK_MOVE_CUSTOMER = /*$$(*/ "StockMove.customer"; /*)*/
   public static final String STOCK_MOVE_MOVE_PREPARED_BY = /*$$(*/ "StockMove.movePreparedBy"; /*)*/
   public static final String STOCK_MOVE_STOCK_PREPARED_BY = /*$$(*/
       "StockMove.stockPreparedBy"; /*)*/
@@ -92,10 +90,8 @@ public interface ITranslation {
       "StockMove.deliveryAddress"; /*)*/
   public static final String STOCK_MOVE_DELIVERY_DETAILS = /*$$(*/
       "StockMove.deliveryDetails"; /*)*/
-  public static final String STOCK_MOVE_VARIANT = /*$$(*/ "StockMove.variant"; /*)*/
   public static final String STOCK_MOVE_QTY_UNIT = /*$$(*/ "StockMove.qtyUnit"; /*)*/
   public static final String STOCK_MOVE_LOT_NO_REF = /*$$(*/ "StockMove.lotNoRef"; /*)*/
-  public static final String STOCK_MOVE_PRODUCT = /*$$(*/ "StockMove.product"; /*)*/
   public static final String STOCK_MOVE_PACKAGE = /*$$(*/ "StockMove.numOfPackages"; /*)*/
   public static final String STOCK_MOVE_PALETTES = /*$$(*/ "StockMove.numOfPalettes"; /*)*/
   public static final String STOCK_MOVE_GROSS_MASS = /*$$(*/ "StockMove.grossMass"; /*)*/
@@ -114,7 +110,6 @@ public interface ITranslation {
   public static final String STOCK_MOVE_RACK_NUMBER = /*$$(*/ "StockMove.rackNbr"; /*)*/
   public static final String STOCK_MOVE_COMMENTS = /*$$(*/ "StockMove.comments"; /*)*/
   public static final String STOCK_MOVE_BARCODE = /*$$(*/ "StockMove.barcode"; /*)*/
-  public static final String STOCK_MOVE_PRODUCTION_NOTE = /*$$(*/ "StockMove.productionNote"; /*)*/
   public static final String PICKING_STOCK_MOVE_LINE_NUMBER = /*$$(*/
       "PickingStockMove.lineNumber"; /*)*/
   public static final String PICKING_STOCK_MOVE_WEEK_CODE = /*$$(*/
@@ -151,8 +146,6 @@ public interface ITranslation {
       "ConformityCertificate.partNumber"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_DESIGNATION = /*$$(*/
       "ConformityCertificate.designation"; /*)*/
-  public static final String CONFORMITY_CERTIFICATE_QUANTITY = /*$$(*/
-      "ConformityCertificate.quantity"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_SIGNATURE = /*$$(*/
       "ConformityCertificate.signature"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_NAME = /*$$(*/
@@ -163,8 +156,6 @@ public interface ITranslation {
       "ConformityCertificate.qtyUnit"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_SEQUENCE = /*$$(*/
       "ConformityCertificate.sequence"; /*)*/
-  public static final String CONFORMITY_CERTIFICATE_STOCK_MOVE_LINE_ROW_NUM = /*$$(*/
-      "ConformityCertificate.stockMoveLineRowNum"; /*)*/
   public static final String CONFORMITY_LOT_NO_REF = /*$$(*/ "ConformityCertificate.lotNoRef"; /*)*/
   public static final String CONFORMITY_EXTERNAL_REFERENCE = /*$$(*/
       "ConformityCertificate.externalReference"; /*)*/

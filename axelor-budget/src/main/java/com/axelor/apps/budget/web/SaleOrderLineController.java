@@ -35,7 +35,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.utils.StringTool;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -124,20 +123,6 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void getAccountDomain(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
-    String domain = "self.id IN (0)";
-    Set<Account> accountsSet =
-        saleOrderLine.getBudget() != null ? saleOrderLine.getBudget().getAccountSet() : null;
-    if (!CollectionUtils.isEmpty(accountsSet)) {
-      domain = domain.replace("(0)", "(" + StringTool.getIdListString(accountsSet) + ")");
-    }
-    response.setAttr("account", "domain", domain);
   }
 
   public void validateBudgetLinesAmount(ActionRequest request, ActionResponse response) {

@@ -102,7 +102,6 @@ import org.slf4j.LoggerFactory;
 public class MrpServiceImpl implements MrpService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private static final Integer ITERATIONS = 100;
 
   protected MrpRepository mrpRepository;
   protected StockLocationRepository stockLocationRepository;

@@ -105,37 +105,6 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     advancePaymentRepository.save(advancePayment);
   }
 
-  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) {
-    if (saleOrder.getAdvancePaymentList() == null || saleOrder.getAdvancePaymentList().isEmpty()) {
-      return;
-    }
-
-    BigDecimal total = saleOrder.getInTaxTotal();
-
-    //		for (AdvancePayment advancePayment : saleOrder.getAdvancePaymentList())  {
-    //
-    //			if(advancePayment.getAmountRemainingToUse().compareTo(BigDecimal.ZERO) != 0 &&
-    // total.compareTo(BigDecimal.ZERO) != 0)  {
-    //				if(total.max(advancePayment.getAmountRemainingToUse()) == total)  {
-    //					total = total.subtract(advancePayment.getAmountRemainingToUse());
-    //					InvoicePayment invoicePayment = createInvoicePayment(advancePayment, invoice,
-    // advancePayment.getAmountRemainingToUse(), saleOrder);
-    //					invoice.addInvoicePaymentListItem(invoicePayment);
-    //					advancePayment.setAmountRemainingToUse(BigDecimal.ZERO);
-    //				}
-    //				else  {
-    //
-    //	advancePayment.setAmountRemainingToUse(advancePayment.getAmountRemainingToUse().subtract(total));
-    //					InvoicePayment invoicePayment = createInvoicePayment(advancePayment, invoice, total,
-    // saleOrder);
-    //					invoicePayment.setInvoice(invoice);
-    //					invoice.addInvoicePaymentListItem(invoicePayment);
-    //					total = BigDecimal.ZERO;
-    //				}
-    //			}
-    //		}
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   public Move createMoveForAdvancePayment(AdvancePayment advancePayment) throws AxelorException {
 

@@ -87,7 +87,6 @@ import org.slf4j.LoggerFactory;
 public class ReconcileServiceImpl implements ReconcileService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final int ALTERNATIVE_SCALE = 5;
 
   protected MoveToolService moveToolService;
   protected AccountCustomerService accountCustomerService;

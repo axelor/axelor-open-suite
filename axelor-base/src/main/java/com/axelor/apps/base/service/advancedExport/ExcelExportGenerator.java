@@ -114,7 +114,6 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
       for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
         Object value = listObj.get(colIndex);
         Cell cell = row.createCell(colIndex);
-        String columnValue = null;
         if (!(value == null || value.equals(""))) {
           if (value instanceof LocalDate) {
             cell.setCellStyle(dateCellStyle);

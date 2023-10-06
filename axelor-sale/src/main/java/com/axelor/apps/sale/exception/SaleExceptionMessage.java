@@ -22,10 +22,6 @@ public final class SaleExceptionMessage {
 
   private SaleExceptionMessage() {}
 
-  /** Sales Order Stock Move Service */
-  public static final String SALES_ORDER_STOCK_MOVE_1 = /*$$(*/
-      "Invoice by delivery impose that all sale order lines must have service or stockable product with provision from stock" /*)*/;
-
   /** Sales Order Service Impl */
   public static final String SALES_ORDER_1 = /*$$(*/
       "The company %s doesn't have any configured sequence for sale orders" /*)*/;

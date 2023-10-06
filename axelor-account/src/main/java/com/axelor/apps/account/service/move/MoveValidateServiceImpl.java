@@ -153,7 +153,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   @Override
   public void completeMoveLines(Move move) {
     LocalDate date = move.getDate();
-    Partner partner = move.getPartner();
 
     int counter = 1;
     for (MoveLine moveLine : move.getMoveLineList()) {

@@ -30,7 +30,6 @@ public interface ITranslation {
   public static final String ABC_ANALYSIS_CREATED_BY = /*$$(*/ "AbcAnalysis.createdBy"; /*)*/
   public static final String ABC_ANALYSIS_COMPANY = /*$$(*/ "AbcAnalysis.company"; /*)*/
   public static final String ABC_ANALYSIS_DESCRIPTION = /*$$(*/ "AbcAnalysis.description"; /*)*/
-  public static final String ABC_ANALYSIS_RESULTS = /*$$(*/ "AbcAnalysis.analysisResult"; /*)*/
   public static final String ABC_ANALYSIS_LINE_CODE = /*$$(*/ "AbcAnalysisLine.code"; /*)*/
   public static final String ABC_ANALYSIS_LINE_NAME = /*$$(*/ "AbcAnalysisLine.name"; /*)*/
   public static final String ABC_ANALYSIS_LINE_CATEGORY = /*$$(*/ "AbcAnalysisLine.category"; /*)*/

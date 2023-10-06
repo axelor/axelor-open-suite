@@ -38,16 +38,12 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BankOrderCreateService {
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected BankOrderRepository bankOrderRepo;
   protected BankOrderService bankOrderService;
   protected BankOrderLineService bankOrderLineService;

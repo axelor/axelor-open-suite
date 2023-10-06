@@ -70,9 +70,7 @@ public interface ITranslation {
       "ClientSituation.orderFreq"; /*)*/
   public static final String CLIENT_SITUATION_NUM = /*$$(*/ "ClientSituation.num"; /*)*/
   public static final String CLIENT_SITUATION_REF_DOC = /*$$(*/ "ClientSituation.refDoc"; /*)*/
-  public static final String CLIENT_SITUATION_CUST_REF = /*$$(*/ "ClientSituation.custRef"; /*)*/
   public static final String CLIENT_SITUATION_TO_PAY = /*$$(*/ "ClientSituation.toPay"; /*)*/
-  public static final String CLIENT_SITUATION_DUE_DATE = /*$$(*/ "ClientSituation.dueDate"; /*)*/
   public static final String CLIENT_SITUATION_FINANCIAL_DATA = /*$$(*/
       "ClientSituation.financialData"; /*)*/
   public static final String CLIENT_SITUATION_TOTAL_BALANCE = /*$$(*/

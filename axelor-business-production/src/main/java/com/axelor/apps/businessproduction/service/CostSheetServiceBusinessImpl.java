@@ -29,16 +29,11 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public CostSheetServiceBusinessImpl(

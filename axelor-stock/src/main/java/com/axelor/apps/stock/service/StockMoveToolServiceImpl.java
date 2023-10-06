@@ -29,7 +29,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.common.StringUtils;
@@ -37,35 +36,27 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class StockMoveToolServiceImpl implements StockMoveToolService {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected StockMoveLineService stockMoveLineService;
   protected AppBaseService appBaseService;
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
   private SequenceService sequenceService;
-  private StockMoveLineRepository stockMoveLineRepo;
 
   @Inject
   public StockMoveToolServiceImpl(
       StockMoveLineService stockMoveLineService,
       SequenceService sequenceService,
-      StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService) {
     this.stockMoveLineService = stockMoveLineService;
     this.sequenceService = sequenceService;
-    this.stockMoveLineRepo = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.stockMoveRepo = stockMoveRepository;
     this.partnerProductQualityRatingService = partnerProductQualityRatingService;

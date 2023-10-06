@@ -58,7 +58,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -69,12 +68,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected UnitConversionService unitConversionService;
   protected StockMoveLineRepository stockMoveLineRepository;

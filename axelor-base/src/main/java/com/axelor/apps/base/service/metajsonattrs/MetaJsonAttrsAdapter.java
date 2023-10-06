@@ -115,7 +115,6 @@ public class MetaJsonAttrsAdapter {
 
   static List<Map<String, Object>> toMapList(Object value) {
     List<?> values = (List<?>) value;
-    List<Map<String, Object>> result;
     if (!values.isEmpty()) {
       if (values.get(0) instanceof Map) {
         return (List<Map<String, Object>>) values;

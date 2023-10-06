@@ -59,7 +59,6 @@ import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -77,13 +76,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ForecastRecapServiceImpl implements ForecastRecapService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
   protected CurrencyService currencyService;

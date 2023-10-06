@@ -45,16 +45,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class PaymentVoucherController {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   // Called on onSave event
   public void paymentVoucherSetNum(ActionRequest request, ActionResponse response)

@@ -22,25 +22,12 @@ public final class CrmExceptionMessage {
 
   private CrmExceptionMessage() {}
 
-  /** Target service */
-  public static final String TARGET_1 = /*$$(*/
-      "Objective %s is in contradiction with objective's configuration %s" /*)*/;
-
   /** Batch event reminder */
   public static final String BATCH_EVENT_REMINDER_1 = /*$$(*/ "Event reminder %s" /*)*/;
 
   public static final String BATCH_EVENT_REMINDER_2 = /*$$(*/
       "Event's reminder's generation's reporting :" /*)*/;
   public static final String BATCH_EVENT_REMINDER_3 = /*$$(*/ "Reminder(s) treated" /*)*/;
-
-  /** Batch event reminder message */
-  public static final String BATCH_EVENT_REMINDER_MESSAGE_1 = /*$$(*/ "Reminder(s) treated" /*)*/;
-
-  /** Batch target */
-  public static final String BATCH_TARGET_1 = /*$$(*/ "Event reminder %s" /*)*/;
-
-  public static final String BATCH_TARGET_2 = /*$$(*/ "Objectives' generation's reporting :" /*)*/;
-  public static final String BATCH_TARGET_3 = /*$$(*/ "Treated objectives reporting" /*)*/;
 
   /** Convert lead wizard controller */
   public static final String CONVERT_LEAD_1 = /*$$(*/ "Lead converted" /*)*/;
@@ -59,10 +46,6 @@ public final class CrmExceptionMessage {
   public static final String EVENT_SAVED = /*$$(*/
       "Please save the event before setting the recurrence" /*)*/;
 
-  public static final String LEAD_START_WRONG_STATUS = /*$$(*/
-      "Can only start new or assigned lead." /*)*/;
-  public static final String LEAD_RECYCLE_WRONG_STATUS = /*$$(*/
-      "Can only recycle a lost lead." /*)*/;
   public static final String LEAD_CONVERT_WRONG_STATUS = /*$$(*/
       "Can only convert new, assigned or in process lead." /*)*/;
   public static final String LEAD_ASSIGN_TO_ME_WRONG_STATUS = /*$$(*/
@@ -74,8 +57,6 @@ public final class CrmExceptionMessage {
   public static final String LEAD_LOSE_KANBAN = /*$$(*/ "Can only lose leads in form view." /*)*/;
 
   /** Opportunity */
-  public static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;
-
   public static final String OPPORTUNITY_CLOSE_LOST_KANBAN = /*$$(*/
       "Can only close lost opportunities in form view." /*)*/;
 
@@ -92,12 +73,6 @@ public final class CrmExceptionMessage {
 
   public static final String CRM_CONFIG_USER_EMAIL = /*$$(*/
       "User %s does not have an email address configured nor is it linked to a partner with an email address configured." /*)*/;
-  public static final String CRM_CONFIG_USER_COMPANY = /*$$(*/
-      "User %s must have an active company to use templates" /*)*/;
-  public static final String CRM_CONFIG_TEMPLATES = /*$$(*/
-      "Please configure all templates in CRM configuration for company %s" /*)*/;
-  public static final String CRM_CONFIG_TEMPLATES_NONE = /*$$(*/
-      "No template created in CRM configuration for company %s, emails have not been sent" /*)*/;
   public static final String CRM_CLOSED_WIN_OPPORTUNITY_STATUS_MISSING = /*$$(*/
       "Please fill closed win opportunity status in App CRM configuration." /*)*/;
   public static final String CRM_CLOSED_LOST_OPPORTUNITY_STATUS_MISSING = /*$$(*/

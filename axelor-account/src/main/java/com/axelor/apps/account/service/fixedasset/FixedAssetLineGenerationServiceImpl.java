@@ -27,18 +27,13 @@ import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputat
 import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenerationService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected FixedAssetLineService fixedAssetLineService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;

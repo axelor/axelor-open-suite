@@ -39,7 +39,6 @@ import com.axelor.utils.xml.Marschaller;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,12 +46,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BankOrderFileService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final String FILE_EXTENSION_XML = "xml";
   protected static final String FILE_EXTENSION_TXT = "txt";
