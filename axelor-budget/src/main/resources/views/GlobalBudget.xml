@@ -134,7 +134,8 @@
         form-view="budget-level-intermediate-form" grid-view="budget-level-included-grid"
         canEdit="statusSelect == 0" canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
       <spacer colSpan="12"/>
-      <label name="orLabel" title="Or" colSpan="12" showIf="((budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0) &amp;&amp; (!budgetLevelList || budgetLevelList.length == 0)"/>
+      <label name="orLabel" title="Or" colSpan="12"
+        showIf="((budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0) &amp;&amp; (!budgetLevelList || budgetLevelList.length == 0)"/>
       <spacer colSpan="12"/>
       <field name="budgetList" title="Budgets" colSpan="12"
         showIf="!budgetLevelList || budgetLevelList.length == 0" form-view="budget-included-form"

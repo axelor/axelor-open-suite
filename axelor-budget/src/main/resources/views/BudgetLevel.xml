@@ -117,7 +117,8 @@
         canRemove="statusSelect == 'draft'"
         hideIf="budgetList != null &amp;&amp; budgetList.length &gt;= 1"/>
       <spacer colSpan="12"/>
-      <label name="orLabel" title="Or" colSpan="12" hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1)"/>
+      <label name="orLabel" title="Or" colSpan="12"
+        hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1)"/>
       <spacer colSpan="12"/>
       <field name="budgetList" title="Lines" colSpan="12" form-view="budget-included-form"
         grid-view="budget-lines-grid"
