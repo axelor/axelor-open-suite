@@ -85,12 +85,11 @@
   <menuitem title="Templates" name="budget-root-budget-management-templates"
     parent="budget-root-budget-management" order="25"/>
 
-  <menuitem title="Budget structures using lines"
-    name="budget-root-budget-management-budget-structure"
+  <menuitem title="Budget templates" name="budget-root-budget-management-budget-structure"
     parent="budget-root-budget-management-templates"
     action="budget.root.budget.management.budget.structure" order="31"/>
   <action-view name="budget.root.budget.management.budget.structure"
-    title="Budget structures" model="com.axelor.apps.budget.db.BudgetStructure">
+    title="Budget templates" model="com.axelor.apps.budget.db.BudgetStructure">
     <view type="grid" name="budget-structure-grid"/>
     <view type="form" name="budget-structure-form"/>
     <view-param name="forceTitle" value="true"/>
@@ -110,7 +109,7 @@
 
   </action-view>
 
-  <menuitem title="Budget structures using scenario"
+  <menuitem title="Budget structures"
     name="budget-root-budget-management-budget-structure-scenario"
     parent="budget-root-budget-management-templates"
     action="budget.root.budget.management.budget.structure.scenario" order="31"/>

@@ -26,6 +26,7 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
     this.budgetRepository = budgetRepository;
   }
 
+  @Transactional
   @Override
   public void validateChildren(GlobalBudget globalBudget, int status) throws AxelorException {
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {

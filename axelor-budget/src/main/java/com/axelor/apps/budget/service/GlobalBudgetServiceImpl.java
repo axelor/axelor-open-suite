@@ -1,6 +1,7 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetLevel;
@@ -224,9 +225,10 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   @Override
   @Transactional
-  public GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator) throws AxelorException {
+  public GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator, Year year)
+      throws AxelorException {
 
-    GlobalBudget globalBudget = copyGlobalBudgetTemplate(budgetGenerator);
+    GlobalBudget globalBudget = copyGlobalBudgetTemplate(budgetGenerator, year);
 
     fillGlobalBudgetWithLevels(budgetGenerator, globalBudget);
 
@@ -266,11 +268,11 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     return budgetScenarioLineList;
   }
 
-  protected GlobalBudget copyGlobalBudgetTemplate(BudgetGenerator budgetGenerator) {
+  protected GlobalBudget copyGlobalBudgetTemplate(BudgetGenerator budgetGenerator, Year year) {
     GlobalBudget globalBudget =
         new GlobalBudget(budgetGenerator.getCode(), budgetGenerator.getName());
-    globalBudget.setFromDate(budgetGenerator.getYear().getFromDate());
-    globalBudget.setToDate(budgetGenerator.getYear().getToDate());
+    globalBudget.setFromDate(year.getFromDate());
+    globalBudget.setToDate(year.getToDate());
     globalBudget.setCompany(budgetGenerator.getBudgetStructure().getCompany());
     globalBudget.setBudgetTypeSelect(budgetGenerator.getBudgetStructure().getBudgetTypeSelect());
 
@@ -287,8 +289,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   protected void fillGlobalBudgetWithLevels(
       BudgetGenerator budgetGenerator, GlobalBudget globalBudget) throws AxelorException {
-    if (budgetGenerator.getBudgetStructure() == null
-        || budgetGenerator.getBudgetScenario() == null) {
+    if (budgetGenerator.getBudgetStructure() == null) {
       return;
     }
 
@@ -300,11 +301,11 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     if (!ObjectUtils.isEmpty(budgetStructure.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : budgetStructure.getBudgetLevelList()) {
         budgetLevelService.generateBudgetLevelFromGenerator(
-            budgetLevel, null, budgetGenerator, globalBudget, variableAmountMap, true);
+            budgetLevel, null, globalBudget, variableAmountMap, true);
       }
     } else if (!ObjectUtils.isEmpty(budgetStructure.getBudgetList())) {
       for (Budget budget : budgetStructure.getBudgetList()) {
-        budgetService.generateLineFromGenerator(budget, null, budgetGenerator, globalBudget);
+        budgetService.generateLineFromGenerator(budget, null, globalBudget);
       }
     } else if (!ObjectUtils.isEmpty(budgetStructure.getBudgetScenarioVariableSet())) {
       for (BudgetScenarioVariable budgetScenarioVariable :

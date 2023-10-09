@@ -19,6 +19,7 @@
       <field name="name" required="true"/>
       <field name="company" required="true"/>
       <field name="budgetTypeSelect" required="true"/>
+      <field name="isScenario" hidden="true"/>
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
       showIf="code &amp;&amp; name &amp;&amp; company &amp;&amp; budgetTypeSelect">
@@ -33,6 +34,10 @@
         showIf="!budgetLevelList || budgetLevelList.length == 0 &amp;&amp; $isScenario" colSpan="12"
         form-view="budget-scenario-variable-form" grid-view="budget-scenario-variable-grid"
         canNew="false" canEdit="false" canSelect="true"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true" showIf="id &amp;&amp; !isScenario">
+      <button name="generateGlobalBudgetBtn" title="Generate global budget"
+        onClick="save,action-budget-generator-method-popup-generate"/>
     </panel>
   </form>
 
