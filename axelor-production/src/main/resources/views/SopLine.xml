@@ -57,6 +57,8 @@
       <panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
         target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
+        <field name="forecastDate" title="Forecast date" type="date" required="true"
+          onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" readonly="true"/>
         <field name="qty" onChange="action-sop-line-record-compute-total-price"/>
         <field name="$unitPrice" title="Unit price" readonly="true" type="decimal"/>
@@ -175,6 +177,17 @@
       message="There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&amp;OP forecast. Proceed?"
       if="difference != 0"/>
   </action-validate>
+
+  <action-validate name="action-mrp-forecast-validate-check-forecast-date">
+    <error message="Please enter valid forecast date"
+      if="forecastDate &amp;&amp; __parent__ &amp;&amp; (forecastDate.isBefore(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.fromDate) || forecastDate.isAfter(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.toDate))"
+      action="action-mrp-forecast-record-reset-forecast-date"/>
+  </action-validate>
+
+  <action-record name="action-mrp-forecast-record-reset-forecast-date"
+    model="com.axelor.apps.supplychain.db.MrpForecast">
+    <field name="forecastDate" expr="eval: null"/>
+  </action-record>
 
 </object-views>
 
