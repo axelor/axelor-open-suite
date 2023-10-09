@@ -108,6 +108,16 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
       return false;
     }
     String fileType = metaFile.getFileType();
-    return "application/pdf".equals(fileType) || fileType.startsWith("image");
+    return isFilePdf(expenseLine) || fileType.startsWith("image");
+  }
+
+  @Override
+  public boolean isFilePdf(ExpenseLine expenseLine) {
+    MetaFile metaFile = expenseLine.getJustificationMetaFile();
+    if (metaFile == null) {
+      return false;
+    }
+    String fileType = metaFile.getFileType();
+    return "application/pdf".equals(fileType);
   }
 }
