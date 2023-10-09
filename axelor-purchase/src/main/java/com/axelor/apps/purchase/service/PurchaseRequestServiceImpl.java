@@ -109,7 +109,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
       PurchaseOrderLine purchaseOrderLine =
           groupByProduct ? getPoLineByProductAndUnit(purchaseRequestLine, purchaseOrder) : null;
-      if (ObjectUtils.notEmpty(purchaseOrderLine)) {
+      if (purchaseOrderLine != null) {
         purchaseOrderLine.setQty(purchaseOrderLine.getQty().add(purchaseRequestLine.getQuantity()));
       } else {
         purchaseOrderLine =
