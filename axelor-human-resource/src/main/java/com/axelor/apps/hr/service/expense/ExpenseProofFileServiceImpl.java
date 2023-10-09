@@ -19,15 +19,18 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
   protected PdfService pdfService;
   protected PdfSignatureService pdfSignatureService;
   protected AppBaseService appBaseService;
+  protected ExpenseLineService expenseLineService;
 
   @Inject
   public ExpenseProofFileServiceImpl(
       PdfService pdfService,
       PdfSignatureService pdfSignatureService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ExpenseLineService expenseLineService) {
     this.pdfService = pdfService;
     this.pdfSignatureService = pdfSignatureService;
     this.appBaseService = appBaseService;
+    this.expenseLineService = expenseLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -40,28 +43,38 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
 
     for (ExpenseLine expenseLine : expenseLineList) {
       convertProofFileToPdf(expenseLine);
+      signPdf(expenseLine);
     }
   }
 
   @Override
   public void convertProofFileToPdf(ExpenseLine expenseLine) throws AxelorException {
     MetaFile metaFile = expenseLine.getJustificationMetaFile();
-    if (metaFile == null || expenseLine.getIsJustificationFileDigitallySigned()) {
+    if (metaFile == null) {
       return;
     }
 
-    MetaFile result;
-    MetaFile pdfToSign = pdfService.convertImageToPdf(metaFile);
-
-    result = getSignedPdf(pdfToSign);
-    expenseLine.setJustificationMetaFile(result);
-    expenseLine.setIsJustificationFileDigitallySigned(true);
+    expenseLine.setJustificationMetaFile(pdfService.convertImageToPdf(metaFile));
   }
 
-  protected MetaFile getSignedPdf(MetaFile pdfToSign) throws AxelorException {
+  protected void signPdf(ExpenseLine expenseLine) throws AxelorException {
+
+    if (!expenseLineService.isFilePdf(expenseLine)
+        || expenseLine.getIsJustificationFileDigitallySigned()) {
+      return;
+    }
+
+    MetaFile signedPdf = getSignedPdf(expenseLine);
+    expenseLine.setJustificationMetaFile(signedPdf);
+  }
+
+  protected MetaFile getSignedPdf(ExpenseLine expenseLine) throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
     PfxCertificate pfxCertificate = appBase.getPfxCertificate();
+    MetaFile pdfToSign = expenseLine.getJustificationMetaFile();
+
     if (pfxCertificate != null) {
+      expenseLine.setIsJustificationFileDigitallySigned(true);
       return pdfSignatureService.digitallySignPdf(
           pdfToSign, pfxCertificate.getCertificate(), pfxCertificate.getPassword(), "Expense");
     }
