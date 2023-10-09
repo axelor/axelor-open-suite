@@ -49,6 +49,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -468,6 +469,31 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
         budgetService.generateLineFromGenerator(
             budgetScenarioVariable, optBudgetLevel, variableAmountMap, globalBudget);
       }
+    }
+  }
+
+  @Override
+  public List<BudgetLevel> getLastSections(GlobalBudget globalBudget) {
+    List<BudgetLevel> budgetLevelList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      return budgetLevelList;
+    }
+
+    for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
+      getLastSection(budgetLevel, budgetLevelList);
+    }
+    return budgetLevelList;
+  }
+
+  protected void getLastSection(BudgetLevel budgetLevel, List<BudgetLevel> budgetLevelList) {
+    if (budgetLevel != null && ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      budgetLevelList.add(budgetLevel);
+      return;
+    }
+
+    for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
+      getLastSection(child, budgetLevelList);
     }
   }
 }
