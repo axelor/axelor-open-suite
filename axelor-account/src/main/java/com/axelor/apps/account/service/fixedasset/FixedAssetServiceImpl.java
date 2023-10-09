@@ -551,7 +551,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             fixedAsset,
             depreciationFixedAssetLine,
             transferredReason,
-            depreciationFixedAssetLine.getDepreciationDate());
+            Optional.ofNullable(depreciationFixedAssetLine)
+                .map(FixedAssetLine::getDepreciationDate)
+                .orElse(null));
       } else if (disposalAmount.compareTo(fixedAsset.getResidualValue()) == 0) {
         fixedAssetLineMoveService.generateDisposalMove(
             fixedAsset, null, transferredReason, disposalDate);

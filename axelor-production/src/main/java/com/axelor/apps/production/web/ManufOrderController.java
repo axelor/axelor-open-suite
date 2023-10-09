@@ -343,8 +343,7 @@ public class ManufOrderController {
                 .getProductionConfig(company)
                 .getProdProcessBirtTemplate();
       }
-      if (ObjectUtils.isEmpty(prodProcessBirtTemplate)
-          || ObjectUtils.isEmpty(prodProcessBirtTemplate.getTemplateMetaFile())) {
+      if (ObjectUtils.isEmpty(prodProcessBirtTemplate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

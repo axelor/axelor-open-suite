@@ -59,8 +59,7 @@ public class AssistantReportInvoiceController {
         Beans.get(AccountConfigService.class)
             .getAccountConfig(assistant.getCompany())
             .getPurchaseInvoicesDetailsBirtTemplate();
-    if (ObjectUtils.isEmpty(purchaseInvoicesDetailsBirtTemplate)
-        || ObjectUtils.isEmpty(purchaseInvoicesDetailsBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(purchaseInvoicesDetailsBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
