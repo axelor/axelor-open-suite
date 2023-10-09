@@ -24,6 +24,7 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
+    <field name="globalBUdget"/>
   </grid>
 
   <grid model="com.axelor.apps.budget.db.Budget" title="Budgets" name="budget-detailed-grid"
@@ -56,6 +57,7 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
+    <field name="_globalId"/>
     <field name="totalAmountExpected"/>
     <field name="totalAmountCommitted"/>
     <field name="totalAmountRealized"/>
@@ -115,9 +117,10 @@
       <field name="name" required="true" colSpan="4"/>
       <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
         onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
-        domain="self.parentBudgetLevel != null" form-view="budget-section-budget-level-form"/>
+        domain="self.parentBudgetLevel != null" form-view="budget-level-intermediate-form"/>
       <field name="globalBudget" title="Global budget" colSpan="3"
-        grid-view="global-budget-grid" form-view="global-budget-form"/>
+        domain="self.id = :_globalId OR self.id = 0" grid-view="global-budget-grid"
+        form-view="global-budget-form"/>
       <field name="typeSelect" colSpan="3"/>
       <field name="sourceSelect" colSpan="3"/>
       <field name="budgetKey" colSpan="6" readonly="true"/>
@@ -151,7 +154,7 @@
         <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
     </panel>
     <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
-      colSpan="12" readonlyIf="statusSelect != 1">
+      colSpan="12" readonlyIf="globalBudget.statusSelect &gt;= 2">
       <field name="periodDurationSelect" colSpan="4"/>
       <field name="amountForGeneration" colSpan="4"/>
       <button name="generatePeriodsBtn" title="Generate periods"
@@ -197,12 +200,14 @@
         <field name="code" required="true" colSpan="2"
           onChange="budget-action-method-budget-manage-budget-key"/>
         <field name="name" required="true" colSpan="4"/>
-        <field name="budgetLevel" form-view="budget-section-budget-level-form"
+        <field name="budgetLevel" form-view="budget-level-intermediate-form"
           onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
           readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
-          domain="self.parentBudgetLevel != null AND self.parentBudgetLevel.globalBudget.id = :globalId"/>
+          onSelect="action-budget-method-get-budget-level-domain"/>
         <field name="globalBudget" title="Global budget" readonlyIf="$popup()" colSpan="3"
-          grid-view="global-budget-grid" form-view="global-budget-form"/>
+          grid-view="global-budget-grid" form-view="global-budget-form"
+          domain="self.id = :_globalId"/>
+        <field name="_globalId"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
         <field name="category" colSpan="4"/>
         <field name="fromDate" colSpan="4" readonlyIf="statusSelect == 2"
@@ -239,7 +244,8 @@
       <static name="$periodNotAvailable" colSpan="12" hidden="true">
         <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
       <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
-        colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
+        colSpan="12" readonlyIf="globalBudget.statusSelect &gt;= 2"
+        hideIf="globalBudget.statusSelect &gt;= 2">
         <field name="periodDurationSelect" colSpan="4"/>
         <field name="amountForGeneration" colSpan="4"/>
         <button name="generatePeriodsBtn" title="Generate periods"
@@ -336,6 +342,10 @@
     <call class="com.axelor.apps.budget.web.BudgetController" method="computeTotalAmount"/>
   </action-method>
 
+  <action-method name="action-budget-method-get-budget-level-domain">
+    <call class="com.axelor.apps.budget.web.BudgetController" method="getBudgetLevelDomain"/>
+  </action-method>
+
   <action-validate name="action-budget-validate-exceed-line-amount">
     <alert
       if="__config__.app.getApp('budget')?.manageMultiBudget
@@ -396,6 +406,9 @@
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <field name="globalBudget" expr="eval: __parent__"
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
+    <field name="globalBudget" expr="eval: __repo__(GlobalBudget).find(_globalId)"
+      if="_globalId"/>
+    <field name="_globalId" expr="eval; _globalId"/>
   </action-record>
 
   <action-validate name="action-budget-budget-validate-dates">

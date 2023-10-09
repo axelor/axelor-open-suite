@@ -18,12 +18,13 @@
  */
 package com.axelor.apps.budget.service.saleorder;
 
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
@@ -47,17 +48,20 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   protected BudgetDistributionService budgetDistributionService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected AppBudgetService appBudgetService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderLineBudgetServiceImpl(
       BudgetService budgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineRepository saleOrderLineRepo,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      AppBaseService appBaseService) {
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.appBudgetService = appBudgetService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -127,26 +131,23 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
 
   @Override
   public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    String query =
-        String.format(
-            "self.totalAmountExpected > 0 AND self.statusSelect = %d AND self.globalBudget.budgetTypeSelect = %s ",
-            BudgetRepository.STATUS_VALIDATED,
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE);
-    if (saleOrderLine != null) {
-      LocalDate date = null;
-      if (saleOrder != null) {
-        date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
+    Company company = null;
+    LocalDate date = null;
+    if (saleOrder != null) {
+      if (saleOrder.getCompany() != null) {
+        company = saleOrder.getCompany();
       }
-      if (date != null) {
-        query =
-            query.concat(
-                String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+      date =
+          saleOrderLine.getSaleOrder().getOrderDate() != null
+              ? saleOrderLine.getSaleOrder().getOrderDate()
+              : saleOrderLine.getSaleOrder().getCreationDate();
+      if (date == null) {
+        date = appBaseService.getTodayDate(company);
       }
     }
-    return query;
+    String technicalTypeSelect = AccountTypeRepository.TYPE_INCOME;
+
+    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
   }
 
   @Override

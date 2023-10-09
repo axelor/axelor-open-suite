@@ -18,7 +18,7 @@
           onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"
-          grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>
+          grid-view="reduce-budget-distribution-grid" editable="true" colSpan="12"/>
       </insert>
     </extend>
   </form>
@@ -38,7 +38,7 @@
           onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"
-          grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>
+          grid-view="reduce-budget-distribution-grid" editable="true" colSpan="12"/>
       </insert>
     </extend>
   </form>

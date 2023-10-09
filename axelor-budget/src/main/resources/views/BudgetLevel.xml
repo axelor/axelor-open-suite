@@ -234,63 +234,6 @@
     </panel>
   </form>
 
-  <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget section"
-    name="budget-section-budget-level-form" width="large" onNew="action-budget-level-group-onnew"
-    onLoad="action-budget-level-group-onload" canNew="false">
-
-    <panel name="budgetLevelHiddenPanel" hidden="true" colSpan="12">
-      <field name="parentBudgetLevel.globalBudget.statusSelect"/>
-      <field name="parentBudgetLevel.globalBudget"/>
-    </panel>
-
-    <panel name="overViewPanel">
-      <panel name="generalPanel" colSpan="12">
-        <field name="fullName" colSpan="12" hidden="true"/>
-        <field name="code" colSpan="4"
-          readonlyIf="parentBudgetLevel.statusSelect != 'draft' || !$popup()"/>
-        <field name="name" colSpan="4"
-          readonlyIf="parentBudgetLevel.statusSelect != 'draft' || !$popup()"/>
-        <field name="parentBudgetLevel" colSpan="4" readonly="true"
-          onChange="action-budget-level-record-parent-budget-level-onchange"
-          onSelect="action-budget-level-attrs-parent-budget-level-onselect"
-          form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
-        <spacer colSpan="7"/>
-        <field name="typeSelect" colSpan="1" required="true"/>
-      </panel>
-      <panel name="datesPanel" colSpan="8">
-        <field name="fromDate" colSpan="4" required="true"
-          readonlyIf="parentBudgetLevel.statusSelect != 'draft' || !$popup()"
-          onChange="action-budget-level-validate-from-to-dates"/>
-        <field name="toDate" colSpan="4" required="true"
-          readonlyIf="parentBudgetLevel.statusSelect != 'draft' || !$popup()"
-          onChange="action-budget-level-validate-from-to-dates"/>
-        <button name="updateDatesBtn" colSpan="4" title="Update dates"
-          onClick="save,action-budget-budget-level-method-set-dates"
-          readonlyIf="code == null || name == null || parentBudgetLevel == null || parentBudgetLevel.globalBudget == null || parentBudgetLevel.globalBudget.statusSelect == 2 "/>
-      </panel>
-      <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
-        title="Total amounts">
-        <field name="totalAmountExpected"/>
-        <field name="totalAmountAvailable"/>
-        <field name="availableAmountWithSimulated"/>
-        <field name="simulatedAmount"/>
-        <field name="totalAmountCommitted"/>
-        <field name="realizedWithNoPo"/>
-        <field name="realizedWithPo"/>
-        <field name="totalAmountPaid"/>
-        <field name="totalFirmGap"/>
-        <field name="totalAmountRealized" hidden="true"/>
-      </panel>
-    </panel>
-
-    <panel name="masterDetailPanel" colSpan="12" css="border-solid border-green"
-      readonlyIf="parentBudgetLevel.globalBudget.statusSelect &gt;= 1">
-      <field name="budgetList" widget="MasterDetail" summary-view="true" title="Lines"
-        colSpan="12" form-view="budget-included-form" grid-view="budget-lines-grid"
-        onChange="action-budget-level-method-compute-children-key"/>
-    </panel>
-  </form>
-
   <form model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
     name="budget-level-template-form" onNew="action-budget-level-template-group-onnew"
     onLoad="action-budget-level-template-record-scenario">
