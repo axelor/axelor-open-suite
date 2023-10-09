@@ -29,6 +29,7 @@
     model="com.axelor.apps.budget.db.BudgetDistribution"
     onNew="action-group-on-new-parent-budget-distribution" edit-icon="true">
     <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
+      grid-view="budget-lines-template-grid"
       onChange="action-method-budget-budget-distribution-set-amount-available" title="Budget line"/>
     <field name="budget.globalBudget"/>
     <field name="budget.category"/>
@@ -129,16 +130,6 @@
     <field name="budget.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="amount" aggregate="sum"/>
-  </grid>
-
-  <grid name="move-line-budget-distribution-grid" title="Budget distributions"
-    model="com.axelor.apps.budget.db.BudgetDistribution">
-    <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
-      onChange="action-method-budget-budget-distribution-set-amount-available" title="Budget line"/>
-    <field name="budget.globalBudget"/>
-    <field name="budget.category"/>
-    <field name="budgetAmountAvailable" readonly="true"/>
-    <field name="amount" validIf="amount &gt; 0"/>
   </grid>
 
   <grid name="budget-distribution-simulated-moves" title="Distribution lines"

@@ -138,4 +138,6 @@ public interface BudgetLevelService {
       Map<String, Object> variableAmountMap,
       boolean linkToGlobal)
       throws AxelorException;
+
+  List<BudgetLevel> getLastSections(GlobalBudget globalBudget);
 }

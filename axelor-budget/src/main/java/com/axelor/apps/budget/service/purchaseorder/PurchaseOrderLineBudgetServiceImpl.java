@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.budget.service.purchaseorder;
 
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -40,6 +42,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -50,6 +53,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   protected BudgetDistributionService budgetDistributionService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected AppBudgetService appBudgetService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public PurchaseOrderLineBudgetServiceImpl(
@@ -57,12 +61,14 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       BudgetRepository budgetRepository,
       BudgetDistributionService budgetDistributionService,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      AppBaseService appBaseService) {
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.appBudgetService = appBudgetService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -130,59 +136,25 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
 
   @Override
   public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
-    String query =
-        String.format(
-            "self.totalAmountExpected > 0 AND self.statusSelect = %d ",
-            BudgetRepository.STATUS_VALIDATED);
-    if (purchaseOrderLine != null) {
-
-      if (AccountTypeRepository.TYPE_CHARGE.equals(
-          purchaseOrderLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-        query =
-            query.concat(
-                " AND self.globalBudget.budgetTypeSelect in ("
-                    + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
-                    + ","
-                    + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
-                    + ")");
-      } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
-          purchaseOrderLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-        query =
-            query.concat(
-                " AND self.globalBudget.budgetTypeSelect in ("
-                    + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
-                    + ","
-                    + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
-                    + ")");
-      }
-    }
+    Company company = null;
+    LocalDate date = null;
     if (purchaseOrder != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.globalBudget.company.id = %d",
-                  purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getId() : 0));
-      if (purchaseOrder.getGlobalBudget() != null) {
-        query =
-            query.concat(
-                String.format(
-                    " AND self.globalBudget.id = %d", purchaseOrder.getGlobalBudget().getId()));
-      } else if (purchaseOrder.getCompanyDepartment() != null) {
-        query =
-            query.concat(
-                String.format(
-                    " AND self.globalBudget.companyDepartment.id = %d",
-                    purchaseOrder.getCompanyDepartment().getId()));
+      if (purchaseOrder.getCompany() != null) {
+        company = purchaseOrder.getCompany();
+        date = appBaseService.getTodayDate(purchaseOrder.getCompany());
       }
       if (purchaseOrder.getOrderDate() != null) {
-        query =
-            query.concat(
-                String.format(
-                    " AND self.fromDate <= '%s' AND self.toDate >= '%s'",
-                    purchaseOrder.getOrderDate(), purchaseOrder.getOrderDate()));
+        date = purchaseOrder.getOrderDate();
       }
     }
-    return query;
+    String technicalTypeSelect =
+        Optional.of(purchaseOrderLine)
+            .map(PurchaseOrderLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(null);
+
+    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
   }
 
   @Override

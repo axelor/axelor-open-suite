@@ -34,6 +34,7 @@ import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
+import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -44,6 +45,7 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetController {
@@ -274,16 +276,34 @@ public class BudgetController {
     }
   }
 
-  public void setLevelDomain(ActionRequest request, ActionResponse response) {
+  public void getBudgetLevelDomain(ActionRequest request, ActionResponse response) {
     Budget budget = request.getContext().asType(Budget.class);
-
-    String globalId = request.getContext().get("_globalId").toString();
-    if (ObjectUtils.isEmpty(globalId)) {
-      return;
+    GlobalBudget globalBudget = budget.getGlobalBudget();
+    if (globalBudget == null) {
+      if (request.getContext().get("_globalId") == null
+          || ObjectUtils.isEmpty(request.getContext().get("_globalId").toString())) {
+        return;
+      }
+      String globalId = request.getContext().get("_globalId").toString();
+      globalBudget = Beans.get(GlobalBudgetRepository.class).find(Long.valueOf(globalId));
     }
-    GlobalBudget globalBudget =
-        Beans.get(GlobalBudgetRepository.class).find(Long.valueOf(globalId));
-    if (globalBudget != null) {}
+
+    if (globalBudget != null) {
+      List<BudgetLevel> budgetLevelList =
+          Beans.get(BudgetLevelService.class).getLastSections(globalBudget);
+      if (!ObjectUtils.isEmpty(budgetLevelList)) {
+        response.setAttr(
+            "budgetLevel",
+            "domain",
+            String.format(
+                "self.id in (%s)",
+                Joiner.on(",")
+                    .join(
+                        budgetLevelList.stream()
+                            .map(BudgetLevel::getId)
+                            .collect(Collectors.toList()))));
+      }
+    }
   }
 
   public GlobalBudget getGlobalBudget(ActionRequest request, ActionResponse response) {
