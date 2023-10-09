@@ -17,7 +17,8 @@
   <form name="prod-process-line-form" title="Phase"
     model="com.axelor.apps.production.db.ProdProcessLine"
     onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default"
-    onLoad="action-prod-process-line-attrs-default" width="large">
+    onLoad="action-prod-process-line-attrs-default,action-prod-process-line-attrs-hide-duration"
+    width="large">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="priority" colSpan="3"/>
@@ -120,13 +121,22 @@
       expr="eval: workCenter?.durationPerCycle"/>
     <attribute name="value" for="humanDuration"
       expr="eval: workCenter?.hrDurationPerCycle"/>
+
   </action-attrs>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">
     <action name="action-prod-process-line-method-duration"/>
     <action name="action-prod-process-line-attrs-update-from-workcenter"/>
     <action name="action-prod-process-line-method-capacity-settings"/>
+    <action name="action-prod-process-line-attrs-hide-duration"/>
   </action-group>
+
+  <action-attrs name="action-prod-process-line-attrs-hide-duration">
+    <attribute name="hidden" for="durationPerCycle"
+      expr="eval: workCenter?.workCenterTypeSelect != 3 &amp;&amp; workCenter?.workCenterTypeSelect != 2"/>
+    <attribute name="hidden" for="humanDuration"
+      expr="eval: workCenter?.workCenterTypeSelect != 3 &amp;&amp; workCenter?.workCenterTypeSelect != 1"/>
+  </action-attrs>
 
   <action-group name="action-prod-process-line-group-work-center-group-onchange">
     <action name="action-prod-process-line-method-work-center-group-fill-work-center"/>

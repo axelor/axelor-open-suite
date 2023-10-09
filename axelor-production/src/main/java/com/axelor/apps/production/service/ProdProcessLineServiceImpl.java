@@ -37,6 +37,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -96,9 +97,9 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     BigDecimal nbCycles = durationNbCyclesPair.getRight();
 
     BigDecimal machineDurationPerCycle =
-        new BigDecimal(workCenterService.getMachineDurationFromWorkCenter(workCenter));
+        new BigDecimal(Optional.ofNullable(prodProcessLine.getDurationPerCycle()).orElse(0l));
     BigDecimal humanDurationPerCycle =
-        new BigDecimal(workCenterService.getHumanDurationFromWorkCenter(workCenter));
+        new BigDecimal(Optional.ofNullable(prodProcessLine.getHumanDuration()).orElse(0l));
     BigDecimal maxDurationPerCycle =
         getMaxDuration(Arrays.asList(machineDurationPerCycle, humanDurationPerCycle));
 
