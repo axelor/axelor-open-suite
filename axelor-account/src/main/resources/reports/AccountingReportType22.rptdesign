@@ -980,12 +980,12 @@ FROM
 		    AccountingReport.id = ?
 			AND FixedAsset.company = AccountingReport.company
 			AND FixedAssetType.technical_type_select != 1
-			AND FixedAsset.failover_date IS NOT NULL
+			AND FixedAsset.import_depreciation_date IS NOT NULL
 			AND (FixedAsset.status_select IN (2,3)
 			    OR (FixedAsset.status_select = 4
 			        AND	FixedAsset.disposal_date >= AccountingReport.date_from))
 			AND FixedAsset.origin_select = 99
-			AND FixedAsset.failover_date < AccountingReport.date_to
+			AND FixedAsset.import_depreciation_date < AccountingReport.date_to
 			AND NOT EXISTS (
                 SELECT 1 FROM account_fixed_asset_line AS FixedAssetLine
                 WHERE FixedAssetLine.fixed_asset = FixedAsset.id

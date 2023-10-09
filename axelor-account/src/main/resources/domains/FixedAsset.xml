@@ -33,8 +33,8 @@
     <integer name="periodicityInMonth" title="Periodicity in month" default="12"/>
     <integer name="numberOfDepreciation" title="Number of depreciation" default="1"/>
     <integer name="durationInMonth" title="Duration in month"/>
-    <integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>
-    <decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+    <integer name="importNbrOfPastDepreciations" title="Nbr of past depreciations"/>
+    <decimal name="importAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
     <integer name="firstDepreciationDateInitSelect" massUpdate="true"
       title="Reference Date for first depreciation"
       selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
@@ -73,7 +73,7 @@
     <integer name="originSelect" title="Origin" selection="account.fixed.asset.origin"/>
 
     <date name="firstServiceDate" title="First Service Date"/>
-    <date name="failoverDate" title="Failover Date"/>
+    <date name="importDepreciationDate" title="Failover Date"/>
     <decimal name="accountingValue" title="Accounting value"/>
     <decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
 
@@ -89,8 +89,8 @@
     <integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month"
       default="12"/>
     <integer name="fiscalDurationInMonth" title="Fiscal Duration In Month"/>
-    <integer name="fiscalNbrOfPastDepreciations" title="Nbr of past depreciations"/>
-    <decimal name="fiscalAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+    <integer name="importFiscalNbrOfPastDepreciations" title="Nbr of past depreciations"/>
+    <decimal name="importFiscalAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"
       mappedBy="fiscalFixedAsset"/>
@@ -109,7 +109,7 @@
       selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
     <integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month" default="12"/>
     <integer name="ifrsDurationInMonth" title="IFRS Duration In Month"/>
-    <integer name="ifrsNbrOfPastDepreciations" title="Nbr of past depreciations"/>
+    <integer name="importIfrsNbrOfPastDepreciations" title="Nbr of past depreciations"/>
     <decimal name="ifrsAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List" mappedBy="ifrsFixedAsset"/>
