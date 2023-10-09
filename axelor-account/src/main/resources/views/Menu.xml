@@ -515,6 +515,17 @@
     <context name="_reportExportTypeSelect" expr="2"/>
   </action-view>
 
+  <menuitem name="account-root-accounting-conf-accounting-config-templates"
+    action="account.conf.reporting.accounting.config.templates" parent="account-conf-reporting"
+    title="Accounting configurations templates" order="500"/>
+
+  <action-view name="account.conf.reporting.accounting.config.templates"
+    title="Accounting configurations templates"
+    model="com.axelor.apps.account.db.AccountingConfigTemplate">
+    <view type="grid" name="accounting-config-template-grid"/>
+    <view type="form" name="accounting-config-template-form"/>
+  </action-view>
+
   <menuitem title="Fixed assets" name="account-root-asset-management" parent="account-root"
     order="1100"/>
 

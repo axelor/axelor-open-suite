@@ -18,11 +18,11 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.repo.AccountChartRepository;
+import com.axelor.apps.account.db.AccountingConfigTemplate;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingConfigTemplateRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 
-public class AccountChartService {
+public class AccountingConfigTemplateService {
 
   @Inject private FactoryImporter factoryImporter;
 
@@ -53,25 +53,25 @@ public class AccountChartService {
 
   protected AccountConfigRepository accountConfigRepo;
   protected CompanyRepository companyRepo;
-  protected AccountChartRepository accountChartRepository;
+  protected AccountingConfigTemplateRepository accountingConfigTemplateRepository;
   protected AccountRepository accountRepository;
 
   @Inject
-  public AccountChartService(
+  public AccountingConfigTemplateService(
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo,
-      AccountChartRepository accountChartRepository,
+      AccountingConfigTemplateRepository accountingConfigTemplateRepository,
       AccountRepository accountRepository) {
 
     this.accountConfigRepo = accountConfigRepo;
     this.companyRepo = companyRepo;
-    this.accountChartRepository = accountChartRepository;
+    this.accountingConfigTemplateRepository = accountingConfigTemplateRepository;
     this.accountRepository = accountRepository;
   }
 
   public boolean installAccountChart(AccountConfig accountConfig) throws AxelorException {
 
-    AccountChart act = accountConfig.getAccountChart();
+    AccountingConfigTemplate act = accountConfig.getAccountingConfigTemplate();
     Company company = accountConfig.getCompany();
     long accountCounter =
         accountRepository
@@ -87,14 +87,18 @@ public class AccountChartService {
     return installProcess(accountConfig, act, company);
   }
 
-  protected boolean installProcess(AccountConfig accountConfig, AccountChart act, Company company)
+  public boolean installProcess(
+      AccountConfig accountConfig, AccountingConfigTemplate act, Company company)
       throws AxelorException {
     try {
       if (act.getMetaFile() == null) {
         return false;
       }
-
-      InputStream inputStream = this.getClass().getResourceAsStream("/l10n/chart-config.xml");
+      String configFileName =
+          Boolean.TRUE.equals(accountConfig.getIsImportAccountChartOnly())
+              ? "/l10n/chart-config-account.xml"
+              : "/l10n/chart-config.xml";
+      InputStream inputStream = this.getClass().getResourceAsStream(configFileName);
       if (inputStream == null) {
         return false;
       }
@@ -135,22 +139,29 @@ public class AccountChartService {
   }
 
   @Transactional
-  public void updateChartCompany(AccountChart act, Company company, AccountConfig accountConfig) {
+  public void updateChartCompany(
+      AccountingConfigTemplate act, Company company, AccountConfig accountConfig) {
 
     accountConfig = accountConfigRepo.find(accountConfig.getId());
-    accountConfig.setHasChartImported(true);
-    act = accountChartRepository.find(act.getId());
-    accountConfig.setAccountChart(act);
+    updateAccountConfigBooleans(accountConfig);
+    act = accountingConfigTemplateRepository.find(act.getId());
+    accountConfig.setAccountingConfigTemplate(act);
     company = companyRepo.find(company.getId());
     Set<Company> companySet = act.getCompanySet();
     companySet.add(company);
     act.setCompanySet(companySet);
-    accountChartRepository.save(act);
+    accountingConfigTemplateRepository.save(act);
     accountConfigRepo.save(accountConfig);
   }
 
+  protected void updateAccountConfigBooleans(AccountConfig accountConfig) {
+    accountConfig.setHasChartImported(true);
+    accountConfig.setHasAccountingConfigTemplateImported(
+        !accountConfig.getIsImportAccountChartOnly());
+  }
+
   public void importAccountChartData(
-      AccountChart act, File configFile, Map<String, Object> importContext)
+      AccountingConfigTemplate act, File configFile, Map<String, Object> importContext)
       throws IOException, AxelorException {
 
     ImportConfiguration importConfiguration = new ImportConfiguration();
