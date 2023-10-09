@@ -1,0 +1,3 @@
+---
+title: "Move : Fix error when we create a move line with a a partner where hasn't accounting situation"
+type: fix
