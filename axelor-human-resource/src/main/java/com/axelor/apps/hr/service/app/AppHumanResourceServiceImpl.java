@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.rpc.ActionRequest;
@@ -62,8 +63,9 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
+      AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo,
       AppTimesheetRepository appTimesheetRepo,
       AppLeaveRepository appLeaveRepo,
       AppExpenseRepository appExpenseRepo,
@@ -74,8 +76,9 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
         metaFiles,
         appVersionService,
         metaModelRepo,
-        appSettingsStudioService,
-        metaModuleRepo);
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
     this.appTimesheetRepo = appTimesheetRepo;
     this.appLeaveRepo = appLeaveRepo;
     this.appExpenseRepo = appExpenseRepo;

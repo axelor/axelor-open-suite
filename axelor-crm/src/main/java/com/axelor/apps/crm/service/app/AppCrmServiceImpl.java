@@ -32,6 +32,7 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
@@ -54,8 +55,9 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
+      AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo,
       CompanyRepository companyRepo,
       CrmConfigRepository crmConfigRepo) {
     super(
@@ -63,8 +65,9 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
         metaFiles,
         appVersionService,
         metaModelRepo,
-        appSettingsStudioService,
-        metaModuleRepo);
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
     this.companyRepo = companyRepo;
     this.crmConfigRepo = crmConfigRepo;
   }

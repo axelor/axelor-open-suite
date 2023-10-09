@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
@@ -49,8 +50,9 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
+      AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo,
       AppBankPaymentRepository appBankPaymentRepo,
       BankPaymentConfigRepository bankPaymentConfigRepo,
       CompanyRepository companyRepo) {
@@ -59,8 +61,9 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
         metaFiles,
         appVersionService,
         metaModelRepo,
-        appSettingsStudioService,
-        metaModuleRepo);
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
     this.appBankPaymentRepo = appBankPaymentRepo;
     this.bankPaymentConfigRepo = bankPaymentConfigRepo;
     this.companyRepo = companyRepo;
