@@ -71,22 +71,6 @@
           onChange="action-base-validate-multi-company-boolean"/>
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
-        <panel name="printingsPanel" title="Printings" colSpan="12">
-          <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true"
-            colSpan="3"
-            help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
-          <field name="regroupProductsTypeSelect" widget="MultiSelect"
-            showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings"
-            colSpan="3"/>
-          <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings"
-            requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
-          <field name="regroupProductsLabelServices"
-            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1"
-            colspan="6"/>
-          <field name="regroupProductsLabelProducts"
-            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1"
-            colspan="6"/>
-        </panel>
         <panel-related field="companySpecificProductFieldsSet"
           domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false"
           canEdit="false" grid-view="meta-field-details-grid" form-view="meta-field-form"/>
@@ -98,9 +82,6 @@
         </panel>
         <field name="emailLinkList" colSpan="12"
           onChange="action-base-method-model-email-link-onsave"/>
-        <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
-          field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"
-          form-view="birt-template-config-line-form"/>
         <panel name="stylePanel" title="Style" colSpan="12">
           <field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
         </panel>
@@ -158,10 +139,35 @@
           x-can-copy="true"/>
       </panel>
       <panel name="printingsPanel" title="Printings" colSpan="12">
-        <field name="clientSituationBirtTemplate"/>
-        <field name="companyPhoneBookBirtTemplate"/>
-        <field name="contactPhoneBookBirtTemplate"/>
-        <field name="productCatalogPGQLBirtTemplate"/>
+        <panel name="productPrintingsPanel" colSpan="12">
+          <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true"
+            colSpan="3"
+            help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
+          <field name="regroupProductsTypeSelect" widget="MultiSelect"
+            showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings"
+            colSpan="3"/>
+          <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings"
+            requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
+          <field name="regroupProductsLabelServices"
+            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1"
+            colspan="6"/>
+          <field name="regroupProductsLabelProducts"
+            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1"
+            colspan="6"/>
+        </panel>
+        <panel name="printingTemplatesPanel" colSpan="12">
+          <field name="clientSituationBirtTemplate"/>
+          <field name="companyPhoneBookBirtTemplate"/>
+          <field name="contactPhoneBookBirtTemplate"/>
+          <field name="productCatalogPGQLBirtTemplate"/>
+        </panel>
+        <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
+          field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"
+          form-view="birt-template-config-line-form"/>
+      </panel>
+      <panel name="signaturePanel" title="Signature">
+        <field name="pfxCertificate" canNew="true" canEdit="true"
+          form-view="pfx-certificate-form"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

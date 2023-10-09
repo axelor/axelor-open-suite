@@ -19,7 +19,7 @@
     type="com.axelor.apps.account.db.AccountEquiv"/>
 
   <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
     search="self.importId = :importId" update="true"
@@ -134,7 +134,7 @@
     </bind>
   </input>
 
-  <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template"/>
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"/>
 
   <input file="account_debtRecoveryMethod.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryMethod" search="self.code = :code"/>

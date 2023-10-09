@@ -540,6 +540,9 @@ public class TimesheetController {
       }
     }
 
+    Integer dailyLimit = Beans.get(AppHumanResourceService.class).getAppTimesheet().getDailyLimit();
+
+    response.setValue("$dailyLimit", dailyLimit);
     response.setValue("$showActivity", showActivity);
   }
 
@@ -551,7 +554,9 @@ public class TimesheetController {
         "hr/timesheet/?timesheetId="
             + context.get("id")
             + "&showActivity="
-            + context.get("showActivity");
+            + context.get("showActivity")
+            + "&dailyLimit="
+            + context.get("dailyLimit");
 
     response.setView(
         ActionView.define(I18n.get("Timesheet lines"))

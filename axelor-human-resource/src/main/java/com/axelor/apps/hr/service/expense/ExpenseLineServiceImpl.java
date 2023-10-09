@@ -21,11 +21,13 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ExpenseLineServiceImpl implements ExpenseLineService {
@@ -62,8 +64,10 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
 
     // removing expense from one O2M also remove the link
     for (ExpenseLine expenseLine : expenseLineList) {
-      if (!kilometricExpenseLineList.contains(expenseLine)
-          && !generalExpenseLineList.contains(expenseLine)) {
+      if ((CollectionUtils.isEmpty(kilometricExpenseLineList)
+              || !kilometricExpenseLineList.contains(expenseLine))
+          && (CollectionUtils.isEmpty(generalExpenseLineList)
+              || !generalExpenseLineList.contains(expenseLine))) {
         expenseLine.setExpense(null);
         expenseLineRepository.remove(expenseLine);
       }
@@ -95,5 +99,15 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
               return amountLimit.compareTo(BigDecimal.ZERO) != 0
                   && amountLimit.compareTo(line.getTotalAmount()) < 0;
             });
+  }
+
+  @Override
+  public boolean isFilePdfOrImage(ExpenseLine expenseLine) {
+    MetaFile metaFile = expenseLine.getJustificationMetaFile();
+    if (metaFile == null) {
+      return false;
+    }
+    String fileType = metaFile.getFileType();
+    return "application/pdf".equals(fileType) || fileType.startsWith("image");
   }
 }

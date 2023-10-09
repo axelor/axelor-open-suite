@@ -36,6 +36,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
@@ -84,7 +85,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       PartnerPriceListService partnerPriceListService,
       UnitConversionService unitConversionService,
       WeeklyPlanningService weeklyPlanningService,
-      LeaveRequestComputeDurationService leaveRequestComputeDurationService) {
+      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
+      EmployeeService employeeService) {
     super(
         priceListService,
         appHumanResourceService,
@@ -106,7 +108,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         partnerPriceListService,
         unitConversionService,
         weeklyPlanningService,
-        leaveRequestComputeDurationService);
+        leaveRequestComputeDurationService,
+        employeeService);
   }
 
   @Override

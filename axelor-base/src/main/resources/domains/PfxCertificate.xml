@@ -9,8 +9,9 @@
     <string name="name" title="Name"/>
     <many-to-one name="certificate" ref="com.axelor.meta.db.MetaFile"
       title="Certificate" required="true"/>
-    <string name="password" title="Password" required="true" password="true"/>
-
+    <string name="password" title="Password" required="true" password="true" encrypted="true"/>
+    <date name="fromValidityDate" readonly="true"/>
+    <date name="toValidityDate" readonly="true"/>
   </entity>
 
 </domain-models>

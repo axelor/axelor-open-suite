@@ -22,12 +22,23 @@
     title="Bank details" onLoad="action-group-account-bank-details-form-onload"
     model="com.axelor.apps.base.db.BankDetails" width="large">
     <panel name="ownerPanel" title="Owner">
-      <panel name="ownerInfoPanel" colSpan="9">
+      <panel name="ownerInfoPanel" colSpan="12">
+        <spacer colSpan="10"/>
+        <field name="$activeLabel" showIf="$readonly()" showTitle="false" colSpan="2">
+          <viewer depends="active">
+            <![CDATA[
+                <span class="label label-success" ng-show="record.active" x-translate>Active</span>
+                <span class="label label-important" ng-show="!record.active" x-translate>Inactive</span>
+            ]]>
+          </viewer>
+        </field>
         <field name="partner"
           onChange="action-set-owner-name,action-bank-details-attrs-specific-notes"
           domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"
           colSpan="10"/>
-        <field name="ownerName" colSpan="10"/>
+        <field name="active" widget="boolean-radio" colSpan="2" showTitle="false"
+          showIf="!$readonly()" x-true-text="Active" x-false-text="Inactive"/>
+        <field name="ownerName" colSpan="12"/>
         <field name="company" hidden="true"/>
       </panel>
     </panel>
@@ -41,9 +52,6 @@
         domain="self.company = :company AND self.statusSelect = 1" if-module="axelor-account"
         if="__config__.app.isApp('account')"/>
       <field name="code" x-bind="{{code|uppercase}}" hidden="true"/>
-    </panel>
-    <panel name="activePanel" sidebar="true">
-      <field name="active" widget="boolean-switch"/>
     </panel>
     <panel name="ibanPanel" title="IBAN / BBAN">
       <field name="bank.bankDetailsTypeSelect" readonly="true"/>
@@ -158,6 +166,8 @@
     <action name="action-set-default-partner"/>
     <action name="action-set-default-bank"/>
     <action name="action-bank-details-attrs-code"/>
+    <action name="action-bank-details-record-set-partner-and-currency"
+      if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
   </action-group>
 
   <action-group name="action-group-account-bank-details-form-onload">
@@ -185,6 +195,12 @@
     <field name="ownerName"
       if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'"
       expr="eval:__parent__ != null ? (__parent__.name != null ? __parent__.name : '') + ' ' + (__parent__.firstName != null ? __parent__.firstName : '') : ''"/>
+  </action-record>
+
+  <action-record name="action-bank-details-record-set-partner-and-currency"
+    model="com.axelor.apps.base.db.BankDetails">
+    <field name="partner" expr="eval:__parent__?.partner"/>
+    <field name="currency" expr="eval:__parent__?.currency"/>
   </action-record>
 
   <action-record name="action-bank-details-record-set-company"

@@ -152,10 +152,12 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       if (expenseProduct != null && kilometricAllowParam == null) {
         expense.addGeneralExpenseLineListItem(expenseLine);
       }
-      if (expenseProduct != null && kilometricAllowParam != null) {
+      if (isKilometricExpenseLine(expenseLine)) {
         expense.addKilometricExpenseLineListItem(expenseLine);
       }
     }
+
+    expenseRepository.save(expense);
   }
 
   protected void checkCurrency(Expense expense, List<ExpenseLine> expenseLineList)
@@ -179,6 +181,13 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       throws AxelorException {
     addExpenseLinesToExpense(expense, expenseLineList);
     expenseComputationService.compute(expense);
+  }
+
+  @Override
+  public boolean isKilometricExpenseLine(ExpenseLine expenseLine) {
+    Product expenseProduct = expenseLine.getExpenseProduct();
+    KilometricAllowParam kilometricAllowParam = expenseLine.getKilometricAllowParam();
+    return expenseProduct != null && kilometricAllowParam != null;
   }
 
   protected void updateMoveDate(Expense expense) {

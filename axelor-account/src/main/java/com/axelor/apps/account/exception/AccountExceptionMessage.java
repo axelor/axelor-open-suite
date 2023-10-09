@@ -200,7 +200,6 @@ public final class AccountExceptionMessage {
       "%s : You must configure shit to irrecoverable sequence for the company %s" /*)*/;
   public static final String IRRECOVERABLE_5 = /*$$(*/ "Treatment finished" /*)*/;
   public static final String IRRECOVERABLE_6 = /*$$(*/ "Anomalies generated" /*)*/;
-  public static final String IRRECOVERABLE_7 = /*$$(*/ "You must select a printing type" /*)*/;
 
   /** Journal service */
   public static final String JOURNAL_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -1672,4 +1671,27 @@ public final class AccountExceptionMessage {
 
   public static final String NO_DEPRECIATION_ACCOUNT_FOUND_IN_FIXED_ASSET_CATEGORY = /*$$(*/
       "No depreciation account found in fixed asset category %s." /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to debt recoveries:<br> %s" /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to payments voucher:<br> %s" /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to invoice payment(s) related to invoices: <br> %s" /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES = /*$$(*/
+      "The move lines are still linked to debt recoveries:<br> %s <br> You can't modify them." /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER = /*$$(*/
+      "The move lines are still linked to payments voucher:<br> %s <br> You can't modify them." /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
+      "The move lines are still linked to invoice payment(s) related to invoices: <br> %s <br> You can't modify them." /*)*/;
+
+  public static final String ACCOUNT_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
+      "Fiscal year and periods have been generated successfully." /*)*/;
+  public static final String ACCOUNT_CHART_AND_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
+      "The chart of account has been loaded and fiscal year/periods have been correctly generated." /*)*/;
 }

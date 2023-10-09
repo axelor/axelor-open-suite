@@ -60,7 +60,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       MetaFile justificationMetaFile,
       String comments,
       Employee employee,
-      Currency currency)
+      Currency currency,
+      Boolean toInvoice)
       throws AxelorException {
 
     if (expenseProduct == null) {
@@ -70,7 +71,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     }
 
     ExpenseLine expenseLine =
-        createBasicExpenseLine(project, employee, expenseDate, comments, currency);
+        createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
     setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     expenseProofFileService.convertProofFileToPdf(expenseLine);
@@ -90,14 +91,15 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       String comments,
       Employee employee,
       Company company,
-      Currency currency)
+      Currency currency,
+      Boolean toInvoice)
       throws AxelorException {
 
     checkKilometricLineRequiredValues(
         kilometricAllowParam, kilometricType, fromCity, toCity, company);
 
     ExpenseLine expenseLine =
-        createBasicExpenseLine(project, employee, expenseDate, comments, currency);
+        createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
     setKilometricExpenseLineInfo(
         kilometricAllowParam, kilometricType, fromCity, toCity, company, expenseLine);
 
@@ -162,15 +164,52 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       BigDecimal totalAmount,
       BigDecimal totalTax,
       MetaFile justificationMetaFile,
-      ExpenseLine expenseLine) {
+      ExpenseLine expenseLine)
+      throws AxelorException {
+
+    checkExpenseProduct(expenseProduct);
+
     expenseLine.setIsAloneMeal(expenseProduct.getDeductLunchVoucher());
     expenseLine.setExpenseProduct(expenseProduct);
     expenseLine.setJustificationMetaFile(justificationMetaFile);
 
-    if (totalAmount != null && totalTax != null) {
+    setAmountAndTax(expenseProduct, totalAmount, totalTax, expenseLine);
+  }
+
+  protected void setAmountAndTax(
+      Product expenseProduct,
+      BigDecimal totalAmount,
+      BigDecimal totalTax,
+      ExpenseLine expenseLine) {
+    if (totalAmount != null) {
       expenseLine.setTotalAmount(totalAmount);
+    }
+
+    if (totalTax != null) {
       expenseLine.setTotalTax(totalTax);
-      expenseLine.setUntaxedAmount(totalAmount.subtract(totalTax));
+
+      if (totalAmount != null) {
+        expenseLine.setUntaxedAmount(totalAmount.subtract(totalTax));
+      }
+
+      if (expenseProduct.getBlockExpenseTax()) {
+        expenseLine.setTotalTax(BigDecimal.ZERO);
+        expenseLine.setUntaxedAmount(totalAmount);
+      }
+    }
+  }
+
+  protected void checkExpenseProduct(Product expenseProduct) throws AxelorException {
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      Employee userEmployee = user.getEmployee();
+      if (userEmployee != null
+          && !userEmployee.getHrManager()
+          && expenseProduct.getUnavailableToUsers()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_EXPENSE_TYPE_NOT_ALLOWED));
+      }
     }
   }
 
@@ -191,14 +230,14 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   }
 
   protected ExpenseLine createBasicExpenseLine(
-      Project project, Employee employee, LocalDate expenseDate, String comments, Currency currency)
+      Project project,
+      Employee employee,
+      LocalDate expenseDate,
+      String comments,
+      Currency currency,
+      Boolean toInvoice)
       throws AxelorException {
     ExpenseLine expenseLine = new ExpenseLine();
-    if (expenseDate.isAfter(appBaseService.getTodayDate(null))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          HumanResourceExceptionMessage.EXPENSE_LINE_DATE_ERROR);
-    }
 
     setCurrency(currency, expenseLine);
     expenseLine.setProject(project);

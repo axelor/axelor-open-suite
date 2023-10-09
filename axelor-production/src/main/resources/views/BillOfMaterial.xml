@@ -54,7 +54,7 @@
 
     <menubar>
       <menu name="bomReportsMenu" title="Reports">
-        <item name="printItem" title="Print" action="action-bill-of-material-method-print"/>
+        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
 
       <menu name="bomOptionsMenu" title="Options">
@@ -230,11 +230,6 @@
     <field name="unit" expr="eval: _product?.unit"/>
   </action-record>
 
-  <action-record name="action-bill-of-material-line-default-record"
-    model="com.axelor.apps.production.db.BillOfMaterial">
-    <field name="qty" expr="1"/>
-  </action-record>
-
   <action-record name="action-bill-of-material-record-product"
     model="com.axelor.apps.production.db.BillOfMaterial">
     <field name="defineSubBillOfMaterial" expr="product?.productSubTypeSelect != 3"/>
@@ -272,10 +267,6 @@
   <action-method name="action-bill-of-material-generate-new-version">
     <call class="com.axelor.apps.production.web.BillOfMaterialController"
       method="generateNewVersion"/>
-  </action-method>
-
-  <action-method name="action-bill-of-material-method-print">
-    <call class="com.axelor.apps.production.web.BillOfMaterialController" method="print"/>
   </action-method>
 
   <action-method name="action-bill-of-material-method-validate-prod-process">

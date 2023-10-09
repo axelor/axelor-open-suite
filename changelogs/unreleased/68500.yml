@@ -1,0 +1,7 @@
+---
+title: "Expense : add control on expense justification file"
+type: fix
+description: |
+  Alert user if some expense lines don't have a justification file.
+  Alert user to keep original document if the file is not a PDF nor an image.
+  

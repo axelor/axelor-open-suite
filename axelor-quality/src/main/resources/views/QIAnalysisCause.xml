@@ -35,10 +35,10 @@
 
   <action-attrs name="action-qi-analysis-cause-attrs-set-qi-cause-domain">
     <attribute name="domain" for="qiCause"
-      expr="eval: &quot; self.company = ${__parent__?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.company = ${__parent__?.qi?.company?.id} AND self.branch.analysisMethod = ${__parent__?.qi?.analysisMethod?.id} &quot;"
       if="__parent__?._model == 'com.axelor.apps.quality.db.QIAnalysis'"/>
     <attribute name="domain" for="qiCause"
-      expr="eval: &quot; self.company = ${qiAnalysis?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.company = ${qiAnalysis?.qi?.company?.id} AND self.branch.analysisMethod = ${qiAnalysis.qi?.analysisMethod?.id} &quot;"
       if="qiAnalysis &amp;&amp; __parent__?._model != 'com.axelor.apps.quality.db.QIAnalysis'"/>
   </action-attrs>
 

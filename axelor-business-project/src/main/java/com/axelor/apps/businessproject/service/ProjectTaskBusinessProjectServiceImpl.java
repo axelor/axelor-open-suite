@@ -173,6 +173,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     ProjectTask task = super.create(subject, project, assignedTo);
     task.setProjectTaskList(new ArrayList<>());
     task.setProjectPlanningTimeList(new ArrayList<>());
+    task.setPurchaseOrderLineList(new ArrayList<>());
     task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
@@ -229,12 +230,14 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setPriceDiscounted(priceDiscounted);
     projectTask.setExTaxTotal(exTaxTotal);
 
-    projectTask.setTotalCosts(
-        projectTask
-            .getProduct()
-            .getCostPrice()
-            .multiply(projectTask.getQuantity())
-            .setScale(2, RoundingMode.HALF_UP));
+    if (projectTask.getProduct() != null) {
+      projectTask.setTotalCosts(
+          projectTask
+              .getProduct()
+              .getCostPrice()
+              .multiply(projectTask.getQuantity())
+              .setScale(2, RoundingMode.HALF_UP));
+    }
 
     return projectTask;
   }
@@ -634,6 +637,35 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     data.put("progress", projectTask.getPercentageOfProgress() + " %");
     data.put("consumption", projectTask.getPercentageOfConsumption() + " %");
     data.put("remaining", projectTask.getRemainingAmountToDo());
+
+    return data;
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayFinancialReporting(Long id)
+      throws AxelorException {
+
+    ProjectTask projectTask = projectTaskRepo.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put("turnover", projectTask.getTurnover());
+    data.put("initialCosts", projectTask.getInitialCosts());
+    data.put("initialMargin", projectTask.getInitialMargin());
+    data.put("initialMarkup", projectTask.getInitialMarkup());
+    data.put("realTurnover", projectTask.getRealTurnover());
+    data.put("realCosts", projectTask.getRealCosts());
+    data.put("realMargin", projectTask.getRealMargin());
+    data.put("realMarkup", projectTask.getRealMarkup());
+    data.put("landingCosts", projectTask.getLandingCosts());
+    data.put("landingMargin", projectTask.getLandingMargin());
+    data.put("landingMarkup", projectTask.getLandingMarkup());
+    data.put("forecastCosts", projectTask.getForecastCosts());
+    data.put("forecastMargin", projectTask.getForecastMargin());
+    data.put("forecastMarkup", projectTask.getForecastMarkup());
+    Optional.ofNullable(projectTask.getProject())
+        .map(Project::getCompany)
+        .map(Company::getCurrency)
+        .ifPresent(currency -> data.put("currencySymbol", currency.getSymbol()));
 
     return data;
   }

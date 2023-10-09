@@ -21,15 +21,18 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
@@ -51,7 +54,11 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
       PurchaseOrderService purchaseOrderService,
-      OperationOrderService operationOrderService) {
+      AppBaseService appBaseService,
+      OperationOrderService operationOrderService,
+      AppProductionService appProductionService,
+      ProductionConfigService productionConfigService,
+      OperationOrderPlanningService operationOrderPlanningService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
@@ -60,7 +67,11 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         productCompanyService,
         productionConfigRepo,
         purchaseOrderService,
-        operationOrderService);
+        appBaseService,
+        operationOrderService,
+        appProductionService,
+        productionConfigService,
+        operationOrderPlanningService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -94,9 +105,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     }
 
-    for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-      operationOrderWorkflowService.plan(operationOrder);
-    }
+    operationOrderPlanningService.plan(manufOrder.getOperationOrderList());
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
 
