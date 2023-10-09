@@ -54,7 +54,7 @@
     <panel name="titlePanel" showIf="typeSelect > 0">
       <field name="productName" title="Title" requiredIf="typeSelect != 0" colSpan="9"/>
       <field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line"/>
-      <field name="qty" colSpan="6" onChange="action-invoice-line-group-qty-onchange"/>
+      <field name="qty" colSpan="6" onChange="action-invoice-line-method-check-qty"/>
       <field name="isShowTotal" colSpan="3"
         if="__config__.app.getApp('sale')?.enablePackManagement"
         onChange="action-invoice-line-record-reset-is-hide-unit-amounts" showIf="typeSelect == 3"/>
@@ -374,10 +374,6 @@
     <action name="action-invoice-line-method-check-analytic-account-on-invoice-line"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
     <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-  </action-group>
-
-  <action-group name="action-invoice-line-group-qty-onchange">
-    <action name="action-invoice-line-method-check-qty"/>
   </action-group>
 
   <!-- ACTION RECORDS -->

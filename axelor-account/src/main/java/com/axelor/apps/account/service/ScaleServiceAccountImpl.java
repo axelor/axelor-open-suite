@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -39,6 +40,14 @@ public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleSe
   }
 
   @Override
+  public BigDecimal getScaledValue(
+      InvoiceLine invoiceLine, BigDecimal amount, boolean isCompanyAmount) {
+    return invoiceLine.getInvoice() != null
+        ? this.getScaledValue(invoiceLine.getInvoice(), amount, isCompanyAmount)
+        : this.getScaledValue(amount);
+  }
+
+  @Override
   public int getScale(Move move, boolean isCompanyAmount) {
     return this.getScale(move.getCompany(), move.getCurrency(), isCompanyAmount);
   }
@@ -53,6 +62,13 @@ public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleSe
   @Override
   public int getScale(Invoice invoice, boolean isCompanyAmount) {
     return this.getScale(invoice.getCompany(), invoice.getCurrency(), isCompanyAmount);
+  }
+
+  @Override
+  public int getScale(InvoiceLine invoiceLine, boolean isCompanyAmount) {
+    return invoiceLine.getInvoice() != null
+        ? this.getScale(invoiceLine.getInvoice(), isCompanyAmount)
+        : this.getScale();
   }
 
   @Override

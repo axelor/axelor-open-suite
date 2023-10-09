@@ -260,6 +260,7 @@ public class InvoiceLineController {
                   taxLine,
                   exTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
+      // TODO ajouter un scale
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

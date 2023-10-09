@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -67,6 +68,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected InvoiceLineService invoiceLineService;
   protected AccountManagementAccountService accountManagementService;
   protected ProductCompanyService productCompanyService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   protected Invoice invoice;
   protected Product product;
@@ -86,6 +88,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected BigDecimal exTaxTotal;
   protected BigDecimal inTaxTotal;
   protected Integer typeSelect = 0;
+  protected int currencyScale;
+  protected int companyCurrencyScale;
 
   public static final int DEFAULT_SEQUENCE = 0;
 
@@ -100,6 +104,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.invoiceLineService = Beans.get(InvoiceLineService.class);
     this.accountManagementService = Beans.get(AccountManagementAccountService.class);
     this.productCompanyService = Beans.get(ProductCompanyService.class);
+    this.scaleServiceAccount = Beans.get(ScaleServiceAccount.class);
   }
 
   protected InvoiceLineGenerator(
@@ -123,6 +128,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
     this.currencyService = new CurrencyService(this.appBaseService, this.today);
+    this.currencyScale = this.scaleServiceAccount.getScale(invoice, false);
+    this.companyCurrencyScale = this.scaleServiceAccount.getScale(invoice, true);
   }
 
   protected InvoiceLineGenerator(
@@ -151,8 +158,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.taxLine = taxLine;
     this.discountTypeSelect = discountTypeSelect;
     this.discountAmount = discountAmount;
-    this.exTaxTotal = exTaxTotal;
-    this.inTaxTotal = inTaxTotal;
+    this.exTaxTotal = exTaxTotal.setScale(this.currencyScale, RoundingMode.HALF_UP);
+    this.inTaxTotal = inTaxTotal.setScale(this.currencyScale, RoundingMode.HALF_UP);
   }
 
   public Invoice getInvoice() {
@@ -266,11 +273,16 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     if (!invoice.getInAti()) {
-      exTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_UP);
+      exTaxTotal = computeAmount(this.qty, this.priceDiscounted, this.currencyScale);
+      inTaxTotal =
+          exTaxTotal
+              .add(exTaxTotal.multiply(taxRate))
+              .setScale(this.currencyScale, RoundingMode.HALF_UP);
     } else {
-      inTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      inTaxTotal = computeAmount(this.qty, this.priceDiscounted, this.currencyScale);
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE), this.currencyScale, BigDecimal.ROUND_HALF_UP);
     }
   }
 
@@ -295,13 +307,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         currencyService
             .getAmountCurrencyConvertedAtDate(
                 invoice.getCurrency(), companyCurrency, exTaxTotal, today)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+            .setScale(this.companyCurrencyScale, RoundingMode.HALF_UP));
 
     invoiceLine.setCompanyInTaxTotal(
         currencyService
             .getAmountCurrencyConvertedAtDate(
                 invoice.getCurrency(), companyCurrency, inTaxTotal, today)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+            .setScale(this.companyCurrencyScale, RoundingMode.HALF_UP));
   }
 
   /**
@@ -326,7 +338,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     LOG.debug("Quantity reimbursed : {}", refundInvoiceLine.getQty());
 
     refundInvoiceLine.setExTaxTotal(
-        computeAmount(refundInvoiceLine.getQty(), refundInvoiceLine.getPrice()));
+        computeAmount(
+            refundInvoiceLine.getQty(), refundInvoiceLine.getPrice(), this.currencyScale));
 
     LOG.debug(
         "Reimbursement of the invoice line {} => amount W.T : {}",
@@ -340,7 +353,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     InvoiceLine substract = JPA.copy(invoiceLine1, false);
 
     substract.setQty(invoiceLine1.getQty().add(invoiceLine2.getQty()));
-    substract.setExTaxTotal(computeAmount(substract.getQty(), substract.getPrice()));
+    substract.setExTaxTotal(
+        computeAmount(substract.getQty(), substract.getPrice(), this.currencyScale));
 
     LOG.debug("Subtraction of two invoice lines: {}", substract);
 

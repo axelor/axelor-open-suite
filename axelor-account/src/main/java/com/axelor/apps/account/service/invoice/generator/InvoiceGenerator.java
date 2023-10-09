@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -420,6 +421,7 @@ public abstract class InvoiceGenerator {
    * @throws AxelorException
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
+    ScaleServiceAccount scaleServiceAccount = Beans.get(ScaleServiceAccount.class);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
@@ -438,28 +440,42 @@ public abstract class InvoiceGenerator {
       }
 
       // In the invoice currency
-      invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
+      invoice.setExTaxTotal(
+          scaleServiceAccount.getScaledValue(
+              invoice, invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()), false));
 
       // In the company accounting currency
       invoice.setCompanyExTaxTotal(
-          invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
+          scaleServiceAccount.getScaledValue(
+              invoice,
+              invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()),
+              true));
     }
 
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
       // In the invoice currency
-      invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
+      invoice.setTaxTotal(
+          scaleServiceAccount.getScaledValue(
+              invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()), false));
 
       // In the company accounting currency
       invoice.setCompanyTaxTotal(
-          invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
+          scaleServiceAccount.getScaledValue(
+              invoice,
+              invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()),
+              true));
     }
 
     // In the invoice currency
-    invoice.setInTaxTotal(invoice.getExTaxTotal().add(invoice.getTaxTotal()));
+    invoice.setInTaxTotal(
+        scaleServiceAccount.getScaledValue(
+            invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal()), false));
 
     // In the company accounting currency
-    invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()));
+    invoice.setCompanyInTaxTotal(
+        scaleServiceAccount.getScaledValue(
+            invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()), true));
     invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 
     invoice.setAmountRemaining(invoice.getInTaxTotal());

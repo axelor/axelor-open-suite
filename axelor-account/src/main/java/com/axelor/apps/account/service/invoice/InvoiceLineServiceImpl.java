@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -75,6 +76,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected TaxService taxService;
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
+  protected ScaleServiceAccount scaleServiceAccount;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -89,8 +91,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       TaxService taxService,
       InternationalService internationalService,
-      InvoiceLineAttrsService invoiceLineAttrsService) {
-
+      InvoiceLineAttrsService invoiceLineAttrsService,
+      ScaleServiceAccount scaleServiceAccount) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -103,6 +105,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.taxService = taxService;
     this.internationalService = internationalService;
     this.invoiceLineAttrsService = invoiceLineAttrsService;
+    this.scaleServiceAccount = scaleServiceAccount;
   }
 
   @Override
@@ -132,7 +135,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
       throws AxelorException {
 
-    return this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase, true);
+    return scaleServiceAccount.getScaledValue(
+        invoice, this.getUnitPrice(invoice, invoiceLine, taxLine, isPurchase, true), false);
   }
 
   /**
@@ -208,7 +212,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             invoice.getCompany().getCurrency(),
             exTaxTotal,
             invoice.getInvoiceDate())
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        .setScale(scaleServiceAccount.getScale(invoice, true), RoundingMode.HALF_UP);
   }
 
   @Override
@@ -262,7 +266,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
                 : invoiceLine.getPrice())
         != 0) {
       if (invoiceLine.getProduct().getInAti()) {
-        processedDiscounts.put("inTaxPrice", price);
+        processedDiscounts.put(
+            "inTaxPrice", scaleServiceAccount.getScaledValue(invoiceLine, price, false));
         processedDiscounts.put(
             "price",
             taxService.convertUnitPrice(
@@ -274,11 +279,14 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         processedDiscounts.put("price", price);
         processedDiscounts.put(
             "inTaxPrice",
-            taxService.convertUnitPrice(
-                false,
-                invoiceLine.getTaxLine(),
-                price,
-                appAccountService.getNbDecimalDigitForUnitPrice()));
+            scaleServiceAccount.getScaledValue(
+                invoiceLine,
+                taxService.convertUnitPrice(
+                    false,
+                    invoiceLine.getTaxLine(),
+                    price,
+                    appAccountService.getNbDecimalDigitForUnitPrice()),
+                false));
       }
     }
 
@@ -364,6 +372,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal inTaxTotal;
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(invoiceLine, invoice.getInAti());
+    int currencyScale = scaleServiceAccount.getScale(invoice, false);
 
     invoiceLine.setPriceDiscounted(priceDiscounted);
 
@@ -375,13 +384,20 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
 
     if (!invoice.getInAti()) {
-      exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))));
+      exTaxTotal =
+          InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted, currencyScale);
+      inTaxTotal =
+          exTaxTotal
+              .add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))))
+              .setScale(currencyScale, RoundingMode.HALF_UP);
     } else {
-      inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
+      inTaxTotal =
+          InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted, currencyScale);
       exTaxTotal =
           inTaxTotal.divide(
-              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              currencyScale,
+              BigDecimal.ROUND_HALF_UP);
     }
 
     companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, invoice);
@@ -514,19 +530,26 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
     TaxLine taxLine = invoiceLine.getTaxLine();
     BigDecimal priceDiscounted = this.computeDiscount(invoiceLine, invoice.getInAti());
+    int currencyScale = scaleServiceAccount.getScale(invoice, false);
+
     if (taxLine != null) {
       taxRate = taxLine.getValue();
       invoiceLine.setTaxRate(taxRate);
       invoiceLine.setTaxCode(taxLine.getTax().getCode());
     }
     if (Boolean.FALSE.equals(invoice.getInAti())) {
-      exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))));
+      exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted, currencyScale);
+      inTaxTotal =
+          exTaxTotal
+              .add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))))
+              .setScale(currencyScale, RoundingMode.HALF_UP);
     } else {
-      inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
+      inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted, currencyScale);
       exTaxTotal =
           inTaxTotal.divide(
-              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              currencyScale,
+              BigDecimal.ROUND_HALF_UP);
     }
     invoiceLine.setExTaxTotal(exTaxTotal);
     invoiceLine.setCompanyExTaxTotal(this.getCompanyExTaxTotal(exTaxTotal, invoice));
@@ -629,14 +652,26 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       BigDecimal price = getPrice(invoice, invoiceLine);
 
       invoiceLine.setInTaxTotal(
-          taxService.convertUnitPrice(
-              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+          scaleServiceAccount.getScaledValue(
+              invoice,
+              taxService.convertUnitPrice(
+                  false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()),
+              false));
       invoiceLine.setCompanyInTaxTotal(
-          taxService.convertUnitPrice(
-              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+          scaleServiceAccount.getScaledValue(
+              invoice,
+              taxService.convertUnitPrice(
+                  false,
+                  taxLine,
+                  companyExTaxTotal,
+                  appBaseService.getNbDecimalDigitForUnitPrice()),
+              true));
       invoiceLine.setInTaxPrice(
-          taxService.convertUnitPrice(
-              false, taxLine, price, appBaseService.getNbDecimalDigitForUnitPrice()));
+          scaleServiceAccount.getScaledValue(
+              invoice,
+              taxService.convertUnitPrice(
+                  false, taxLine, price, appBaseService.getNbDecimalDigitForUnitPrice()),
+              false));
     }
     return invoiceLineList;
   }

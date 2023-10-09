@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -18,11 +19,15 @@ public interface ScaleServiceAccount {
 
   BigDecimal getScaledValue(Invoice invoice, BigDecimal amount, boolean isCompanyAmount);
 
+  BigDecimal getScaledValue(InvoiceLine invoiceLine, BigDecimal amount, boolean isCompanyAmount);
+
   int getScale(Move move, boolean isCompanyAmount);
 
   int getScale(MoveLine moveLine, boolean isCompanyAmount);
 
   int getScale(Invoice invoice, boolean isCompanyAmount);
+
+  int getScale(InvoiceLine invoiceLine, boolean isCompanyAmount);
 
   int getScale(InvoiceTerm invoiceTerm, boolean isCompanyAmount);
 
