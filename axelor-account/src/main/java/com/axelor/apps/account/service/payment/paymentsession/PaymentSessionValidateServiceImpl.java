@@ -36,8 +36,8 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -81,7 +81,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected AppBaseService appBaseService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
-  protected MoveComputeService moveComputeService;
+  protected MoveCutOffService moveCutOffService;
   protected MoveLineCreateService moveLineCreateService;
   protected ReconcileService reconcileService;
   protected InvoiceTermService invoiceTermService;
@@ -104,7 +104,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -123,7 +123,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
-    this.moveComputeService = moveComputeService;
+    this.moveCutOffService = moveCutOffService;
     this.moveLineCreateService = moveLineCreateService;
     this.reconcileService = reconcileService;
     this.invoiceTermService = invoiceTermService;
@@ -410,7 +410,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       this.createFinancialDiscountMoveLine(paymentSession, invoiceTerm, move, out);
     }
 
-    moveComputeService.autoApplyCutOffDates(move);
+    moveCutOffService.autoApplyCutOffDates(move);
 
     return moveRepo.save(move);
   }
@@ -659,7 +659,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.generateCashMoveLine(
         move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, out);
 
-    moveComputeService.autoApplyCutOffDates(move);
+    moveCutOffService.autoApplyCutOffDates(move);
 
     moveRepo.save(move);
 
@@ -788,7 +788,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       moveValidateService.completeMoveLines(move);
       moveValidateService.freezeFieldsOnMoveLines(move);
     } else {
-      moveComputeService.autoApplyCutOffDates(move);
+      moveCutOffService.autoApplyCutOffDates(move);
       moveValidateService.accounting(move);
     }
   }
@@ -1046,14 +1046,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     if (moveLine != null) {
-      if (out) {
-        moveLine.setCredit(moveLine.getCredit().add(pair.getRight()));
-      } else {
-        moveLine.setDebit(moveLine.getDebit().add(pair.getRight()));
-      }
-
-      moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(pair.getRight()));
-
+      this.updateMoveLine(moveLine, pair.getRight(), out);
     } else {
       moveLine =
           this.generateMoveLine(
@@ -1094,6 +1087,28 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         true);
   }
 
+  protected void updateMoveLine(MoveLine moveLine, BigDecimal amountToAdd, boolean out) {
+    if (out) {
+      moveLine.setCredit(moveLine.getCredit().add(amountToAdd));
+    } else {
+      moveLine.setDebit(moveLine.getDebit().add(amountToAdd));
+    }
+
+    moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(amountToAdd));
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      InvoiceTerm invoiceTerm = moveLine.getInvoiceTermList().get(0);
+
+      BigDecimal newAmount = moveLine.getCurrencyAmount();
+      BigDecimal amountPaid = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
+
+      invoiceTerm.setAmountRemaining(newAmount.subtract(amountPaid));
+      invoiceTerm.setAmount(newAmount);
+      invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getAmountRemaining());
+      invoiceTerm.setCompanyAmount(invoiceTerm.getAmount());
+    }
+  }
+
   @Override
   public boolean containsCompensativeInvoiceTerm(
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
@@ -1118,13 +1133,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected void recomputeAmountPaid(MoveLine moveLine) {
     if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      Optional<BigDecimal> amountPaid =
-          moveLine.getInvoiceTermList().stream()
-              .map(it -> it.getPaymentAmount())
-              .reduce(BigDecimal::add);
-      if (amountPaid.isPresent()) {
-        moveLine.setAmountPaid(amountPaid.get());
-      }
+      moveLine.getInvoiceTermList().stream()
+          .filter(InvoiceTerm::getIsPaid)
+          .map(InvoiceTerm::getPaymentAmount)
+          .reduce(BigDecimal::add)
+          .ifPresent(moveLine::setAmountPaid);
     }
   }
 }

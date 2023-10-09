@@ -277,7 +277,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     moveLineList.addAll(newMap.values());
   }
 
-  protected boolean isGenerateMoveLineForAutoTax(String accountType) {
+  @Override
+  public boolean isGenerateMoveLineForAutoTax(String accountType) {
     return accountType.equals(AccountTypeRepository.TYPE_DEBT)
         || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
         || accountType.equals(AccountTypeRepository.TYPE_INCOME)

@@ -768,10 +768,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           taxLine.getTax().getAccountManagementList().stream()
               .filter(
                   accountManagement ->
-                      accountManagement
-                          .getCompany()
-                          .getName()
-                          .equals(fixedAsset.getCompany().getName()))
+                      accountManagement.getCompany().equals(fixedAsset.getCompany()))
               .collect(Collectors.toList());
       Account creditAccountTwo =
           !CollectionUtils.isEmpty(creditAccountTwoList)

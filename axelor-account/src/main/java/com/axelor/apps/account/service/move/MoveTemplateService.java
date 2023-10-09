@@ -206,7 +206,7 @@ public class MoveTemplateService {
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 origin,
-                null,
+                moveTemplate.getDescription(),
                 companyBankDetails);
 
         int counter = 1;
@@ -386,6 +386,7 @@ public class MoveTemplateService {
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
 
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {

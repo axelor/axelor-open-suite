@@ -353,20 +353,14 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if ((reconcile
+    if (reconcile
                 .getAmount()
-                .compareTo(
-                    creditMoveLine
-                        .getCurrencyAmount()
-                        .abs()
-                        .subtract(creditMoveLine.getAmountPaid()))
-            > 0)
-        || (reconcile
+                .compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()))
+            > 0
+        || reconcile
                 .getAmount()
-                .multiply(debitMoveLine.getCurrencyRate())
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
                 .compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()))
-            > 0)) {
+            > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -462,10 +456,18 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.checkCurrencies(debitMoveLine, creditMoveLine);
 
     this.updatePayment(
-        reconcile, debitMoveLine, debitInvoice, debitMove, creditMove, amount, updateInvoiceTerms);
+        reconcile,
+        debitMoveLine,
+        creditMoveLine,
+        debitInvoice,
+        debitMove,
+        creditMove,
+        amount,
+        updateInvoiceTerms);
     this.updatePayment(
         reconcile,
         creditMoveLine,
+        debitMoveLine,
         creditInvoice,
         creditMove,
         debitMove,
@@ -492,13 +494,13 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected void updatePayment(
       Reconcile reconcile,
       MoveLine moveLine,
+      MoveLine otherMoveLine,
       Invoice invoice,
       Move move,
       Move otherMove,
       BigDecimal amount,
       boolean updateInvoiceTerms)
       throws AxelorException {
-
     InvoicePayment invoicePayment = null;
     if (invoice != null
         && otherMove.getFunctionalOriginSelect()
@@ -511,18 +513,8 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .orElse(this.getExistingInvoicePayment(invoice, otherMove));
       }
 
-      Currency currency;
-      if (invoicePayment != null) {
-        currency = invoicePayment.getCurrency();
-      } else {
-        currency = otherMove.getCurrency();
-        if (currency == null) {
-          currency = otherMove.getCompanyCurrency();
-        }
-      }
-      boolean isCompanyCurrency = currency.equals(reconcile.getCompany().getCurrency());
-      if (!isCompanyCurrency) {
-        amount = this.getTotal(moveLine, amount, invoicePayment != null);
+      if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
+        amount = this.getTotal(moveLine, otherMoveLine, amount, invoicePayment != null);
       }
 
       if (invoicePayment == null) {
@@ -530,7 +522,10 @@ public class ReconcileServiceImpl implements ReconcileService {
             invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
         invoicePayment.addReconcileListItem(reconcile);
       }
+    } else if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
+      amount = this.getTotal(moveLine, otherMoveLine, amount, false);
     }
+
     List<InvoiceTermPayment> invoiceTermPaymentList = null;
     if (moveLine.getAccount().getUseForPartnerBalance() && updateInvoiceTerms) {
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
@@ -546,25 +541,49 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
-  protected BigDecimal getTotal(MoveLine moveLine, BigDecimal amount, boolean isInvoicePayment) {
+  protected boolean isCompanyCurrency(
+      Reconcile reconcile, InvoicePayment invoicePayment, Move otherMove) {
+    Currency currency;
+    if (invoicePayment != null) {
+      currency = invoicePayment.getCurrency();
+    } else {
+      currency = otherMove.getCurrency();
+      if (currency == null) {
+        currency = otherMove.getCompanyCurrency();
+      }
+    }
+
+    return currency.equals(reconcile.getCompany().getCurrency());
+  }
+
+  protected BigDecimal getTotal(
+      MoveLine moveLine, MoveLine otherMoveLine, BigDecimal amount, boolean isInvoicePayment) {
     BigDecimal total;
     BigDecimal moveLineAmount = moveLine.getCredit().add(moveLine.getDebit());
     BigDecimal rate = moveLine.getCurrencyRate();
     BigDecimal invoiceAmount =
         moveLine.getAmountPaid().add(moveLineAmount.subtract(moveLine.getAmountPaid()));
     BigDecimal computedAmount =
-        moveLineAmount.divide(rate, 10, RoundingMode.HALF_UP).multiply(rate);
+        moveLineAmount
+            .divide(rate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+            .multiply(rate);
 
     // Recompute currency rate to avoid rounding issue
-    total = amount.divide(rate, 10, RoundingMode.HALF_UP);
+    total = amount.divide(rate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     if (total.stripTrailingZeros().scale() > AppBaseService.DEFAULT_NB_DECIMAL_DIGITS) {
       total =
           computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
-              .multiply(moveLine.getCurrencyAmount().abs())
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+              .multiply(moveLine.getCurrencyAmount().abs());
     }
 
-    return total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+    if (amount.compareTo(otherMoveLine.getCredit().max(otherMoveLine.getDebit())) == 0
+        && total.compareTo(otherMoveLine.getCurrencyAmount()) != 0) {
+      total = otherMoveLine.getCurrencyAmount().abs();
+    }
+
+    return total;
   }
 
   protected BigDecimal computePaidRatio(
@@ -579,7 +598,9 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     if (isInvoicePayment) {
       // ReCompute percentage paid when it's partial payment with invoice payment
-      percentage = amountToPay.divide(invoiceAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
+      percentage =
+          amountToPay.divide(
+              invoiceAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     } else if (moveLineAmount
             .multiply(percentage)
             .setScale(scale, RoundingMode.HALF_UP)
@@ -589,9 +610,13 @@ public class ReconcileServiceImpl implements ReconcileService {
       if (amountToPay.compareTo(invoiceAmount) != 0) {
         percentage = invoiceAmount.divide(computedAmount, scale, RoundingMode.HALF_UP);
       } else {
-        percentage = invoiceAmount.divide(computedAmount, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
+        percentage =
+            invoiceAmount.divide(
+                computedAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       }
-      ratioPaid = amountToPay.divide(invoiceAmount, 10, RoundingMode.HALF_UP);
+      ratioPaid =
+          amountToPay.divide(
+              invoiceAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     }
 
     return ratioPaid.multiply(percentage);
@@ -608,7 +633,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (invoiceTermList != null) {
       invoiceTermPaymentList =
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTermList, amount);
+              invoicePayment, invoiceTermList, amount, reconcile.getAmount());
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
         invoiceTermService.updateInvoiceTermsPaidAmount(

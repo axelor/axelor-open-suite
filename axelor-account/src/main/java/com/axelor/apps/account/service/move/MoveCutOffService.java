@@ -16,15 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Print;
-import com.axelor.apps.base.db.PrintTemplate;
-import java.io.IOException;
+import com.axelor.apps.account.db.Move;
+import java.time.LocalDate;
 
-public interface PrintTemplateService {
+public interface MoveCutOffService {
 
-  public Print generatePrint(Long objectId, PrintTemplate printTemplate)
-      throws AxelorException, IOException, ClassNotFoundException;
+  boolean checkManageCutOffDates(Move move);
+
+  void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  void autoApplyCutOffDates(Move move);
+
+  void applyCutOffDatesInEmptyLines(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }

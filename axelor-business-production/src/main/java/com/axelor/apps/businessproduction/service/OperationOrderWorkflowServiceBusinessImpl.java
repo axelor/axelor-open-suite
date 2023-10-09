@@ -30,6 +30,8 @@ import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
 import com.axelor.inject.Beans;
@@ -49,7 +51,9 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
       WeeklyPlanningService weeklyPlanningService,
       ProdProcessLineService prodProcessLineService,
       MachineService machineService,
-      ManufOrderService manufOrderService) {
+      ManufOrderService manufOrderService,
+      ManufOrderWorkflowService manufOrderWorkflowService,
+      ManufOrderStockMoveService manufOrderStockMoveService) {
     super(
         operationOrderStockMoveService,
         operationOrderRepo,
@@ -59,7 +63,9 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
         weeklyPlanningService,
         prodProcessLineService,
         machineService,
-        manufOrderService);
+        manufOrderService,
+        manufOrderWorkflowService,
+        manufOrderStockMoveService);
   }
 
   /**
