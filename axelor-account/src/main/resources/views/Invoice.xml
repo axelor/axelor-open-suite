@@ -636,7 +636,8 @@
           <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
             grid-view="incoterm-grid"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
-          <spacer colSpan="6" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled)"/>
+          <spacer colSpan="6"
+            if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled)"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
             <viewer><![CDATA[<>{addressStr}</>]]></viewer>

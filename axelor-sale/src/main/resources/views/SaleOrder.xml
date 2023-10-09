@@ -1972,7 +1972,8 @@
     <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="forwarderPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <field name="incoterm" hidden="true" if="!__config__.app.isApp('supplychain') || !__config__.app.getApp('stock')?.isIncotermEnabled"/>
+    <field name="incoterm" hidden="true"
+      if="!__config__.app.isApp('supplychain') || !__config__.app.getApp('stock')?.isIncotermEnabled"/>
     <field name="isNeedingConformityCertificate" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('supplychain')"/>

@@ -25,7 +25,8 @@
     <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail"
       showIf="realStockMoveAutomaticMail" form-view="template-form" grid-view="template-grid"
       domain="self.metaModel.name='StockMove'"/>
-    <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
+    <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"
+      if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
     <field name="$stockConfig" type="many-to-one"
       target="com.axelor.apps.stock.db.StockConfig" hidden="true"/>
   </grid>
