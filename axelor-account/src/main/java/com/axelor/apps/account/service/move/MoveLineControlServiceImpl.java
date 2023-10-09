@@ -159,18 +159,24 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (isCompanyAmount) {
       total =
           invoiceAttached == null
-              ? moveLine.getDebit().max(moveLine.getCredit())
+              ? moveLine
+                  .getDebit()
+                  .max(moveLine.getCredit())
+                  .subtract(moveLine.getFinancialDiscountTotalAmount())
               : invoiceAttached.getCompanyInTaxTotal();
     } else {
       total =
-          invoiceAttached == null ? moveLine.getCurrencyAmount() : invoiceAttached.getInTaxTotal();
+          invoiceAttached == null
+              ? moveLine.getCurrencyAmount().subtract(moveLine.getFinancialDiscountTotalAmount())
+              : invoiceAttached.getInTaxTotal();
     }
 
     total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     BigDecimal invoiceTermTotal =
         invoiceTermList.stream()
             .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .abs();
 
     if (invoiceTermTotal.compareTo(total) != 0) {
       invoiceTermTotal =
