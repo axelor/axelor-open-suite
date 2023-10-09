@@ -19,6 +19,7 @@
     <string name="prefixe" title="Prefix"/>
     <string name="suffixe" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
+    <string name="pattern" title="Pattern"/>
     <integer name="toBeAdded" title="Increment" required="true" min="1"/>
 
     <boolean name="yearlyResetOk" title="Yearly reset"/>
@@ -59,6 +60,7 @@
   <enum name="SequenceTypeSelect">
     <item name="NUMBERS" title="Use numbers"/>
     <item name="LETTERS" title="Use letters"/>
+    <item name="ALPHANUMERIC" title="Use alphanumeric"/>
   </enum>
 
   <enum name="SequenceLettersTypeSelect">

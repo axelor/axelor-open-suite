@@ -282,6 +282,13 @@ public class SequenceService {
         nextSequence = findNextLetterSequence(nextNum, lettersType);
         break;
 
+      case ALPHANUMERIC:
+        padStr = PADDING_DIGIT;
+        nextSequence =
+            findNextAlphanumericSequence(nextNum, sequence.getPattern(), sequence.getPadding());
+
+        break;
+
       default:
         throw new AxelorException(
             sequenceVersion,
@@ -291,6 +298,43 @@ public class SequenceService {
     }
 
     return StringUtils.leftPad(nextSequence, sequence.getPadding(), padStr);
+  }
+
+  private String findNextAlphanumericSequence(Long nextNum, String pattern, Integer padding)
+      throws AxelorException {
+    int patternLength = pattern.length();
+    /* if (padding != patternLength) {
+      throw new AxelorException(1, "The pattern length should be equal to padding ");
+    }*/
+
+    String sequence = "";
+    int add = 0;
+    for (int i = patternLength - 1; i >= 0; i--) {
+      if (add == 1) {
+        nextNum++;
+        add = 0;
+      }
+      int value;
+      switch (pattern.charAt(i)) {
+        case 'N':
+          value = (int) (nextNum % 10);
+          nextNum = nextNum - value;
+          nextNum = nextNum / 10;
+          sequence = value + sequence;
+          break;
+
+        case 'L':
+          value = (int) (nextNum % 26);
+          nextNum = nextNum - value;
+          nextNum = nextNum / 26;
+          char temp = (char) ('A' + value);
+          add = temp > 'Z' ? 1 : 0;
+          sequence = temp + sequence;
+          break;
+      }
+    }
+
+    return sequence;
   }
 
   /**
@@ -493,5 +537,11 @@ public class SequenceService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           BaseExceptionMessage.SEQUENCE_PREFIX,
           draftPrefix);
+  }
+
+  public void verifyPattern(Sequence sequence) throws AxelorException {
+    if (sequence.getPattern() != null && sequence.getPadding() != sequence.getPattern().length()) {
+      throw new AxelorException(1, "The pattern length should be equal to padding ");
+    }
   }
 }
