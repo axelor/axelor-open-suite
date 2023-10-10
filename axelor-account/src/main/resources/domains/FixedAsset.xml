@@ -110,7 +110,7 @@
     <integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month" default="12"/>
     <integer name="ifrsDurationInMonth" title="IFRS Duration In Month"/>
     <integer name="importIfrsNbrOfPastDepreciations" title="Nbr of past depreciations"/>
-    <decimal name="ifrsAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+    <decimal name="importIfrsAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List" mappedBy="ifrsFixedAsset"/>
     <integer name="ifrsFirstDepreciationDateInitSelect" massUpdate="true"

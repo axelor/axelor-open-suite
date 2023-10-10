@@ -59,8 +59,10 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
                 AccountExceptionMessage
                     .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
       }
-      if (fixedAsset.getIfrsAlreadyDepreciatedAmount() != null
-          && fixedAsset.getIfrsAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
+      if (fixedAsset.getImportIfrsAlreadyDepreciatedAmount() != null
+          && fixedAsset
+                  .getImportIfrsAlreadyDepreciatedAmount()
+                  .compareTo(fixedAsset.getGrossValue())
               > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,

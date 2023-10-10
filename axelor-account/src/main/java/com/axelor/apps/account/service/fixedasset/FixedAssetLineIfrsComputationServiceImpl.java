@@ -125,7 +125,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
-    return fixedAsset.getIfrsAlreadyDepreciatedAmount();
+    return fixedAsset.getImportIfrsAlreadyDepreciatedAmount();
   }
 
   @Override

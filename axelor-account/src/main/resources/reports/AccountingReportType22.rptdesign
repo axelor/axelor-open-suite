@@ -965,7 +965,7 @@ FROM
             ORDER BY FixedAssetLine2.depreciation_date DESC LIMIT 1)
     UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
-			FixedAsset.already_depreciated_amount AS imported_depreciation_a,
+			FixedAsset.import_already_depreciated_amount AS imported_depreciation_a,
 			0 AS depreciation_b,
 			0 AS depreciation_c,
 			0 AS impairment_value_a,
