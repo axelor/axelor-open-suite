@@ -20,7 +20,7 @@
       <field name="name" colSpan="5"/>
       <field name="templateLink" colSpan="5"/>
       <field name="format" colSpan="2"/>
-      <field name="templateMetaFile" widget="binary-link" colSpan="5"/>
+      <field name="templateMetaFile" widget="binary-link" colSpan="5" x-accept=".rptdesign"/>
       <field name="metaModel" colSpan="5"/>
       <field name="templateEngineSelect" colSpan="2"/>
       <field name="attach"/>

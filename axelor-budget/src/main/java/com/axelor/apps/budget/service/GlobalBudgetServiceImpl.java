@@ -195,6 +195,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           budgetLevelManagementRepository.copy(groupBudgetLevel, false);
       optGroupBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
       optGroupBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
+      optGroupBudgetLevel.setBudgetTypeSelect(globalBudget.getBudgetTypeSelect());
       globalBudgetTemplate.removeBudgetLevelListItem(optGroupBudgetLevel);
       optGroupBudgetLevel.setGlobalBudgetTemplate(null);
       globalBudget.addBudgetLevelListItem(optGroupBudgetLevel);
@@ -208,6 +209,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           optSectionBudgetLevel.setTypeSelect(
               BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
           optSectionBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
+          optSectionBudgetLevel.setBudgetTypeSelect(globalBudget.getBudgetTypeSelect());
           optGroupBudgetLevel.addBudgetLevelListItem(optSectionBudgetLevel);
           List<Budget> budgetList = sectionBudgetLevel.getBudgetList();
           Set<BudgetScenarioVariable> variablesList =

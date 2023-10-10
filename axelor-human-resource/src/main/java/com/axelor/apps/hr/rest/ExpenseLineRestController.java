@@ -6,19 +6,26 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLineResponse;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
+import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.servers.Server;
 import java.time.LocalDate;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -82,5 +89,23 @@ public class ExpenseLineRestController {
 
     return Beans.get(ExpenseLineResponseComputeService.class)
         .computeCreateResponse(expenseLine, requestBody, new ExpenseLineResponse(expenseLine));
+  }
+
+  @Operation(
+      summary = "Check expense line",
+      tags = {"Expense line"})
+  @Path("/check/{expenseLineId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkExpenseLine(@PathParam("expenseLineId") Long expenseLineId)
+      throws AxelorException {
+    new SecurityCheck().writeAccess(ExpenseLine.class).createAccess(ExpenseLine.class).check();
+    ExpenseLine expenseLine =
+        ObjectFinder.find(ExpenseLine.class, expenseLineId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.CHECK_RESPONSE_RESPONSE),
+        Beans.get(ExpenseLineCheckResponseService.class).createResponse(expenseLine));
   }
 }

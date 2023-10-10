@@ -21,6 +21,7 @@ package com.axelor.apps.sale.service.saleorder.print;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -95,7 +96,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
     if (errorCount > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get("The file could not be generated"));
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
     Integer status = saleOrderRepository.find(ids.get(0)).getStatusSelect();
     String fileName = getSaleOrderFilesName(status);

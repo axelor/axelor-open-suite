@@ -202,7 +202,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     if (errorCount > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get("The file could not be generated"));
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
 
     String fileName =
@@ -244,7 +244,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     }
     BirtTemplate invoiceBirtTemplate =
         accountConfigService.getAccountConfig(invoice.getCompany()).getInvoiceBirtTemplate();
-    if (invoiceBirtTemplate == null || invoiceBirtTemplate.getTemplateMetaFile() == null) {
+    if (invoiceBirtTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

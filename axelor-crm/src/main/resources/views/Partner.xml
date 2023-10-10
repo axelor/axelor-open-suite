@@ -95,19 +95,19 @@
       </replace>
     </extend>
     <extend target="//field[@name='isSupplier']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//field[@name='isInternal']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//field[@name='isSubcontractor']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//field[@name='isCarrier']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//field[@name='isFactor']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//button[@name='$positiveBalanceBtn']">
       <attribute name="showIf" value="id &amp;&amp; !isProspect"/>
@@ -221,11 +221,6 @@
     </extend>
     <extend target="/">
       <insert position="after">
-        <panel name="activityPanel" sidebar="true" showIf="id &amp;&amp; isProspect"
-          hidden="true">
-          <panel-dashlet action="action-partner-view-prospect-activity-custom"
-            title="Activity" height="550"/>
-        </panel>
         <panel name="followUpPanel" title="Collaborator monitoring" showIf="isCollaborator"
           sidebar="true" colSpan="12">
           <field name="takenOpportunities"/>
@@ -233,9 +228,10 @@
         </panel>
       </insert>
     </extend>
-    <extend target="//field[@name='isFactor']">
+    <extend target="//field[@name='isInternal']">
       <insert position="after">
-        <field name="isCorporatePartner" widget="InlineCheckbox" hideIf="$readonly()"/>
+        <field name="isCorporatePartner" widget="InlineCheckbox"
+          if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled"/>
       </insert>
     </extend>
     <extend target="/">
@@ -256,6 +252,17 @@
           showIf="isCorporatePartner" sidebar="true" colSpan="12">
           <field name="takenOpportunities"/>
           <field name="wonOpportunities"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='deliveryPanel']">
+      <insert position="after">
+        <panel name="activityPanel" title="Activity" showIf="id &amp;&amp; isProspect"
+          hidden="true" if="__config__.app.getApp('crm')?.crmProcessOnPartner">
+          <panel-dashlet action="action-partner-view-prospect-recent-activity-custom"
+            title="Activity" height="550"/>
+          <panel-dashlet action="action-partner-view-prospect-past-activity-custom"
+            title="Activity" height="550"/>
         </panel>
       </insert>
     </extend>
@@ -544,82 +551,6 @@
       <button name="cancelmBtn" title="No" onClick="close"/>
     </panel>
   </form>
-
-  <custom title="Activity" name="partner-form-activity-custom">
-    <dataset type="rpc">com.axelor.apps.crm.web.PartnerCrmController:getPartnerActivityData</dataset>
-    <template>
-      <![CDATA[
-      <>
-         <Box>
-      		{data.map(({date,status,closedWonStatus,closedLostStatus,type,activityName,description},index) => {
-      			return (
-      				<Box key={index} border borderColor="primary" borderWidth={1} rounded={2} m={2} style={{ width: 300 }}>
-      					<Box d="flex" justifyContent="space-between" mt={2} ms={1} me={1}>
-      						<Box fontWeight="bold" fontSize={6}>{$moment(date).format('DD/MM/YYYY HH:mm')}</Box>
-      						{type == 'event' &&
-      							<Box d="flex" justifyContent="flex-end" alignItems="center">
-      								{status == 1 && <Badge bg="primary">{_t('Planned')}</Badge>}
-      								{status == 2 && <Badge bg="success">{_t('Realized')}</Badge>}
-      								{status == 3 && <Badge bg="danger">{_t('Canceled')}</Badge>}
-      							</Box>
-      						}
-      						{type == 'opportunity' &&
-      							<Box d="flex" justifyContent="flex-end" alignItems="center">
-      								{status != closedWonStatus && status != closedLostStatus && <Badge bg="primary">{status}</Badge>}
-      								{status == closedWonStatus && <Badge bg="success">{status}</Badge>}
-      								{status == closedLostStatus && <Badge bg="danger">{status}</Badge>}
-      							</Box>
-      						}
-      						</Box>
-      					<Box mt={1} ms={1} me={1} d="flex" justifyContent="space-between">
-      						<Box>
-      							{type == 'event' && activityName == 1 && <Box>{_t('Call')}</Box>}
-      							{type == 'event' && activityName == 2 && <Box>{_t('Meeting')}</Box>}
-      							{type == 'event' && activityName == 3 && <Box>{_t('Task')}</Box>}
-      							{type == 'event' && activityName == 5 && <Box>{_t('Note')}</Box>}
-      							{type == 'creation' && <Box>{activityName}</Box>}
-      							{type == 'statusChange' &&
-      								<Box>
-      									{JSON.parse(activityName).oldValue && (<span>{JSON.parse(activityName).oldValue} <Icon icon="arrow-right"/> </span>)}
-      									{JSON.parse(activityName).value}
-      								</Box>
-      							}
-      							{type == 'opportunity' &&
-								    <Box>
-								    	<strong>{_t('Score :')} </strong>
-								    	{Array(parseInt(activityName)).fill(<Icon icon="star-fill" color="warning"/>)}
-								    	{Array(5-activityName).fill(<Icon icon="star" color="warning"/>)}
-								    </Box>
-      							}
-      						</Box>
-       						<Box>
-      							{type == 'creation' && <Icon icon="plus-lg" color="primary" fontSize="25px"/>}
-      							{type == 'statusChange' && <Icon icon="arrow-left-right" color="primary" fontSize="25px"/>}
-      							{type == 'opportunity' && <Icon icon="handshake" color="primary" fontSize="25px"/>}
-      							{type == 'event' &&
-      								<Box>
-      									{activityName == 1 && <Icon icon="telephone" color="primary" fontSize="25px"/>}
-      									{activityName == 2 && <Icon icon="pencil-square" color="primary" fontSize="25px"/>}
-      									{activityName == 3 && <Icon icon="list-task" color="primary" fontSize="25px"/>}
-      									{activityName == 5 && <Icon icon="sticky" color="primary" fontSize="25px"/>}
-      								 </Box>
-      							}
-      						</Box>
-      					</Box>
-      					{description &&
-      						<Box ms={1}>
-      							<Box borderTop borderColor="inherit" borderWidth={1}/>
-      							{description}
-      						</Box>
-      					}
-      				</Box>
-      			);
-      		})}
-         </Box>
-      </>
-      ]]>
-    </template>
-  </custom>
 
   <!-- CREATE CRM OBJECT FROM PARTNER -->
 
@@ -911,8 +842,4 @@
     <error message="Please fill default partner status in App CRM configuration."
       if="!__config__.app.getApp('crm')?.partnerDefaultStatus"/>
   </action-validate>
-
-  <action-view name="action-partner-view-prospect-activity-custom" title="Activity">
-    <view type="custom" name="partner-form-activity-custom"/>
-  </action-view>
 </object-views>

@@ -117,4 +117,14 @@ public interface OperationOrderService {
    * @return Real duration of {@code operationOrder}
    */
   Duration computeRealDuration(OperationOrder operationOrder);
+
+  LocalDateTime getNextOperationDate(OperationOrder operationOrder);
+
+  LocalDateTime getLastOperationDate(OperationOrder operationOrder);
+
+  long getDuration(OperationOrder operationOrder) throws AxelorException;
+
+  List<OperationOrder> getSortedOperationOrderList(List<OperationOrder> operationOrders);
+
+  List<OperationOrder> getReversedSortedOperationOrderList(List<OperationOrder> operationOrders);
 }

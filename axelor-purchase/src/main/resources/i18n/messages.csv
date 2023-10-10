@@ -309,7 +309,6 @@
 "The company is required and must be the same for all purchase orders",,,
 "The currency is required and must be the same for all purchase orders",,,
 "The field 'Stock Location' must be filled.",,,
-"The file could not be generated",,,
 "The line cannot be null.",,,
 "The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one.",,,
 "The partner\'s language is different from the current language. Description and product name are in :",,,

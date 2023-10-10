@@ -926,12 +926,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     BigDecimal customizedAmount =
         this.getCustomizedAmount(invoiceTerm, invoiceTermList, total, isLastInvoiceTerm);
-    BigDecimal customizedCompanyAmount =
-        this.getCustomizedCompanyAmount(
-            invoiceTerm, invoiceTermList, companyTotal, isLastInvoiceTerm);
 
     invoiceTerm.setAmount(customizedAmount);
     invoiceTerm.setAmountRemaining(customizedAmount);
+
+    BigDecimal customizedCompanyAmount =
+        this.getCustomizedCompanyAmount(
+            invoiceTerm, invoiceTermList, companyTotal, isLastInvoiceTerm);
 
     if (customizedCompanyAmount != null) {
       invoiceTerm.setCompanyAmount(customizedCompanyAmount);
@@ -1670,7 +1671,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
-        && moveLine.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
+        && moveLine.getAmountRemaining().abs().compareTo(thresholdDistanceFromRegulation) <= 0) {
       BigDecimal reconcileAmount = this.getReconcileAmount(moveLine);
       List<InvoiceTerm> unpaidInvoiceTermList =
           moveLine.getInvoiceTermList().stream()
@@ -1710,7 +1711,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountToPay,
       BigDecimal currencyRate) {
     BigDecimal moveLineAmountRemaining =
-        companyAmountRemaining.subtract(amountToPayInCompanyCurrency);
+        companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
     BigDecimal invoiceTermAmountRemaining =
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmountRemaining)

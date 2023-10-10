@@ -298,8 +298,6 @@ public interface BudgetService {
    * @param entity
    * @return Budget
    */
-  Budget resetBudget(Budget entity);
-
   void getUpdatedBudgetLineList(Budget budget, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
 

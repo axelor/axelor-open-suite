@@ -39,9 +39,6 @@ public class PdfServiceImpl implements PdfService {
       pdfToSign = convertImageToPdfProcess(metaFile);
     }
 
-    if (fileType.contains("pdf")) {
-      pdfToSign = metaFile;
-    }
     return pdfToSign;
   }
 
