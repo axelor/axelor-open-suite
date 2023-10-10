@@ -42,35 +42,44 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
     }
 
     for (ExpenseLine expenseLine : expenseLineList) {
-      convertProofFileToPdf(expenseLine);
-      signPdf(expenseLine);
+      signJustificationFile(expenseLine);
+    }
+  }
+
+  protected void signJustificationFile(ExpenseLine expenseLine) throws AxelorException {
+    AppBase appBase = appBaseService.getAppBase();
+    PfxCertificate pfxCertificate = appBase.getPfxCertificate();
+    if (pfxCertificate != null) {
+      convertProofFileToPdf(pfxCertificate, expenseLine);
+      signPdf(pfxCertificate, expenseLine);
     }
   }
 
   @Override
-  public void convertProofFileToPdf(ExpenseLine expenseLine) throws AxelorException {
+  public void convertProofFileToPdf(PfxCertificate pfxCertificate, ExpenseLine expenseLine)
+      throws AxelorException {
     MetaFile metaFile = expenseLine.getJustificationMetaFile();
-    if (metaFile == null) {
+    if (metaFile == null || pfxCertificate == null) {
       return;
     }
 
     expenseLine.setJustificationMetaFile(pdfService.convertImageToPdf(metaFile));
   }
 
-  protected void signPdf(ExpenseLine expenseLine) throws AxelorException {
+  protected void signPdf(PfxCertificate pfxCertificate, ExpenseLine expenseLine)
+      throws AxelorException {
 
     if (!expenseLineService.isFilePdf(expenseLine)
         || expenseLine.getIsJustificationFileDigitallySigned()) {
       return;
     }
 
-    MetaFile signedPdf = getSignedPdf(expenseLine);
+    MetaFile signedPdf = getSignedPdf(pfxCertificate, expenseLine);
     expenseLine.setJustificationMetaFile(signedPdf);
   }
 
-  protected MetaFile getSignedPdf(ExpenseLine expenseLine) throws AxelorException {
-    AppBase appBase = appBaseService.getAppBase();
-    PfxCertificate pfxCertificate = appBase.getPfxCertificate();
+  protected MetaFile getSignedPdf(PfxCertificate pfxCertificate, ExpenseLine expenseLine)
+      throws AxelorException {
     MetaFile pdfToSign = expenseLine.getJustificationMetaFile();
 
     if (pfxCertificate != null) {
