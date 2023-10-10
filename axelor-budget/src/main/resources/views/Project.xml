@@ -17,10 +17,10 @@
             domain="self.typeSelect = 'budget' and self.parentBudgetLevel = null and self.project = :id and self.statusSelect = 'valid'">
             <viewer depends="name,versionNumber">
                      <![CDATA[
-	                     <div>
-	                     <span ng-show="record.name &amp;&amp; record.versionNumber"><B>{{record.name}}-{{record.versionNumber}}</B></span>
-	                     <span ng-show="record.name &amp;&amp; !record.versionNumber"><B>{{record.name}}</B></span>
-	                     </div>
+	                     <>
+	                     	{name && <span><b>{name}</b></span>}
+	                     	{versionNumber && <span><b>-{versionNumber}</b></span>}
+	                     </>
                      ]]>
             </viewer>
             <editor>
