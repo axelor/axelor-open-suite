@@ -39,14 +39,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
-import java.util.List;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,22 +244,23 @@ public class InventoryController {
 
   public void showStockMoves(ActionRequest request, ActionResponse response) {
     try {
+      final InventoryService inventoryService = Beans.get(InventoryService.class);
       Inventory inventory = request.getContext().asType(Inventory.class);
-      List<StockMove> stockMoveList = Beans.get(InventoryService.class).findStockMoves(inventory);
-      ActionViewBuilder builder =
+      if (Boolean.FALSE.equals(inventoryService.hasRelatedStockMoves(inventory))) {
+        response.setInfo(I18n.get("No stock moves found for this inventory."));
+        return;
+      }
+
+      response.setView(
           ActionView.define(I18n.get("Internal Stock Moves"))
               .model(StockMove.class.getName())
               .add("grid", "stock-move-grid")
               .add("form", "stock-move-form")
-              .param("search-filters", "internal-stock-move-filters");
-      if (stockMoveList.isEmpty()) {
-        response.setInfo(I18n.get("No stock moves found for this inventory."));
-      } else {
-        builder
-            .context("_showSingle", true)
-            .domain(String.format("self.inventory.id = %s", inventory.getId()));
-        response.setView(builder.map());
-      }
+              .param("search-filters", "internal-stock-move-filters")
+              .domain("self.inventory.id = :inventoryId")
+              .context("_showSingle", true)
+              .context("inventoryId", inventory.getId())
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
