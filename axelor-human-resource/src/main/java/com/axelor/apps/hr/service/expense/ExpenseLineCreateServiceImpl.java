@@ -3,6 +3,7 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.PfxCertificate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -19,6 +20,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -74,8 +76,15 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
         createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
     setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
-    expenseProofFileService.convertProofFileToPdf(expenseLine);
+    convertJustificationFileToPdf(expenseLine);
+
     return expenseLineRepository.save(expenseLine);
+  }
+
+  protected void convertJustificationFileToPdf(ExpenseLine expenseLine) throws AxelorException {
+    AppBase appBase = appBaseService.getAppBase();
+    PfxCertificate pfxCertificate = appBase.getPfxCertificate();
+    expenseProofFileService.convertProofFileToPdf(pfxCertificate, expenseLine);
   }
 
   @Transactional(rollbackOn = {Exception.class})
