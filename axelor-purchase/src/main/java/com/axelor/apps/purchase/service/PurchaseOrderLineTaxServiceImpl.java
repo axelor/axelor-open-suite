@@ -76,12 +76,10 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
             ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
             : null;
 
-    getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLine, map, taxLine, false);
+    getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLine, map, false);
 
     // Reverse charged process
-    TaxLine activeTaxLine =
-        taxEquiv != null ? taxEquiv.getReverseChargeTax().getActiveTaxLine() : null;
-    getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLineRC, map, activeTaxLine, true);
+    getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLineRC, map, true);
 
     orderLineTaxService.addTaxEquivSpecificNote(
         purchaseOrderLine, customerSpecificNote, specificNotes);
@@ -92,12 +90,11 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       PurchaseOrderLine purchaseOrderLine,
       TaxLine taxLine,
       Map<TaxLine, PurchaseOrderLineTax> map,
-      TaxLine mapTaxLine,
       boolean reverseCharged) {
     if (taxLine != null) {
       LOG.debug("VAT {}", taxLine);
       if (map.containsKey(taxLine)) {
-        PurchaseOrderLineTax purchaseOrderLineVat = map.get(mapTaxLine);
+        PurchaseOrderLineTax purchaseOrderLineVat = map.get(taxLine);
         purchaseOrderLineVat.setReverseCharged(reverseCharged);
         purchaseOrderLineVat.setExTaxBase(
             purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
