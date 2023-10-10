@@ -31,6 +31,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -94,7 +95,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     year = yearRepository.find(year.getId());
 
     for (Period period : year.getPeriodList()) {
-      periodService.close(period);
+      periodService.closePeriod(period);
     }
     Company company = year.getCompany();
     if (company == null) {
@@ -161,7 +162,10 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       JPA.clear();
     }
     year = yearRepository.find(year.getId());
-    closeYear(year);
+
+    if (this.allPeriodClosed(year)) {
+      closeYear(year);
+    }
   }
 
   @Transactional
@@ -210,5 +214,17 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     } else {
       return BigDecimal.ZERO;
     }
+  }
+
+  protected boolean allPeriodClosed(Year year) throws AxelorException {
+    if (ObjectUtils.notEmpty(year.getPeriodList())) {
+      for (Period period : year.getPeriodList()) {
+        if (!periodService.isClosedPeriod(period)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 }

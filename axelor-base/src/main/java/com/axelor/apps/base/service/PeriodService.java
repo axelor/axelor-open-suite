@@ -94,4 +94,8 @@ public interface PeriodService {
   void openPeriod(Period period);
 
   void closureInProgress(Period period);
+
+  void closePeriod(Period period);
+
+  void resetStatusSelect(Period period);
 }
