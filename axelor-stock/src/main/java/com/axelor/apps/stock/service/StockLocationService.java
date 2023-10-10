@@ -29,16 +29,17 @@ import java.util.Set;
 
 public interface StockLocationService {
 
-  public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType)
+  BigDecimal getQtyOfProductInStockLocations(
+      Long productId, List<Long> stockLocationIds, Long companyId, String qtyFieldName)
       throws AxelorException;
 
   @CallMethod
-  public BigDecimal getRealQty(Long productId, Long locationId, Long companyId)
-      throws AxelorException;
+  BigDecimal getRealQtyOfProductInStockLocations(
+      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
 
   @CallMethod
-  public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId)
-      throws AxelorException;
+  BigDecimal getFutureQtyOfProductInStockLocations(
+      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
 
   public Map<String, Object> getStockIndicators(Long productId, Long companyId, Long locationId)
       throws AxelorException;

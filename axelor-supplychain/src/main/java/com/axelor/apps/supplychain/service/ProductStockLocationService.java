@@ -32,4 +32,8 @@ public interface ProductStockLocationService {
 
   BigDecimal getAvailableQty(Product product, Company company, StockLocation stockLocation)
       throws AxelorException;
+
+  BigDecimal getNonReservedAvailableQuantity(
+      Product product, Company company, StockLocation stockLocation, BigDecimal reservedQty)
+      throws AxelorException;
 }
