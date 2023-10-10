@@ -41,9 +41,13 @@
         showIf="$numberOfPhases > 0" colSpan="4">
         <viewer depends="$numberOfPhases">
                     <![CDATA[
-                        <h4 class="text-right">
-                            <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of phases</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{fmt('$numberOfPhases')}}</span>
-                        </h4>
+						<>
+	                    	<Box d="flex" justifyContent="flex-end">
+	                    		<Badge style={{ backgroundColor: "#2185D0" }}>
+	                    			{_t('Number of phases')} <Badge style={{ backgroundColor: "#23C6C8", fontSize: "12px" }}>{$fmt('$numberOfPhases')}</Badge>
+	                    		</Badge>
+	                    	</Box>
+						</>
 					]]>
         </viewer>
       </field>
@@ -217,7 +221,7 @@
 
   <action-record name="action-prod-process-record-count-number-of-phases"
     model="com.axelor.apps.production.db.ProdProcess">
-    <field name="$numberOfComponents" expr="eval: prodProcessLineList.size()"/>
+    <field name="$numberOfPhases" expr="eval: prodProcessLineList.size()"/>
   </action-record>
 
   <action-view name="action-prod-process-view-bill-of-materials"
