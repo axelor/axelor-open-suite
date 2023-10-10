@@ -59,16 +59,18 @@
     <field name="maintenanceCategory"/>
     <field name="machine"/>
     <template><![CDATA[
-		    <div class="span12"><strong>{{code}}-{{name}}</strong></div>
-			<div>
-			  <div class="span4 card-image">
-                <img ng-show="image" ng-src="{{$image('image', 'content')}}" />
-			  </div>
-			  <div class="span8">
-			    {{maintenanceCategory.name}}<br/>
-			    {{machine.name}}<br/>
-			  </div>
-			</div>
+			<>
+				<strong>{code}-{name}</strong>
+				<Box d="grid" gridTemplateColumns="33% 67%" mt={2}>
+					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+						{image && <Image src={$image('image', 'content')} w={100} h={100}></Image>}
+					</Box>
+		        	<Box>
+						<Box>{maintenanceCategory.name}</Box>
+			        	<Box>{machine.name}</Box>
+					</Box>
+				</Box>
+			</>
 		]]>
     </template>
   </cards>
