@@ -217,6 +217,11 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           saleOrderLine.getBudgetDistributionList().stream()
               .forEach(
                   budgetDistribution -> {
+                    LocalDate computeDate =
+                        saleOrder.getOrderDate() != null
+                            ? saleOrder.getOrderDate()
+                            : saleOrder.getCreationDate();
+                    budgetDistribution.setImputationDate(computeDate);
                     Budget budget = budgetDistribution.getBudget();
                     budgetService.updateLines(budget);
                     budgetService.computeTotalAmountCommitted(budget);
