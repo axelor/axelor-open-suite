@@ -110,20 +110,18 @@
           showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
           <viewer>
 					<![CDATA[
-						<h4 class="text-right">
-							<span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prodProcess.outsourcing" x-translate>Outsourced</span>
-						</h4>
+						<>
+							<Box d="flex" justifyContent="flex-end">
+								{prodProcess.outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
+							</Box>
+						</>
 					]]>
           </viewer>
         </field>
         <field name="$viewerIsPermanent" showTitle="false" colSpan="2"
           showIf="typeSelect == 2 &amp;&amp; $readonly()">
           <viewer depends="typeSelect">
-					<![CDATA[
-						<h4 style="text-align: left;">
-							<span class="label label-default" style="background-color: green; margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate>Permanent</span>
-						</h4>
-	                ]]>
+			<![CDATA[<><Badge style={{ backgroundColor: "green" }}>{_t('Permanent')}</Badge></>]]>
           </viewer>
         </field>
         <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
@@ -213,8 +211,8 @@
           <field name="cancelReason" hidden="true" grid-view="cancel-reason-grid"
             form-view="cancel-reason-form"/>
           <field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true"
-            showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">
-            <viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
+            showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12">
+            <viewer><![CDATA[<><Box color="danger">{cancelReasonStr}</Box></>]]></viewer>
           </field>
         </panel>
         <panel name="realDatesPanel" title="Real dates" showIf="statusSelect &gt; 3">
