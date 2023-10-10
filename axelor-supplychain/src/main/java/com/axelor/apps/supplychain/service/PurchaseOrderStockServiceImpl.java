@@ -630,14 +630,15 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       if (stockLocationId != 0L) {
         StockLocation stockLocation =
             Beans.get(StockLocationRepository.class).find(stockLocationId);
-        List<StockLocation> stockLocationList =
+        List<Long> stockLocationIds =
             Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
+                .getAllLocationAndSubLocationId(stockLocation, false);
+        if (!stockLocationIds.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
-              " AND self.purchaseOrder.stockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
-                  + ") ";
+              " AND self.purchaseOrder.stockLocation.id IN "
+                  + stockLocationIds.stream()
+                      .map(Objects::toString)
+                      .collect(Collectors.joining(",", " (", ") "));
         }
       }
     }

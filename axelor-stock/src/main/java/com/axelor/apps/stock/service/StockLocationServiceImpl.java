@@ -214,15 +214,37 @@ public class StockLocationServiceImpl implements StockLocationService {
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation) {
     locationIdSet = new HashSet<>();
     if (stockLocation != null) {
-      List<StockLocation> stockLocations = getAllLocationAndSubLocation(stockLocation, true);
-      for (StockLocation item : stockLocations) {
-        locationIdSet.add(item.getId());
-      }
+      locationIdSet.addAll(getAllLocationAndSubLocationIds(stockLocation.getId(), true));
     } else {
       locationIdSet.add(0L);
     }
 
     return locationIdSet;
+  }
+
+  public List<Long> getAllLocationAndSubLocationIds(
+      Long stockLocationId, boolean isVirtualInclude) {
+
+    List<Long> resultList = new ArrayList<>();
+    if (stockLocationId == null) {
+      return resultList;
+    }
+
+    for (Long subLocation :
+        JPA.em()
+            .createQuery(
+                "SELECT sl.id FROM StockLocation sl WHERE sl.parentStockLocation.id = :stockLocationId AND (:isVirtualIncluded is true OR sl.typeSelect != :virtual)",
+                Long.class)
+            .setParameter("stockLocationId", stockLocationId)
+            .setParameter("virtual", StockLocationRepository.TYPE_VIRTUAL)
+            .setParameter("isVirtualIncluded", isVirtualInclude)
+            .getResultList()) {
+
+      resultList.addAll(this.getAllLocationAndSubLocationIds(subLocation, isVirtualInclude));
+    }
+    resultList.add(stockLocationId);
+
+    return resultList;
   }
 
   public List<StockLocation> getAllLocationAndSubLocation(
@@ -289,14 +311,7 @@ public class StockLocationServiceImpl implements StockLocationService {
   @Override
   public List<Long> getAllLocationAndSubLocationId(
       StockLocation stockLocation, boolean isVirtualInclude) {
-    List<StockLocation> stockLocationList =
-        getAllLocationAndSubLocation(stockLocation, isVirtualInclude);
-    List<Long> stockLocationListId = null;
-    if (stockLocationList != null) {
-      stockLocationListId =
-          stockLocationList.stream().map(StockLocation::getId).collect(Collectors.toList());
-    }
-    return stockLocationListId;
+    return getAllLocationAndSubLocationIds(stockLocation.getId(), isVirtualInclude);
   }
 
   @Override
@@ -330,8 +345,8 @@ public class StockLocationServiceImpl implements StockLocationService {
     }
     return String.format(
         "self.id in (%s)",
-        getAllLocationAndSubLocation(stockLocation, false).stream()
-            .map(location -> location.getId().toString())
+        getAllLocationAndSubLocationId(stockLocation, false).stream()
+            .map(Object::toString)
             .collect(Collectors.joining(",")));
   }
 }
