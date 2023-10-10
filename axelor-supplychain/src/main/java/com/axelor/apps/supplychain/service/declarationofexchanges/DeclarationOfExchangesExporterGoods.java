@@ -328,8 +328,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
         supplyChainConfigService.getSupplyChainConfig(declarationOfExchanges.getCompany());
     BirtTemplate declarationOfExchGoodsBirtTemplate =
         supplyChainConfig.getDeclarationOfExchGoodsBirtTemplate();
-    if (ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate)
-        || ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

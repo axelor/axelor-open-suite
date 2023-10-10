@@ -324,4 +324,14 @@ public final class ProductionExceptionMessage {
   public static final String
       YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE =
           /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders." /*)*/;
+
+  public static final String PLAN_IS_BEFORE_TODAY_DATE =
+      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please correct it." /*)*/;
+
+  public static final String INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION =
+      /*$$(*/ "Invalid scheduling and capacity configuration." /*)*/;
+
+  public static final String
+      LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
+          "The last operation order planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
 }

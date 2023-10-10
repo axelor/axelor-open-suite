@@ -16,16 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.tax;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.meta.db.MetaFile;
-import java.io.IOException;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.meta.CallMethod;
 
-public interface BirtTemplateViewService {
-
-  void setTemplateMetaFile(Long birtId, String templateFileName)
-      throws AxelorException, IOException;
-
-  MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException;
+public interface TaxEquivService {
+  @CallMethod
+  String getTaxDomain(TaxEquiv taxEquiv, boolean isFromTax, boolean isToTax);
 }

@@ -18,6 +18,7 @@
       <field name="crmProcessOnPartner" widget="boolean-switch"/>
       <field name="isSearchFunctionalityEnabled" widget="boolean-switch"
         help="This configuration enables a search tool to be activated in CRM, which allows queries to be made on multiple object types (opportunities, leads, events, etc...), using keywords and configurable mapping."/>
+      <field name="isCorporatePartnerEnabled" widget="boolean-switch"/>
       <field name="emailDomainToIgnore"/>
     </panel>
     <panel name="opportunityStatusMgtPanel" title="Opportunitities status managment">

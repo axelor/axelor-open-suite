@@ -288,8 +288,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       employeeAnnualReportBirtTemplate = hrConfig.getEmployeeAnnualReportBirtTemplate();
     }
 
-    if (ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate)
-        || ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
@@ -306,8 +305,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       employeePhoneBookBirtTemplate = hrConfig.getEmployeePhoneBookBirtTemplate();
     }
 
-    if (ObjectUtils.isEmpty(employeePhoneBookBirtTemplate)
-        || ObjectUtils.isEmpty(employeePhoneBookBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(employeePhoneBookBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

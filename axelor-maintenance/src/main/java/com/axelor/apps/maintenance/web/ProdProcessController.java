@@ -45,8 +45,7 @@ public class ProdProcessController {
           Beans.get(ProductionConfigService.class)
               .getProductionConfig(prodProcess.getCompany())
               .getMaintenanceProdProcessBirtTemplate();
-      if (maintenanceProdProcessBirtTemplate == null
-          || maintenanceProdProcessBirtTemplate.getTemplateMetaFile() == null) {
+      if (maintenanceProdProcessBirtTemplate == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

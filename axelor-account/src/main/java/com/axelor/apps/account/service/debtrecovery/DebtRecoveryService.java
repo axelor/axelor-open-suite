@@ -323,7 +323,7 @@ public class DebtRecoveryService {
     query.append("AND (ml.dueDate <= :todayDate) ");
     query.append("AND account.id IS NOT NULL ");
     query.append("AND account.useForPartnerBalance IS TRUE ");
-    query.append("AND ml.amountRemaining > 0 ");
+    query.append("AND ABS(ml.amountRemaining) > 0 ");
     query.append("AND move.ignoreInDebtRecoveryOk IS FALSE ");
 
     if (tradingName != null) {

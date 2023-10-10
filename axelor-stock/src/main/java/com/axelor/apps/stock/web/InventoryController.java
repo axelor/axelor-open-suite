@@ -73,8 +73,7 @@ public class InventoryController {
           Beans.get(StockConfigService.class)
               .getStockConfig(inventory.getCompany())
               .getInventoryBirtTemplate();
-      if (ObjectUtils.isEmpty(inventoryBirtTemplate)
-          || ObjectUtils.isEmpty(inventoryBirtTemplate.getTemplateMetaFile())) {
+      if (ObjectUtils.isEmpty(inventoryBirtTemplate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
