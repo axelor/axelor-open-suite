@@ -72,8 +72,9 @@
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
         <panel-related field="companySpecificProductFieldsSet"
-          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false"
-          canEdit="false" grid-view="meta-field-details-grid" form-view="meta-field-form"/>
+          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product' AND self.name IN ('sellable','purchasable','procurementMethodSelect','salePrice','saleCurrency','purchasePrice','purchaseCurrency','costPrice','costTypeSelect','managPriceCoef','avgPrice','autoUpdateSalePrice','lastPurchasePrice','defaultBillOfMaterial','controlOnReceipt','customsCodeNomenclature')"
+          canNew="false" canEdit="false" grid-view="meta-field-details-grid"
+          form-view="meta-field-form"/>
         <panel itemSpan="12" colSpan="6">
           <field name="defaultMailMessageTemplate"/>
           <field name="manageCcBccRelatedTo" widget="boolean-switch"/>
