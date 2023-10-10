@@ -67,6 +67,7 @@ public class GlobalBudgetController {
   public void validateStructure(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+
     Beans.get(GlobalBudgetGroupService.class).validateStructure(globalBudget);
     response.setValues(globalBudget);
   }

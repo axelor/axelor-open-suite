@@ -458,7 +458,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
   public void computeBudgetLevelTotals(Budget budget) {
 
     BudgetLevel sectionBudgetLevel = budget.getBudgetLevel();
@@ -466,12 +465,10 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     if (sectionBudgetLevel != null) {
 
       computeBudgetTotals(sectionBudgetLevel);
-      budgetLevelRepository.save(sectionBudgetLevel);
 
       BudgetLevel groupBudgetLevel = sectionBudgetLevel.getParentBudgetLevel();
       if (groupBudgetLevel != null) {
         computeTotals(groupBudgetLevel);
-        budgetLevelRepository.save(groupBudgetLevel);
       }
     }
   }

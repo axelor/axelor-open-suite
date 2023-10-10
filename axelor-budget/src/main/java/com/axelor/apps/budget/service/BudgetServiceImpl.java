@@ -418,7 +418,12 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
-      if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey())) {
+      GlobalBudget globalBudget =
+          Optional.of(budget.getBudgetLevel())
+              .map(BudgetLevel::getParentBudgetLevel)
+              .map(BudgetLevel::getGlobalBudget)
+              .orElse(null);
+      if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey()) && globalBudget != null) {
         String error =
             computeBudgetKey(
                 budget,
@@ -433,9 +438,10 @@ public class BudgetServiceImpl implements BudgetService {
                   I18n.get(BudgetExceptionMessage.BUDGET_MISSING_BUDGET_KEY), budget.getCode()));
         }
       }
-
       budget.setStatusSelect(BudgetRepository.STATUS_VALIDATED);
       budgetRepository.save(budget);
+
+      budget.setGlobalBudget(globalBudget);
     }
   }
 

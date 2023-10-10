@@ -4,19 +4,24 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetResetToolServiceImpl implements BudgetResetToolService {
 
   private final BudgetLineResetToolService budgetLineResetToolService;
+  private final BudgetRepository budgetRepository;
 
   @Inject
-  public BudgetResetToolServiceImpl(BudgetLineResetToolService budgetLineResetToolService) {
+  public BudgetResetToolServiceImpl(
+      BudgetLineResetToolService budgetLineResetToolService, BudgetRepository budgetRepository) {
     this.budgetLineResetToolService = budgetLineResetToolService;
+    this.budgetRepository = budgetRepository;
   }
 
   @Override
+  @Transactional
   public Budget resetBudget(Budget entity) {
 
     entity.setStatusSelect(BudgetRepository.STATUS_DRAFT);
@@ -38,6 +43,6 @@ public class BudgetResetToolServiceImpl implements BudgetResetToolService {
         child = budgetLineResetToolService.resetBudgetLine(child);
       }
     }
-    return entity;
+    return budgetRepository.save(entity);
   }
 }
