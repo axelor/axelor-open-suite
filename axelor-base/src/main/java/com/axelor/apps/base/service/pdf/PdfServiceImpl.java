@@ -47,7 +47,8 @@ public class PdfServiceImpl implements PdfService {
       if (metaFile == null) {
         return null;
       }
-      File tempPdfFile = File.createTempFile(metaFile.getFileName(), ".pdf");
+      File tempPdfFile =
+          File.createTempFile(Files.getNameWithoutExtension(metaFile.getFileName()), ".pdf");
 
       convertImageToPdf(metaFile, tempPdfFile);
       metaFiles.delete(metaFile);
