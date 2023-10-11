@@ -21,6 +21,9 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.User;
 
 public interface BudgetToolsService {
@@ -35,4 +38,8 @@ public interface BudgetToolsService {
   boolean checkBudgetKeyAndRole(Company company, User user) throws AxelorException;
 
   boolean checkBudgetKeyAndRoleForMove(Move move) throws AxelorException;
+
+  GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
+
+  GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
 }
