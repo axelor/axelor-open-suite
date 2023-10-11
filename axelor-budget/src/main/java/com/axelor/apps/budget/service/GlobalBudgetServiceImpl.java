@@ -19,12 +19,10 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
@@ -64,24 +62,18 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   }
 
   @Override
-  @Transactional
   public void computeBudgetLevelTotals(Budget budget) {
 
     budgetLevelService.computeBudgetLevelTotals(budget);
 
-    GlobalBudget globalBudget = budget.getGlobalBudget();
-
-    if (globalBudget == null) {
-      globalBudget =
-          Optional.ofNullable(budget.getBudgetLevel())
-              .map(BudgetLevel::getParentBudgetLevel)
-              .map(BudgetLevel::getGlobalBudget)
-              .orElse(null);
-    }
+    GlobalBudget globalBudget =
+        Optional.ofNullable(budget.getBudgetLevel())
+            .map(BudgetLevel::getParentBudgetLevel)
+            .map(BudgetLevel::getGlobalBudget)
+            .orElse(null);
 
     if (globalBudget != null) {
       computeTotals(globalBudget);
-      globalBudgetRepository.save(globalBudget);
     }
   }
 
@@ -121,33 +113,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     globalBudget.setSimulatedAmount(simulatedAmount);
     globalBudget.setAvailableAmountWithSimulated(
         (globalBudget.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
-  }
-
-  @Override
-  public void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException {
-    List<Budget> budgetList = globalBudget.getBudgetList();
-    if (ObjectUtils.isEmpty(budgetList)
-        && !ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      budgetList =
-          globalBudget.getBudgetLevelList().stream()
-              .filter(bl -> !ObjectUtils.isEmpty(bl.getBudgetLevelList()))
-              .map(BudgetLevel::getBudgetLevelList)
-              .flatMap(Collection::stream)
-              .filter(bl -> !ObjectUtils.isEmpty(bl.getBudgetList()))
-              .map(BudgetLevel::getBudgetList)
-              .flatMap(Collection::stream)
-              .collect(Collectors.toList());
-    }
-    if (ObjectUtils.isEmpty(budgetList)) {
-      return;
-    }
-
-    for (Budget budget : budgetList) {
-      budgetService.createBudgetKey(budget);
-      if (budget.getGlobalBudget() == null) {
-        globalBudget.addBudgetListItem(budget);
-      }
-    }
   }
 
   @Override
