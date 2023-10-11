@@ -29,6 +29,7 @@ import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -38,6 +39,7 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
@@ -61,6 +63,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   protected BudgetService budgetService;
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AppBudgetService appBudgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public PurchaseOrderBudgetServiceImpl(
@@ -77,7 +80,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
       BudgetService budgetService,
       BudgetDistributionRepository budgetDistributionRepository,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -93,6 +97,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     this.budgetService = budgetService;
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.appBudgetService = appBudgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -332,6 +337,27 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
                   poLine.setBudget(null);
                 });
       }
+    }
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())
+        || purchaseOrder.getCompany() == null
+        || !budgetToolsService.checkBudgetKeyAndRole(
+            purchaseOrder.getCompany(), AuthUtils.getUser())
+        || !budgetService.checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
+      return;
+    }
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          purchaseOrderLine.getAnalyticMoveLineList(),
+          purchaseOrderLine.getAccount(),
+          purchaseOrder.getCompany(),
+          purchaseOrder.getOrderDate(),
+          purchaseOrderLine.getCompanyExTaxTotal(),
+          purchaseOrderLine);
+      purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, true);
     }
   }
 }

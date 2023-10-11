@@ -198,7 +198,6 @@
   <action-group
     name="action-group-budget-purchase-order-line-budget-distribution-onchange">
     <action name="action-method-purchase-order-line-budget-distribution-validate-amount"/>
-    <action name="action-purchase-order-method-compute-budget-distribution-sum-amount"/>
     <action name="action-budget-purchase-order-line-method-fill-budget-str"/>
   </action-group>
 

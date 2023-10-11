@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.budget.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -158,6 +160,42 @@ public class SaleOrderController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
+
+  @ErrorException
+  public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
+    if (saleOrder != null
+        && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())
+        && !saleOrderBudgetService.isBudgetInLines(saleOrder)) {
+      saleOrderBudgetService.autoComputeBudgetDistribution(saleOrder);
+      response.setReload(true);
+    }
+  }
+
+  public void validateFinalize(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
+    if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+      if (saleOrderBudgetService.isBudgetInLines(saleOrder)) {
+
+        String budgetExceedAlert = saleOrderBudgetService.getBudgetExceedAlert(saleOrder);
+        if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
+          response.setAlert(budgetExceedAlert);
+        }
+      } else {
+        Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
+        if (isError != null) {
+          if (isError) {
+            response.setError(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
+          } else {
+            response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND));
+          }
+        }
+      }
     }
   }
 }

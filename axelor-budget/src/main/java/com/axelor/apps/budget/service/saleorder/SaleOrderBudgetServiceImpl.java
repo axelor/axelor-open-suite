@@ -29,6 +29,7 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -42,6 +43,7 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -62,6 +64,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   protected BudgetDistributionService budgetDistributionService;
   protected SaleOrderLineBudgetService saleOrderLineBudgetService;
   protected BudgetService budgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public SaleOrderBudgetServiceImpl(
@@ -81,7 +84,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
-      BudgetService budgetService) {
+      BudgetService budgetService,
+      BudgetToolsService budgetToolsService) {
     super(
         appBaseService,
         appSupplychainService,
@@ -100,6 +104,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
     this.budgetService = budgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -285,5 +290,25 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       }
     }
     return budgetExceedAlert;
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
+    if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())
+        || saleOrder.getCompany() == null
+        || !budgetToolsService.checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
+        || !budgetService.checkBudgetKeyInConfig(saleOrder.getCompany())) {
+      return;
+    }
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          saleOrderLine.getAnalyticMoveLineList(),
+          saleOrderLine.getAccount(),
+          saleOrder.getCompany(),
+          saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate(),
+          saleOrderLine.getCompanyExTaxTotal(),
+          saleOrderLine);
+      saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
+    }
   }
 }

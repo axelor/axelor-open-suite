@@ -584,7 +584,7 @@ public class BudgetServiceImpl implements BudgetService {
                     + "%'")
             .bind("statusSelect", GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID)
             .fetch();
-    if (!CollectionUtils.isEmpty(budgetList)) {
+    if (!CollectionUtils.isEmpty(budgetList) && date != null) {
       for (Budget budget : budgetList) {
         if ((budget.getFromDate().isBefore(date) || budget.getFromDate().isEqual(date))
             && (budget.getToDate().isAfter(date) || budget.getToDate().isEqual(date))) {
