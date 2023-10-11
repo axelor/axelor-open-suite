@@ -46,7 +46,8 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
       throws AxelorException {
 
     try {
-      File tempPdfFile = File.createTempFile(metaFile.getFileName(), ".pdf");
+      File tempPdfFile =
+          File.createTempFile(Files.getNameWithoutExtension(metaFile.getFileName()), ".pdf");
       try (FileOutputStream outStream = new FileOutputStream(tempPdfFile);
           FileInputStream inputStream =
               new FileInputStream(String.valueOf(MetaFiles.getPath(certificate)))) {
