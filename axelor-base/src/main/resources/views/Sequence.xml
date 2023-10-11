@@ -39,31 +39,36 @@
       <label name="DLabel" title="%D : Day"/>
       <label name="WYLabel" title="%WY : Week number"/>
 
-      <label name="PatternLabel"
-             title="The tags below can be used to specify the pattern" showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
-      <label name="NumberLabel" title="N : For numbers" showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
-      <label name="LettreLabel" title="L : For Letters " showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
-      <label name="ExampleLabel" title="Example of pattern NLL : 0AA, 0AB,0AC...0ZZ,1AA. " showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
+      <label name="PatternLabel" title="The tags below can be used to specify the pattern"
+        showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
+      <label name="NumberLabel" title="N : For numbers"
+        showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
+      <label name="LettreLabel" title="L : For Letters "
+        showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
+      <label name="ExampleLabel" title="Example of pattern NLL : 0AA, 0AB,0AC...0ZZ,1AA. "
+        showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
 
 
-    </panel>    <panel name="sequenceDefinitionPanel" title="Sequence Definition" colSpan="12">
-     <panel name="type" colSpan="12">
-      <field name="sequenceTypeSelect"/>
-     </panel>
-      <panel name="letters"   showIf="sequenceTypeSelect == 'LETTERS'" colSpan="12">
+    </panel>
+    <panel name="sequenceDefinitionPanel" title="Sequence Definition" colSpan="12">
+      <panel name="type" colSpan="12">
+        <field name="sequenceTypeSelect"/>
+      </panel>
+      <panel name="letters" showIf="sequenceTypeSelect == 'LETTERS'" colSpan="12">
         <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
         <field name="sequenceLettersTypeSelect" requiredIf="sequenceTypeSelect == 'LETTERS'"/>
       </panel>
 
-      <panel name="numbers"   showIf="sequenceTypeSelect == 'NUMBERS'" colSpan="12">
+      <panel name="numbers" showIf="sequenceTypeSelect == 'NUMBERS'" colSpan="12">
         <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
-        <field name="toBeAdded" />
+        <field name="toBeAdded"/>
       </panel>
 
-      <panel name="alphanumeric"   showIf="sequenceTypeSelect == 'ALPHANUMERIC'" colSpan="12">
+      <panel name="alphanumeric" showIf="sequenceTypeSelect == 'ALPHANUMERIC'" colSpan="12">
         <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
-        <field name="pattern" pattern="^[NL]*$" requiredIf="sequenceTypeSelect == 'ALPHANUMERIC'"
-               onChange="action-sequence-method-verify-pattern"/>
+        <field name="pattern" pattern="^[NL]*$"
+          requiredIf="sequenceTypeSelect == 'ALPHANUMERIC'"
+          onChange="action-sequence-method-verify-pattern"/>
       </panel>
 
       <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"

@@ -303,9 +303,6 @@ public class SequenceService {
   private String findNextAlphanumericSequence(Long nextNum, String pattern, Integer padding)
       throws AxelorException {
     int patternLength = pattern.length();
-    /* if (padding != patternLength) {
-      throw new AxelorException(1, "The pattern length should be equal to padding ");
-    }*/
 
     String sequence = "";
     int add = 0;
@@ -324,11 +321,17 @@ public class SequenceService {
           break;
 
         case 'L':
+         if (i == patternLength - 1) {
+            nextNum = nextNum  - 1;
+          }
           value = (int) (nextNum % 26);
           nextNum = nextNum - value;
           nextNum = nextNum / 26;
           char temp = (char) ('A' + value);
-          add = temp > 'Z' ? 1 : 0;
+          if (temp > 'Z') {
+            add = 1;
+            temp = 'A';
+          }
           sequence = temp + sequence;
           break;
       }
