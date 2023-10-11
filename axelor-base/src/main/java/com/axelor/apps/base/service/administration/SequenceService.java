@@ -321,8 +321,8 @@ public class SequenceService {
           break;
 
         case 'L':
-         if (i == patternLength - 1) {
-            nextNum = nextNum  - 1;
+          if (i == patternLength - 1) {
+            nextNum = nextNum - 1;
           }
           value = (int) (nextNum % 26);
           nextNum = nextNum - value;
