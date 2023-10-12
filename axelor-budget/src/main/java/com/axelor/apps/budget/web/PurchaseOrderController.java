@@ -208,9 +208,9 @@ public class PurchaseOrderController {
     if (purchaseOrder != null
         && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       if (purchaseOrderBudgetService.isBudgetInLines(purchaseOrder)) {
-        Boolean isError = Beans.get(AppBudgetService.class).isBudgetExceedValuesError(true);
         String budgetExceedAlert = purchaseOrderBudgetService.getBudgetExceedAlert(purchaseOrder);
         if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
+          Boolean isError = Beans.get(AppBudgetService.class).isBudgetExceedValuesError(true);
           if (isError != null) {
             if (isError) {
               response.setError(I18n.get(budgetExceedAlert));
