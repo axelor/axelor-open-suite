@@ -57,6 +57,8 @@
       <panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
         target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
+        <field name="forecastDate" title="Forecast date" type="date" required="true"
+          onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" readonly="true"/>
         <field name="qty" onChange="action-sop-line-record-compute-total-price"/>
         <field name="$unitPrice" title="Unit price" readonly="true" type="decimal"/>
@@ -106,21 +108,24 @@
 
   <action-record name="action-sop-line-record-compute-sop-sales-gap"
     model="com.axelor.apps.production.db.SopLine">
-    <field name="sopSalesGap" expr="eval: (sopRealSales - sopSalesForecast)/sopSalesForecast"
+    <field name="sopSalesGap"
+      expr="eval: ((sopRealSales - sopSalesForecast)/sopSalesForecast)*100"
       if="sopSalesForecast &amp;&amp; sopRealSales"/>
     <field name="sopSalesGap" expr="eval: null" if="!sopSalesForecast || !sopRealSales"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-sop-manuf-gap"
     model="com.axelor.apps.production.db.SopLine">
-    <field name="sopManufGap" expr="eval: (sopRealManuf - sopManufForecast)/sopManufForecast"
+    <field name="sopManufGap"
+      expr="eval: ((sopRealManuf - sopManufForecast)/sopManufForecast)*100"
       if="sopManufForecast &amp;&amp; sopRealManuf"/>
     <field name="sopManufGap" expr="eval: null" if="!sopManufForecast || !sopRealManuf"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-sop-stock-gap"
     model="com.axelor.apps.production.db.SopLine">
-    <field name="sopStockGap" expr="eval: (sopRealStock - sopStockForecast)/sopStockForecast"
+    <field name="sopStockGap"
+      expr="eval: ((sopRealStock - sopStockForecast)/sopStockForecast)*100"
       if="sopStockForecast &amp;&amp; sopRealStock"/>
     <field name="sopStockGap" expr="eval: null" if="!sopStockForecast || !sopRealStock"/>
   </action-record>
@@ -175,6 +180,17 @@
       message="There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&amp;OP forecast. Proceed?"
       if="difference != 0"/>
   </action-validate>
+
+  <action-validate name="action-mrp-forecast-validate-check-forecast-date">
+    <error message="Please enter valid forecast date"
+      if="forecastDate &amp;&amp; __parent__ &amp;&amp; (forecastDate.isBefore(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.fromDate) || forecastDate.isAfter(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.toDate))"
+      action="action-mrp-forecast-record-reset-forecast-date"/>
+  </action-validate>
+
+  <action-record name="action-mrp-forecast-record-reset-forecast-date"
+    model="com.axelor.apps.supplychain.db.MrpForecast">
+    <field name="forecastDate" expr="eval: null"/>
+  </action-record>
 
 </object-views>
 

@@ -153,11 +153,11 @@
       <field name="pfpValidateStatusSelect" on="UPDATE"/>
       <field name="reasonOfRefusalToPay" on="UPDATE"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
-      <message if="true" on="CREATE">Move created</message>
+      <message if="true" on="CREATE">Move.created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
       <message if="statusSelect == 2" tag="info">Daybook move</message>
       <message if="statusSelect == 3" tag="success">Accounted move</message>
-      <message if="statusSelect == 4" tag="warning">Move canceled</message>
+      <message if="statusSelect == 4" tag="warning">Move.canceled</message>
       <message if="statusSelect == 5" tag="info">Simulated move</message>
     </track>
 

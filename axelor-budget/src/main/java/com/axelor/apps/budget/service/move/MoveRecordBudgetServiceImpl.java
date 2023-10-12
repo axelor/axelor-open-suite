@@ -21,9 +21,9 @@ package com.axelor.apps.budget.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -52,7 +52,7 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
       MoveAttrsService moveAttrsService,
       PeriodServiceAccount periodAccountService,
       MoveCheckService moveCheckService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       MoveRecordUpdateService moveRecordUpdateService,
       MoveRecordSetService moveRecordSetService,
       MoveToolService moveToolService,
@@ -62,17 +62,17 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
       MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      AppAccountService appAccountService,
       MassEntryService massEntryService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
-      MoveBudgetService moveBudgetService) {
+      MoveBudgetService moveBudgetService,
+      PfpService pfpService) {
     super(
         moveDefaultService,
         moveAttrsService,
         periodAccountService,
         moveCheckService,
-        moveComputeService,
+        moveCutOffService,
         moveRecordUpdateService,
         moveRecordSetService,
         moveToolService,
@@ -82,10 +82,10 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
         moveLineTaxService,
         periodService,
         moveRepository,
-        appAccountService,
         massEntryService,
         massEntryVerificationService,
-        moveLineMassEntryRecordService);
+        moveLineMassEntryRecordService,
+        pfpService);
     this.moveBudgetService = moveBudgetService;
   }
 

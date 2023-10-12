@@ -262,7 +262,7 @@ public class InvoicePaymentController {
 
           invoicePayment.clearInvoiceTermPaymentList();
           Beans.get(InvoiceTermPaymentService.class)
-              .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount);
+              .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount, amount);
         }
         response.setValues(invoicePayment);
 

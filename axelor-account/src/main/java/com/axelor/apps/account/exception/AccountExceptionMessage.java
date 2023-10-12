@@ -1014,6 +1014,9 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_VOUCHER_NOT_GENERATE_ALL = /*$$(*/
       "Some due elements could not be loaded there was no amount left to pay." /*)*/;
 
+  public static final String PAYMENT_VOUCHER_PFP_NOT_VALIDATED = /*$$(*/
+      "Some imported invoice terms are not PFP validated." /*)*/;
+
   /** Payment schedule line service */
   public static final String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
       "Missing direct debit payment mode in the company's account configuration" /*)*/;
@@ -1125,13 +1128,13 @@ public final class AccountExceptionMessage {
    * Partner
    */
   public static final String PARTNER_BANK_DETAILS_MISSING = /*$$(*/
-      "Bank details are missing for partner %s." /*)*/;
+      "Default bank details are missing for partner %s." /*)*/;
 
   /*
    * Company
    */
   public static final String COMPANY_BANK_DETAILS_MISSING = /*$$(*/
-      "Bank details are missing for company %s." /*)*/;
+      "Default bank details are missing for company %s." /*)*/;
 
   /*
    * Invoice printing
@@ -1206,7 +1209,7 @@ public final class AccountExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 
   public static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
+      "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -1659,4 +1662,25 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_CONDITION_LINKED_OBJECTS = /*$$(*/
       "Changes will be applied on next records." /*)*/;
+
+  public static final String NO_DEPRECIATION_ACCOUNT_FOUND_IN_FIXED_ASSET_CATEGORY = /*$$(*/
+      "No depreciation account found in fixed asset category %s." /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to debt recoveries:<br> %s" /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to payments voucher:<br> %s" /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to invoice payment(s) related to invoices: <br> %s" /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES = /*$$(*/
+      "The move lines are still linked to debt recoveries:<br> %s <br> You can't modify them." /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER = /*$$(*/
+      "The move lines are still linked to payments voucher:<br> %s <br> You can't modify them." /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
+      "The move lines are still linked to invoice payment(s) related to invoices: <br> %s <br> You can't modify them." /*)*/;
 }

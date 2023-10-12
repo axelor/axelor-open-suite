@@ -1027,8 +1027,13 @@ public class InventoryService {
             .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
   }
 
-  public List<StockMove> findStockMoves(Inventory inventory) {
-    return stockMoveRepo.all().filter("self.inventory.id = ?2", inventory.getId()).fetch();
+  public Boolean hasRelatedStockMoves(Inventory inventory) {
+    return stockMoveRepo
+            .all()
+            .filter("self.inventory.id = :inventoryId")
+            .bind("inventoryId", inventory.getId())
+            .count()
+        > 0;
   }
 
   public String computeTitle(Inventory entity) {

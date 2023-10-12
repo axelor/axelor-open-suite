@@ -41,7 +41,6 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.auth.AuthUtils;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.google.inject.Inject;
@@ -176,21 +175,17 @@ public class HRDashboardServiceImpl implements HRDashboardService {
   }
 
   protected List<ExpenseLine> getExpenseList(Employee employee, Period period) {
-    StringBuilder filter = new StringBuilder();
+    StringBuilder filter = new StringBuilder("self.expense.id IS NOT NULL");
     Map<String, Object> params = new HashMap<>();
 
     if (employee != null) {
-      filter.append("self.expense.employee = :employee");
+      filter.append(" AND self.expense.employee = :employee");
       params.put("employee", employee);
     }
     if (period != null) {
-      filter.append(ObjectUtils.isEmpty(filter) ? "" : " AND ");
-      filter.append("self.expenseDate >= :fromDate AND self.expenseDate <= :endDate");
+      filter.append(" AND self.expenseDate >= :fromDate AND self.expenseDate <= :endDate");
       params.put("fromDate", period.getFromDate());
       params.put("endDate", period.getToDate());
-    }
-    if (ObjectUtils.isEmpty(filter)) {
-      return expenseRepo.all().fetch();
     }
     return expenseRepo.all().filter(filter.toString()).bind(params).fetch();
   }
@@ -274,21 +269,17 @@ public class HRDashboardServiceImpl implements HRDashboardService {
   }
 
   protected List<ExtraHoursLine> getExtraHoursList(Employee employee, Period period) {
-    StringBuilder filter = new StringBuilder();
+    StringBuilder filter = new StringBuilder("self.extraHours.id IS NOT NULL");
     Map<String, Object> params = new HashMap<>();
 
     if (employee != null) {
-      filter.append("self.extraHours.employee = :employee");
+      filter.append(" AND self.extraHours.employee = :employee");
       params.put("employee", employee);
     }
     if (period != null) {
-      filter.append(ObjectUtils.isEmpty(filter) ? "" : " AND ");
-      filter.append("self.date >= :fromDate AND self.date <= :endDate");
+      filter.append(" AND self.date >= :fromDate AND self.date <= :endDate");
       params.put("fromDate", period.getFromDate());
       params.put("endDate", period.getToDate());
-    }
-    if (ObjectUtils.isEmpty(filter)) {
-      return extraHoursRepo.all().fetch();
     }
     return extraHoursRepo.all().filter(filter.toString()).bind(params).fetch();
   }
@@ -315,7 +306,9 @@ public class HRDashboardServiceImpl implements HRDashboardService {
   }
 
   protected Map<LocalDate, BigDecimal> getTimeSpentPerDay(Employee employee, Period period) {
-    StringBuilder filter = new StringBuilder("self.timesheet.statusSelect = :statusSelect");
+    StringBuilder filter =
+        new StringBuilder(
+            "self.timesheet.id IS NOT NULL AND self.timesheet.statusSelect = :statusSelect");
     Map<String, Object> params = new HashMap<>();
 
     if (employee != null) {

@@ -709,7 +709,8 @@
         <field name="partner.factorizedCustomer" hidden="true"/>
       </panel>
       <panel name="analyticAccountingPanel" title="Analytic Accounting" showTitle="false">
-        <panel-dashlet action="action-invoice-analytic-lines" colSpan="12"/>
+        <panel-dashlet action="action-invoice-analytic-lines" colSpan="12"
+          readonly="true"/>
       </panel>
       <panel name="advancePaymentPanel" title="Advance payments"
         showIf="operationSubTypeSelect != 2 &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp;
@@ -1658,6 +1659,7 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 

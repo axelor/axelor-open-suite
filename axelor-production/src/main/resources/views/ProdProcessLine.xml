@@ -44,8 +44,6 @@
       <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
         <field name="minCapacityPerCycle" colSpan="4"/>
         <field name="maxCapacityPerCycle" colSpan="4"/>
-        <field name="timingOfImplementation" colSpan="4" widget="duration" x-big="true"
-          x-seconds="true"/>
         <field name="durationPerCycle" colSpan="6" widget="duration" x-big="true"
           x-seconds="true"/>
         <field name="humanDuration" colSpan="6" widget="duration" x-big="true"

@@ -131,7 +131,7 @@
             onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
           <button name="$previewBtn" title="See stock details" colSpan="3"
             onClick="action-stock-location-line-view-for-a-product-from-product-view"
-            if-module="axelor-supplychain" widget="info-button" icon="fa-cubes"/>
+            if="__config__.app.isApp('supplychain')" widget="info-button" icon="fa-cubes"/>
           <spacer colSpan="9"/>
           <button name="$totalVariantsBtn" title="Total variants" showIf="isModel"
             colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants"
@@ -366,7 +366,7 @@
         <field name="costSheetGroup" showIf="productSubTypeSelect == 3"
           if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
         <field name="economicManufOrderQty"
-          showIf="productSubTypeSelect == 3 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
+          showIf="productSubTypeSelect == 1 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
         <panel name="productionPanel" colSpan="12"
           showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
           <panel-include view="product-production-form"/>
@@ -738,8 +738,8 @@
     <field name="salePrice" expr="0"/>
     <field name="purchasePrice" expr="0"/>
     <field name="lastPurchasePrice" expr="0"/>
-    <field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
-    <field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
+    <field name="saleCurrency" expr="eval: __user__?.activeCompany?.currency"/>
+    <field name="purchaseCurrency" expr="eval: __user__?.activeCompany?.currency"/>
     <field name="managPriceCoef" expr="1"/>
     <field name="isModel" expr="eval: _isModel"/>
     <field name="isShippingCostsProduct" expr="eval: _isShippingCostsProduct"/>

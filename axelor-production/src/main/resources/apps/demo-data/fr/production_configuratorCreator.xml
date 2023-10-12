@@ -1051,6 +1051,7 @@ return cp*nbOrdi_1
 
       <authorizedUserSet>
         <authorizedUser>admin</authorizedUser>
+        <authorizedUser>admin-fr</authorizedUser>
       </authorizedUserSet>
 
       <authorizedGroupSet>
@@ -1545,6 +1546,7 @@ return cp*nbOrdi_1
 
       <authorizedUserSet>
         <authorizedUser>admin</authorizedUser>
+        <authorizedUser>admin-fr</authorizedUser>
       </authorizedUserSet>
 
       <authorizedGroupSet>

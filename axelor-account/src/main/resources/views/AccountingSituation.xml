@@ -233,9 +233,9 @@
 
   <action-attrs name="action-accounting-situation-attrs-hide-pfp-validator-user">
     <attribute name="hidden" for="pfpValidatorUser"
-      expr="eval: !__parent__?.isSupplier || !company?.accountConfig?.isManagePassedForPayment"/>
+      expr="eval: !__parent__?.isSupplier || !company?.accountConfig?.isManagePassedForPayment || !__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <attribute name="required" for="pfpValidatorUser"
-      expr="eval: __parent__?.isSupplier &amp;&amp; company?.accountConfig?.isManagePassedForPayment"/>
+      expr="eval: __parent__?.isSupplier &amp;&amp; company?.accountConfig?.isManagePassedForPayment &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment()"/>
   </action-attrs>
 
 

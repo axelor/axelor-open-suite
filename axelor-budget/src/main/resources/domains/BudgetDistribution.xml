@@ -5,7 +5,7 @@
 
   <module name="budget" package="com.axelor.apps.budget.db"/>
 
-  <entity name="BudgetDistribution" lang="java" cacheable="true">
+  <entity name="BudgetDistribution" cacheable="true">
 
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"
       required="true"/>
