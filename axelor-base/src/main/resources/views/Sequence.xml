@@ -43,9 +43,9 @@
         showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
       <label name="NumberLabel" title="N : For numbers"
         showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
-      <label name="LettreLabel" title="L : For Letters "
+      <label name="LettreLabel" title="L : For Letters"
         showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
-      <label name="ExampleLabel" title="Example of pattern NLL : 0AA, 0AB,0AC...0ZZ,1AA. "
+      <label name="ExampleLabel" title="Example of pattern NLL : 0AA, 0AB,0AC...0ZZ,1AA."
         showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
 
 

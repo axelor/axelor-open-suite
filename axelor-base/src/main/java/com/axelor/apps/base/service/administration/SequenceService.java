@@ -544,7 +544,9 @@ public class SequenceService {
 
   public void verifyPattern(Sequence sequence) throws AxelorException {
     if (sequence.getPattern() != null && sequence.getPadding() != sequence.getPattern().length()) {
-      throw new AxelorException(1, "The pattern length should be equal to padding ");
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.SEQUENCE_PATTERN_LENGTH_NOT_VALID));
     }
   }
 }
