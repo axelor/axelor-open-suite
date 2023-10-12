@@ -284,8 +284,7 @@ public class SequenceService {
 
       case ALPHANUMERIC:
         padStr = PADDING_DIGIT;
-        nextSequence =
-            findNextAlphanumericSequence(nextNum, sequence.getPattern(), sequence.getPadding());
+        nextSequence = findNextAlphanumericSequence(nextNum, sequence.getPattern());
 
         break;
 
@@ -300,10 +299,8 @@ public class SequenceService {
     return StringUtils.leftPad(nextSequence, sequence.getPadding(), padStr);
   }
 
-  private String findNextAlphanumericSequence(Long nextNum, String pattern, Integer padding)
-      throws AxelorException {
+  protected String findNextAlphanumericSequence(Long nextNum, String pattern) {
     int patternLength = pattern.length();
-
     String sequence = "";
     int add = 0;
     for (int i = patternLength - 1; i >= 0; i--) {
