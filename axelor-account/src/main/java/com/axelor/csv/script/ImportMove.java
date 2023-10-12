@@ -51,8 +51,11 @@ import com.google.inject.persist.Transactional;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ImportMove {
 
@@ -72,6 +75,13 @@ public class ImportMove {
     MoveLine moveLine = (MoveLine) bean;
     FECImport fecImport = null;
     try {
+
+      if (values.get("Idevise") == null || StringUtils.isEmpty((String) values.get("Idevise"))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.IMPORT_FEC_MISSING_CURRENCY));
+      }
+
       if (values.get("FECImport") != null) {
         fecImport = fecImportRepository.find(((FECImport) values.get("FECImport")).getId());
       }
@@ -211,6 +221,21 @@ public class ImportMove {
       }
 
       move.addMoveLineListItem(moveLine);
+
+      List<String> currencyList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getCurrencyCode)
+              .filter(Objects::nonNull)
+              .distinct()
+              .collect(Collectors.toList());
+
+      if (!move.getCurrency().getCode().equals(moveLine.getCurrencyCode())
+          || currencyList.size() > 1) {
+        throw new AxelorException(
+            fecImport,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.IMPORT_FEC_CURRENCY_INCOHERENCE));
+      }
 
       if (values.get("Montantdevise") == null || "".equals(values.get("Montantdevise"))) {
         moveLine.setMove(move);
