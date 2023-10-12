@@ -181,10 +181,16 @@ public class SaleOrderController {
     SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
     if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
       if (saleOrderBudgetService.isBudgetInLines(saleOrder)) {
-
+        Boolean isError = Beans.get(AppBudgetService.class).isBudgetExceedValuesError(true);
         String budgetExceedAlert = saleOrderBudgetService.getBudgetExceedAlert(saleOrder);
         if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
-          response.setAlert(budgetExceedAlert);
+          if (isError != null) {
+            if (isError) {
+              response.setError(I18n.get(budgetExceedAlert));
+            } else {
+              response.setAlert(I18n.get(budgetExceedAlert));
+            }
+          }
         }
       } else {
         Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
