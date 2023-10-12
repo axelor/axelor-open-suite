@@ -83,6 +83,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -94,7 +95,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
-      AccountingCutOffService cutOffService) {
+      AccountingCutOffService cutOffService,
+      MoveLineTaxService moveLineTaxService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -104,6 +106,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   @Override
@@ -171,6 +174,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
       return;
     }
+
+    moveLineTaxService.checkEmptyTaxLines(moveLineList);
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
         getPopulatedReconcilableMoveLineMap(moveLineList);
