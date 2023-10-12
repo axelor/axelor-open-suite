@@ -72,6 +72,8 @@ public class TimesheetReportController {
     TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);
     Set<Employee> reminderEmployeeSet =
         Beans.get(TimesheetReportService.class).getEmployeeToBeReminded(timesheetReport);
+    logger.debug(
+        "Filling timesheet report reminder employees for timesheet report {}", timesheetReport);
     if (!ObjectUtils.isEmpty(reminderEmployeeSet)) {
       response.setValue("reminderEmployeeSet", reminderEmployeeSet);
     } else {
@@ -89,6 +91,7 @@ public class TimesheetReportController {
     }
 
     List<Message> messages = Beans.get(TimesheetReportService.class).sendReminders(timesheetReport);
+    logger.debug("Sending timesheet reminder for timesheet report {}", timesheetReport);
     List<Long> messageIds = new ArrayList<Long>();
     messageIds.add(0L);
     for (Message message : messages) {

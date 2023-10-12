@@ -58,6 +58,7 @@ public class BillOfMaterialController {
                 Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId()),
                 CostSheetService.ORIGIN_BILL_OF_MATERIAL,
                 null);
+    LOG.debug("Computing cost price for bill of material {}", billOfMaterial);
 
     response.setView(
         ActionView.define(String.format(I18n.get("Cost sheet - %s"), billOfMaterial.getName()))
@@ -82,7 +83,7 @@ public class BillOfMaterialController {
     Beans.get(BillOfMaterialService.class)
         .updateProductCostPrice(
             Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId()));
-
+    LOG.debug("Updating product cost price for bill of material {}", billOfMaterial);
     response.setReload(true);
   }
 
@@ -115,7 +116,7 @@ public class BillOfMaterialController {
     } else {
       message = I18n.get("Do you really wish to create a new version of this bill of materials ?");
     }
-
+    LOG.debug("Checking original bill of material for bill of material {}", billOfMaterial);
     response.setAlert(message);
   }
 
@@ -126,7 +127,7 @@ public class BillOfMaterialController {
             .find(request.getContext().asType(BillOfMaterial.class).getId());
 
     BillOfMaterial copy = Beans.get(BillOfMaterialService.class).generateNewVersion(billOfMaterial);
-
+    LOG.debug("Generating new version of bill of material {}", billOfMaterial);
     response.setView(
         ActionView.define(I18n.get("Bill of materials"))
             .model(BillOfMaterial.class.getName())
@@ -145,6 +146,7 @@ public class BillOfMaterialController {
         try {
           Beans.get(ProdProcessService.class)
               .validateProdProcess(billOfMaterial.getProdProcess(), billOfMaterial);
+          LOG.debug("Validating prod process for bill of material {}", billOfMaterial);
         } catch (AxelorException e) {
           TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
@@ -176,7 +178,7 @@ public class BillOfMaterialController {
 
     TempBomTree tempBomTree =
         Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
-
+    LOG.debug("Opening bill of material tree for bill of material {}", billOfMaterial);
     response.setView(
         ActionView.define(I18n.get("Bill of materials"))
             .model(TempBomTree.class.getName())
@@ -191,7 +193,7 @@ public class BillOfMaterialController {
       billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
       Beans.get(BillOfMaterialService.class).setBillOfMaterialAsDefault(billOfMaterial);
-
+      LOG.debug("Setting bill of material as default for bill of material {}", billOfMaterial);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -203,6 +205,7 @@ public class BillOfMaterialController {
 
     if (billOfMaterial.getName() == null) {
       response.setValue("name", Beans.get(BillOfMaterialService.class).computeName(billOfMaterial));
+      LOG.debug("Computing name for bill of material {}", billOfMaterial);
     }
   }
 
@@ -216,7 +219,7 @@ public class BillOfMaterialController {
       if (rawMaterials != null && !rawMaterials.isEmpty()) {
         Beans.get(BillOfMaterialService.class)
             .addRawMaterials(billOfMaterial.getId(), rawMaterials);
-
+        LOG.debug("Adding raw materials for bill of material {}", billOfMaterial);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -229,6 +232,7 @@ public class BillOfMaterialController {
       BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
       billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
       Beans.get(BillOfMaterialService.class).setDraftStatus(billOfMaterial);
+      LOG.debug("Setting draft status for bill of material {}", billOfMaterial);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -241,6 +245,7 @@ public class BillOfMaterialController {
       BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
       billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
       Beans.get(BillOfMaterialService.class).setValidateStatus(billOfMaterial);
+      LOG.debug("Setting validate status for bill of material {}", billOfMaterial);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -253,6 +258,7 @@ public class BillOfMaterialController {
       BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
       billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
       Beans.get(BillOfMaterialService.class).setApplicableStatus(billOfMaterial);
+      LOG.debug("Setting applicable status for bill of material {}", billOfMaterial);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -265,6 +271,7 @@ public class BillOfMaterialController {
       BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
       billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
       Beans.get(BillOfMaterialService.class).setObsoleteStatus(billOfMaterial);
+      LOG.debug("Setting obsolete status for bill of material {}", billOfMaterial);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

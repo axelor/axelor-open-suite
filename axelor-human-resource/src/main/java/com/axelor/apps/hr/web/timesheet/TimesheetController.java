@@ -77,6 +77,7 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       Beans.get(TimesheetService.class).prefillLines(timesheet);
+      logger.debug("Prefilling lines for timesheet {}", timesheet);
       response.setValues(timesheet);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -133,6 +134,7 @@ public class TimesheetController {
           Beans.get(TimesheetService.class)
               .generateLines(
                   timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
+      logger.debug("Generating lines for timesheet {}", timesheet);
       response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -148,6 +150,7 @@ public class TimesheetController {
                 AuthUtils.getUser().getId(),
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
+    logger.debug("Editing timesheets {}", timesheetList);
     if (timesheetList.isEmpty()) {
       response.setView(
           ActionView.define(I18n.get("Timesheet"))
@@ -198,7 +201,7 @@ public class TimesheetController {
         actionView.domain("self.employee.managerUser = :_user").context("_user", user);
       }
     }
-
+    logger.debug("Showing all timesheets for employee {}", employee);
     response.setView(actionView.map());
   }
 
@@ -214,7 +217,7 @@ public class TimesheetController {
             .add("form", "timesheet-line-form");
 
     Beans.get(TimesheetService.class).createDomainAllTimesheetLine(user, employee, actionView);
-
+    logger.debug("Showing all timesheet lines for employee {}", employee);
     response.setView(actionView.map());
   }
 
@@ -233,7 +236,7 @@ public class TimesheetController {
                 "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
-
+    logger.debug("Showing all timesheets to validate for employee {}", employee);
     response.setView(actionView.map());
   }
 
@@ -251,7 +254,7 @@ public class TimesheetController {
                 "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(TimesheetService.class).createValidateDomainTimesheetLine(user, employee, actionView);
-
+    logger.debug("Showing all timesheet lines to validate for employee {}", employee);
     response.setView(actionView.map());
   }
 
@@ -259,6 +262,7 @@ public class TimesheetController {
     Map<?, ?> timesheetMap = (Map<?, ?>) request.getContext().get("timesheetSelect");
     Timesheet timesheet =
         Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
+    logger.debug("Editing selected timesheet {}", timesheet);
     response.setView(
         ActionView.define(I18n.get("Timesheet"))
             .model(Timesheet.class.getName())
@@ -288,7 +292,7 @@ public class TimesheetController {
           .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
           .context("_user", user);
     }
-
+    logger.debug("Showing historic timesheets for employee {}", employee);
     response.setView(actionView.map());
   }
 
@@ -314,7 +318,7 @@ public class TimesheetController {
               actionView.get().getDomain() + " AND self.timesheet.employee.managerUser = :_user")
           .context("_user", user);
     }
-
+    logger.debug("Showing historic timesheet lines for employee {}", employee);
     response.setView(actionView.map());
   }
 
@@ -339,7 +343,7 @@ public class TimesheetController {
             .bind("_user", user)
             .bind("_activeCompany", activeCompany)
             .count();
-
+    logger.debug("Showing subordinate timesheets for active company {}", activeCompany);
     if (nbTimesheets == 0) {
       response.setNotify(I18n.get("No timesheet to be validated by your subordinates"));
     } else {
@@ -358,6 +362,7 @@ public class TimesheetController {
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 
       Message message = Beans.get(TimesheetService.class).cancelAndSendCancellationEmail(timesheet);
+      logger.debug("Cancelling timesheet {}", timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -384,6 +389,7 @@ public class TimesheetController {
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 
       Beans.get(TimesheetService.class).draft(timesheet);
+      logger.debug("Drafting timesheet {}", timesheet);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -404,7 +410,7 @@ public class TimesheetController {
 
       Message message =
           Beans.get(TimesheetService.class).confirmAndSendConfirmationEmail(timesheet);
-
+      logger.debug("Confirming timesheet {}", timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -458,6 +464,7 @@ public class TimesheetController {
       computeTimeSpent(request, response);
 
       Message message = timesheetService.validateAndSendValidationEmail(timesheet);
+      logger.debug("Validating timesheet {}", timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -479,7 +486,7 @@ public class TimesheetController {
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
       // confirm
       Beans.get(TimesheetService.class).confirm(timesheet);
-
+      logger.debug("Completing timesheet {}", timesheet);
       // validate
       this.valid(request, response);
     } catch (Exception e) {
@@ -495,6 +502,7 @@ public class TimesheetController {
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
 
       Message message = Beans.get(TimesheetService.class).refuseAndSendRefusalEmail(timesheet);
+      logger.debug("Refusing timesheet {}", timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -514,6 +522,7 @@ public class TimesheetController {
     timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
     if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
       Beans.get(TimesheetService.class).computeTimeSpent(timesheet);
+      logger.debug("Computing time spent for timesheet {}", timesheet);
     }
   }
 
@@ -565,7 +574,7 @@ public class TimesheetController {
         }
       }
     }
-
+    logger.debug("Setting show activity for timesheet {}", timesheet);
     response.setValue("$showActivity", showActivity);
   }
 
@@ -593,7 +602,7 @@ public class TimesheetController {
       TimesheetService timesheetService = Beans.get(TimesheetService.class);
 
       BigDecimal periodTotal = timesheetService.computePeriodTotal(timesheet);
-
+      logger.debug("Computing period total for timesheet {}", timesheet);
       response.setAttr("periodTotal", "value", periodTotal);
       response.setAttr("$periodTotalConvert", "hidden", false);
       response.setAttr(
@@ -620,6 +629,7 @@ public class TimesheetController {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       Beans.get(TimesheetService.class).updateTimeLoggingPreference(timesheet);
+      logger.debug("Updating time logging preference for timesheet {}", timesheet);
       response.setAttr("$periodTotalConvert", "hidden", false);
       response.setAttr(
           "$periodTotalConvert",
@@ -642,6 +652,7 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
       Beans.get(TimesheetService.class).generateLinesFromExpectedProjectPlanning(timesheet);
+      logger.debug("Generate lines from expected planning for timesheet {}", timesheet);
       response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -653,6 +664,7 @@ public class TimesheetController {
     Timesheet timesheet = request.getContext().asType(Timesheet.class);
     if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
       Beans.get(TimesheetService.class).removeAfterToDateTimesheetLines(timesheet);
+      logger.debug("Removing after to date timesheet lines for timesheet {}", timesheet);
     }
     response.setValues(timesheet);
   }

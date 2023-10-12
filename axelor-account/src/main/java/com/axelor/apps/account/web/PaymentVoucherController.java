@@ -80,6 +80,7 @@ public class PaymentVoucherController {
     try {
       List<PayVoucherDueElement> pvDueElementList =
           Beans.get(PaymentVoucherLoadService.class).searchDueElements(paymentVoucher);
+      logger.debug("Loading invoice terms for payment voucher {}", paymentVoucher);
       response.setValue("payVoucherDueElementList", pvDueElementList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -94,6 +95,7 @@ public class PaymentVoucherController {
     try {
       boolean generateAll =
           Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
+      logger.debug("Loading selected lines for payment voucher {}", paymentVoucher);
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
@@ -113,7 +115,7 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherLoadService.class).resetImputation(paymentVoucher);
-
+      logger.debug("Resetting imputation for payment voucher {}", paymentVoucher);
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
@@ -142,6 +144,7 @@ public class PaymentVoucherController {
               I18n.get(
                   "Some move amounts have been changed since the imputation. Please remake the imputation."));
         }
+        logger.debug("Asking payment voucher {}", paymentVoucher);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }
@@ -156,6 +159,7 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherConfirmService.class).confirmPaymentVoucher(paymentVoucher);
+      logger.debug("Confirming payment voucher {}", paymentVoucher);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -211,6 +215,7 @@ public class PaymentVoucherController {
     BankDetails defaultBankDetails =
         Beans.get(BankDetailsService.class)
             .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
+    logger.debug("Filling company bank details for payment voucher {}", paymentVoucher);
     response.setValue("companyBankDetails", defaultBankDetails);
   }
 
@@ -223,6 +228,7 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherLoadService.class).initFromInvoice(paymentVoucher, invoice);
+      logger.debug("Initializing from invoice for payment voucher {}", paymentVoucher);
       response.setValues(paymentVoucher);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -239,6 +245,7 @@ public class PaymentVoucherController {
         Beans.get(PaymentVoucherLoadService.class)
             .reloadElementToPayList(paymentVoucher, contextPaymentVoucher);
       }
+      logger.debug("Reloading payment voucher {}", paymentVoucher);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -250,7 +257,7 @@ public class PaymentVoucherController {
       PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
       boolean displayReceipt =
           Beans.get(PaymentVoucherControlService.class).isReceiptDisplayed(paymentVoucher);
-
+      logger.debug("Setting receipt display for payment voucher {}", paymentVoucher);
       response.setAttr("receiptNo", "hidden", !displayReceipt);
       response.setAttr("printPaymentVoucherBtn", "hidden", !displayReceipt);
     } catch (Exception e) {

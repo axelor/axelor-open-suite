@@ -48,6 +48,7 @@ public class IrrecoverableController {
 
     try {
       Beans.get(IrrecoverableService.class).getIrrecoverable(irrecoverable);
+      logger.debug("Getting irrecoverable {}", irrecoverable);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -61,6 +62,7 @@ public class IrrecoverableController {
 
     try {
       Beans.get(IrrecoverableService.class).createIrrecoverableReport(irrecoverable);
+      logger.debug("Creating irrecoverable {}", irrecoverable);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -74,6 +76,7 @@ public class IrrecoverableController {
 
     try {
       int anomaly = Beans.get(IrrecoverableService.class).passInIrrecoverable(irrecoverable);
+      logger.debug("Passing in irrecoverable {}", irrecoverable);
 
       response.setReload(true);
 

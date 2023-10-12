@@ -57,6 +57,7 @@ public class BankOrderController {
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
         Beans.get(BankOrderService.class).confirm(bankOrder);
+        log.debug("Confirming bank order {}", bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -115,6 +116,7 @@ public class BankOrderController {
               response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_WRONG_PASSWORD));
             } else {
               bankOrderService.validate(bankOrder);
+              log.debug("Validating bank order {}", bankOrder);
             }
           }
           response.setReload(true);
@@ -132,6 +134,7 @@ public class BankOrderController {
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
         Beans.get(BankOrderService.class).realize(bankOrder);
+        log.debug("Realizing bank order {}", bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -182,6 +185,7 @@ public class BankOrderController {
         }
 
         BankOrder bankOrder = Beans.get(BankOrderMergeService.class).mergeBankOrders(bankOrderList);
+        log.debug("Merging bank order {}", bankOrder);
 
         response.setView(
             ActionView.define(I18n.get("Bank Order"))
@@ -204,6 +208,7 @@ public class BankOrderController {
           Beans.get(BankOrderService.class)
               .getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
       bankOrder.setSignatoryEbicsUser(ebicsUser);
+      log.debug("Filling signatory ebics user for bank order {}", bankOrder);
       response.setValues(bankOrder);
     }
   }
@@ -211,6 +216,7 @@ public class BankOrderController {
   public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     String domain = Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder);
+    log.debug("Setting bank detail domain for bank order {}", bankOrder);
     // if nothing was found for the domain, we set it at a default value.
     if (domain.equals("")) {
       response.setAttr("senderBankDetails", "domain", "self.id IN (0)");
@@ -222,6 +228,7 @@ public class BankOrderController {
   public void fillBankDetails(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     BankDetails bankDetails = Beans.get(BankOrderService.class).getDefaultBankDetails(bankOrder);
+    log.debug("Filling bank details for bank order {}", bankOrder);
     response.setValue("senderBankDetails", bankDetails);
   }
 
@@ -229,6 +236,7 @@ public class BankOrderController {
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       Beans.get(BankOrderService.class).resetReceivers(bankOrder);
+      log.debug("Resetting receivers for bank order {}", bankOrder);
       response.setValue("bankOrderLineList", bankOrder.getBankOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -266,6 +274,7 @@ public class BankOrderController {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
+      log.debug("Cancelling bank order {}", bankOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -276,6 +285,7 @@ public class BankOrderController {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
     Beans.get(BankOrderService.class).setStatusToDraft(bankOrder);
+    log.debug("Setting draft status for bank order {}", bankOrder);
     response.setReload(true);
   }
 
@@ -283,6 +293,7 @@ public class BankOrderController {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
     Beans.get(BankOrderService.class).setStatusToRejected(bankOrder);
+    log.debug("Setting rejected status bank order {}", bankOrder);
     response.setReload(true);
   }
 }

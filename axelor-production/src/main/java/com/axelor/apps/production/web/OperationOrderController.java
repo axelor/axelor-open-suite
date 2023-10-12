@@ -57,6 +57,7 @@ public class OperationOrderController {
     operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
 
     Beans.get(OperationOrderWorkflowService.class).computeDuration(operationOrder);
+    LOG.debug("Computing duration for operation order {}", operationOrder);
     response.setReload(true);
   }
 
@@ -68,6 +69,7 @@ public class OperationOrderController {
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderWorkflowService.class)
           .setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
+      LOG.debug("Setting planned dates for operation order {}", operationOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -81,6 +83,7 @@ public class OperationOrderController {
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderWorkflowService.class)
           .setRealDates(operationOrder, realStartDateT, realEndDateT);
+      LOG.debug("Setting real dates for operation order {}", operationOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -96,6 +99,7 @@ public class OperationOrderController {
       }
       Beans.get(OperationOrderWorkflowService.class)
           .plan(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()), null);
+      LOG.debug("Planning operation order {}", operationOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -107,6 +111,7 @@ public class OperationOrderController {
       OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
+      LOG.debug("Starting operation order {}", operationOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -118,7 +123,7 @@ public class OperationOrderController {
       OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderWorkflowService.class).pause(operationOrder);
-
+      LOG.debug("Pausing operation order {}", operationOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -130,7 +135,7 @@ public class OperationOrderController {
       OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderWorkflowService.class).resume(operationOrder);
-
+      LOG.debug("Resuming operation order {}", operationOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -145,7 +150,7 @@ public class OperationOrderController {
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       operationOrder.setRealStartDateT(realStartDateT);
       Beans.get(OperationOrderWorkflowService.class).finishAndAllOpFinished(operationOrder);
-
+      LOG.debug("Finishing operation order {}", operationOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -158,6 +163,7 @@ public class OperationOrderController {
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
 
       Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
+      LOG.debug("Partially finishing operation order {}", operationOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -169,7 +175,7 @@ public class OperationOrderController {
       OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
       Beans.get(OperationOrderWorkflowService.class)
           .cancel(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));
-
+      LOG.debug("Cancelling operation order {}", operationOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -291,6 +297,7 @@ public class OperationOrderController {
           Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderService.class)
           .checkConsumedStockMoveLineList(operationOrder, oldOperationOrder);
+      LOG.debug("Checking consumed stock move line list for operation order {}", operationOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
@@ -309,6 +316,7 @@ public class OperationOrderController {
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderService.class)
           .updateConsumedStockMoveFromOperationOrder(operationOrder);
+      LOG.debug("Updating consumed stock move from operation order {}", operationOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
