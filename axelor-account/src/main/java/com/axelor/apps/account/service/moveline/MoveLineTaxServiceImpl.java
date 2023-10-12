@@ -303,19 +303,16 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     if (CollectionUtils.isEmpty(move.getMoveLineList()) || move.getMoveLineList().size() < 2) {
       return;
     }
-    for (MoveLine moveline : move.getMoveLineList()) {
-      if (moveline.getAccount() != null
-          && moveline.getAccount().getAccountType() != null
-          && AccountTypeRepository.TYPE_TAX.equals(
-              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (this.isMoveLineTaxAccount(moveLine)
           && !move.getMoveLineList().stream()
               .filter(
                   ml ->
                       moveLineToolService.isEqualTaxMoveLine(
-                          moveline.getAccount(),
-                          moveline.getTaxLine(),
-                          moveline.getVatSystemSelect(),
-                          moveline.getId(),
+                          moveLine.getAccount(),
+                          moveLine.getTaxLine(),
+                          moveLine.getVatSystemSelect(),
+                          moveLine.getId(),
                           ml))
               .collect(Collectors.<MoveLine>toList())
               .isEmpty()) {
@@ -324,5 +321,13 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             I18n.get(AccountExceptionMessage.SAME_TAX_MOVE_LINES));
       }
     }
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
+    return moveLine.getAccount() != null
+        && moveLine.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 }

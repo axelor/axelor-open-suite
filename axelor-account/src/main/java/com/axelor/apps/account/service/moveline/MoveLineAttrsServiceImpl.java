@@ -36,6 +36,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineAttrsServiceImpl(
@@ -58,12 +60,14 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveLineTaxService moveLineTaxService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   protected void addAttr(
@@ -310,5 +314,19 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     if (company.getCurrency() != move.getCurrency()) {
       this.addAttr("currencyAmount", "focus", true, attrsMap);
     }
+  }
+
+  @Override
+  public void addTaxLineRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "taxLine",
+        "required",
+        moveLineTaxService.isMoveLineTaxAccount(moveLine)
+            && Lists.newArrayList(
+                    MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
+                    MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+                .contains(move.getFunctionalOriginSelect()),
+        attrsMap);
   }
 }

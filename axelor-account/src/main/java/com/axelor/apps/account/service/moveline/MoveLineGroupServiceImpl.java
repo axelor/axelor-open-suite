@@ -284,6 +284,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineAttrsService.addPartnerReadonly(moveLine, move, attrsMap);
     moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
     moveLineAttrsService.changeFocus(move, moveLine, attrsMap);
+    moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
 
     return attrsMap;
   }

@@ -54,4 +54,6 @@ public interface MoveLineTaxService {
   int getVatSystem(Move move, MoveLine moveline) throws AxelorException;
 
   void checkTaxMoveLines(Move move) throws AxelorException;
+
+  boolean isMoveLineTaxAccount(MoveLine moveLine);
 }
