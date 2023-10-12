@@ -135,7 +135,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       throws AxelorException {
 
     TaxLine taxLine = invoiceMoveLine.getTaxLine();
-    BigDecimal vatRate = taxLine.getValue();
+    BigDecimal vatRate = taxLine != null ? taxLine.getValue() : BigDecimal.ZERO;
 
     BigDecimal baseAmount = BigDecimal.ZERO;
     if (BigDecimal.ZERO.compareTo(vatRate) != 0) {
