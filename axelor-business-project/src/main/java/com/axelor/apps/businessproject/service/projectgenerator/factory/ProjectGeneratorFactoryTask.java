@@ -169,13 +169,15 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         projectTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
 
     if (saleOrder.getToInvoiceViaTask()) {
+      task.setToInvoice(true);
       task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+    } else {
+      task.setToInvoice(project.getIsInvoicingTimesheet());
     }
 
     task.setTaskDate(startDate.toLocalDate());
     task.setUnitPrice(saleOrderLine.getPrice());
     task.setExTaxTotal(saleOrderLine.getExTaxTotal());
-    task.setToInvoice(project.getIsInvoicingTimesheet());
     projectTaskRepo.save(task);
     return task;
   }
