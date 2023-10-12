@@ -79,9 +79,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected InvoiceRepository invoiceRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
-  public static final String FA_LEVEL_UP = "fa-level-up";
-  public static final String FA_LEVEL_DOWN = "fa-level-down";
-  public static final String ICON_EQUAL = "icon-equal";
+  public static final String FA_LEVEL_UP = "arrow-90deg-up";
+  public static final String FA_LEVEL_DOWN = "arrow-90deg-down";
+  public static final String ICON_EQUAL = "equal";
 
   @Inject
   public ProjectBusinessServiceImpl(
