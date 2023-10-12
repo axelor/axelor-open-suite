@@ -103,9 +103,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
 
     if (appBudgetService.getAppBudget() != null
         && appBudgetService.getAppBudget().getCheckAvailableBudget()
-        && CollectionUtils.isNotEmpty(moveLineList)
-        && move.getStatusSelect() != MoveRepository.STATUS_NEW
-        && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
+        && CollectionUtils.isNotEmpty(moveLineList)) {
 
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 
