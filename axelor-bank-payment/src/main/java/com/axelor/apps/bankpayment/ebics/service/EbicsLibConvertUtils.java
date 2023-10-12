@@ -8,13 +8,13 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.ebics.dto.EbicsLibBank;
-import com.axelor.ebics.dto.EbicsLibCertificate;
-import com.axelor.ebics.dto.EbicsLibPartner;
-import com.axelor.ebics.dto.EbicsLibRequestLog;
-import com.axelor.ebics.dto.EbicsLibUser;
-import com.axelor.ebics.xml.DefaultResponseElement;
 import com.axelor.inject.Beans;
+import com.axelor.libs.ebics.dto.EbicsLibBank;
+import com.axelor.libs.ebics.dto.EbicsLibCertificate;
+import com.axelor.libs.ebics.dto.EbicsLibPartner;
+import com.axelor.libs.ebics.dto.EbicsLibRequestLog;
+import com.axelor.libs.ebics.dto.EbicsLibUser;
+import com.axelor.libs.ebics.xml.DefaultResponseElement;
 import java.util.Optional;
 
 public class EbicsLibConvertUtils {
