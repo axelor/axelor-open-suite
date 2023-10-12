@@ -19,7 +19,8 @@
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -32,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveController {
 
@@ -67,12 +69,31 @@ public class MoveController {
     }
   }
 
-  public void checkBudgetDistribution(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
+    if (move != null
+        && !CollectionUtils.isEmpty(move.getMoveLineList())
+        && !moveBudgetService.isBudgetInLines(move)) {
+      moveBudgetService.autoComputeBudgetDistribution(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    }
+  }
 
-    try {
-      Move move = request.getContext().asType(Move.class);
-      MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
-      if (moveBudgetService.checkMissingBudgetDistributionOnAccountedMove(move)) {
+  public void validateAccounting(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
+    if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+      if (moveBudgetService.isBudgetInLines(move)) {
+
+        String budgetExceedAlert = moveBudgetService.getBudgetExceedAlert(move);
+        if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
+          response.setAlert(budgetExceedAlert);
+        }
+      } else {
+
         Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
         if (isError != null) {
           if (isError) {
@@ -82,20 +103,6 @@ public class MoveController {
           }
         }
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void validateBudgetBalance(ActionRequest request, ActionResponse response) {
-
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      Beans.get(MoveBudgetService.class).getBudgetExceedAlert(move);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
 }

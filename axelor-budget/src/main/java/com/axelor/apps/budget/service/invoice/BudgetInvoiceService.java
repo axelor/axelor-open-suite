@@ -20,6 +20,7 @@ package com.axelor.apps.budget.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import java.util.List;
 
@@ -78,4 +79,6 @@ public interface BudgetInvoiceService {
    */
   public void updateLineWithPO(
       BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine);
+
+  void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException;
 }
