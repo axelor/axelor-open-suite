@@ -171,11 +171,11 @@ public class MoveLineServiceImpl implements MoveLineService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_NO_SELECTED));
     }
 
+    moveLineTaxService.checkEmptyTaxLines(moveLineList);
+
     if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
       return;
     }
-
-    moveLineTaxService.checkEmptyTaxLines(moveLineList);
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
         getPopulatedReconcilableMoveLineMap(moveLineList);

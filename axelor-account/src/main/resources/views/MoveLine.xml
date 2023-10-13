@@ -158,7 +158,6 @@
     <field name="amountRemaining" hidden="true" width="80"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-      requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80"/>
     <field name="vatSystemSelect"

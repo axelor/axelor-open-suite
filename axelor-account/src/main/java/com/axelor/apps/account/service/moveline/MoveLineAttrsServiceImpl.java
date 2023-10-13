@@ -323,10 +323,12 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         "taxLine",
         "required",
         moveLineTaxService.isMoveLineTaxAccount(moveLine)
-            && Lists.newArrayList(
-                    MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
-                    MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-                .contains(move.getFunctionalOriginSelect()),
+                && Lists.newArrayList(
+                        MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
+                        MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+                    .contains(move.getFunctionalOriginSelect())
+            || (moveLine.getAccount() != null
+                && moveLine.getAccount().getIsTaxRequiredOnMoveLine()),
         attrsMap);
   }
 }
