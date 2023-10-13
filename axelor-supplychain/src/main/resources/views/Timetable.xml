@@ -91,6 +91,24 @@
     </panel>
   </form>
 
+  <grid name="timetable-grid-grouped-by-sale-order" title="Timetables"
+    model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true"
+    groupBy="saleOrder">
+    <field name="estimatedDate" readonlyIf="invoiced" required="true"/>
+    <field name="title" readonlyIf="invoiced"/>
+    <field name="amount" readonlyIf="invoiced" required="true"
+      onChange="action-timetable-group-on-amount-change"/>
+    <field name="percentage" readonlyIf="invoiced" required="true"
+      onChange="action-timetable-record-on-percentage-change"/>
+    <field name="comments" readonlyIf="invoiced" width="300%"/>
+    <field name="invoiced" readonly="true"/>
+    <button name="generateInvoiceBtn" readonlyIf="!id || invoiced" help="Generate Invoice"
+      icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice"
+      if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
+    <field name="invoice" width="120" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+  </grid>
+
   <action-group name="action-timetable-group-on-amount-change">
     <action name="action-timetable-condition-on-amount-change"
       if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
