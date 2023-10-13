@@ -210,7 +210,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(ProductionExceptionMessage.PLAN_IS_BEFORE_TODAY_DATE),
-            String.format("%s %s", manufOrder.getQty(), manufOrder.getProduct().getFullName()));
+            String.format(
+                "%s %s",
+                manufOrder.getQty() != null
+                    ? manufOrder.getQty().setScale(2, RoundingMode.HALF_UP)
+                    : null,
+                manufOrder.getProduct().getFullName()));
       }
     }
 
