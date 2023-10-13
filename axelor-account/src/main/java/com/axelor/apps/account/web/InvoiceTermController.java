@@ -30,6 +30,8 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -46,7 +48,6 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -442,14 +443,12 @@ public class InvoiceTermController {
       response.setValue("$isMultiCurrency", isMultiCurrency);
       MoveLine moveLine = invoiceTerm.getMoveLine();
       Invoice invoice = invoiceTerm.getInvoice();
-      if (invoice != null
-              && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
+
+      this.setMoveParentContextFields(moveLine, request);
+      if (Beans.get(InvoiceToolService.class).isMultiCurrency(invoice)
           || (invoice == null
               && moveLine != null
-              && moveLine.getMove() != null
-              && !Objects.equals(
-                  moveLine.getMove().getCurrency(),
-                  moveLine.getMove().getCompany().getCurrency()))) {
+              && Beans.get(MoveToolService.class).isMultiCurrency(moveLine.getMove()))) {
         response.setAttr("amount", "title", I18n.get("Amount in currency"));
         response.setAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"));
       }
@@ -475,6 +474,13 @@ public class InvoiceTermController {
         moveLine.setMove(move);
         response.setValue("move", move);
       }
+    }
+  }
+
+  protected void setMoveParentContextFields(MoveLine moveLine, ActionRequest request) {
+    if (moveLine != null && (moveLine.getMove() == null || moveLine.getId() == null)) {
+      Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+      moveLine.setMove(move);
     }
   }
 

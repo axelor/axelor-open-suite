@@ -201,4 +201,6 @@ public interface MoveToolService {
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 
   void setDescriptionOnMoveLineList(Move move);
+
+  boolean isMultiCurrency(Move move);
 }
