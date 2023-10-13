@@ -35,6 +35,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.util.Objects;
 
 @Singleton
 public class SaleOrderLineTreeController {
@@ -107,6 +108,15 @@ public class SaleOrderLineTreeController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
+
+  public void reloadView(ActionRequest request, ActionResponse response)
+      throws InterruptedException {
+
+    if (Objects.isNull(request.getContext().get("id"))) {
+      response.setReload(true);
+      Thread.sleep(400);
     }
   }
 }
