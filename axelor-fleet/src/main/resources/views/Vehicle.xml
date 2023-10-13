@@ -112,17 +112,19 @@
     <field name="vehicleState"/>
     <field name="company"/>
     <template><![CDATA[
-		    <div class="span12"><strong>{{name}}</strong></div>
-			<div>
-			  <div class="span4 card-image" style="width: 128px; height: 64px;">
-			    <img ng-src="{{$image(null, 'image')}}" style="width: 100%; height: 100%; object-fit: contain;" />
-			  </div>
-			  <div class="span8" style="width: 60%;">
-			    <span>{{plateNo}}<br/>
-			    {{company.name}}<br/>
-			    {{driverPartner.fullName}}<br/></span>
-			  </div>
-			</div>
+			<>
+				<strong>{name}</strong>
+				<Box d="grid" gridTemplateColumns="40% 60%" mt={2}>
+					<Box style={{ width: 128, height: 64 }}>
+						<Image src={$image(null, 'image')} w={100} h={100} style={{ objectFit: "contain" }}></Image>
+					</Box>
+					<Box>
+						{plateNo} <Box/>
+						{company.name} <Box/>
+						{driverPartner.fullName}
+					</Box>
+				</Box>
+			</>
 		]]>
     </template>
   </cards>
