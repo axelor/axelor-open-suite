@@ -130,7 +130,8 @@
       <field name="assignedToUser"/>
       <field name="journal" readonlyIf="!company"
         onSelect="action-payment-session-method-set-journal-domain"/>
-      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"
+        readonly="true"/>
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings"
       readonlyIf="statusSelect > 1 &amp;&amp; $hasInvoiceTerm" itemSpan="6">
