@@ -32,6 +32,7 @@ import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.db.repo.BudgetSaleOrderRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
@@ -99,6 +100,7 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
+import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
@@ -168,5 +170,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetLevelResetToolService.class).to(BudgetLevelResetToolServiceImpl.class);
     bind(BudgetResetToolService.class).to(BudgetResetToolServiceImpl.class);
     bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
+    bind(SaleOrderProjectRepository.class).to(BudgetSaleOrderRepository.class);
   }
 }
