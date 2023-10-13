@@ -182,8 +182,9 @@
 
   <action-view name="sc.root.sale.timetable" title="Timetables"
     model="com.axelor.apps.supplychain.db.Timetable">
-    <view type="grid" name="timetable-grid-grouped-by-sale-order"/>
+    <view type="grid" name="timetable-grid"/>
     <view type="form" name="timetable-form"/>
+    <view-param name="orderBy" value="estimatedDate"/>
   </action-view>
 
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"
