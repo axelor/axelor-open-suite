@@ -11,6 +11,7 @@
 "Accounting.Account",,,
 "AccountingReportType25.balance","Solde",,
 "AccountingReportType25.company","Société",,
+"AccountingReportType25.currency","Devise",,
 "AccountingReportType25.date","Date",,
 "AccountingReportType25.expectedAmt","Montant prévu",,
 "AccountingReportType25.expenditure","Dépenses",,
