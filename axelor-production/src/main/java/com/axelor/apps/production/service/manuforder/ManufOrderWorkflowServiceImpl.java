@@ -205,6 +205,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ProductionConfig productionConfig =
           productionConfigService.getProductionConfig(manufOrder.getCompany());
 
+      int qtyScale = appBaseService.getNbDecimalDigitForQty();
+
       if (productionConfig.getScheduling() == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING
           && manufOrder.getPlannedStartDateT().isBefore(todayDateT)) {
         throw new AxelorException(
@@ -213,7 +215,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             String.format(
                 "%s %s",
                 manufOrder.getQty() != null
-                    ? manufOrder.getQty().setScale(2, RoundingMode.HALF_UP)
+                    ? manufOrder.getQty().setScale(qtyScale, RoundingMode.HALF_UP)
                     : null,
                 manufOrder.getProduct().getFullName()));
       }
