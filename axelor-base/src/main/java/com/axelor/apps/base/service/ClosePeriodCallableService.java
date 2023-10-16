@@ -55,8 +55,7 @@ public class ClosePeriodCallableService implements Callable<Period> {
   }
 
   protected void closePeriodAndSendMessage() throws AxelorException {
-    Beans.get(PeriodService.class).closureInProgress(period);
-    Beans.get(PeriodService.class).close(period);
+    Beans.get(PeriodService.class).closePeriod(period);
     Beans.get(MailMessageService.class)
         .sendNotification(
             AuthUtils.getUser(),
