@@ -292,7 +292,7 @@
     <template><![CDATA[
 	  <>
 	  	<Box>
-	  		<Box d="grid" gridTemplateColumns="20% 60% 20%">
+	  		<Box d="grid" gridTemplateColumns="auto auto auto">
 		  		<Box d="flex" gap="4" alignItems="center">
 		          	{typeSelect == 1 && <Badge bg="warning">{_t('Call')}</Badge>}
 		          	{typeSelect == 2 && <Badge style={{ backgroundColor: "#58427C" }}>{_t('Meeting')}</Badge>}

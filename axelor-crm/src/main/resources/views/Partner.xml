@@ -236,9 +236,9 @@
         <panel name="activityPanel" title="Activity" showIf="id &amp;&amp; isProspect"
           hidden="true" if="__config__.app.getApp('crm')?.crmProcessOnPartner">
           <panel-dashlet action="action-partner-view-prospect-recent-activity-custom"
-            title="Activity" height="550"/>
+            height="550"/>
           <panel-dashlet action="action-partner-view-prospect-past-activity-custom"
-            title="Activity" height="550"/>
+            height="550"/>
         </panel>
       </insert>
     </extend>
@@ -360,36 +360,36 @@
     <hilite color="success" if="leadScoringSelect == 5.00"/>
     <template> <![CDATA[
 	         <>
-	         	{picture && <Image src={$image('picture', 'image')}></Image>}
+	         	{picture && <Image src={$image('picture', 'image')} w={25} h={25} style={{ objectFit: "contain" }}></Image>}
 	         	<dl>
 	         		{name &&
 	         			<Box>
 	         				<dt>{_t('Enterprise Name')}</dt>
-	         				<dd>{name}</dd>
+	         				<Box as="dd" ms={2}>{name}</Box>
 	         			</Box>
 	         		}
 	         		{sizeSelect != 0 &&
 	         			<Box>
 	         				<dt>{_t('Size')}</dt>
-	         				{sizeSelect == 1 && <dd>{_t('1 to 20')}</dd>}
-	         				{sizeSelect == 2 && <dd>{_t('20 to 100')}</dd>}
-	         				{sizeSelect == 3 && <dd>{_t('100 to 500')}</dd>}
-	         				{sizeSelect == 4 && <dd>{_t('500 to 1000')}</dd>}
-	         				{sizeSelect == 5 && <dd>{_t('1000 to 2000')}</dd>}
-	         				{sizeSelect == 6 && <dd>{_t('Over 2000')}</dd>}
+	         				{sizeSelect == 1 && <Box as="dd" ms={2}>{_t('1 to 20')}</Box>}
+	         				{sizeSelect == 2 && <Box as="dd" ms={2}>{_t('20 to 100')}</Box>}
+	         				{sizeSelect == 3 && <Box as="dd" ms={2}>{_t('100 to 500')}</Box>}
+	         				{sizeSelect == 4 && <Box as="dd" ms={2}>{_t('500 to 1000')}</Box>}
+	         				{sizeSelect == 5 && <Box as="dd" ms={2}>{_t('1000 to 2000')}</Box>}
+	         				{sizeSelect == 6 && <Box as="dd" ms={2}>{_t('Over 2000')}</Box>}
 	         			</Box>
 	         		}
 	         		<Box>
 	         			<dt>{_t('Lead Scoring')}</dt>
-	         			<dd>
-	         				{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning"/>)}
-	         				{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning"/>)}
-	         			</dd>
+	         			<Box as="dd" ms={2}>
+	         				{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning" fontSize="15px"/>)}
+	         				{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning" fontSize="15px"/>)}
+	         			</Box>
 	         		</Box>
 	         	</dl>
 	        	<Box className="card-summary popover">
 	       			<Box as="p" m={2}>
-	        			{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100, wordBreak: "break-all", maxWidth: 250 }}></Box>}
+	        			{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ wordBreak: "break-all", maxWidth: 250 }}></Box>}
 	        		</Box>
 	        	</Box>
 	         </>
@@ -471,7 +471,7 @@
 		<>
 			<Box>
 				<strong>{fullName}</strong>
-				<Box d="grid" gridTemplateColumns="33% 67%">
+				<Box d="grid" gridTemplateColumns="33% 67%" mt={2}>
 					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
 						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
 		     			{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg"></Image>}
@@ -483,16 +483,16 @@
 						{mainAddress.fullName} <Box/>
 						{fixedPhone} <Box/>
 						{emailAddress.address} <Box/>
-						{partnerCategory.name} <Box/>
-						{isProspect &&
-							<Box>
-								{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning" fontSize="25px"/>)}
-								{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning" fontSize="25px"/>)}
-							</Box>
-						}
+						{partnerCategory.name}
 					</Box>
 				</Box>
-				<Box d="flex" justifyContent="flex-end" gap="4" mt={4}>
+				{isProspect &&
+					<Box d="flex" justifyContent="center">
+						{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning" fontSize="25px"/>)}
+						{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning" fontSize="25px"/>)}
+					</Box>
+				}
+				<Box d="flex" justifyContent="flex-end" gap="4" mt={3}>
 					{isProspect && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Prospect')}</Badge>}
 					{isEmployee && <Badge style={{ backgroundColor: "#5680FC" }}>{_t('Employee')}</Badge>}
 					{isCustomer && <Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Customer')}</Badge>}
