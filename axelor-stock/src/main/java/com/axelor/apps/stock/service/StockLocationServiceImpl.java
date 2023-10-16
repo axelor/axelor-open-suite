@@ -37,7 +37,6 @@ import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -54,6 +53,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
 
 @RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
@@ -102,39 +102,41 @@ public class StockLocationServiceImpl implements StockLocationService {
         .fetch();
   }
 
-  @Override
-  public BigDecimal getQtyOfProductInStockLocations(
+  protected BigDecimal getQtyOfProductInStockLocations(
       Long productId, List<Long> stockLocationIds, Long companyId, String qtyFieldName)
       throws AxelorException {
     Product product = productRepo.find(productId);
     Unit productUnit = product.getUnit();
 
-    int scale = appBaseService.getNbDecimalDigitForQty();
+    StringBuilder query = new StringBuilder();
+    Map<String, Object> parameterMap = new HashMap<>();
+    query.append("SELECT self.unit.id, sum(self.%s)");
+    query.append(" FROM StockLocationLine self");
+    query.append(" WHERE self.stockLocation.typeSelect != :stockLocationTypeSelectVirtual");
+    query.append(" AND self.product.id = :productId AND self.product.stockManaged is TRUE");
 
-    String query =
-        "SELECT sll.unit.id, sum(sll.%1$s)"
-            + " FROM StockLocationLine sll"
-            + " WHERE (( (0 IN (%2$s)) AND sll.stockLocation.typeSelect != :stockLocationTypeSelectVirtual AND (sll.stockLocation.company.id = :companyId OR COALESCE(:companyId,0) = 0 ) )"
-            + " OR (sll.stockLocation.id in (%2$s) AND 0 NOT IN (%2$s) ))"
-            + " AND :productId is not null AND sll.product.id = :productId AND sll.product.stockManaged is TRUE GROUP BY sll.unit.id";
+    parameterMap.put("stockLocationTypeSelectVirtual", StockLocationRepository.TYPE_VIRTUAL);
+    parameterMap.put("productId", product.getId());
 
-    List<Tuple> sumOfQtyPerUnitList =
-        JPA.em()
-            .createQuery(
-                String.format(
-                    query,
-                    qtyFieldName,
-                    (stockLocationIds == null || stockLocationIds.isEmpty())
-                        ? "0"
-                        : Joiner.on(",").join(stockLocationIds)),
-                Tuple.class)
-            .setParameter("productId", product.getId())
-            .setParameter("stockLocationTypeSelectVirtual", StockLocationRepository.TYPE_VIRTUAL)
-            .setParameter("companyId", companyId)
-            .getResultList();
+    if (companyId != null && companyId > 0L) {
+      query.append(" AND self.stockLocation.company.id = :companyId");
+      parameterMap.put("companyId", companyId);
+    }
+
+    if (stockLocationIds != null && !stockLocationIds.isEmpty()) {
+      query.append(" AND self.stockLocation.id IN (:stockLocationIds)");
+      parameterMap.put("stockLocationIds", stockLocationIds);
+    }
+
+    query.append(" GROUP BY self.unit.id");
+
+    TypedQuery<Tuple> sumOfQtyPerUnitQuery =
+        JPA.em().createQuery(String.format(query.toString(), qtyFieldName), Tuple.class);
+
+    parameterMap.forEach(sumOfQtyPerUnitQuery::setParameter);
 
     BigDecimal sumOfQty = BigDecimal.ZERO;
-    for (Tuple qtyPerUnit : sumOfQtyPerUnitList) {
+    for (Tuple qtyPerUnit : sumOfQtyPerUnitQuery.getResultList()) {
       Long stockLocationLineUnitId = (Long) qtyPerUnit.get(0);
       BigDecimal sumOfQtyOfStockLocationLineUnit = (BigDecimal) qtyPerUnit.get(1);
 
@@ -153,7 +155,7 @@ public class StockLocationServiceImpl implements StockLocationService {
         sumOfQty = sumOfQty.add(sumOfQtyOfStockLocationLineUnit);
       }
     }
-    return sumOfQty.setScale(scale, RoundingMode.HALF_UP);
+    return sumOfQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
   }
 
   @Override

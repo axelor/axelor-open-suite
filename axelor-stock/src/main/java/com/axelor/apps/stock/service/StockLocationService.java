@@ -29,10 +29,6 @@ import java.util.Set;
 
 public interface StockLocationService {
 
-  BigDecimal getQtyOfProductInStockLocations(
-      Long productId, List<Long> stockLocationIds, Long companyId, String qtyFieldName)
-      throws AxelorException;
-
   @CallMethod
   BigDecimal getRealQtyOfProductInStockLocations(
       Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
