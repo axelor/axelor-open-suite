@@ -823,7 +823,6 @@
 
   <action-group name="action-group-moveline-invoice-term-list-onchange">
     <action name="action-move-line-method-update-due-dates"/>
-    <action name="save" if="move?.statusSelect != 4 &amp;&amp; move?.statusSelect &gt;= 2"/>
     <action name="action-move-line-method-generate-pfp-partial-terms"/>
   </action-group>
 

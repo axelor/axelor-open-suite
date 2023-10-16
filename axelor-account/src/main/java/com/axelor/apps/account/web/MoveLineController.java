@@ -730,6 +730,11 @@ public class MoveLineController {
   public void generatePfpPartialTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      if (moveLine.getId() == null) {
+        return;
+      }
+
       moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
 
       if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {

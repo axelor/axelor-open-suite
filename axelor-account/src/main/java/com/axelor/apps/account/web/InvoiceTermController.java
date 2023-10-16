@@ -159,15 +159,12 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
-      Move move = null;
 
-      this.setParentContextFields(invoiceTerm, request, response);
+      this.setParentContext(request, invoiceTerm);
 
       Invoice invoice = invoiceTerm.getInvoice();
       MoveLine moveLine = invoiceTerm.getMoveLine();
-      if (moveLine != null && moveLine.getMove() != null) {
-        move = moveLine.getMove();
-      }
+      Move move = moveLine != null ? moveLine.getMove() : null;
 
       if (invoice == null && request.getContext().containsKey("_invoiceId")) {
         invoice =
@@ -417,7 +414,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      this.setParentContextFields(invoiceTerm, request, response);
+      this.setParentContext(request, invoiceTerm);
 
       MoveLine moveLine = invoiceTerm.getMoveLine();
       if (moveLine != null && moveLine.getFinancialDiscount() != null) {
@@ -430,7 +427,15 @@ public class InvoiceTermController {
                 moveLine.getRemainingAmountAfterFinDiscount());
       }
 
-      response.setValues(invoiceTerm);
+      response.setValue("applyFinancialDiscount", invoiceTerm.getApplyFinancialDiscount());
+      response.setValue("financialDiscount", invoiceTerm.getFinancialDiscount());
+      response.setValue(
+          "financialDiscountDeadlineDate", invoiceTerm.getFinancialDiscountDeadlineDate());
+      response.setValue("financialDiscountAmount", invoiceTerm.getFinancialDiscountAmount());
+      response.setValue(
+          "remainingAmountAfterFinDiscount", invoiceTerm.getRemainingAmountAfterFinDiscount());
+      response.setValue(
+          "amountRemainingAfterFinDiscount", invoiceTerm.getAmountRemainingAfterFinDiscount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -440,7 +445,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      this.setParentContextFields(invoiceTerm, request, response);
+      this.setParentContext(request, invoiceTerm);
 
       if (invoiceTerm.getMoveLine() == null && request.getContext().containsKey("_moveLineId")) {
         invoiceTerm.setMoveLine(
@@ -459,7 +464,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      this.setParentContextFields(invoiceTerm, request, response);
+      this.setParentContext(request, invoiceTerm);
 
       boolean isMultiCurrency = Beans.get(InvoiceTermService.class).isMultiCurrency(invoiceTerm);
 
@@ -482,23 +487,38 @@ public class InvoiceTermController {
     }
   }
 
-  protected void setParentContextFields(
-      InvoiceTerm invoiceTerm, ActionRequest request, ActionResponse response) {
-    if (invoiceTerm.getInvoice() == null) {
-      Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
-      response.setValue("invoice", invoice);
-      invoiceTerm.setInvoice(invoice);
+  protected void setParentContext(ActionRequest request, InvoiceTerm invoiceTerm) {
+    Context parentContext = request.getContext().getParent();
+    if (parentContext != null && Invoice.class.equals(parentContext.getContextClass())) {
+      invoiceTerm.setInvoice(this.getInvoice(request, invoiceTerm));
+    } else if (invoiceTerm.getInvoice() == null) {
+      invoiceTerm.setMoveLine(this.getMoveLine(request, invoiceTerm));
     }
+  }
 
-    if (invoiceTerm.getMoveLine() == null) {
-      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
-      invoiceTerm.setMoveLine(moveLine);
-      response.setValue("moveLine", moveLine);
-      if (moveLine != null && moveLine.getMove() == null) {
-        Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
-        moveLine.setMove(move);
-        response.setValue("move", move);
-      }
+  protected Invoice getInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
+    Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+
+    return invoice != null ? invoice : invoiceTerm.getInvoice();
+  }
+
+  protected Move getMove(ActionRequest request, MoveLine moveLine) {
+    Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+
+    return move != null ? move : moveLine.getMove();
+  }
+
+  protected MoveLine getMoveLine(ActionRequest request, InvoiceTerm invoiceTerm) {
+    MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+    if (moveLine != null) {
+      Move move = this.getMove(request, invoiceTerm.getMoveLine());
+      moveLine.setMove(move);
+      return moveLine;
+    } else {
+      Move move = this.getMove(request, invoiceTerm.getMoveLine());
+      invoiceTerm.getMoveLine().setMove(move);
+      return invoiceTerm.getMoveLine();
     }
   }
 
