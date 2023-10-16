@@ -3,46 +3,22 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="menu-project-root" order="-1400" title="Projects" icon="fa-tasks"
+  <menuitem name="menu-project-root" order="-1400" title="Project" icon="fa-tasks"
     if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
 
-  <menuitem name="project-folder" parent="menu-project-root" title="Project Folder"
-    action="project.folder" order="100"/>
-  <action-view name="project.folder" title="Project Folder"
-    model="com.axelor.apps.businessproject.db.ProjectFolder">
-    <view type="grid" name="project-folder-grid"/>
-    <view type="form" name="project-folder-form"/>
-  </action-view>
-
-  <menuitem name="project-all" parent="menu-project-root" order="200" title="Projects"
+  <menuitem name="project-all" parent="menu-project-root" order="100" title="Projects"
     action="project.all"/>
   <action-method name="project.all">
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjects"/>
   </action-method>
 
-  <menuitem name="project-all-tree" parent="menu-project-root" order="300"
-    title="Projects tree" action="project.all.tree"/>
-  <action-view name="project.all.tree" title="Projects"
-    model="com.axelor.apps.project.db.Project">
-    <view type="tree" name="project-tree"/>
-    <view-param name="forceTitle" value="true"/>
-  </action-view>
-
-  <menuitem name="project-task-all" parent="menu-project-root" order="400" title="Tasks"
+  <menuitem name="project-task-all" parent="menu-project-root" order="300" title="Tasks"
     action="project.task.all"/>
   <action-method name="project.task.all">
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjectTasks"/>
   </action-method>
 
-  <menuitem name="project-open-tickets" parent="menu-project-root" title="Tickets"
-    order="500" action="all.open.project.tickets" if-module="axelor-business-support"
-    if="__config__.app.isApp('business-support')"/>
-  <action-method name="all.open.project.tickets">
-    <call class="com.axelor.apps.project.web.ProjectMenuController"
-      method="allOpenProjectTickets"/>
-  </action-method>
-
-  <menuitem name="project-template" parent="menu-project-root" order="800"
+  <menuitem name="project-template" parent="menu-project-root" order="500"
     title="Templates"/>
 
   <menuitem name="project-task-template" parent="project-template" title="Task templates"
@@ -64,7 +40,7 @@
   </action-view>
 
   <menuitem name="project-current-project" parent="menu-project-root"
-    title="Current project" order="900"/>
+    title="Current projects" order="600" />
 
   <menuitem name="project-activity" title="Project Activities"
     parent="project-current-project" action="project.activity" order="100"/>
@@ -96,21 +72,7 @@
       expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
   </action-view>
 
-  <menuitem title="Historical" name="project-historical" parent="menu-project-root"
-    order="1000" icon="fa-clock-o"/>
-
-  <menuitem name="project-task-history" parent="project-historical" title="Task history"
-    action="all.tasks.history" order="100"/>
-  <action-view name="all.tasks.history" title="Task history"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="grid" name="project-task-grid"/>
-    <view type="form" name="project-task-form"/>
-    <view-param name="search-filters" value="project-task-filters"/>
-    <domain>self.status.isCompleted = true</domain>
-
-  </action-view>
-
-  <menuitem name="project-reporting" parent="menu-project-root" order="1100"
+  <menuitem name="project-reporting" parent="menu-project-root" order="800"
     title="Reportings" icon="fa-bar-chart"/>
 
   <menuitem name="project-reporting-my-projects" parent="project-reporting" order="100"
