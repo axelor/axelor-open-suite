@@ -40,7 +40,7 @@
   </action-view>
 
   <menuitem name="project-current-project" parent="menu-project-root"
-    title="Current projects" order="600" />
+    title="Current projects" order="600"/>
 
   <menuitem name="project-activity" title="Project Activities"
     parent="project-current-project" action="project.activity" order="100"/>
