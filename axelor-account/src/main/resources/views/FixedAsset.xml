@@ -868,13 +868,13 @@
 
   <action-attrs name="action-attrs-fixed-asset-set-readonly-residual-value">
     <attribute name="readonly" for="residualValue"
-      expr="eval:isEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      expr="eval:isEqualToFiscalDepreciation || (fixedAssetCategory?.fixedAssetType?.technicalTypeSelect == 3 || statusSelect > 1)"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;)"/>
     <attribute name="readonly" for="residualValue"
-      expr="eval:isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      expr="eval:isIfrsEqualToFiscalDepreciation || (fixedAssetCategory?.fixedAssetType?.technicalTypeSelect == 3 || statusSelect > 1)"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;1&quot;)"/>
     <attribute name="readonly" for="residualValue"
-      expr="eval:isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      expr="eval:isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation || (fixedAssetCategory?.fixedAssetType?.technicalTypeSelect == 3 || statusSelect > 1)"
       if="depreciationPlanSelect != null &amp;&amp;  depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
     <attribute name="readonly" for="residualValue" expr="eval:false"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;0&quot;)"/>
