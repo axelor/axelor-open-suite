@@ -176,6 +176,8 @@ import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileServiceImpl;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl;
+import com.axelor.apps.base.service.imports.ImportConfigurationService;
+import com.axelor.apps.base.service.imports.ImportConfigurationServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
@@ -385,5 +387,6 @@ public class BaseModule extends AxelorModule {
     bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
     bind(TaxEquivService.class).to(TaxEquivServiceImpl.class);
     bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
+    bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
   }
 }

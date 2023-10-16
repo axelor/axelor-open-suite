@@ -620,4 +620,11 @@ public final class BaseExceptionMessage {
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
+
+  /** Import Configuration */
+  public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/
+      "There is an error in the import configuration." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
+      "The import configuration executed successfully." /*)*/;
 }
