@@ -26,6 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
@@ -148,5 +149,35 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
       }
     }
     return amountByField;
+  }
+
+  @Override
+  public GlobalBudget getGlobalBudgetUsingBudget(Budget budget) {
+
+    if (budget == null) {
+      return null;
+    }
+
+    if (budget.getGlobalBudget() != null) {
+      return budget.getGlobalBudget();
+    }
+    if (budget.getBudgetLevel() != null) {
+      return getGlobalBudgetUsingBudgetLevel(budget.getBudgetLevel());
+    }
+
+    return null;
+  }
+
+  @Override
+  public GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel) {
+    if (budgetLevel == null) {
+      return null;
+    }
+
+    if (budgetLevel.getGlobalBudget() != null) {
+      return budgetLevel.getGlobalBudget();
+    }
+
+    return getGlobalBudgetUsingBudgetLevel(budgetLevel.getParentBudgetLevel());
   }
 }

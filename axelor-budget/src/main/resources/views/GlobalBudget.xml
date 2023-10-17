@@ -79,12 +79,12 @@
       <panel name="globalBudgetLevelButtonPanel" colSpan="3" stacked="true">
         <button name="draftBtn" title="draftBtn"
           showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
-          colSpan="12" onClick="action-global-budget-method-draft-children, save"/>
+          colSpan="12" onClick="action-global-budget-group-draft"/>
         <button name="validateStructureBtn" title="Validate structure"
           showIf="statusSelect == 0 &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
           colSpan="12" onClick="action-global-budget-group-validate-structure"/>
         <button name="validBtn" title="validateBtn" showIf="statusSelect == 1" colSpan="12"
-          onClick="action-global-budget-method-validate-children, save"/>
+          onClick="action-global-budget-group-validate"/>
         <button name="archivedBtn" title="archiveBtn" showIf="statusSelect == 2" colSpan="12"
           onClick="action-global-budget-method-archived-btn-onClick, save"/>
 
@@ -206,11 +206,6 @@
       method="setBudgetVersionDomain"/>
   </action-method>
 
-  <action-method name="action-global-budget-method-hide-amounts">
-    <call class="com.axelor.apps.budget.web.GlobalBudgetController"
-      method="hideBudgetLevelAmounts"/>
-  </action-method>
-
   <action-group name="action-global-budget-group-onsave">
     <action name="action-global-budget-validate-from-to-dates"/>
     <action name="action-global-budget-method-check-budget-dates"/>
@@ -224,10 +219,17 @@
     <action name="action-method-budget-default-version-new"/>
   </action-group>
 
-  <action-method name="action-method-budget-default-version-new">
-    <call class="com.axelor.apps.budget.web.GlobalBudgetController"
-      method="createDefaultBudgetVersion"/>
-  </action-method>
+  <action-group name="action-global-budget-group-draft">
+    <action name="action-global-budget-validate-draft"/>
+    <action name="action-global-budget-method-draft-children"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-global-budget-group-validate">
+    <action name="action-global-budget-validate-validate"/>
+    <action name="action-global-budget-method-validate-children"/>
+    <action name="save"/>
+  </action-group>
 
   <action-method name="action-global-budget-method-set-dates">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="setDates"/>
@@ -260,6 +262,16 @@
   <action-validate name="action-global-budget-validate-from-to-dates">
     <error message="Invalid dates"
       if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate"/>
+  </action-validate>
+
+  <action-validate name="action-global-budget-validate-validate">
+    <alert
+      message="By validating this budget, you will validate children sections and budgets linked too. Do you want to continue ?"/>
+  </action-validate>
+
+  <action-validate name="action-global-budget-validate-draft">
+    <alert
+      message="By drafting this budget, you will set children sections and budgets linked in draft too. Do you want to continue ?"/>
   </action-validate>
 
   <action-record name="action-global-budget-record-set-defaults"

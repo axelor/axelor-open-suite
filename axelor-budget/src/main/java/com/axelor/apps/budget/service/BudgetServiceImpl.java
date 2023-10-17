@@ -79,6 +79,7 @@ public class BudgetServiceImpl implements BudgetService {
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AccountRepository accountRepo;
   protected AnalyticDistributionLineRepository analyticDistributionLineRepo;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetServiceImpl(
@@ -91,7 +92,8 @@ public class BudgetServiceImpl implements BudgetService {
       AnalyticMoveLineService analyticMoveLineService,
       BudgetDistributionRepository budgetDistributionRepository,
       AccountRepository accountRepo,
-      AnalyticDistributionLineRepository analyticDistributionLineRepo) {
+      AnalyticDistributionLineRepository analyticDistributionLineRepo,
+      BudgetToolsService budgetToolsService) {
     this.budgetLineRepository = budgetLineRepository;
     this.budgetRepository = budgetRepository;
     this.budgetLevelRepository = budgetLevelRepository;
@@ -102,6 +104,7 @@ public class BudgetServiceImpl implements BudgetService {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.accountRepo = accountRepo;
     this.analyticDistributionLineRepo = analyticDistributionLineRepo;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -404,8 +407,9 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
+      budget = budgetRepository.find(budget.getId());
       if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey())) {
-        GlobalBudget globalBudget = getGlobalBudgetUsingBudget(budget);
+        GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
         String error =
             computeBudgetKey(budget, globalBudget != null ? globalBudget.getCompany() : null);
         if (!Strings.isNullOrEmpty(error)) {
@@ -427,6 +431,7 @@ public class BudgetServiceImpl implements BudgetService {
   @Transactional
   public void draftBudget(Budget budget) {
     if (budget != null) {
+      budget = budgetRepository.find(budget.getId());
       budget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
       budget.setActiveVersionExpectedAmountsLine(null);
     }
@@ -915,36 +920,6 @@ public class BudgetServiceImpl implements BudgetService {
         }
       }
     }
-  }
-
-  @Override
-  public GlobalBudget getGlobalBudgetUsingBudget(Budget budget) {
-
-    if (budget == null) {
-      return null;
-    }
-
-    if (budget.getGlobalBudget() != null) {
-      return budget.getGlobalBudget();
-    }
-    if (budget.getBudgetLevel() != null) {
-      return getGlobalBudgetUsingBudgetLevel(budget.getBudgetLevel());
-    }
-
-    return null;
-  }
-
-  @Override
-  public GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel) {
-    if (budgetLevel == null) {
-      return null;
-    }
-
-    if (budgetLevel.getGlobalBudget() != null) {
-      return budgetLevel.getGlobalBudget();
-    }
-
-    return getGlobalBudgetUsingBudgetLevel(budgetLevel.getParentBudgetLevel());
   }
 
   @Override

@@ -8,7 +8,6 @@ import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.service.BudgetVersionService;
-import com.axelor.apps.budget.service.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
 import com.axelor.common.ObjectUtils;
@@ -64,7 +63,7 @@ public class GlobalBudgetController {
   public void validateStructure(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    Beans.get(GlobalBudgetGroupService.class).validateStructure(globalBudget);
+    Beans.get(GlobalBudgetWorkflowService.class).validateStructure(globalBudget);
     response.setValues(globalBudget);
   }
 

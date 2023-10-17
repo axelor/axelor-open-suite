@@ -95,7 +95,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     String budgetExceedAlert = "";
 
     Integer budgetControlLevel = globalBudgetService.getBudgetControlLevel(budget);
-    GlobalBudget globalBudget = budgetService.getGlobalBudgetUsingBudget(budget);
+    GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
     if (budget == null || budgetControlLevel == null || globalBudget == null) {
       return budgetExceedAlert;
     }

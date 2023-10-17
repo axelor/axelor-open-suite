@@ -94,7 +94,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     GlobalBudget globalBudget = budget.getGlobalBudget();
 
     if (globalBudget == null) {
-      globalBudget = budgetService.getGlobalBudgetUsingBudget(budget);
+      globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
     }
 
     if (globalBudget != null) {
@@ -355,7 +355,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
         || !appBudgetService.getAppBudget().getCheckAvailableBudget()) {
       return null;
     }
-    GlobalBudget globalBudget = budgetService.getGlobalBudgetUsingBudget(budget);
+    GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
     if (globalBudget != null && globalBudget.getCheckAvailableSelect() != 0) {
       return globalBudget.getCheckAvailableSelect();
     } else {

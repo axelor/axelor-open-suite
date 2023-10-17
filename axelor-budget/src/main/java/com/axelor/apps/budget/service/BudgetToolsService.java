@@ -23,6 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.util.List;
@@ -43,4 +44,8 @@ public interface BudgetToolsService {
 
   Map<String, BigDecimal> buildMapWithAmounts(
       List<Budget> budgetList, List<BudgetLevel> budgetLevelList);
+
+  GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
+
+  GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
 }

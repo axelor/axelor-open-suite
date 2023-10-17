@@ -309,10 +309,6 @@ public interface BudgetService {
 
   public BigDecimal computeTotalAmountRealized(Budget budget);
 
-  GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
-
-  GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
-
   void generateLineFromGenerator(Budget budget, BudgetLevel parent, GlobalBudget globalBudget)
       throws AxelorException;
 

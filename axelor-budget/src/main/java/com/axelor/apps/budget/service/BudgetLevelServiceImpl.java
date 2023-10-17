@@ -274,7 +274,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     } else {
       if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
         boolean checkBudgetKey = false;
-        GlobalBudget globalBudget = budgetService.getGlobalBudgetUsingBudgetLevel(budgetLevel);
+        GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudgetLevel(budgetLevel);
         if (globalBudget != null) {
           Company company = globalBudget.getCompany();
           checkBudgetKey = budgetService.checkBudgetKeyInConfig(company);
@@ -287,9 +287,13 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     validateLevel(budgetLevel);
   }
 
-  protected void validateLevel(BudgetLevel budgetLevel) {
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void validateLevel(BudgetLevel budgetLevel) {
     if (budgetLevel != null) {
+      budgetLevel = budgetLevelRepository.find(budgetLevel.getId());
       budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
+      budgetLevelRepository.save(budgetLevel);
     }
   }
 
@@ -309,9 +313,13 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     draftLevel(budgetLevel);
   }
 
-  protected void draftLevel(BudgetLevel budgetLevel) {
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void draftLevel(BudgetLevel budgetLevel) {
     if (budgetLevel != null) {
+      budgetLevel = budgetLevelRepository.find(budgetLevel.getId());
       budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
+      budgetLevelRepository.save(budgetLevel);
     }
   }
 

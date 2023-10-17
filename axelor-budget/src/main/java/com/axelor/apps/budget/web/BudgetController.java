@@ -36,6 +36,7 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -309,7 +310,8 @@ public class BudgetController {
   public GlobalBudget getGlobalBudget(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     Budget budget = context.asType(Budget.class);
-    GlobalBudget globalBudget = Beans.get(BudgetService.class).getGlobalBudgetUsingBudget(budget);
+    GlobalBudget globalBudget =
+        Beans.get(BudgetToolsService.class).getGlobalBudgetUsingBudget(budget);
     if (globalBudget != null) {
       return globalBudget;
     }
