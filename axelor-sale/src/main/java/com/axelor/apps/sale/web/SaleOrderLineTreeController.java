@@ -35,7 +35,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.util.Objects;
 
 @Singleton
 public class SaleOrderLineTreeController {
@@ -114,7 +113,9 @@ public class SaleOrderLineTreeController {
   public void reloadView(ActionRequest request, ActionResponse response)
       throws InterruptedException {
 
-    if (Objects.isNull(request.getContext().get("id"))) {
+    if (request.getContext().get("id") == null) {
+      // have to do this trick to avoid an error in view, will be fixed in future AOP release.
+      // if we do not wait here, in the next action we will not have the id.
       response.setReload(true);
       Thread.sleep(400);
     }

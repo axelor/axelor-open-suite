@@ -1,3 +1,0 @@
----
-title: "Sale Order: The price is not computed on the sale order on  multi level sale order mode, and creating a sub-element of a sale order line doesn't work the first time."
-type: fix
