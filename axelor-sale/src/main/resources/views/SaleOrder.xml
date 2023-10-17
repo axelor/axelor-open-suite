@@ -11,7 +11,7 @@
       </menu>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
-          action="action-sale-order-method-convert-selected-lines-to-merge-lines,action-validate-sale-quotation-check-selection,action-group-sale-order-merge-action"/>
+          action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="action-view-open-quotation-lines"/>
       </menu>

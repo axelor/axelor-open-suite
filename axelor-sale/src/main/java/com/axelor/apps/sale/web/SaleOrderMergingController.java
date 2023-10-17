@@ -37,14 +37,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class SaleOrderMergingController {
 
   public void mergeSaleOrder(ActionRequest request, ActionResponse response) {
-
-    String lineToMerge;
-    Context context = request.getContext();
-    if (context.get("saleQuotationToMerge") != null) {
-      lineToMerge = "saleQuotationToMerge";
-    } else {
-      lineToMerge = "saleOrderToMerge";
-    }
+    String lineToMerge = getLineToMerge(request);
     try {
       List<SaleOrder> saleOrdersToMerge =
           MapHelper.getCollection(context, SaleOrder.class, lineToMerge);
@@ -58,19 +51,7 @@ public class SaleOrderMergingController {
           response.setView(confirmView.map());
           return;
         }
-        if (result.getSaleOrder() != null) {
-          // Open the generated sale order in a new tab
-          response.setView(
-              ActionView.define(I18n.get("Sale order"))
-                  .model(SaleOrder.class.getName())
-                  .add("grid", "sale-order-grid")
-                  .add("form", "sale-order-form")
-                  .param("search-filters", "sale-order-filters")
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(result.getSaleOrder().getId()))
-                  .map());
-          response.setCanClose(true);
-        }
+        setResponseView(response, result);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -78,13 +59,7 @@ public class SaleOrderMergingController {
   }
 
   public void mergeSaleOrderFromPopUp(ActionRequest request, ActionResponse response) {
-    String lineToMerge;
-    Context context = request.getContext();
-    if (context.get("saleQuotationToMerge") != null) {
-      lineToMerge = "saleQuotationToMerge";
-    } else {
-      lineToMerge = "saleOrderToMerge";
-    }
+    String lineToMerge = getLineToMerge(request);
     try {
       List<SaleOrder> saleOrdersToMerge =
           MapHelper.getCollection(context, SaleOrder.class, lineToMerge);
@@ -92,19 +67,7 @@ public class SaleOrderMergingController {
         SaleOrderMergingResult result =
             Beans.get(SaleOrderMergingService.class)
                 .mergeSaleOrdersWithContext(saleOrdersToMerge, context);
-        if (result.getSaleOrder() != null) {
-          // Open the generated sale order in a new tab
-          response.setView(
-              ActionView.define(I18n.get("Sale order"))
-                  .model(SaleOrder.class.getName())
-                  .add("grid", "sale-order-grid")
-                  .add("form", "sale-order-form")
-                  .param("search-filters", "sale-order-filters")
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(result.getSaleOrder().getId()))
-                  .map());
-          // response.setCanClose(true);
-        }
+        setResponseView(response, result);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -115,11 +78,48 @@ public class SaleOrderMergingController {
     try {
       @SuppressWarnings("unchecked")
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-      response.setValue(
-          "$saleQuotationToMerge",
-          Beans.get(SaleOrderMergingService.class).convertSelectedLinesToMergeLines(idList));
+      List<SaleOrder> saleOrdersToMerge =
+          Beans.get(SaleOrderMergingService.class).convertSelectedLinesToMergeLines(idList);
+      if (saleOrdersToMerge == null || saleOrdersToMerge.isEmpty()) {
+        response.setError(I18n.get("You have to choose at least one sale quotation"));
+        return;
+      }
+      if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
+        SaleOrderMergingResult result =
+            Beans.get(SaleOrderMergingService.class).mergeSaleOrders(saleOrdersToMerge);
+        if (result.isConfirmationNeeded()) {
+          ActionViewBuilder confirmView =
+              Beans.get(SaleOrderMergingViewService.class)
+                  .buildConfirmView(result, "saleQuotationToMerge", saleOrdersToMerge);
+          response.setView(confirmView.map());
+          return;
+        }
+        setResponseView(response, result);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  protected String getLineToMerge(ActionRequest request) {
+    return request.getContext().get("saleQuotationToMerge") != null
+        ? "saleQuotationToMerge"
+        : "saleOrderToMerge";
+  }
+
+  protected void setResponseView(ActionResponse response, SaleOrderMergingResult result) {
+    if (result.getSaleOrder() != null) {
+      // Open the generated sale order in a new tab
+      response.setView(
+          ActionView.define(I18n.get("Sale order"))
+              .model(SaleOrder.class.getName())
+              .add("grid", "sale-order-grid")
+              .add("form", "sale-order-form")
+              .param("search-filters", "sale-order-filters")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(result.getSaleOrder().getId()))
+              .map());
+      response.setCanClose(true);
     }
   }
 }
