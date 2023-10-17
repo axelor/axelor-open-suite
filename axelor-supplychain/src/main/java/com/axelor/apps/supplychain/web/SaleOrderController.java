@@ -547,10 +547,9 @@ public class SaleOrderController {
     StockMove stockMove =
         stockMoveRepo
             .all()
-            .filter(
-                "self.saleOrder.id = ?2 AND self.statusSelect = ?3",
-                saleOrder.getId(),
-                StockMoveRepository.STATUS_PLANNED)
+            .filter("self.saleOrder.id = :saleOrderId AND self.statusSelect = :statusSelect")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
     if (stockMove != null) {
       response.setNotify(
