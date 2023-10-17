@@ -103,9 +103,21 @@ public class SaleOrderMergingController {
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(result.getSaleOrder().getId()))
                   .map());
-          response.setCanClose(true);
+          // response.setCanClose(true);
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void convertSelectedLinesToMergeLines(ActionRequest request, ActionResponse response) {
+    try {
+      @SuppressWarnings("unchecked")
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      response.setValue(
+          "$saleQuotationToMerge",
+          Beans.get(SaleOrderMergingService.class).convertSelectedLinesToMergeLines(idList));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

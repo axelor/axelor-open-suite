@@ -11,7 +11,7 @@
       </menu>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
-          action="action-open-sale-quotation-merge-form"/>
+          action="action-sale-order-method-convert-selected-lines-to-merge-lines,action-validate-sale-quotation-check-selection,action-group-sale-order-merge-action"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="action-view-open-quotation-lines"/>
       </menu>
@@ -1650,6 +1650,11 @@
   <action-method name="action-sale-order-method-merge-from-pop-up">
     <call class="com.axelor.apps.sale.web.SaleOrderMergingController"
       method="mergeSaleOrderFromPopUp"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-convert-selected-lines-to-merge-lines">
+    <call class="com.axelor.apps.sale.web.SaleOrderMergingController"
+      method="convertSelectedLinesToMergeLines"/>
   </action-method>
 
   <action-method name="action-sale-order-method-confirm">
