@@ -71,6 +71,8 @@ public class InvoiceTermController {
 
         BigDecimal total = this.getCustomizedTotal(request.getContext().getParent());
 
+        this.setResponseParentContext(request, invoiceTerm, response);
+
         if (Beans.get(InvoiceTermService.class)
             .setCustomizedAmounts(invoiceTerm, invoiceTermList, total)) {
           response.setValue("amount", invoiceTerm.getAmount());
@@ -96,6 +98,8 @@ public class InvoiceTermController {
         if (total.compareTo(BigDecimal.ZERO) == 0) {
           return;
         }
+
+        this.setResponseParentContext(request, invoiceTerm, response);
 
         BigDecimal percentage =
             invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
@@ -161,7 +165,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
-      this.setParentContext(request, invoiceTerm);
+      this.setResponseParentContext(request, invoiceTerm, response);
 
       Invoice invoice = invoiceTerm.getInvoice();
       MoveLine moveLine = invoiceTerm.getMoveLine();
@@ -446,7 +450,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      this.setParentContext(request, invoiceTerm);
+      this.setResponseParentContext(request, invoiceTerm, response);
 
       if (invoiceTerm.getMoveLine() == null && request.getContext().containsKey("_moveLineId")) {
         invoiceTerm.setMoveLine(
@@ -465,7 +469,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      this.setParentContext(request, invoiceTerm);
+      this.setResponseParentContext(request, invoiceTerm, response);
 
       boolean isMultiCurrency = Beans.get(InvoiceTermService.class).isMultiCurrency(invoiceTerm);
 
@@ -473,7 +477,7 @@ public class InvoiceTermController {
       MoveLine moveLine = invoiceTerm.getMoveLine();
       Invoice invoice = invoiceTerm.getInvoice();
 
-      this.setMoveParentContextFields(moveLine, request);
+      // this.setMoveParentContextFields(moveLine, request);
       if (Beans.get(InvoiceToolService.class).isMultiCurrency(invoice)
           || (invoice == null
               && moveLine != null
@@ -487,44 +491,47 @@ public class InvoiceTermController {
   }
 
   protected void setParentContext(ActionRequest request, InvoiceTerm invoiceTerm) {
-    Context parentContext = request.getContext().getParent();
-    if (parentContext != null && Invoice.class.equals(parentContext.getContextClass())) {
-      invoiceTerm.setInvoice(this.getInvoice(request, invoiceTerm));
-    } else if (invoiceTerm.getInvoice() == null) {
-      invoiceTerm.setMoveLine(this.getMoveLine(request, invoiceTerm));
+    this.setInvoice(request, invoiceTerm);
+
+    MoveLine contextMoveLine = invoiceTerm.getMoveLine();
+    this.setMoveLine(request, invoiceTerm);
+
+    this.setMove(request, invoiceTerm.getMoveLine());
+  }
+
+  protected void setResponseParentContext(
+      ActionRequest request, InvoiceTerm invoiceTerm, ActionResponse response) {
+    this.setParentContext(request, invoiceTerm);
+
+    response.setValue("invoice", invoiceTerm.getInvoice());
+    response.setValue("moveLine", invoiceTerm.getMoveLine());
+
+    // response.setValue("move", invoiceTerm.getMoveLine().getMove());
+  }
+
+  protected void setInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getInvoice() != null) {
+      invoiceTerm.setInvoice(ContextTool.getContextParent(request.getContext(), Invoice.class, 1));
     }
   }
 
-  protected Invoice getInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
-    Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
-
-    return invoice != null ? invoice : invoiceTerm.getInvoice();
+  protected void setMove(ActionRequest request, MoveLine moveLine) {
+    if (moveLine != null && moveLine.getMove() == null) {
+      moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 2));
+    }
   }
 
-  protected Move getMove(ActionRequest request, MoveLine moveLine) {
-    Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
-
-    return move != null ? move : moveLine.getMove();
-  }
-
-  protected MoveLine getMoveLine(ActionRequest request, InvoiceTerm invoiceTerm) {
-    MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
-
-    if (moveLine != null) {
-      Move move = this.getMove(request, invoiceTerm.getMoveLine());
-      moveLine.setMove(move);
-      return moveLine;
-    } else {
-      Move move = this.getMove(request, invoiceTerm.getMoveLine());
-      invoiceTerm.getMoveLine().setMove(move);
-      return invoiceTerm.getMoveLine();
+  protected void setMoveLine(ActionRequest request, InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getMoveLine() == null) {
+      invoiceTerm.setMoveLine(
+          ContextTool.getContextParent(request.getContext(), MoveLine.class, 1));
     }
   }
 
   protected void setMoveParentContextFields(MoveLine moveLine, ActionRequest request) {
+    // TODO verifier si on ne peut pas le supprimer
     if (moveLine != null && (moveLine.getMove() == null || moveLine.getId() == null)) {
-      Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
-      moveLine.setMove(move);
+      moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 2));
     }
   }
 
