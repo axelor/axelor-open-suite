@@ -60,8 +60,6 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.BudgetVersionServiceImpl;
-import com.axelor.apps.budget.service.GlobalBudgetGroupService;
-import com.axelor.apps.budget.service.GlobalBudgetGroupServiceImpl;
 import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.apps.budget.service.GlobalBudgetServiceImpl;
 import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
@@ -154,7 +152,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetVersionService.class).to(BudgetVersionServiceImpl.class);
     bind(BudgetScenarioService.class).to(BudgetScenarioServiceImpl.class);
     bind(GlobalBudgetWorkflowService.class).to(GlobalBudgetWorkflowServiceImpl.class);
-    bind(GlobalBudgetGroupService.class).to(GlobalBudgetGroupServiceImpl.class);
     bind(GlobalBudgetRepository.class).to(GlobalBudgetManagementRepository.class);
   }
 }

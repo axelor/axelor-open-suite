@@ -81,6 +81,8 @@ public interface BudgetLevelService {
    */
   public void validateChildren(BudgetLevel budgetLevel) throws AxelorException;
 
+  void validateLevel(BudgetLevel budgetLevel);
+
   /**
    * Set the status to draft for the budget level and his children, then related budgets
    *
@@ -88,6 +90,8 @@ public interface BudgetLevelService {
    * @throws AxelorException
    */
   public void draftChildren(BudgetLevel budgetLevel);
+
+  void draftLevel(BudgetLevel budgetLevel);
 
   /**
    * Create budget key for each budget related to this section

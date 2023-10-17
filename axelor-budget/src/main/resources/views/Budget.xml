@@ -58,7 +58,8 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
-    <field name="_globalId"/>
+    <field name="globalBudget"/>
+    <field name="statusSelect"/>
     <field name="totalAmountExpected"/>
     <field name="totalAmountCommitted"/>
     <field name="totalAmountRealized"/>
@@ -193,6 +194,10 @@
     onLoad="budget-action-budget-group-onload"
     onSave="budget-action-method-create-check-budget-key,budget-action-method-create-check-dates-on-budget"
     canNew="!_isReadOnly" canEdit="!_isReadOnly">
+    <panel name="statusPanel" colSpan="12">
+      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
+        widget="NavSelect"/>
+    </panel>
     <panel name="overViewPanel" title="Overview" canCollapse="true" colSpan="12"
       collapseIf="!$popup()" readonlyIf="_isReadOnly">
       <panel name="mainPanel" readonlyIf="statusSelect != 1" colSpan="9">
@@ -408,7 +413,7 @@
       if="__parent__ &amp;&amp; (__parent__.code || __parent__.name) &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
     <field name="globalBudget" expr="eval: __repo__(GlobalBudget).find(_globalId)"
       if="_globalId"/>
-    <field name="_globalId" expr="eval; _globalId"/>
+    <field name="_globalId" expr="eval: _globalId"/>
   </action-record>
 
   <action-validate name="action-budget-budget-validate-dates">
@@ -544,18 +549,6 @@
     <domain>self.budget.id= :_budgetId and self.moveLine.move.statusSelect = 5</domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
-
-  <action-view name="action-budget-view-budget-level" title="Budget Level"
-    model="com.axelor.apps.budget.db.Budget">
-    <view type="form" name="budget-included-form"/>
-    <view-param name="popup" value="reload"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="false"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
-
-
 
   <search-filters name="budget-filters" model="com.axelor.apps.budget.db.Budget"
     title="Budget filters">

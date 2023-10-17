@@ -15,15 +15,18 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
   protected BudgetLevelService budgetLevelService;
   protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
+  protected GlobalBudgetService globalBudgetService;
 
   @Inject
   public GlobalBudgetWorkflowServiceImpl(
       BudgetLevelService budgetLevelService,
       BudgetService budgetService,
-      BudgetRepository budgetRepository) {
+      BudgetRepository budgetRepository,
+      GlobalBudgetService globalBudgetService) {
     this.budgetLevelService = budgetLevelService;
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
+    this.globalBudgetService = globalBudgetService;
   }
 
   @Transactional
@@ -41,6 +44,14 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
     }
 
     globalBudget.setStatusSelect(status);
+  }
+
+  @Override
+  public void validateStructure(GlobalBudget globalBudget) throws AxelorException {
+    globalBudgetService.generateBudgetKey(globalBudget);
+
+    globalBudget.setStatusSelect(
+        GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID_STRUCTURE);
   }
 
   @Override

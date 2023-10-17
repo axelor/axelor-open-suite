@@ -24,11 +24,15 @@ import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -144,6 +148,40 @@ public class BudgetLevelController {
       Beans.get(BudgetLevelService.class).computeChildrenKey(budgetLevel);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @ErrorException
+  public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
+    Beans.get(BudgetLevelService.class).validateChildren(budgetLevel);
+    response.setReload(true);
+  }
+
+  @ErrorException
+  public void draft(ActionRequest request, ActionResponse response) throws AxelorException {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
+    Beans.get(BudgetLevelService.class).draftChildren(budgetLevel);
+    response.setReload(true);
+  }
+
+  public void showButtonFields(ActionRequest request, ActionResponse response) {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    GlobalBudget globalBudget =
+        Beans.get(BudgetToolsService.class).getGlobalBudgetUsingBudgetLevel(budgetLevel);
+    if (globalBudget != null
+        && globalBudget.getStatusSelect()
+            != GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID_STRUCTURE) {
+      return;
+    }
+    response.setAttr("buttonsPanel", "hidden", false);
+    if (BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT.equals(
+        budgetLevel.getStatusSelect())) {
+      response.setAttr("validateBtn", "hidden", false);
+    } else {
+      response.setAttr("draftBtn", "hidden", false);
     }
   }
 }
