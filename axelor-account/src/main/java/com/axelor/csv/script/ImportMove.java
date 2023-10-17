@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
@@ -154,8 +155,14 @@ public class ImportMove {
         move.setPeriod(period);
 
         if (values.get("Idevise") != null) {
-          move.setCurrency(
-              Beans.get(CurrencyRepository.class).findByCode(values.get("Idevise").toString()));
+          Currency currency =
+              Beans.get(CurrencyRepository.class).findByCode(values.get("Idevise").toString());
+          if (currency == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.IMPORT_FEC_MISSING_CURRENCY));
+          }
+          move.setCurrency(currency);
           move.setCurrencyCode(values.get("Idevise").toString());
         }
 
