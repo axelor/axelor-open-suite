@@ -17,18 +17,15 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -41,64 +38,24 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
       StockLocationRepository stockLocationRepo,
       StockLocationLineService stockLocationLineService,
       ProductRepository productRepo,
-      StockConfigService stockConfigService) {
-    super(stockLocationRepo, stockLocationLineService, productRepo, stockConfigService);
+      StockConfigService stockConfigService,
+      AppBaseService appBaseService,
+      UnitRepository unitRepository,
+      UnitConversionService unitConversionService) {
+    super(
+        stockLocationRepo,
+        stockLocationLineService,
+        productRepo,
+        stockConfigService,
+        appBaseService,
+        unitRepository,
+        unitConversionService);
   }
 
   @Override
-  public BigDecimal getReservedQty(Long productId, Long locationId, Long companyId)
-      throws AxelorException {
-    if (productId != null) {
-      Product product = productRepo.find(productId);
-      Unit productUnit = product.getUnit();
-      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+  public BigDecimal getReservedQtyOfProductInStockLocations(
+      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException {
 
-      if (locationId == null || locationId == 0L) {
-        List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
-        if (!stockLocations.isEmpty()) {
-          BigDecimal reservedQty = BigDecimal.ZERO;
-          for (StockLocation stockLocation : stockLocations) {
-            StockLocationLine stockLocationLine =
-                stockLocationLineService.getOrCreateStockLocationLine(
-                    stockLocationRepo.find(stockLocation.getId()), productRepo.find(productId));
-
-            if (stockLocationLine != null) {
-              Unit stockLocationLineUnit = stockLocationLine.getUnit();
-              reservedQty = reservedQty.add(stockLocationLine.getReservedQty());
-
-              if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
-                reservedQty =
-                    unitConversionService.convert(
-                        stockLocationLineUnit,
-                        productUnit,
-                        reservedQty,
-                        reservedQty.scale(),
-                        product);
-              }
-            }
-          }
-          return reservedQty;
-        }
-      } else {
-        StockLocationLine stockLocationLine =
-            stockLocationLineService.getOrCreateStockLocationLine(
-                stockLocationRepo.find(locationId), productRepo.find(productId));
-
-        if (stockLocationLine != null) {
-          Unit stockLocationLineUnit = stockLocationLine.getUnit();
-
-          if (productUnit != null && !productUnit.equals(stockLocationLineUnit)) {
-            return unitConversionService.convert(
-                stockLocationLineUnit,
-                productUnit,
-                stockLocationLine.getReservedQty(),
-                stockLocationLine.getReservedQty().scale(),
-                product);
-          }
-          return stockLocationLine.getReservedQty();
-        }
-      }
-    }
-    return BigDecimal.ZERO;
+    return getQtyOfProductInStockLocations(productId, stockLocationIds, companyId, "reservedQty");
   }
 }

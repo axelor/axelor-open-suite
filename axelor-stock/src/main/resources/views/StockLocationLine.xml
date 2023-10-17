@@ -323,11 +323,11 @@
   <action-record name="action-stock-location-line-record-total-quantities"
     model="com.axelor.apps.stock.db.StockLocationLine">
     <field name="$realQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(product.id, stockLocation.id, null)"/>
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQtyOfProductInStockLocations(product.id, java.util.Collections.singletonList(stockLocation.id), null)"/>
     <field name="$futureQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, stockLocation.id, null)"/>
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQtyOfProductInStockLocations(product.id, java.util.Collections.singletonList(stockLocation.id), null)"/>
     <field name="$reservedQtyBtn"
-      expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(product.id, stockLocation.id, null)"
+      expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQtyOfProductInStockLocations(product.id, java.util.Collections.singletonList(stockLocation.id), null)"
       if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
