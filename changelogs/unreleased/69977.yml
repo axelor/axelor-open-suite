@@ -1,0 +1,3 @@
+---
+title: "ProdProcessLine: Fixed a bug where work center's durations were used instead of prod process line."
+type: fix
