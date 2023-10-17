@@ -24,4 +24,7 @@ public interface AnalyticLineModelService {
       throws AxelorException;
 
   void setInvoiceLineAnalyticInfo(AnalyticLineModel analyticLineModel, InvoiceLine invoiceLine);
+
+  boolean analyticDistributionTemplateRequired(boolean isPurchase, Company company)
+      throws AxelorException;
 }

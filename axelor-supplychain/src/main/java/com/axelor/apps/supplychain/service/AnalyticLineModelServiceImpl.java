@@ -13,6 +13,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -34,6 +36,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected AnalyticToolService analyticToolService;
+  protected SaleConfigService saleConfigService;
+  protected PurchaseConfigService purchaseConfigService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
@@ -41,12 +45,16 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      AnalyticToolService analyticToolService) {
+      AnalyticToolService analyticToolService,
+      SaleConfigService saleConfigService,
+      PurchaseConfigService purchaseConfigService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.analyticToolService = analyticToolService;
+    this.saleConfigService = saleConfigService;
+    this.purchaseConfigService = purchaseConfigService;
   }
 
   @Override
@@ -217,5 +225,17 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     invoiceLine.setAxis3AnalyticAccount(analyticLineModel.getAxis3AnalyticAccount());
     invoiceLine.setAxis4AnalyticAccount(analyticLineModel.getAxis4AnalyticAccount());
     invoiceLine.setAxis5AnalyticAccount(analyticLineModel.getAxis5AnalyticAccount());
+  }
+
+  @Override
+  public boolean analyticDistributionTemplateRequired(boolean isPurchase, Company company)
+      throws AxelorException {
+    return analyticToolService.isManageAnalytic(company)
+        && ((isPurchase
+                && purchaseConfigService
+                    .getPurchaseConfig(company)
+                    .getIsAnalyticDistributionRequired())
+            || (!isPurchase
+                && saleConfigService.getSaleConfig(company).getIsAnalyticDistributionRequired()));
   }
 }

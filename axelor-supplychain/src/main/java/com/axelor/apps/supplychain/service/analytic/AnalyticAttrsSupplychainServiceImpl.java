@@ -30,7 +30,9 @@ public class AnalyticAttrsSupplychainServiceImpl implements AnalyticAttrsSupplyc
       AnalyticLineModel analyticLineModel, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     boolean displayPanel =
-        !analyticLineModelService.productAccountManageAnalytic(analyticLineModel);
+        !(analyticLineModelService.productAccountManageAnalytic(analyticLineModel)
+            || analyticLineModelService.analyticDistributionTemplateRequired(
+                analyticLineModel.getIsPurchase(), analyticLineModel.getCompany()));
 
     this.addAttr("analyticDistributionPanel", "hidden", displayPanel, attrsMap);
   }
