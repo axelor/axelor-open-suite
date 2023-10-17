@@ -1117,8 +1117,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());
 
-      invoiceTerm.setSubrogationPartner(
-          partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
+      this.setSubrogationPartner(invoiceTerm);
 
       if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
         invoiceTerm.setOrigin(invoice.getInvoiceId());
@@ -1145,14 +1144,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         }
 
         if (journalService.isSubrogationOk(move.getJournal())) {
-          invoiceTerm.setSubrogationPartner(
-              partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
+          this.setSubrogationPartner(invoiceTerm);
         }
       }
     }
 
     if (moveLine != null && move != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
+    }
+  }
+
+  protected void setSubrogationPartner(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
+      invoiceTerm.setSubrogationPartner(
+          partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
     }
   }
 

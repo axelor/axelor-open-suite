@@ -69,4 +69,6 @@ public interface MoveAttrsService {
   void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addMainPanelTabHiddenValue(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addSubrogationPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap);
 }
