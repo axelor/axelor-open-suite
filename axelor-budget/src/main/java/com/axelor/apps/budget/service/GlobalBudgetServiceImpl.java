@@ -364,4 +364,18 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           : null;
     }
   }
+
+  @Override
+  public List<BudgetLevel> getFilteredBudgetLevelList(GlobalBudget globalBudget) {
+    return globalBudget.getBudgetLevelList().stream()
+        .filter(budgetLevel -> budgetLevel.getValidatorSet().contains(AuthUtils.getUser()))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<BudgetLevel> getOtherUsersBudgetLevelList(GlobalBudget globalBudget) {
+    return globalBudget.getBudgetLevelList().stream()
+        .filter(budgetLevel -> !budgetLevel.getValidatorSet().contains(AuthUtils.getUser()))
+        .collect(Collectors.toList());
+  }
 }

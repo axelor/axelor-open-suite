@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
@@ -42,4 +43,8 @@ public interface GlobalBudgetService {
    * @return Integer
    */
   public Integer getBudgetControlLevel(Budget budget);
+
+  List<BudgetLevel> getFilteredBudgetLevelList(GlobalBudget globalBudget);
+
+  List<BudgetLevel> getOtherUsersBudgetLevelList(GlobalBudget globalBudget);
 }

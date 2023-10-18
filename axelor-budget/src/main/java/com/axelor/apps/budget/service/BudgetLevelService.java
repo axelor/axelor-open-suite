@@ -144,4 +144,8 @@ public interface BudgetLevelService {
       throws AxelorException;
 
   List<BudgetLevel> getLastSections(GlobalBudget globalBudget);
+
+  List<BudgetLevel> getFilteredBudgetLevelList(BudgetLevel budgetLevel);
+
+  List<BudgetLevel> getOtherUsersBudgetLevelList(BudgetLevel budgetLevel);
 }

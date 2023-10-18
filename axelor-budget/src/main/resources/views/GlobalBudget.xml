@@ -21,7 +21,8 @@
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
     name="global-budget-form" width="large"
     onNew="action-global-budget-record-set-defaults,action-global-budget-method-hide-amounts"
-    onSave="action-global-budget-group-onsave" canCopy="false">
+    onSave="action-global-budget-group-onsave,action-global-budget-method-save-budget-level-list"
+    onLoad="action-global-budget-method-filter-budget-level-list" canCopy="false">
 
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
@@ -50,7 +51,7 @@
           <field name="toDate" colSpan="4" requiredIf="statusSelect == 0"
             onChange="action-global-budget-validate-from-to-dates"/>
           <button name="updateDatesBtn" colSpan="2" title="Update dates"
-            onClick="save,action-global-budget-method-set-dates"
+            onClick="action-global-budget-method-save-budget-level-list,save,action-global-budget-method-set-dates"
             readonlyIf="fromDate == null || toDate == null"/>
           <field name="budgetTypeSelect" colSpan="4" readonly="true"/>
           <field name="companyDepartment" colSpan="4" showIf="company"
@@ -86,7 +87,7 @@
         <button name="validBtn" title="validateBtn" showIf="statusSelect == 1" colSpan="12"
           onClick="action-global-budget-group-validate"/>
         <button name="archivedBtn" title="archiveBtn" showIf="statusSelect == 2" colSpan="12"
-          onClick="action-global-budget-method-archived-btn-onClick, save"/>
+          onClick="action-global-budget-group-archived-btn-onClick"/>
 
         <panel name="showBudgetDistributionPanel">
           <button name="showGlobalOrderLineBtn"
@@ -129,7 +130,7 @@
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red"
       showIf="code &amp;&amp; name &amp;&amp; fromDate &amp;&amp; toDate &amp;&amp; budgetTypeSelect">
       <field name="budgetLevelList" title="Sections" colSpan="12"
-        onChange="action-global-budget-method-clear-budget-list"
+        onChange="action-global-budget-method-clear-budget-list,action-global-budget-method-save-on-change"
         showIf="(budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0"
         form-view="budget-level-intermediate-form" grid-view="budget-level-included-grid"
         canEdit="statusSelect == 0" canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
@@ -213,23 +214,41 @@
 
   <action-group name="action-global-budget-group-validate-structure">
     <action name="action-global-budget-method-check-budget-dates"/>
+    <action name="action-global-budget-method-save-budget-level-list"/>
     <action name="save"/>
     <action name="action-global-budget-method-validate-structure"/>
+    <action name="action-global-budget-method-save-budget-level-list"/>
     <action name="save"/>
+    <action name="action-refresh-record"/>
     <action name="action-method-budget-default-version-new"/>
   </action-group>
 
   <action-group name="action-global-budget-group-draft">
     <action name="action-global-budget-validate-draft"/>
     <action name="action-global-budget-method-draft-children"/>
+    <action name="action-global-budget-method-save-budget-level-list"/>
     <action name="save"/>
+    <action name="action-refresh-record"/>
   </action-group>
 
   <action-group name="action-global-budget-group-validate">
     <action name="action-global-budget-validate-validate"/>
+    <action name="action-global-budget-method-save-budget-level-list"/>
+    <action name="save"/>
     <action name="action-global-budget-method-validate-children"/>
     <action name="save"/>
+    <action name="action-refresh-record"/>
   </action-group>
+
+  <action-group name="action-global-budget-group-archived-btn-onClick">
+    <action name="action-global-budget-method-save-budget-level-list"/>
+    <action name="save"/>
+    <action name="action-global-budget-method-archived-btn-onClick"/>
+    <action name="save"/>
+    <action name="action-refresh-record"/>
+  </action-group>
+
+
 
   <action-method name="action-global-budget-method-set-dates">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="setDates"/>
@@ -320,6 +339,21 @@
     <call class="com.axelor.apps.budget.web.GlobalBudgetViewController"
       method="viewBudgetDistribution"/>
   </action-method>
+
+  <action-method name="action-global-budget-method-filter-budget-level-list">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController"
+      method="filterBudgetLevelList"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-save-budget-level-list">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController"
+      method="saveBudgetLevelList"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-save-on-change">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="onChangeSave"/>
+  </action-method>
+
 
   <action-method
     name="action-global-budget-line-distribution-method-view-show-simulated-moves-lines">
