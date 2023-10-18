@@ -65,7 +65,7 @@ public class AnalyticToolSupplychainServiceImpl implements AnalyticToolSupplycha
     if (!productList.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(SupplychainExceptionMessage.SALE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
           productList);
     }
   }
