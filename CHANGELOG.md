@@ -1,3 +1,15 @@
+## [6.4.25] (2023-10-18)
+
+#### Fixed
+
+* Project: fixed french translation for 'Create business project from this template'.
+* Payment session: set currency field readonly on payment session.
+* Sale order: fixed duplicated 'Advance Payment' panel.
+* Purchase request: fixed 'Group by product' option not working when generating a purchase order.
+* Sequence: fixed sequence duplication causing a NPE error.
+* Move: fixed an error when we create a move line with a partner without any accounting situation.
+* SOP/MPS: fixed a bug where a existing forecast was modified instead of creating a new one when the forecast was on a different date.
+
 ## [6.4.24] (2023-10-06)
 
 #### Fixed
@@ -1034,6 +1046,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.25]: https://github.com/axelor/axelor-open-suite/compare/v6.4.24...v6.4.25
 [6.4.24]: https://github.com/axelor/axelor-open-suite/compare/v6.4.23...v6.4.24
 [6.4.23]: https://github.com/axelor/axelor-open-suite/compare/v6.4.22...v6.4.23
 [6.4.22]: https://github.com/axelor/axelor-open-suite/compare/v6.4.21...v6.4.22
