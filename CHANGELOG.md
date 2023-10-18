@@ -1,3 +1,45 @@
+## [7.0.12] (2023-10-18)
+
+#### Fixed
+
+* Update App Builder dependency to 1.0.3
+
+This version provides a fix for an issue causing the application to create a new file for each app on startup.
+
+If you have this issue and want to clear existing files in your server, please follow these steps:
+
+* Shutdown tomcat
+* Execute the SQL script below
+* Clear all application images from the server disk
+* Restart tomcat
+
+```sql
+UPDATE studio_app
+SET image = null
+WHERE image in
+      (SELECT id
+       FROM meta_file
+       where file_path LIKE 'app-%'
+         AND file_type = 'image/png');
+
+DELETE
+FROM meta_file
+WHERE file_path LIKE 'app-%'
+  AND file_type = 'image/png';
+```
+
+* Product: fixed stock indicators computation.
+* Project: fixed french translation for 'Create business project from this template'.
+* Payment session: set currency field readonly on payment session.
+* Period: improved period closure process from year form.
+* Sale order: fixed duplicated 'Advance Payment' panel.
+* Manufacturing order: fixed "Circular dependency" error preventing to start operation orders.
+* Purchase request: fixed 'Group by product' option not working when generating a purchase order.
+* Sequence: fixed sequence duplication causing a NPE error.
+* Move: fixed an error when we create a move line with a partner without any accounting situation.
+* Move: fixed error displayed when trying to open an invoice term.
+* SOP/MPS: fixed a bug where an existing forecast was modified instead of creating a new one when the forecast was on a different date.
+
 ## [7.0.11] (2023-10-06)
 
 #### Fixed
@@ -561,6 +603,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.12]: https://github.com/axelor/axelor-open-suite/compare/v7.0.11...v7.0.12
 [7.0.11]: https://github.com/axelor/axelor-open-suite/compare/v7.0.10...v7.0.11
 [7.0.10]: https://github.com/axelor/axelor-open-suite/compare/v7.0.9...v7.0.10
 [7.0.9]: https://github.com/axelor/axelor-open-suite/compare/v7.0.8...v7.0.9
