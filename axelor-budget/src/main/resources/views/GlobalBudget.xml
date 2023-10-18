@@ -217,7 +217,6 @@
     <action name="action-global-budget-method-save-budget-level-list"/>
     <action name="save"/>
     <action name="action-global-budget-method-validate-structure"/>
-    <action name="action-global-budget-method-save-budget-level-list"/>
     <action name="save"/>
     <action name="action-refresh-record"/>
     <action name="action-method-budget-default-version-new"/>
@@ -225,8 +224,9 @@
 
   <action-group name="action-global-budget-group-draft">
     <action name="action-global-budget-validate-draft"/>
-    <action name="action-global-budget-method-draft-children"/>
     <action name="action-global-budget-method-save-budget-level-list"/>
+    <action name="save"/>
+    <action name="action-global-budget-method-draft-children"/>
     <action name="save"/>
     <action name="action-refresh-record"/>
   </action-group>

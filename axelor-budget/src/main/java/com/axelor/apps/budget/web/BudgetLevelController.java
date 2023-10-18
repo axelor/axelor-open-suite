@@ -189,12 +189,18 @@ public class BudgetLevelController {
   public void filterBudgetLevelList(ActionRequest request, ActionResponse response) {
     try {
       BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+      if(Beans.get(BudgetToolsService.class).getGlobalBudgetUsingBudgetLevel(budgetLevel).getStatusSelect() == 0 ){
+        return;
+      }
       List<BudgetLevel> filteredBudgetLevelList =
           Beans.get(BudgetLevelService.class).getFilteredBudgetLevelList(budgetLevel);
 
       response.setValue("budgetLevelList", filteredBudgetLevelList);
     } catch (IllegalArgumentException e) {
       GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+      if(globalBudget.getStatusSelect() == 0) {
+        return;
+      }
       List<BudgetLevel> filteredBudgetLevelList =
           Beans.get(GlobalBudgetService.class).getFilteredBudgetLevelList(globalBudget);
       response.setValue("budgetLevelList", filteredBudgetLevelList);

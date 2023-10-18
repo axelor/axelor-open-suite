@@ -174,6 +174,9 @@ public class GlobalBudgetController {
 
   public void filterBudgetLevelList(ActionRequest request, ActionResponse response) {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    if(globalBudget.getStatusSelect() == 0){
+      return;
+    }
     List<BudgetLevel> filteredBudgetLevelList =
         Beans.get(GlobalBudgetService.class).getFilteredBudgetLevelList(globalBudget);
     response.setValue("budgetLevelList", filteredBudgetLevelList);
@@ -193,8 +196,6 @@ public class GlobalBudgetController {
       List<BudgetLevel> combinedList = new ArrayList<>(uniqueSet);
       globalBudget.setBudgetLevelList(combinedList);
       response.setValues(globalBudget);
-    } else {
-      return;
     }
   }
 
