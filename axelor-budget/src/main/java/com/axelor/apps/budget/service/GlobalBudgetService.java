@@ -13,8 +13,6 @@ public interface GlobalBudgetService {
 
   void computeTotals(GlobalBudget globalBudget);
 
-  void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
-
   GlobalBudget generateGlobalBudgetWithTemplate(GlobalBudgetTemplate globalBudgetTemplate)
       throws AxelorException;
 

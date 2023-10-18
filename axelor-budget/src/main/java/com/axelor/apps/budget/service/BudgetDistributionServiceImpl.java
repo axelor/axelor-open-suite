@@ -126,10 +126,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getParentBudgetLevel()
+                .getGlobalBudget()
                 .getTotalAmountAvailable();
-        budgetName =
-            budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getName();
+        budgetName = budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getName();
         break;
     }
     if (budgetToCompare.compareTo(amount) < 0) {
@@ -141,7 +140,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               budget
                   .getBudgetLevel()
                   .getParentBudgetLevel()
-                  .getParentBudgetLevel()
+                  .getGlobalBudget()
                   .getCompany()
                   .getCurrency()
                   .getSymbol());

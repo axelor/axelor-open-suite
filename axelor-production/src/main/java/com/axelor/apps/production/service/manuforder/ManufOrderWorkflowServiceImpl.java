@@ -205,12 +205,19 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ProductionConfig productionConfig =
           productionConfigService.getProductionConfig(manufOrder.getCompany());
 
+      int qtyScale = appBaseService.getNbDecimalDigitForQty();
+
       if (productionConfig.getScheduling() == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING
           && manufOrder.getPlannedStartDateT().isBefore(todayDateT)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(ProductionExceptionMessage.PLAN_IS_BEFORE_TODAY_DATE),
-            String.format("%s %s", manufOrder.getQty(), manufOrder.getProduct().getFullName()));
+            String.format(
+                "%s %s",
+                manufOrder.getQty() != null
+                    ? manufOrder.getQty().setScale(qtyScale, RoundingMode.HALF_UP)
+                    : null,
+                manufOrder.getProduct().getFullName()));
       }
     }
 
