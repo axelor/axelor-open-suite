@@ -215,6 +215,9 @@
   <tree id="business-project-project-task-tree" name="project-project-task-tree" title="Task">
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
+    <column name="initial" type="decimal"/>
+    <column name="real" type="decimal"/>
+    <column name="forecast" type="decimal"/>
     <column name="assignedTo" type="reference"/>
     <column name="openTaskBtn" type="button"/>
     <column name="generatePurchaseOrderBtn" type="button"/>
@@ -223,6 +226,9 @@
       onClick="action-project-task-view-task" domain="self.project.id = :_id" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
+      <field name="initialMarkup" as="initial"/>
+      <field name="realMarkup" as="real"/>
+      <field name="forecastMarkup" as="forecast"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
       <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
