@@ -924,24 +924,14 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
-            + " AND self.account.accountType.technicalTypeSelect = :accountType";
+            + " AND self.account.accountType.technicalTypeSelect = :accountType"
+            + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount";
 
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
       query =
           query
               + " AND (self.date >= :fromDate OR self.dueDate >= :fromDate)"
               + " AND (self.date <= :toDate OR self.dueDate <= :toDate)";
-    }
-
-    if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
-      query =
-          query
-              + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount";
-    } else {
-      query =
-          query
-              + " AND ((self.debit > 0 AND self.bankReconciledAmount < self.debit)"
-              + " OR (self.credit > 0 AND self.bankReconciledAmount < self.credit))";
     }
 
     if (bankReconciliation.getJournal() != null) {
@@ -1434,14 +1424,9 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
               + MoveRepository.STATUS_ACCOUNTED
               + " OR self.move.statusSelect = "
               + MoveRepository.STATUS_DAYBOOK
+              + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount "
               + ")";
-      if (!BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
-        query =
-            query.concat(
-                " AND (self.bankReconciledAmount < self.debit or self.bankReconciledAmount < self.credit)");
-      } else {
-        query = query.concat(" AND self.bankReconciledAmount < self.currencyAmount ");
-      }
+
       if (bankStatementCredit.signum() > 0) {
         query = query.concat(" AND self.debit > 0");
       }
@@ -1483,12 +1468,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
                 moveLineRepository.find(
                     Long.valueOf((Integer) ((LinkedHashMap<?, ?>) m).get("id")))));
     for (MoveLine moveLine : moveLineList) {
-      if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
-        selectedMoveLineTotal = selectedMoveLineTotal.add(moveLine.getCurrencyAmount().abs());
-      } else {
-        selectedMoveLineTotal =
-            selectedMoveLineTotal.add(moveLine.getDebit().add(moveLine.getCredit()));
-      }
+      selectedMoveLineTotal = selectedMoveLineTotal.add(moveLine.getCurrencyAmount().abs());
     }
     return selectedMoveLineTotal;
   }

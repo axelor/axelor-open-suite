@@ -201,8 +201,12 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         .getAccount()
         .getAccountType()
         .getTechnicalTypeSelect()
-        .equals(AccountTypeRepository.TYPE_CASH)) {reverseMoveLine.setBankReconciledAmount(
-        reverseMoveLine.getCurrencyAmount().subtract(orgineMoveLine.getBankReconciledAmount()));
+        .equals(AccountTypeRepository.TYPE_CASH)) {
+      reverseMoveLine.setBankReconciledAmount(
+          reverseMoveLine
+              .getCurrencyAmount()
+              .abs()
+              .subtract(orgineMoveLine.getBankReconciledAmount()));
     }
     return reverseMoveLine;
   }
