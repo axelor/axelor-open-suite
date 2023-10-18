@@ -36,11 +36,11 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -401,18 +401,8 @@ public class PurchaseOrderController {
       ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      List<String> productList = new ArrayList<>();
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (purchaseOrderLine.getAnalyticDistributionTemplate() == null) {
-          productList.add(purchaseOrderLine.getProduct().getFullName());
-        }
-      }
-      if (productList != null && !productList.isEmpty()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
-            productList);
-      }
+      Beans.get(AnalyticToolSupplychainService.class)
+          .checkPurchaseOrderLinesAnalyticDistribution(purchaseOrder);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

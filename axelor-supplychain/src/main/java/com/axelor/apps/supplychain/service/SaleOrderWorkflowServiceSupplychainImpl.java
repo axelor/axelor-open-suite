@@ -35,6 +35,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -52,7 +53,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
   protected SaleConfigService saleConfigService;
-  protected SaleOrderCheckAnalyticService saleOrderCheckAnalyticService;
+  protected AnalyticToolSupplychainService analyticToolSupplychainService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -69,7 +70,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
-      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
+      AnalyticToolSupplychainService analyticToolSupplychainService) {
     super(
         sequenceService,
         partnerRepo,
@@ -84,7 +85,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.saleConfigService = saleConfigService;
-    this.saleOrderCheckAnalyticService = saleOrderCheckAnalyticService;
+    this.analyticToolSupplychainService = analyticToolSupplychainService;
   }
 
   @Override
@@ -96,11 +97,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       return;
     }
 
-    if (saleConfigService
-        .getSaleConfig(saleOrder.getCompany())
-        .getIsAnalyticDistributionRequired()) {
-      saleOrderCheckAnalyticService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
-    }
+    analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
 
     if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
       throw new AxelorException(
