@@ -1,3 +1,15 @@
+## [6.3.30] (2023-10-18)
+
+#### Fixed
+
+* Product: fixed stock indicators computation.
+* Project: fixed french translation for 'Create business project from this template'.
+* Sale order: fixed duplicated 'Advance Payment' panel.
+* Purchase request: fixed 'Group by product' option not working when generating a purchase order.
+* Sequence: fixed sequence duplication causing a NPE error.
+* Move: fixed an error when we create a move line with a partner without any accounting situation.
+* SOP/MPS: fixed a bug where a existing forecast was modified instead of creating a new one when the forecast was on a different date.
+
 ## [6.3.29] (2023-10-06)
 
 #### Fixed
@@ -878,6 +890,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.30]: https://github.com/axelor/axelor-open-suite/compare/v6.3.29...v6.3.30
 [6.3.29]: https://github.com/axelor/axelor-open-suite/compare/v6.3.28...v6.3.29
 [6.3.28]: https://github.com/axelor/axelor-open-suite/compare/v6.3.27...v6.3.28
 [6.3.27]: https://github.com/axelor/axelor-open-suite/compare/v6.3.26...v6.3.27
