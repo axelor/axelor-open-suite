@@ -1,2 +1,3 @@
 "importId";"name";"code";"address.importId";"partner.importId";"logo_fileName";"currency.code";"defaultBankDetails.importId";"generatedMailFileName";"generatedEmailFileName";"printingSettings.importId"
 "1";"Axelor";"AXE";90000;90000;"img/axelor.png";"EUR";90000;"mail";"email";1
+"2";"Axelor Maroc";"AXEMAR";90023;90023;"img/axelor.png";"EUR";90023;"mail";"email";1
