@@ -32,10 +32,10 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -61,7 +61,7 @@ public class SaleOrderWorkflowServiceProductionImpl
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
-      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService,
+      AnalyticToolSupplychainService analyticToolSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService) {
     super(
@@ -78,7 +78,7 @@ public class SaleOrderWorkflowServiceProductionImpl
         accountingSituationSupplychainService,
         partnerSupplychainService,
         saleConfigService,
-        saleOrderCheckAnalyticService);
+        analyticToolSupplychainService);
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;
   }
