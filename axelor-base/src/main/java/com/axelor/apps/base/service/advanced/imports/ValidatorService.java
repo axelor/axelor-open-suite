@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
-import static com.axelor.utils.MetaJsonFieldType.MANY_TO_MANY;
-
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
@@ -29,15 +27,12 @@ import com.axelor.apps.base.db.repo.FileTabRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaJsonField;
-import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.utils.reader.DataReaderFactory;
 import com.axelor.utils.reader.DataReaderService;
 import com.google.common.base.Strings;
@@ -92,8 +87,6 @@ public class ValidatorService {
   @Inject private DataReaderFactory dataReaderFactory;
 
   @Inject private LogService logService;
-
-  @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
 
   @Inject private SearchCallService searchCallService;
 
@@ -184,10 +177,6 @@ public class ValidatorService {
 
         logFile.delete();
         isLog = true;
-      } else {
-        createCustomObjectSet(
-            fileTab.getClass().getName(), fileTab.getMetaModel().getFullName(), 0);
-        createCustomButton(fileTab.getClass().getName(), fileTab.getMetaModel().getFullName(), 1);
       }
       fileTabRepo.save(fileTab);
     }
@@ -765,74 +754,6 @@ public class ValidatorService {
   public void addLog(BufferedWriter writer, String errorType, String log) throws IOException {
     writer.write(I18n.get(errorType) + ":   " + log);
     writer.newLine();
-  }
-
-  @Transactional
-  public void createCustomObjectSet(String modelName, String targetModelName, int sequence) {
-
-    String simpleModelName = StringUtils.substringAfterLast(targetModelName, ".");
-    String fieldName = Inflector.getInstance().camelize(simpleModelName, true) + "Set";
-    String viewName = Inflector.getInstance().dasherize(simpleModelName);
-
-    if (metaJsonFieldRepo
-            .all()
-            .filter(
-                "self.type = ?1 AND self.model = ?2 AND self.targetModel = ?3",
-                MANY_TO_MANY,
-                modelName,
-                targetModelName)
-            .count()
-        > 0) {
-      return;
-    }
-
-    MetaJsonField jsonField = new MetaJsonField();
-    jsonField.setName(fieldName);
-    jsonField.setType(MANY_TO_MANY);
-    jsonField.setTitle(Inflector.getInstance().titleize(simpleModelName));
-    jsonField.setSequence(sequence);
-    jsonField.setModel(modelName);
-    jsonField.setModelField("attrs");
-    jsonField.setTargetModel(targetModelName);
-    jsonField.setGridView(viewName + "-grid");
-    jsonField.setFormView(viewName + "-form");
-    jsonField.setWidgetAttrs("{\"colSpan\": \"12\"}");
-    jsonField.setShowIf(fieldName + " != null && $record.advancedImport.statusSelect > 0");
-
-    metaJsonFieldRepo.save(jsonField);
-  }
-
-  @Transactional
-  public void createCustomButton(String modelName, String targetModelName, int sequence) {
-
-    String simpleModelName = StringUtils.substringAfterLast(targetModelName, ".");
-    String fieldName = Inflector.getInstance().camelize(simpleModelName, true) + "Set";
-    String buttonName = "show" + fieldName + "Btn";
-
-    if (metaJsonFieldRepo
-            .all()
-            .filter(
-                "self.name = ?1 AND self.type = ?2 AND self.model = ?3",
-                buttonName,
-                "button",
-                modelName)
-            .count()
-        > 0) {
-      return;
-    }
-
-    MetaJsonField jsonField = new MetaJsonField();
-    jsonField.setName(buttonName);
-    jsonField.setType("button");
-    jsonField.setTitle("Show " + Inflector.getInstance().titleize(simpleModelName));
-    jsonField.setSequence(sequence);
-    jsonField.setModel(modelName);
-    jsonField.setModelField("attrs");
-    jsonField.setOnClick("action-file-tab-method-show-record,close");
-    jsonField.setWidgetAttrs("{\"colSpan\": \"4\"}");
-    jsonField.setShowIf(fieldName + " != null && $record.advancedImport.statusSelect > 0");
-
-    metaJsonFieldRepo.save(jsonField);
   }
 
   protected void validateSearch(FileTab fileTab) throws AxelorException {

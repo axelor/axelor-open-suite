@@ -19,6 +19,8 @@
 package com.axelor.apps.base.service.advanced.imports;
 
 import com.axelor.apps.base.db.FileTab;
+import java.util.Map;
+import wslite.json.JSONException;
 
 public interface FileTabService {
 
@@ -26,5 +28,5 @@ public interface FileTabService {
 
   public FileTab compute(FileTab fileTab);
 
-  public String getShowRecordIds(FileTab fileTab, String field) throws ClassNotFoundException;
+  public Map<String, Object> getImportedRecordMap(String recordString) throws JSONException;
 }

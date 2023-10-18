@@ -25,14 +25,15 @@ import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.FileTabService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.Inflector;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaJsonField;
-import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,42 +66,6 @@ public class FileTabController {
     }
   }
 
-  public void showRecord(ActionRequest request, ActionResponse response) {
-    try {
-      FileTab fileTab = request.getContext().asType(FileTab.class);
-      fileTab = Beans.get(FileTabRepository.class).find(fileTab.getId());
-
-      String btnName = request.getContext().get("_signal").toString();
-      String fieldName = StringUtils.substringBetween(btnName, "show", "Btn");
-
-      MetaJsonField jsonField =
-          Beans.get(MetaJsonFieldRepository.class)
-              .all()
-              .filter(
-                  "self.name = ?1 AND self.type = 'many-to-many' AND self.model = ?2 AND self.modelField = 'attrs'",
-                  fieldName,
-                  fileTab.getClass().getName())
-              .fetchOne();
-
-      if (jsonField == null) {
-        return;
-      }
-
-      String ids = Beans.get(FileTabService.class).getShowRecordIds(fileTab, jsonField.getName());
-
-      response.setView(
-          ActionView.define(I18n.get(jsonField.getTitle()))
-              .model(jsonField.getTargetModel())
-              .add("grid", jsonField.getGridView())
-              .add("form", jsonField.getFormView())
-              .domain("self.id IN (" + ids + ")")
-              .map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void validateActions(ActionRequest request, ActionResponse response) {
     FileTab fileTab = request.getContext().asType(FileTab.class);
 
@@ -126,5 +91,37 @@ public class FileTabController {
           String.format(
               BaseExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getMetaModel().getName()));
     }
+  }
+
+  public void setViewerData(ActionRequest request, ActionResponse response) {
+    FileTab fileTab = request.getContext().asType(FileTab.class);
+    fileTab = Beans.get(FileTabRepository.class).find(fileTab.getId());
+
+    try {
+      Map<String, Object> recordMap =
+          Beans.get(FileTabService.class).getImportedRecordMap(fileTab.getImportedRecordIds());
+      if (recordMap != null) {
+        response.setValues(recordMap);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void showRecords(ActionRequest request, ActionResponse response) {
+    HashMap<String, Object> _map = (HashMap<String, Object>) request.getData().get("context");
+    String modelName = (String) _map.get("model");
+    String modelFullName = Beans.get(MetaModelRepository.class).findByName(modelName).getFullName();
+    String ids = (String) _map.get("ids");
+
+    String viewName = Inflector.getInstance().dasherize(modelName);
+    response.setView(
+        ActionView.define(I18n.get(modelName))
+            .model(modelFullName)
+            .add("grid", viewName + "-grid")
+            .add("form", viewName + "-form")
+            .domain("self.id IN (" + ids + ")")
+            .map());
   }
 }

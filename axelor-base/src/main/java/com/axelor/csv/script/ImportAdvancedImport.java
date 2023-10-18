@@ -21,21 +21,17 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileTabRepository;
 import com.axelor.apps.base.service.advanced.imports.ActionService;
-import com.axelor.apps.base.service.advanced.imports.ValidatorService;
-import com.axelor.common.Inflector;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.rpc.Context;
-import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 import com.axelor.script.ScriptHelper;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.io.File;
@@ -43,12 +39,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
 public class ImportAdvancedImport {
 
@@ -56,13 +53,11 @@ public class ImportAdvancedImport {
 
   @Inject private FileTabRepository fileTabRepo;
 
-  @Inject private ValidatorService validatorService;
-
   @Inject protected ActionService actionService;
 
   @SuppressWarnings("unchecked")
   public Object importGeneral(Object bean, Map<String, Object> values)
-      throws ClassNotFoundException {
+      throws ClassNotFoundException, JSONException {
     if (bean == null) {
       return bean;
     }
@@ -81,23 +76,15 @@ public class ImportAdvancedImport {
     if (((Model) bean).getId() == null) {
       List<Property> propList = this.getProperties(bean);
       JPA.save((Model) bean);
-      this.addJsonObjectRecord(bean, fileTab, fileTab.getMetaModel().getName(), values);
+      this.addImportedRecordIds(bean, fileTab, fileTab.getMetaModel().getName(), values);
 
-      int fieldSeq = 2;
-      int btnSeq = 3;
       for (Property prop : propList) {
-        validatorService.createCustomObjectSet(
-            fileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
-        validatorService.createCustomButton(
-            fileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
 
-        this.addJsonObjectRecord(
+        this.addImportedRecordIds(
             prop.get(bean),
             fileTab,
             StringUtils.substringAfterLast(prop.getTarget().getName(), "."),
             values);
-        fieldSeq++;
-        btnSeq++;
       }
     }
 
@@ -123,43 +110,27 @@ public class ImportAdvancedImport {
     return propList;
   }
 
-  @SuppressWarnings("unchecked")
-  protected void addJsonObjectRecord(
-      Object bean, FileTab fileTab, String fieldName, Map<String, Object> values) {
-
-    String field = Inflector.getInstance().camelize(fieldName, true) + "Set";
-    List<Object> recordList;
-
-    Map<String, Object> recordMap = new HashMap<String, Object>();
-    recordMap.put("id", ((Model) bean).getId());
-
-    Map<String, Object> jsonContextValues =
-        (Map<String, Object>) values.get("jsonContextValues" + fileTab.getId());
-
-    JsonContext jsonContext = (JsonContext) jsonContextValues.get("jsonContext");
-    Context context = (Context) jsonContextValues.get("context");
-
-    if (!jsonContext.containsKey(field)) {
-      recordList = new ArrayList<Object>();
-    } else {
-      recordList =
-          ((List<Object>) jsonContext.get(field))
-              .stream()
-                  .map(
-                      obj -> {
-                        if (Mapper.toMap(EntityHelper.getEntity(obj)).get("id") != null) {
-                          Map<String, Object> idMap = new HashMap<String, Object>();
-                          idMap.put("id", Mapper.toMap(EntityHelper.getEntity(obj)).get("id"));
-                          return idMap;
-                        }
-                        return obj;
-                      })
-                  .collect(Collectors.toList());
+  private void addImportedRecordIds(
+      Object bean, FileTab fileTab, String modelName, Map<String, Object> values)
+      throws JSONException {
+    List<String> recordList = new ArrayList<>();
+    JSONObject jsonObject = new JSONObject();
+    String recordId = ((Model) bean).getId().toString();
+    if (!Strings.isNullOrEmpty(fileTab.getImportedRecordIds())) {
+      jsonObject = new JSONObject(fileTab.getImportedRecordIds());
     }
-    recordList.add(recordMap);
-    jsonContext.put(field, recordList);
 
-    fileTab.setAttrs(context.get("attrs").toString());
+    if (!jsonObject.isEmpty()) {
+      if (jsonObject.containsKey(modelName)) {
+        String ids = (String) jsonObject.get(modelName);
+        recordList = new ArrayList<>(Arrays.asList(ids.split("\\,")));
+      }
+    }
+
+    recordList.add(recordId);
+    String recordIds = Joiner.on(",").join(recordList);
+    jsonObject.put(modelName, recordIds);
+    fileTab.setImportedRecordIds(jsonObject.toString());
   }
 
   public Object importPicture(String value, String pathVal) throws IOException {

@@ -48,7 +48,6 @@ import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.Context;
-import com.axelor.rpc.JsonContext;
 import com.axelor.utils.reader.DataReaderFactory;
 import com.axelor.utils.reader.DataReaderService;
 import com.axelor.utils.service.TranslationService;
@@ -78,6 +77,8 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
 public class DataImportServiceImpl implements DataImportService {
 
@@ -956,12 +957,18 @@ public class DataImportServiceImpl implements DataImportService {
     Class<? extends Model> klass = (Class<? extends Model>) fileTab.getClass();
     Context context = new Context(klass);
 
-    JsonContext jsonContext =
-        new JsonContext(context, Mapper.of(klass).getProperty("attrs"), fileTab.getAttrs());
+    JSONObject jsonObject = new JSONObject();
+    try {
+      if (!Strings.isNullOrEmpty(fileTab.getImportedRecordIds())) {
+        jsonObject = new JSONObject(fileTab.getImportedRecordIds());
+      }
+    } catch (JSONException e) {
+      TraceBackService.trace(e);
+    }
 
     Map<String, Object> _map = new HashMap<String, Object>();
     _map.put("context", context);
-    _map.put("jsonContext", jsonContext);
+    _map.put("jsonObject", jsonObject);
     return _map;
   }
 

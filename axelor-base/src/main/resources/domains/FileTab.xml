@@ -31,6 +31,8 @@
 
     <string name="searchCall" title="Search Call" large="true"/>
 
+    <string name="importedRecordIds" large="true"/>
+
   </entity>
 
 </domain-models>

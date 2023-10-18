@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.utils.reader.DataReaderService;
+import wslite.json.JSONException;
 
 public interface AdvancedImportService {
 
@@ -32,5 +33,6 @@ public interface AdvancedImportService {
   public int getTabConfigRowCount(
       String sheet, DataReaderService reader, int totalLines, String[] objectRow);
 
-  public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException;
+  public boolean resetImport(AdvancedImport advancedImport)
+      throws ClassNotFoundException, JSONException;
 }

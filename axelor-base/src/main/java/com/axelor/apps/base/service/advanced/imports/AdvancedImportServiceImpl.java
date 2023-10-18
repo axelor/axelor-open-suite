@@ -26,8 +26,6 @@ import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.common.Inflector;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -38,7 +36,6 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.rpc.JsonContext;
 import com.axelor.utils.reader.DataReaderFactory;
 import com.axelor.utils.reader.DataReaderService;
 import com.google.common.base.Strings;
@@ -53,11 +50,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
 public class AdvancedImportServiceImpl implements AdvancedImportService {
 
@@ -66,8 +64,6 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   private static final String forSelectUseValues = "values";
   private static final String forSelectUseTitles = "titles";
   private static final String forSelectUseTranslatedTitles = "translated titles";
-
-  private Inflector inflector = Inflector.getInstance();
 
   private List<String> searchFieldList = new ArrayList<>();
 
@@ -679,7 +675,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @Override
-  public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException {
+  public boolean resetImport(AdvancedImport advancedImport)
+      throws ClassNotFoundException, JSONException {
     List<FileTab> fileTabList = advancedImport.getFileTabList();
     Beans.get(ValidatorService.class).sortFileTabList(fileTabList);
 
@@ -691,17 +688,23 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  public boolean resetRelationalFields(List<FileTab> fileTabList) throws ClassNotFoundException {
+  public boolean resetRelationalFields(List<FileTab> fileTabList)
+      throws ClassNotFoundException, JSONException {
 
     boolean isResetValue = false;
 
     for (FileTab fileTab : fileTabList) {
 
       Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
-      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
-      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+      JSONObject jsonObject = (JSONObject) jsonContextMap.get("jsonObject");
+      String fieldName = fileTab.getMetaModel().getName();
 
-      List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
+      if (!jsonObject.containsKey(fieldName)) {
+        continue;
+      }
+
+      List<String> recordList = Arrays.asList(((String) jsonObject.get(fieldName)).split("\\,"));
+
       if (CollectionUtils.isEmpty(recordList)) {
         continue;
       }
@@ -710,13 +713,13 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       Class<? extends Model> modelKlass =
           (Class<? extends Model>) Class.forName(fileTab.getMetaModel().getFullName());
       this.resetPropertyValue(modelKlass, recordList);
-      this.resetSubPropertyValue(modelKlass, jsonContext);
+      this.resetSubPropertyValue(modelKlass, jsonObject);
     }
     return isResetValue;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void resetPropertyValue(Class<? extends Model> klass, List<Object> recordList)
+  protected void resetPropertyValue(Class<? extends Model> klass, List<String> recordList)
       throws ClassNotFoundException {
 
     JpaRepository<? extends Model> modelRepo = JpaRepository.of(klass);
@@ -726,9 +729,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      for (Object obj : recordList) {
-        Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
-        Long id = Long.valueOf(recordMap.get("id").toString());
+      for (String obj : recordList) {
+        Long id = Long.valueOf(obj);
         Object bean = modelRepo.find(id);
         if (bean != null) {
           prop.set(bean, null);
@@ -738,8 +740,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  protected void resetSubPropertyValue(Class<? extends Model> klass, JsonContext jsonContext)
-      throws ClassNotFoundException {
+  protected void resetSubPropertyValue(Class<? extends Model> klass, JSONObject jsonObject)
+      throws ClassNotFoundException, JSONException {
 
     for (Property prop : Mapper.of(klass).getProperties()) {
       if (prop.getTarget() == null || prop.isRequired()) {
@@ -747,13 +749,13 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       }
 
       String simpleModelName = StringUtils.substringAfterLast(prop.getTarget().getName(), ".");
-      String field = inflector.camelize(simpleModelName, true) + "Set";
 
-      if (!jsonContext.containsKey(field)) {
+      if (!jsonObject.containsKey(simpleModelName)) {
         continue;
       }
 
-      List<Object> recordList = (List<Object>) jsonContext.get(field);
+      List<String> recordList =
+          Arrays.asList(((String) jsonObject.get(simpleModelName)).split("\\,"));
 
       Class<? extends Model> modelKlass =
           (Class<? extends Model>) Class.forName(prop.getTarget().getName());
@@ -763,24 +765,29 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  public void removeRecords(List<FileTab> fileTabList) throws ClassNotFoundException {
+  public void removeRecords(List<FileTab> fileTabList)
+      throws ClassNotFoundException, JSONException {
 
     for (FileTab fileTab : fileTabList) {
 
       String targetModelName = fileTab.getMetaModel().getFullName();
 
       Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
-      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
-      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+      JSONObject jsonObject = (JSONObject) jsonContextMap.get("jsonObject");
+      String fieldName = fileTab.getMetaModel().getName();
 
-      List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
-      if (CollectionUtils.isEmpty(recordList)) {
+      if (!jsonObject.containsKey(fieldName)) {
+        continue;
+      }
+      String ids = (String) jsonObject.get(fieldName);
+
+      if (Strings.isNullOrEmpty(ids)) {
         continue;
       }
 
       Class<? extends Model> modelKlass = (Class<? extends Model>) Class.forName(targetModelName);
-      removeRecord(fileTab, modelKlass, recordList, fileTabList);
-      removeSubRecords(modelKlass, jsonContext);
+      removeRecord(fileTab, modelKlass, ids, fileTabList, jsonObject);
+      removeSubRecords(modelKlass, jsonObject);
     }
   }
 
@@ -789,20 +796,23 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   public void removeRecord(
       FileTab fileTab,
       Class<? extends Model> modelKlass,
-      List<Object> recordList,
-      List<FileTab> fileTabList)
-      throws ClassNotFoundException {
+      String recordIds,
+      List<FileTab> fileTabList,
+      JSONObject jsonObject)
+      throws ClassNotFoundException, JSONException {
 
     JpaRepository<? extends Model> modelRepo = JpaRepository.of(modelKlass);
 
     for (FileTab tab : fileTabList) {
 
-      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(tab);
-      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
-      String fieldName = inflector.camelize(tab.getMetaModel().getName(), true) + "Set";
+      String fieldName = tab.getMetaModel().getName();
 
-      List<Object> recList = (List<Object>) jsonContext.get(fieldName);
-      if (CollectionUtils.isEmpty(recList)) {
+      if (!jsonObject.containsKey(fieldName)) {
+        continue;
+      }
+      String ids = (String) jsonObject.get(fieldName);
+
+      if (Strings.isNullOrEmpty(ids)) {
         continue;
       }
 
@@ -813,30 +823,21 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       for (Property prop : props) {
         if (prop.getTarget() != null && prop.getTarget() == modelKlass && prop.isRequired()) {
-          removeRecord(tab, klass, recList, fileTabList);
+          removeRecord(tab, klass, ids, fileTabList, jsonObject);
         }
       }
     }
 
-    String ids =
-        recordList.stream()
-            .map(
-                obj -> {
-                  Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
-                  return recordMap.get("id").toString();
-                })
-            .collect(Collectors.joining(","));
-
-    modelRepo.all().filter("self.id IN (" + ids + ")").delete();
-    fileTab.setAttrs(null);
+    modelRepo.all().filter("self.id IN (" + recordIds + ")").delete();
+    fileTab.setImportedRecordIds(null);
 
     LOG.debug("Reset imported data : {}", modelKlass.getSimpleName());
   }
 
   @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
-  public void removeSubRecords(Class<? extends Model> klass, JsonContext jsonContext)
-      throws ClassNotFoundException {
+  public void removeSubRecords(Class<? extends Model> klass, JSONObject jsonObject)
+      throws ClassNotFoundException, JSONException {
 
     for (Property prop : Mapper.of(klass).getProperties()) {
       if (prop.getTarget() == null || prop.isCollection()) {
@@ -844,22 +845,12 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       }
 
       String simpleModelName = StringUtils.substringAfterLast(prop.getTarget().getName(), ".");
-      String field = inflector.camelize(simpleModelName, true) + "Set";
 
-      if (!jsonContext.containsKey(field)) {
+      if (!jsonObject.containsKey(simpleModelName)) {
         continue;
       }
 
-      List<Object> recList = (List<Object>) jsonContext.get(field);
-
-      String ids =
-          recList.stream()
-              .map(
-                  obj -> {
-                    Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
-                    return recordMap.get("id").toString();
-                  })
-              .collect(Collectors.joining(","));
+      String ids = (String) jsonObject.get(simpleModelName);
 
       JpaRepository<? extends Model> modelRepo =
           JpaRepository.of((Class<? extends Model>) Class.forName(prop.getTarget().getName()));
