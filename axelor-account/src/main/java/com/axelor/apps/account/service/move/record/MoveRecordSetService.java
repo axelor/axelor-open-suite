@@ -56,7 +56,7 @@ public interface MoveRecordSetService {
 
   void setOriginDate(Move move);
 
-  void setPfpStatus(Move move);
+  void setPfpStatus(Move move) throws AxelorException;
 
   void setPfpValidatorUser(Move move);
 
