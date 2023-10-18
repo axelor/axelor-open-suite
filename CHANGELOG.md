@@ -1,3 +1,18 @@
+## [6.5.19] (2023-10-18)
+
+#### Fixed
+
+* Product: fixed stock indicators computation.
+* Project: fixed french translation for 'Create business project from this template'.
+* Payment session: set currency field readonly on payment session.
+* Period: improved period closure process from year form.
+* Sale order: fixed duplicated 'Advance Payment' panel.
+* Manufacturing order: fixed "Circular dependency" error preventing to start operation orders.
+* Purchase request: fixed 'Group by product' option not working when generating a purchase order.
+* Sequence: fixed sequence duplication causing a NPE error.
+* Move: fixed an error when we create a move line with a partner without any accounting situation.
+* SOP/MPS: fixed a bug where an existing forecast was modified instead of creating a new one when the forecast was on a different date.
+
 ## [6.5.18] (2023-10-06)
 
 #### Fixed
@@ -875,6 +890,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.19]: https://github.com/axelor/axelor-open-suite/compare/v6.5.18...v6.5.19
 [6.5.18]: https://github.com/axelor/axelor-open-suite/compare/v6.5.17...v6.5.18
 [6.5.17]: https://github.com/axelor/axelor-open-suite/compare/v6.5.16...v6.5.17
 [6.5.16]: https://github.com/axelor/axelor-open-suite/compare/v6.5.15...v6.5.16
