@@ -188,8 +188,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         accountConfigService
             .getAccountConfig(depositSlip.getCompany())
             .getChequeDepositSlipBirtTemplate();
-    if (ObjectUtils.isEmpty(chequeDepositSlipBirtTemplate)
-        || ObjectUtils.isEmpty(chequeDepositSlipBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(chequeDepositSlipBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

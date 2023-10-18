@@ -60,8 +60,7 @@ public class AccountingReportPrintServiceBankPaymentImpl extends AccountingRepor
           bankPaymentConfigService
               .getBankPaymentConfig(accountingReport.getCompany())
               .getBankReconciliationStatementBirtTemplate();
-      if (ObjectUtils.isEmpty(bankReconciliationStatementBirtTemplate)
-          || ObjectUtils.isEmpty(bankReconciliationStatementBirtTemplate.getTemplateMetaFile())) {
+      if (ObjectUtils.isEmpty(bankReconciliationStatementBirtTemplate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

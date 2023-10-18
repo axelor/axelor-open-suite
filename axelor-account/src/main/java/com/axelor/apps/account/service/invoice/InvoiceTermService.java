@@ -59,7 +59,7 @@ public interface InvoiceTermService {
   void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate, boolean isHoldback);
 
   @CallMethod
-  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine);
+  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) throws AxelorException;
 
   /**
    * Method that creates a customized invoiceTerm

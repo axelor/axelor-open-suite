@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
-import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE;
-
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.CancelReason;
@@ -54,6 +52,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
@@ -69,7 +68,6 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.EmailAccountRepository;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -78,10 +76,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService {
@@ -96,6 +91,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected OperationOrderService operationOrderService;
   protected AppProductionService appProductionService;
   protected ProductionConfigService productionConfigService;
+  protected OperationOrderPlanningService operationOrderPlanningService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -109,7 +105,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       AppBaseService appBaseService,
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
-      ProductionConfigService productionConfigService) {
+      ProductionConfigService productionConfigService,
+      OperationOrderPlanningService operationOrderPlanningService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -121,6 +118,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.operationOrderService = operationOrderService;
     this.appProductionService = appProductionService;
     this.productionConfigService = productionConfigService;
+    this.operationOrderPlanningService = operationOrderPlanningService;
   }
 
   @Override
@@ -185,6 +183,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
               operationOrderService.computeEntireCycleDuration(
                   order, order.getManufOrder().getQty()); // in seconds
         }
+        // This is a estimation only, it will be updated later
+        // It does not take into configuration such as machine planning etc...
         manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
       }
       manufOrder.setRealStartDateT(null);
@@ -192,29 +192,32 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
-      if (manufOrder.getOperationOrderList() != null) {
-        ProductionConfig productionConfig =
-            productionConfigService.getProductionConfig(manufOrder.getCompany());
-        boolean useAsapScheduling =
-            productionConfig.getScheduling()
-                == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING;
+      LocalDateTime todayDateT =
+          appBaseService.getTodayDateTime(manufOrder.getCompany()).toLocalDateTime();
+      List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
+      if (CollectionUtils.isNotEmpty(operationOrders)) {
+        operationOrderPlanningService.plan(operationOrders);
+      }
+      // Updating plannedStartDate since, it may be different now that operation orders are
+      // planned
+      manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
 
-        if (!useAsapScheduling && manufOrder.getPlannedEndDateT() == null) {
-          throw new AxelorException(
-              manufOrder,
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(
-                  YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE));
-        }
+      ProductionConfig productionConfig =
+          productionConfigService.getProductionConfig(manufOrder.getCompany());
 
-        List<OperationOrder> operationOrders =
-            useAsapScheduling
-                ? getSortedOperationOrderList(manufOrder)
-                : getReversedSortedOperationOrderList(manufOrder);
+      int qtyScale = appBaseService.getNbDecimalDigitForQty();
 
-        for (OperationOrder operationOrder : operationOrders) {
-          operationOrderWorkflowService.plan(operationOrder, useAsapScheduling);
-        }
+      if (productionConfig.getScheduling() == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING
+          && manufOrder.getPlannedStartDateT().isBefore(todayDateT)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(ProductionExceptionMessage.PLAN_IS_BEFORE_TODAY_DATE),
+            String.format(
+                "%s %s",
+                manufOrder.getQty() != null
+                    ? manufOrder.getQty().setScale(qtyScale, RoundingMode.HALF_UP)
+                    : null,
+                manufOrder.getProduct().getFullName()));
       }
     }
 
@@ -564,13 +567,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       throws AxelorException {
     manufOrder.setPlannedStartDateT(plannedStartDateT);
 
-    if (manufOrder.getOperationOrderList() != null) {
-      List<OperationOrder> operationOrderList = getSortedOperationOrderList(manufOrder);
-      operationOrderWorkflowService.resetPlannedDates(operationOrderList);
-
-      for (OperationOrder operationOrder : operationOrderList) {
-        operationOrderWorkflowService.replan(operationOrder);
-      }
+    List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
+    if (operationOrders != null) {
+      operationOrderWorkflowService.resetPlannedDates(operationOrders);
+      operationOrderPlanningService.replan(operationOrders);
     }
 
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
@@ -589,52 +589,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     manufOrder.setPlannedStartDateT(computePlannedStartDateT(manufOrder));
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
-  }
-
-  /**
-   * Get a list of operation orders sorted by priority and id from the specified manufacturing
-   * order.
-   *
-   * @param manufOrder
-   * @return
-   */
-  protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
-    List<OperationOrder> operationOrderList =
-        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
-    Comparator<OperationOrder> byPriority =
-        Comparator.comparing(
-            OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()));
-    Comparator<OperationOrder> byId =
-        Comparator.comparing(
-            OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
-
-    return operationOrderList.stream()
-        .sorted(byPriority.thenComparing(byId))
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Get a list of operation orders reverse sorted by priority and id from the specified
-   * manufacturing order.
-   *
-   * @param manufOrder
-   * @return
-   */
-  protected List<OperationOrder> getReversedSortedOperationOrderList(ManufOrder manufOrder) {
-    List<OperationOrder> operationOrderList =
-        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
-    Comparator<OperationOrder> byPriority =
-        Comparator.comparing(
-                OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()))
-            .reversed();
-    Comparator<OperationOrder> byId =
-        Comparator.comparing(
-                OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()))
-            .reversed();
-
-    return operationOrderList.stream()
-        .sorted(byPriority.thenComparing(byId))
-        .collect(Collectors.toList());
   }
 
   protected boolean sendMail(ManufOrder manufOrder, Template template) {

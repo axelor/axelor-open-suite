@@ -11,6 +11,8 @@ import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -39,10 +41,16 @@ public class PdfServiceImpl implements PdfService {
       pdfToSign = convertImageToPdfProcess(metaFile);
     }
 
-    if (fileType.contains("pdf")) {
-      pdfToSign = metaFile;
-    }
     return pdfToSign;
+  }
+
+  @Override
+  public List<MetaFile> convertImageToPdf(List<MetaFile> metaFileList) throws AxelorException {
+    List<MetaFile> pdfList = new ArrayList<>();
+    for (MetaFile metaFile : metaFileList) {
+      pdfList.add(convertImageToPdf(metaFile));
+    }
+    return pdfList;
   }
 
   public MetaFile convertImageToPdfProcess(MetaFile metaFile) throws AxelorException {
@@ -50,10 +58,10 @@ public class PdfServiceImpl implements PdfService {
       if (metaFile == null) {
         return null;
       }
-      File tempPdfFile = File.createTempFile(metaFile.getFileName(), ".pdf");
+      File tempPdfFile =
+          File.createTempFile(Files.getNameWithoutExtension(metaFile.getFileName()), ".pdf");
 
       convertImageToPdf(metaFile, tempPdfFile);
-      metaFiles.delete(metaFile);
       MetaFile resultFile = metaFiles.upload(tempPdfFile);
       resultFile.setFileName(Files.getNameWithoutExtension(metaFile.getFileName()) + ".pdf");
       return resultFile;

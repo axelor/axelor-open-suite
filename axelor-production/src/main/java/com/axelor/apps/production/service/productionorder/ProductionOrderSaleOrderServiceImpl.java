@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
@@ -44,7 +45,9 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
 
@@ -181,6 +184,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
     List<BillOfMaterial> childBomList = new ArrayList<>();
     childBomList.add(billOfMaterial);
+
+    Map<BillOfMaterial, ManufOrder> subBomManufOrderParentMap = new HashMap<>();
     // prevent infinite loop
     int depth = 0;
     while (!childBomList.isEmpty()) {
@@ -191,11 +196,10 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       }
       ProductionConfig productionConfig =
           productionConfigService.getProductionConfig(saleOrder.getCompany());
-      boolean useAsapScheduling =
-          productionConfig.getScheduling()
-              == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING;
+
       LocalDateTime endDate = null;
-      if (!useAsapScheduling) {
+      if (productionConfig.getScheduling()
+          != ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
         if (saleOrderLine.getEstimatedShippingDate() == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -204,13 +208,18 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
               saleOrderLine.getSequence());
         }
         endDate = saleOrderLine.getEstimatedShippingDate().atStartOfDay();
+        // Start date will be filled at plan
+        startDate = null;
       }
 
       List<BillOfMaterial> tempChildBomList = new ArrayList<>();
+
+      // Map for future manufOrder and its manufOrder Parent
+
       for (BillOfMaterial childBom : childBomList) {
-        productionOrder =
-            productionOrderService.addManufOrder(
-                productionOrder,
+
+        ManufOrder manufOrder =
+            productionOrderService.generateManufOrder(
                 childBom.getProduct(),
                 childBom,
                 qtyRequested.multiply(childBom.getQty()),
@@ -218,8 +227,18 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 endDate,
                 saleOrder,
                 saleOrderLine,
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER);
-        tempChildBomList.addAll(billOfMaterialService.getSubBillOfMaterial(childBom));
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER,
+                subBomManufOrderParentMap.get(childBom));
+
+        productionOrderService.addManufOrder(productionOrder, manufOrder);
+
+        List<BillOfMaterial> subBomList = billOfMaterialService.getSubBillOfMaterial(childBom);
+        subBomList.forEach(
+            bom -> {
+              subBomManufOrderParentMap.putIfAbsent(bom, manufOrder);
+            });
+
+        tempChildBomList.addAll(subBomList);
       }
       childBomList.clear();
       childBomList.addAll(tempChildBomList);

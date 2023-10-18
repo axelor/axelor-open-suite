@@ -1,4 +1,4 @@
-"name";"metaModel.name";"language.importId";"target";"birtTemplateSet.importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"addSignature";"signature"
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"addSignature";"signature"
 "Facture Client";"Invoice";2;;;;"true";;"Votre facture N° $Invoice.invoiceId$";"<p>Bonjour,</p>
 
 <p>Vous trouverez ci-joint la facture N° $Invoice.invoiceId$.</p>
@@ -31,7 +31,7 @@ $it.name$ - $it.dueDate; format=""dd/MM/yyyy""$ - $it.paymentAmount$$it.paymentS
 <p>Cordialement,<br>
 Le service comptabilité.<br>
 Société $PaymentSession.company.name$</p>";"$PaymentSession.partnerForEmail.emailAddress.address$";;;2;;
-"Releve facture";"NoteBills";2;;"34";;"true";;"Votre relevé de facture";"<p>Bonjour,</p>
+"Releve facture";"NoteBills";2;;"31";;"true";;"Votre relevé de facture";"<p>Bonjour,</p>
 
 <p>Vous trouverez ci-joint votre relevé de facture</p>
 
@@ -43,7 +43,7 @@ Société $PaymentSession.company.name$</p>";"$PaymentSession.partnerForEmail.em
 L'équipe Axelor</p>
 
 ";"$NoteBills.emailAddress.address$";;;2;;
-"Note Bills";"NoteBills";1;;"34";;"true";;"Your note bills";"<p>Hi,</p>
+"Note Bills";"NoteBills";1;;"31";;"true";;"Your note bills";"<p>Hi,</p>
 
 <p>Please find attached the note bills</p>
 

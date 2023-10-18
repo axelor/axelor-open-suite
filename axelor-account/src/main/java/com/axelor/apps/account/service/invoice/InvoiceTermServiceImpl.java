@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -42,6 +41,7 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PartnerAccountService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -86,7 +86,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
   protected AppAccountService appAccountService;
-  protected InvoiceToolService invoiceToolService;
   protected InvoiceVisibilityService invoiceVisibilityService;
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
@@ -95,25 +94,25 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected PartnerAccountService partnerAccountService;
   protected UserRepository userRepo;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
+  protected PfpService pfpService;
 
   @Inject
   public InvoiceTermServiceImpl(
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
-      InvoiceToolService invoiceToolService,
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      UserRepository userRepo,
       JournalService journalService,
       PartnerAccountService partnerAccountService,
-      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      UserRepository userRepo,
+      PfpService pfpService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
-    this.invoiceToolService = invoiceToolService;
     this.invoiceVisibilityService = invoiceVisibilityService;
     this.accountConfigService = accountConfigService;
     this.reconcileService = reconcileService;
@@ -122,6 +121,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.journalService = journalService;
     this.partnerAccountService = partnerAccountService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -312,13 +312,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) {
+  public boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine)
+      throws AxelorException {
     boolean invoiceCondition =
         invoice != null
-            && invoice.getCompany().getAccountConfig().getIsManagePassedForPayment()
+            && pfpService.isManagePassedForPayment(invoice.getCompany())
             && (invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                || (invoice.getCompany().getAccountConfig().getIsManagePFPInRefund()
+                || (pfpService.isManagePFPInRefund(invoice.getCompany())
                     && invoice.getOperationTypeSelect()
                         == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
 
@@ -326,15 +327,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoice == null
             && moveLine != null
             && moveLine.getMove() != null
-            && moveLine.getMove().getCompany().getAccountConfig().getIsManagePassedForPayment()
+            && pfpService.isManagePassedForPayment(moveLine.getMove().getCompany())
             && (moveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
                     == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-                || (moveLine.getMove().getCompany().getAccountConfig().getIsManagePFPInRefund()
+                || (pfpService.isManagePFPInRefund(moveLine.getMove().getCompany())
                     && moveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
                         == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE));
 
-    return appAccountService.getAppAccount().getActivatePassedForPayment()
-        && (invoiceCondition || moveLineCondition);
+    return invoiceCondition || moveLineCondition;
   }
 
   @Override
@@ -810,12 +810,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     BigDecimal customizedAmount =
         this.getCustomizedAmount(invoiceTerm, invoiceTermList, total, isLastInvoiceTerm);
-    BigDecimal customizedCompanyAmount =
-        this.getCustomizedCompanyAmount(
-            invoiceTerm, invoiceTermList, companyTotal, isLastInvoiceTerm);
 
     invoiceTerm.setAmount(customizedAmount);
     invoiceTerm.setAmountRemaining(customizedAmount);
+
+    BigDecimal customizedCompanyAmount =
+        this.getCustomizedCompanyAmount(
+            invoiceTerm, invoiceTermList, companyTotal, isLastInvoiceTerm);
 
     if (customizedCompanyAmount != null) {
       invoiceTerm.setCompanyAmount(customizedCompanyAmount);
@@ -971,10 +972,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE;
     }
 
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    if (accountConfig.getIsManagePassedForPayment()
-        && (isSupplierPurchase || (isSupplierRefund && accountConfig.getIsManagePFPInRefund()))) {
+    if (pfpService.isManagePassedForPayment(company)
+        && (isSupplierPurchase || (isSupplierRefund && pfpService.isManagePFPInRefund(company)))) {
       invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
     } else {
       invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_NO_PFP);
@@ -1567,6 +1566,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         moveLine.getDebit().signum() > 0
             ? moveLine.getDebitReconcileList()
             : moveLine.getCreditReconcileList();
+
+    if (reconcileList == null) {
+      return BigDecimal.ZERO;
+    }
 
     return reconcileList.stream()
         .sorted(Comparator.comparing(Reconcile::getCreatedOn))

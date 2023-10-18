@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PaymentConditionService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
@@ -63,6 +64,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected PartnerAccountService partnerAccountService;
   protected JournalService journalService;
   protected MoveLineService moveLineService;
+  protected PfpService pfpService;
 
   @Inject
   public MoveRecordSetServiceImpl(
@@ -74,7 +76,8 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       MoveLineService moveLineService,
       AppBaseService appBaseService,
       PartnerAccountService partnerAccountService,
-      JournalService journalService) {
+      JournalService journalService,
+      PfpService pfpService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.periodService = periodService;
@@ -84,6 +87,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     this.appBaseService = appBaseService;
     this.partnerAccountService = partnerAccountService;
     this.journalService = journalService;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -265,15 +269,13 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public void setPfpStatus(Move move) {
+  public void setPfpStatus(Move move) throws AxelorException {
     Objects.requireNonNull(move);
 
     if (move.getJournal() != null && move.getJournal().getJournalType() != null) {
       JournalType journalType = move.getJournal().getJournalType();
-      if (move.getCompany() != null
-          && move.getCompany().getAccountConfig() != null
-          && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
-          && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+      if (pfpService.isManagePassedForPayment(move.getCompany())
+          && pfpService.isManagePFPInRefund(move.getCompany())
           && (journalType.getTechnicalTypeSelect()
                   == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
               || journalType.getTechnicalTypeSelect()

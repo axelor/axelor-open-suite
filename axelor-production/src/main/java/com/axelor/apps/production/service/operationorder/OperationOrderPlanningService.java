@@ -3,43 +3,25 @@ package com.axelor.apps.production.service.operationorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface OperationOrderPlanningService {
 
   /**
-   * Plan an operation order. For successive calls, must be called by order of operation order
-   * priority.
+   * Plan a list of operation orders
    *
-   * @param operationOrder
-   * @param cumulatedDuration
-   * @return
+   * @param operationOrders
    * @throws AxelorException
    */
-  OperationOrder plan(OperationOrder operationOrder, Long cumulatedDuration) throws AxelorException;
+  void plan(List<OperationOrder> operationOrders) throws AxelorException;
 
   /**
-   * Plan an operation order. For successive calls, must be called by order of operation order
-   * priority. The order must be ascending if useAsapScheduling is true and descending if not.
+   * Re-plan a list of operation orders
    *
-   * @param operationOrder
-   * @param cumulatedDuration
-   * @param useAsapScheduling
-   * @return
+   * @param operationOrders
    * @throws AxelorException
    */
-  OperationOrder plan(
-      OperationOrder operationOrder, Long cumulatedDuration, boolean useAsapScheduling)
-      throws AxelorException;
-
-  /**
-   * Replan an operation order. For successive calls, must reset planned dates first, then call by
-   * order of operation order priority.
-   *
-   * @param operationOrder
-   * @return
-   * @throws AxelorException
-   */
-  OperationOrder replan(OperationOrder operationOrder) throws AxelorException;
+  void replan(List<OperationOrder> operationOrders) throws AxelorException;
 
   /**
    * Set planned start and end dates.
@@ -66,6 +48,8 @@ public interface OperationOrderPlanningService {
   OperationOrder setRealDates(
       OperationOrder operationOrder, LocalDateTime realStartDateT, LocalDateTime realEndDateT)
       throws AxelorException;
+
+  boolean willPlannedEndDateOverflow(OperationOrder operationOrder) throws AxelorException;
 
   OperationOrder computeDuration(OperationOrder operationOrder);
 

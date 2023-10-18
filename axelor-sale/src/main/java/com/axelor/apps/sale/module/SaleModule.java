@@ -98,7 +98,6 @@ public class SaleModule extends AxelorModule {
   @Override
   protected void configure() {
     bind(AddressServiceSaleImpl.class);
-
     bind(PartnerServiceImpl.class).to(PartnerSaleServiceImpl.class);
     bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
     bind(SaleOrderLineService.class).to(SaleOrderLineServiceImpl.class);
