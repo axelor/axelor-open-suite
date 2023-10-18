@@ -161,7 +161,7 @@ public class PayVoucherElementToPayService {
         != 0;
   }
 
-  protected void resetRemainingAmounts(
+  public void resetRemainingAmounts(
       PayVoucherElementToPay payVoucherElementToPay, BigDecimal financialDiscountAmount) {
     payVoucherElementToPay.setRemainingAmount(
         payVoucherElementToPay.getRemainingAmount().add(financialDiscountAmount));
@@ -169,8 +169,29 @@ public class PayVoucherElementToPayService {
         payVoucherElementToPay.getRemainingAmountAfterPayment().add(financialDiscountAmount));
   }
 
-  public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay)
-      throws AxelorException {
+  public void updateRemainingAmountsWithFinancialDiscount(
+      PayVoucherElementToPay payVoucherElementToPay) throws AxelorException {
+    BigDecimal financialDiscountAmount = payVoucherElementToPay.getFinancialDiscountTotalAmount();
+
+    if (payVoucherElementToPay.getApplyFinancialDiscount()) {
+      if (payVoucherElementToPay.getAmountToPay().compareTo(payVoucherElementToPay.getTotalAmount())
+          == 0) {
+        payVoucherElementToPay.setAmountToPay(
+            payVoucherElementToPay.getAmountToPay().subtract(financialDiscountAmount));
+        payVoucherElementToPay.setRemainingAmount(payVoucherElementToPay.getAmountToPay());
+
+        this.updateAmountToPayCurrency(payVoucherElementToPay);
+
+        financialDiscountAmount = BigDecimal.ZERO;
+      } else {
+        financialDiscountAmount = financialDiscountAmount.negate();
+      }
+    }
+
+    this.resetRemainingAmounts(payVoucherElementToPay, financialDiscountAmount);
+  }
+
+  public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay) {
     if (!payVoucherElementToPay.getApplyFinancialDiscount()
         || payVoucherElementToPay.getFinancialDiscount() == null
         || (payVoucherElementToPay.getInvoiceTerm() != null
@@ -208,12 +229,12 @@ public class PayVoucherElementToPayService {
   @CallMethod
   public boolean isFinancialDiscountReadonly(PayVoucherElementToPay payVoucherElementToPay) {
     InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
-    BigDecimal amount =
-        payVoucherElementToPay.getApplyFinancialDiscount()
-            ? invoiceTerm.getRemainingAmountAfterFinDiscount()
-            : invoiceTerm.getAmount();
 
     return invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0
-        || payVoucherElementToPay.getAmountToPay().compareTo(amount) != 0;
+        || (payVoucherElementToPay.getAmountToPay().compareTo(invoiceTerm.getAmount()) != 0
+            && payVoucherElementToPay
+                    .getAmountToPay()
+                    .compareTo(invoiceTerm.getRemainingAmountAfterFinDiscount())
+                != 0);
   }
 }

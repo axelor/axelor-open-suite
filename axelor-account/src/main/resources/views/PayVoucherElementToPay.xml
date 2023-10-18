@@ -36,6 +36,7 @@
         validIf="$readonly() || $number(amountToPay) &lt;= $number($maxAmountToPay)"
         onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"/>
       <field name="applyFinancialDiscount" readonlyIf="$isFinancialDiscountReadonly"
+        onChange="action-pay-voucher-element-to-pay-method-update-financial-discount"
         if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
       <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"
         showIf="moveLineGenerated"/>
@@ -56,7 +57,7 @@
 
   <action-group name="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange">
     <action name="action-method-account-payment-voucher-element-pay-amount"/>
-    <action name="action-pay-voucher-element-to-pay-method-update-financial-discount"
+    <action name="action-pay-voucher-element-to-pay-method-reset-financial-discount"
       if="applyFinancialDiscount"/>
     <action name="action-pay-voucher-element-to-pay-attrs-set-financial-discount-readonly"/>
     <action name="action-pay-voucher-element-to-pay-attrs-set-max-amount-to-pay"/>
@@ -70,6 +71,12 @@
   <action-method name="action-method-account-payment-voucher-element-pay-amount">
     <call class="com.axelor.apps.account.web.PayVoucherElementToPayController"
       method="updateAmountToPayCurrency"/>
+  </action-method>
+
+  <action-method
+    name="action-pay-voucher-element-to-pay-method-reset-financial-discount">
+    <call class="com.axelor.apps.account.web.PayVoucherElementToPayController"
+      method="resetFinancialDiscount"/>
   </action-method>
 
   <action-method

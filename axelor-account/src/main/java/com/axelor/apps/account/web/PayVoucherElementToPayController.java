@@ -44,7 +44,7 @@ public class PayVoucherElementToPayController {
     }
   }
 
-  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
+  public void resetFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       PayVoucherElementToPay payVoucherElementToPay =
           request.getContext().asType(PayVoucherElementToPay.class);
@@ -54,9 +54,21 @@ public class PayVoucherElementToPayController {
       if (payVoucherElementToPayService.isPartialPayment(
           payVoucherElementToPay, payVoucherElementToPay.getFinancialDiscountTotalAmount())) {
         payVoucherElementToPayService.resetFinancialDiscount(payVoucherElementToPay);
-      } else {
-        payVoucherElementToPayService.updateFinancialDiscount(payVoucherElementToPay);
       }
+
+      response.setValues(payVoucherElementToPay);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      PayVoucherElementToPay payVoucherElementToPay =
+          request.getContext().asType(PayVoucherElementToPay.class);
+
+      Beans.get(PayVoucherElementToPayService.class)
+          .updateRemainingAmountsWithFinancialDiscount(payVoucherElementToPay);
 
       response.setValues(payVoucherElementToPay);
     } catch (Exception e) {
