@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="PurchaseOrder">
+    <many-to-one name="budgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Global budget"/>
+
+    <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"/>
+
+    <many-to-one name="companyDepartment"
+      ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department"/>
+
+    <decimal name="unassignedAmt" title="Total unassigned amount" readonly="true"/>
+    <decimal name="gapAmt" title="Gap amount" readonly="true"/>
+    <boolean name="budgetDistributionGenerated" title="Budget distribution generated"/>
+
+  </entity>
+
+</domain-models>

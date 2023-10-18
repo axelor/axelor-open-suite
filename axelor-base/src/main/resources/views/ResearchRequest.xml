@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="research-request-grid" title="Requests" canNew="true"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <field name="name" title="Name"/>
+    <field name="searchDate" title="Date"/>
+    <field name="models" title="Models to search"/>
+  </grid>
+
+  <form name="research-request-form" title="Request" canNew="true"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <panel name="requestPanel" title="Request" colSpan="12">
+      <field name="name" colSpan="3" required="true"/>
+      <field name="models" required="true" widget="MultiSelect" colSpan="3"/>
+      <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hideIf="!models">
+
+        <field name="research1" canEdit="false"
+          onChange="action-research-request-record-research-1-reset-value" canNew="false"
+          title="Research 1" colSpan="2"
+          onSelect="action-research-request-method-primary-key-research-1-domain"/>
+        <field name="research1Value" requiredIf="research1" title="Value 1" colSpan="4"
+          readonlyIf="research1 == null"/>
+
+        <field name="research2" canEdit="false"
+          onChange="action-research-request-record-research-2-reset-value" canNew="false"
+          title="Research 2" colSpan="2"
+          onSelect="action-research-request-method-primary-key-research-2-domain"/>
+        <field name="research2Value" requiredIf="research2" title="Value 2" colSpan="4"
+          readonlyIf="research2 == null"/>
+
+        <field name="research3" canEdit="false"
+          onChange="action-research-request-record-research-3-reset-value" canNew="false"
+          title="Research 3" colSpan="2"
+          onSelect="action-research-request-method-primary-key-research-3-domain"/>
+        <field name="research3Value" requiredIf="research3" title="Value 3" colSpan="4"
+          readonlyIf="research3 == null"/>
+
+        <field name="research4" canEdit="false"
+          onChange="action-research-request-record-research-4-reset-value" canNew="false"
+          title="Research 4" colSpan="2"
+          onSelect="action-research-request-method-primary-key-research-4-domain"/>
+        <field name="research4Value" requiredIf="research4" title="Value 4" colSpan="4"
+          readonlyIf="research4 == null"/>
+
+        <field name="dateResearch1" canEdit="false"
+          onChange="action-research-request-record-date-research-1-reset-value" canNew="false"
+          title="Date research 1" colSpan="2"
+          onSelect="action-research-request-method-primary-key-date-research-1-domain"/>
+        <field name="dateResearch1Value" requiredIf="dateResearch1" title="Date 1" colSpan="4"
+          readonlyIf="dateResearch1 == null"/>
+
+        <button name="searchBtn" title="Search" icon="fa-search"
+          onClick="save,action-base-search" colOffset="8" colSpan="4"
+          readonlyIf="(research1 == null &amp;&amp; research2 == null &amp;&amp; research3 == null &amp;&amp; research4 == null ) || (research1 != null &amp;&amp; research1Value == null) || (research2 != null &amp;&amp; research2Value == null  )  || (research3 != null &amp;&amp; research3Value == null)  || (research4 != null &amp;&amp; research4Value == null)"/>
+        <panel-related name="researchResultsPanel" title="Results"
+          field="researchResultLineList" colSpan="12" grid-view="research-result-line-grid"
+          form-view="research-result-line-form" canNew="false" canView="false" canRemove="false"
+          canEdit="false">
+        </panel-related>
+      </panel>
+    </panel>
+    <panel name="datePanel" sidebar="true">
+      <field name="searchDate" readonly="true" colSpan="6"/>
+    </panel>
+
+  </form>
+
+  <action-method name="action-base-search">
+    <call class="com.axelor.apps.base.web.ResearchRequestController" method="searchObject"/>
+  </action-method>
+
+  <action-method name="action-research-request-method-primary-key-research-1-domain">
+    <call class="com.axelor.apps.base.web.ResearchRequestController"
+      method="getResearch1PrimaryKeyDomain"/>
+  </action-method>
+
+  <action-method name="action-research-request-method-primary-key-research-2-domain">
+    <call class="com.axelor.apps.base.web.ResearchRequestController"
+      method="getResearch2PrimaryKeyDomain"/>
+  </action-method>
+
+  <action-method name="action-research-request-method-primary-key-research-3-domain">
+    <call class="com.axelor.apps.base.web.ResearchRequestController"
+      method="getResearch3PrimaryKeyDomain"/>
+  </action-method>
+
+  <action-method name="action-research-request-method-primary-key-research-4-domain">
+    <call class="com.axelor.apps.base.web.ResearchRequestController"
+      method="getResearch4PrimaryKeyDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-research-request-method-primary-key-date-research-1-domain">
+    <call class="com.axelor.apps.base.web.ResearchRequestController"
+      method="getDateResearch1PrimaryKeyDomain"/>
+  </action-method>
+
+  <action-record name="action-research-request-record-research-1-reset-value"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <field name="research1Value" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-research-request-record-research-2-reset-value"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <field name="research2Value" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-research-request-record-research-3-reset-value"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <field name="research3Value" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-research-request-record-research-4-reset-value"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <field name="research4Value" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-research-request-record-date-research-1-reset-value"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <field name="dateResearch1Value" expr="eval: null"/>
+  </action-record>
+</object-views>

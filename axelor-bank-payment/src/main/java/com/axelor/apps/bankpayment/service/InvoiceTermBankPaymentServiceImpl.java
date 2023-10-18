@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service;
 
@@ -21,15 +22,16 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.auth.db.repo.UserRepository;
 import com.google.inject.Inject;
 
 public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
@@ -42,21 +44,23 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
-      InvoiceToolService invoiceToolService,
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      BankOrderLineOriginRepository bankOrderLineOriginRepository) {
+      UserRepository userRepo,
+      BankOrderLineOriginRepository bankOrderLineOriginRepository,
+      PfpService pfpService) {
     super(
         invoiceTermRepo,
         invoiceRepo,
         appAccountService,
-        invoiceToolService,
         invoiceVisibilityService,
         accountConfigService,
         reconcileService,
-        invoicePaymentCreateService);
+        invoicePaymentCreateService,
+        userRepo,
+        pfpService);
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
   }
 

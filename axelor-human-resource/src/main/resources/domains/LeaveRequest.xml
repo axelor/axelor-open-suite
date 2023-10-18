@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -19,15 +19,15 @@
       required="true" default="2"/>
     <decimal name="duration" title="Duration" scale="1" precision="20"/>
     <string name="comments" title="Comments" large="true"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <integer name="injectConsumeSelect" title="Inject/Consume"
       selection="hrs.leave.reason.inject.consume.select" default="1"/>
     <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
       readonly="true"/>
     <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By"
       readonly="true"/>
-    <date name="validationDate" title="Validation Date" readonly="true"/>
-    <date name="refusalDate" title="Refusal Date" readonly="true"/>
+    <datetime name="validationDateTime" title="Validation Date" readonly="true"/>
+    <datetime name="refusalDateTime" title="Refusal Date" readonly="true"/>
     <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
     <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent"
       title="Event"/>

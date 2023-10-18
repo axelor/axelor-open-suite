@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.ebics.client;
 
@@ -37,19 +38,18 @@ package com.axelor.apps.bankpayment.ebics.client;
  */
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.tool.xml.XPathParse;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.xml.XPathParse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -58,6 +58,13 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.utils.IgnoreAllErrorHandler;
 import org.apache.xpath.XPathAPI;
@@ -72,6 +79,11 @@ import org.w3c.dom.traversal.NodeIterator;
  * @author hachani
  */
 public class EbicsUtils {
+
+  private static final String HTTP_PROXY_HOST = "http.proxy.host";
+  private static final String HTTP_PROXY_PORT = "http.proxy.port";
+  private static final String HTTP_PROXY_AUTH_USER = "http.proxy.auth.user";
+  private static final String HTTP_PROXY_AUTH_PASSWORD = "http.proxy.auth.password";
 
   /**
    * Compresses an input of byte array
@@ -227,7 +239,7 @@ public class EbicsUtils {
         Canonicalizer canonicalizer;
 
         canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-        output.write(canonicalizer.canonicalizeSubtree(node));
+        canonicalizer.canonicalizeSubtree(node, output);
       }
 
       return output.toByteArray();
@@ -316,21 +328,6 @@ public class EbicsUtils {
   }
 
   /**
-   * Parses a string date
-   *
-   * @param date the given string date
-   * @return the date value
-   */
-  public static Date parse(String date) throws AxelorException {
-    try {
-      return new SimpleDateFormat(AppSettings.get().get("date.format")).parse(date);
-    } catch (Exception e) {
-      throw new AxelorException(
-          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
-    }
-  }
-
-  /**
    * Checks for the returned http code
    *
    * @param httpCode the http code
@@ -341,5 +338,38 @@ public class EbicsUtils {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, "http.code.error[Code:%s]", httpCode);
     }
+  }
+
+  /**
+   * * To set proxy settings in HttpClientBuilder
+   *
+   * @param client
+   */
+  public static void setProxy(HttpClientBuilder client) {
+
+    final AppSettings appSettings = AppSettings.get();
+    String proxyHost = appSettings.get(HTTP_PROXY_HOST);
+    int proxyPort = appSettings.getInt(HTTP_PROXY_PORT, 0);
+
+    if (StringUtils.isBlank(proxyHost) || proxyPort == 0) {
+      return;
+    }
+
+    HttpHost proxy = new HttpHost(proxyHost.trim(), proxyPort);
+    DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+    client.setRoutePlanner(routePlanner);
+
+    String userName = appSettings.get(HTTP_PROXY_AUTH_USER);
+    String userPassword = appSettings.get(HTTP_PROXY_AUTH_PASSWORD);
+
+    if (StringUtils.isBlank(userName) || StringUtils.isBlank(userPassword)) {
+      return;
+    }
+
+    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    credentialsProvider.setCredentials(
+        new AuthScope(proxy),
+        new UsernamePasswordCredentials(userName.trim(), userPassword.trim()));
+    client.setDefaultCredentialsProvider(credentialsProvider);
   }
 }

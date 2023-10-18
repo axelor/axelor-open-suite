@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <chart name="chart.daily.planned.charge.in.month.per.project"
     title="Daily planned charge in a month per project">
     <dataset type="jpql">
   <![CDATA[
-   select sum(e.hourlyRate*t.plannedHours) as charge, p.name as project
+   select sum(e.hourlyRate*t.plannedTime) as charge, p.name as project
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id
- WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ WHERE MONTH(t.startDateTime) = MONTH(CURRENT_DATE)
  GROUP BY p.id
   ]]>
     </dataset>
@@ -23,11 +23,11 @@
     title="Daily planned charge in a month per employee">
     <dataset type="jpql">
   <![CDATA[
-   select sum(e.hourlyRate*t.plannedHours) as charge, p.name as project , e.name as employee
+   select sum(e.hourlyRate*t.plannedTime) as charge, p.name as project , e.name as employee
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id
- WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ WHERE MONTH(t.startDateTime) = MONTH(CURRENT_DATE)
  GROUP BY p.id,e.id
   ]]>
     </dataset>
@@ -39,11 +39,11 @@
     title="Daily planned charge in a month in an average per employee">
     <dataset type="jpql">
   <![CDATA[
-   select avg(e.hourlyRate*t.plannedHours) as charge , e.name as employee
+   select avg(e.hourlyRate*t.plannedTime) as charge , e.name as employee
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id
- WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ WHERE MONTH(t.startDateTime) = MONTH(CURRENT_DATE)
  GROUP BY e.id
   ]]>
     </dataset>

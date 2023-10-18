@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/domain-models"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountConfig" cacheable="true">
+
+    <boolean name="enableBudgetKey" title="Enable budget key"/>
+    <many-to-many ref="com.axelor.auth.db.Role" name="budgetDistributionRoleList"
+      title="Budget distribution role"/>
+
+    <track>
+      <field name="enableBudgetKey" on="UPDATE"/>
+    </track>
+
+  </entity>
+
+</domain-models>
+

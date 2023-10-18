@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <custom name="report-top-3-suppliers" title="Top 3 supplier" css="report-box">
     <dataset type="jpql"><![CDATA[
@@ -393,59 +393,37 @@ from InvoiceTerm as self
     <dataset type="sql">
 
       SELECT
-      to_char(_invoice.invoice_date,'yyyy-MM') AS _month_no,
-      coalesce(_product._product_type,'other') AS product,
-      coalesce(SUM(CASE _operation_type
-      WHEN 3
-      THEN _invoice._turn_over
-      WHEN 4 THEN -_invoice._turn_over
-      END), 00) AS _turn_over
-      FROM
-      (SELECT
-      _invoice.id AS _invoice_id,
-      _invoice.operation_type_select AS _operation_type,
-      _invoice.invoice_date as invoice_date,
-      date_part('mon', _invoice.invoice_date) AS _month,
-      _line.ex_tax_total AS _turn_over,
-      _line.product AS _line_product
+      to_char(_invoice.invoice_date, 'yyyy-MM') AS _month_no,
+      coalesce(_category.name, 'other') AS product,
+      coalesce(SUM(CASE _invoice.operation_type_select
+      WHEN 3 THEN _invoice_line.ex_tax_total
+      WHEN 4 THEN -_invoice_line.ex_tax_total
+      END), 0) AS
+      _turn_over
       FROM
       account_invoice AS _invoice
-      JOIN
-      account_invoice_line AS _line
-      ON _line.invoice=_invoice.id
-      JOIN
-      auth_user as _user
-      ON _user.id
-      = :__user__
-      AND _invoice.company = _user.active_company
+      LEFT JOIN
+      account_invoice_line AS _invoice_line ON
+      _invoice.id = _invoice_line.invoice
+      LEFT JOIN
+      base_product AS _product ON _invoice_line.product
+      = _product.id
+      LEFT JOIN
+      base_product_category AS _category ON _product.product_category =
+      _category.id
+      LEFT JOIN
+      auth_user AS _user ON _user.id = :__user__ AND _invoice.company =
+      _user.active_company
       WHERE
       _invoice.status_select = 3
-      AND
-      _invoice.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      AND
-      (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
-
+      AND _invoice.invoice_date BETWEEN
+      DATE(:fromDate) AND DATE(:toDate)
+      AND _invoice.operation_type_select IN (3,4)
       GROUP BY
-      _invoice_id,
-      _line_product, _turn_over, _month) AS _invoice
-
-      JOIN
-
-      (SELECT
-      _category.name AS _product_type,
-      _product.id AS _product_id
-      FROM
-      base_product AS _product
-      JOIN
-      base_product_category AS _category
-      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
-
-      ON
-      _invoice._line_product=_product._product_id
-      GROUP BY _month_no, _product._product_type
+      _month_no, _category.name
       ORDER BY
-      _month_no, _turn_over DESC
-
+      _month_no,
+      _turn_over DESC
 
     </dataset>
     <category key="_month_no" type="month" title="Month"/>
@@ -649,52 +627,32 @@ from InvoiceTerm as self
     name="chart.purchase.buyer.dashboard.prod.turnover.suppl.invoices.last.12m"
     title="Turnover On Supplier Invoices On Last 12 Month">
     <dataset type="sql">
+
       SELECT
-      to_char(_invoice._invoice_date,'yyyy-MM') AS _month,
-      coalesce(_product._product_type,'other') AS _product,
-      coalesce(SUM(_invoice._turn_over),00) AS
-      _turn_over
-      FROM
-      (SELECT
-      _invoice.id AS _invoice_id,
-      _invoice.invoice_date AS _invoice_date,
-      _line.company_ex_tax_total AS _turn_over,
-      _line.product AS _line_product
+      to_char(_invoice.invoice_date, 'yyyy-MM') AS _month,
+      coalesce(_category.name, 'other') AS _product,
+      coalesce(SUM(_invoice_line.company_ex_tax_total), 0) AS _turn_over
       FROM
       account_invoice AS
       _invoice
-      JOIN
-      account_invoice_line AS _line
-      ON _line.invoice=_invoice.id
+      LEFT JOIN
+      account_invoice_line AS _invoice_line ON _invoice.id = _invoice_line.invoice
+      LEFT JOIN
+      base_product AS _product ON _invoice_line.product = _product.id
+      LEFT JOIN
+      base_product_category AS _category ON _product.product_category = _category.id
+
       WHERE
       _invoice.status_select = 3
       AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month'
       AND
-      _invoice.operation_type_select=1
+      _invoice.operation_type_select = 1
+      GROUP BY _category.name,_month
+      ORDER BY _month
 
-      GROUP BY
-      _invoice_id, _line_product, _turn_over, _invoice_date
-      ORDER BY
-      _turn_over) AS _invoice
-      JOIN
-      (SELECT
-      _category.name AS _product_type, _product.id AS
-      _product_id
-      FROM
-      base_product AS _product
-      JOIN
-      base_product_category AS _category
-      ON
-      _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
-
-      ON
-      _invoice._line_product=_product._product_id
-      GROUP BY _product._product_type,_month
-      ORDER BY
-      _month
     </dataset>
     <category key="_month" type="month" title="Month"/>
-    <series key="_turn_over" groupBy="_product" type="bar" title="Units"/>
+    <series key="_turn_over" groupBy="_product" type="bar" title="Turnover"/>
     <config name="xFormat" value="MM-YYYY"/>
   </chart>
 
@@ -1445,19 +1403,25 @@ from InvoiceTerm as self
     title="Custom">
 
     <field name="amount" type="decimal" x-scale="2"/>
+    <field name="statusSelect" title="Status"
+      selection="payment.session.dashlet.status.select" widget="single-select"/>
 
     <dataset type="jpql"><![CDATA[
-	 select round(sum(self.amountPaid),2) as amount, _partner.name as supplier, _bankDetails.fullName as bankDetails
-	 from InvoiceTerm as self
-	 left join self.moveLine.partner as _partner
-	 left join self.bankDetails as _bankDetails
-	 where self.isSelectedOnPaymentSession = true and self.paymentSession.id = :_id
-	 group by _partner.id,_bankDetails.id
-	 order by _partner.name
+	   SELECT
+	     ROUND(SUM(self.amountPaid), 2) AS amount,
+	     CASE WHEN ROUND(SUM(self.amountPaid), 2) > 0 THEN 2 ELSE 1 END AS statusSelect,
+	     _partner.name AS supplier,
+	     _bankDetails.fullName AS bankDetails
+	   FROM InvoiceTerm AS self
+	   LEFT JOIN self.moveLine.partner AS _partner
+	   LEFT JOIN self.bankDetails AS _bankDetails
+	   WHERE self.isSelectedOnPaymentSession IS TRUE AND self.paymentSession.id = :_id
+	   GROUP BY _partner.id, _bankDetails.id
+	   ORDER BY _partner.name
 	 ]]></dataset>
 
     <template><![CDATA[
-	<report-table data='data' columns='supplier,bankDetails,amount' sums='amount'></report-table>
+	   <report-table data='data' columns='supplier,bankDetails,amount,statusSelect' sums='amount'/>
 	 ]]></template>
 
   </custom>

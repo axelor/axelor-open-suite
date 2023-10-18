@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid title="Permission Assistant" name="permission-assistant-grid"
+    model="com.axelor.auth.db.PermissionAssistant">
+    <field name="metaFile"/>
+    <field name="importDate"/>
+    <field name="createdBy"/>
+    <field name="updatedBy"/>
+  </grid>
+
+  <form name="permission-assistant-form" title="Permission Assistant"
+    model="com.axelor.auth.db.PermissionAssistant">
+    <panel name="mainPanel">
+      <field name="typeSelect" selection="permission.assistant.type.select"
+        onChange="action-attr-reset-all-set"/>
+      <panel-related name="roleSetPanel" field="roleSet" showIf="typeSelect == 2"
+        colSpan="12"/>
+      <panel-related name="groupSetPanel" field="groupSet" showIf="typeSelect == 1"
+        colSpan="12"/>
+      <panel-related name="objectSetPanel" field="objectSet" colSpan="12"/>
+      <field name="metaField"
+        domain="self.metaModel.name = 'User' and self.relationship != null"
+        onChange="action-permission-assistant-method-fill-objects"/>
+      <field name="fieldPermission"/>
+      <field name="metaFile" colSpan="12" widget="binary-link"/>
+      <field name="language"/>
+      <button name="createFileBtn" title="Create file" colSpan="3"
+        onClick="save,action-permission-method-create-file"/>
+      <button name="importPermissionsBtn" title="Import permissions"
+        readonlyIf="metaFile == null" colSpan="3"
+        onClick="save,action-permission-method-import-permissions,save"/>
+      <panel name="detailsPanel" title="Details" readonly="true" colSpan="12">
+        <field name="importDate" colSpan="4"/>
+        <field name="createdBy" colSpan="4"/>
+        <field name="updatedBy" colSpan="4"/>
+      </panel>
+      <field name="log" colSpan="12" readonly="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-permission-method-create-file"
+    model="com.axelor.auth.db.PermissionAssistant">
+    <call class="com.axelor.auth.web.PermissionAssistantController" method="createFile"/>
+  </action-method>
+
+  <action-method name="action-permission-method-import-permissions"
+    model="com.axelor.auth.db.PermissionAssistant">
+    <call class="com.axelor.auth.web.PermissionAssistantController" method="importPermissions"/>
+  </action-method>
+
+  <action-method name="action-permission-assistant-method-fill-objects">
+    <call class="com.axelor.auth.web.PermissionAssistantController" method="fillObjects"/>
+  </action-method>
+
+  <action-attrs name="action-attr-reset-all-set">
+    <attribute name="value" for="groupSet" expr="eval: null" if="typeSelect == 2"/>
+    <attribute name="value" for="roleSet" expr="eval: null" if="typeSelect == 1"/>
+  </action-attrs>
+
+</object-views>

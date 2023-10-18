@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <!-- INITIAL -->
+  <custom title="ProjectTask.Turnover" name="project-task-turnover-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.turnover}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Costs" name="project-task-initial-costs-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.initialCosts}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Margin" name="project-task-initial-margin-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.initialMargin}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Markup" name="project-task-initial-markup-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.initialMarkup}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <!-- REAL -->
+  <custom title="Real turnover" name="project-task-real-turnover-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.realTurnover}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Costs" name="project-task-real-costs-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.realCosts}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Margin" name="project-task-real-margin-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.realMargin}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Markup" name="project-task-real-markup-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.realMarkup}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+
+  <!-- FORECAST -->
+  <custom title="ProjectTask.Costs" name="project-task-forecast-costs-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.forecastCosts}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Margin" name="project-task-forecast-margin-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.forecastMargin}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Markup" name="project-task-forecast-markup-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.forecastMarkup}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <!-- ACTION VIEWS -->
+  <action-view name="action-project-task-view-turnover-custom"
+    title="ProjectTask.Turnover">
+    <view type="custom" name="project-task-turnover-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-initial-costs-custom"
+    title="ProjectTask.Costs">
+    <view type="custom" name="project-task-initial-costs-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-initial-margin-custom"
+    title="ProjectTask.Margin">
+    <view type="custom" name="project-task-initial-margin-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-initial-markup-custom"
+    title="ProjectTask.Markup">
+    <view type="custom" name="project-task-initial-markup-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-real-turnover-custom"
+    title="Real turnover">
+    <view type="custom" name="project-task-real-turnover-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-real-costs-custom"
+    title="ProjectTask.Costs">
+    <view type="custom" name="project-task-real-costs-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-real-margin-custom"
+    title="ProjectTask.Margin">
+    <view type="custom" name="project-task-real-margin-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-real-markup-custom"
+    title="ProjectTask.Markup">
+    <view type="custom" name="project-task-real-markup-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-forecast-costs-custom"
+    title="ProjectTask.Costs">
+    <view type="custom" name="project-task-forecast-costs-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-forecast-margin-custom"
+    title="ProjectTask.Margin">
+    <view type="custom" name="project-task-forecast-margin-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-forecast-markup-custom"
+    title="ProjectTask.Markup">
+    <view type="custom" name="project-task-forecast-markup-custom"/>
+  </action-view>
+
+
+
+</object-views>

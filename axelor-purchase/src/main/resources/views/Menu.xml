@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
-  <menuitem name="sc-root-purchase" title="Purchases" order="-105"
+  <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
     if="__config__.app.isApp('purchase')" icon="fa-shopping-cart" icon-background="#b6473f"/>
 
-  <menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="5"
+  <menuitem name="sc-root-purchase-suppliers" parent="sc-root-purchase" order="100"
     title="Suppliers" action="sc.root.purchase.suppliers"/>
 
   <action-view name="sc.root.purchase.suppliers" title="Suppliers"
@@ -23,7 +23,7 @@
     <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
-  <menuitem name="sc-root-purchase-contacts" parent="sc-root-purchase" order="10"
+  <menuitem name="sc-root-purchase-contacts" parent="sc-root-purchase" order="200"
     title="Contacts" action="sc.root.purchase.contacts"/>
 
   <action-view name="sc.root.purchase.contacts" title="Contacts"
@@ -38,7 +38,7 @@
       expr="self.isContact = true AND self.mainPartner.isSupplier = true"/>
   </action-view>
 
-  <menuitem name="sc-root-purchase-products" parent="sc-root-purchase" order="15"
+  <menuitem name="sc-root-purchase-products" parent="sc-root-purchase" order="300"
     title="Products &amp; services" action="sc.root.purchase.products"/>
 
   <action-view name="sc.root.purchase.products" title="Products &amp; services"
@@ -48,13 +48,12 @@
     <view type="form" name="product-form"/>
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = false AND self.purchasable = true AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_fromPurchase" expr="eval:true"/>
   </action-view>
 
   <!-- Purchase request menus -->
   <menuitem name="sc-root-purchase-request" parent="sc-root-purchase"
-    if="__config__.app.isApp('purchase-request')" title="Internal purchase requests" order="16"
+    if="__config__.app.isApp('purchase-request')" title="Internal purchase requests" order="400"
     icon="fa-bullhorn" icon-background="#b6473f" action="sc.root.purchase.request.all"/>
 
   <action-view name="sc.root.purchase.request.all"
@@ -66,7 +65,7 @@
 
   <!-- Purchase request menus end -->
 
-  <menuitem name="sc-root-purchase-quotations" title="Purchase quotations" order="20"
+  <menuitem name="sc-root-purchase-quotations" title="Purchase quotations" order="500"
     action="sc.root.purchase.quotations" parent="sc-root-purchase"/>
 
   <action-view name="sc.root.purchase.quotations" title="Purchase quotations"
@@ -80,7 +79,7 @@
     <context name="_status" expr="eval: [1,2]"/>
   </action-view>
 
-  <menuitem name="sc-root-purchase-orders" title="Purchase orders" order="25"
+  <menuitem name="sc-root-purchase-orders" title="Purchase orders" order="600"
     action="sc.root.purchase.orders" parent="sc-root-purchase"/>
 
   <action-view name="sc.root.purchase.orders" title="Purchase orders"
@@ -94,7 +93,7 @@
     <context name="_status" expr="eval: 3"/>
   </action-view>
 
-  <menuitem name="purchase-root-abc-analysis" title="ABC analysis" order="27"
+  <menuitem name="purchase-root-abc-analysis" title="ABC analysis" order="900"
     action="purchase.root.abc.analysis" parent="sc-root-purchase"/>
 
   <action-view name="purchase.root.abc.analysis" title="ABC analysis"
@@ -106,36 +105,37 @@
       expr="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl"/>
   </action-view>
 
-  <menuitem name="sc-root-purchase-historical" title="Historical" order="30"
+  <menuitem name="sc-root-purchase-historical" title="Historical" order="1100"
     parent="sc-root-purchase" action="purchase.historical.orders"/>
 
   <action-view name="purchase.historical.orders" title="Historical"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <view type="cards" name="purchase-order-cards"/>
+
     <view type="grid" name="purchase-order-grid"/>
+    <view type="cards" name="purchase-order-cards"/>
     <view type="form" name="purchase-order-form"/>
     <view-param name="search-filters" value="purchase-order-filters"/>
     <context name="_internalUser" expr="eval: __user__.id"/>
   </action-view>
 
   <menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"
-    order="200" icon="fa-bar-chart"/>
+    order="1300" icon="fa-bar-chart"/>
 
   <menuitem name="purchase-report-maps" parent="sc-root-purchase-report" title="Maps"
-    order="10"/>
+    order="300"/>
 
   <menuitem name="purchase-maps-partner-suppliers" parent="purchase-report-maps"
-    title="Suppliers" action="action-purchase-method-show-suppliers-on-map-page"/>
+    title="Suppliers" action="action-purchase-method-show-suppliers-on-map-page" order="100"/>
 
   <action-method name="action-purchase-method-show-suppliers-on-map-page">
     <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
   </action-method>
 
   <menuitem name="sc-root-purchase-conf" parent="sc-root-purchase" title="Configuration"
-    order="300" icon="fa-cog"/>
+    order="1400" icon="fa-cog"/>
 
   <menuitem name="sc-root-purchase-conf-partner-price-list" parent="sc-root-purchase-conf"
-    title="Partner price lists" action="sc.root.purchase.conf.partner.price.list"/>
+    title="Partner price lists" action="sc.root.purchase.conf.partner.price.list" order="100"/>
 
   <action-view name="sc.root.purchase.conf.partner.price.list"
     title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
@@ -145,7 +145,7 @@
   </action-view>
 
   <menuitem name="sc-root-purchase-conf-price-list" parent="sc-root-purchase-conf"
-    title="Price lists" action="sc.root.purchase.conf.price.list"/>
+    title="Price lists" action="sc.root.purchase.conf.price.list" order="200"/>
 
   <action-view name="sc.root.purchase.conf.price.list" title="Price lists"
     model="com.axelor.apps.base.db.PriceList">
@@ -194,7 +194,7 @@
 
 
   <menuitem name="menu-purchase-dashboard-1" parent="sc-root-purchase-report"
-    title="Purchase Buyer" action="purchase.dashboard.1"/>
+    title="Purchase Buyer" action="purchase.dashboard.1" order="100"/>
 
   <action-view name="purchase.dashboard.1" title="Purchase Buyer">
     <view type="dashboard" name="purchase.dashboard.1"/>
@@ -202,7 +202,7 @@
   </action-view>
 
   <menuitem name="menu-purchase-dashboard-2" parent="sc-root-purchase-report"
-    title="Purchase Manager" action="purchase.dashboard.2"/>
+    title="Purchase Manager" action="purchase.dashboard.2" order="200"/>
 
   <action-view name="purchase.dashboard.2" title="Purchase Manager">
     <view type="dashboard" name="purchase.dashboard.2"/>

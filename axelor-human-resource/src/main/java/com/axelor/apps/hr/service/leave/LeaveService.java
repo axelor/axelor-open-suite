@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,25 +14,23 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.message.db.Message;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.message.db.Message;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public interface LeaveService {
@@ -45,16 +44,12 @@ public interface LeaveService {
       LeaveRequest leave, LocalDateTime from, LocalDateTime to, int startOn, int endOn)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void manageSentLeaves(LeaveRequest leave) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void manageValidateLeaves(LeaveRequest leave) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void manageRefuseLeaves(LeaveRequest leave) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void manageCancelLeaves(LeaveRequest leave) throws AxelorException;
 
   public double computeStartDateWithSelect(
@@ -62,46 +57,35 @@ public interface LeaveService {
 
   public double computeEndDateWithSelect(LocalDate date, int select, WeeklyPlanning weeklyPlanning);
 
-  @Transactional(rollbackOn = {Exception.class})
   public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException;
 
   public BigDecimal computeLeaveDaysByLeaveRequest(
       LocalDate fromDate, LocalDate toDate, LeaveRequest leaveRequest, Employee employee)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendValidationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void refuse(LeaveRequest leaveRequest) throws AxelorException;
 
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
-      throws AxelorException;
+  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason);
 
   /**
    * Checks if the given day is a leave day.

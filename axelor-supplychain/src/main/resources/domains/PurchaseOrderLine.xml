@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrderLine" lang="java">
+  <entity name="PurchaseOrderLine">
 
     <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
 
@@ -17,11 +17,6 @@
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
     <boolean name="invoiced" readonly="true"/>
-    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
-    <one-to-many name="budgetDistributionList"
-      ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution"
-      mappedBy="purchaseOrderLine"/>
-    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
 
     <integer name="receiptState" title="Receipt state"
       selection="purchase.order.receipt.state" readonly="true" default="0"/>

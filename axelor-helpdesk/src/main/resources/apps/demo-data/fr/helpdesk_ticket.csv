@@ -1,0 +1,7 @@
+"importId";"subject";"ticketType.name";"startDateT";"endDateT";"assignedToUser.name";"prioritySelect";"statusSelect";"progressSelect"
+"1";"Où télécharger les sources de l'ERP ?";"Support technique";"26/02/18 18:30";"26/02/18 20:30";"Kevin DEMOERP";1;2;100
+"2";"Comment accéder à la doc technique ? ";"Support technique";"27/02/18 13:30";"27/02/18 16:30";"Kevin DEMOERP";1;2;100
+"3";"Impossible de se connecter avec l’utilisateur Admin";"Support technique";"27/02/18 14:30";"28/02/18 14:00";"Cyril MARCHAL";3;2;100
+"4";"Comment joindre un fichier ?";"Support fonctionnel";"27/02/18 18:30";;"Charles DEMOCRM";2;1;10
+"5";"Comment effectuer une recherche avancée ? ";"Support fonctionnel";"28/02/18 13:30";;"Charles DEMOCRM";3;0;
+"6";"Comment effectuer une mise à jour en masse d'enregistrements ?";"Support fonctionnel";"28/02/18 14:00";;"Kevin DEMOERP";4;0;

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,17 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
-import com.axelor.apps.message.exception.MessageExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -45,11 +48,9 @@ import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -73,6 +74,7 @@ public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
   private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
+  private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -135,7 +137,7 @@ public class SaleOrderController {
                               I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else {
-          response.setFlash(
+          response.setInfo(
               I18n.get(SupplychainExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
@@ -191,7 +193,7 @@ public class SaleOrderController {
           }
 
           if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-            response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+            response.setInfo(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
                 ActionView.define(I18n.get("SaleOrder"))
@@ -313,6 +315,7 @@ public class SaleOrderController {
 
       SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
 
+      Map<Long, BigDecimal> qtyMap = new HashMap<>();
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
       Map<Long, BigDecimal> priceMap = new HashMap<>();
 
@@ -328,6 +331,8 @@ public class SaleOrderController {
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
             BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
             priceMap.put(soLineId, priceItem);
+            BigDecimal qtyItem = new BigDecimal(map.get(SO_LINES_WIZARD_QTY_FIELD).toString());
+            qtyMap.put(soLineId, qtyItem);
           }
         }
       }
@@ -335,7 +340,13 @@ public class SaleOrderController {
       // Re-compute amount to invoice if invoicing partially
       amountToInvoice =
           saleOrderInvoiceService.computeAmountToInvoice(
-              amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap);
+              amountToInvoice,
+              operationSelect,
+              saleOrder,
+              qtyToInvoiceMap,
+              priceMap,
+              qtyMap,
+              isPercent);
 
       saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
           saleOrder, amountToInvoice, isPercent);
@@ -427,11 +438,11 @@ public class SaleOrderController {
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
     response.setAttr(
-        "operationSelect",
+        "$operationSelect",
         "value",
         operationSelectValues.stream().min(Integer::compareTo).orElse(null));
 
-    response.setAttr("operationSelect", "selection-in", operationSelectValues);
+    response.setAttr("$operationSelect", "selection-in", operationSelectValues);
   }
 
   /**
@@ -493,7 +504,7 @@ public class SaleOrderController {
         saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
         saleOrderLineList.add(saleOrderLineMap);
       }
-      response.setValue("amountToInvoice", BigDecimal.ZERO);
+      response.setValue("$amountToInvoice", BigDecimal.ZERO);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -509,8 +520,21 @@ public class SaleOrderController {
         Integer deliveryState = saleOrderLine.getDeliveryState();
         if (!deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
             && !deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)) {
-          saleOrderLine.setEstimatedDelivDate(saleOrder.getDeliveryDate());
+          saleOrderLine.setEstimatedShippingDate(saleOrder.getEstimatedShippingDate());
         }
+      }
+    }
+
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void fillSaleOrderLinesDeliveryDate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        saleOrderLine.setEstimatedDeliveryDate(saleOrder.getEstimatedDeliveryDate());
       }
     }
 
@@ -523,11 +547,9 @@ public class SaleOrderController {
     StockMove stockMove =
         stockMoveRepo
             .all()
-            .filter(
-                "self.originTypeSelect = ?1 AND self.originId = ?2 AND self.statusSelect = ?3",
-                "com.axelor.apps.sale.db.SaleOrder",
-                saleOrder.getId(),
-                StockMoveRepository.STATUS_PLANNED)
+            .filter("self.saleOrder.id = :saleOrderId AND self.statusSelect = :statusSelect")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
     if (stockMove != null) {
       response.setNotify(
@@ -683,7 +705,7 @@ public class SaleOrderController {
       String message =
           Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
       if (message != null) {
-        response.setFlash(message);
+        response.setInfo(message);
       }
       response.setValues(saleOrder);
     } catch (Exception e) {

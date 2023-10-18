@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
@@ -40,17 +41,20 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -60,7 +64,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -80,6 +83,9 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AppAccountService appAccountService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected DateService dateService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -93,7 +99,10 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       ReconcileService reconcileService,
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoicePaymentToolService invoicePaymentToolService,
+      DateService dateService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoiceTermService invoiceTermService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -106,6 +115,9 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.appAccountService = appAccountService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.dateService = dateService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   /**
@@ -203,7 +215,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               "%s-%s-%s",
               invoicePayment.getPaymentMode().getName(),
               invoice.getPartner().getName(),
-              invoice.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+              invoice.getDueDate().format(dateService.getDateFormat()));
     }
 
     Account customerAccount;
@@ -246,6 +258,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             getOriginFromInvoicePayment(invoicePayment),
             description,
             invoice.getCompanyBankDetails());
+    move.setPaymentCondition(null);
 
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
@@ -351,7 +364,24 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     if (maxAmount != null) {
       companyPaymentAmount = companyPaymentAmount.min(maxAmount);
     }
+
     BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
+    companyPaymentAmount =
+        companyPaymentAmount.subtract(
+            invoicePayment.getFinancialDiscountAmount().multiply(currencyRate));
+
+    companyPaymentAmount =
+        invoiceTermService.adjustAmountInCompanyCurrency(
+            invoice.getInvoiceTermList(),
+            invoice.getCompanyInTaxTotalRemaining(),
+            companyPaymentAmount,
+            paymentAmount,
+            invoice.getMove() != null
+                ? invoice.getMove().getMoveLineList().stream()
+                    .map(MoveLine::getCurrencyRate)
+                    .findAny()
+                    .orElse(BigDecimal.ONE)
+                : BigDecimal.ONE);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -431,10 +461,20 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && financialDiscountVat
         && financialDiscountMoveLine != null
         && BigDecimal.ZERO.compareTo(invoicePayment.getFinancialDiscountTaxAmount()) != 0) {
-      int vatSytem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
+
+      if (financialDiscountMoveLine.getAccount().getVatSystemSelect() == null
+          || financialDiscountMoveLine.getAccount().getVatSystemSelect() == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+            financialDiscountMoveLine.getAccount().getCode());
+      }
+
+      int vatSystem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
+
       Account financialDiscountVATAccount =
           this.getFinancialDiscountVATAccount(
-              invoice, company, move.getJournal(), vatSytem, move.getFunctionalOriginSelect());
+              invoice, company, move.getJournal(), vatSystem, move.getFunctionalOriginSelect());
 
       if (financialDiscountVATAccount != null) {
         MoveLine financialDiscountVatMoveLine =
@@ -452,10 +492,15 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
         financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
         financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
-        financialDiscountVatMoveLine.setVatSystemSelect(vatSytem);
+        financialDiscountVatMoveLine.setVatSystemSelect(vatSystem);
         move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, paymentDate, false);
+    }
+
     return move;
   }
 

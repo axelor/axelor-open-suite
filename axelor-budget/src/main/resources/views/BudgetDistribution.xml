@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="budget-distribution-grid" title="Budget distributions"
+    model="com.axelor.apps.budget.db.BudgetDistribution">
+    <field name="budget" title="Budget line" domain="self.statusSelect = 2"
+      onSelect="action-method-budget-distribution-set-domain-budget"/>
+    <field name="budgetAmountAvailable" readonly="true"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid name="budget-distribution-line-grid" title="Distribution lines"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large" canNew="false"
+    canEdit="false" canArchive="false" canDelete="false" groupBy="budget">
+    <field name="budget"/>
+    <field name="invoiceLine"/>
+    <field name="purchaseOrderLine"/>
+    <field name="saleOrderLine"/>
+    <field name="moveLine"/>
+    <field name="budgetAmountAvailable"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid title="Budget distributions" name="reduce-budget-distribution-grid"
+    model="com.axelor.apps.budget.db.BudgetDistribution"
+    onNew="action-group-on-new-parent-budget-distribution" edit-icon="true">
+    <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
+      onChange="action-method-budget-budget-distribution-set-amount-available"/>
+    <field name="budgetAmountAvailable" readonly="true"/>
+    <field name="amount" validIf="amount &gt; 0"
+      onChange="action-method-budget-budget-distribution-set-amount-available"/>
+  </grid>
+
+  <grid name="invoice-budget-distribution-grid" title="Budget distributions"
+    model="com.axelor.apps.budget.db.BudgetDistribution"
+    onNew="action-method-onnew-budget-distribution-invoice">
+    <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
+      onChange="action-method-budget-budget-distribution-set-amount-available"/>
+    <field name="invoiceLine.product"/>
+    <field name="budgetAmountAvailable" readonly="true"/>
+    <field name="amount"
+      onChange="action-method-budget-budget-distribution-set-amount-available"/>
+  </grid>
+
+  <grid name="purchase-order-budget-distribution-grid" title="Budget distributions"
+    groupBy="budget" model="com.axelor.apps.budget.db.BudgetDistribution"
+    onNew="action-method-onnew-budget-distribution-purchase-order">
+    <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
+      onChange="action-method-budget-budget-distribution-set-amount-available"/>
+    <field name="purchaseOrderLine.product"/>
+    <field name="budgetAmountAvailable" readonly="true" title="Budget amount available"
+      if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+    <field name="amount"
+      onChange="action-method-budget-budget-distribution-set-amount-available" aggregate="sum"/>
+  </grid>
+
+  <grid name="purchase-order-budget-distribution-complete-grid" title="Budget distributions"
+    model="com.axelor.apps.budget.db.BudgetDistribution">
+    <field name="budget"/>
+    <field name="purchaseOrderLine.product"/>
+    <field name="purchaseOrderLine.purchaseOrder"/>
+    <field name="purchaseOrderLine.purchaseOrder.validationDateTime"/>
+    <field name="budgetAmountAvailable"
+      if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+    <field name="amount"/>
+  </grid>
+
+  <grid name="budget-budget-distribution-purchase-order-line-global-dashlet-grid"
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget"
+    canNew="false" canDelete="false" canEdit="false" canArchive="false">
+    <field name="budget" title="Budget"/>
+    <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
+    <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
+    <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
+    <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+    <field name="purchaseOrderLine.productName"/>
+    <field name="purchaseOrderLine.exTaxTotal"/>
+    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
+    <field name="budget.budgetLevel" title="Section line"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid name="budget-budget-distribution-sale-order-line-global-dashlet-grid"
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget">
+    <field name="budget" title="Budget"/>
+    <field name="saleOrderLine.saleOrder" title="Ref."/>
+    <field name="saleOrderLine.saleOrder.statusSelect"/>
+    <field name="saleOrderLine.saleOrder.orderDate"/>
+    <field name="saleOrderLine.productName"/>
+    <field name="saleOrderLine.exTaxTotal"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid name="budget-budget-distribution-purchase-order-line-group-dashlet-grid"
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget"
+    canNew="false" canDelete="false" canEdit="false" canArchive="false">
+    <field name="budget" title="Budget"/>
+    <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
+    <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
+    <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
+    <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+    <field name="purchaseOrderLine.productName"/>
+    <field name="purchaseOrderLine.exTaxTotal"/>
+    <field name="budget.budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"/>
+    <field name="budget.budgetLevel" title="Section line"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid name="budget-budget-distribution-purchase-order-line-section-dashlet-grid"
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget"
+    canNew="false" canDelete="false" canEdit="false" canArchive="false">
+    <field name="budget" title="Budget"/>
+    <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
+    <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
+    <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
+    <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+    <field name="purchaseOrderLine.productName"/>
+    <field name="purchaseOrderLine.exTaxTotal"/>
+    <field name="budget.budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"/>
+    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid name="move-line-budget-distribution-grid" title="Budget distributions"
+    model="com.axelor.apps.budget.db.BudgetDistribution">
+    <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
+      onChange="action-method-budget-budget-distribution-set-amount-available"/>
+    <field name="budgetAmountAvailable" readonly="true"/>
+    <field name="amount" validIf="amount &gt; 0"/>
+  </grid>
+
+  <grid name="budget-distribution-simulated-moves" title="Distribution lines"
+    model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget" canNew="false"
+    canArchive="false" canDelete="false" canEdit="false">
+    <field name="budget"/>
+    <field name="moveLine"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid name="budget-distribution-realized-with-po-line-grid" title="Distribution lines"
+    model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget" canNew="false"
+    canArchive="false" canDelete="false" canEdit="false">
+    <field name="budget"/>
+    <field name="invoiceLine"/>
+    <field name="invoiceLine.invoice.purchaseOrder"/>
+    <field name="invoiceLine.invoice.saleOrder"/>
+    <field name="amount" aggregate="sum"/>
+    <field name="invoiceLine.invoice" hidden="true"/>
+  </grid>
+
+  <grid name="budget-distribution-realized-without-po-line-grid" title="Distribution lines"
+    model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget" canNew="false"
+    canArchive="false" canDelete="false" canEdit="false">
+    <field name="budget"/>
+    <field name="invoiceLine"/>
+    <field name="moveLine"/>
+    <field name="amount" aggregate="sum"/>
+  </grid>
+
+  <grid name="budget-distribution-grid-purchase-order-line-grid" title="Committed lines"
+    model="com.axelor.apps.budget.db.BudgetDistribution" canNew="false" canDelete="false"
+    canEdit="false" canArchive="false">
+    <field name="budget" title="Budget"/>
+    <field name="purchaseOrderLine.purchaseOrder"/>
+    <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+    <field name="purchaseOrderLine.product"/>
+    <field name="amount"/>
+    <field name="budget.budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"/>
+    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
+    <field name="budget.budgetLevel" title="Section line"/>
+  </grid>
+
+  <grid name="budget-distribution-grid-invoice-line-grid" title="Realized lines"
+    model="com.axelor.apps.budget.db.BudgetDistribution">
+    <field name="invoiceLine.invoice"/>
+    <field name="invoiceLine.invoice.invoiceDate"/>
+    <field name="invoiceLine.product" domain="self.dtype = 'Product'"/>
+    <field name="amount"/>
+  </grid>
+
+
+  <form name="purchase-order-budget-distribution-form" title="Budget distribution"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
+    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    <panel name="mainPanel">
+      <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
+        onChange="action-method-budget-budget-distribution-set-amount-available"/>
+      <field name="purchaseOrderLine.product" readonly="true"/>
+      <field name="budgetAmountAvailable" readonly="true"
+        if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      <field name="amount" validIf="amount &gt; 0"/>
+      <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
+      <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="purchase-order-budget-distribution-complete-form" title="Budget distribution"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
+    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    <panel name="mainPanel">
+      <field name="budget" readonly="true"/>
+      <field name="purchaseOrderLine.product" readonly="true"/>
+      <field name="purchaseOrderLine.purchaseOrder" readonly="true"/>
+      <field name="purchaseOrderLine.purchaseOrder.validationDateTime" readonly="true"/>
+      <field name="budgetAmountAvailable" readonly="true"
+        if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      <field name="amount" readonly="true"/>
+      <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
+      <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="budget-distribution-form" title="Budget distribution"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
+    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    <panel name="mainPanel">
+      <field name="budget" required="true" domain="self.statusSelect = 2"/>
+      <field name="budgetAmountAvailable" readonly="true"
+        hideIf="purchaseOrderLine.purchaseOrder.statusSelect &gt; 2 || invoiceLine.invoice.statusSelect &gt; 2"/>
+      <field name="amount"/>
+      <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
+      <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="invoice-budget-distribution-form" title="Budget distribution"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
+    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    <panel name="mainPanel">
+      <field name="budget" readonly="true"/>
+      <field name="invoiceLine.product" readonly="true" domain="self.dtype = 'Product'"/>
+      <field name="budgetAmountAvailable" readonly="true"/>
+      <field name="amount" readonly="true"/>
+      <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
+      <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="budget-distribution-grid-invoice-line-form" title="Realized line"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large">
+    <panel name="mainPanel" readonly="true">
+      <field name="invoiceLine.invoice"/>
+      <field name="invoiceLine.invoice.invoiceDate"/>
+      <field name="invoiceLine.product" domain="self.dtype = 'Product'"/>
+      <field name="amount"/>
+    </panel>
+  </form>
+
+  <form name="budget-budget-distribution-purchase-order-line-dashlet-form"
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
+    onLoad="action-purchase-order-line-attrs-dashlet-onload" canNew="false" canDelete="false"
+    canEdit="false">
+    <panel name="mainPanel" readonly="true">
+      <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
+      <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
+      <field name="budget.budgetLevel.parentBudgetLevel.parentBudgetLevel"
+        title="Global budget" showIf="$fromGroup"/>
+      <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"
+        showIf="$fromSection"/>
+      <field name="budget.budgetLevel" title="Section line" showIf="$fromBudget"/>
+      <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
+      <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+      <field name="purchaseOrderLine.productName"/>
+      <field name="purchaseOrderLine.exTaxTotal"/>
+      <field name="$fromGroup" hidden="true"/>
+      <field name="$fromSection" hidden="true"/>
+      <field name="$fromBudget" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="budget-distribution-line-form" title="Distribution lines" canNew="false"
+    canDelete="false" canEdit="false" canArchive="false"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large" readonlyIf="true">
+    <panel name="mainPanel">
+      <field name="invoiceLine"/>
+      <field name="invoiceLine.invoice.purchaseOrder" colSpan="3" showIf="invoiceLine"/>
+      <field name="invoiceLine.invoice.saleOrder" colSpan="3" showIf="invoiceLine"/>
+      <field name="purchaseOrderLine"/>
+      <field name="saleOrderLine"/>
+      <field name="moveLine"/>
+      <field name="budget"/>
+      <field name="budgetAmountAvailable" readonly="true"/>
+      <field name="amount"/>
+      <field name="invoiceLine.invoice" hidden="true"/>
+    </panel>
+  </form>
+
+
+  <form name="budget-distribution-grid-purchase-order-line-form" title="Committed line"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large">
+    <panel name="mainPanel" readonly="true">
+      <field name="purchaseOrderLine.purchaseOrder"/>
+      <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+      <field name="purchaseOrderLine.product" domain="self.dtype = 'Product'"/>
+      <field name="amount"/>
+    </panel>
+  </form>
+
+  <form name="move-line-budget-distribution-form" title="Budget distributions"
+    model="com.axelor.apps.budget.db.BudgetDistribution" canNew="false">
+    <panel name="mainPanel">
+      <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
+        onChange="action-method-budget-budget-distribution-set-amount-available"/>
+      <field name="budgetAmountAvailable" readonly="true"/>
+      <field name="amount" validIf="amount &gt; 0"/>
+    </panel>
+  </form>
+
+  <form name="sale-order-budget-distribution-form" title="Budget distribution"
+    model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
+    onNew="action-method-onnew-budget-distribution-sale-order"
+    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    <panel name="mainPanel">
+      <field name="budget" readonly="false"
+        onChange="action-method-budget-budget-distribution-set-amount-available"
+        onSelect="action-method-budget-distribution-set-domain-budget"/>
+      <field name="saleOrderLine.product" readonly="true"/>
+      <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+        name="budgetAmountAvailable" readonly="true"/>
+      <field name="amount" readonly="false"/>
+      <field name="saleOrderLine.saleOrder.statusSelect" hidden="true"/>
+      <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-group name="action-group-on-new-parent-budget-distribution">
+    <action name="action-method-onnew-budget-distribution-purchase-order"
+      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine'"/>
+    <action name="action-method-onnew-budget-distribution-sale-order"
+      if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
+    <action name="action-method-onnew-budget-distribution-invoice"
+      if="__parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
+  </action-group>
+
+  <action-attrs name="action-budget-distribution-attrs-budget-amount-available">
+    <attribute name="title" for="budgetAmountAvailable"
+      expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')"
+      if="__parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
+    <attribute name="title" for="budgetDistributionList.budgetAmountAvailable"
+      expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')"
+      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+    <attribute name="hidden" for="budgetDistributionList.budgetAmountAvailable"
+      expr="eval:__parent__?.statusSelect &gt; 2"
+      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+
+    <attribute name="value" for="$currencySymbol"
+      expr="eval:__parent__?.company?.currency?.symbol"
+      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+  </action-attrs>
+
+  <action-method name="action-method-budget-budget-distribution-set-amount-available">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController"
+      method="setAmountAvailableOnBudget"/>
+  </action-method>
+
+  <action-method name="action-method-budget-distribution-set-domain-budget">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController"
+      method="setBudgetDomain"/>
+  </action-method>
+
+  <action-method name="action-method-onnew-budget-distribution-purchase-order">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController"
+      method="purchaseOrderOnNew"/>
+  </action-method>
+
+  <action-method name="action-method-onnew-budget-distribution-sale-order">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController"
+      method="saleOrderOnNew"/>
+  </action-method>
+
+  <action-method name="action-method-onnew-budget-distribution-invoice">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController" method="invoiceOnNew"/>
+  </action-method>
+
+  <action-attrs name="action-purchase-order-line-attrs-dashlet-onload">
+    <attribute name="value" for="$fromGroup" expr="eval:_fromGroup"/>
+    <attribute name="value" for="$fromSection" expr="eval:_fromSection"/>
+    <attribute name="value" for="$fromBudget" expr="eval:_fromBudget"/>
+  </action-attrs>
+
+</object-views>

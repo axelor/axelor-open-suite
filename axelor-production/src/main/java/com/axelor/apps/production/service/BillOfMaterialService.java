@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
-import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,10 +38,8 @@ public interface BillOfMaterialService {
 
   public List<BillOfMaterial> getBillOfMaterialSet(Product product);
 
-  @Transactional(rollbackOn = {Exception.class})
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
@@ -52,16 +50,12 @@ public interface BillOfMaterialService {
       BillOfMaterial billOfMaterial, String name, String language, String format)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom);
 
-  @Transactional
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException;
 
@@ -78,6 +72,18 @@ public interface BillOfMaterialService {
       throws AxelorException;
 
   /**
+   * This method will return a BOM fetched by priority that goes like this 1) search for company
+   * specific default BOM in the the original product 2) Any BOM with original product and company.
+   * 3) Default bom of the original product regardless of the company
+   *
+   * @param originalProduct
+   * @param company
+   * @return Bom found
+   * @throws AxelorException
+   */
+  public BillOfMaterial getBOM(Product originalProduct, Company company) throws AxelorException;
+
+  /**
    * Returns all the products from boms
    *
    * @param companySet
@@ -85,4 +91,12 @@ public interface BillOfMaterialService {
    * @throws AxelorException
    */
   List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException;
+
+  BillOfMaterial setDraftStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setValidateStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setApplicableStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setObsoleteStatus(BillOfMaterial billOfMaterial) throws AxelorException;
 }

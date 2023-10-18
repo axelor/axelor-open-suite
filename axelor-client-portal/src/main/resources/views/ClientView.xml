@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form name="wizard-client-form" title="My space" model="com.axelor.apps.base.db.Wizard"
+  <form name="wizard-client-form" title="My space" model="com.axelor.utils.db.Wizard"
     onNew="action-group-client-view-onnew" width="large" editable="false" canDelete="false"
     canEdit="false" canNew="false" canSave="false" canCopy="false" canArchive="false"
     canAttach="false">
@@ -42,7 +42,7 @@
           <button name="$tasksDue" title="Tasks due" width="190px" widget="info-button"
             onClick="action-method-show-client-view-tasks-due"/>
         </panel>
-        <panel name="saleOrderPanel" title="Order" if-module="axelor-sale" itemSpan="12"
+        <panel name="saleOrderPanel" title="Sale order" if-module="axelor-sale" itemSpan="12"
           hidden="true">
           <button name="$myQuotation" title="My quotations" width="190px"
             widget="info-button" onClick="action-method-show-client-view-my-quotation"/>
@@ -136,7 +136,7 @@
     model="com.axelor.apps.helpdesk.db.Ticket">
     <view type="grid" name="ticket-grid"/>
     <view type="form" name="ticket-form"/>
-    <domain>self.customer = :_myPartner or self.assignedToUser =:_user</domain>
+    <domain>self.customerPartner = :_myPartner or self.assignedToUser =:_user</domain>
     <context name="_myPartner" expr="eval:__user__.partner"/>
     <context name="_user" expr="eval:__user__"/>
   </action-view>
@@ -175,122 +175,122 @@
   </action-view>
 
   <action-method name="action-method-complete-client-view-indicators"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="completeClientViewIndicators"/>
   </action-method>
 
   <!-- Project OnClick -->
   <action-method name="action-method-show-client-view-total-projects"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyTotalProjects"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-tasks-in-completed"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyTasksInCompleted"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-tasks-due"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyTasksDue"/>
   </action-method>
 
   <!-- SaleOrder OnClick -->
   <action-method name="action-method-show-client-view-orders-in-progress"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyOrdersInProgress"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-my-quotation"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyQuotation"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-last-order"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyLastOrder"/>
   </action-method>
 
   <!-- StockMove OnClick -->
   <action-method name="action-method-show-client-view-last-delivery"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyLastDelivery"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-next-delivery"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyNextDelivery"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-planned-deliveries"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyPlannedDeliveries"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-reversions"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController" method="showClientReversions"/>
   </action-method>
 
   <!-- Invoice OnClick -->
   <action-method name="action-method-show-client-view-overdue-invoices"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyOverdueInvoices"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-awaiting-invoices"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyAwaitingInvoices"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-total-remaining"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyTotalRemaining"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-refund"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyRefund"/>
   </action-method>
 
   <!-- Ticket OnClick -->
   <action-method name="action-method-show-client-view-customer-tickets"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyCustomerTickets"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-company-tickets"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyCompanyTickets"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-resolved-tickets"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyResolvedTickets"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-late-tickets"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
       method="showClientMyLateTickets"/>
   </action-method>
 
-  <action-view name="wizard-client-view" model="com.axelor.apps.base.db.Wizard"
+  <action-view name="wizard-client-view" model="com.axelor.utils.db.Wizard"
     title="My space">
     <view name="wizard-client-form" type="form"/>
   </action-view>

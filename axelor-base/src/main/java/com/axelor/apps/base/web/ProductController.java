@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,26 +14,27 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JpaSecurity;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -61,7 +63,7 @@ public class ProductController {
     if (product.getProductVariantConfig() != null) {
       Beans.get(ProductService.class).generateProductVariants(product);
 
-      response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_1));
+      response.setInfo(I18n.get(BaseExceptionMessage.PRODUCT_1));
       response.setReload(true);
     }
   }
@@ -101,7 +103,7 @@ public class ProductController {
 
     Beans.get(ProductService.class).updateProductPrice(product);
 
-    response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_2));
+    response.setInfo(I18n.get(BaseExceptionMessage.PRODUCT_2));
     response.setReload(true);
   }
 
@@ -193,5 +195,21 @@ public class ProductController {
       }
     }
     return displayedProductIdList;
+  }
+
+  public void updateCostPrice(ActionRequest request, ActionResponse response) {
+    try {
+
+      Product product = request.getContext().asType(Product.class);
+      // Set anomaly when a product exists in list Price
+      if (product.getId() != null) {
+        Beans.get(ProductUpdateService.class).updateCostPriceFromView(product);
+        response.setValue("costPrice", product.getCostPrice());
+        response.setValue("productCompanyList", product.getProductCompanyList());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.module;
 
@@ -22,9 +23,11 @@ import com.axelor.apps.account.db.repo.PartnerAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveValidateServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
+import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
@@ -46,6 +49,10 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.service.EmployeeComputeStatusService;
+import com.axelor.apps.hr.service.EmployeeComputeStatusServiceImpl;
+import com.axelor.apps.hr.service.HRDashboardService;
+import com.axelor.apps.hr.service.HRDashboardServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -61,10 +68,33 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeService;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
+import com.axelor.apps.hr.service.expense.ExpenseAnalyticServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseCancellationService;
+import com.axelor.apps.hr.service.expense.ExpenseCancellationServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseComputationService;
+import com.axelor.apps.hr.service.expense.ExpenseComputationServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
+import com.axelor.apps.hr.service.expense.ExpenseConfirmationServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodServiceImpl;
-import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
+import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
+import com.axelor.apps.hr.service.expense.ExpenseKilometricServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseLineServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpensePaymentService;
+import com.axelor.apps.hr.service.expense.ExpensePaymentServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
+import com.axelor.apps.hr.service.expense.ExpenseRefusalServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.apps.hr.service.expense.ExpenseToolServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseValidateService;
+import com.axelor.apps.hr.service.expense.ExpenseValidateServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
+import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -75,10 +105,15 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtServiceImpl;
+import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
+import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetReportService;
@@ -111,7 +146,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(AccountConfigService.class).to(AccountConfigHRService.class);
     bind(ExtraHoursService.class).to(ExtraHoursServiceImpl.class);
     bind(LeaveService.class).to(LeaveServiceImpl.class);
-    bind(ExpenseService.class).to(ExpenseServiceImpl.class);
     bind(LunchVoucherMgtService.class).to(LunchVoucherMgtServiceImpl.class);
     bind(LunchVoucherMgtLineService.class).to(LunchVoucherMgtLineServiceImpl.class);
     bind(AppHumanResourceService.class).to(AppHumanResourceServiceImpl.class);
@@ -139,5 +173,24 @@ public class HumanResourceModule extends AxelorModule {
     bind(AnalyticMoveLineGenerateRealServiceImpl.class)
         .to(AnalyticMoveLineGenerateRealServiceHrImpl.class);
     bind(ExpenseFetchPeriodService.class).to(ExpenseFetchPeriodServiceImpl.class);
+    bind(TimesheetComputeNameService.class).to(TimesheetComputeNameServiceImpl.class);
+    bind(MoveReverseServiceBankPaymentImpl.class).to(ExpenseMoveReverseServiceImpl.class);
+    bind(ProjectPlanningTimeComputeNameService.class)
+        .to(ProjectPlanningTimeComputeNameServiceImpl.class);
+    bind(MoveValidateServiceImpl.class).to(MoveValidateHRServiceImpl.class);
+    bind(HRDashboardService.class).to(HRDashboardServiceImpl.class);
+    bind(ExpenseCancellationService.class).to(ExpenseCancellationServiceImpl.class);
+    bind(ExpenseConfirmationService.class).to(ExpenseConfirmationServiceImpl.class);
+    bind(ExpenseRefusalService.class).to(ExpenseRefusalServiceImpl.class);
+    bind(ExpenseAnalyticService.class).to(ExpenseAnalyticServiceImpl.class);
+    bind(ExpenseInvoiceLineService.class).to(ExpenseInvoiceLineServiceImpl.class);
+    bind(ExpenseKilometricService.class).to(ExpenseKilometricServiceImpl.class);
+    bind(ExpenseLineService.class).to(ExpenseLineServiceImpl.class);
+    bind(ExpensePaymentService.class).to(ExpensePaymentServiceImpl.class);
+    bind(ExpenseValidateService.class).to(ExpenseValidateServiceImpl.class);
+    bind(ExpenseVentilateService.class).to(ExpenseVentilateServiceImpl.class);
+    bind(ExpenseToolService.class).to(ExpenseToolServiceImpl.class);
+    bind(ExpenseComputationService.class).to(ExpenseComputationServiceImpl.class);
+    bind(EmployeeComputeStatusService.class).to(EmployeeComputeStatusServiceImpl.class);
   }
 }

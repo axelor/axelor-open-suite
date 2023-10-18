@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="prod-process-grid" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess">
@@ -84,8 +84,8 @@
           if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"/>
         <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
         <spacer colSpan="2"/>
-        <field name="subcontractors" domain="self.isSubcontractor = true" colSpan="3"
-          onChange="action-production-record-subcontractors-on-change"
+        <field name="subcontractor" domain="self.isSubcontractor = true" colSpan="3"
+          onChange="action-production-record-subcontractor-on-change"
           if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"
           requiredIf="outsourcing" form-view="partner-form"/>
         <field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true"
@@ -116,11 +116,11 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
-  <action-record name="action-production-record-subcontractors-on-change"
+  <action-record name="action-production-record-subcontractor-on-change"
     model="com.axelor.apps.production.db.ProdProcess">
-    <field name="outsourcingStockLocation" if="subcontractors != null"
-      expr="eval: subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
-	                                                                                  subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true}?.defaultStockLocation :
+    <field name="outsourcingStockLocation" if="subcontractor != null"
+      expr="eval: subcontractor?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
+	                                                                                  subcontractor?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true}?.defaultStockLocation :
 	                                                                                  company?.stockConfig?.virtualOutsourcingStockLocation"/>
   </action-record>
 

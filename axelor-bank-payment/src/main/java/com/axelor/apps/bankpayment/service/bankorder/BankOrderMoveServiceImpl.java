@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,16 +14,21 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -32,20 +38,30 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +69,21 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public static final int FETCH_LIMIT = 20;
+
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected PaymentModeService paymentModeService;
   protected AccountingSituationService accountingSituationService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected MoveLineCreateService moveLineCreateService;
+  protected BankOrderLineRepository bankOrderLineRepository;
+  protected PaymentModeRepository paymentModeRepository;
+  protected CompanyRepository companyRepository;
+  protected BankDetailsRepository bankDetailsRepository;
+  protected JournalRepository journalRepository;
+  protected AccountRepository accountRepository;
+  protected InvoiceTermRepository invoiceTermRepository;
 
   protected PaymentMode paymentMode;
   protected Company senderCompany;
@@ -78,7 +103,14 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
       PaymentModeService paymentModeService,
       AccountingSituationService accountingSituationService,
       BankPaymentConfigService bankPaymentConfigService,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BankOrderLineRepository bankOrderLineRepository,
+      PaymentModeRepository paymentModeRepository,
+      CompanyRepository companyRepository,
+      BankDetailsRepository bankDetailsRepository,
+      JournalRepository journalRepository,
+      AccountRepository accountRepository,
+      InvoiceTermRepository invoiceTermRepository) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -86,6 +118,13 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     this.accountingSituationService = accountingSituationService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.moveLineCreateService = moveLineCreateService;
+    this.bankOrderLineRepository = bankOrderLineRepository;
+    this.paymentModeRepository = paymentModeRepository;
+    this.companyRepository = companyRepository;
+    this.bankDetailsRepository = bankDetailsRepository;
+    this.journalRepository = journalRepository;
+    this.accountRepository = accountRepository;
+    this.invoiceTermRepository = invoiceTermRepository;
   }
 
   @Override
@@ -120,9 +159,45 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
             || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER;
 
-    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-      generateMoves(bankOrderLine);
+    generateMovesBankOrderLines(bankOrder);
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void generateMovesBankOrderLines(BankOrder bankOrder) throws AxelorException {
+
+    Query<BankOrderLine> query =
+        bankOrderLineRepository
+            .all()
+            .filter("self.bankOrder = :bankOrder")
+            .bind("bankOrder", bankOrder)
+            .order("id");
+
+    List<BankOrderLine> bankOrderLines = query.fetch(FETCH_LIMIT, 0);
+    if (bankOrderLines.size() == 1) {
+      generateMoves(bankOrderLines.get(0));
+    } else {
+      int offSet = FETCH_LIMIT;
+
+      while (!bankOrderLines.isEmpty()) {
+        for (BankOrderLine bankOrderLine : bankOrderLines) {
+          generateMoves(bankOrderLine);
+        }
+
+        JPA.clear();
+        fetchDetachedEntities();
+        bankOrderLines = query.fetch(FETCH_LIMIT, offSet);
+        offSet += FETCH_LIMIT;
+      }
     }
+  }
+
+  protected void fetchDetachedEntities() {
+
+    this.paymentMode = paymentModeRepository.find(this.paymentMode.getId());
+    this.senderCompany = companyRepository.find(this.senderCompany.getId());
+    this.senderBankDetails = bankDetailsRepository.find(this.senderBankDetails.getId());
+    this.journal = journalRepository.find(this.journal.getId());
+    this.senderBankAccount = accountRepository.find(this.senderBankAccount.getId());
   }
 
   protected void generateMoves(BankOrderLine bankOrderLine) throws AxelorException {
@@ -134,6 +209,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         && bankOrderLine.getReceiverMove() == null) {
       bankOrderLine.setReceiverMove(generateReceiverMove(bankOrderLine));
     }
+
+    bankOrderLineRepository.save(bankOrderLine);
   }
 
   protected Move generateSenderMove(BankOrderLine bankOrderLine) throws AxelorException {
@@ -155,6 +232,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverReference(),
             bankOrderLine.getReceiverLabel(),
             bankOrderLine.getBankOrder().getSenderBankDetails());
+
+    senderMove.setPartnerBankDetails(getPartnerBankDetails(bankOrderLine));
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
@@ -181,6 +260,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverReference(),
             bankOrderLine.getReceiverLabel());
     senderMove.addMoveLineListItem(partnerMoveLine);
+
+    moveValidateService.accounting(senderMove);
 
     return senderMove;
   }
@@ -213,6 +294,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverLabel(),
             bankOrderLine.getBankOrder().getSenderBankDetails());
 
+    receiverMove.setPartnerBankDetails(getPartnerBankDetails(bankOrderLine));
+
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
             receiverMove,
@@ -238,6 +321,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverReference(),
             bankOrderLine.getReceiverLabel());
     receiverMove.addMoveLineListItem(partnerMoveLine);
+
+    moveValidateService.accounting(receiverMove);
 
     return receiverMove;
   }
@@ -292,5 +377,32 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     } else {
       return bankOrderLine.getBankOrder().getBankOrderCurrency();
     }
+  }
+
+  protected BankDetails getPartnerBankDetails(BankOrderLine bankOrderLine) {
+    if (bankOrderLine.getBankOrderLineOriginList().size() == 1
+        && bankOrderLine.getBankOrderLineOriginList().get(0).getRelatedToSelect()
+            == BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM) {
+      BankOrderLineOrigin origin = bankOrderLine.getBankOrderLineOriginList().get(0);
+      if (origin.getRelatedToSelectId() != null) {
+        InvoiceTerm invoiceTerm = invoiceTermRepository.find(origin.getRelatedToSelectId());
+
+        if (invoiceTerm != null && invoiceTerm.getBankDetails() != null) {
+          return invoiceTerm.getBankDetails();
+        } else if (Optional.ofNullable(invoiceTerm)
+            .map(InvoiceTerm::getMoveLine)
+            .map(MoveLine::getMove)
+            .map(Move::getPartnerBankDetails)
+            .isPresent()) {
+          return invoiceTerm.getMoveLine().getMove().getPartnerBankDetails();
+        } else if (Optional.ofNullable(invoiceTerm)
+            .map(InvoiceTerm::getInvoice)
+            .map(Invoice::getBankDetails)
+            .isPresent()) {
+          return invoiceTerm.getInvoice().getBankDetails();
+        }
+      }
+    }
+    return null;
   }
 }

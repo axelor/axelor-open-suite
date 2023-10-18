@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <!-- Dashboard Manager -->
@@ -41,6 +41,20 @@
       if="__config__.app.isApp('leave')"/>
   </dashboard>
 
+  <!-- Dashboard MyRH -->
+  <dashboard title="MyHR" name="my.hr.dashboard">
+    <dashlet action="custom:my-expenses-custom-view" colSpan="4" height="300"
+      if="__config__.app.isApp('expense')"/>
+    <dashlet action="custom:my-leave-request-custom-view" colSpan="8" height="300"
+      if="__config__.app.isApp('leave')"/>
+    <dashlet action="custom:my-trainings-custom-view" colSpan="4" height="300"
+      if-module="axelor-talent" if="__config__.app.isApp('training')"/>
+    <dashlet action="custom:my-timesheets-custom-view" colSpan="4" height="300"
+      if="__config__.app.isApp('timesheet')"/>
+    <dashlet action="custom:my-extra-hours-custom-view" colSpan="4" height="300"
+      if="__config__.app.isApp('exthrs')"/>
+  </dashboard>
+
   <action-view name="hr.dashboard.my.extrahours" title="My extra hours"
     model="com.axelor.apps.hr.db.ExtraHours">
     <view type="grid" name="extra-hours-validate-grid"/>
@@ -73,6 +87,47 @@
     <context name="userId" expr="eval: __user__.id"/>
   </action-view>
 
+  <!-- Manager Dashboard -->
+  <form name="hr-manager-dashboard-form" title="Manager dashboard"
+    model="com.axelor.utils.db.Wizard" width="large">
+    <panel name="mainPanel">
+      <field name="$employee" title="Select employee" type="many-to-one"
+        target="com.axelor.apps.hr.db.Employee" canView="false"
+        onChange="action-hr-manager-dashboard-refresh-dashlets"/>
+      <field name="$period" title="Select period" type="many-to-one"
+        target="com.axelor.apps.base.db.Period" domain="self.year.typeSelect = 2" canView="false"
+        onChange="action-hr-manager-dashboard-refresh-dashlets"/>
+    </panel>
+    <panel name="detailPanel">
+      <panel-dashlet name="trainingPanel" title="Training" colSpan="6"
+        action="custom:hr-manager-training-custom-view" if-module="axelor-talent" height="400"
+        if="__config__.app.isApp('training')"/>
+      <panel-dashlet name="recruitmentPanel" title="Recruitment" colSpan="6"
+        action="custom:hr-manager-recruitment-custom-view" if-module="axelor-talent" height="400"
+        if="__config__.app.isApp('recruitment')"/>
+      <panel-dashlet name="leaveRequestPanel" title="Leave requests" colSpan="6"
+        action="custom:hr-manager-leave-requests-custom-view" height="400"
+        if="__config__.app.isApp('leave')"/>
+      <panel-dashlet name="expensePanel" title="Expenses" colSpan="6"
+        action="custom:hr-manager-expenses-custom-view" height="400"
+        if="__config__.app.isApp('expense')"/>
+      <panel-dashlet name="timesheetPanel" title="Timesheets" colSpan="6"
+        action="custom:hr-manager-timesheets-custom-view" height="400"
+        if="__config__.app.isApp('timesheet')"/>
+      <panel-dashlet name="extraHoursPanel" title="Extra hours" colSpan="6"
+        action="custom:hr-manager-extra-hours-custom-view" height="400"
+        if="__config__.app.isApp('exthrs')"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-hr-manager-dashboard-refresh-dashlets">
+    <attribute name="refresh" for="trainingPanel" expr="eval: true"/>
+    <attribute name="refresh" for="recruitmentPanel" expr="eval: true"/>
+    <attribute name="refresh" for="leaveRequestPanel" expr="eval: true"/>
+    <attribute name="refresh" for="expensePanel" expr="eval: true"/>
+    <attribute name="refresh" for="timesheetPanel" expr="eval: true"/>
+    <attribute name="refresh" for="extraHoursPanel" expr="eval: true"/>
+  </action-attrs>
 
 </object-views>
 

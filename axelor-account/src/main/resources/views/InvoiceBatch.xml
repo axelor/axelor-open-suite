@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="invoice-batch-grid" title="Invoice batches"
     model="com.axelor.apps.account.db.InvoiceBatch">
@@ -91,14 +91,11 @@
       for="invoiceBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 2, 3, 4]"
       for="statusBatchBtn"/>
-    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 3, 4]"
-      for="alarmBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 4]"
       for="memoryBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 3]"
       for="confirmMemoryBatch"/>
     <attribute name="hidden" expr="eval: actionSelect != 1" for="toStatusSelect"/>
-    <attribute name="hidden" expr="eval: actionSelect != 2" for="clearAlarmsOk"/>
     <attribute name="hidden" expr="eval: actionSelect != 2" for="fromStatusSelect"/>
   </action-attrs>
 

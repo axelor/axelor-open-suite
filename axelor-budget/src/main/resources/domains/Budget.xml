@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module package="com.axelor.apps.budget.db" name="budget"/>
+
+  <entity name="Budget">
+
+    <integer name="statusSelect" selection="budget.budget.status.select" default="1"/>
+
+    <string name="name" title="Name"/>
+    <string name="code" title="Code"/>
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="inChargeUser" ref="com.axelor.auth.db.User"
+      title="Person in charge"/>
+
+    <decimal name="totalAmountCommitted" title="Committed amount"
+      help="Represents the sum of orders of status requested, validated or finished and that don't have an invoiced invoice."
+      precision="20" scale="2"/>
+
+    <decimal name="totalAmountExpected" title="Expected amount"
+      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
+      precision="20" scale="2"/>
+    <decimal name="totalAmountRealized" title="Realized total amount" precision="20"
+      scale="2"/>
+    <one-to-many name="budgetLineList" ref="com.axelor.apps.budget.db.BudgetLine"
+      title="Budget Lines" mappedBy="budget"/>
+    <integer name="periodDurationSelect" title="Period duration"
+      selection="account.year.period.duration.select" default="0"/>
+    <decimal name="amountForGeneration" title="Amount for each line"/>
+
+    <many-to-one name="budgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
+      title="Parent Level"/>
+
+    <string name="typeSelect" title="Type" selection="budget.budget.type.select"
+      readonly="true"/>
+    <string name="sourceSelect" title="Source" selection="budget.budget.source.select"
+      readonly="true"/>
+
+    <decimal name="totalAmountPaid" title="Paid total amount" precision="20" scale="2"/>
+    <decimal name="availableAmount" title="Available amount" precision="20" scale="2"/>
+    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with no order and daybook and accounted moves with no invoice."/>
+    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with an order."/>
+    <decimal name="totalFirmGap" title="Firm gap" precision="20" scale="2"
+      help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
+    <decimal name="simulatedAmount" title="Simulated amount" precision="20" scale="2"
+      help="Represents the sum of moves of status simulated."/>
+    <decimal name="availableAmountWithSimulated"
+      title="Available amount with simulated moves"
+      help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
+    </decimal>
+
+    <many-to-one name="budgetModel" ref="com.axelor.apps.budget.db.Budget"
+      title="Budget model"/>
+    <many-to-many name="accountModelSet" ref="com.axelor.apps.budget.db.AccountModel"
+      title="Account model"/>
+
+    <string name="budgetKey" title="Budget key" large="true" index="true"/>
+    <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis"
+      title="Analytic axis"/>
+    <many-to-one name="analyticAccount" ref="com.axelor.apps.account.db.AnalyticAccount"
+      title="Analytic account"/>
+    <many-to-many name="accountSet" ref="com.axelor.apps.account.db.Account"
+      title="Account(s)"/>
+
+    <string name="fullName" namecolumn="true" search="code,name" title="Full name">
+         <![CDATA[
+            return code + " " + name;
+         ]]>
+    </string>
+
+    <unique-constraint columns="code,fromDate,toDate,budgetLevel"/>
+
+    <extra-code>
+      <![CDATA[
+      //budget type select
+        public static final String BUDGET_TYPE_SELECT_BUDGET = "budget";
+        public static final String BUDGET_TYPE_SELECT_TEMPLATE = "template";
+
+			//budget source select
+        public static final String BUDGET_SOURCE_AUTO = "auto";
+        public static final String BUDGET_SOURCE_CUSTOM = "custom";
+
+        // STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+		]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence";"cancelReasonOnChangingSaleOrder.importId"
-"Supplychain";"supplychain";12;"Supplychain management";"app-supplychain.png";"axelor-supplychain,axelor-supplier-management";"account,invoice,sale,purchase,stock";13;10

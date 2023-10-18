@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,16 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.exception.MessageExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
@@ -42,15 +44,14 @@ import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
@@ -96,7 +97,7 @@ public class ManufOrderController {
             I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
                 .concat(message);
-        response.setFlash(message);
+        response.setInfo(message);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -199,7 +200,7 @@ public class ManufOrderController {
               Beans.get(ManufOrderRepository.class).find(manufOrder.getId()),
               manufOrder.getCancelReason(),
               manufOrder.getCancelReasonStr());
-      response.setFlash(I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL));
+      response.setInfo(I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -228,32 +229,15 @@ public class ManufOrderController {
                 .fetch();
       }
 
-      String message = "";
+      String message = Beans.get(ManufOrderWorkflowService.class).planManufOrders(manufOrders);
 
-      for (ManufOrder manufOrder : manufOrders) {
-        Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
-        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-          message = manufOrder.getMoCommentFromSaleOrder();
-        }
-
-        if (manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()) {
-          Beans.get(ManufOrderWorkflowService.class).createPurchaseOrder(manufOrder);
-        }
-
-        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
-          message =
-              message
-                  .concat(System.lineSeparator())
-                  .concat(manufOrder.getMoCommentFromSaleOrderLine());
-        }
-      }
       response.setReload(true);
       if (!message.isEmpty()) {
         message =
             I18n.get(ITranslation.PRODUCTION_COMMENT)
                 .concat(System.lineSeparator())
                 .concat(message);
-        response.setFlash(message);
+        response.setInfo(message);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -313,7 +297,7 @@ public class ManufOrderController {
         LOG.debug("Printing {}", name);
         response.setView(ActionView.define(name).add("html", fileLink).map());
       } else {
-        response.setFlash(I18n.get(ProductionExceptionMessage.MANUF_ORDER_1));
+        response.setInfo(I18n.get(ProductionExceptionMessage.MANUF_ORDER_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -771,6 +755,17 @@ public class ManufOrderController {
               .map());
 
     } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeProducibleQty(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      BigDecimal producibleQty =
+          Beans.get(ManufOrderService.class).computeProducibleQty(manufOrder);
+      response.setValue("$producibleQty", producibleQty);
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }

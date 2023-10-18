@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
     <toolbar>
@@ -57,7 +57,7 @@
       <field name="$balance" title="Balance" type="decimal" colSpan="4" readonly="true">
         <viewer>
 					<![CDATA[
-						<h3>{{record.$totalDebit >= record.$totalCredit ? $fmt('$totalDebit - $totalCredit') : $fmt('$totalCredit - $totalDebit')}}</h3>
+						<h3>{{$fmt('$balance')}}</h3>
 					]]>
         </viewer>
       </field>
@@ -72,13 +72,15 @@
         <panel name="moveLinePanel" title="MoveLine" colSpan="12">
           <field name="sequence" domain="self.codeSelect = 'move' and self.company = :company"
             form-view="sequence-form" grid-view="sequence-grid" canEdit="true" canNew="true"/>
-          <field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
+          <field name="isInvoiceMoveConsolidated" widget="boolean-switch"/>
+          <field name="isFillOriginDate" widget="boolean-switch"/>
           <field name="descriptionModel"/>
           <field name="descriptionIdentificationOk"/>
           <field name="authorizeSimulatedMove"
             showIf="company.accountConfig.isActivateSimulatedMove"/>
           <field name="allowAccountingDaybook"
             showIf="company.accountConfig.accountingDaybook"/>
+          <field name="allowAccountingNewOnMassEntry" widget="Boolean-switch"/>
           <panel name="originControlSettings" showTitle="false" colSpan="12">
             <field name="hasDuplicateDetectionOnOrigin"/>
             <field name="hasRequiredOrigin"/>
@@ -157,8 +159,7 @@
   </action-record>
 
   <action-group name="action-journal-group-on-load-actions">
-    <action name="action-journal-method-set-totals"
-      if="journalType != null &amp;&amp; journalType?.isDisplayBalances"/>
+    <action name="action-journal-method-set-totals" if="journalType.isDisplayBalances"/>
     <action name="action-method-account-journal-readonly-if-journal-in-move"/>
     <action name="action-attrs-account-journal-status-show-title"/>
     <action name="action-attrs-account-journal-readonly-if-account-in-move-line"/>

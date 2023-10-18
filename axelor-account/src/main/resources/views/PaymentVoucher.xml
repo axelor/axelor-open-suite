@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payment-voucher-grid" title="Payment vouchers"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
@@ -84,6 +84,10 @@
           <field name="bankEntryGenWithoutValEntryCollectionOk" widget="boolean-switch"/>
           <field name="valueForCollectionAccount" title="Value for collection" hidden="true"
             hideIf="bankEntryGenWithoutValEntryCollectionOk"/>
+          <field name="depositBankDetails"
+            requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
+            hideIf="bankEntryGenWithoutValEntryCollectionOk"
+            domain="self.active = true AND self.company = :company"/>
         </panel>
         <panel colSpan="12">
           <field name="chequeNumber"
@@ -130,7 +134,7 @@
           readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherDueElementList.length == 0"
           colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation"
+          onClick="action-payment-voucher-method-reset-imputation"
           readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"
           colSpan="6"/>
       </panel>
@@ -261,6 +265,7 @@
     <field name="currency" expr="eval:__repo__(Company).all().fetchOne()?.currency"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="tradingName" expr="eval: _invoice.tradingName" if="_invoice"/>
+    <field name="statusSelect" expr="eval: 1"/>
   </action-record>
 
   <action-record name="action-payment-voucher-getDate"
@@ -364,12 +369,9 @@
 
   <action-group name="action-group-payment-voucher-reset-imputation"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <action name="action-payment-voucher-reset-imputation" if="payVoucherElementToPayList"/>
+    <action name="action-payment-voucher-method-reset-imputation"
+      if="payVoucherElementToPayList"/>
   </action-group>
-
-  <action-method name="action-payment-voucher-reset-imputation">
-    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
-  </action-method>
 
   <action-record name="action-payment-voucher-reset-due-element-list"
     model="com.axelor.apps.account.db.PaymentVoucher">

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
@@ -23,19 +24,15 @@ import com.axelor.apps.base.db.MailTemplateAssociation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.MailServiceMessageImpl;
-import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -45,8 +42,15 @@ import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.mail.db.repo.MailMessageRepository;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailServiceMessageImpl;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
@@ -70,6 +74,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -83,6 +88,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private ExecutorService executor = Executors.newCachedThreadPool();
@@ -92,7 +98,13 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected Templates templates;
   protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
-  @Inject AppBaseService appBaseService;
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public MailServiceBaseImpl(MailAccountService mailAccountService, AppBaseService appBaseService) {
+    super(mailAccountService);
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public Model resolve(String email) {
@@ -131,17 +143,25 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       where.add(userPermissionFilter.getQuery());
     }
 
-    where.add(
-        "((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
+    String partnerEmailCondition =
+        "self.partner is not null AND self.partner.emailAddress is not null";
+
+    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
+      partnerEmailCondition =
+          String.format(
+              "%s AND self.partner.emailAddress.address not in (:selected)", partnerEmailCondition);
+      params.put("selected", selectedWithoutNull);
+    }
+
+    String mainEmailCondition =
+        String.format("((%s) OR (self.email is not null))", partnerEmailCondition);
+
+    where.add(mainEmailCondition);
 
     if (!isBlank(matching)) {
       where.add(
           "(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email) OR LOWER(self.email) like LOWER(:email) OR LOWER(self.name) like LOWER(:email))");
       params.put("email", "%" + matching + "%");
-    }
-    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
-      where.add("self.partner.emailAddress.address not in (:selected)");
-      params.put("selected", selectedWithoutNull);
     }
 
     final String filter = Joiner.on(" AND ").join(where);
@@ -236,12 +256,17 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected Set<String> recipients(MailMessage message, Model entity) {
     final Set<String> recipients = new LinkedHashSet<>();
     final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
-    String entityName = entity.getClass().getName();
 
     if (message.getRecipients() != null) {
       for (MailAddress address : message.getRecipients()) {
         recipients.add(address.getAddress());
       }
+    }
+
+    String entityName =
+        Optional.ofNullable(entity).map(Model::getClass).map(Class::getName).orElse(null);
+    if (ObjectUtils.isEmpty(entityName)) {
+      return Sets.filter(recipients, Predicates.notNull());
     }
 
     for (MailFollower follower : followers.findAll(message)) {
@@ -250,11 +275,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
       User user = follower.getUser();
       if (user != null) {
-        if (!(user.getReceiveEmails()
+        if (user.getReceiveEmails()
             && user.getFollowedMetaModelSet().stream()
-                .anyMatch(x -> x.getFullName().equals(entityName)))) {
-          continue;
-        } else {
+                .map(MetaModel::getFullName)
+                .anyMatch(entityName::equals)) {
           Partner partner = user.getPartner();
           if (partner != null && partner.getEmailAddress() != null) {
             recipients.add(partner.getEmailAddress().getAddress());
@@ -357,10 +381,16 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       return super.getSubject(message, entity);
     }
 
-    return templates.fromText(messageTemplate.getSubject()).make(templatesContext).render();
+    String subject =
+        message.getSubject() != null ? message.getSubject() : messageTemplate.getSubject();
+    return templates.fromText(subject).make(templatesContext).render();
   }
 
   void updateTemplateAndContext(MailMessage message, Model entity) {
+    if (entity == null) {
+      return;
+    }
+
     boolean isDefaultTemplate = false;
     messageTemplate = this.getTemplateByModel(entity);
 
@@ -435,12 +465,14 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   protected void setRecipientsFromTemplate(MailBuilder builder, Set<String> recipients) {
 
-    if (messageTemplate == null) {
-      return;
-    }
+    String[] ccRcp = new String[0];
+    String[] toRcp = new String[0];
 
-    String[] ccRcp = getRecipients(messageTemplate.getCcRecipients());
-    String[] toRcp = getRecipients(messageTemplate.getToRecipients());
+    if (messageTemplate != null) {
+      ccRcp = getRecipients(messageTemplate.getCcRecipients());
+      toRcp = getRecipients(messageTemplate.getToRecipients());
+      builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
+    }
 
     if (ccRcp.length == 0) {
       ccRcp = recipients.toArray(new String[0]);
@@ -452,12 +484,14 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     builder.to(toRcp);
     builder.cc(ccRcp);
-    builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
   }
 
   void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
+    if (templatesContext == null) {
+      templatesContext = Maps.newHashMap();
+    }
     // Creating 2 same keys as it could be useful for a future update
     templatesContext.put("toRecipients", contRecipients);
     templatesContext.put("ccRecipients", contRecipients);

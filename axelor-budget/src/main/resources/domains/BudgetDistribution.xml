@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="budget" package="com.axelor.apps.budget.db"/>
+
+  <entity name="BudgetDistribution" cacheable="true">
+
+    <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"
+      required="true"/>
+
+    <decimal name="amount" title="Amount" precision="20" scale="2"/>
+    <decimal name="assignedAmount" title="Assigned amount"/>
+    <decimal name="budgetAmountAvailable"/>
+
+    <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
+      title="MoveLine"/>
+    <many-to-one name="purchaseOrderLine"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine"/>
+    <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine"/>
+  </entity>
+
+</domain-models>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="mrp-line-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Results"
     groupBy="product" sortable="false"
@@ -76,9 +76,9 @@
       <field name="product" readonly="true" canEdit="false"/>
       <field name="mrpLineType" readonly="true"/>
       <field name="qty" onChange="action-temp-complete-is-edited-by-user"
-        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="maturityDate" onChange="action-temp-complete-is-edited-by-user"
-        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="cumulativeQty" css="bold" readonly="true"/>
       <field name="product.unit" readonly="true"/>
       <field name="minQty" readonly="true"/>
@@ -106,7 +106,7 @@
       <field name="proposalSelect" title="Proposal" widget="RefSelect" readonly="true"
         showIf="proposalGenerated"/>
       <field name="isEditedByUser"
-        hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="mrp.mrpTypeSelect" hidden="true"/>
       <field name="warnDelayFromSupplier" hidden="true"/>
     </panel>

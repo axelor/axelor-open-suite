@@ -1,3 +1,0 @@
----
-title : "Fixed asset : fix wrong disposal depreciation value when disposing just before the last depreciation line, with prorata temporis"
-type: fix
