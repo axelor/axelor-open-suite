@@ -99,4 +99,9 @@
   <selection id="sale.research.model.selection" name="research.model.selection">
     <option value="com.axelor.apps.sale.db.SaleOrder">Sale Order</option>
   </selection>
+
+  <selection name="sale.pricing.order.type.select">
+    <option value="1">Previous Pricing</option>
+    <option value="2">Next Pricing</option>
+  </selection>
 </object-views>

@@ -60,6 +60,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.loader.ModuleManager;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -143,7 +144,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Override
   public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
     if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
       PricingComputer pricingComputer =
@@ -170,12 +170,19 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     // It is supposed that only one pricing match those criteria (because of the configuration)
     // Having more than one pricing matched may result on a unexpected result
-    return pricingService.getRandomPricing(
-        saleOrder.getCompany(),
-        saleOrderLine.getProduct(),
-        saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
-        SaleOrderLine.class.getSimpleName(),
-        null);
+    if (AppSaleRepository.PRICING_COMPUTATION_ORDER_PREVIOUS == appSaleService.getAppSale().getPricingComputingOrder()){
+      return pricingService.getRandomPricing(
+              saleOrder.getCompany(),
+              saleOrderLine.getProduct(),
+              saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
+              SaleOrderLine.class.getSimpleName(),
+              null);
+    }else if (AppSaleRepository.PRICING_COMPUTATION_ORDER_NEXT == appSaleService.getAppSale().getPricingComputingOrder()) {
+      return pricingService.getRootPricingForNextPricings(saleOrder.getCompany(), saleOrderLine.getProduct(),
+              saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
+              SaleOrderLine.class.getSimpleName());
+    }
+    return Optional.empty();
   }
 
   @Override
