@@ -880,33 +880,34 @@
     <field name="simpleFullName"/>
     <template><![CDATA[
 		<style>
-		    #contact-card{{id}} {
+
+		    .contact-card {
 		      margin: -16px;
 		      height: 180px;
 		      display: flex;
 		    }
-		    #contact-card{{id}} > .span4 {
+		    .contact-card > .span4 {
 		      display: flex;
 		      flex-direction: column;
 		      justify-content: center;
 		      align-items: center;
 		    }
-		    #contact-card{{id}} > .span4 strong {
+		    .contact-card > .span4 strong {
 		      padding: 0 0.5rem;
 		    }
-		    #contact-card{{id}} > .span8 {
+		    .contact-card > .span8 {
 		      padding-left: 40px;
 		      display: flex;
 		      flex-direction: column;
 		      justify-content: center;
 		      position: relative;
 		    }
-		    #contact-card{{id}} .card-image .img {
+		    .contact-card .card-image .img {
 		      width: 128px;
 		      height: 64px;
 		      object-fit: contain;
 		    }
-		    #contact-card{{id}} .list {
+		    .contact-card .list {
 		      position: absolute;
 		      height: calc(100% + 20px);
 		      display: flex;
@@ -916,7 +917,7 @@
 		      border-left: 2px solid #ddd;
 		      width: 100%;
 		    }
-		    #contact-card{{id}} .list .bar {
+		    .contact-card .list .bar {
 		      width: 30px;
 		      height: 60%;
 		      background: #20bcb5;
@@ -926,70 +927,70 @@
 		      align-items: center;
 		      box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px;
 		    }
-		    #contact-card{{id}} .list .data {
+		    .contact-card .list .data {
 		      width: 100%;
 		      color: #fff;
 		      position: absolute;
 		      left: 8px;
 		    }
-		    #contact-card{{id}} .icon {
+		    .contact-card .icon {
 		      width: 20px;
 		      display: inline-block;
 		    }
-		    #contact-card{{id}} .icon i {
+		    .contact-card .icon i {
 		      transform: skew(20deg, 0deg);
 		    }
-		    #contact-card{{id}} .icon i.fa-envelope {
+		    .contact-card .icon i.fa-envelope {
 		      font-size: 0.8rem;
 		    }
-		    #contact-card{{id}} .icon i.fa-mobile {
+		    .contact-card .icon i.fa-mobile {
 		      font-size: 1.25rem;
 		    }
-		    #contact-card{{id}} .icon i.fa-building {
+		    .contact-card .icon i.fa-building {
 		      font-size: 0.75rem;
 		    }
-		    #contact-card{{id}} .icon i.fa-home,
-		    #contact-card{{id}} .icon i.fa-phone {
+		    .contact-card .icon i.fa-home,
+		    .contact-card .icon i.fa-phone {
 		      font-size: 1rem;
 		    }
-		    #contact-card{{id}} .item {
+		    .contact-card .item {
 		      position: relative;
 		      line-height: 20px;
 		    }
-		    #contact-card{{id}} .item .details {
+		    .contact-card .item .details {
 		      transform: skew(20deg, 0deg);
 		      position: absolute;
 		      color: #000;
 		      margin: 0;
 		      margin-left: 18px;
 		    }
-		    #contact-card{{id}} .item:nth-child(1) .details {
+		    .contact-card .item:nth-child(1) .details {
 		      width: calc(100% - 3.75rem);
 		    }
-		    #contact-card{{id}} .item:nth-child(2) .details {
+		    .contact-card .item:nth-child(2) .details {
 		      width: calc(100% - 3.25rem);
 		    }
-		    #contact-card{{id}} .item:nth-child(3) .details {
+		    .contact-card .item:nth-child(3) .details {
 		      width: calc(100% - 2.75rem);
 		    }
-		    #contact-card{{id}} .item:nth-child(4) .details {
+		    .contact-card .item:nth-child(4) .details {
 		      width: calc(100% - 2.25rem);
 		    }
-		    #contact-card{{id}} .item:nth-child(5) .details {
+		    .contact-card .item:nth-child(5) .details {
 		      width: calc(100% - 1.75rem);
 		    }
-		    #contact-card{{id}} .item:not(.address) .details {
+		    .contact-card .item:not(.address) .details {
 		      white-space: nowrap;
 		      text-overflow: ellipsis;
 		      overflow: hidden;
 		    }
-		    #contact-card{{id}} .item.address .details {
+		    .contact-card .item.address .details {
 		      word-wrap: break-word;
 		      overflow: hidden;
 		    }
 		  </style>
 
-		   <div id="contact-card{{id}}">
+		   <div class="contact-card">
 		    <div class="span4 card-image">
 		      <img
 		        class="img"
