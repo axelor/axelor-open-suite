@@ -226,6 +226,7 @@
         </field>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"

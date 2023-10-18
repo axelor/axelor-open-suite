@@ -1,0 +1,3 @@
+---
+title: "Analytic : Fix analytic distribution verification at validation/confirmation of purchase order/sale order when analytic isn't managed"
+type: fix
