@@ -1095,7 +1095,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
               .all()
               .filter(
                   "self.employee.id = ?1 "
-                      + "AND self.date >= ?2 "
+                      + "AND self.startDateTime >= ?2 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
@@ -1110,7 +1110,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
               .all()
               .filter(
                   "self.employee.id = ?1 "
-                      + "AND self.date BETWEEN ?2 AND ?3 "
+                      + "AND self.startDateTime >= ?2 AND self.endDateTime <= ?3 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
