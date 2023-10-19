@@ -109,4 +109,15 @@ public class SaleOrderLineTreeController {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
+
+  public void reloadView(ActionRequest request, ActionResponse response)
+      throws InterruptedException {
+
+    if (request.getContext().get("id") == null) {
+      // have to do this trick to avoid an error in view, will be fixed in future AOP release.
+      // if we do not wait here, in the next action we will not have the id.
+      response.setReload(true);
+      Thread.sleep(400);
+    }
+  }
 }
