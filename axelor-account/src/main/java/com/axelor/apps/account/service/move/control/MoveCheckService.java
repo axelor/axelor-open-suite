@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move.control;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 
 public interface MoveCheckService {
 
@@ -56,4 +57,6 @@ public interface MoveCheckService {
   void checkCurrencyAmountSum(Move move) throws AxelorException;
 
   String getPeriodAlert(Move move);
+
+  String getAccountingConfigAlert(Company company);
 }
