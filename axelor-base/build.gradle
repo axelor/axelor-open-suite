@@ -60,6 +60,9 @@ dependencies {
 	if (file("../../axelor-studio").exists()) {
 		api project(":modules:axelor-studio")
 	}
+	else {
+		api libs.axelor_studio
+	}
 
 	implementation libs.faker
 	api libs.commons_csv
