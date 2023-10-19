@@ -31,7 +31,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
@@ -112,6 +112,6 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
         .add("grid", "project-grid")
         .add("form", "project-form")
         .param("search-filters", "project-filters")
-        .domain(String.format("self.id in (%s)", StringTool.getIdListString(projects)));
+        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(projects)));
   }
 }

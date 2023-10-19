@@ -27,7 +27,7 @@ import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ public class MrpFilterSaleOrderLineServiceImpl implements MrpFilterSaleOrderLine
   protected List<Long> getSaleOrderLinesComplyingToMrpLineType(
       Mrp mrp, List<StockLocation> stockLocationList, MrpLineType saleOrderMrpLineType) {
 
-    List<Integer> statusList = StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
+    List<Integer> statusList = StringHelper.getIntegerList(saleOrderMrpLineType.getStatusSelect());
 
     String filter =
         "self.product.productTypeSelect = 'storable'"

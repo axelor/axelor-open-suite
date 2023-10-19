@@ -46,7 +46,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -395,7 +395,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         accountConfig.getAnalyticAxisByCompanyList().stream()
             .map(AnalyticAxisByCompany::getAnalyticAxis)
             .collect(Collectors.toList());
-    String idList = StringTool.getIdListString(analyticAxisList);
+    String idList = StringHelper.getIdListString(analyticAxisList);
     domain.append(" AND self.id IN (").append(idList).append(")");
     return domain.toString();
   }

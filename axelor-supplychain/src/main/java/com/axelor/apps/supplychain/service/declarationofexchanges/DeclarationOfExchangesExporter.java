@@ -28,7 +28,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.ImmutableMap;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -127,7 +127,7 @@ public abstract class DeclarationOfExchangesExporter {
   protected String getFileName() {
     String title = getTitle();
     String filename = String.format("%s.%s", title, declarationOfExchanges.getFormatSelect());
-    return StringTool.getFilename(filename);
+    return StringHelper.getFilename(filename);
   }
 
   protected Path getFilePath() {

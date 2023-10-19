@@ -35,8 +35,9 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.MapTools;
+import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.MapHelper;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -62,7 +63,7 @@ public class InvoiceMergingController {
     try {
       InvoiceMergingService invoiceMergingService = Beans.get(InvoiceMergingService.class);
       List<Invoice> invoicesToMerge =
-          MapTools.makeList(Invoice.class, request.getContext().get("invoiceToMerge"));
+          MapHelper.getCollection(request.getContext(), Invoice.class, "invoiceToMerge");
       if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
         InvoiceMergingResult result = invoiceMergingService.mergeInvoices(invoicesToMerge);
         if (result.isConfirmationNeeded()) {
@@ -142,21 +143,18 @@ public class InvoiceMergingController {
    */
   public void mergeInvoiceFromPopup(ActionRequest request, ActionResponse response) {
     try {
+      Context context = request.getContext();
       InvoiceMergingService invoiceMergingService = Beans.get(InvoiceMergingService.class);
       List<Invoice> invoicesToMerge =
-          MapTools.makeList(Invoice.class, request.getContext().get("invoiceToMerge"));
-      Partner contactPartner =
-          MapTools.findObject(Partner.class, request.getContext().get("contactPartner"));
-      PriceList priceList =
-          MapTools.findObject(PriceList.class, request.getContext().get("priceList"));
-      PaymentMode paymentMode =
-          MapTools.findObject(PaymentMode.class, request.getContext().get("paymentMode"));
+          MapHelper.getCollection(context, Invoice.class, "invoiceToMerge");
+      Partner contactPartner = MapHelper.get(context, Partner.class, "contactPartner");
+      PriceList priceList = MapHelper.get(context, PriceList.class, "priceList");
+      PaymentMode paymentMode = MapHelper.get(context, PaymentMode.class, "paymentMode");
       PaymentCondition paymentCondition =
-          MapTools.findObject(PaymentCondition.class, request.getContext().get("paymentCondition"));
-      TradingName tradingName =
-          MapTools.findObject(TradingName.class, request.getContext().get("tradingName"));
+          MapHelper.get(context, PaymentCondition.class, "paymentCondition");
+      TradingName tradingName = MapHelper.get(context, TradingName.class, "tradingName");
       FiscalPosition fiscalPosition =
-          MapTools.findObject(FiscalPosition.class, request.getContext().get("fiscalPosition"));
+          MapHelper.get(context, FiscalPosition.class, "fiscalPosition");
       if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
         InvoiceMergingResult result =
             invoiceMergingService.mergeInvoices(
@@ -194,21 +192,18 @@ public class InvoiceMergingController {
    */
   public void mergeSupplInvoiceFromPopup(ActionRequest request, ActionResponse response) {
     try {
+      Context context = request.getContext();
       InvoiceMergingService invoiceMergingService = Beans.get(InvoiceMergingService.class);
       List<Invoice> invoicesToMerge =
-          MapTools.makeList(Invoice.class, request.getContext().get("invoiceToMerge"));
-      Partner contactPartner =
-          MapTools.findObject(Partner.class, request.getContext().get("contactPartner"));
-      PriceList priceList =
-          MapTools.findObject(PriceList.class, request.getContext().get("priceList"));
-      PaymentMode paymentMode =
-          MapTools.findObject(PaymentMode.class, request.getContext().get("paymentMode"));
+          MapHelper.getCollection(context, Invoice.class, "invoiceToMerge");
+      Partner contactPartner = MapHelper.get(context, Partner.class, "contactPartner");
+      PriceList priceList = MapHelper.get(context, PriceList.class, "priceList");
+      PaymentMode paymentMode = MapHelper.get(context, PaymentMode.class, "paymentMode");
       PaymentCondition paymentCondition =
-          MapTools.findObject(PaymentCondition.class, request.getContext().get("paymentCondition"));
-      TradingName tradingName =
-          MapTools.findObject(TradingName.class, request.getContext().get("tradingName"));
+          MapHelper.get(context, PaymentCondition.class, "paymentCondition");
+      TradingName tradingName = MapHelper.get(context, TradingName.class, "tradingName");
       FiscalPosition fiscalPosition =
-          MapTools.findObject(FiscalPosition.class, request.getContext().get("fiscalPosition"));
+          MapHelper.get(context, FiscalPosition.class, "fiscalPosition");
       String supplierInvoiceNb =
           request.getContext().get("supplierInvoiceNb") == null
               ? null

@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -364,7 +364,7 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
   protected LocalDate computeLastDepreciationDate(
       LocalDate initialDate, int numberOfDepreciation, int periodicityTypeSelect) {
     return initialDate != null
-        ? DateTool.plusMonths(initialDate, numberOfDepreciation * periodicityTypeSelect)
+        ? LocalDateHelper.plusMonths(initialDate, numberOfDepreciation * periodicityTypeSelect)
         : null;
   }
 
