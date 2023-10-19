@@ -33,7 +33,7 @@
           <viewer depends="targetTypeSelect,statusSelect,contractId,versionNumber"><![CDATA[
 					<>
 						<Box as="h4" d="flex" justifyContent="flex-end" gap="4" alignItems="center">
-							<Box as="span" me={3}><span>{_t('Contract')}</span> {contractId && <span> - {contractId} </span>} {versionNumber > 0 && <span> - {versionNumber}</span>}</Box>
+							<Box as="span" me={2}><span>{_t('Contract')}</span> {contractId && <span> - {contractId} </span>} {versionNumber > 0 && <span> - {versionNumber}</span>}</Box>
 
 							{targetTypeSelect == 1 && <Badge bg="info">{_t('Customer')}</Badge>}
 							{targetTypeSelect == 2 && <Badge bg="warning">{_t('Supplier')}</Badge>}
@@ -145,10 +145,10 @@
               <![CDATA[
 					<>
 						<Box mt={2} fontWeight="bold">{_t('Initial ex tax total per year')}</Box>
-						<Box mt={2} fontWeight="bold" fontSize={4}>{contract.currency.symbol}{$fmt('initialExTaxTotalPerYear')}</Box>
+						<Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{$fmt('initialExTaxTotalPerYear')}</Box>
 						<Box borderTop borderColor="inherit" m={1}/>
 						<Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>
-						<Box mt={2} fontWeight="bold" fontSize={4}>{contract.currency.symbol}{$fmt('yearlyExTaxTotalRevalued')}</Box>
+						<Box fontWeight="bold" fontSize={4}>{contract.currency.symbol}{$fmt('yearlyExTaxTotalRevalued')}</Box>
 					</>
               ]]>
             </viewer>
