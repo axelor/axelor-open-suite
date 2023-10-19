@@ -514,9 +514,9 @@
         readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="subrogationPartner" colSpan="4" domain="self.isSubrogation IS TRUE"
-        showIf="[1,3].includes(operationTypeSelect)" readonlyIf="amountRemaining != inTaxTotal"
-        form-view="partner-form" grid-view="partner-grid"
-        onChange="action-invoice-method-update-subrogation-partner"
+        showIf="[1,3].includes(operationTypeSelect)"
+        readonlyIf="$number(amountRemaining) != $number(inTaxTotal)" form-view="partner-form"
+        grid-view="partner-grid" onChange="action-invoice-method-update-subrogation-partner"
         if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       <field name="paymentMode" colSpan="4" canEdit="false" widget="SuggestBox"
         onSelect="action-set-payment-mode-domain"
