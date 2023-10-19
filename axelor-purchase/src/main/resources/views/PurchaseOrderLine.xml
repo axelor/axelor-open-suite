@@ -345,6 +345,7 @@
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
     <action name="action-purchase-order-line-method-check-different-supplier"/>
     <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
+    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-qty-onchange">

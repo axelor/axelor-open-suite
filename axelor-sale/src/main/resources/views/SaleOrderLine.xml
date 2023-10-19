@@ -686,6 +686,7 @@
     <action name="action-sale-order-line-record-complementary-products-to-handle"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-method-translate-product-description-and-name"/>
+    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-qty-onchange">

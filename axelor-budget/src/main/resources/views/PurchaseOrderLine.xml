@@ -111,6 +111,7 @@
     <action name="action-group-purchase-purchase-orderline-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onnew">

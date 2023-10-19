@@ -103,6 +103,7 @@
     <action name="action-sale-order-line-method-translate-product-description-and-name"/>
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-attrs name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"
