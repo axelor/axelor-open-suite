@@ -129,11 +129,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   @Override
   public void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
-    String fieldNameToSet = "moveLineList";
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      fieldNameToSet = "moveLineMassEntryList";
-    }
-
     if (move.getCompany() != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
 
@@ -143,7 +138,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         AnalyticAxis analyticAxis = null;
 
         for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
+          String analyticAxisKey =
+              this.getMoveLineFieldName(move) + ".axis" + i + "AnalyticAccount";
           this.addAttr(
               analyticAxisKey,
               "hidden",
@@ -163,15 +159,28 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
           }
         }
       } else {
-        this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);
-        this.addAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true, attrsMap);
-
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-          this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
-        }
+        this.addMoveLineAnalyticHidden(move, attrsMap);
       }
     }
+  }
+
+  @Override
+  public void addMoveLineAnalyticHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    String fieldNameToSet = this.getMoveLineFieldName(move);
+
+    this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);
+    this.addAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true, attrsMap);
+
+    for (int i = 1; i <= 5; i++) {
+      String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
+      this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
+    }
+  }
+
+  protected String getMoveLineFieldName(Move move) {
+    return move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
+        ? "moveLineMassEntryList"
+        : "moveLineList";
   }
 
   @Override
