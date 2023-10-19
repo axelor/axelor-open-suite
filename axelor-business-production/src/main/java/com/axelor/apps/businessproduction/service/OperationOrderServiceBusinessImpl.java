@@ -20,6 +20,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -46,13 +47,15 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
-      OperationOrderRepository operationOrderRepository) {
+      OperationOrderRepository operationOrderRepository,
+      WeeklyPlanningService weeklyPlanningService) {
     super(
         barcodeGeneratorService,
         appProductionService,
         manufOrderStockMoveService,
         prodProcessLineService,
-        operationOrderRepository);
+        operationOrderRepository,
+        weeklyPlanningService);
   }
 
   @Override

@@ -33,6 +33,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface OperationOrderService {
 
@@ -71,6 +72,13 @@ public interface OperationOrderService {
 
   List<Map<String, Object>> chargeByMachineDays(
       LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException;
+
+  List<Map<String, Object>> chargePerMachineDays(
+      LocalDateTime fromDateTime, LocalDateTime toDateTime, Set<Machine> machinesInUse)
+      throws AxelorException;
+
+  List<Map<String, Object>> calculateHourlyMachineCharge(
+      LocalDateTime fromDateTime, LocalDateTime toDateTime, Machine machine) throws AxelorException;
 
   /**
    * Compute the difference between the two lists for the given operation order.

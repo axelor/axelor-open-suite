@@ -44,6 +44,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
@@ -56,6 +57,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -71,10 +73,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationOrderServiceImpl implements OperationOrderService {
+  protected static final String PRIORITY = "priority";
+  protected static final String DATE_TIME = "dateTime";
+  protected static final String MACHINE = "machine";
+  protected static final String CHARGE = "charge";
   protected BarcodeGeneratorService barcodeGeneratorService;
 
   protected AppProductionService appProductionService;
-
+  protected WeeklyPlanningService weeklyPlanningService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ProdProcessLineService prodProcessLineService;
   protected OperationOrderRepository operationOrderRepository;
@@ -85,12 +91,14 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
-      OperationOrderRepository operationOrderRepository) {
+      OperationOrderRepository operationOrderRepository,
+      WeeklyPlanningService weeklyPlanningService) {
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.prodProcessLineService = prodProcessLineService;
     this.operationOrderRepository = operationOrderRepository;
+    this.weeklyPlanningService = weeklyPlanningService;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -216,12 +224,76 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     return operationOrder;
   }
 
+  protected List<OperationOrder> getOperationOrdersInTimeRange(
+      LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+    return operationOrderRepository
+        .all()
+        .filter(
+            "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1", fromDateTime, toDateTime)
+        .fetch();
+  }
+
+  protected Map<Object, BigDecimal> getMachineChargeMap(
+      LocalDateTime itDateTime, Boolean chargePerCompany, Machine machineInUse) {
+
+    Map<Object, BigDecimal> machineChargeMap = new HashMap<>();
+    List<OperationOrder> operationOrderList =
+        getOperationOrdersInTimeRange(itDateTime, itDateTime.plusHours(1));
+
+    for (OperationOrder operationOrder : operationOrderList) {
+      if (operationOrder.getWorkCenter() != null
+          && operationOrder.getWorkCenter().getMachine() != null) {
+        Object machineOrCompany =
+            Boolean.TRUE.equals(chargePerCompany)
+                    && machineInUse != null
+                    && operationOrder
+                        .getWorkCenter()
+                        .getMachine()
+                        .getId()
+                        .equals(machineInUse.getId())
+                ? operationOrder.getWorkCenter().getMachine().getStockLocation().getCompany()
+                : operationOrder.getWorkCenter().getMachine();
+
+        long numberOfMinutes = calculateNumberOfMinutesPerHour(operationOrder, itDateTime);
+        BigDecimal percentage = calculateMachineChargePercentagePerHour(numberOfMinutes);
+
+        machineChargeMap.put(
+            machineOrCompany,
+            machineChargeMap.getOrDefault(machineOrCompany, BigDecimal.ZERO).add(percentage));
+      }
+    }
+
+    return machineChargeMap;
+  }
+
+  protected long calculateNumberOfMinutesPerHour(
+      OperationOrder operationOrder, LocalDateTime itDateTime) {
+    LocalDateTime start = operationOrder.getPlannedStartDateT();
+    LocalDateTime end = operationOrder.getPlannedEndDateT();
+
+    if (start.isBefore(itDateTime)) {
+      start = itDateTime;
+    }
+
+    if (end.isAfter(itDateTime.plusHours(1))) {
+      end = itDateTime.plusHours(1);
+    }
+
+    long numberOfMinutes = Duration.between(start, end).toMinutes();
+    return Math.min(numberOfMinutes, 60);
+  }
+
+  protected BigDecimal calculateMachineChargePercentagePerHour(long numberOfMinutes) {
+    return new BigDecimal(numberOfMinutes)
+        .multiply(new BigDecimal(100))
+        .divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+  }
+
   public List<Map<String, Object>> chargeByMachineHours(
       LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
-    List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-    LocalDateTime itDateTime =
-        LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
-    OperationOrderRepository operationOrderRepo = Beans.get(OperationOrderRepository.class);
+    List<Map<String, Object>> dataList = new ArrayList<>();
+
+    LocalDateTime itDateTime = fromDateTime;
     if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -229,78 +301,89 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     }
 
     List<OperationOrder> operationOrderListTemp =
-        operationOrderRepo
-            .all()
-            .filter(
-                "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1",
-                fromDateTime,
-                toDateTime)
-            .fetch();
-    Set<String> machineNameList = new HashSet<String>();
-    for (OperationOrder operationOrder : operationOrderListTemp) {
-      if (operationOrder.getWorkCenter() != null
-          && operationOrder.getWorkCenter().getMachine() != null) {
-        if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
-          machineNameList.add(operationOrder.getWorkCenter().getMachine().getName());
-        }
-      }
-    }
+        getOperationOrdersInTimeRange(fromDateTime, toDateTime);
+
+    Set<Machine> machineNameList =
+        operationOrderListTemp.stream()
+            .map(OperationOrder::getWorkCenter)
+            .filter(Objects::nonNull)
+            .map(WorkCenter::getMachine)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
     while (!itDateTime.isAfter(toDateTime)) {
-      List<OperationOrder> operationOrderList =
-          operationOrderRepo
-              .all()
-              .filter(
-                  "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1",
-                  itDateTime,
-                  itDateTime.plusHours(1))
-              .fetch();
-      Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-      for (OperationOrder operationOrder : operationOrderList) {
-        if (operationOrder.getWorkCenter() != null
-            && operationOrder.getWorkCenter().getMachine() != null) {
-          String machine = operationOrder.getWorkCenter().getMachine().getName();
-          long numberOfMinutes = 0;
-          if (operationOrder.getPlannedStartDateT().isBefore(itDateTime)) {
-            numberOfMinutes =
-                Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
-          } else if (operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))) {
-            numberOfMinutes =
-                Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1))
-                    .toMinutes();
-          } else {
-            numberOfMinutes =
-                Duration.between(
-                        operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
-                    .toMinutes();
-          }
-          if (numberOfMinutes > 60) {
-            numberOfMinutes = 60;
-          }
-          BigDecimal percentage =
-              new BigDecimal(numberOfMinutes)
-                  .multiply(new BigDecimal(100))
-                  .divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
-          if (map.containsKey(machine)) {
-            map.put(machine, map.get(machine).add(percentage));
-          } else {
-            map.put(machine, percentage);
-          }
+      Map<Object, BigDecimal> chargeMap = getMachineChargeMap(itDateTime, Boolean.FALSE, null);
+      Set<Object> keyList = chargeMap.keySet();
+      String dateTime = L10n.getInstance().format(itDateTime);
+      for (Machine key : machineNameList) {
+        BigDecimal charge = chargeMap.getOrDefault(key, BigDecimal.ZERO);
+        if (keyList.contains(key)) {
+          Map<String, Object> dataMap = new HashMap<>();
+          dataMap.put(DATE_TIME, dateTime);
+          dataMap.put(CHARGE, charge);
+          dataMap.put(MACHINE, key.getName());
+          dataList.add(dataMap);
         }
       }
-      Set<String> keyList = map.keySet();
+      itDateTime = itDateTime.plusHours(1);
+    }
+    return dataList;
+  }
+
+  protected void adjustChargePerHour(
+      Map<Object, BigDecimal> chargeMap, Map<Company, Integer> companyMachineMap) {
+    for (Map.Entry<Object, BigDecimal> entry : chargeMap.entrySet()) {
+      Object company = entry.getKey();
+      BigDecimal charge = entry.getValue();
+      Integer divisor = companyMachineMap.getOrDefault(company, 1);
+      chargeMap.put(company, charge.divide(BigDecimal.valueOf(divisor), 2, RoundingMode.HALF_UP));
+    }
+  }
+
+  public List<Map<String, Object>> calculateHourlyMachineCharge(
+      LocalDateTime fromDateTime, LocalDateTime toDateTime, Machine machineInUse)
+      throws AxelorException {
+    List<Map<String, Object>> dataList = new ArrayList<>();
+    LocalDateTime itDateTime = fromDateTime;
+
+    if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
+    }
+
+    List<OperationOrder> operationOrderListTemp =
+        getOperationOrdersInTimeRange(fromDateTime, toDateTime);
+
+    Map<Company, Integer> companyMachineMap =
+        operationOrderListTemp.stream()
+            .filter(op -> Objects.nonNull(op.getWorkCenter()))
+            .map(op -> op.getWorkCenter().getMachine())
+            .filter(
+                machine ->
+                    machine != null
+                        && machine.getId().equals(machineInUse.getId())
+                        && machine.getStockLocation() != null
+                        && machine.getStockLocation().getCompany() != null)
+            .collect(
+                Collectors.groupingBy(
+                    machine -> machine.getStockLocation().getCompany(),
+                    Collectors.collectingAndThen(Collectors.counting(), Long::intValue)));
+
+    while (!itDateTime.isAfter(toDateTime)) {
+      Map<Object, BigDecimal> chargeMap =
+          getMachineChargeMap(itDateTime, Boolean.TRUE, machineInUse);
+
+      adjustChargePerHour(chargeMap, companyMachineMap);
+      Set<Object> keyList = chargeMap.keySet();
       String dateTime = L10n.getInstance().format(itDateTime);
-      for (String key : machineNameList) {
+      for (Company key : companyMachineMap.keySet()) {
+        BigDecimal charge = chargeMap.getOrDefault(key, BigDecimal.ZERO);
         if (keyList.contains(key)) {
-          Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) dateTime);
-          dataMap.put("charge", (Object) map.get(key));
-          dataMap.put("machine", (Object) key);
-          dataList.add(dataMap);
-        } else {
-          Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) dateTime);
-          dataMap.put("charge", (Object) BigDecimal.ZERO);
-          dataMap.put("machine", (Object) key);
+          Map<String, Object> dataMap = new HashMap<>();
+          dataMap.put(DATE_TIME, dateTime);
+          dataMap.put(CHARGE, charge);
+          dataMap.put("company", key.getName());
           dataList.add(dataMap);
         }
       }
@@ -310,143 +393,159 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     return dataList;
   }
 
+  @Override
   public List<Map<String, Object>> chargeByMachineDays(
       LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
-    List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+    return chargeByMachineDaysInternal(fromDateTime, toDateTime, null, false);
+  }
+
+  @Override
+  public List<Map<String, Object>> chargePerMachineDays(
+      LocalDateTime fromDateTime, LocalDateTime toDateTime, Set<Machine> machinesInUse)
+      throws AxelorException {
+    return chargeByMachineDaysInternal(fromDateTime, toDateTime, machinesInUse, true);
+  }
+
+  protected List<Map<String, Object>> chargeByMachineDaysInternal(
+      LocalDateTime fromDateTime,
+      LocalDateTime toDateTime,
+      Set<Machine> machinesInUse,
+      boolean considerMachine)
+      throws AxelorException {
     fromDateTime = fromDateTime.withHour(0).withMinute(0);
     toDateTime = toDateTime.withHour(23).withMinute(59);
-    LocalDateTime itDateTime =
-        LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
     if (Duration.between(fromDateTime, toDateTime).toDays() > 500) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
     }
-
     List<OperationOrder> operationOrderListTemp =
-        Beans.get(OperationOrderRepository.class)
-            .all()
-            .filter(
-                "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1",
-                fromDateTime,
-                toDateTime)
-            .fetch();
-    Set<String> machineNameList = new HashSet<String>();
+        getOperationOrdersInTimeRange(fromDateTime, toDateTime);
+
+    Set<Machine> machineNameList = new HashSet<>();
     for (OperationOrder operationOrder : operationOrderListTemp) {
-      if (operationOrder.getWorkCenter() != null
-          && operationOrder.getWorkCenter().getMachine() != null) {
-        if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
-          machineNameList.add(operationOrder.getWorkCenter().getMachine().getName());
-        }
-      }
+      getMachineNameList(machinesInUse, considerMachine, machineNameList, operationOrder);
     }
+
+    List<Map<String, Object>> dataList = new ArrayList<>();
+    LocalDateTime itDateTime = fromDateTime;
+
     while (!itDateTime.isAfter(toDateTime)) {
+      Map<Machine, BigDecimal> map = new HashMap<>();
       List<OperationOrder> operationOrderList =
-          Beans.get(OperationOrderRepository.class)
-              .all()
-              .filter(
-                  "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1",
-                  itDateTime,
-                  itDateTime.plusHours(1))
-              .fetch();
-      Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-      WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
+          getOperationOrdersInTimeRange(itDateTime, itDateTime.plusHours(1));
+
       for (OperationOrder operationOrder : operationOrderList) {
         if (operationOrder.getWorkCenter() != null
             && operationOrder.getWorkCenter().getMachine() != null) {
-          String machine = operationOrder.getWorkCenter().getMachine().getName();
-          long numberOfMinutes = 0;
-          if (operationOrder.getPlannedStartDateT().isBefore(itDateTime)) {
-            numberOfMinutes =
-                Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
-          } else if (operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))) {
-            numberOfMinutes =
-                Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1))
-                    .toMinutes();
-          } else {
-            numberOfMinutes =
-                Duration.between(
-                        operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
-                    .toMinutes();
-          }
-          if (numberOfMinutes > 60) {
-            numberOfMinutes = 60;
-          }
-          long numberOfMinutesPerDay = 0;
-          if (operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null) {
-            DayPlanning dayPlanning =
-                weeklyPlanningService.findDayPlanning(
-                    operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(),
-                    LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME)
-                        .toLocalDate());
-            if (dayPlanning != null) {
-              if (dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null) {
-                numberOfMinutesPerDay =
-                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
-                        .toMinutes();
-              }
-              if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null) {
-                numberOfMinutesPerDay +=
-                    Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo())
-                        .toMinutes();
-              }
-              if (dayPlanning.getMorningFrom() != null
-                  && dayPlanning.getMorningTo() == null
-                  && dayPlanning.getAfternoonFrom() == null
-                  && dayPlanning.getAfternoonTo() != null) {
-                numberOfMinutesPerDay +=
-                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getAfternoonTo())
-                        .toMinutes();
-              }
-
-            } else {
-              numberOfMinutesPerDay = 0;
-            }
-          } else {
-            numberOfMinutesPerDay = 60 * 24;
-          }
-          if (numberOfMinutesPerDay != 0) {
-
-            BigDecimal percentage =
-                new BigDecimal(numberOfMinutes)
-                    .multiply(new BigDecimal(100))
-                    .divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
-
-            if (map.containsKey(machine)) {
-              map.put(machine, map.get(machine).add(percentage));
-            } else {
-              map.put(machine, percentage);
-            }
-          }
+          Machine machine = operationOrder.getWorkCenter().getMachine();
+          long numberOfMinutes = getNumberOfMinutesMachineUsed(itDateTime, operationOrder);
+          getNumberOfMinutesPerDay(itDateTime, map, operationOrder, machine, numberOfMinutes);
         }
       }
-      Set<String> keyList = map.keySet();
       String itDate = L10n.getInstance().format(itDateTime.toLocalDate());
-      for (String key : machineNameList) {
-        if (keyList.contains(key)) {
-          int found = 0;
-          for (Map<String, Object> mapIt : dataList) {
-            if (mapIt.get("dateTime").equals((Object) itDate)
-                && mapIt.get("machine").equals((Object) key)) {
-              mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
-              found = 1;
-              break;
-            }
-          }
-          if (found == 0) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
-
-            dataMap.put("dateTime", (Object) itDate);
-            dataMap.put("charge", (Object) map.get(key));
-            dataMap.put("machine", (Object) key);
-            dataList.add(dataMap);
-          }
+      for (Machine key : machineNameList) {
+        if (map.containsKey(key)) {
+          dataList.stream()
+              .filter(
+                  mapIt ->
+                      mapIt.get(DATE_TIME).equals(itDate)
+                          && mapIt.get(MACHINE).equals(key.getName()))
+              .findFirst()
+              .ifPresentOrElse(
+                  mapIt -> mapIt.put(CHARGE, ((BigDecimal) mapIt.get(CHARGE)).add(map.get(key))),
+                  () -> {
+                    Map<String, Object> dataMap = new HashMap<>();
+                    dataMap.put(DATE_TIME, itDate);
+                    dataMap.put(CHARGE, map.get(key));
+                    dataMap.put(MACHINE, key.getName());
+                    dataList.add(dataMap);
+                  });
         }
       }
 
       itDateTime = itDateTime.plusHours(1);
     }
+
     return dataList;
+  }
+
+  protected void getMachineNameList(
+      Set<Machine> machinesInUse,
+      boolean considerMachine,
+      Set<Machine> machineNameList,
+      OperationOrder operationOrder) {
+    if (operationOrder.getWorkCenter() != null
+            && operationOrder.getWorkCenter().getMachine() != null
+            && (considerMachine
+                && !ObjectUtils.isEmpty(machinesInUse)
+                && machinesInUse.contains(operationOrder.getWorkCenter().getMachine()))
+        || !considerMachine) {
+      machineNameList.add(operationOrder.getWorkCenter().getMachine());
+    }
+  }
+
+  protected long getNumberOfMinutesMachineUsed(
+      LocalDateTime itDateTime, OperationOrder operationOrder) {
+
+    LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
+    LocalDateTime plannedEndDate = operationOrder.getPlannedEndDateT();
+
+    long numberOfMinutes = 0;
+
+    if (plannedStartDate.isBefore(itDateTime)) {
+      numberOfMinutes = Math.min(Duration.between(itDateTime, plannedEndDate).toMinutes(), 60);
+    } else if (plannedEndDate.isAfter(itDateTime.plusHours(1))) {
+      numberOfMinutes =
+          Math.min(Duration.between(plannedStartDate, itDateTime.plusHours(1)).toMinutes(), 60);
+    } else {
+      numberOfMinutes =
+          Math.min(Duration.between(plannedStartDate, plannedEndDate).toMinutes(), 60);
+    }
+
+    return numberOfMinutes;
+  }
+
+  protected void getNumberOfMinutesPerDay(
+      LocalDateTime itDateTime,
+      Map<Machine, BigDecimal> map,
+      OperationOrder operationOrder,
+      Machine machine,
+      long numberOfMinutes) {
+
+    long numberOfMinutesPerDay = 0;
+
+    WorkCenter workCenter = operationOrder.getWorkCenter();
+    Machine workCenterMachine = workCenter.getMachine();
+
+    if (workCenterMachine.getWeeklyPlanning() != null) {
+      DayPlanning dayPlanning =
+          weeklyPlanningService.findDayPlanning(
+              workCenterMachine.getWeeklyPlanning(),
+              LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME)
+                  .toLocalDate());
+
+      if (dayPlanning != null) {
+        numberOfMinutesPerDay =
+            calculateMinutes(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
+                + calculateMinutes(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo());
+      }
+    }
+
+    if (numberOfMinutesPerDay == 0) {
+      numberOfMinutesPerDay = 60L * 24;
+    }
+
+    BigDecimal percentage =
+        new BigDecimal(numberOfMinutes)
+            .multiply(new BigDecimal(100))
+            .divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
+
+    map.merge(machine, percentage, BigDecimal::add);
+  }
+
+  protected long calculateMinutes(LocalTime from, LocalTime to) {
+    return (from != null && to != null) ? Duration.between(from, to).toMinutes() : 0;
   }
 
   @Override
@@ -572,11 +671,11 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             .filter(
                 "self.manufOrder = :manufOrder AND self.priority >= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
             .bind("manufOrder", manufOrder)
-            .bind("priority", operationOrder.getPriority())
+            .bind(PRIORITY, operationOrder.getPriority())
             .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
             .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
             .bind("operationOrderId", operationOrder.getId())
-            .order("priority")
+            .order(PRIORITY)
             .order("plannedStartDateT")
             .fetchOne();
 
@@ -611,10 +710,10 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             .filter(
                 "self.manufOrder = :manufOrder AND ((self.priority = :priority AND self.machine = :machine) OR self.priority < :priority) AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
             .bind("manufOrder", manufOrder)
-            .bind("priority", operationOrder.getPriority())
+            .bind(PRIORITY, operationOrder.getPriority())
             .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
             .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
-            .bind("machine", operationOrder.getMachine())
+            .bind(MACHINE, operationOrder.getMachine())
             .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
             .order("-plannedEndDateT")

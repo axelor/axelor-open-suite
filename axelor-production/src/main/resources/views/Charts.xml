@@ -29,6 +29,28 @@
     <series key="charge" groupBy="machine" type="bar"/>
   </chart>
 
+  <chart name="chart.machine.charge.per.hours" title="Previsional Charge (per hour)"
+    onInit="action.production.chart.set.from.date.to.date">
+    <search-fields>
+      <field type="datetime" name="fromDateTime" title="From Date"/>
+      <field type="datetime" name="toDateTime" title="To Date"/>
+    </search-fields>
+    <dataset type="rpc">com.axelor.apps.production.web.OperationOrderController:calculateHourlyMachineCharge</dataset>
+    <category key="dateTime" type="text"/>
+    <series key="charge" groupBy="company" type="line"/>
+  </chart>
+
+  <chart name="chart.machine.charge.per.days" title="Previsional charge (per day)"
+    onInit="action.production.chart.set.from.date.to.date">
+    <search-fields>
+      <field type="datetime" name="fromDateTime" title="From Date"/>
+      <field type="datetime" name="toDateTime" title="To Date"/>
+    </search-fields>
+    <dataset type="rpc">com.axelor.apps.production.web.OperationOrderController:chargePerMachineDays</dataset>
+    <category key="dateTime" type="text"/>
+    <series key="charge" groupBy="machine" type="line"/>
+  </chart>
+
   <chart name="chart.wastes.by.product" title="Products Wastes">
     <search-fields>
       <field name="name" title="Product" type="reference"

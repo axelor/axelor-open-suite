@@ -20,9 +20,12 @@ package com.axelor.apps.production.web;
 
 import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
@@ -37,8 +40,10 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -219,6 +224,46 @@ public class OperationOrderController {
       response.setData(dataList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void chargePerMachineDays(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    LocalDateTime fromDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    LocalDateTime toDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    Object object = request.getContext().get("_id");
+    if (object != null) {
+      Set<Machine> machineSet = new HashSet<>();
+      Long id = Long.valueOf(object.toString());
+      machineSet.add(Beans.get(MachineRepository.class).find((id)));
+      List<Map<String, Object>> dataList =
+          Beans.get(OperationOrderService.class)
+              .chargePerMachineDays(fromDateTime, toDateTime, machineSet);
+      response.setData(dataList);
+    }
+  }
+
+  public void calculateHourlyMachineCharge(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    LocalDateTime fromDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    LocalDateTime toDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    Object object = request.getContext().get("_id");
+    if (object != null) {
+      Long id = Long.valueOf(object.toString());
+      Machine machine = Beans.get(MachineRepository.class).find((id));
+      List<Map<String, Object>> dataList =
+          Beans.get(OperationOrderService.class)
+              .calculateHourlyMachineCharge(fromDateTime, toDateTime, machine);
+      response.setData(dataList);
     }
   }
 
