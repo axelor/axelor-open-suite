@@ -31,7 +31,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
-import com.axelor.utils.MapTools;
+import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Objects;
@@ -307,15 +307,14 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   protected void updateResultWithContext(SaleOrderMergingResult result, Context context) {
     if (context.get("priceList") != null) {
       getCommonFields(result)
-          .setCommonPriceList(MapTools.findObject(PriceList.class, context.get("priceList")));
+          .setCommonPriceList(MapHelper.get(context, PriceList.class, "priceList"));
     }
     if (context.get("contactPartner") != null) {
       getCommonFields(result)
-          .setCommonContactPartner(
-              MapTools.findObject(Partner.class, context.get("contactPartner")));
+          .setCommonContactPartner(MapHelper.get(context, Partner.class, "contactPartner"));
     }
     if (context.get("team") != null) {
-      getCommonFields(result).setCommonTeam(MapTools.findObject(Team.class, context.get("team")));
+      getCommonFields(result).setCommonTeam(MapHelper.get(context, Team.class, "team"));
     }
   }
 

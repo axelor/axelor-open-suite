@@ -31,7 +31,7 @@ import com.axelor.common.csv.CSVFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.MetaSelectTool;
+import com.axelor.utils.helpers.MetaSelectHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,18 +46,18 @@ public class LeaveExportServiceImpl implements LeaveExportService {
   protected static final String HR_START_ON_SELECT = "hr.start.on.select";
 
   protected LeaveRequestRepository leaveRequestRepo;
-  protected MetaSelectTool metaSelectTool;
+  protected MetaSelectHelper metaSelectHelper;
   protected DateService dateService;
   protected MetaFiles metaFiles;
 
   @Inject
   public LeaveExportServiceImpl(
       LeaveRequestRepository leaveRequestRepo,
-      MetaSelectTool metaSelectTool,
+      MetaSelectHelper metaSelectHelper,
       DateService dateService,
       MetaFiles metaFiles) {
     this.leaveRequestRepo = leaveRequestRepo;
-    this.metaSelectTool = metaSelectTool;
+    this.metaSelectHelper = metaSelectHelper;
     this.dateService = dateService;
     this.metaFiles = metaFiles;
   }
@@ -78,9 +78,9 @@ public class LeaveExportServiceImpl implements LeaveExportService {
       Map<Integer, String> selectionMap =
           Map.of(
               1,
-              metaSelectTool.getSelectTitle(HR_START_ON_SELECT, 1),
+              metaSelectHelper.getSelectTitle(HR_START_ON_SELECT, 1),
               2,
-              metaSelectTool.getSelectTitle(HR_START_ON_SELECT, 2));
+              metaSelectHelper.getSelectTitle(HR_START_ON_SELECT, 2));
 
       printer.printRecord(createHeader());
 

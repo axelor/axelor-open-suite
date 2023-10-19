@@ -35,9 +35,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -72,14 +72,14 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
   public String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf)
       throws AxelorException {
     String fileName = getFileName(purchaseOrder) + "." + formatPdf;
-    return PdfTool.getFileLinkFromPdfFile(print(purchaseOrder, formatPdf), fileName);
+    return PdfHelper.getFileLinkFromPdfFile(print(purchaseOrder, formatPdf), fileName);
   }
 
   @Override
   public String printPurchaseOrders(List<Long> ids) throws IOException, AxelorException {
     List<File> printedPurchaseOrders = new ArrayList<>();
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             PurchaseOrder.class,
             ids,
             new ThrowConsumer<PurchaseOrder, Exception>() {
@@ -101,7 +101,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     }
     Integer status = Beans.get(PurchaseOrderRepository.class).find(ids.get(0)).getStatusSelect();
     String fileName = getPurchaseOrderFilesName(status);
-    return PdfTool.mergePdfToFileLink(printedPurchaseOrders, fileName);
+    return PdfHelper.mergePdfToFileLink(printedPurchaseOrders, fileName);
   }
 
   public File print(PurchaseOrder purchaseOrder, String formatPdf) throws AxelorException {

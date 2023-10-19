@@ -34,9 +34,9 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
       throws IOException, AxelorException {
     List<File> printedStockMoves = new ArrayList<>();
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             StockMove.class,
             ids,
             new ThrowConsumer<StockMove, Exception>() {
@@ -87,7 +87,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
     }
     stockMoveService.setPickingStockMovesEditDate(ids, userType);
     String fileName = getStockMoveFilesName(true, ReportSettings.FORMAT_PDF);
-    return PdfTool.mergePdfToFileLink(printedStockMoves, fileName);
+    return PdfHelper.mergePdfToFileLink(printedStockMoves, fileName);
   }
 
   @Override
@@ -117,7 +117,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
       throws AxelorException, IOException {
     stockMoveService.setPickingStockMoveEditDate(stockMove, userType);
     String fileName = getStockMoveFilesName(false, ReportSettings.FORMAT_PDF);
-    return PdfTool.getFileLinkFromPdfFile(print(stockMove, format), fileName);
+    return PdfHelper.getFileLinkFromPdfFile(print(stockMove, format), fileName);
   }
 
   /**

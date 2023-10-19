@@ -38,7 +38,7 @@ import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -87,7 +87,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
     ZonedDateTime todayDateTime = ZonedDateTime.now();
     if (company != null) {
-      todayDateTime = DateTool.getTodayDateTime(company.getTimezone());
+      todayDateTime = LocalDateTimeHelper.getTodayDateTime(company.getTimezone());
     }
 
     String applicationMode = AppSettings.get().get("application.mode", "prod");

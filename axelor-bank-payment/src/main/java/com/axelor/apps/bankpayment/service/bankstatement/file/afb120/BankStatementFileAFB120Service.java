@@ -36,7 +36,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.FileTool;
+import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -204,7 +204,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
 
     List<Map<String, Object>> structuredContent = Lists.newArrayList();
 
-    List<String> fileContent = FileTool.reader(file.getPath());
+    List<String> fileContent = FileHelper.reader(file.getPath());
 
     for (String lineContent : fileContent) {
       log.info("Read line : {}", lineContent);

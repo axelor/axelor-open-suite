@@ -34,7 +34,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServ
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,17 +43,17 @@ import java.util.Map;
 public class ContractLineController {
 
   protected Contract getContractFromContext(ActionRequest request) {
-    Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
+    Contract contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 2);
 
-    if (ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1) == null) {
-      contract = ContextTool.getContextParent(request.getContext(), Contract.class, 1);
+    if (ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1) == null) {
+      contract = ContextHelper.getContextParent(request.getContext(), Contract.class, 1);
     }
 
     return contract;
   }
 
   protected ContractVersion getContractVersionFromContext(ActionRequest request) {
-    return ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
+    return ContextHelper.getContextParent(request.getContext(), ContractVersion.class, 1);
   }
 
   public void computeTotal(ActionRequest request, ActionResponse response) {

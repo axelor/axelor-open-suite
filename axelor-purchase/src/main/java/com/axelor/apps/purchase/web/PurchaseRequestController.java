@@ -33,7 +33,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,7 +81,7 @@ public class PurchaseRequestController {
                 .context("_showSingle", true)
                 .domain(
                     String.format(
-                        "self.id in (%s)", StringTool.getIdListString(purchaseOrderList)));
+                        "self.id in (%s)", StringHelper.getIdListString(purchaseOrderList)));
         response.setView(actionViewBuilder.map());
       } catch (AxelorException e) {
         response.setInfo(e.getMessage());

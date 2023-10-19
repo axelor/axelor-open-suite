@@ -10,8 +10,8 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.db.JPA;
-import com.axelor.utils.date.DurationTool;
-import com.axelor.utils.date.LocalDateTimeUtils;
+import com.axelor.utils.helpers.date.DurationHelper;
+import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -44,7 +44,7 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
     LocalDateTime plannedEndDate = operationOrder.getPlannedEndDateT();
 
     LocalDateTime nextOperationDate = operationOrderService.getNextOperationDate(operationOrder);
-    LocalDateTime minDate = LocalDateTimeUtils.min(plannedEndDate, nextOperationDate);
+    LocalDateTime minDate = LocalDateTimeHelper.min(plannedEndDate, nextOperationDate);
     operationOrder.setPlannedEndDateT(minDate);
 
     if (machine != null) {
@@ -56,7 +56,7 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
     operationOrder.setPlannedStartDateT(this.computePlannedStartDateT(operationOrder));
 
     Long plannedDuration =
-        DurationTool.getSecondsDuration(
+        DurationHelper.getSecondsDuration(
             Duration.between(
                 operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
 
@@ -153,7 +153,7 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
           && endDateTime.isAfter(secondPeriodFrom)) {
         LocalDateTime plannedStartDate = startDate.toLocalDate().atTime(secondPeriodFrom);
         Long plannedDuration =
-            DurationTool.getSecondsDuration(Duration.between(plannedStartDate, endDateTime));
+            DurationHelper.getSecondsDuration(Duration.between(plannedStartDate, endDateTime));
         operationOrder.setPlannedDuration(plannedDuration);
         operationOrder.setPlannedStartDateT(plannedStartDate);
         operationOrderRepository.save(operationOrder);

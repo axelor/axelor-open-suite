@@ -32,7 +32,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -97,11 +97,11 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
     if (ebicsPartner.getBankStatementGetModeSelect() == EbicsPartnerRepository.GET_MODE_PERIOD) {
       bankStatementStartDate = ebicsPartner.getBankStatementStartDate();
       if (bankStatementStartDate != null) {
-        startDate = DateTool.toDate(bankStatementStartDate);
+        startDate = LocalDateHelper.toDate(bankStatementStartDate);
       }
       bankStatementToDate = ebicsPartner.getBankStatementEndDate();
       if (bankStatementToDate != null) {
-        endDate = DateTool.toDate(bankStatementToDate);
+        endDate = LocalDateHelper.toDate(bankStatementToDate);
       }
     } else {
       if (ebicsPartner.getBankStatementLastExeDateT() != null) {

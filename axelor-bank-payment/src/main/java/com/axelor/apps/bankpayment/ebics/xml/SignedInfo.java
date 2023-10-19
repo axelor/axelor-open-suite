@@ -51,7 +51,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.xml.XPathParse;
+import com.axelor.utils.xml.XPathParser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import javax.xml.XMLConstants;
@@ -163,7 +163,7 @@ public class SignedInfo extends DefaultEbicsRootElement {
       Canonicalizer canonicalizer;
       ByteArrayOutputStream output;
 
-      factory = Beans.get(XPathParse.class).getDocumentBuilderFactory();
+      factory = Beans.get(XPathParser.class).getDocumentBuilderFactory();
       factory.setNamespaceAware(true);
       factory.setValidating(true);
       builder = factory.newDocumentBuilder();
