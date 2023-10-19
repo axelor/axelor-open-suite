@@ -122,6 +122,9 @@ public class EbicsLibConvertUtils {
 
   public static void createEbicsRequestLogsFromResponse(DefaultResponseElement response) {
     EbicsLibRequestLog ebicsLibRequestLog = response.getEbicsLibRequestLog();
+    if (ebicsLibRequestLog.getErrorMessage() != null) {
+      return;
+    }
 
     EbicsUserService ebicsUserService = Beans.get(EbicsUserService.class);
     ebicsUserService.logRequest(

@@ -38,8 +38,10 @@ import com.axelor.libs.ebics.client.EbicsSession;
 import com.axelor.libs.ebics.client.FileTransfer;
 import com.axelor.libs.ebics.client.KeyManagement;
 import com.axelor.libs.ebics.client.OrderType;
+import com.axelor.libs.ebics.dto.EbicsLibRequestLog;
 import com.axelor.libs.ebics.dto.EbicsLibUser;
 import com.axelor.libs.ebics.exception.EbicsLibException;
+import com.axelor.libs.ebics.exception.ReturnCode;
 import com.axelor.libs.ebics.io.IOUtils;
 import com.axelor.libs.ebics.xml.DefaultResponseElement;
 import com.axelor.libs.ebics.xml.KeyManagementResponseElement;
@@ -57,8 +59,10 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
 
@@ -181,7 +185,7 @@ public class EbicsService {
           keyManager.sendINI(proxyHost, proxyPort, userName, userPassword);
 
       // retrieve logs from lib
-      EbicsLibConvertUtils.createEbicsRequestLogsFromResponse(response);
+      processResponses(Collections.singletonList(response));
 
       ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES);
       userRepo.save(ebicsUser);
@@ -227,11 +231,11 @@ public class EbicsService {
       DefaultResponseElement response =
           keyManager.sendHIA(proxyHost, proxyPort, userName, userPassword);
       // retrieve logs from lib
-      EbicsLibConvertUtils.createEbicsRequestLogsFromResponse(response);
+      processResponses(Collections.singletonList(response));
 
       ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_ACTIVE_CONNECTION);
       userRepo.save(ebicsUser);
-    } catch (IOException | EbicsLibException | JDOMException e) {
+    } catch (IOException | EbicsLibException e) {
       TraceBackService.trace(e);
       throw new AxelorException(
           e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
@@ -268,7 +272,7 @@ public class EbicsService {
       DefaultResponseElement response =
           keyManager.sendHPB(proxyHost, proxyPort, userName, userPassword);
       // retrieve logs from lib
-      EbicsLibConvertUtils.createEbicsRequestLogsFromResponse(response);
+      processResponses(Collections.singletonList(response));
       return keyManager.createCertificateFromResponse(
           (KeyManagementResponseElement) response, proxyHost, proxyPort, userName, userPassword);
     } catch (Exception e) {
@@ -306,7 +310,8 @@ public class EbicsService {
       DefaultResponseElement response =
           keyManager.lockAccess(proxyHost, proxyPort, userName, userPassword);
       // retrieve logs from lib
-      EbicsLibConvertUtils.createEbicsRequestLogsFromResponse(response);
+      processResponses(Collections.singletonList(response));
+
       ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
       userService.getNextOrderId(ebicsUser);
       userRepo.save(ebicsUser);
@@ -432,25 +437,30 @@ public class EbicsService {
     FileTransfer transferManager = new FileTransfer(session);
 
     try {
+      List<DefaultResponseElement> ebicsResponses = null;
       if (ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS) {
-        transferManager.sendFile(
-            IOUtils.getFileContent(file.getAbsolutePath()),
-            OrderType.FUL,
-            IOUtils.getFileContent(signature.getAbsolutePath()),
-            proxyHost,
-            proxyPort,
-            userName,
-            userPassword);
+        ebicsResponses =
+            transferManager.sendFile(
+                IOUtils.getFileContent(file.getAbsolutePath()),
+                OrderType.FUL,
+                IOUtils.getFileContent(signature.getAbsolutePath()),
+                proxyHost,
+                proxyPort,
+                userName,
+                userPassword);
       } else {
-        transferManager.sendFile(
-            IOUtils.getFileContent(file.getAbsolutePath()),
-            OrderType.FUL,
-            null,
-            proxyHost,
-            proxyPort,
-            userName,
-            userPassword);
+        ebicsResponses =
+            transferManager.sendFile(
+                IOUtils.getFileContent(file.getAbsolutePath()),
+                OrderType.FUL,
+                null,
+                proxyHost,
+                proxyPort,
+                userName,
+                userPassword);
       }
+
+      processResponses(ebicsResponses);
       userService.getNextOrderId(transportUser);
     } catch (IOException | AxelorException | EbicsLibException e) {
       TraceBackService.trace(e);
@@ -532,7 +542,7 @@ public class EbicsService {
       FileTransfer transferManager = new FileTransfer(session);
 
       file = File.createTempFile(user.getName(), "." + orderType.getOrderType());
-      List<DefaultResponseElement> responseElements =
+      List<DefaultResponseElement> ebicsResponses =
           transferManager.fetchFile(
               orderType,
               start,
@@ -543,7 +553,7 @@ public class EbicsService {
               userName,
               userPassword);
 
-      responseElements.forEach(EbicsLibConvertUtils::createEbicsRequestLogsFromResponse);
+      processResponses(ebicsResponses);
 
       addResponseFile(user, file);
 
@@ -573,6 +583,42 @@ public class EbicsService {
     if (requestLog != null && file != null && file.length() > 0) {
       requestLog.setResponseFile(metaFiles.upload(file));
       logRepo.save(requestLog);
+    }
+  }
+
+  protected void processResponses(List<DefaultResponseElement> ebicsResponses)
+      throws AxelorException {
+    ebicsResponses.forEach(EbicsLibConvertUtils::createEbicsRequestLogsFromResponse);
+
+    // technical error message
+    Optional<EbicsLibRequestLog> ebicsRequestError =
+        ebicsResponses.stream()
+            .map(DefaultResponseElement::getEbicsLibRequestLog)
+            .filter(ebicsLibRequestLog -> ebicsLibRequestLog.getErrorMessage() != null)
+            .findFirst();
+
+    if (ebicsRequestError.isPresent()) {
+      AxelorException exception =
+          new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(ebicsRequestError.map(EbicsLibRequestLog::getErrorMessage).orElse("")));
+      TraceBackService.trace(exception);
+      throw exception;
+    }
+
+    // functional error message
+    Optional<ReturnCode> errorReturnCode =
+        ebicsResponses.stream()
+            .map(DefaultResponseElement::getReturnCode)
+            .filter(returnCode -> !returnCode.isOk())
+            .findFirst();
+    if (errorReturnCode.isPresent()) {
+      AxelorException exception =
+          new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(errorReturnCode.map(ReturnCode::getText).orElse("")));
+      TraceBackService.trace(exception);
+      throw exception;
     }
   }
 }
