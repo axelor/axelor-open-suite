@@ -617,4 +617,7 @@ public final class BaseExceptionMessage {
 
   public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
       "No view configured for model %s." /*)*/;
+
+  public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
+      "The file could not be generated." /*)*/;
 }

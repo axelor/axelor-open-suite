@@ -418,7 +418,12 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
-      if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey())) {
+      GlobalBudget globalBudget =
+          Optional.of(budget.getBudgetLevel())
+              .map(BudgetLevel::getParentBudgetLevel)
+              .map(BudgetLevel::getGlobalBudget)
+              .orElse(null);
+      if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey()) && globalBudget != null) {
         String error =
             computeBudgetKey(
                 budget,
@@ -433,9 +438,10 @@ public class BudgetServiceImpl implements BudgetService {
                   I18n.get(BudgetExceptionMessage.BUDGET_MISSING_BUDGET_KEY), budget.getCode()));
         }
       }
-
       budget.setStatusSelect(BudgetRepository.STATUS_VALIDATED);
       budgetRepository.save(budget);
+
+      budget.setGlobalBudget(globalBudget);
     }
   }
 
@@ -835,34 +841,6 @@ public class BudgetServiceImpl implements BudgetService {
         }
       }
     }
-  }
-
-  @Override
-  public Budget resetBudget(Budget entity) {
-
-    entity.setCode(entity.getCode() + " (" + I18n.get("copy") + ")");
-
-    entity.setStatusSelect(BudgetRepository.STATUS_DRAFT);
-    entity.setArchived(false);
-
-    entity.setTotalAmountExpected(entity.getTotalAmountExpected());
-    entity.setTotalAmountCommitted(BigDecimal.ZERO);
-    entity.setRealizedWithNoPo(BigDecimal.ZERO);
-    entity.setRealizedWithPo(BigDecimal.ZERO);
-    entity.setSimulatedAmount(BigDecimal.ZERO);
-    entity.setAvailableAmount(entity.getTotalAmountExpected());
-    entity.setAvailableAmountWithSimulated(entity.getTotalAmountExpected());
-    entity.setTotalAmountRealized(BigDecimal.ZERO);
-    entity.setTotalFirmGap(BigDecimal.ZERO);
-    entity.setTotalAmountPaid(BigDecimal.ZERO);
-
-    if (!CollectionUtils.isEmpty(entity.getBudgetLineList())) {
-      for (BudgetLine child : entity.getBudgetLineList()) {
-        child = budgetLineService.resetBudgetLine(child);
-      }
-    }
-
-    return entity;
   }
 
   @Override

@@ -257,7 +257,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(
-        moveLine.getAccount(), move.getJournal(), attrsMap);
+        moveLine.getAccount(), move.getJournal(), move.getCompany(), attrsMap);
     moveLineMassEntryAttrsService.addCutOffReadonly(moveLine.getAccount(), attrsMap);
 
     return attrsMap;

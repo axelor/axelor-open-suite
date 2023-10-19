@@ -108,8 +108,7 @@ public class PartnerController {
 
     BirtTemplate contactPhoneBookBirtTemplate =
         Beans.get(AppBaseService.class).getAppBase().getContactPhoneBookBirtTemplate();
-    if (ObjectUtils.isEmpty(contactPhoneBookBirtTemplate)
-        || ObjectUtils.isEmpty(contactPhoneBookBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(contactPhoneBookBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
@@ -138,8 +137,7 @@ public class PartnerController {
 
     BirtTemplate companyPhoneBookBirtTemplate =
         Beans.get(AppBaseService.class).getAppBase().getCompanyPhoneBookBirtTemplate();
-    if (ObjectUtils.isEmpty(companyPhoneBookBirtTemplate)
-        || ObjectUtils.isEmpty(companyPhoneBookBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(companyPhoneBookBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
@@ -169,8 +167,7 @@ public class PartnerController {
 
     BirtTemplate clientSituationBirtTemplate =
         Beans.get(AppBaseService.class).getAppBase().getClientSituationBirtTemplate();
-    if (ObjectUtils.isEmpty(clientSituationBirtTemplate)
-        || ObjectUtils.isEmpty(clientSituationBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(clientSituationBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

@@ -83,8 +83,7 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
               .getProductionConfig(company)
               .getMaintenanceBillOfMaterialBirtTemplate();
     }
-    if (maintenanceBOMBirtTemplate == null
-        || maintenanceBOMBirtTemplate.getTemplateMetaFile() == null) {
+    if (maintenanceBOMBirtTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

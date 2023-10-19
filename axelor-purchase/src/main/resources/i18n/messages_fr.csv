@@ -309,7 +309,6 @@
 "The company is required and must be the same for all purchase orders","La société est requise et doit être la même pour toutes les commandes d'achat",,
 "The currency is required and must be the same for all purchase orders","La devise est requise et doit être la même pour toutes les commandes d'achat",,
 "The field 'Stock Location' must be filled.","Le champs ""Emplacement de stock"" doit être rempli",,
-"The file could not be generated","Le fichier n'a pas pu être généré",,
 "The line cannot be null.","La ligne ne peut pas être nul",,
 "The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one.","La quantité minimum de commande de %s auprès du fournisseur n’est pas respectée. Le prix unitaire peut être différent par rapport au catalogue fournisseur.",,
 "The partner\'s language is different from the current language. Description and product name are in :","La langue du tiers est différente de la langue actuelle. La description et le nom du produit est en :",,

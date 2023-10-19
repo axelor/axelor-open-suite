@@ -18,7 +18,7 @@
     width="large" onNew="action-inventory-record-new">
     <menubar>
       <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-        <item name="showStockMoveItem" action="action-inventory-method-show-stockmoves"
+        <item name="showStockMoveItem" action="save,action-inventory-method-show-stockmoves"
           title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
       </menu>
     </menubar>

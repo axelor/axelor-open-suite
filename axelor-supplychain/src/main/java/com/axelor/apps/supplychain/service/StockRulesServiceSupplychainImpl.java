@@ -52,7 +52,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import wslite.json.JSONException;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
@@ -189,7 +188,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
     if (template != null) {
       try {
         templateMessageService.generateAndSendMessage(stockRules, template);
-      } catch (ClassNotFoundException | IOException | JSONException e) {
+      } catch (ClassNotFoundException | IOException e) {
         throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
     }

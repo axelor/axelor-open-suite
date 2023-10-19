@@ -6,21 +6,25 @@ import com.axelor.apps.hr.rest.dto.ExpensePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpensePutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseResponse;
+import com.axelor.apps.hr.service.expense.ExpenseCheckResponseService;
 import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseCreateService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -133,5 +137,21 @@ public class ExpenseRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Check expense",
+      tags = {"Expense"})
+  @Path("/check/{expenseId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkExpense(@PathParam("expenseId") Long expenseId) throws AxelorException {
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.CHECK_RESPONSE_RESPONSE),
+        Beans.get(ExpenseCheckResponseService.class).createResponse(expense));
   }
 }
