@@ -1,0 +1,3 @@
+---
+title: "Invoice/Move : Fix due date when we set invoice date, move date or when we update payment condition"
+type: fix
