@@ -29,6 +29,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -49,8 +50,23 @@ public class InvoiceToolService {
   public static LocalDate getDueDate(Invoice invoice) throws AxelorException {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
-    return Beans.get(InvoiceTermService.class)
-        .getDueDate(invoice.getInvoiceTermList(), invoiceDate);
+    return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
+        ? getMaxDueDate(invoice.getPaymentCondition(), invoiceDate)
+        : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
+  }
+
+  protected static LocalDate getMaxDueDate(
+      PaymentCondition paymentCondition, LocalDate defaultDate) {
+    if (paymentCondition == null
+        || ObjectUtils.isEmpty(paymentCondition.getPaymentConditionLineList())) {
+      return defaultDate;
+    }
+
+    return getDueDate(
+        paymentCondition.getPaymentConditionLineList().stream()
+            .max(Comparator.comparing(PaymentConditionLine::getSequence))
+            .get(),
+        defaultDate);
   }
 
   @CallMethod
