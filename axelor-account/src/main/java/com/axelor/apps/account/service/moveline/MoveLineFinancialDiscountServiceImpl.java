@@ -10,7 +10,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -20,9 +19,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -157,11 +154,8 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean isDebit,
       boolean financialDiscountVat)
       throws AxelorException {
-    Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap = null;
-
-    if (financialDiscountVat) {
-      taxMap = this.getFinancialDiscountTaxMap(invoice);
-    }
+    Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap = this.getFinancialDiscountTaxMap(invoice);
+    Map<Tax, Integer> vatSystemTaxMap = this.getVatSystemTaxMap(invoice.getMove());
 
     Account financialDiscountAccount =
         financialDiscountService.getFinancialDiscountAccount(
@@ -172,6 +166,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
         invoice.getCompany(),
         invoice.getPartner(),
         taxMap,
+        vatSystemTaxMap,
         financialDiscountAccount,
         origin,
         invoicePayment.getDescription(),
@@ -189,6 +184,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       Company company,
       Partner partner,
       Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap,
+      Map<Tax, Integer> vatSystemTaxMap,
       Account financialDiscountAccount,
       String origin,
       String description,
@@ -214,6 +210,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               taxMap.get(tax),
               paymentDate,
               counter,
+              vatSystemTaxMap.get(tax),
               isDebit,
               financialDiscountVat);
     }
@@ -234,6 +231,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       Pair<BigDecimal, BigDecimal> prorata,
       LocalDate paymentDate,
       int counter,
+      int vatSystem,
       boolean isDebit,
       boolean financialDiscountVat)
       throws AxelorException {
@@ -280,6 +278,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               financialDiscountTaxAmount,
               paymentDate,
               counter,
+              vatSystem,
               isDebit);
     }
 
@@ -297,17 +296,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       BigDecimal financialDiscountTaxAmount,
       LocalDate paymentDate,
       int counter,
+      int vatSystem,
       boolean isDebit)
       throws AxelorException {
-    Integer vatSystem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
-
-    if (vatSystem == null || vatSystem == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
-          financialDiscountMoveLine.getAccount().getCode());
-    }
-
     Account financialDiscountTaxAccount =
         this.getFinancialDiscountTaxAccount(move, company, tax, vatSystem);
 
@@ -353,6 +344,23 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
         .filter(it -> it.getCompany().equals(company))
         .findFirst()
         .orElse(null);
+  }
+
+  @Override
+  public Map<Tax, Integer> getVatSystemTaxMap(Move move) {
+    Map<Tax, Integer> vatSystemMap = new HashMap<>();
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine
+          .getAccount()
+          .getAccountType()
+          .getTechnicalTypeSelect()
+          .equals(AccountTypeRepository.TYPE_TAX)) {
+        vatSystemMap.put(moveLine.getTaxLine().getTax(), moveLine.getVatSystemSelect());
+      }
+    }
+
+    return vatSystemMap;
   }
 
   @Override

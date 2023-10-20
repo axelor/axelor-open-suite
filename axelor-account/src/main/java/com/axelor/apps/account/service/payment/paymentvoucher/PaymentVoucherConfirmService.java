@@ -690,12 +690,15 @@ public class PaymentVoucherConfirmService {
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
     Map<Tax, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
         moveLineFinancialDiscountService.getFinancialDiscountTaxMap(moveLineToPay);
+    Map<Tax, Integer> vatSystemTaxMap =
+        moveLineFinancialDiscountService.getVatSystemTaxMap(moveLineToPay.getMove());
 
     moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
         move,
         company,
         payerPartner,
         financialDiscountTaxMap,
+        vatSystemTaxMap,
         financialDiscountAccount,
         invoiceName,
         null,

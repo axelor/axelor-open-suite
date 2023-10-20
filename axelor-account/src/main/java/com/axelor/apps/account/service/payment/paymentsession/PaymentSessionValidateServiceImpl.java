@@ -892,6 +892,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         invoiceTerm.getFinancialDiscountAmount().subtract(financialDiscountTaxAmount);
     Map<Tax, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
         moveLineFinancialDiscountService.getFinancialDiscountTaxMap(invoiceTerm.getMoveLine());
+    Map<Tax, Integer> vatSystemTaxMap =
+        moveLineFinancialDiscountService.getVatSystemTaxMap(invoiceTerm.getMoveLine().getMove());
 
     counter =
         moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
@@ -899,6 +901,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getCompany(),
             null,
             financialDiscountTaxMap,
+            vatSystemTaxMap,
             financialDiscountAccount,
             move.getOrigin(),
             move.getDescription(),
