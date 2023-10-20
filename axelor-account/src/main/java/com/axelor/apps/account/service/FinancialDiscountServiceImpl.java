@@ -53,13 +53,15 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
       BigDecimal inTaxTotal,
       BigDecimal exTaxTotal,
       BigDecimal taxTotal) {
-    return taxTotal
-        .multiply(exTaxTotal)
-        .multiply(financialDiscount.getDiscountRate())
-        .divide(
-            inTaxTotal.multiply(BigDecimal.valueOf(100)),
-            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-            RoundingMode.HALF_UP);
+    return inTaxTotal.signum() == 0
+        ? BigDecimal.ZERO
+        : taxTotal
+            .multiply(exTaxTotal)
+            .multiply(financialDiscount.getDiscountRate())
+            .divide(
+                inTaxTotal.multiply(BigDecimal.valueOf(100)),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
   }
 
   @Override
