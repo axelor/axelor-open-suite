@@ -165,7 +165,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      ManufOrderOriginType manufOrderOrigin)
+      Integer manufOrderOrigin)
       throws AxelorException {
 
     if (billOfMaterial == null) {
@@ -209,11 +209,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             billOfMaterial,
             plannedStartDateT,
             plannedEndDateT);
+    manufOrder.setCreatedFromSelect(manufOrderOrigin);
 
-    if (manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER)
+    if (manufOrderOrigin.equals(ManufOrderRepository.CREATED_FROM_SALE_ORDER)
             && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
-        || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
-        || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
+        || manufOrderOrigin.equals(ManufOrderRepository.CREATED_FROM_MRP)
+        || manufOrderOrigin.equals(ManufOrderRepository.CREATED_FROM_OTHER)) {
       manufOrder = manufOrderWorkflowService.plan(manufOrder);
       if (Boolean.TRUE.equals(manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning())) {
         manufOrderWorkflowService.createPurchaseOrder(manufOrder);
@@ -1284,7 +1285,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 billOfMaterial,
                 null,
                 manufOrder.getPlannedStartDateT(),
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+                ManufOrderRepository.CREATED_FROM_OTHER);
 
         manufOrder.setClientPartner(clientPartner);
         manufOrder.setManualMOSeq(backupSeq);

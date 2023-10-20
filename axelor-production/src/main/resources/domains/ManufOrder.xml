@@ -117,6 +117,9 @@
     <string name="manualMOSeq" transient="true"/>
     <integer name="operationOrderMaxPriority" title="Operation orders maximum priority"/>
 
+    <integer name="createdFromSelect" title="Created from"
+      selection="manuf.order.created.from.select"/>
+
     <unique-constraint columns="manufOrderSeq,company"/>
 
     <extra-code><![CDATA[
@@ -132,6 +135,12 @@
 		//TYPE SELECT
 		public static final int TYPE_PRODUCTION = 1;
 		public static final int TYPE_PERMANENT = 2;
+
+		//TYPE SELECT
+		public static final int CREATED_FROM_MRP = 1;
+		public static final int CREATED_FROM_SALE_ORDER = 2;
+		public static final int CREATED_FROM_OTHER = 3;
+
 	]]></extra-code>
 
     <track>

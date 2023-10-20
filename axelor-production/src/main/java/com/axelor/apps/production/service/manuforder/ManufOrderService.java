@@ -39,15 +39,7 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 
-  public interface ManufOrderOriginType {}
-
-  public enum ManufOrderOriginTypeProduction implements ManufOrderOriginType {
-    ORIGIN_TYPE_MRP,
-    ORIGIN_TYPE_SALE_ORDER,
-    ORIGIN_TYPE_OTHER;
-  }
-
-  public ManufOrder generateManufOrder(
+  ManufOrder generateManufOrder(
       Product product,
       BigDecimal qtyRequested,
       int priority,
@@ -55,7 +47,7 @@ public interface ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      ManufOrderOriginType manufOrderOriginType)
+      Integer manufOrderOrigin)
       throws AxelorException;
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);

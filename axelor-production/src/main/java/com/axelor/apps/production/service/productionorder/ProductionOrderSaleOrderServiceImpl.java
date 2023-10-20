@@ -30,13 +30,13 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
@@ -227,7 +227,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 endDate,
                 saleOrder,
                 saleOrderLine,
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER,
+                ManufOrderRepository.CREATED_FROM_SALE_ORDER,
                 subBomManufOrderParentMap.get(childBom));
 
         productionOrderService.addManufOrder(productionOrder, manufOrder);

@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
@@ -77,7 +76,7 @@ public interface ProductionOrderService {
       LocalDateTime endDate,
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
-      ManufOrderOriginType manufOrderOriginType)
+      Integer manufOrderOriginType)
       throws AxelorException;
 
   public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet);
@@ -90,7 +89,7 @@ public interface ProductionOrderService {
       LocalDateTime endDate,
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
-      ManufOrderOriginType manufOrderOriginType,
+      Integer manufOrderOriginType,
       ManufOrder manufOrderParent)
       throws AxelorException;
 

@@ -45,6 +45,12 @@
     <option value="2">Permanent</option>
   </selection>
 
+  <selection name="manuf.order.created.from.select">
+    <option value="1">MRP</option>
+    <option value="2">Sale order</option>
+    <option value="3">Other</option>
+  </selection>
+
   <selection name="production.order.priority.select">
     <option value="1" color="cyan">Low</option>
     <option value="2" color="blue">Normal</option>

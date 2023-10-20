@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProductionConfig;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -104,7 +105,12 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
         productionConfig.getScheduling()
             == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING;
 
-    if (!useAsapScheduling && manufOrder.getPlannedEndDateT() == null) {
+    OperationOrderPlanningCommonService operationOrderPlanningCommonService = null;
+    if (ManufOrderRepository.CREATED_FROM_MRP == manufOrder.getCreatedFromSelect()) {
+      operationOrderPlanningCommonService =
+          Beans.get(OperationOrderPlanningAsapInfiniteCapacityService.class);
+      useAsapScheduling = true;
+    } else if (!useAsapScheduling && manufOrder.getPlannedEndDateT() == null) {
       throw new AxelorException(
           manufOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -112,31 +118,32 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
               YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE));
     }
 
-    OperationOrderPlanningStrategy operationOrderPlanningStrategy =
-        getOperationOrderPlanningStrategy(scheduling, capacity);
+    if (operationOrderPlanningCommonService == null) {
+      OperationOrderPlanningStrategy operationOrderPlanningStrategy =
+          getOperationOrderPlanningStrategy(scheduling, capacity);
 
-    OperationOrderPlanningCommonService operationOrderPlanningCommonService;
-    switch (operationOrderPlanningStrategy) {
-      case OperationOrderPlanningAsapFiniteCapacity:
-        operationOrderPlanningCommonService =
-            Beans.get(OperationOrderPlanningAsapFiniteCapacityService.class);
-        break;
-      case OperationOrderPlanningAsapInfiniteCapacity:
-        operationOrderPlanningCommonService =
-            Beans.get(OperationOrderPlanningAsapInfiniteCapacityService.class);
-        break;
-      case OperationOrderPlanningAtTheLatestFiniteCapacity:
-        operationOrderPlanningCommonService =
-            Beans.get(OperationOrderPlanningAtTheLatestFiniteCapacityService.class);
-        break;
-      case OperationOrderPlanningAtTheLatestInfiniteCapacity:
-        operationOrderPlanningCommonService =
-            Beans.get(OperationOrderPlanningAtTheLatestInfiniteCapacityService.class);
-        break;
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION));
+      switch (operationOrderPlanningStrategy) {
+        case OperationOrderPlanningAsapFiniteCapacity:
+          operationOrderPlanningCommonService =
+              Beans.get(OperationOrderPlanningAsapFiniteCapacityService.class);
+          break;
+        case OperationOrderPlanningAsapInfiniteCapacity:
+          operationOrderPlanningCommonService =
+              Beans.get(OperationOrderPlanningAsapInfiniteCapacityService.class);
+          break;
+        case OperationOrderPlanningAtTheLatestFiniteCapacity:
+          operationOrderPlanningCommonService =
+              Beans.get(OperationOrderPlanningAtTheLatestFiniteCapacityService.class);
+          break;
+        case OperationOrderPlanningAtTheLatestInfiniteCapacity:
+          operationOrderPlanningCommonService =
+              Beans.get(OperationOrderPlanningAtTheLatestInfiniteCapacityService.class);
+          break;
+        default:
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION));
+      }
     }
 
     List<OperationOrder> sortedOperationOrders =

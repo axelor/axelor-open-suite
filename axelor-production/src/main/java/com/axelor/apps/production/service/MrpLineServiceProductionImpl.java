@@ -28,7 +28,6 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -122,9 +121,9 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             null,
             mrpLine.getMaturityDate().atStartOfDay(),
             null,
-            ManufOrderOriginTypeProduction
-                .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
-    // correct day
+            ManufOrderRepository
+                .CREATED_FROM_MRP); // TODO compute the time to produce to put the manuf order at
+    // the correct day
 
     linkToOrder(mrpLine, manufOrder);
   }
