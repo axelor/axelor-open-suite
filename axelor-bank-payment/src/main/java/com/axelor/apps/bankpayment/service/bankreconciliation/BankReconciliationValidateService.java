@@ -223,16 +223,14 @@ public class BankReconciliationValidateService {
         BigDecimal credit;
 
         if (isDebit) {
-          BigDecimal amountMoveLine = moveLine.getCurrencyAmount().abs();
           debit =
-              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
+              (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
           credit = BigDecimal.ZERO;
         } else {
-          BigDecimal amountMoveLine = moveLine.getCurrencyAmount().abs();
           debit = BigDecimal.ZERO;
           credit =
-              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
+              (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
         }
 

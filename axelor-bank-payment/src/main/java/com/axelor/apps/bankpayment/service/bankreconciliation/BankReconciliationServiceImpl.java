@@ -74,6 +74,7 @@ import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -140,6 +141,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   protected MoveLineTaxService moveLineTaxService;
   protected DateService dateService;
   protected TaxAccountService taxAccountService;
+  protected CurrencyService currencyService;
 
   @Inject
   public BankReconciliationServiceImpl(
@@ -171,7 +173,8 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
       MoveLineTaxService moveLineTaxService,
       AccountingSituationRepository accountingSituationRepository,
       TaxAccountService taxAccountService,
-      DateService dateService) {
+      DateService dateService,
+      CurrencyService currencyService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -202,6 +205,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     this.accountingSituationRepository = accountingSituationRepository;
     this.taxAccountService = taxAccountService;
     this.dateService = dateService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -516,7 +520,8 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   }
 
   @Override
-  public BankReconciliation computeBalances(BankReconciliation bankReconciliation) {
+  public BankReconciliation computeBalances(BankReconciliation bankReconciliation)
+      throws AxelorException {
     int limit = 10;
     int offset = 0;
     List<BankReconciliation> bankReconciliations;
@@ -586,20 +591,34 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
       bankReconciliation.setAccountBalance(
           accountService.computeBalance(cashAccount, AccountService.BALANCE_TYPE_DEBIT_BALANCE));
     }
-    bankReconciliation.setStatementReconciledLineBalance(statementReconciledLineBalance);
-    bankReconciliation.setMovesReconciledLineBalance(movesReconciledLineBalance);
-    bankReconciliation.setStatementUnreconciledLineBalance(statementUnreconciledLineBalance);
-    bankReconciliation.setMovesUnreconciledLineBalance(movesUnreconciledLineBalance);
-    bankReconciliation.setStatementOngoingReconciledBalance(statementOngoingReconciledBalance);
-    bankReconciliation.setMovesOngoingReconciledBalance(movesOngoingReconciledBalance);
+
+    bankReconciliation.setStatementReconciledLineBalance(
+        getConvertedAmount(statementReconciledLineBalance, bankReconciliation));
+    bankReconciliation.setMovesReconciledLineBalance(
+        getConvertedAmount(movesReconciledLineBalance, bankReconciliation));
+    bankReconciliation.setStatementUnreconciledLineBalance(
+        getConvertedAmount(statementUnreconciledLineBalance, bankReconciliation));
+    bankReconciliation.setMovesUnreconciledLineBalance(
+        getConvertedAmount(movesUnreconciledLineBalance, bankReconciliation));
+    bankReconciliation.setStatementOngoingReconciledBalance(
+        getConvertedAmount(statementOngoingReconciledBalance, bankReconciliation));
+    bankReconciliation.setMovesOngoingReconciledBalance(
+        getConvertedAmount(movesOngoingReconciledBalance, bankReconciliation));
     bankReconciliation.setStatementAmountRemainingToReconcile(
-        statementUnreconciledLineBalance.subtract(statementOngoingReconciledBalance));
+        getConvertedAmount(
+            statementUnreconciledLineBalance.subtract(statementOngoingReconciledBalance),
+            bankReconciliation));
     bankReconciliation.setMovesAmountRemainingToReconcile(
-        movesUnreconciledLineBalance.subtract(movesOngoingReconciledBalance));
+        getConvertedAmount(
+            movesUnreconciledLineBalance.subtract(movesOngoingReconciledBalance),
+            bankReconciliation));
     bankReconciliation.setStatementTheoreticalBalance(
-        statementReconciledLineBalance.add(statementOngoingReconciledBalance));
+        getConvertedAmount(
+            statementReconciledLineBalance.add(statementOngoingReconciledBalance),
+            bankReconciliation));
     bankReconciliation.setMovesTheoreticalBalance(
-        movesReconciledLineBalance.add(movesOngoingReconciledBalance));
+        getConvertedAmount(
+            movesReconciledLineBalance.add(movesOngoingReconciledBalance), bankReconciliation));
     bankReconciliation = computeEndingBalance(bankReconciliation);
     return saveBR(bankReconciliation);
   }
@@ -924,6 +943,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
+            + " AND self.move.currency = :bankReconciliationCurrency"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
             + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount";
 
@@ -954,6 +974,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
     params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
     params.put("company", bankReconciliation.getCompany());
+    params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
       int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
@@ -1420,12 +1441,14 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
       String query =
           "self.move.company.id = "
               + bankReconciliation.getCompany().getId()
+              + " AND self.move.currency.id = "
+              + bankReconciliation.getCurrency().getId()
               + " AND (self.move.statusSelect = "
               + MoveRepository.STATUS_ACCOUNTED
               + " OR self.move.statusSelect = "
               + MoveRepository.STATUS_DAYBOOK
-              + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount "
-              + ")";
+              + ")"
+              + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount ";
 
       if (bankStatementCredit.signum() > 0) {
         query = query.concat(" AND self.debit > 0");
@@ -1517,11 +1540,19 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   }
 
   @Override
-  public BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation) {
+  public BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(
+            bankReconciliation.getCurrency(),
+            bankReconciliation.getCompany().getCurrency(),
+            dateService.date());
+
     return bankReconciliation.getBankReconciliationLineList().stream()
         .filter(BankReconciliationLine::getIsSelectedBankReconciliation)
         .map(it -> it.getCredit().subtract(it.getDebit()))
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+        .reduce(BigDecimal.ZERO, BigDecimal::add)
+        .divide(currencyRate, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -1537,7 +1568,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
             .fetch();
     return unreconciledMoveLines.stream()
         .filter(MoveLine::getIsSelectedBankReconciliation)
-        .map(it -> it.getDebit().subtract(it.getCredit()))
+        .map(MoveLine::getCurrencyAmount)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
@@ -1602,5 +1633,16 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
         bankReconciliationLineRepository.save(bankReconciliationLine);
       }
     }
+  }
+
+  protected BigDecimal getConvertedAmount(BigDecimal value, BankReconciliation bankReconciliation)
+      throws AxelorException {
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(
+            bankReconciliation.getCurrency(),
+            bankReconciliation.getCompany().getCurrency(),
+            dateService.date());
+
+    return value.divide(currencyRate, RoundingMode.HALF_UP);
   }
 }

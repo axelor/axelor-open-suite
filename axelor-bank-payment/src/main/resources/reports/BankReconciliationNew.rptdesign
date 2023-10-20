@@ -1312,6 +1312,12 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">currency_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">currency_amount</text-property>
+                    <text-property name="heading">currency_amount</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
@@ -1439,6 +1445,11 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                     </structure>
                     <structure>
                         <property name="position">14</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1539,6 +1550,13 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                 </structure>
                 <structure>
                     <property name="position">14</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
@@ -1559,6 +1577,7 @@ bankReconciliationLine.type_select  AS type ,
 bankReconciliationLine.is_posted  AS is_posted , 
 moveLine.debit AS debit , 
 moveLine.credit AS credit ,
+abs(moveLine.currency_amount) AS currency_amount,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
@@ -4322,14 +4341,26 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                         <structure>
                                             <property name="name">debit</property>
                                             <text-property name="displayName">debit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">credit</property>
                                             <text-property name="displayName">credit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">sum_debit</property>
@@ -4445,6 +4476,18 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">is_posted_1</property>
+                                            <text-property name="displayName">is_posted</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["is_posted"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">currency_amount</property>
+                                            <text-property name="displayName">currency_amount</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                            <property name="dataType">decimal</property>
                                         </structure>
                                     </list-property>
                                     <column id="7544">
