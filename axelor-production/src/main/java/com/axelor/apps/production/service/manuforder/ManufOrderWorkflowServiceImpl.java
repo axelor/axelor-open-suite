@@ -207,6 +207,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
       int qtyScale = appBaseService.getNbDecimalDigitForQty();
 
+      // TODO remove this check from here and put it in the operationOrder planning to fail fast and
+      // be able to
       if (productionConfig.getScheduling() == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING
           && manufOrder.getPlannedStartDateT().isBefore(todayDateT)) {
         throw new AxelorException(
