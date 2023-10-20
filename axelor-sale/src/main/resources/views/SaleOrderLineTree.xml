@@ -112,7 +112,8 @@
   <form title="Product composition" name="sale-order-master-details-form"
     model="com.axelor.apps.sale.db.SaleOrderLineTree">
     <panel name="mainPanel" title="Product composition" colSpan="12">
-      <button name="computePrices" onClick="action-sale-order-line-tree-group-onchange-price"
+      <button name="computePrices"
+        onClick="save,action-sale-order-line-tree-method-reload-sale-order,action-sale-order-line-tree-group-onchange-price"
         title="Compute prices"/>
       <button name="addSubElement"
         onClick="save,action-sale-order-line-tree-method-reload-sale-order

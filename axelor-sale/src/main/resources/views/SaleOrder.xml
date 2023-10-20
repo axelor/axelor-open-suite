@@ -493,7 +493,8 @@
           target="com.axelor.apps.sale.db.SaleOrderLine"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          title="Details Lines" orderBy="sequence" onChange="action-sale-order-line-change-group"
+          title="Details Lines" orderBy="sequence"
+          onChange="action-sale-order-line-change-group,action-sale-order-method-on-line-change"
           onClick="action-orderSaleLine-tree" canMove="true"
           if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
