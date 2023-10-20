@@ -14,6 +14,10 @@
   <form model="com.axelor.apps.budget.db.BudgetScenario" title="Budget Scenario"
     name="budget-scenario-form" width="large"
     onLoad="action-budget-scenario-method-change-column-names">
+    <toolbar>
+      <button onClick="save,action-method-print-birt" name="printBtn" title="Print"
+        showIf="statusSelect == 1" icon="fa-print"/>
+    </toolbar>
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
         <item action="action-budget-scenario-see-tracebacks" title="Tracebacks"
