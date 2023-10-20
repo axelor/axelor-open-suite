@@ -427,7 +427,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   @Override
   public boolean isPartialPayment(InvoicePayment invoicePayment) {
     return invoicePayment.getInvoiceTermPaymentList().stream()
-        .anyMatch(
+        .allMatch(
             it ->
                 it.getPaidAmount()
                         .add(it.getFinancialDiscountAmount())
