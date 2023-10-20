@@ -41,6 +41,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.libs.ebics.exception.ReturnCode;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
@@ -103,7 +104,11 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendINIRequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendINIRequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
       response.setInfo(stripClass(e.getLocalizedMessage()));
@@ -119,7 +124,11 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendHIARequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendHIARequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
       response.setInfo(stripClass(e.getLocalizedMessage()));
@@ -135,9 +144,18 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      X509Certificate[] certificates =
+
+      Map<String, Object> hpbResponse =
           Beans.get(EbicsService.class).sendHPBRequest(ebicsUser, null);
+      X509Certificate[] certificates = (X509Certificate[]) hpbResponse.get("certificate");
       confirmCertificates(ebicsUser, certificates, response);
+
+      ReturnCode returnCode = (ReturnCode) hpbResponse.get("returnCode");
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
+
     } catch (Exception e) {
       e.printStackTrace();
       response.setInfo(stripClass(e.getLocalizedMessage()));
@@ -185,7 +203,11 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendSPRRequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendSPRRequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
       response.setInfo(stripClass(e.getLocalizedMessage()));

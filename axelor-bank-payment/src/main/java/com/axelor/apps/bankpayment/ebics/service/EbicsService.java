@@ -59,9 +59,9 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
@@ -156,7 +156,8 @@ public class EbicsService {
    * @throws IOException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
+  public ReturnCode sendINIRequest(EbicsUser ebicsUser, EbicsProduct product)
+      throws AxelorException {
 
     AppSettings appSettings = AppSettings.get();
     String proxyHost = appSettings.get(HTTP_PROXY_HOST);
@@ -166,7 +167,7 @@ public class EbicsService {
 
     if (ebicsUser.getStatusSelect()
         != EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE) {
-      return;
+      return ReturnCode.EBICS_OK;
     }
 
     try {
@@ -185,10 +186,14 @@ public class EbicsService {
           keyManager.sendINI(proxyHost, proxyPort, userName, userPassword);
 
       // retrieve logs from lib
-      processResponses(Collections.singletonList(response));
+      EbicsLibConvertUtils.createEbicsRequestLogsFromResponse(response);
 
-      ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES);
-      userRepo.save(ebicsUser);
+      ReturnCode returnCode = checkResponseErrors(response);
+      if (returnCode.isOk()) {
+        ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES);
+        userRepo.save(ebicsUser);
+      }
+      return returnCode;
 
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -205,7 +210,8 @@ public class EbicsService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
+  public ReturnCode sendHIARequest(EbicsUser ebicsUser, EbicsProduct product)
+      throws AxelorException {
 
     AppSettings appSettings = AppSettings.get();
     String proxyHost = appSettings.get(HTTP_PROXY_HOST);
@@ -215,7 +221,7 @@ public class EbicsService {
 
     if (ebicsUser.getStatusSelect()
         != EbicsUserRepository.STATUS_WAITING_AUTH_AND_ENCRYPT_CERTIFICATES) {
-      return;
+      return ReturnCode.EBICS_OK;
     }
     userService.getNextOrderId(ebicsUser);
 
@@ -231,10 +237,14 @@ public class EbicsService {
       DefaultResponseElement response =
           keyManager.sendHIA(proxyHost, proxyPort, userName, userPassword);
       // retrieve logs from lib
-      processResponses(Collections.singletonList(response));
+      EbicsLibConvertUtils.createEbicsRequestLogsFromResponse(response);
+      ReturnCode returnCode = checkResponseErrors(response);
+      if (returnCode.isOk()) {
+        ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_ACTIVE_CONNECTION);
+        userRepo.save(ebicsUser);
+      }
+      return returnCode;
 
-      ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_ACTIVE_CONNECTION);
-      userRepo.save(ebicsUser);
     } catch (IOException | EbicsLibException e) {
       TraceBackService.trace(e);
       throw new AxelorException(
@@ -250,7 +260,7 @@ public class EbicsService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public X509Certificate[] sendHPBRequest(EbicsUser user, EbicsProduct product)
+  public Map<String, Object> sendHPBRequest(EbicsUser user, EbicsProduct product)
       throws AxelorException {
 
     AppSettings appSettings = AppSettings.get();
@@ -272,9 +282,17 @@ public class EbicsService {
       DefaultResponseElement response =
           keyManager.sendHPB(proxyHost, proxyPort, userName, userPassword);
       // retrieve logs from lib
-      processResponses(Collections.singletonList(response));
-      return keyManager.createCertificateFromResponse(
-          (KeyManagementResponseElement) response, proxyHost, proxyPort, userName, userPassword);
+      EbicsLibConvertUtils.createEbicsRequestLogsFromResponse(response);
+      ReturnCode returnCode = checkResponseErrors(response);
+      X509Certificate[] certificateFromResponse =
+          keyManager.createCertificateFromResponse(
+              (KeyManagementResponseElement) response,
+              proxyHost,
+              proxyPort,
+              userName,
+              userPassword);
+
+      return Map.of("certificate", certificateFromResponse, "returnCode", returnCode);
     } catch (Exception e) {
       TraceBackService.trace(e);
       throw new AxelorException(
@@ -290,7 +308,8 @@ public class EbicsService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void sendSPRRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
+  public ReturnCode sendSPRRequest(EbicsUser ebicsUser, EbicsProduct product)
+      throws AxelorException {
 
     AppSettings appSettings = AppSettings.get();
     String proxyHost = appSettings.get(HTTP_PROXY_HOST);
@@ -310,11 +329,16 @@ public class EbicsService {
       DefaultResponseElement response =
           keyManager.lockAccess(proxyHost, proxyPort, userName, userPassword);
       // retrieve logs from lib
-      processResponses(Collections.singletonList(response));
+      EbicsLibConvertUtils.createEbicsRequestLogsFromResponse(response);
 
-      ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
-      userService.getNextOrderId(ebicsUser);
-      userRepo.save(ebicsUser);
+      ReturnCode returnCode = checkResponseErrors(response);
+      if (returnCode.isOk()) {
+        ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
+        userService.getNextOrderId(ebicsUser);
+        userRepo.save(ebicsUser);
+      }
+
+      return returnCode;
     } catch (Exception e) {
       TraceBackService.trace(e);
       throw new AxelorException(
@@ -460,8 +484,9 @@ public class EbicsService {
                 userPassword);
       }
 
-      processResponses(ebicsResponses);
+      ebicsResponses.forEach(EbicsLibConvertUtils::createEbicsRequestLogsFromResponse);
       userService.getNextOrderId(transportUser);
+      checkResponseListErrors(ebicsResponses);
     } catch (IOException | AxelorException | EbicsLibException e) {
       TraceBackService.trace(e);
       throw new AxelorException(
@@ -553,11 +578,12 @@ public class EbicsService {
               userName,
               userPassword);
 
-      processResponses(ebicsResponses);
+      ebicsResponses.forEach(EbicsLibConvertUtils::createEbicsRequestLogsFromResponse);
 
       addResponseFile(user, file);
 
       userService.getNextOrderId(user);
+      checkResponseListErrors(ebicsResponses);
 
     } catch (EbicsLibException | IOException e) {
       TraceBackService.trace(e);
@@ -586,24 +612,11 @@ public class EbicsService {
     }
   }
 
-  protected void processResponses(List<DefaultResponseElement> ebicsResponses)
+  protected void checkResponseListErrors(List<DefaultResponseElement> ebicsResponses)
       throws AxelorException {
-    ebicsResponses.forEach(EbicsLibConvertUtils::createEbicsRequestLogsFromResponse);
-
     // technical error message
-    Optional<EbicsLibRequestLog> ebicsRequestError =
-        ebicsResponses.stream()
-            .map(DefaultResponseElement::getEbicsLibRequestLog)
-            .filter(ebicsLibRequestLog -> ebicsLibRequestLog.getErrorMessage() != null)
-            .findFirst();
-
-    if (ebicsRequestError.isPresent()) {
-      AxelorException exception =
-          new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(ebicsRequestError.map(EbicsLibRequestLog::getErrorMessage).orElse("")));
-      TraceBackService.trace(exception);
-      throw exception;
+    for (DefaultResponseElement ebicsResponse : ebicsResponses) {
+      checkTechnicalErrorInResponse(ebicsResponse);
     }
 
     // functional error message
@@ -617,6 +630,32 @@ public class EbicsService {
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(errorReturnCode.map(ReturnCode::getText).orElse("")));
+      TraceBackService.trace(exception);
+      throw exception;
+    }
+  }
+
+  protected ReturnCode checkResponseErrors(DefaultResponseElement ebicsResponse)
+      throws AxelorException {
+    // technical error message
+    checkTechnicalErrorInResponse(ebicsResponse);
+
+    // functional error message, do not throw exception to avoid rollback
+    return Optional.ofNullable(ebicsResponse.getReturnCode()).orElse(ReturnCode.EBICS_OK);
+  }
+
+  protected void checkTechnicalErrorInResponse(DefaultResponseElement ebicsResponse)
+      throws AxelorException {
+    Optional<EbicsLibRequestLog> ebicsRequestError =
+        Optional.ofNullable(ebicsResponse.getEbicsLibRequestLog())
+            .filter(ebicsLibRequestLog -> ebicsLibRequestLog.getErrorMessage() != null).stream()
+            .findFirst();
+
+    if (ebicsRequestError.isPresent()) {
+      AxelorException exception =
+          new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(ebicsRequestError.map(EbicsLibRequestLog::getErrorMessage).orElse("")));
       TraceBackService.trace(exception);
       throw exception;
     }
