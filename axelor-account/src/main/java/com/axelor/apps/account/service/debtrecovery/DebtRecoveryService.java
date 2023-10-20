@@ -542,7 +542,9 @@ public class DebtRecoveryService {
       log.debug("balanceDue : {} ", balanceDue);
 
       BigDecimal balanceDueDebtRecovery =
-          accountCustomerService.getBalanceDueDebtRecovery(partner, company, tradingName);
+          this.getMoveLineDebtRecovery(partner, company, tradingName).stream()
+              .map(MoveLine::getAmountRemaining)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
 
       if (balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0) {
         log.debug("balanceDueDebtRecovery : {} ", balanceDueDebtRecovery);
