@@ -44,7 +44,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class BudgetLevelController {
 
@@ -189,16 +193,23 @@ public class BudgetLevelController {
   public void filterBudgetLevelList(ActionRequest request, ActionResponse response) {
     try {
       BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      if(Beans.get(BudgetToolsService.class).getGlobalBudgetUsingBudgetLevel(budgetLevel).getStatusSelect() == 0 ){
-        return;
+      GlobalBudget globalBudget =
+          Beans.get(BudgetToolsService.class).getGlobalBudgetUsingBudgetLevel(budgetLevel);
+      if (globalBudget != null) {
+        if (globalBudget.getStatusSelect()
+            == GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT) {
+          return;
+        }
       }
+
       List<BudgetLevel> filteredBudgetLevelList =
           Beans.get(BudgetLevelService.class).getFilteredBudgetLevelList(budgetLevel);
 
       response.setValue("budgetLevelList", filteredBudgetLevelList);
     } catch (IllegalArgumentException e) {
       GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-      if(globalBudget.getStatusSelect() == 0) {
+      if (globalBudget.getStatusSelect()
+          == GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT) {
         return;
       }
       List<BudgetLevel> filteredBudgetLevelList =
@@ -210,12 +221,13 @@ public class BudgetLevelController {
   public void saveOnChange(ActionRequest request, ActionResponse response) {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
     List<BudgetLevel> finalList = new ArrayList<>();
+    BudgetLevelRepository budgetLevelRepository = Beans.get(BudgetLevelRepository.class);
+    BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
     for (BudgetLevel level : budgetLevel.getBudgetLevelList()) {
       List<BudgetLevel> myList = level.getBudgetLevelList();
       if (level.getId() != null) {
-        BudgetLevel myBudgetLevel = Beans.get(BudgetLevelRepository.class).find(level.getId());
-        List<BudgetLevel> list =
-            Beans.get(BudgetLevelService.class).getOtherUsersBudgetLevelList(myBudgetLevel);
+        BudgetLevel myBudgetLevel = budgetLevelRepository.find(level.getId());
+        List<BudgetLevel> list = budgetLevelService.getOtherUsersBudgetLevelList(myBudgetLevel);
         Set<BudgetLevel> uniqueSet = new HashSet<>(myList);
         uniqueSet.addAll(list);
         List<BudgetLevel> combinedList = new ArrayList<>(uniqueSet);

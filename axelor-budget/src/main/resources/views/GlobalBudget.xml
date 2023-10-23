@@ -21,7 +21,7 @@
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
     name="global-budget-form" width="large"
     onNew="action-global-budget-record-set-defaults,action-global-budget-method-hide-amounts"
-    onSave="action-global-budget-group-onsave,action-global-budget-method-save-budget-level-list"
+    onSave="action-global-budget-group-onsave"
     onLoad="action-global-budget-method-filter-budget-level-list" canCopy="false">
 
     <menubar>
@@ -51,7 +51,7 @@
           <field name="toDate" colSpan="4" requiredIf="statusSelect == 0"
             onChange="action-global-budget-validate-from-to-dates"/>
           <button name="updateDatesBtn" colSpan="2" title="Update dates"
-            onClick="action-global-budget-method-save-budget-level-list,save,action-global-budget-method-set-dates"
+            onClick="action-global-budget-group-update-dates-btn-onclick"
             readonlyIf="fromDate == null || toDate == null"/>
           <field name="budgetTypeSelect" colSpan="4" readonly="true"/>
           <field name="companyDepartment" colSpan="4" showIf="company"
@@ -210,6 +210,7 @@
   <action-group name="action-global-budget-group-onsave">
     <action name="action-global-budget-validate-from-to-dates"/>
     <action name="action-global-budget-method-check-budget-dates"/>
+    <action name="action-global-budget-method-save-budget-level-list"/>
   </action-group>
 
   <action-group name="action-global-budget-group-validate-structure">
@@ -246,6 +247,12 @@
     <action name="action-global-budget-method-archived-btn-onClick"/>
     <action name="save"/>
     <action name="action-refresh-record"/>
+  </action-group>
+
+  <action-group name="action-global-budget-group-update-dates-btn-onclick">
+    <action name="action-global-budget-method-save-budget-level-list"/>
+    <action name="save"/>
+    <action name="action-global-budget-method-set-dates"/>
   </action-group>
 
 

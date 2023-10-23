@@ -70,7 +70,7 @@
 
   <form model="com.axelor.apps.budget.db.BudgetLevel" title="Section"
     name="budget-level-intermediate-form" width="large"
-    onNew="action-budget-level-defaults-groups-onnew,action-global-budget-method-hide-amounts,action-budget-level-record-current-user-onnew"
+    onNew="action-budget-level-intermediate-group-onnew"
     onLoad="action-budget-level-group-onload,action-global-budget-method-filter-budget-level-list-onload">
     <panel name="mainPanel" colSpan="12">
       <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
@@ -300,6 +300,11 @@
     <action name="action-budget-level-method-show-validate-fields"/>
   </action-group>
 
+  <action-group name="action-budget-level-intermediate-group-onnew">
+    <action name="action-budget-level-defaults-groups-onnew"/>
+    <action name="action-global-budget-method-hide-amounts"/>
+  </action-group>
+
   <action-attrs name="action-budget-level-attrs-set-attrs">
     <attribute name="domain" for="parentBudgetLevel" expr="eval: _domain" if=" _domain"/>
     <attribute name="title" for="totalAmountAvailable"
@@ -374,12 +379,6 @@
     model="com.axelor.apps.budget.db.BudgetLevel">
     <field name="$isScenario" expr="eval: __parent__?.isScenario"/>
   </action-record>
-
-  <action-record name="action-budget-level-record-current-user-onnew"
-    model="com.axelor.apps.budget.db.BudgetLevel">
-    <field name="validatorSet" expr="eval: __user__"/>
-  </action-record>
-
 
   <action-group name="action-budget-level-defaults-groups-onnew">
     <action name="action-budget-level-group-onnew"/>

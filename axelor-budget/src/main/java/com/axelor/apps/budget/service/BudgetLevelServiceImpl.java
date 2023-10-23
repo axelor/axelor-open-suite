@@ -508,7 +508,10 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     if (budgetLevel.getBudgetLevelList().size() > 0) {
       filteredBudgetLevelList =
           budgetLevel.getBudgetLevelList().stream()
-              .filter(it -> it.getValidatorSet().contains(AuthUtils.getUser()))
+              .filter(
+                  it ->
+                      ObjectUtils.isEmpty(it.getValidatorSet())
+                          || it.getValidatorSet().contains(AuthUtils.getUser()))
               .collect(Collectors.toList());
     }
 
@@ -518,7 +521,10 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   @Override
   public List<BudgetLevel> getOtherUsersBudgetLevelList(BudgetLevel budgetLevel) {
     return budgetLevel.getBudgetLevelList().stream()
-        .filter(it -> !it.getValidatorSet().contains(AuthUtils.getUser()))
+        .filter(
+            it ->
+                !ObjectUtils.isEmpty(it.getValidatorSet())
+                    && !it.getValidatorSet().contains(AuthUtils.getUser()))
         .collect(Collectors.toList());
   }
 }
