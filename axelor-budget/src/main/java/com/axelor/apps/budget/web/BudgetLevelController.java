@@ -157,4 +157,16 @@ public class BudgetLevelController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void showUpdateDatesBtn(ActionRequest request, ActionResponse response) {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    if (budgetLevel.getId() != null) {
+      BudgetLevel myBudgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
+
+      if (!(budgetLevel.getFromDate().equals(myBudgetLevel.getFromDate())
+          && budgetLevel.getToDate().equals(myBudgetLevel.getToDate()))) {
+        response.setAttr("updateDatesBtn", "hidden", false);
+      }
+    }
+  }
 }

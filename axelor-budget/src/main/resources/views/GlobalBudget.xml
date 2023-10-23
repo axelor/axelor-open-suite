@@ -45,23 +45,23 @@
           <field name="company" canNew="false" colSpan="3"
             readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0" required="true"/>
           <field name="company.currency" colSpan="3" readonly="true" hideIf="!company"/>
-          <field name="fromDate" colSpan="4" requiredIf="statusSelect == 0"
-            onChange="action-global-budget-validate-from-to-dates"/>
-          <field name="toDate" colSpan="4" requiredIf="statusSelect == 0"
-            onChange="action-global-budget-validate-from-to-dates"/>
-          <button name="updateDatesBtn" colSpan="2" title="Update dates"
+          <field name="fromDate" colSpan="3" requiredIf="statusSelect == 0"
+            onChange="action-global-budget-validate-from-to-dates,action-global-budget-method-show-update-dates-btn"/>
+          <field name="toDate" colSpan="3" requiredIf="statusSelect == 0"
+            onChange="action-global-budget-validate-from-to-dates,action-global-budget-method-show-update-dates-btn"/>
+          <button name="updateDatesBtn" colSpan="3" title="Update dates" css="btn-light"
             onClick="save,action-global-budget-method-set-dates"
-            readonlyIf="fromDate == null || toDate == null"/>
-          <field name="budgetTypeSelect" colSpan="4" readonly="true"/>
-          <field name="companyDepartment" colSpan="4" showIf="company"
+            readonlyIf="fromDate == null || toDate == null" hidden="true"/>
+          <field name="budgetTypeSelect" colSpan="3" readonly="true"/>
+          <field name="companyDepartment" colSpan="3" showIf="company"
             domain="self.company = :company OR self.company IS NULL"/>
-          <field name="budgetManager" colSpan="4" showIf="company"
+          <field name="budgetManager" colSpan="3" showIf="company"
             domain="(self.activeCompany IS NULL AND (:company member of self.companySet OR self.companySet IS EMPTY)) OR self.activeCompany = :company"/>
           <field name="checkAvailableSelect" readonlyIf="statusSelect == 'valid'"
             hideIf="budgetTypeSelect == 2"
-            if="__config__.app.getApp('budget').getCheckAvailableBudget()" colSpan="2"/>
-          <field name="sourceSelect" colSpan="4" hidden="true"/>
-          <field name="fullName" colSpan="4" hidden="true"/>
+            if="__config__.app.getApp('budget').getCheckAvailableBudget()" colSpan="3"/>
+          <field name="sourceSelect" colSpan="3" hidden="true"/>
+          <field name="fullName" colSpan="3" hidden="true"/>
         </panel>
 
         <panel name="versionPanel" colSpan="12" hideIf="statusSelect == 0">
@@ -195,6 +195,10 @@
   <action-method name="action-global-budget-method-budget-version-domain">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController"
       method="setBudgetVersionDomain"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-show-update-dates-btn">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="showUpdateDatesBtn"/>
   </action-method>
 
   <action-view
