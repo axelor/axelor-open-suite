@@ -65,7 +65,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   // must not rollback on AxelorException
-  @Transactional
+  @Transactional(ignore = AxelorException.class)
   public void close(Period period) {
     try {
       if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
@@ -77,11 +77,16 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
           getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
 
       period = periodRepo.find(period.getId());
+
       super.close(period);
     } catch (AxelorException e) {
       super.resetStatusSelect(period);
       periodRepo.save(period);
       TraceBackService.trace(e);
+    } catch (Exception e) {
+      super.resetStatusSelect(period);
+      periodRepo.save(period);
+      throw e;
     }
   }
 
