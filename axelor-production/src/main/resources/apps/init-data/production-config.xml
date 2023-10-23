@@ -19,4 +19,13 @@
       eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"/>
   </input>
 
+  <input file="production_productionConfig.csv" separator=";"
+    type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
+
+  <input file="base_birtTemplateConfigLine.csv"
+    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
+    search="self.importId = :importId">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="appBase" search="self.id = '1'"/>
+  </input>
 </csv-inputs>

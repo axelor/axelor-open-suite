@@ -18,18 +18,12 @@
  */
 package com.axelor.apps.hr.web;
 
-import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.EmployeeBonusMgt;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
-import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.EmployeeBonusService;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -49,27 +43,5 @@ public class EmployeeBonusController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    EmployeeBonusMgt bonus =
-        Beans.get(EmployeeBonusMgtRepository.class)
-            .find(request.getContext().asType(EmployeeBonusMgt.class).getId());
-
-    String name =
-        I18n.get("Employee bonus management") + " :  " + bonus.getEmployeeBonusType().getLabel();
-
-    String fileLink =
-        ReportFactory.createReport(IReport.EMPLOYEE_BONUS_MANAGEMENT, name)
-            .addParam("EmployeeBonusMgtId", bonus.getId())
-            .addParam(
-                "Timezone", bonus.getCompany() != null ? bonus.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(bonus)
-            .generate()
-            .getFileLink();
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 }

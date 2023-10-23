@@ -432,6 +432,7 @@
     <action name="action-project-task-attrs-project-filter-status"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
     <action name="action-project-task-attrs-onchange-invoice-type"/>
+    <action name="test" if="parentTask != null"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
@@ -547,6 +548,7 @@
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="taskDate" expr="#{__config__.date}"/>
     <field name="project" expr="eval:_project"/>
+    <field name="parentTask" expr="eval:_parentTask"/>
     <field name="customerReferral" expr="eval: __user__"
       if="__user__?.roles.contains(__repo__(Role).all().filter('self.name=?','role.customer').fetchOne())"/>
     <field name="assignment" expr="eval:2"/>
@@ -647,6 +649,8 @@
       expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'salePrice', project.company)"/>
     <field name="currency"
       expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'saleCurrency', project.company)"/>
+    <field name="unitCost" expr="eval: product?.costPrice"/>
+    <field name="totalCosts" expr="eval: product?.costPrice"/>
   </action-record>
 
   <action-method name="action-project-task-method-manage-timer-buttons">
@@ -656,6 +660,10 @@
   <action-method name="action-project-task-method-compute-total-timer-duration">
     <call class="com.axelor.apps.project.web.ProjectTaskController"
       method="computeTotalTimerDuration"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-defaults-from-parent-task">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillSubtask"/>
   </action-method>
 
   <action-group name="action-project-task-group-project-category-onchange">

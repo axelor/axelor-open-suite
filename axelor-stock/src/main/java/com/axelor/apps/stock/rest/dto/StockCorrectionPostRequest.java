@@ -55,6 +55,8 @@ public class StockCorrectionPostRequest extends RequestPostStructure {
   @Min(0)
   private BigDecimal realQty;
 
+  private String comments;
+
   public Long getProductId() {
     return productId;
   }
@@ -101,6 +103,14 @@ public class StockCorrectionPostRequest extends RequestPostStructure {
 
   public void setRealQty(BigDecimal realQty) {
     this.realQty = realQty;
+  }
+
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
   }
 
   // Transform id to object

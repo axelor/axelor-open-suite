@@ -7,7 +7,7 @@
 
   <entity name="AppRecruitment" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <string name="lastEmailId" title="Last email sync id"/>
     <many-to-one name="hiringStatus" ref="com.axelor.apps.talent.db.HiringStage"

@@ -158,7 +158,7 @@ public class ReimbursementExportService {
   public BigDecimal getTotalAmountRemaining(List<MoveLine> moveLineList) {
     BigDecimal total = BigDecimal.ZERO;
     for (MoveLine moveLine : moveLineList) {
-      total = total.add(moveLine.getAmountRemaining());
+      total = total.add(moveLine.getAmountRemaining().abs());
     }
 
     log.debug("Total Amount Remaining : {}", total);
@@ -185,7 +185,7 @@ public class ReimbursementExportService {
     if (reimbursement.getMoveLineSet() != null && !reimbursement.getMoveLineSet().isEmpty()) {
       int seq = 1;
       for (MoveLine moveLine : reimbursement.getMoveLineSet()) {
-        BigDecimal amountRemaining = moveLine.getAmountRemaining();
+        BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
         if (amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
           partner = moveLine.getPartner();
 
@@ -561,7 +561,7 @@ public class ReimbursementExportService {
             .all()
             .filter(
                 "self.account.useForPartnerBalance = 'true' "
-                    + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
+                    + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining != 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
                 MoveRepository.STATUS_ACCOUNTED,
                 MoveRepository.STATUS_DAYBOOK,
                 partner,

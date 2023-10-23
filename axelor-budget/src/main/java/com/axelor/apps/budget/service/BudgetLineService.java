@@ -32,12 +32,4 @@ public interface BudgetLineService {
    * @return BudgetLine
    */
   Optional<BudgetLine> findBudgetLineAtDate(List<BudgetLine> budgetLineList, LocalDate date);
-
-  /**
-   * Reset budget line amounts when the budget line is a copy
-   *
-   * @param entity
-   * @return BudgetLine
-   */
-  BudgetLine resetBudgetLine(BudgetLine entity);
 }

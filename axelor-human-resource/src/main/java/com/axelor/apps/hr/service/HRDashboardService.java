@@ -41,4 +41,6 @@ public interface HRDashboardService {
 
   List<Map<String, Object>> getEmployeeLeaveData(Employee employee, Period period)
       throws AxelorException;
+
+  List<Map<String, Object>> getEmployeeMedicalVisitData(Employee employee);
 }
