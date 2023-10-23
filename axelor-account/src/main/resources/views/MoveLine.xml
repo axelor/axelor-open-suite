@@ -209,6 +209,7 @@
     <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
     <field name="move.statusSelect" hidden="true"/>
+    <field name="account.accountType" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
@@ -236,7 +237,7 @@
     <field name="credit" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
     <field name="taxLine"
-      requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
+      requiredIf="!account.isTaxAuthorizedOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
     <field name="analyticDistributionTemplate"
@@ -513,15 +514,12 @@
       </panel>
       <panel name="othersPanel" title="Others"
         showIf="move.statusSelect == 2 || move.statusSelect == 3 || taxLine != null" readonly="true">
-        <field name="taxLine" canEdit="false"
-          showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
-          colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
-          domain="self.endDate > :date OR self.endDate IS NULL"
-          readonlyIf="!account.isTaxAuthorizedOnMoveLine"
+        <field name="taxLine" canEdit="false" colSpan="6" form-view="tax-line-form"
+          grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
+          readonlyIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation' || !account.isTaxAuthorizedOnMoveLine"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="vatSystemSelect"
-          readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
-          showIf="account.accountType.technicalTypeSelect == 'tax'"/>
+          readonlyIf="account.accountType.technicalTypeSelect != 'tax' || (move.statusSelect != 1 &amp;&amp; move.statusSelect != 5)"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="reimbursementStatusSelect"
           showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0"
@@ -761,14 +759,12 @@
       </panel>
       <panel name="othersPanel" title="Others">
         <field name="taxLine" canEdit="false" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-          showIf="account.isTaxRequiredOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine"
-          colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
-          domain="self.endDate > :date OR self.endDate IS NULL"
+          requiredIf="account.isTaxRequiredOnMoveLine" colSpan="6" form-view="tax-line-form"
+          grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="vatSystemSelect"
-          readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
-          showIf="account.accountType.technicalTypeSelect == 'tax'"
+          readonlyIf="(move.statusSelect != 1 &amp;&amp; move.statusSelect != 5) || account.accountType.technicalTypeSelect != 'tax'"
           requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="reimbursementStatusSelect"
           showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0"
