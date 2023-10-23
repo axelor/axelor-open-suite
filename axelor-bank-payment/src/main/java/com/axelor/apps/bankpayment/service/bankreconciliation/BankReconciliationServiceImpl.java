@@ -945,7 +945,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
             + " AND self.move.company = :company"
             + " AND self.move.currency = :bankReconciliationCurrency"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
-            + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount";
+            + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount)";
 
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
       query =
@@ -1448,7 +1448,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
               + " OR self.move.statusSelect = "
               + MoveRepository.STATUS_DAYBOOK
               + ")"
-              + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount ";
+              + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount) ";
 
       if (bankStatementCredit.signum() > 0) {
         query = query.concat(" AND self.debit > 0");
