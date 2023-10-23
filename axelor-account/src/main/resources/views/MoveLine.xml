@@ -379,18 +379,22 @@
       <field name="name" colSpan="8" showTitle="false">
         <viewer depends="name">
 					<![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Move line</span> {{record.name}}</span>
-						</h3>
+						<>
+							<h3>
+								<span>{_t('Move line')}</span> {name}
+							</h3>
+						</>
 					]]>
         </viewer>
       </field>
       <field name="reconcileGroup.code" colSpan="4" showTitle="false">
         <viewer depends="reconcileGroup.code">
 					<![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial; text-align:right; display:block; width:100%;">{{record.reconcileGroup.code}}</span>
-						</h3>
+						<>
+							<h3>
+								<Box as="span" d="flex" justifyContent="flex-end">{reconcileGroup.code}</Box>
+							</h3>
+						</>
 					]]>
         </viewer>
       </field>
@@ -446,7 +450,7 @@
         <field name="$invoiceTermListPercentageWarningText" hidden="true" colSpan="12"
           showTitle="false" readonly="true">
           <viewer>
-          <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
+          <![CDATA[<><Badge bg="danger">{_t('The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.')}</Badge></>]]>
           </viewer>
         </field>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
@@ -501,9 +505,7 @@
       <panel name="currency" title="Currency">
         <field name="currency" title="Currency and exchange rate">
           <viewer>
-						<![CDATA[
-							<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>
-						]]>
+			<![CDATA[<><span>{currencyRate}</span> x <span>{currencyAmount}</span> <span>{move.currencyCode}</span></>]]>
           </viewer>
           <editor colSpan="12" layout="table" x-show-titles="false">
             <field name="currencyRate" readonly="true"/>
@@ -554,31 +556,25 @@
       <field name="$viewerTags" showTitle="false" colSpan="6" readonly="true">
         <viewer depends="move.statusSelect">
 					<![CDATA[
-						<h4>
-							<span class="label label-info" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 1" x-translate>Move.New</span>
-							<span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 2" x-translate>DayBook</span>
-							<span class="label label-success" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 3" x-translate>Move.Accounted</span>
-							<span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 4" x-translate>Move.Canceled</span>
-							<span class="label label-info" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.statusSelect == 5" x-translate>Simulated</span>
-						</h4>
+						<>
+							{move.statusSelect == 1 && <Badge bg="info">{_t('Move.New')}</Badge>}
+							{move.statusSelect == 2 && <Badge bg="warning">{_t('DayBook')}</Badge>}
+							{move.statusSelect == 3 && <Badge bg="success">{_t('Move.Accounted')}</Badge>}
+							{move.statusSelect == 4 && <Badge bg="danger">{_t('Move.Canceled')}</Badge>}
+							{move.statusSelect == 5 && <Badge bg="info">{_t('Simulated')}</Badge>}
+						</>
 					]]>
         </viewer>
       </field>
       <field name="$functionalOriginTags" showTitle="false" colSpan="6" readonly="true">
         <viewer depends="move.functionalOriginSelect">
           <![CDATA[
-                      <h4>
-	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 1" x-translate>Opening</span>
-	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 2" x-translate>Closure</span>
-	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 3" x-translate>Sale</span>
-	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 4" x-translate>Purchase</span>
-	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 5" x-translate>Payment</span>
-	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 6" x-translate>Cut Off</span>
-	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 7" x-translate>Fixed asset</span>
-	                      <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 8" x-translate>Doubtful customer</span>
-                      	  <span class="label label-important" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.move.functionalOriginSelect == 9" x-translate>Irrecoverable</span>
-                      </h4>
-                    ]]>
+          		<>
+          			<Badge bg="danger">
+          				{_t(['Opening','Closure','Sale','Purchase','Payment','Cut Off','Fixed asset','Doubtful customer','Irrecoverable'][move.functionalOriginSelect-1])}
+          			</Badge>
+          		</>
+          ]]>
         </viewer>
       </field>
       <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
@@ -597,18 +593,22 @@
       <field name="name" colSpan="8" showTitle="false">
         <viewer depends="name">
 					<![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Move line</span> {{record.name}}</span>
-						</h3>
+						<>
+							<h3>
+								<span>{_t('Move line')}</span> {name}
+							</h3>
+						</>
 					]]>
         </viewer>
       </field>
       <field name="reconcileGroup.code" colSpan="4" showTitle="false">
         <viewer depends="reconcileGroup.code">
 					<![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial; text-align:right; display:block; width:100%;">{{record.reconcileGroup.code}}</span>
-						</h3>
+						<>
+							<h3>
+								<Box as="span" d="flex" justifyContent="flex-end">{reconcileGroup.code}</Box>
+							</h3>
+						</>
 					]]>
         </viewer>
       </field>
@@ -692,7 +692,7 @@
         <field name="$invoiceTermListPercentageWarningText" hidden="true" colSpan="12"
           showTitle="false" readonly="true">
           <viewer>
-          <![CDATA[<span class='label label-important' style='white-space: normal; text-align: left;' x-translate>The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.</span>]]>
+          <![CDATA[<><Badge bg="danger">{_t('The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.')}</Badge></>]]>
           </viewer>
         </field>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-invoice-form"
@@ -747,9 +747,7 @@
       <panel name="currency" title="Currency">
         <field name="currency" title="Currency and exchange rate">
           <viewer>
-						<![CDATA[
-							<span>{{ record.currencyRate }} </span> x <span>{{ record.currencyAmount }}</span> <span>{{ record.move.currencyCode }} </span>
-						]]>
+			<![CDATA[<><span>{currencyRate}</span> x <span>{currencyAmount}</span> <span>{move.currencyCode}</span></>]]>
           </viewer>
           <editor colSpan="12" layout="table" x-show-titles="false">
             <field name="currencyRate"

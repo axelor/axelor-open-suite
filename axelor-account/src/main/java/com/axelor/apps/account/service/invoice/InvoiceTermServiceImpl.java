@@ -62,7 +62,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -1415,11 +1415,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal computeParentTotal(Context context) {
     BigDecimal total = BigDecimal.ZERO;
     if (context.getParent() != null) {
-      Invoice invoice = ContextTool.getContextParent(context, Invoice.class, 1);
+      Invoice invoice = ContextHelper.getContextParent(context, Invoice.class, 1);
       if (invoice != null) {
         total = invoice.getInTaxTotal();
       } else {
-        MoveLine moveLine = ContextTool.getContextParent(context, MoveLine.class, 1);
+        MoveLine moveLine = ContextHelper.getContextParent(context, MoveLine.class, 1);
         if (moveLine != null) {
           total = moveLine.getDebit().max(moveLine.getCredit());
         }

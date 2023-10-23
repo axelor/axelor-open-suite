@@ -33,7 +33,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -94,8 +94,8 @@ public class PrintServiceImpl implements PrintService {
       File file = MetaFiles.getPath(metaFile).toFile();
 
       String fileLink =
-          PdfTool.getFileLinkFromPdfFile(
-              PdfTool.printCopiesToFile(file, 1), metaFile.getFileName());
+          PdfHelper.getFileLinkFromPdfFile(
+              PdfHelper.printCopiesToFile(file, 1), metaFile.getFileName());
 
       attachFileToModel(print, file, metaFile, documentName);
 

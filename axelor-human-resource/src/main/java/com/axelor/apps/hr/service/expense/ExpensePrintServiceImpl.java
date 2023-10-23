@@ -32,7 +32,7 @@ import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -97,7 +97,7 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
     fileList.addAll(convertMetaFileToFile(imageConvertedMetaFileList));
     fileList.addAll(convertMetaFileToFile(pdfMetaFileList));
 
-    return PdfTool.mergePdf(fileList);
+    return PdfHelper.mergePdf(fileList);
   }
 
   protected File getReportFile(Expense expense) throws AxelorException, IOException {

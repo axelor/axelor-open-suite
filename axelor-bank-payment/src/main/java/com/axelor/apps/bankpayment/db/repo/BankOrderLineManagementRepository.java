@@ -21,7 +21,7 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.i18n.L10n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -51,9 +51,9 @@ public class BankOrderLineManagementRepository extends BankOrderLineRepository {
       }
     }
 
-    json.put("$pieceReferenceList", StringTool.cutTooLongString(pieceReferenceList));
-    json.put("$pieceDateList", StringTool.cutTooLongString(pieceDateList));
-    json.put("$pieceDueDateList", StringTool.cutTooLongString(pieceDueDateList));
+    json.put("$pieceReferenceList", StringHelper.cutTooLongString(pieceReferenceList));
+    json.put("$pieceDateList", StringHelper.cutTooLongString(pieceDateList));
+    json.put("$pieceDueDateList", StringHelper.cutTooLongString(pieceDueDateList));
 
     return super.populate(json, context);
   }

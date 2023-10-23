@@ -84,10 +84,15 @@
         <field name="$viewerProjectTags" showTitle="false" colSpan="4" readonly="true">
           <viewer depends="isBusinessProject,$toInvoiceCounter,id">
 							<![CDATA[
-								<h4 style="text-align: right;">
-									<span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject &amp;&amp; record.id">{{$fmt('$toInvoiceCounter')}}</span>
-									<span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
-								</h4>
+								<>
+									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+										<Box>
+											{isBusinessProject && <Badge style={{ backgroundColor: "#FD6217" }}>{_t('To Invoice')}</Badge>}
+											{isBusinessProject && id && <Badge style={{ backgroundColor: "#FFAA00" }}>{$fmt('$toInvoiceCounter')}</Badge>}
+										</Box>
+										{isBusinessProject && <Badge style={{ backgroundColor: "#2185D0" }}>{_t('Business')}</Badge>}
+									</Box>
+								</>
 							]]>
           </viewer>
         </field>
@@ -597,10 +602,10 @@
     <field name="sequence"/>
     <template>
 		<![CDATA[
-		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		 <div ng-bind-html="description"></div>
-	    </div>
+	    <>
+	    	<h4>{fullName}</h4>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
 		]]>
     </template>
   </kanban>
@@ -613,10 +618,10 @@
     <field name="sequence"/>
     <template>
 		<![CDATA[
-		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		 <div ng-bind-html="description"></div>
-	    </div>
+	    <>
+	    	<h4>{fullName}</h4>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
 		]]>
     </template>
   </kanban>

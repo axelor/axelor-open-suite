@@ -35,9 +35,11 @@
       <field name="reconcileGroup.code" showTitle="false" colSpan="4">
         <viewer depends="reconcileGroup.code">
                   <![CDATA[
-                     <h3>
-                         <span style="margin: 5px 0 !important; display: inline-table; line-height: initial; text-align:right; display:block; width:100%;">{{record.reconcileGroup.code}}</span>
-                     </h3>
+					<>
+						<h3>
+							<Box as="span" d="flex" justifyContent="flex-end">{reconcileGroup.code}</Box>
+						</h3>
+					</>
                   ]]>
         </viewer>
       </field>

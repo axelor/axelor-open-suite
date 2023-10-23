@@ -49,9 +49,9 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
-import com.axelor.utils.reader.DataReaderFactory;
-import com.axelor.utils.reader.DataReaderService;
 import com.axelor.utils.service.TranslationService;
+import com.axelor.utils.service.reader.DataReader;
+import com.axelor.utils.service.reader.DataReaderFactory;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -141,7 +141,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     String extension = Files.getFileExtension(advancedImport.getImportFile().getFileName());
 
-    DataReaderService reader = dataReaderFactory.getDataReader(extension);
+    DataReader reader = dataReaderFactory.getDataReader(extension);
     reader.initialize(advancedImport.getImportFile(), advancedImport.getFileSeparator());
 
     List<CSVInput> inputs = this.process(reader, advancedImport);
@@ -155,7 +155,7 @@ public class DataImportServiceImpl implements DataImportService {
     return addImportHistory(advancedImport, logFile);
   }
 
-  private List<CSVInput> process(DataReaderService reader, AdvancedImport advancedImport)
+  private List<CSVInput> process(DataReader reader, AdvancedImport advancedImport)
       throws AxelorException, IOException, ClassNotFoundException {
 
     String[] sheets = reader.getSheetNames();

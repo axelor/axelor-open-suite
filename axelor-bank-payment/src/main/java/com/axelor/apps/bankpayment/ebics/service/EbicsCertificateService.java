@@ -39,7 +39,7 @@ import com.axelor.libs.ebics.dto.EbicsLibUser;
 import com.axelor.libs.ebics.exception.EbicsLibException;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.ByteArrayInputStream;
@@ -238,8 +238,8 @@ public class EbicsCertificateService {
     log.debug("certificat : {}", new String(certificate.getEncoded()));
     log.debug("certificat size : {}", certificate.getEncoded().length);
 
-    cert.setValidFrom(DateTool.toLocalDate(certificate.getNotBefore()));
-    cert.setValidTo(DateTool.toLocalDate(certificate.getNotAfter()));
+    cert.setValidFrom(LocalDateHelper.toLocalDate(certificate.getNotBefore()));
+    cert.setValidTo(LocalDateHelper.toLocalDate(certificate.getNotAfter()));
     cert.setIssuer(certificate.getIssuerDN().getName());
     cert.setSubject(certificate.getSubjectDN().getName());
     cert.setCertificate(certificate.getEncoded());

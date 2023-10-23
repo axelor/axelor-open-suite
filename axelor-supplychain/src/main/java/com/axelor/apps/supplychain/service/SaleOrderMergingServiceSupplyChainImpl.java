@@ -31,7 +31,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
-import com.axelor.utils.MapTools;
+import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.StringJoiner;
@@ -266,8 +266,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
     if (appSaleService.isApp("supplychain")) {
       if (context.get("stockLocation") != null) {
         getCommonFields(result)
-            .setCommonStockLocation(
-                MapTools.findObject(StockLocation.class, context.get("stockLocation")));
+            .setCommonStockLocation(MapHelper.get(context, StockLocation.class, "stockLocation"));
       }
     }
   }

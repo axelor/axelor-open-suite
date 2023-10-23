@@ -29,7 +29,7 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
-import com.axelor.utils.date.LocalDateUtils;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -76,7 +76,7 @@ public class ExpenseLimitServiceImpl implements ExpenseLimitService {
 
       BigDecimal totalAmount =
           expenseLineList.stream()
-              .filter(line -> LocalDateUtils.isBetween(fromDate, toDate, line.getExpenseDate()))
+              .filter(line -> LocalDateHelper.isBetween(fromDate, toDate, line.getExpenseDate()))
               .map(ExpenseLine::getTotalAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 

@@ -29,7 +29,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.MapTools;
+import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.MapHelper;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -38,14 +39,15 @@ public class SaleOrderMergingController {
   public void mergeSaleOrder(ActionRequest request, ActionResponse response) {
 
     String lineToMerge;
-    if (request.getContext().get("saleQuotationToMerge") != null) {
+    Context context = request.getContext();
+    if (context.get("saleQuotationToMerge") != null) {
       lineToMerge = "saleQuotationToMerge";
     } else {
       lineToMerge = "saleOrderToMerge";
     }
     try {
       List<SaleOrder> saleOrdersToMerge =
-          MapTools.makeList(SaleOrder.class, request.getContext().get(lineToMerge));
+          MapHelper.getCollection(context, SaleOrder.class, lineToMerge);
       if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
         SaleOrderMergingResult result =
             Beans.get(SaleOrderMergingService.class).mergeSaleOrders(saleOrdersToMerge);
@@ -77,18 +79,19 @@ public class SaleOrderMergingController {
 
   public void mergeSaleOrderFromPopUp(ActionRequest request, ActionResponse response) {
     String lineToMerge;
-    if (request.getContext().get("saleQuotationToMerge") != null) {
+    Context context = request.getContext();
+    if (context.get("saleQuotationToMerge") != null) {
       lineToMerge = "saleQuotationToMerge";
     } else {
       lineToMerge = "saleOrderToMerge";
     }
     try {
       List<SaleOrder> saleOrdersToMerge =
-          MapTools.makeList(SaleOrder.class, request.getContext().get(lineToMerge));
+          MapHelper.getCollection(context, SaleOrder.class, lineToMerge);
       if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
         SaleOrderMergingResult result =
             Beans.get(SaleOrderMergingService.class)
-                .mergeSaleOrdersWithContext(saleOrdersToMerge, request.getContext());
+                .mergeSaleOrdersWithContext(saleOrdersToMerge, context);
         if (result.getSaleOrder() != null) {
           // Open the generated sale order in a new tab
           response.setView(
