@@ -195,12 +195,11 @@ public class BudgetLevelController {
       BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
       GlobalBudget globalBudget =
           Beans.get(BudgetToolsService.class).getGlobalBudgetUsingBudgetLevel(budgetLevel);
-      if (globalBudget != null) {
-        if (globalBudget.getStatusSelect()
-            == GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT) {
-          return;
-        }
+      if (globalBudget != null &&
+              globalBudget.getStatusSelect() == GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT) {
+        return;
       }
+
 
       List<BudgetLevel> filteredBudgetLevelList =
           Beans.get(BudgetLevelService.class).getFilteredBudgetLevelList(budgetLevel);
