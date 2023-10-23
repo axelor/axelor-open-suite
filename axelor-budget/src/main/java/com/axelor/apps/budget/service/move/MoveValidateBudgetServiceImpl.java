@@ -76,7 +76,9 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
   @Override
   public void accounting(Move move) throws AxelorException {
 
-    moveBudgetService.autoComputeBudgetDistribution(move);
+    if (!moveBudgetService.isBudgetInLines(move)) {
+      moveBudgetService.autoComputeBudgetDistribution(move);
+    }
 
     super.accounting(move);
   }
