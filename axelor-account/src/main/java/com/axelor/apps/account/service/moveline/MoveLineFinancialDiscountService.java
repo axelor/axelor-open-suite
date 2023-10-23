@@ -35,10 +35,10 @@ public interface MoveLineFinancialDiscountService {
 
   int createFinancialDiscountMoveLine(
       Move move,
-      Company company,
       Partner partner,
       Map<Tax, Pair<BigDecimal, BigDecimal>> taxMap,
       Map<Tax, Integer> vatSystemTaxMap,
+      Map<Tax, Account> accountTaxMap,
       Account financialDiscountAccount,
       String origin,
       String description,
@@ -49,6 +49,8 @@ public interface MoveLineFinancialDiscountService {
       boolean isDebit,
       boolean financialDiscountVat)
       throws AxelorException;
+
+  Map<Tax, Account> getAccountTaxMap(Move move);
 
   Map<Tax, Integer> getVatSystemTaxMap(Move move);
 

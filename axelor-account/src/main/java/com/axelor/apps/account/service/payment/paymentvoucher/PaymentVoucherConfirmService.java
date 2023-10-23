@@ -692,13 +692,15 @@ public class PaymentVoucherConfirmService {
         moveLineFinancialDiscountService.getFinancialDiscountTaxMap(moveLineToPay);
     Map<Tax, Integer> vatSystemTaxMap =
         moveLineFinancialDiscountService.getVatSystemTaxMap(moveLineToPay.getMove());
+    Map<Tax, Account> accountTaxMap =
+        moveLineFinancialDiscountService.getAccountTaxMap(moveLineToPay.getMove());
 
     moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
         move,
-        company,
         payerPartner,
         financialDiscountTaxMap,
         vatSystemTaxMap,
+        accountTaxMap,
         financialDiscountAccount,
         invoiceName,
         null,
