@@ -232,11 +232,7 @@ public class DebtRecoveryService {
       Partner partner, Company company, TradingName tradingName) {
     List<Long> idList = new ArrayList<>();
 
-    LocalDate todayDate = appAccountService.getTodayDate(company);
-    int mailTransitTime = company.getAccountConfig().getMailTransitTime();
-
-    addInvoiceTermsFromInvoice(partner, company, tradingName, todayDate, mailTransitTime, idList);
-    addInvoiceTermsFromMoveLine(partner, company, tradingName, todayDate, mailTransitTime, idList);
+    addInvoiceTermsFromMoveLine(partner, company, tradingName, idList);
 
     return moveLineRepo.findByIds(idList.stream().distinct().collect(Collectors.toList()));
   }
@@ -252,57 +248,23 @@ public class DebtRecoveryService {
     return invoiceList;
   }
 
-  protected void addInvoiceTermsFromInvoice(
-      Partner partner,
-      Company company,
-      TradingName tradingName,
-      LocalDate todayDate,
-      int mailTransitTime,
-      List<Long> idList) {
-    javax.persistence.Query moveLineWithoutInvoiceTermQuery =
-        JPA.em().createQuery(computeQuery(tradingName, false));
-
-    moveLineWithoutInvoiceTermQuery =
-        addInvoiceTermQueryParam(
-            company, partner, todayDate, mailTransitTime, moveLineWithoutInvoiceTermQuery);
-
-    moveLineWithoutInvoiceTermQuery =
-        addTradingNameBinding(tradingName, moveLineWithoutInvoiceTermQuery);
-
-    idList.addAll(moveLineWithoutInvoiceTermQuery.getResultList());
-  }
-
   protected void addInvoiceTermsFromMoveLine(
-      Partner partner,
-      Company company,
-      TradingName tradingName,
-      LocalDate todayDate,
-      int mailTransitTime,
-      List<Long> idList) {
-    javax.persistence.Query moveLineWithInvoiceTermQuery =
-        JPA.em().createQuery(computeQuery(tradingName, true));
+      Partner partner, Company company, TradingName tradingName, List<Long> idList) {
+    LocalDate todayDate = appAccountService.getTodayDate(company);
+    int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 
-    moveLineWithInvoiceTermQuery =
-        addInvoiceTermQueryParam(
-            company, partner, todayDate, mailTransitTime, moveLineWithInvoiceTermQuery);
+    javax.persistence.Query moveLineWithInvoiceTermQuery =
+        JPA.em()
+            .createQuery(computeQuery(tradingName))
+            .setParameter("partner", partner)
+            .setParameter("company", company)
+            .setParameter("todayDate", todayDate)
+            .setParameter("cancelStatus", MoveRepository.STATUS_CANCELED)
+            .setParameter("todayDateMinusTransitTime", todayDate.minusDays(mailTransitTime));
 
     moveLineWithInvoiceTermQuery = addTradingNameBinding(tradingName, moveLineWithInvoiceTermQuery);
 
     idList.addAll(moveLineWithInvoiceTermQuery.getResultList());
-  }
-
-  protected javax.persistence.Query addInvoiceTermQueryParam(
-      Company company,
-      Partner partner,
-      LocalDate todayDate,
-      int mailTransitTime,
-      javax.persistence.Query invoiceTermQuery) {
-    return invoiceTermQuery
-        .setParameter("partner", partner)
-        .setParameter("company", company)
-        .setParameter("todayDate", todayDate)
-        .setParameter("cancelStatus", MoveRepository.STATUS_CANCELED)
-        .setParameter("todayDateMinusTransitTime", todayDate.minusDays(mailTransitTime));
   }
 
   protected javax.persistence.Query addTradingNameBinding(
@@ -314,48 +276,43 @@ public class DebtRecoveryService {
     return moveLineWithoutInvoiceTermQuery;
   }
 
-  protected String computeQuery(TradingName tradingName, boolean fromMoveLine) {
+  protected String computeQuery(TradingName tradingName) {
     StringBuilder query = new StringBuilder();
     boolean allowMultiInvoiceTerms = appAccountService.getAppAccount().getAllowMultiInvoiceTerms();
 
     computeQueryJoins(allowMultiInvoiceTerms, query);
-    computeQueryConditions(tradingName, allowMultiInvoiceTerms, fromMoveLine, query);
+    computeQueryConditions(tradingName, allowMultiInvoiceTerms, query);
 
     return query.toString();
   }
 
   protected void computeQueryConditions(
-      TradingName tradingName,
-      boolean allowMultiInvoiceTerms,
-      boolean fromMoveLine,
-      StringBuilder query) {
+      TradingName tradingName, boolean allowMultiInvoiceTerms, StringBuilder query) {
     query.append("WHERE ml.partner = :partner ");
-    query.append("AND move.company = :company ");
     query.append("AND move.id IS NOT NULL ");
-    query.append("AND move.ignoreInDebtRecoveryOk IS FALSE ");
-    query.append("AND move.statusSelect != :cancelStatus ");
+    query.append("AND move.company = :company ");
+    query.append("AND ml.debit > 0 ");
     query.append("AND account.id IS NOT NULL ");
     query.append("AND account.useForPartnerBalance IS TRUE ");
+    query.append("AND ABS(ml.amountRemaining) > 0 ");
+    query.append("AND move.ignoreInDebtRecoveryOk IS FALSE ");
     query.append("AND (invoice.id IS NULL ");
     query.append("OR (invoice.debtRecoveryBlockingOk IS FALSE ");
     query.append("AND invoice.schedulePaymentOk IS FALSE ");
     query.append("AND invoice.invoiceDate < :todayDateMinusTransitTime))");
+    query.append("AND move.statusSelect != :cancelStatus ");
 
     if (tradingName != null) {
       query.append("AND move.tradingName = :tradingName ");
-    }
-
-    if (fromMoveLine) {
-      query.append("AND ml.debit > 0 ");
-      query.append("AND ml.dueDate IS NOT NULL ");
-      query.append("AND (ml.dueDate <= :todayDate) ");
-      query.append("AND ABS(ml.amountRemaining) > 0 ");
     }
 
     if (allowMultiInvoiceTerms) {
       query.append("AND invoiceterm.dueDate IS NOT NULL ");
       query.append("AND invoiceterm.dueDate <= :todayDate ");
       query.append("AND ABS(invoiceterm.amountRemaining) > 0 ");
+    } else {
+      query.append("AND ml.dueDate IS NOT NULL ");
+      query.append("AND (ml.dueDate <= :todayDate) ");
     }
   }
 
