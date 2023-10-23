@@ -206,52 +206,28 @@
         </field>
       </replace>
     </extend>
-    <extend target="//panel[@name='marketingCampaignPanel']">
-      <insert position="after">
-        <panel name="mainInformationPanel" title="General information" showIf="isCollaborator">
-          <panel-related name="collaboratorDomainListPanel"
-            field="collaboratorDomainList" form-view="collaborator-domain-form"
-            grid-view="collaborator-domain-grid"/>
-          <panel-related name="workAreaSetPanel" field="workAreaSet"
-            form-view="country-form" grid-view="country-grid" canNew="false" canEdit="false"/>
-          <field name="fidelity" form-view="fidelity-form" grid-view="fidelity-grid"/>
-          <field name="collaboratorSince"/>
-        </panel>
-      </insert>
-    </extend>
-    <extend target="/">
-      <insert position="after">
-        <panel name="followUpPanel" title="Collaborator monitoring" showIf="isCollaborator"
-          sidebar="true" colSpan="12">
-          <field name="takenOpportunities"/>
-          <field name="wonOpportunities"/>
-        </panel>
-      </insert>
-    </extend>
     <extend target="//field[@name='isInternal']">
       <insert position="after">
         <field name="isCorporatePartner" widget="InlineCheckbox"
           if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled"/>
       </insert>
     </extend>
-    <extend target="/">
+    <extend target="//panel[@name='customerPanel']">
       <insert position="after">
-        <panel name="mainInformationPanel" title="General information"
-          showIf="isCorporatePartner" sidebar="true">
-          <field name="corporatePartnerDomainSet" widget="TagSelect"/>
-          <field name="workAreaSet" widget="TagSelect"/>
-          <panel-related name="fidelityListPanel" field="fidelityList"
-            form-view="fidelity-form" grid-view="fidelity-grid"/>
-          <field name="corporatePartnerSince"/>
-        </panel>
-      </insert>
-    </extend>
-    <extend target="/">
-      <insert position="after">
-        <panel name="followUpPanel" title="Corporate partner monitoring"
-          showIf="isCorporatePartner" sidebar="true" colSpan="12">
-          <field name="takenOpportunities"/>
-          <field name="wonOpportunities"/>
+        <panel name="corporatePanel" title="Corporate partner" showIf="isCorporatePartner">
+          <panel name="mainInformationPanel" title="General information"
+            showIf="isCorporatePartner" colSpan="6">
+            <field name="corporatePartnerDomainSet" widget="TagSelect"/>
+            <field name="workAreaSet" widget="TagSelect"/>
+            <panel-related name="fidelityListPanel" field="fidelityList"
+              form-view="fidelity-form" grid-view="fidelity-grid" colSpan="12"/>
+            <field name="corporatePartnerSince"/>
+          </panel>
+          <panel name="followUpPanel" title="Corporate partner monitoring"
+            showIf="isCorporatePartner" colSpan="6">
+            <field name="takenOpportunities"/>
+            <field name="wonOpportunities"/>
+          </panel>
         </panel>
       </insert>
     </extend>
