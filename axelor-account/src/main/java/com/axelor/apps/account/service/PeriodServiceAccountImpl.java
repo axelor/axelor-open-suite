@@ -79,7 +79,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       period = periodRepo.find(period.getId());
       super.close(period);
     } catch (AxelorException e) {
-      super.openPeriod(period);
+      super.resetStatusSelect(period);
       periodRepo.save(period);
       TraceBackService.trace(e);
     }

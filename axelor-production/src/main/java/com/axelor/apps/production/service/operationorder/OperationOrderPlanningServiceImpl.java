@@ -16,6 +16,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAsapFiniteCapacityService;
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAsapInfiniteCapacityService;
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAtTheLatestFiniteCapacityService;
@@ -24,7 +25,7 @@ import com.axelor.apps.production.service.operationorder.planning.OperationOrder
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningInfiniteCapacityService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
@@ -45,6 +46,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   protected OperationOrderService operationOrderService;
   protected OperationOrderPlanningInfiniteCapacityService
       operationOrderPlanningInfiniteCapacityService;
+  protected ManufOrderWorkflowService manufOrderWorkflowService;
 
   @Inject
   public OperationOrderPlanningServiceImpl(
@@ -55,7 +57,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
       WeeklyPlanningService weeklyPlanningService,
       ManufOrderService manufOrderService,
       OperationOrderService operationOrderService,
-      OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService) {
+      OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
+      ManufOrderWorkflowService manufOrderWorkflowService) {
     this.productionConfigService = productionConfigService;
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.machineService = machineService;
@@ -65,6 +68,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     this.operationOrderService = operationOrderService;
     this.operationOrderPlanningInfiniteCapacityService =
         operationOrderPlanningInfiniteCapacityService;
+    this.manufOrderWorkflowService = manufOrderWorkflowService;
   }
 
   @Override
@@ -125,6 +129,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     for (OperationOrder operationOrder : sortedOperationOrders) {
       operationOrderPlanningCommonService.plan(operationOrder);
     }
+    manufOrderWorkflowService.setOperationOrderMaxPriority(manufOrder);
   }
 
   @Override
@@ -151,7 +156,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
             operationOrderPlanningInfiniteCapacityService.computePlannedEndDateT(operationOrder));
 
         operationOrder.setPlannedDuration(
-            DurationTool.getSecondsDuration(
+            DurationHelper.getSecondsDuration(
                 Duration.between(
                     operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
       }
@@ -297,7 +302,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     if (operationOrder.getPlannedStartDateT() != null
         && operationOrder.getPlannedEndDateT() != null) {
       duration =
-          DurationTool.getSecondsDuration(
+          DurationHelper.getSecondsDuration(
               Duration.between(
                   operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
       operationOrder.setPlannedDuration(duration);
@@ -348,7 +353,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   @Override
   public void updateRealDuration(OperationOrder operationOrder) {
     long durationLong =
-        DurationTool.getSecondsDuration(operationOrderService.computeRealDuration(operationOrder));
+        DurationHelper.getSecondsDuration(
+            operationOrderService.computeRealDuration(operationOrder));
     operationOrder.setRealDuration(durationLong);
   }
 }

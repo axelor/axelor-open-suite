@@ -35,7 +35,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.FileTool;
+import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -168,7 +168,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     lines.addAll(generateN4DSLines(accountingExport));
 
     File file =
-        FileTool.writer(
+        FileHelper.writer(
             Beans.get(AppService.class).getDataExportDir(), fileName, (List<String>) lines);
     InputStream is = new FileInputStream(file);
     return Beans.get(MetaFiles.class).attach(is, fileName, accountingExport).getMetaFile();

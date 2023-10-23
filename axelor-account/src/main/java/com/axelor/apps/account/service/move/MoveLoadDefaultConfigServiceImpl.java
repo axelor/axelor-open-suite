@@ -59,7 +59,7 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
     Account accountingAccount = null;
 
     JournalType journalType = move.getJournal().getJournalType();
-    if (journalType != null) {
+    if (journalType != null && accountSituation != null) {
       if (journalType.getTechnicalTypeSelect()
           == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
         accountingAccount = accountSituation.getDefaultExpenseAccount();

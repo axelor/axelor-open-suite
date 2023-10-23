@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
@@ -13,7 +14,7 @@ import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -32,17 +33,20 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
   protected AppBaseService appBaseService;
   protected HRConfigService hrConfigService;
   protected PrintFromBirtTemplateService printFromBirtTemplateService;
+  protected PdfService pdfService;
 
   @Inject
   public ExpensePrintServiceImpl(
       MetaFiles metaFiles,
       AppBaseService appBaseService,
       HRConfigService hrConfigService,
-      PrintFromBirtTemplateService printFromBirtTemplateService) {
+      PrintFromBirtTemplateService printFromBirtTemplateService,
+      PdfService pdfService) {
     this.metaFiles = metaFiles;
     this.appBaseService = appBaseService;
     this.hrConfigService = hrConfigService;
     this.printFromBirtTemplateService = printFromBirtTemplateService;
+    this.pdfService = pdfService;
   }
 
   @Override
@@ -68,10 +72,14 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
     List<File> fileList = new ArrayList<>();
     File reportFile = getReportFile(expense);
     fileList.add(reportFile);
-    List<MetaFile> metaFileList = getExpenseLineJustificationFiles(expense);
-    fileList.addAll(convertMetaFileToFile(metaFileList));
+    List<MetaFile> pdfMetaFileList = getExpenseLinePdfJustificationFiles(expense);
+    List<MetaFile> imageConvertedMetaFileList =
+        pdfService.convertImageToPdf(getExpenseLineImageJustificationFiles(expense));
 
-    return PdfTool.mergePdf(fileList);
+    fileList.addAll(convertMetaFileToFile(imageConvertedMetaFileList));
+    fileList.addAll(convertMetaFileToFile(pdfMetaFileList));
+
+    return PdfHelper.mergePdf(fileList);
   }
 
   protected File getReportFile(Expense expense) throws AxelorException, IOException {
@@ -91,10 +99,19 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
     return birtTemplate;
   }
 
-  protected List<MetaFile> getExpenseLineJustificationFiles(Expense expense) {
+  protected List<MetaFile> getExpenseLinePdfJustificationFiles(Expense expense) {
     return expense.getGeneralExpenseLineList().stream()
         .map(ExpenseLine::getJustificationMetaFile)
         .filter(Objects::nonNull)
+        .filter(file -> "application/pdf".equals(file.getFileType()))
+        .collect(Collectors.toList());
+  }
+
+  protected List<MetaFile> getExpenseLineImageJustificationFiles(Expense expense) {
+    return expense.getGeneralExpenseLineList().stream()
+        .map(ExpenseLine::getJustificationMetaFile)
+        .filter(Objects::nonNull)
+        .filter(file -> file.getFileType().startsWith("image"))
         .collect(Collectors.toList());
   }
 

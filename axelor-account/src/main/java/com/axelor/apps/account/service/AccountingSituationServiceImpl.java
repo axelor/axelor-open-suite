@@ -36,7 +36,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -101,7 +101,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
                 accountingSituation.getPartner().getOutPaymentMode(),
                 accountingSituation.getCompany());
       }
-      String idList = StringTool.getIdListString(authorizedBankDetails);
+      String idList = StringHelper.getIdListString(authorizedBankDetails);
       if (idList.equals("")) {
         return domain;
       }

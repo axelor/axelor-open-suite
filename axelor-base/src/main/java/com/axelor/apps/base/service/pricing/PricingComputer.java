@@ -35,7 +35,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
-import com.axelor.utils.MetaTool;
+import com.axelor.utils.helpers.MetaHelper;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -264,7 +264,7 @@ public class PricingComputer extends AbstractObservablePricing {
     MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
     if (fieldToPopulate != null) {
       if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
-        return MetaTool.jsonTypeToType(resultPricingRule.getMetaJsonField().getType());
+        return MetaHelper.jsonTypeToType(resultPricingRule.getMetaJsonField().getType());
       }
       return fieldToPopulate.getTypeName();
     }

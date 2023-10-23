@@ -49,16 +49,16 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     if (company != null && user != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
       if (!accountConfig.getEnableBudgetKey()
-          || CollectionUtils.isEmpty(accountConfig.getBudgetDistributionRoleList())) {
+          || CollectionUtils.isEmpty(accountConfig.getBudgetDistributionRoleSet())) {
         return true;
       }
       for (Role role : user.getRoles()) {
-        if (accountConfig.getBudgetDistributionRoleList().contains(role)) {
+        if (accountConfig.getBudgetDistributionRoleSet().contains(role)) {
           return true;
         }
       }
       for (Role role : user.getGroup().getRoles()) {
-        if (accountConfig.getBudgetDistributionRoleList().contains(role)) {
+        if (accountConfig.getBudgetDistributionRoleSet().contains(role)) {
           return true;
         }
       }

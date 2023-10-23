@@ -19,7 +19,7 @@
       </insert>
     </extend>
 
-    <extend target="//button[@name='accountingBtn']">
+    <extend target="//button[@name='accountingBtn' and @title='Accounting.toAccount']">
       <attribute name="onClick" value="action-budget-move-accounting-click"/>
     </extend>
 

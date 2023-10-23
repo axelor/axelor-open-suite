@@ -20,7 +20,6 @@ public class GlobalBudgetGroupServiceImpl implements GlobalBudgetGroupService {
 
   @Override
   public void validateStructure(GlobalBudget globalBudget) throws AxelorException {
-    globalBudgetService.generateBudgetKey(globalBudget);
 
     globalBudgetWorkflowService.validateChildren(
         globalBudget, GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID_STRUCTURE);

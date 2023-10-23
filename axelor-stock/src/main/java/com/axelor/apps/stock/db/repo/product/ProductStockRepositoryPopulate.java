@@ -86,7 +86,9 @@ public class ProductStockRepositoryPopulate {
           json.put("$availableQty", availableQty);
         }
       } else if (product.getParentProduct() != null) {
-        json.put("$availableQty", stockLocationService.getRealQty(productId, null, null));
+        json.put(
+            "$availableQty",
+            stockLocationService.getRealQtyOfProductInStockLocations(productId, null, null));
       }
 
     } catch (Exception e) {

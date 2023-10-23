@@ -326,7 +326,7 @@ public final class ProductionExceptionMessage {
           /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders." /*)*/;
 
   public static final String PLAN_IS_BEFORE_TODAY_DATE =
-      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please correct it." /*)*/;
+      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please adjust it." /*)*/;
 
   public static final String INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION =
       /*$$(*/ "Invalid scheduling and capacity configuration." /*)*/;

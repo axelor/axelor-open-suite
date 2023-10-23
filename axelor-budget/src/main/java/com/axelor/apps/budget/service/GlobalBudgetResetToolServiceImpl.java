@@ -6,7 +6,6 @@ import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -19,7 +18,6 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     this.budgetLevelResetToolService = budgetLevelResetToolService;
   }
 
-  @Transactional
   public void resetGlobalBudget(GlobalBudget globalBudget) {
     globalBudget.setCode(globalBudget.getCode() + " (" + I18n.get("copy") + ")");
     globalBudget.setStatusSelect(GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT);
@@ -33,7 +31,8 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     globalBudget.setSimulatedAmount(BigDecimal.ZERO);
     globalBudget.setTotalFirmGap(BigDecimal.ZERO);
     globalBudget.setTotalAmountPaid(BigDecimal.ZERO);
-
+    globalBudget.setActiveVersion(null);
+    globalBudget.clearBudgetVersionList();
     globalBudget.clearBudgetList();
     List<BudgetLevel> budgetLevels = globalBudget.getBudgetLevelList();
 

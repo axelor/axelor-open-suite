@@ -59,6 +59,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -666,6 +667,14 @@ public class MoveToolServiceImpl implements MoveToolService {
       moveList = moveRepository.all().filter(query.toString()).bind(params).fetch();
     }
     return moveList;
+  }
+
+  @Override
+  public boolean isMultiCurrency(Move move) {
+    return move != null
+        && move.getCurrency() != null
+        && move.getCompany() != null
+        && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency());
   }
 
   @Override
