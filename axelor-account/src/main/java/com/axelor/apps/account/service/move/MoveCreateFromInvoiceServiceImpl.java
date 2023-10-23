@@ -193,7 +193,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                     company,
                     partner,
                     account,
-                    journal.getIsInvoiceMoveConsolidated(),
+                    journal != null ? journal.getIsInvoiceMoveConsolidated() : false,
                     isPurchase,
                     isDebitCustomer));
 

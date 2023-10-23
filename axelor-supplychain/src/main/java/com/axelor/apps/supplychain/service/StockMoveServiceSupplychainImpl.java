@@ -18,14 +18,13 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -86,13 +85,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected AppSupplychainService appSupplyChainService;
 
   protected AppAccountService appAccountService;
-  protected AccountConfigService accountConfigService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected SaleOrderRepository saleOrderRepo;
   protected UnitConversionService unitConversionService;
   protected ReservedQtyService reservedQtyService;
   protected PartnerSupplychainService partnerSupplychainService;
   protected FixedAssetRepository fixedAssetRepository;
+  protected PfpService pfpService;
 
   @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
@@ -110,14 +109,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       AppStockService appStockService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
+      PfpService pfpService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -131,7 +130,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         appStockService);
     this.appSupplyChainService = appSupplyChainService;
     this.appAccountService = appAccountService;
-    this.accountConfigService = accountConfigService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.unitConversionService = unitConversionService;
@@ -139,6 +137,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.partnerSupplychainService = partnerSupplychainService;
     this.fixedAssetRepository = fixedAssetRepository;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -639,13 +638,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             note,
             typeSelect);
 
-    if (appAccountService.isApp("account")) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-      if (accountConfig.getIsManagePassedForPayment()
-          && stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
-          && !stockMove.getIsReversion()) {
-        stockMove.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
-      }
+    if (appAccountService.isApp("account")
+        && pfpService.isManagePassedForPayment(company)
+        && stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion()) {
+      stockMove.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     }
     return stockMove;
   }

@@ -332,12 +332,6 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  public boolean getManagePfpCondition(Company company) throws AxelorException {
-    return company != null
-        && accountConfigService.getAccountConfig(company).getIsManagePassedForPayment();
-  }
-
-  @Override
   public boolean getUserCondition(User pfpValidatorUser, User user) {
     return user.equals(pfpValidatorUser) || user.getIsSuperPfpUser();
   }
