@@ -249,12 +249,6 @@
       if="requestedReservedQty &gt; qty || isQtyRequested"/>
   </action-record>
 
-  <action-record name="action-record-sale-order-line-future-qty"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="$futureQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, __parent__.stockLocation.id, null)"/>
-  </action-record>
-
   <action-record name="action-record-sale-order-line-fill-request-qty"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="isQtyRequested"
@@ -386,6 +380,12 @@
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
       method="createAnalyticDistributionWithTemplate"/>
   </action-method>
+
+  <action-record name="action-record-sale-order-line-future-qty"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="$futureQtyBtn"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQtyOfProductInStockLocations(product.id, java.util.Collections.singletonList(__parent__.stockLocation.id), null)"/>
+  </action-record>
 
   <action-method name="action-sale-order-line-method-supplier-partner-domain">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"

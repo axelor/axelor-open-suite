@@ -11,6 +11,7 @@
 "Accounting.Account",,,
 "AccountingReportType25.balance",,,
 "AccountingReportType25.company",,,
+"AccountingReportType25.currency",,,
 "AccountingReportType25.date",,,
 "AccountingReportType25.expectedAmt",,,
 "AccountingReportType25.expenditure",,,

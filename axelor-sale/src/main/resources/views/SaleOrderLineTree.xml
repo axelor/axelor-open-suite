@@ -115,7 +115,9 @@
       <button name="computePrices" onClick="action-sale-order-line-tree-group-onchange-price"
         title="Compute prices"/>
       <button name="addSubElement"
-        onClick="save, action-sale-order-line-tree-view-add-sub-element" title="Add a new element"/>
+        onClick="save,action-sale-order-line-tree-method-reload-sale-order
+        ,action-sale-order-line-tree-view-add-sub-element"
+        title="Add a new element"/>
       <panel-dashlet action="action-sale-order-line-tree-view-dashlet-display-tree"
         colSpan="12"/>
     </panel>
@@ -177,7 +179,9 @@
   <action-method name="action-sale-order-line-tree-method-update-fields">
     <call class="com.axelor.apps.sale.web.SaleOrderLineTreeController" method="updateFields"/>
   </action-method>
-
+  <action-method name="action-sale-order-line-tree-method-reload-sale-order">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineTreeController" method="reloadView"/>
+  </action-method>
   <action-method name="action-sale-order-line-tree-method-update-unit-price">
     <call class="com.axelor.apps.sale.web.SaleOrderLineTreeController" method="updateUnitPrice"/>
   </action-method>

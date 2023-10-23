@@ -64,13 +64,13 @@
           <field name="fullName" colSpan="4" hidden="true"/>
         </panel>
 
-        <panel name="versionPanel" itemSpan="4" colSpan="12" hideIf="statusSelect == 0">
-          <field name="activeVersion" readonly="true"/>
-          <panel name="versionButtonsPanel" hideIf="statusSelect == 3">
+        <panel name="versionPanel" colSpan="12" hideIf="statusSelect == 0">
+          <field name="activeVersion" readonly="true" colSpan="3"/>
+          <panel name="versionButtonsPanel" hideIf="statusSelect == 3" colSpan="9">
             <button name="new-budget-version" title="Create New version"
-              onClick="action-view-global-budget-budget-version-new"/>
+              onClick="action-view-global-budget-budget-version-new" colSpan="5"/>
             <button name="change-budget-version" title="Change budget version"
-              onClick="action-view-global-budget-budget-version-change"/>
+              onClick="action-view-global-budget-budget-version-change" colSpan="4"/>
           </panel>
         </panel>
 

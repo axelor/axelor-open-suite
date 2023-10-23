@@ -16,17 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.account.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.meta.CallMethod;
-import java.math.BigDecimal;
-import java.util.List;
+import com.axelor.apps.base.db.Company;
 
-public interface StockLocationServiceSupplychain extends StockLocationService {
+public interface PfpService {
 
-  @CallMethod
-  BigDecimal getReservedQtyOfProductInStockLocations(
-      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
+  boolean isManagePassedForPayment(Company company) throws AxelorException;
+
+  boolean isManagePFPInRefund(Company company) throws AxelorException;
+
+  boolean isManageDaybookInPFP(Company company) throws AxelorException;
 }
