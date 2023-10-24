@@ -22,36 +22,26 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService.InvoiceMergingResult;
+import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.auth.db.AuditableModel;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.db.Wizard;
 import com.axelor.utils.helpers.MapHelper;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceMergingController {
-
-  protected String getMergeConfirmFormViewName(InvoiceMergingResult result) {
-    if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
-      return "supplier-invoices-merge-confirm-form";
-    }
-    return "customer-invoices-merge-confirm-form";
-  }
 
   /**
    * A controller to generate a single invoice from several.
@@ -68,67 +58,13 @@ public class InvoiceMergingController {
         InvoiceMergingResult result = invoiceMergingService.mergeInvoices(invoicesToMerge);
         if (result.isConfirmationNeeded()) {
           // Need to display intermediate screen to select some values
-          ActionView.ActionViewBuilder confirmView =
-              ActionView.define(I18n.get("Confirm merge invoice"))
-                  .model(Wizard.class.getName())
-                  .add("form", getMergeConfirmFormViewName(result))
-                  .param("popup", Boolean.TRUE.toString())
-                  .param("show-toolbar", Boolean.FALSE.toString())
-                  .param("show-confirm", Boolean.FALSE.toString())
-                  .param("popup-save", Boolean.FALSE.toString())
-                  .param("forceEdit", Boolean.TRUE.toString());
-
-          if (invoiceMergingService.getChecks(result).isExistContactPartnerDiff()) {
-            confirmView.context("contextContactPartnerToCheck", Boolean.TRUE.toString());
-            confirmView.context(
-                "contextPartnerId",
-                Optional.ofNullable(
-                        invoiceMergingService.getCommonFields(result).getCommonPartner())
-                    .map(AuditableModel::getId)
-                    .map(Objects::toString)
-                    .orElse(null));
-          }
-          if (invoiceMergingService.getChecks(result).isExistPriceListDiff()) {
-            confirmView.context("contextPriceListToCheck", Boolean.TRUE.toString());
-          }
-          if (invoiceMergingService.getChecks(result).isExistPaymentModeDiff()) {
-            confirmView.context("contextPaymentModeToCheck", Boolean.TRUE.toString());
-          }
-          if (invoiceMergingService.getChecks(result).isExistPaymentConditionDiff()) {
-            confirmView.context("contextPaymentConditionToCheck", Boolean.TRUE.toString());
-          }
-          if (invoiceMergingService.getChecks(result).isExistTradingNameDiff()) {
-            confirmView.context("contextTradingNameToCheck", Boolean.TRUE.toString());
-          }
-          if (invoiceMergingService.getChecks(result).isExistFiscalPositionDiff()) {
-            confirmView.context("contextFiscalPositionToCheck", Boolean.TRUE.toString());
-          }
-          if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
-            if (invoiceMergingService.getChecks(result).isExistSupplierInvoiceNbDiff()) {
-              confirmView.context("contextSupplierInvoiceNbToCheck", Boolean.TRUE.toString());
-            }
-            if (invoiceMergingService.getChecks(result).isExistOriginDateDiff()) {
-              confirmView.context("contextOriginDateToCheck", Boolean.TRUE.toString());
-            }
-          }
-          confirmView.context("invoiceToMerge", invoicesToMerge);
+          ActionViewBuilder confirmView =
+              Beans.get(InvoiceMergingViewService.class).buildConfirmView(result, invoicesToMerge);
 
           response.setView(confirmView.map());
           return;
         }
-        if (result.getInvoice() != null) {
-          // Open the generated invoice in a new tab
-          response.setView(
-              ActionView.define(I18n.get("Invoices"))
-                  .model(Invoice.class.getName())
-                  .add("grid", "invoice-grid")
-                  .add("form", "invoice-form")
-                  .param("search-filters", "customer-invoices-filters")
-                  .param("forceEdit", Boolean.TRUE.toString())
-                  .context("_showRecord", String.valueOf(result.getInvoice().getId()))
-                  .map());
-          response.setCanClose(true);
-        }
+        setResponseView(response, result);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -165,19 +101,7 @@ public class InvoiceMergingController {
                 paymentCondition,
                 tradingName,
                 fiscalPosition);
-        if (result.getInvoice() != null) {
-          // Open the generated invoice in a new tab
-          response.setView(
-              ActionView.define(I18n.get("Invoices"))
-                  .model(Invoice.class.getName())
-                  .add("grid", "invoice-grid")
-                  .add("form", "invoice-form")
-                  .param("search-filters", "customer-invoices-filters")
-                  .param("forceEdit", Boolean.TRUE.toString())
-                  .context("_showRecord", String.valueOf(result.getInvoice().getId()))
-                  .map());
-          response.setCanClose(true);
-        }
+        setResponseView(response, result);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -224,22 +148,54 @@ public class InvoiceMergingController {
                 fiscalPosition,
                 supplierInvoiceNb,
                 originDate);
-        if (result.getInvoice() != null) {
-          // Open the generated invoice in a new tab
-          response.setView(
-              ActionView.define(I18n.get("Invoices"))
-                  .model(Invoice.class.getName())
-                  .add("grid", "invoice-grid")
-                  .add("form", "invoice-form")
-                  .param("search-filters", "customer-invoices-filters")
-                  .param("forceEdit", Boolean.TRUE.toString())
-                  .context("_showRecord", String.valueOf(result.getInvoice().getId()))
-                  .map());
-          response.setCanClose(true);
-        }
+        setResponseView(response, result);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void convertSelectedLinesToMergeLines(ActionRequest request, ActionResponse response) {
+    try {
+      @SuppressWarnings("unchecked")
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      List<Invoice> invoicesToMerge =
+          Beans.get(InvoiceMergingService.class).convertSelectedLinesToMergeLines(idList);
+      if (invoicesToMerge == null || invoicesToMerge.isEmpty()) {
+        response.setError(I18n.get("You have to choose at least one invoice"));
+        return;
+      }
+      InvoiceMergingService invoiceMergingService = Beans.get(InvoiceMergingService.class);
+      if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
+        InvoiceMergingResult result = invoiceMergingService.mergeInvoices(invoicesToMerge);
+        if (result.isConfirmationNeeded()) {
+          // Need to display intermediate screen to select some values
+          ActionViewBuilder confirmView =
+              Beans.get(InvoiceMergingViewService.class).buildConfirmView(result, invoicesToMerge);
+
+          response.setView(confirmView.map());
+          return;
+        }
+        setResponseView(response, result);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected void setResponseView(ActionResponse response, InvoiceMergingResult result) {
+    if (result.getInvoice() != null) {
+      // Open the generated invoice in a new tab
+      response.setView(
+          ActionView.define(I18n.get("Invoices"))
+              .model(Invoice.class.getName())
+              .add("grid", "invoice-grid")
+              .add("form", "invoice-form")
+              .param("search-filters", "customer-invoices-filters")
+              .param("forceEdit", Boolean.TRUE.toString())
+              .context("_showRecord", String.valueOf(result.getInvoice().getId()))
+              .map());
+      response.setCanClose(true);
     }
   }
 }
