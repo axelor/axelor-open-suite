@@ -28,6 +28,7 @@
         grid-view="fiscal-position-grid"
         onChange="action-partner-attrs-show-specific-tax-note,action-partner-method-get-default-specific-tax-note"/>
       <field name="specificTaxNote" colSpan="12" hidden="true"/>
+      <field name="analyticDistributionTemplate" canNew="true"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
         hidden="true" showIf="isSupplier"/>
       <panel name="showInvoicesPanel" colSpan="6" hideIf="isEmployee">
@@ -116,13 +117,13 @@
 
   <form name="partner-form" id="account-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" extension="true">
-    <extend target="//panel[@name='rightPanel']">
-      <insert position="inside">
-        <field name="isSubrogation" widget="InlineCheckbox"
-          showIf="(isCustomer || isSupplier) &amp;&amp; !isFactor"
-          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+    <extend target="//field[@name='isSupplier']">
+      <insert position="after">
+        <field name="isCompensation" colSpan="2" widget="InlineCheckbox"
+          showIf="isCustomer &amp;&amp; !$readonly() &amp;&amp; isSupplier"/>
       </insert>
     </extend>
+
   </form>
 
 

@@ -304,8 +304,4 @@
       if="!machineType"/>
   </action-attrs>
 
-  <action-method name="action-manuf-order-method-print">
-    <call class="com.axelor.apps.maintenance.web.ManufOrderController" method="print"/>
-  </action-method>
-
 </object-views>

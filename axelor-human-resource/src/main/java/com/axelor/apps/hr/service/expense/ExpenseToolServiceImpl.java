@@ -20,33 +20,22 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ExpenseToolServiceImpl implements ExpenseToolService {
@@ -55,7 +44,6 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
   protected SequenceService sequenceService;
   protected ExpenseRepository expenseRepository;
   protected PeriodRepository periodRepository;
-  protected ExpenseComputationService expenseComputationService;
 
   @Inject
   public ExpenseToolServiceImpl(
@@ -63,14 +51,12 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       ExpenseLineService expenseLineService,
       SequenceService sequenceService,
       ExpenseRepository expenseRepository,
-      PeriodRepository periodRepository,
-      ExpenseComputationService expenseComputationService) {
+      PeriodRepository periodRepository) {
     this.appBaseService = appBaseService;
     this.expenseLineService = expenseLineService;
     this.sequenceService = sequenceService;
     this.expenseRepository = expenseRepository;
     this.periodRepository = periodRepository;
-    this.expenseComputationService = expenseComputationService;
   }
 
   @Override
@@ -128,66 +114,6 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
     updateMoveDate(expense);
     updatePeriod(expense);
     return expense;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void addExpenseLinesToExpense(Expense expense, List<ExpenseLine> expenseLineList)
-      throws AxelorException {
-    if (expense.getStatusSelect() != ExpenseRepository.STATUS_DRAFT) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(HumanResourceExceptionMessage.EXPENSE_ADD_LINE_WRONG_STATUS));
-    }
-
-    if (CollectionUtils.isEmpty(expenseLineList)) {
-      return;
-    }
-
-    checkCurrency(expense, expenseLineList);
-
-    for (ExpenseLine expenseLine : expenseLineList) {
-      Product expenseProduct = expenseLine.getExpenseProduct();
-      KilometricAllowParam kilometricAllowParam = expenseLine.getKilometricAllowParam();
-      if (expenseProduct != null && kilometricAllowParam == null) {
-        expense.addGeneralExpenseLineListItem(expenseLine);
-      }
-      if (isKilometricExpenseLine(expenseLine)) {
-        expense.addKilometricExpenseLineListItem(expenseLine);
-      }
-    }
-
-    expenseRepository.save(expense);
-  }
-
-  protected void checkCurrency(Expense expense, List<ExpenseLine> expenseLineList)
-      throws AxelorException {
-    Set<Currency> currencySet =
-        expenseLineList.stream().map(ExpenseLine::getCurrency).collect(Collectors.toSet());
-    Optional<Currency> expenseLineCurrency = currencySet.stream().findFirst();
-
-    if (currencySet.size() > 1
-        || (expenseLineCurrency.isPresent()
-            && !expense.getCurrency().equals(expenseLineCurrency.get()))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_CURRENCY_NOT_EQUAL));
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void addExpenseLinesToExpenseAndCompute(Expense expense, List<ExpenseLine> expenseLineList)
-      throws AxelorException {
-    addExpenseLinesToExpense(expense, expenseLineList);
-    expenseComputationService.compute(expense);
-  }
-
-  @Override
-  public boolean isKilometricExpenseLine(ExpenseLine expenseLine) {
-    Product expenseProduct = expenseLine.getExpenseProduct();
-    KilometricAllowParam kilometricAllowParam = expenseLine.getKilometricAllowParam();
-    return expenseProduct != null && kilometricAllowParam != null;
   }
 
   protected void updateMoveDate(Expense expense) {

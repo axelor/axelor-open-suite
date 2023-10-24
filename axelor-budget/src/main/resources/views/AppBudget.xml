@@ -6,9 +6,8 @@
   <form name="app-budget-config-form" title="App budget" model="com.axelor.studio.db.AppBudget"
     canDelete="false" canNew="false" width="large">
     <panel name="appBudgetPanel" if-module="axelor-account" colSpan="12">
-      <field name="checkAvailableBudget" widget="boolean-switch" colSpan="4"/>
-      <field name="manageMultiBudget" widget="boolean-switch" colSpan="4"/>
-      <field name="missingBudgetCheckSelect" colSpan="4"/>
+      <field name="checkAvailableBudget" widget="boolean-switch"/>
+      <field name="manageMultiBudget" widget="boolean-switch"/>
     </panel>
 
     <panel-mail name="mailPanel">

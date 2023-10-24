@@ -52,6 +52,11 @@
     <string name="humanDurationFormula" title="Human Duration (hh:mm:ss)" large="true"/>
     <boolean name="defHrDurationFormula" title="Define with a script"/>
 
+    <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"/>
+    <string name="timingOfImplementationFormula" title="Timing of implementation (hh:mm:ss)"
+      large="true"/>
+    <boolean name="defTimingOfImplementationFormula" title="Define with a script"/>
+
     <string name="useCondition" title="Condition" large="true"/>
 
     <one-to-many name="configuratorProdProductList" title="Products to consume"

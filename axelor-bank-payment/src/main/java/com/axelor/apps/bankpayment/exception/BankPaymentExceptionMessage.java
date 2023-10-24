@@ -197,7 +197,8 @@ public final class BankPaymentExceptionMessage {
       "Test mode is not enabled or test file is missing" /*)*/;
   public static final String EBICS_MISSING_CERTIFICATES = /*$$(*/
       "Please add certificates to print" /*)*/;
-
+  public static final String EBICS_INVALID_BANK_URL = /*$$(*/
+      "Invalid bank url. It must be start with http:// or https://" /*)*/;
   public static final String EBICS_MISSING_USER_TRANSPORT = /*$$(*/
       "Please insert a EBICS user for transport in the EBICS partner" /*)*/;
   public static final String EBICS_NO_SERVICE_CONFIGURED = /*$$(*/

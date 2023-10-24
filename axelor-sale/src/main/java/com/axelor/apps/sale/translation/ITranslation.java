@@ -43,7 +43,4 @@ public interface ITranslation {
       "Populated field: %s"; /*)*/
   public static final String SALE_ORDER_LINE_OBSERVER_POPULATED_CUSTOM_FIELD = /*$$(*/
       "Populated custom field: %s"; /*)*/
-  public static final String PRICING_CUSTOM_TITLE_PREVIOUS_PRICING = /*$$(*/
-      "Previous pricing"; /*)*/
-  public static final String PRICING_CUSTOM_TITLE_NEXT_PRICING = /*$$(*/ "Next pricing"; /*)*/
 }

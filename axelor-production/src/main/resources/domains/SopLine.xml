@@ -15,10 +15,15 @@
     <decimal name="sopRealSales" title="Real sales"/>
     <decimal name="sopSalesGap" title="% Gap"/>
 
+    <decimal name="sopManufForecast" title="Production forecast"/>
     <decimal name="sopRealManuf" title="Real production"/>
+    <decimal name="sopManufGap" title="% Gap"/>
 
+    <decimal name="sopStockForecast" title="Stock forecast"/>
     <decimal name="sopRealStock" title="Real stock"/>
+    <decimal name="sopStockGap" title="% Gap"/>
     <many-to-one name="sop" ref="com.axelor.apps.production.db.Sop" title="Sop"/>
+    <integer name="status" title="Status" selection="production.sop.line.status"/>
 
   </entity>
 

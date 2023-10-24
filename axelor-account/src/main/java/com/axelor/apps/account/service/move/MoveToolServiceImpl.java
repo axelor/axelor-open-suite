@@ -220,7 +220,7 @@ public class MoveToolServiceImpl implements MoveToolService {
       return moveLineRepository
           .all()
           .filter(
-              "self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining != 0",
+              "self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0",
               invoice.getMove(),
               invoice.getPartnerAccount())
           .fetchOne();
@@ -241,7 +241,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public MoveLine getCustomerMoveLineByLoop(Invoice invoice) throws AxelorException {
     if (invoice.getRejectMoveLine() != null
-        && invoice.getRejectMoveLine().getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+        && invoice.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
       return invoice.getRejectMoveLine();
     } else {
       return this.getInvoiceCustomerMoveLineByLoop(invoice);
@@ -262,7 +262,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public MoveLine getCustomerMoveLineByQuery(Invoice invoice) throws AxelorException {
     if (invoice.getRejectMoveLine() != null
-        && invoice.getRejectMoveLine().getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+        && invoice.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
       return invoice.getRejectMoveLine();
     } else {
       return this.getInvoiceCustomerMoveLineByQuery(invoice);
@@ -306,7 +306,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   public BigDecimal getTotalCreditAmount(List<MoveLine> creditMoveLineList) {
     BigDecimal totalCredit = BigDecimal.ZERO;
     for (MoveLine moveLine : creditMoveLineList) {
-      totalCredit = totalCredit.add(moveLine.getAmountRemaining().abs());
+      totalCredit = totalCredit.add(moveLine.getAmountRemaining());
     }
     return totalCredit;
   }
@@ -321,7 +321,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   public BigDecimal getTotalDebitAmount(List<MoveLine> debitMoveLineList) {
     BigDecimal totalDebit = BigDecimal.ZERO;
     for (MoveLine moveLine : debitMoveLineList) {
-      totalDebit = totalDebit.add(moveLine.getAmountRemaining().abs());
+      totalDebit = totalDebit.add(moveLine.getAmountRemaining());
     }
     return totalDebit;
   }
@@ -380,7 +380,7 @@ public class MoveToolServiceImpl implements MoveToolService {
       for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()
             && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
           return moveLine;
         }
       }
@@ -407,7 +407,7 @@ public class MoveToolServiceImpl implements MoveToolService {
 
       if (!CollectionUtils.isEmpty(moveLines)) {
         for (MoveLine moveLine : moveLines) {
-          inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining().abs());
+          inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
         }
 
         if (isMinus) {
@@ -477,7 +477,7 @@ public class MoveToolServiceImpl implements MoveToolService {
         || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAccount().getUseForPartnerBalance()) {
           moveLineList.add(moveLine);
         }
@@ -675,30 +675,5 @@ public class MoveToolServiceImpl implements MoveToolService {
         && move.getCurrency() != null
         && move.getCompany() != null
         && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency());
-  }
-
-  @Override
-  public List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company) {
-    List<Integer> statusList = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
-
-    if (ObjectUtils.isEmpty(moveStatusSelect) || company == null) {
-      return statusList;
-    }
-    try {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-      if (accountConfig.getAccountingDaybook()
-          && moveStatusSelect.contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
-        statusList.add(MoveRepository.STATUS_DAYBOOK);
-      }
-      if (accountConfig.getIsActivateSimulatedMove()
-          && moveStatusSelect.contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
-        statusList.add(MoveRepository.STATUS_SIMULATED);
-      }
-    } catch (Exception e) {
-      return statusList;
-    }
-
-    return statusList;
   }
 }

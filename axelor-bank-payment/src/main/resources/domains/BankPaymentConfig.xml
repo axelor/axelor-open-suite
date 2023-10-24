@@ -49,11 +49,6 @@
     <!-- SEPA Direct Debit -->
     <string name="icsNumber" title="ICS Number" min="13" max="13"/>
 
-    <many-to-one name="bankStatementLinesBirtTemplate"
-      title="Bank statement lines template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="bankReconciliationStatementBirtTemplate"
-      title="Bank reconciliation statement template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-
     <track>
       <field name="company" on="UPDATE"/>
 
@@ -77,8 +72,6 @@
       <field name="bnkStmtAutoReconcileDateMargin" on="UPDATE"/>
 
       <field name="icsNumber" on="UPDATE"/>
-      <field name="bankStatementLinesBirtTemplate" on="UPDATE"/>
-      <field name="bankReconciliationStatementBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

@@ -18,19 +18,25 @@
  */
 package com.axelor.apps.hr.web.lunch.voucher;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
-import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherExportService;
+import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Singleton
@@ -87,8 +93,39 @@ public class LunchVoucherMgtController {
             .find(request.getContext().asType(LunchVoucherMgt.class).getId());
 
     try {
-      Beans.get(LunchVoucherExportService.class).export(lunchVoucherMgt);
+      Beans.get(LunchVoucherMgtService.class).export(lunchVoucherMgt);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void print(ActionRequest request, ActionResponse response) throws IOException {
+    LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+
+    String name =
+        lunchVoucherMgt.getCompany().getName()
+            + " - "
+            + Beans.get(AppBaseService.class)
+                .getTodayDate(lunchVoucherMgt.getCompany())
+                .format(DateTimeFormatter.BASIC_ISO_DATE);
+
+    try {
+      String fileLink =
+          ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
+              .addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
+              .addParam(
+                  "Timezone",
+                  lunchVoucherMgt.getCompany() != null
+                      ? lunchVoucherMgt.getCompany().getTimezone()
+                      : null)
+              .addParam("Locale", Beans.get(UserService.class).getLanguage())
+              .addFormat(ReportSettings.FORMAT_PDF)
+              .generate()
+              .getFileLink();
+
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

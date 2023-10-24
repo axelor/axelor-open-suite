@@ -63,7 +63,7 @@
         <field name="socialCharges"/>
         <field name="total" readonly="true"/>
       </panel>
-      <field name="exportTypeSelect" readonlyIf="exported" selection-in="[1,2,3]"/>
+      <field name="exportTypeSelect" readonlyIf="exported"/>
       <button name="exportBtn" title="Export payroll preparation" hidden="true"
         showIf="id != null &amp;&amp; !exported" onClick="action-payroll-preparation-group-export"/>
       <field name="exported"/>

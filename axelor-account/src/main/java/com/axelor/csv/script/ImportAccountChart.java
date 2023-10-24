@@ -88,7 +88,7 @@ public class ImportAccountChart {
   protected File getZipFile(AccountChart accountChart) throws IOException {
 
     File directory = this.getDataFile(accountChart);
-    String fileName = accountChart.getCode() + ".zip";
+    String fileName = accountChart.getCode() + "_" + accountChart.getCountryCode() + ".zip";
 
     File zipFile = new File(directory.getParent(), fileName);
 

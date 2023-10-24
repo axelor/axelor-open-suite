@@ -1,3 +1,0 @@
-"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
-"85";"InvoiceAnnex";"InvoiceAnnex.rptdesign";"com.axelor.apps.account.db.Invoice";2;"pdf";false
-"86";"InvoicingProjectAnnex";"InvoicingProjectAnnex.rptdesign";"com.axelor.apps.businessproject.db.InvoicingProject";2;"pdf";false

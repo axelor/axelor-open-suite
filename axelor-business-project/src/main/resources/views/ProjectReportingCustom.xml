@@ -129,8 +129,9 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.turnover}} <i class="fa {{first.turnoverProgress}}"></i></h1>
+          <h1>{{first.turnover}} <i class="fa {{first.turnoverProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -141,8 +142,9 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.initialCosts}} <i class="fa {{first.initialCostsProgress}}"></i></h1>
+          <h1>{{first.initialCosts}} <i class="fa {{first.initialCostsProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -153,8 +155,9 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.initialMargin}} <i class="fa {{first.initialMarginProgress}}"></i></h1>
+          <h1>{{first.initialMargin}} <i class="fa {{first.initialMarginProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -179,8 +182,9 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realTurnover}} <i class="fa {{first.realTurnoverProgress}}"></i></h1>
+          <h1>{{first.realTurnover}} <i class="fa {{first.realTurnoverProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -191,8 +195,9 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realCosts}} <i class="fa {{first.realCostsProgress}}"></i></h1>
+          <h1>{{first.realCosts}} <i class="fa {{first.realCostsProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -203,8 +208,9 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realMargin}} <i class="fa {{first.realMarginProgress}}"></i></h1>
+          <h1>{{first.realMargin}} <i class="fa {{first.realMarginProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -230,8 +236,9 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.forecastCosts}} <i class="fa {{first.forecastCostsProgress}}"></i></h1>
+          <h1>{{first.forecastCosts}} <i class="fa {{first.forecastCostsProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -242,8 +249,9 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.forecastMargin}} <i class="fa {{first.forecastMarginProgress}}"></i></h1>
+          <h1>{{first.forecastMargin}} <i class="fa {{first.forecastMarginProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -257,92 +265,6 @@
         <i class='report-icon fa fa-percent'></i>
         <div style='display:inline-block;'>
           <h1>{{first.forecastMarkup}} <i class="fa {{first.forecastMarkupProgress}}"></i></h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <!-- LANDING -->
-  <custom title="ProjectTask.Costs" name="project-landing-costs-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
-    <template>
-      <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.landingCosts}} <i class="fa {{first.landingCostsProgress}}"></i></h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="ProjectTask.Margin" name="project-landing-margin-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
-    <template>
-      <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.landingMargin}} <i class="fa {{first.landingMarginProgress}}"></i></h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="ProjectTask.Markup" name="project-landing-markup-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
-    <template>
-      <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.landingMarkup}} <i class="fa {{first.landingMarkupProgress}}"></i></h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="Total invoiced" name="project-total-invoiced-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
-    <template>
-      <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.totalInvoiced}} <i class="fa {{first.totalInvoicedProgress}}"></i></h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="Invoiced this month" name="project-invoiced-this-month-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
-    <template>
-      <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.invoicedThisMonth}} <i class="fa {{first.invoicedThisMonthProgress}}"></i></h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="Invoiced last month" name="project-invoiced-last-month-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
-    <template>
-      <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.invoicedLastMonth}} <i class="fa {{first.invoicedLastMonthProgress}}"></i></h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="Total paid" name="project-total-paid-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
-    <template>
-      <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.totalPaid}} <i class="fa {{first.totalPaidProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -390,32 +312,6 @@
     <view type="custom" name="project-forecast-markup-custom"/>
   </action-view>
 
-  <action-view name="action-project-view-landing-costs-custom" title="ProjectTask.Costs">
-    <view type="custom" name="project-landing-costs-custom"/>
-  </action-view>
-  <action-view name="action-project-view-landing-margin-custom"
-    title="ProjectTask.Margin">
-    <view type="custom" name="project-landing-margin-custom"/>
-  </action-view>
-  <action-view name="action-project-view-landing-markup-custom"
-    title="ProjectTask.Markup">
-    <view type="custom" name="project-landing-markup-custom"/>
-  </action-view>
 
-  <action-view name="action-project-view-total-invoiced-custom" title="Total invoiced">
-    <view type="custom" name="project-total-invoiced-custom"/>
-  </action-view>
-  <action-view name="action-project-view-invoiced-this-month-custom"
-    title="Invoiced this month">
-    <view type="custom" name="project-invoiced-this-month-custom"/>
-  </action-view>
-  <action-view name="action-project-view-invoiced-last-month-custom"
-    title="Invoiced last month">
-    <view type="custom" name="project-invoiced-last-month-custom"/>
-  </action-view>
-  <action-view name="action-project-view-total-paid-custom"
-    title="Total paid (incl. VAT)">
-    <view type="custom" name="project-total-paid-custom"/>
-  </action-view>
 
 </object-views>

@@ -39,9 +39,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
             ? InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
             : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
         contract.getCompany(),
-        contract.getInvoicedPartner() != null
-            ? contract.getInvoicedPartner()
-            : contract.getPartner(),
+        contract.getPartner(),
         null,
         null,
         contract.getContractId(),
@@ -73,6 +71,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
           InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
     }
 
+    invoice.setContract(contract);
     if (contract.getInvoicingDate() != null) {
       invoice.setInvoiceDate(contract.getInvoicingDate());
     } else {

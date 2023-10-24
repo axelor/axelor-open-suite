@@ -44,6 +44,16 @@ public interface SubrogationReleaseService {
   void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException;
 
   /**
+   * Generate a PDF export.
+   *
+   * @param subrogationRelease
+   * @param name
+   * @return
+   * @throws AxelorException
+   */
+  String printToPDF(SubrogationRelease subrogationRelease, String name) throws AxelorException;
+
+  /**
    * Generate a CSV export.
    *
    * @param subrogationRelease

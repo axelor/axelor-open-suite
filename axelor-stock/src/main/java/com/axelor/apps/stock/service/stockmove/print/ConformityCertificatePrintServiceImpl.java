@@ -18,25 +18,21 @@
  */
 package com.axelor.apps.stock.service.stockmove.print;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.report.IReport;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.file.PdfTool;
-import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -45,20 +41,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class ConformityCertificatePrintServiceImpl implements ConformityCertificatePrintService {
-
-  protected StockMoveService stockMoveService;
-  protected StockConfigService stockConfigService;
-  protected BirtTemplateService birtTemplateService;
-
-  @Inject
-  public ConformityCertificatePrintServiceImpl(
-      StockMoveService stockMoveService,
-      StockConfigService stockConfigService,
-      BirtTemplateService birtTemplateService) {
-    this.stockMoveService = stockMoveService;
-    this.stockConfigService = stockConfigService;
-    this.birtTemplateService = birtTemplateService;
-  }
 
   @Override
   public String printConformityCertificates(List<Long> ids) throws IOException {
@@ -77,27 +59,37 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
   }
 
   @Override
-  public File prepareReportSettings(StockMove stockMove, String format) throws AxelorException {
-    stockMoveService.checkPrintingSettings(stockMove);
-
-    BirtTemplate conformityCertificateBirtTemplate =
-        stockConfigService
-            .getStockConfig(stockMove.getCompany())
-            .getConformityCertificateBirtTemplate();
-    if (ObjectUtils.isEmpty(conformityCertificateBirtTemplate)) {
+  public ReportSettings prepareReportSettings(StockMove stockMove, String format)
+      throws AxelorException {
+    if (stockMove.getPrintingSettings() == null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          String.format(
+              I18n.get(StockExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
+              stockMove.getStockMoveSeq()),
+          stockMove);
     }
 
+    String locale = ReportSettings.getPrintingLocale(stockMove.getPartner());
     String title = getFileName(stockMove);
-    return birtTemplateService.generateBirtTemplateFile(
-        conformityCertificateBirtTemplate, stockMove, title + " - ${date}");
+
+    ReportSettings reportSetting =
+        ReportFactory.createReport(IReport.CONFORMITY_CERTIFICATE, title + " - ${date}");
+    return reportSetting
+        .addParam("StockMoveId", stockMove.getId())
+        .addParam(
+            "Timezone",
+            stockMove.getCompany() != null ? stockMove.getCompany().getTimezone() : null)
+        .addParam("Locale", locale)
+        .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())
+        .addFormat(format);
   }
 
   @Override
   public File print(StockMove stockMove, String format) throws AxelorException {
-    return prepareReportSettings(stockMove, format);
+    ReportSettings reportSettings = prepareReportSettings(stockMove, format);
+    return reportSettings.generate().getFile();
   }
 
   @Override

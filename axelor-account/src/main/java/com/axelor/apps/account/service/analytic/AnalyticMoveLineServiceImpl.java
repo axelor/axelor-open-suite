@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
@@ -35,7 +33,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -70,7 +67,6 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   protected AccountConfigRepository accountConfigRepository;
   protected AccountRepository accountRepository;
   protected AppBaseService appBaseService;
-  protected AccountingSituationService accountingSituationService;
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
 
@@ -82,8 +78,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       AccountConfigService accountConfigService,
       AccountConfigRepository accountConfigRepository,
       AccountRepository accountRepository,
-      AppBaseService appBaseService,
-      AccountingSituationService accountingSituationService) {
+      AppBaseService appBaseService) {
 
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.appAccountService = appAccountService;
@@ -92,7 +87,6 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     this.accountConfigRepository = accountConfigRepository;
     this.accountRepository = accountRepository;
     this.appBaseService = appBaseService;
-    this.accountingSituationService = accountingSituationService;
   }
 
   public AnalyticMoveLineRepository getAnalyticMoveLineRepository() {
@@ -133,38 +127,24 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       Product product,
       Company company,
       TradingName tradingName,
-      Account account,
       boolean isPurchase)
       throws AxelorException {
-    if (company == null) {
-      return null;
-    }
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    if (accountConfig.getAnalyticDistributionTypeSelect()
+    if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
-        && partner != null) {
-      AccountingSituation accountingSituation =
-          accountingSituationService.getAccountingSituation(partner, company);
-      return accountingSituation != null
-          ? accountingSituation.getAnalyticDistributionTemplate()
-          : null;
-
-    } else if (accountConfig.getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-      if (product != null) {
-        return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
-            product, company, isPurchase);
-      } else if (account != null) {
-        return account.getAnalyticDistributionAuthorized()
-            ? account.getAnalyticDistributionTemplate()
-            : null;
-      }
-
+        && partner != null
+        && company != null) {
+      return partner.getAnalyticDistributionTemplate();
+    } else if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
+        && company != null) {
+      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
+          product, company, isPurchase);
     } else if (appBaseService.getAppBase().getEnableTradingNamesManagement()
-        && accountConfig.getAnalyticDistributionTypeSelect()
+        && accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME
-        && tradingName != null) {
+        && tradingName != null
+        && tradingName.getAnalyticDistributionTemplate() != null) {
       return tradingName.getAnalyticDistributionTemplate();
     }
     return null;
@@ -266,13 +246,12 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       throws AxelorException {
     AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
 
-    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
     analyticMoveLine.setDate(this.getAnalyticMoveLineDate(invoice));
     if (invoiceLine.getAccount() != null) {
       analyticMoveLine.setAccount(invoiceLine.getAccount());
       analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());
     }
-
+    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
     return analyticMoveLine;
   }
 

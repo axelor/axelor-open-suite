@@ -18,21 +18,18 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AssistantReportInvoice;
-import com.axelor.apps.account.db.repo.AssistantReportInvoiceRepository;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.DateService;
-import com.axelor.apps.base.service.PrintFromBirtTemplateService;
-import com.axelor.common.ObjectUtils;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.format.DateTimeFormatter;
@@ -44,6 +41,31 @@ public class AssistantReportInvoiceController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public void printSales(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
+
+    String name = I18n.get("SaleInvoicesDetails-") + getDateString(assistant);
+
+    String fileLink =
+        ReportFactory.createReport(IReport.SALE_INVOICES_DETAILS, name + "-${date}")
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                assistant.getCompany() != null ? assistant.getCompany().getTimezone() : null)
+            .addParam("assistantId", assistant.getId())
+            .addParam("companyId", assistant.getCompany().getId())
+            .addParam("graphType", assistant.getGraphTypeSelect().toString())
+            .addParam("turnoverTypeSelect", assistant.getTurnoverTypeSelect())
+            .addFormat(assistant.getFormatSelect())
+            .generate()
+            .getFileLink();
+
+    logger.debug("Printing " + name);
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
   protected String getDateString(AssistantReportInvoice assistant) throws AxelorException {
     DateTimeFormatter dtFormater = Beans.get(DateService.class).getDateFormat();
 
@@ -54,22 +76,25 @@ public class AssistantReportInvoiceController {
       throws AxelorException {
 
     AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
-    assistant = Beans.get(AssistantReportInvoiceRepository.class).find(assistant.getId());
-    BirtTemplate purchaseInvoicesDetailsBirtTemplate =
-        Beans.get(AccountConfigService.class)
-            .getAccountConfig(assistant.getCompany())
-            .getPurchaseInvoicesDetailsBirtTemplate();
-    if (ObjectUtils.isEmpty(purchaseInvoicesDetailsBirtTemplate)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
-    }
 
     String name = I18n.get("PurchaseInvoicesDetails-") + getDateString(assistant);
 
     String fileLink =
-        Beans.get(PrintFromBirtTemplateService.class)
-            .print(purchaseInvoicesDetailsBirtTemplate, assistant);
+        ReportFactory.createReport(IReport.PURCHASE_INVOICES_DETAILS, name + "-${date}")
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                assistant.getCompany() != null ? assistant.getCompany().getTimezone() : null)
+            .addParam("assistantId", assistant.getId())
+            .addParam("companyId", assistant.getCompany().getId())
+            .addParam("partnersIds", Joiner.on(",").join(assistant.getPartnerSet()))
+            .addParam("productsIds", Joiner.on(",").join(assistant.getProductSet()))
+            .addParam(
+                "productCategoriesIds", Joiner.on(",").join(assistant.getProductCategorySet()))
+            .addParam("graphType", assistant.getGraphTypeSelect().toString())
+            .addFormat(assistant.getFormatSelect())
+            .generate()
+            .getFileLink();
 
     logger.debug("Printing " + name);
 

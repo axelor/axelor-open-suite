@@ -18,8 +18,17 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.app.AppSettings;
+import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.TraceBack;
+import com.axelor.apps.base.report.IReport;
+import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.Inflector;
+import com.axelor.common.VersionUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -29,6 +38,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,5 +76,31 @@ public class TraceBackController {
 
     actionViewBuilder.add("form", String.format("%s-form", viewName));
     response.setView(actionViewBuilder.map());
+  }
+
+  public void printTraceback(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    TraceBack traceBack = request.getContext().asType(TraceBack.class);
+    Long traceBackId = traceBack.getId();
+    String name = "TraceBack " + traceBackId;
+    Company activeCompany = AuthUtils.getUser().getActiveCompany();
+    BigDecimal headerHeight = BigDecimal.ZERO;
+    BigDecimal footerHeight = BigDecimal.ZERO;
+    if (activeCompany != null) {
+      PrintingSettings printingSettings = activeCompany.getPrintingSettings();
+      headerHeight = printingSettings.getPdfHeaderHeight();
+      footerHeight = printingSettings.getPdfFooterHeight();
+    }
+    String fileLink =
+        ReportFactory.createReport(IReport.TRACEBACK, name + "-${date}")
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam("TracebackId", traceBackId)
+            .addParam("SDKVersion", VersionUtils.getVersion().toString())
+            .addParam("AOSVersion", AppSettings.get().get("application.version"))
+            .addParam("HeaderHeight", headerHeight)
+            .addParam("FooterHeight", footerHeight)
+            .generate()
+            .getFileLink();
+    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 }

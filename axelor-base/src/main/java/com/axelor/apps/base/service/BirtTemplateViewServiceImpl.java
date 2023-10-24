@@ -54,8 +54,7 @@ public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
     }
   }
 
-  @Override
-  public MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
+  protected MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
     MetaFile standardTemplateFile = null;
     InputStream templateFileInputStream =
         this.getClass().getResourceAsStream("/reports/" + templateFileName);

@@ -33,10 +33,4 @@ public interface ExpenseLineService {
    * @param expense
    */
   void completeExpenseLines(Expense expense);
-
-  public boolean isThereOverAmountLimit(Expense expense);
-
-  boolean isFilePdfOrImage(ExpenseLine expenseLine);
-
-  boolean isFilePdf(ExpenseLine expenseLine);
 }

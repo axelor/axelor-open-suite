@@ -20,9 +20,7 @@ package com.axelor.apps.businessproduction.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproduction.exception.BusinessProductionExceptionMessage;
-import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckService;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.i18n.I18n;
@@ -49,44 +47,6 @@ public class OperationOrderBusinessController {
             I18n.get(
                 BusinessProductionExceptionMessage.OPERATION_ORDER_TIMESHEET_WAITING_VALIDATION));
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkOperationOrder(ActionRequest request, ActionResponse response) {
-    try {
-
-      OperationOrderBusinessProductionCheckService operationOrderCheckService =
-          Beans.get(OperationOrderBusinessProductionCheckService.class);
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-
-      AppProductionService appProductionService = Beans.get(AppProductionService.class);
-
-      if (appProductionService.isApp("production")
-          && appProductionService.getAppProduction().getManageBusinessProduction()
-          && appProductionService.getAppProduction().getAutoGenerateTimesheetLine()) {
-
-        if (!operationOrderCheckService.workingUsersHaveEmployee(operationOrder)) {
-          response.setAlert(
-              I18n.get(BusinessProductionExceptionMessage.WORKING_USERS_HAVE_NO_EMPLOYEE));
-        } else if (!operationOrderCheckService.workingUsersHaveTSImputationSelect(
-            operationOrder, EmployeeRepository.TIMESHEET_MANUF_ORDER)) {
-          response.setAlert(
-              I18n.get(
-                  BusinessProductionExceptionMessage
-                      .WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIMESHEET_IMPUTATION));
-        } else if (!operationOrderCheckService.workingUsersHaveCorrectTimeLoggingPref(
-                operationOrder)
-            || !operationOrderCheckService.workingUsersHaveTSTimeLoggingPrefMatching(
-                operationOrder)) {
-          response.setAlert(
-              I18n.get(
-                  BusinessProductionExceptionMessage
-                      .WORKING_USERS_EMPLOYEE_NOT_CORRECT_TIME_LOGGING));
-        }
-      }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

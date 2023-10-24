@@ -7,7 +7,7 @@
 
   <entity name="AppStock" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
     <boolean name="requireToFillConformityOnReceipt"

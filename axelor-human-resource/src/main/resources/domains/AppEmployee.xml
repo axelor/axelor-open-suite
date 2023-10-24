@@ -7,7 +7,7 @@
 
   <entity name="AppEmployee" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <decimal name="dailyWorkHours" title="Daily work hours"/>
     <boolean name="advanceManagement" default="true"/>
@@ -16,7 +16,6 @@
     <boolean name="employeeBonus" title="Employee bonus"/>
     <boolean name="isMyHrEnabled" title="Enable MyHR" default="true"
       help="Activate MyHR enables the HR menu entries for employees."/>
-    <boolean name="isMedicalVisitEnabled" title="Medical visit"/>
 
     <extra-code>
    		<![CDATA[

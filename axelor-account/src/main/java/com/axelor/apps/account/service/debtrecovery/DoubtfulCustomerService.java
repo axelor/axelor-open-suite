@@ -190,7 +190,7 @@ public class DoubtfulCustomerService {
     List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
     if (invoicePartnerMoveLines != null) {
       for (MoveLine moveLine : invoicePartnerMoveLines) {
-        amountRemaining = amountRemaining.add(moveLine.getAmountRemaining().abs());
+        amountRemaining = amountRemaining.add(moveLine.getAmountRemaining());
         // Credit move line on partner account
         MoveLine creditMoveLine =
             moveLineCreateService.createMoveLine(
@@ -278,7 +278,7 @@ public class DoubtfulCustomerService {
             debtPassReason,
             moveLine.getMove().getCompanyBankDetails());
 
-    BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
+    BigDecimal amountRemaining = moveLine.getAmountRemaining();
 
     // Ecriture au crédit sur le 411
     MoveLine creditMoveLine =

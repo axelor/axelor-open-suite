@@ -25,22 +25,18 @@ import com.axelor.apps.businessproduction.service.InvoicingProjectServiceBusines
 import com.axelor.apps.businessproduction.service.ManufOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessService;
 import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessServiceImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckService;
-import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckServiceImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetService;
 import com.axelor.apps.businessproduction.service.OperationOrderTimesheetServiceImpl;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
 import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessServiceImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderWorkflowBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.OperationOrderWorkflowServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderWizardServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderWorkflowServiceBusinessProductionImpl;
 import com.axelor.apps.businessproduction.service.TimesheetBusinessProductionServiceImpl;
-import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionService;
-import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
@@ -67,6 +63,8 @@ public class BusinessProductionModule extends AxelorModule {
     bind(ProductionOrderSaleOrderServiceImpl.class)
         .to(ProductionOrderSaleOrderServiceBusinessImpl.class);
     bind(InvoicingProjectService.class).to(InvoicingProjectServiceBusinessProdImpl.class);
+    bind(OperationOrderWorkflowServiceImpl.class)
+        .to(OperationOrderWorkflowServiceBusinessImpl.class);
     bind(ManufOrderValidateBusinessService.class).to(ManufOrderValidateBusinessServiceImpl.class);
     bind(OperationOrderValidateBusinessService.class)
         .to(OperationOrderValidateBusinessServiceImpl.class);
@@ -78,12 +76,5 @@ public class BusinessProductionModule extends AxelorModule {
         .to(SaleOrderWorkflowServiceBusinessProductionImpl.class);
     bind(SaleOrderLineProjectServiceImpl.class)
         .to(SaleOrderLineBusinessProductionServiceImpl.class);
-    bind(OperationOrderWorkflowServiceImpl.class)
-        .to(OperationOrderWorkflowBusinessServiceImpl.class);
-    bind(TimesheetLineBusinessProductionService.class)
-        .to(TimesheetLineBusinessProductionServiceImpl.class);
-
-    bind(OperationOrderBusinessProductionCheckService.class)
-        .to(OperationOrderBusinessProductionCheckServiceImpl.class);
   }
 }

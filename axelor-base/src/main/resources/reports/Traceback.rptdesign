@@ -1432,7 +1432,7 @@ if (logoPosition == 2) {
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'Reference ID'</value>
+                                        <value type="javascript">'Reference Id'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

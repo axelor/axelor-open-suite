@@ -19,7 +19,6 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
@@ -44,11 +43,5 @@ public interface EmployeeService extends UserService {
 
   public User getUser(Employee employee) throws AxelorException;
 
-  Employee getEmployee(User user) throws AxelorException;
-
   public Employee getConnectedEmployee() throws AxelorException;
-
-  public BirtTemplate getAnnualReportBirtTemplate(Employee employee) throws AxelorException;
-
-  public BirtTemplate getEmpPhoneBookBirtTemplate() throws AxelorException;
 }

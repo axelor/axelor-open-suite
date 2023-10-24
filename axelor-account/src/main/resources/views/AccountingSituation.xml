@@ -83,14 +83,6 @@
       <field name="vatSystemSelect"
         showIf="(__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; (__parent.isCustomer || __parent.isSupplier || __parent.isInternal) )||(partner.isCustomer != null &amp;&amp; partner.isCustomer) || (partner.isSupplier != null &amp;&amp; partner.isSupplier) || (partner.isInternal != null &amp;&amp; partner.isInternal)"/>
     </panel>
-    <panel name="analyticsPanel" title="Analytics" colSpan="12"
-      showIf="__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; company.accountConfig.analyticDistributionTypeSelect == 2">
-      <field name="analyticDistributionTemplate"
-        grid-view="analytic-distribution-template-grid"
-        form-view="analytic-distribution-template-form" domain="self.company = :company"/>
-      <field name="company.accountConfig" hidden="true"/>
-      <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
-    </panel>
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
       <field name="balanceCustAccount" domain="self.statusSelect = 1"/>
       <field name="balanceDueCustAccount" domain="self.statusSelect = 1"/>

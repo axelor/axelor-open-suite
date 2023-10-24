@@ -7,8 +7,7 @@
 
   <entity name="SupplyChainConfig">
 
-    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      unique="true"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 
     <boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"/>
     <boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"/>
@@ -44,12 +43,6 @@
       title="Activate partial invoicing for incoming moves" default="true"/>
     <boolean name="activateOutStockMovePartialInvoicing"
       title="Activate partial invoicing for outgoing moves" default="false"/>
-
-    <many-to-one name="declarationOfExchGoodsBirtTemplate"
-      title="Declaration of exchanges of goods template" ref="com.axelor.apps.base.db.BirtTemplate"/>
-    <many-to-one name="declarationOfExchServicesBirtTemplate"
-      title="Declaration of exchanges of services template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
 
     <extra-code><![CDATA[
 
@@ -88,8 +81,6 @@
       <field name="numberOfDaysForPurchaseOrder" on="UPDATE"/>
       <field name="activateIncStockMovePartialInvoicing" on="UPDATE"/>
       <field name="activateOutStockMovePartialInvoicing" on="UPDATE"/>
-      <field name="declarationOfExchGoodsBirtTemplate" on="UPDATE"/>
-      <field name="declarationOfExchServicesBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

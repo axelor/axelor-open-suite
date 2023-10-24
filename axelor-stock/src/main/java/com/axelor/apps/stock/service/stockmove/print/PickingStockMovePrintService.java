@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import java.io.File;
 import java.io.IOException;
@@ -33,11 +34,10 @@ public interface PickingStockMovePrintService {
    * @param userType
    * @return the link to the generated file.
    * @throws IOException
-   * @throws AxelorException
    */
-  String printStockMoves(List<Long> ids, String userType) throws IOException, AxelorException;
+  String printStockMoves(List<Long> ids, String userType) throws IOException;
 
-  File prepareReportSettings(StockMove stockMove, String format) throws AxelorException;
+  ReportSettings prepareReportSettings(StockMove stockMove, String format) throws AxelorException;
 
   File print(StockMove stockMove, String format) throws AxelorException;
 

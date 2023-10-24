@@ -27,8 +27,6 @@ import wslite.json.JSONException;
 public interface ExpenseRefusalService {
   public void refuse(Expense expense) throws AxelorException;
 
-  void refuseWithReason(Expense expense, String groundForRefusal) throws AxelorException;
-
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 }

@@ -208,7 +208,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     }
 
     PrintingSettings printSettings = company.getPrintingSettings();
-    if (printSettings == null || printSettings.getDefaultMailBirtTemplate() == null) {
+    if (printSettings == null
+        || printSettings.getDefaultMailBirtTemplate() == null
+        || printSettings.getDefaultMailBirtTemplate().getTemplateMetaFile() == null) {
       return null;
     }
 

@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
- * used. Please use {@link FixedAssetLineEconomicComputationServiceImpl}, {@link
- * FixedAssetLineFiscalComputationServiceImpl} or {@link FixedAssetLineIfrsComputationServiceImpl}.
+ * used. Please use {@link FixedAssetLineEconomicComputationServiceImpl} or {@link
+ * FixedAssetLineFiscalComputationServiceImpl}.
  */
 public abstract class AbstractFixedAssetLineComputationServiceImpl
     implements FixedAssetLineComputationService {
@@ -86,7 +86,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected abstract int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset);
 
   @Inject
-  protected AbstractFixedAssetLineComputationServiceImpl(
+  public AbstractFixedAssetLineComputationServiceImpl(
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       AppBaseService appBaseService) {
     this.fixedAssetFailOverControlService = fixedAssetFailOverControlService;

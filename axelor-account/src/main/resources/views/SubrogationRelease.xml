@@ -18,8 +18,8 @@
 
     <menubar>
       <menu name="subrogationReleasePrintExportMenu" title="Print/Export" icon="fa-print">
-        <item name="printItem" action="action-method-print-birt" title="Print"
-          readonlyIf="statusSelect &lt; 2"/>
+        <item name="printToPDFItem" action="action-subrogation-release-method-print-to-pdf"
+          title="Print to PDF" readonlyIf="statusSelect &lt; 2"/>
         <item name="exportToCSVItem" action="action-subrogation-release-method-export-to-csv"
           title="Export to CSV" readonlyIf="statusSelect &lt; 2"/>
       </menu>
@@ -84,6 +84,10 @@
   <action-method name="action-subrogation-release-method-transmit-release">
     <call class="com.axelor.apps.account.web.SubrogationReleaseController"
       method="transmitRelease"/>
+  </action-method>
+
+  <action-method name="action-subrogation-release-method-print-to-pdf">
+    <call class="com.axelor.apps.account.web.SubrogationReleaseController" method="printToPDF"/>
   </action-method>
 
   <action-method name="action-subrogation-release-method-export-to-csv">

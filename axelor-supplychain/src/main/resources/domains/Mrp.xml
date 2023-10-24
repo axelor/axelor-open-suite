@@ -39,7 +39,6 @@
       readonly="true" large="true"/>
     <boolean name="computeWithSubStockLocation" title="Compute sub stock locations"/>
     <boolean name="takeInAccountSubCategories" title="Take in account sub categories"/>
-    <boolean name="validateScenario" title="Validate scenario" default="false"/>
     <finder-method name="findByMrpSeq" using="mrpSeq"/>
 
     <extra-imports>

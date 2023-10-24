@@ -13,7 +13,6 @@
 
     <track>
       <field name="saleOrderLine" on="UPDATE"/>
-      <field name="purchaseOrderLine" on="UPDATE"/>
     </track>
 
   </entity>

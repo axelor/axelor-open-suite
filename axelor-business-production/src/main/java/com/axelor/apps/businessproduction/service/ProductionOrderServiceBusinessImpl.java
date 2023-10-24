@@ -24,7 +24,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
@@ -42,9 +41,8 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
   public ProductionOrderServiceBusinessImpl(
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
-      ProductionOrderRepository productionOrderRepo,
-      ProductionConfigService productionConfigService) {
-    super(manufOrderService, sequenceService, productionOrderRepo, productionConfigService);
+      ProductionOrderRepository productionOrderRepo) {
+    super(manufOrderService, sequenceService, productionOrderRepo);
   }
 
   @Transactional(rollbackOn = {Exception.class})

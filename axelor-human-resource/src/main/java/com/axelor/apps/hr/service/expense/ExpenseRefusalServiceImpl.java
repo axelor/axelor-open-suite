@@ -65,13 +65,6 @@ public class ExpenseRefusalServiceImpl implements ExpenseRefusalService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void refuseWithReason(Expense expense, String groundForRefusal) throws AxelorException {
-    refuse(expense);
-    expense.setGroundForRefusal(groundForRefusal);
-  }
-
-  @Override
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, IOException, JSONException {
 

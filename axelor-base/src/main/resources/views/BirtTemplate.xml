@@ -20,10 +20,9 @@
       <field name="name" colSpan="5"/>
       <field name="templateLink" colSpan="5"/>
       <field name="format" colSpan="2"/>
-      <field name="templateMetaFile" widget="binary-link" colSpan="5" x-accept=".rptdesign"/>
+      <field name="templateMetaFile" widget="binary-link" colSpan="5"/>
       <field name="metaModel" colSpan="5"/>
       <field name="templateEngineSelect" colSpan="2"/>
-      <field name="attach"/>
       <panel name="parametersPanel" title="Parameters" colSpan="12">
         <field name="birtTemplateParameterList" showTitle="false" colSpan="12">
           <viewer depends="name,value">
@@ -33,7 +32,7 @@
           </viewer>
           <editor x-show-titles="false" itemSpan="4">
             <field name="name"/>
-            <field name="value" widget="CodeEditor" height="60"/>
+            <field name="value"/>
             <field name="type"/>
           </editor>
         </field>
@@ -49,36 +48,6 @@
         onClick="action-wizard-method-set-standard-report-template,close"/>
     </panel>
   </form>
-
-  <form title="Select template" name="birt-template-print-config-wizard"
-    model="com.axelor.utils.db.Wizard" onNew="action-attrs-birt-template-config-wizard-onload"
-    canSave="false">
-    <panel name="mainPanel" colSpan="12">
-      <field name="$birtTemplate" title="Template"
-        target="com.axelor.apps.base.db.BirtTemplate" target-name="name" type="many-to-one"
-        required="true"/>
-      <button name="printBtn" title="Print"
-        onClick="action-method-birt-template-config-wizard-print,close"/>
-    </panel>
-  </form>
-
-  <action-attrs name="action-attrs-birt-template-config-wizard-onload">
-    <attribute name="domain" for="$birtTemplate"
-      expr="eval:&quot;self.id in (${_birtTemplateIdList.join(',')})&quot;"/>
-  </action-attrs>
-
-  <action-method name="action-method-birt-template-config-wizard-print">
-    <call class="com.axelor.apps.base.web.PrintingModelController" method="printFromWizard"/>
-  </action-method>
-
-  <!-- THIS WILL BE USED AS GENERIC ACTION TO PRINT BIRT REPORT FROM BIRT TEMPLATE -->
-  <action-method name="action-method-print-birt">
-    <call class="com.axelor.apps.base.web.PrintingModelController" method="print"/>
-  </action-method>
-
-  <action-method name="action-method-print-birt-list">
-    <call class="com.axelor.apps.base.web.PrintingModelController" method="printList"/>
-  </action-method>
 
   <action-record name="action-birt-template-record-default"
     model="com.axelor.apps.base.db.BirtTemplate">
@@ -106,4 +75,5 @@
     <call method="setStandardReportTemplate"
       class="com.axelor.apps.base.web.BirtTemplateController"/>
   </action-method>
+
 </object-views>

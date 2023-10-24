@@ -5,8 +5,11 @@
 
   <action-group name="action-group-logistical-form-print-packing-list">
     <action name="save"/>
-    <action name="action-method-print-birt"/>
+    <action name="action-logistical-form-method-print-packing-list"/>
   </action-group>
 
+  <action-method name="action-logistical-form-method-print-packing-list">
+    <call class="com.axelor.apps.supplychain.web.LogisticalFormController" method="print"/>
+  </action-method>
 
 </object-views>

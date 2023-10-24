@@ -20,7 +20,6 @@
     <string name="contractId" title="Contract N°" readonly="true"/>
 
     <boolean name="isInvoicingManagement" title="Manage invoices"/>
-    <boolean name="isGroupedInvoicing" title="Grouped Invoicing" default="false"/>
     <boolean name="isConsumptionManagement" title="Consumption management"/>
     <boolean name="isAdditionaBenefitManagement" title="Additional benefit management"/>
     <boolean name="toClosed" title="To closed"/>
@@ -40,8 +39,6 @@
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
       required="true"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
-    <many-to-one name="invoicedPartner" title="Invoiced partner"
-      ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="terminatedByUser" ref="com.axelor.auth.db.User"
       title="Terminated By"/>
     <many-to-one name="currentInvoicePeriod"
@@ -49,10 +46,9 @@
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <one-to-one name="currentContractVersion"
-      ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"
-      unique="true"/>
+      ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"/>
     <one-to-one name="nextVersion" ref="com.axelor.apps.contract.db.ContractVersion"
-      title="Next version" unique="true"/>
+      title="Next version"/>
 
     <one-to-many name="additionalBenefitContractLineList"
       ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>

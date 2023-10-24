@@ -18,13 +18,10 @@
  */
 package com.axelor.apps.budget.service.move;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
@@ -34,8 +31,6 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
-import java.time.LocalDate;
-import java.util.Optional;
 
 @RequestScoped
 public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
@@ -88,27 +83,5 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         }
       }
     }
-  }
-
-  @Override
-  public String getBudgetDomain(Move move, MoveLine moveLine) {
-    Company company = null;
-    LocalDate date = null;
-    if (move != null) {
-      if (move.getCompany() != null) {
-        company = move.getCompany();
-      }
-      if (move.getDate() != null) {
-        date = move.getDate();
-      }
-    }
-    String technicalTypeSelect =
-        Optional.of(moveLine)
-            .map(MoveLine::getAccount)
-            .map(Account::getAccountType)
-            .map(AccountType::getTechnicalTypeSelect)
-            .orElse(null);
-
-    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
   }
 }

@@ -42,8 +42,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
-import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -87,8 +86,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   protected WeeklyPlanningService weeklyPlanningService;
   protected EmployeeService employeeService;
   protected TimesheetLineService timesheetLineService;
-  protected LeaveRequestService leaveRequestService;
-  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
+  protected LeaveService leaveService;
 
   @Inject
   public TimesheetReportServiceImpl(
@@ -103,8 +101,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       WeeklyPlanningService weeklyPlanningService,
       EmployeeService employeeService,
       TimesheetLineService timesheetLineService,
-      LeaveRequestService leaveRequestService,
-      LeaveRequestComputeDurationService leaveRequestComputeDurationService) {
+      LeaveService leaveService) {
     this.timesheetReminderRepo = timesheetReminderRepo;
     this.timesheetReportRepository = timesheetReportRepository;
     this.extraHoursLineRepository = extraHoursLineRepository;
@@ -117,8 +114,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     this.weeklyPlanningService = weeklyPlanningService;
     this.employeeService = employeeService;
     this.timesheetLineService = timesheetLineService;
-    this.leaveRequestService = leaveRequestService;
-    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
+    this.leaveService = leaveService;
   }
 
   @Override
@@ -473,10 +469,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
   protected BigDecimal getLeaveHours(
       Employee employee, LocalDate date, BigDecimal dailyWorkingHours) throws AxelorException {
-    List<LeaveRequest> leavesList = leaveRequestService.getLeaves(employee, date);
+    List<LeaveRequest> leavesList = leaveService.getLeaves(employee, date);
     BigDecimal totalLeaveHours = BigDecimal.ZERO;
     for (LeaveRequest leave : leavesList) {
-      BigDecimal leaveHours = leaveRequestComputeDurationService.computeDuration(leave, date, date);
+      BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
       if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
         leaveHours = leaveHours.multiply(dailyWorkingHours);
       }

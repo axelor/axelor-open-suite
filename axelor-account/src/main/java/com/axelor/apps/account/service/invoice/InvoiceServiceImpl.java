@@ -829,7 +829,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         continue;
       }
       for (MoveLine moveLine : moveLineList) {
-        BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
+        BigDecimal amountRemaining = moveLine.getAmountRemaining();
         if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
           return false;
         }
@@ -1220,14 +1220,5 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
     return invoice;
-  }
-
-  @Override
-  public void updateSubrogationPartner(Invoice invoice) {
-    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-      invoice
-          .getInvoiceTermList()
-          .forEach(it -> it.setSubrogationPartner(invoice.getSubrogationPartner()));
-    }
   }
 }

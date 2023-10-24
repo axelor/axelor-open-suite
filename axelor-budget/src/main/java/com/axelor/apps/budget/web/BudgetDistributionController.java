@@ -22,12 +22,13 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.service.BudgetDistributionService;
-import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
-import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -102,7 +103,7 @@ public class BudgetDistributionController {
   public void setBudgetDomain(ActionRequest request, ActionResponse response) {
     try {
       Context parentContext = request.getContext().getParent();
-      String query = "";
+      String query = "self.totalAmountExpected > 0 AND self.statusSelect = 2";
       if (parentContext != null
           && PurchaseOrderLine.class.equals(parentContext.getContextClass())) {
         PurchaseOrderLine purchaseOrderLine = parentContext.asType(PurchaseOrderLine.class);
@@ -124,15 +125,102 @@ public class BudgetDistributionController {
         } else if (parentContext.asType(MoveLine.class).getMove() != null) {
           move = parentContext.asType(MoveLine.class).getMove();
         }
-        query = Beans.get(MoveLineBudgetService.class).getBudgetDomain(move, moveLine);
+        if (move != null) {
+          query =
+              query.concat(
+                  String.format(
+                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
+                      move.getCompany() != null ? move.getCompany().getId() : 0));
+          if (move.getDate() != null) {
+            query =
+                query.concat(
+                    String.format(
+                        " AND self.fromDate <= '%s' AND self.toDate >= '%s'",
+                        move.getDate(), move.getDate()));
+          }
+        }
+        if (moveLine != null) {
+          if (AccountTypeRepository.TYPE_INCOME.equals(
+              moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            query =
+                query.concat(
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = "
+                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE);
+          } else if (AccountTypeRepository.TYPE_CHARGE.equals(
+              moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            query =
+                query.concat(
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
+                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
+                        + ","
+                        + BudgetLevelRepository
+                            .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
+                        + ")");
+          } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
+              moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            query =
+                query.concat(
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
+                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
+                        + ","
+                        + BudgetLevelRepository
+                            .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
+                        + ")");
+          }
+        }
 
       } else if (parentContext != null
           && InvoiceLine.class.equals(parentContext.getContextClass())) {
 
         if (Invoice.class.equals(parentContext.getParent().getContextClass())) {
           Invoice invoice = parentContext.getParent().asType(Invoice.class);
-          InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
-          query = Beans.get(BudgetInvoiceLineService.class).getBudgetDomain(invoice, invoiceLine);
+
+          query =
+              query.concat(
+                  String.format(
+                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d ",
+                      invoice.getCompany() != null ? invoice.getCompany().getId() : 0));
+          if (invoice.getOperationTypeSelect() >= InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+            query =
+                query.concat(
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = "
+                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE);
+          } else {
+            InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
+            if (AccountTypeRepository.TYPE_CHARGE.equals(
+                invoiceLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+              query =
+                  query.concat(
+                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
+                          + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
+                          + ","
+                          + BudgetLevelRepository
+                              .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
+                          + ")");
+            } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
+                invoiceLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+              query =
+                  query.concat(
+                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
+                          + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
+                          + ","
+                          + BudgetLevelRepository
+                              .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
+                          + ")");
+            } else {
+              query = "self.id = 0";
+            }
+          }
+          LocalDate date =
+              invoice.getInvoiceDate() != null
+                  ? invoice.getInvoiceDate()
+                  : Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
+          if (date != null) {
+            query =
+                query.concat(
+                    String.format(
+                        " AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+          }
         }
       } else if (parentContext != null
           && SaleOrderLine.class.equals(parentContext.getContextClass())) {

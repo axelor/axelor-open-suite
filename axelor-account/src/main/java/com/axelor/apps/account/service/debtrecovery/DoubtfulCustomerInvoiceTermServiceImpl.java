@@ -143,7 +143,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
             pfpUser,
             paymentMode,
             todayDate,
-            creditMoveLine.getAmountRemaining().abs(),
+            creditMoveLine.getAmountRemaining(),
             counter++);
 
         newMove.getMoveLineList().add(creditMoveLine);
@@ -159,7 +159,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
             creditMoveLines.stream()
                 .filter(
                     cml ->
-                        cml.getCredit().equals(invoicePartnerMoveLine.getAmountRemaining().abs())
+                        cml.getCredit().equals(invoicePartnerMoveLine.getAmountRemaining())
                             && cml.getAccount().equals(invoicePartnerMoveLine.getAccount()))
                 .findFirst()
                 .orElse(null);
@@ -168,7 +168,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
               reconcileService.createReconcile(
                   invoicePartnerMoveLine,
                   creditMoveLine,
-                  invoicePartnerMoveLine.getAmountRemaining().abs(),
+                  invoicePartnerMoveLine.getAmountRemaining(),
                   false);
 
           if (reconcile != null) {

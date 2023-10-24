@@ -18,6 +18,8 @@
       ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
     <integer name="graphTypeSelect" title="Graph type"
       selection="assistant.report.invoice.graph.type.select" default="1"/>
+    <string name="formatSelect" title="Format" selection="iadministration.export.type.select"
+      default="pdf"/>
     <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
     <integer name="turnoverTypeSelect"
       selection="assistant.report.invoice.turnover.type.select" default="3" title="Turnover type"/>

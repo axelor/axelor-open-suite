@@ -104,12 +104,7 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
       // TODO get the timesheet Line done when we run the calculation.
 
       this.computeRealHumanResourceCost(
-          operationOrder.getProdProcessLine(),
-          operationOrder.getWorkCenter(),
-          priority,
-          bomLevel,
-          parentCostSheetLine,
-          duration);
+          operationOrder.getWorkCenter(), priority, bomLevel, parentCostSheetLine, duration);
     }
   }
 }

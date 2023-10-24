@@ -21,7 +21,6 @@ package com.axelor.apps.production.service.productionorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -81,18 +80,4 @@ public interface ProductionOrderService {
       throws AxelorException;
 
   public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet);
-
-  ManufOrder generateManufOrder(
-      Product product,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      LocalDateTime endDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      ManufOrderOriginType manufOrderOriginType,
-      ManufOrder manufOrderParent)
-      throws AxelorException;
-
-  ProductionOrder addManufOrder(ProductionOrder productionOrder, ManufOrder manufOrder);
 }

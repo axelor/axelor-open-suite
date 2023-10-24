@@ -116,6 +116,9 @@
           <bind node="durationPerCycle" to="durationPerCycle"/>
           <bind node="durationPerCycleFormula" to="durationPerCycleFormula"/>
           <bind node="defDurationFormula" to="defDurationFormula"/>
+          <bind node="timingOfImplementation" to="timingOfImplementation"/>
+          <bind node="timingOfImplementationFormula" to="timingOfImplementationFormula"/>
+          <bind node="defTimingOfImplementationFormula" to="defTimingOfImplementationFormula"/>
           <bind node="useCondition" to="useCondition"/>
           <bind node="configuratorProdProductList/configuratorProdProduct"
             to="configuratorProdProductList">

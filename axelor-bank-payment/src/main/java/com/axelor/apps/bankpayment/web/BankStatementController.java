@@ -60,6 +60,21 @@ public class BankStatementController {
     response.setReload(true);
   }
 
+  public void print(ActionRequest request, ActionResponse response) {
+    try {
+      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+      bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
+      String name = bankStatement.getName();
+      String fileLink = Beans.get(BankStatementService.class).print(bankStatement);
+      response.setView(ActionView.define(name).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ExceptionOriginRepository.BANK_STATEMENT);
+    }
+
+    response.setReload(true);
+  }
+
   public void runBankReconciliation(ActionRequest request, ActionResponse response) {
 
     try {

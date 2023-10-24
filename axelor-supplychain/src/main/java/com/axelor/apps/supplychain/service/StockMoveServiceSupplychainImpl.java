@@ -29,8 +29,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerLink;
-import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -56,6 +54,8 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
@@ -451,7 +451,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    * throws a exception if it is the case
    *
    * @throws AxelorException if any stock move line is associated with invoice line.
-   * @param stockMoveLines
+   * @param modifiedStockMoveLines
    */
   protected void checkAssociatedInvoiceLine(List<StockMoveLine> stockMoveLines)
       throws AxelorException {
@@ -582,24 +582,26 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         && stockMove.getPartner().getId() != null) {
       Partner partner = Beans.get(PartnerRepository.class).find(stockMove.getPartner().getId());
       if (partner != null) {
-        if (!CollectionUtils.isEmpty(partner.getManagedByPartnerLinkList())) {
-          List<PartnerLink> partnerLinkList = partner.getManagedByPartnerLinkList();
+        if (!CollectionUtils.isEmpty(partner.getPartner1SupplychainLinkList())) {
+          List<PartnerSupplychainLink> partnerSupplychainLinkList =
+              partner.getPartner1SupplychainLinkList();
           // Retrieve all Invoiced by Type
-          List<PartnerLink> partnerLinkInvoicedByList =
-              partnerLinkList.stream()
+          List<PartnerSupplychainLink> partnerSupplychainLinkInvoicedByList =
+              partnerSupplychainLinkList.stream()
                   .filter(
-                      partnerLink ->
-                          partnerLink
-                              .getPartnerLinkType()
-                              .getTypeSelect()
-                              .equals(PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY))
+                      partnerSupplychainLink ->
+                          PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
+                              partnerSupplychainLink
+                                  .getPartnerSupplychainLinkType()
+                                  .getTypeSelect()))
                   .collect(Collectors.toList());
 
           // If there is only one, then it is the default one
-          if (partnerLinkInvoicedByList.size() == 1) {
-            PartnerLink partnerLinkInvoicedBy = partnerLinkInvoicedByList.get(0);
-            stockMove.setInvoicedPartner(partnerLinkInvoicedBy.getPartner2());
-          } else if (partnerLinkInvoicedByList.isEmpty()) {
+          if (partnerSupplychainLinkInvoicedByList.size() == 1) {
+            PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
+                partnerSupplychainLinkInvoicedByList.get(0);
+            stockMove.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
+          } else if (partnerSupplychainLinkInvoicedByList.isEmpty()) {
             stockMove.setInvoicedPartner(partner);
           } else {
             stockMove.setInvoicedPartner(null);

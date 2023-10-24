@@ -747,8 +747,4 @@
     <option value="Boolean">Boolean</option>
   </selection>
 
-  <selection name="base.partner.link.type.type.select">
-    <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
-  </selection>
-
 </object-views>

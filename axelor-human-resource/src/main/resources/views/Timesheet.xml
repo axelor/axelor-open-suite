@@ -92,7 +92,7 @@
     canNew="false" onSave="action-timesheet-group-onsave" canCopy="false">
     <menubar>
       <menu name="timesheetToolsMenu" title="Reports" icon="fa-files-o">
-        <item name="printTimesheetItem" title="Print" action="save,action-method-print-birt"/>
+        <item name="printTimesheetItem" title="Print" action="save,action-print-timesheet"/>
       </menu>
       <menu title="Tools" icon="fa-wrench">
         <item title="Lines Generation Wizard" showIf="statusSelect == 1"
@@ -217,7 +217,6 @@
         if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
         onClick="save,action-timesheet-method-open-timesheet-editor"/>
       <field name="$showActivity" hidden="true" type="boolean"/>
-      <field name="$dailyLimit" hidden="true" type="boolean"/>
       <field name="$enableTimesheetManufOrder" hidden="true" type="boolean"/>
     </panel>
     <panel name="totalsPanel" title="Totals on period">
@@ -580,6 +579,10 @@
       method="editTimesheetSelected"/>
   </action-method>
 
+  <action-method name="action-print-timesheet">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="printTimesheet"/>
+  </action-method>
+
   <action-method name="action-timesheet-method-set-show-activity">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="setShowActivity"/>
   </action-method>
@@ -612,7 +615,7 @@
   <action-view name="action-timesheet-show-timesheet-line-editor"
     title="Timesheet lines">
     <view type="html"
-      name="hr/timesheet/?timesheetId={{id}}&amp;showActivity={{$showActivity}}&amp;dailyLimit={{$dailyLimit}}"/>
+      name="hr/timesheet/?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
   </action-view>
 
   <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines"

@@ -25,6 +25,9 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 
 public interface PurchaseOrderLineServiceSupplyChain {
 
-  PurchaseOrderLine createPurchaseOrderLine(
+  public PurchaseOrderLine createPurchaseOrderLine(
       PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+
+  public PurchaseOrderLine createAnalyticDistributionWithTemplate(
+      PurchaseOrderLine purchaseOrderLine);
 }

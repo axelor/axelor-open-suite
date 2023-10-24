@@ -498,7 +498,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setAnalyticMoveLineList(analyticMoveLineList);
         }
 
-        analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
+        analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
 
         TaxLine taxLine = invoiceLine.getTaxLine();
         if (taxLine != null) {

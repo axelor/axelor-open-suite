@@ -18,162 +18,36 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
-import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
 import com.google.inject.Singleton;
-import java.util.HashMap;
-import java.util.Map;
 
 @Singleton
 public class PurchaseOrderLineController {
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
-      if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-        AnalyticLineModel analyticLineModel =
-            new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
-
-        Beans.get(AnalyticLineModelService.class).computeAnalyticDistribution(analyticLineModel);
-
-        response.setValue(
-            "analyticDistributionTemplate", analyticLineModel.getAnalyticDistributionTemplate());
-        response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
+      purchaseOrderLine =
+          Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+              .computeAnalyticDistribution(purchaseOrderLine);
+      response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
     }
   }
 
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
-      Beans.get(AnalyticLineModelService.class)
-          .createAnalyticDistributionWithTemplate(analyticLineModel);
-
-      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void setAxisDomains(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
-
-      if (purchaseOrder == null) {
-        return;
-      }
-
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
-      response.setAttrs(
-          Beans.get(AnalyticGroupService.class)
-              .getAnalyticAxisDomainAttrsMap(analyticLineModel, purchaseOrder.getCompany()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
-
-      if (purchaseOrder == null) {
-        return;
-      }
-
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
-
-      if (Beans.get(AnalyticLineModelService.class)
-          .analyzeAnalyticLineModel(analyticLineModel, purchaseOrder.getCompany())) {
-        response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void manageAxis(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
-
-      if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
-        return;
-      }
-
-      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-      Beans.get(AnalyticAttrsService.class)
-          .addAnalyticAxisAttrs(purchaseOrder.getCompany(), null, attrsMap);
-
-      response.setAttrs(attrsMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
-
-      if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
-        return;
-      }
-
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
-
-      response.setValues(
-          Beans.get(AnalyticGroupService.class)
-              .getAnalyticAccountValueMap(analyticLineModel, purchaseOrder.getCompany()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
-
-      if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
-        return;
-      }
-
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
-      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-      Beans.get(AnalyticAttrsSupplychainService.class)
-          .addAnalyticDistributionPanelHiddenAttrs(analyticLineModel, attrsMap);
-      response.setAttrs(attrsMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
+    purchaseOrderLine =
+        Beans.get(PurchaseOrderLineServiceSupplyChain.class)
+            .createAnalyticDistributionWithTemplate(purchaseOrderLine);
+    response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
   }
 }

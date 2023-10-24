@@ -24,7 +24,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
@@ -36,12 +35,11 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
+import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
-import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -66,12 +64,10 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
-      AnalyticToolSupplychainService analyticToolSupplychainService,
+      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      BirtTemplateService birtTemplateService,
-      SaleOrderService saleOrderService) {
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         sequenceService,
         partnerRepo,
@@ -86,11 +82,9 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
         accountingSituationSupplychainService,
         partnerSupplychainService,
         saleConfigService,
-        analyticToolSupplychainService,
+        saleOrderCheckAnalyticService,
         productionOrderSaleOrderService,
-        appProductionService,
-        birtTemplateService,
-        saleOrderService);
+        appProductionService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 

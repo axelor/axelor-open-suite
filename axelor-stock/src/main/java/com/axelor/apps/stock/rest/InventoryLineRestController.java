@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.rest.dto.InventoryLinePostRequest;
@@ -93,7 +94,9 @@ public class InventoryLineRestController {
                 requestBody.getRack(),
                 requestBody.getRealQty());
 
-    return ResponseConstructor.buildCreateResponse(
-        inventoryLine, new InventoryLineResponse(inventoryLine));
+    return ResponseConstructor.build(
+        Response.Status.CREATED,
+        Beans.get(ResponseComputeService.class).compute(inventoryLine),
+        new InventoryLineResponse(inventoryLine));
   }
 }

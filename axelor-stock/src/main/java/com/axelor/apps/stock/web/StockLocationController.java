@@ -18,19 +18,15 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -44,7 +40,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -120,24 +115,15 @@ public class StockLocationController {
           response.setNotify(I18n.get(StockExceptionMessage.STOCK_CONFIGURATION_MISSING));
         }
 
-        BirtTemplate stockLocationBirtTemplate =
-            Beans.get(StockConfigService.class)
-                .getStockConfig(stockLocation.getCompany())
-                .getStockLocationBirtTemplate();
-        if (ObjectUtils.isEmpty(stockLocationBirtTemplate)) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
-        }
         String fileLink =
-            Beans.get(BirtTemplateService.class)
-                .generateBirtTemplateLink(
-                    stockLocationBirtTemplate,
-                    null,
-                    Map.of("StockLocationId", locationIds, "PrintType", printType),
-                    title + "-${date}",
-                    stockLocationBirtTemplate.getAttach(),
-                    exportType);
+            ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
+                .addParam("StockLocationId", locationIds)
+                .addParam("Timezone", null)
+                .addParam("Locale", language)
+                .addFormat(exportType)
+                .addParam("PrintType", printType)
+                .generate()
+                .getFileLink();
 
         logger.debug("Printing " + title);
 

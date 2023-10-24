@@ -271,7 +271,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       maxAmount =
           invoiceMoveLines.stream()
               .map(MoveLine::getAmountRemaining)
-              .map(BigDecimal::abs)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
     }

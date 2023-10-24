@@ -243,8 +243,6 @@
         <button name="updateLinesBtn" title="Update lines with selected project"
           onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
           readonlyIf="!project"/>
-        <field name="projectTask" domain="self.project = :project"
-          form-view="project-task-form" grid-view="project-task-grid" colSpan="6"/>
       </panel>
       <panel name="POManagementPanel" title="PO Management"
         if-module="axelor-supplier-management" colSpan="12"
@@ -983,7 +981,8 @@
   <action-method
     name="action-purchase-order-method-check-analytic-distribution-template">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="checkPurchaseOrderAnalyticDistributionTemplate"/>
+      method="checkPurchaseOrderAnalyticDistributionTemplate"
+      if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
   </action-method>
 
   <action-method name="action-purchase-order-method-set-status-to-validated">

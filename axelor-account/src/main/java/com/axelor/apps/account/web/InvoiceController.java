@@ -56,7 +56,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -1271,14 +1270,5 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  @ErrorException
-  public void updateSubrogationPartner(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-
-    Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
-
-    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
   }
 }

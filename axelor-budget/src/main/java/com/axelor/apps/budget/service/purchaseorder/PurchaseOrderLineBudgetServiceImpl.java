@@ -24,10 +24,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
@@ -154,7 +153,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
           purchaseOrderLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
         query =
             query.concat(
-                " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in ("
+                " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
                     + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
                     + ","
                     + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
@@ -163,7 +162,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
           purchaseOrderLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
         query =
             query.concat(
-                " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in ("
+                " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
                     + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
                     + ","
                     + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
@@ -174,19 +173,19 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       query =
           query.concat(
               String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.globalBudget.company.id = %d",
+                  " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
                   purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getId() : 0));
-      if (purchaseOrder.getGlobalBudget() != null) {
+      if (purchaseOrder.getBudgetLevel() != null) {
         query =
             query.concat(
                 String.format(
-                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.id = %d",
-                    purchaseOrder.getGlobalBudget().getId()));
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = %d",
+                    purchaseOrder.getBudgetLevel().getId()));
       } else if (purchaseOrder.getCompanyDepartment() != null) {
         query =
             query.concat(
                 String.format(
-                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.companyDepartment.id = %d",
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.companyDepartment.id = %d",
                     purchaseOrder.getCompanyDepartment().getId()));
       }
       if (purchaseOrder.getOrderDate() != null) {
@@ -240,7 +239,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
 
   @Override
   public String getGroupBudgetDomain(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, GlobalBudget global) {
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BudgetLevel global) {
 
     if (purchaseOrderLine == null || purchaseOrder == null || purchaseOrder.getCompany() == null) {
       return "self.id = 0";
@@ -248,7 +247,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
 
     String query =
         String.format(
-            "self.parentBudgetLevel IS NULL AND self.statusSelect = '%s'",
+            "self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.statusSelect = '%s'",
             BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
 
     if (purchaseOrderLine.getAccount() != null
@@ -258,28 +257,25 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
         query =
             query.concat(
                 String.format(
-                    " AND self.globalBudget.budgetTypeSelect in (%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
           accountType.getTechnicalTypeSelect())) {
         query =
             query.concat(
                 String.format(
-                    " AND self.globalBudget.budgetTypeSelect in (%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       } else {
         query =
             query.concat(
                 String.format(
-                    " AND self.globalBudget.budgetTypeSelect in (%d,%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE,
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.parentBudgetLevel.budgetTypeSelect in (%d,%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       }
     }
 
@@ -292,19 +288,20 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
                   " AND self.id = %d",
                   purchaseOrderLine.getBudget().getBudgetLevel().getParentBudgetLevel().getId()));
     } else if (global != null && global.getId() != null) {
-      query = query.concat(String.format(" AND self.globalBudget.id = %d", global.getId()));
+      query = query.concat(String.format(" AND self.parentBudgetLevel.id = %d", global.getId()));
     } else {
       query =
           query.concat(
               String.format(
-                  " AND self.globalBudget.company.id = %d", purchaseOrder.getCompany().getId()));
+                  " AND self.parentBudgetLevel.company.id = %d",
+                  purchaseOrder.getCompany().getId()));
     }
     return query;
   }
 
   @Override
   public String getSectionBudgetDomain(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, GlobalBudget global) {
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BudgetLevel global) {
 
     if (purchaseOrderLine == null || purchaseOrder == null || purchaseOrder.getCompany() == null) {
       return "self.id = 0";
@@ -312,8 +309,8 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
 
     String query =
         String.format(
-            "self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.globalBudget.statusSelect = %d",
-            GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID);
+            "self.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.parentBudgetLevel.statusSelect = '%s'",
+            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
 
     if (purchaseOrderLine.getAccount() != null
         && purchaseOrderLine.getAccount().getAccountType() != null) {
@@ -322,28 +319,25 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
         query =
             query.concat(
                 String.format(
-                    " AND self.parentBudgetLevel.globalBudget.budgetTypeSelect in (%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
           accountType.getTechnicalTypeSelect())) {
         query =
             query.concat(
                 String.format(
-                    " AND self.parentBudgetLevel.globalBudget.budgetTypeSelect in (%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       } else {
         query =
             query.concat(
                 String.format(
-                    " AND self.parentBudgetLevel.globalBudget.budgetTypeSelect in (%d,%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE,
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       }
     }
 
@@ -362,12 +356,13 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
     } else if (global != null && global.getId() != null) {
       query =
           query.concat(
-              String.format(" AND self.parentBudgetLevel.globalBudget.id = %d", global.getId()));
+              String.format(
+                  " AND self.parentBudgetLevel.parentBudgetLevel.id = %d", global.getId()));
     } else {
       query =
           query.concat(
               String.format(
-                  " AND self.parentBudgetLevel.globalBudget.company.id = %d",
+                  " AND self.parentBudgetLevel.parentBudgetLevel.company.id = %d",
                   purchaseOrder.getCompany().getId()));
     }
     return query;
@@ -377,7 +372,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   public String getLineBudgetDomain(
       PurchaseOrderLine purchaseOrderLine,
       PurchaseOrder purchaseOrder,
-      GlobalBudget global,
+      BudgetLevel global,
       boolean isBudget) {
 
     if (purchaseOrderLine == null || purchaseOrder == null || purchaseOrder.getCompany() == null) {
@@ -386,8 +381,8 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
 
     String query =
         String.format(
-            "self.budgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect = %d",
-            GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID);
+            "self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = '%s'",
+            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
 
     if (purchaseOrderLine.getAccount() != null
         && purchaseOrderLine.getAccount().getAccountType() != null) {
@@ -396,28 +391,25 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
         query =
             query.concat(
                 String.format(
-                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in (%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
           accountType.getTechnicalTypeSelect())) {
         query =
             query.concat(
                 String.format(
-                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in (%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       } else {
         query =
             query.concat(
                 String.format(
-                    " AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect in (%d,%d,%d)",
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT,
-                    GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE,
-                    GlobalBudgetRepository
-                        .GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
       }
     }
 
@@ -441,12 +433,13 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       query =
           query.concat(
               String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.globalBudget.id = %d", global.getId()));
+                  " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = %d",
+                  global.getId()));
     } else {
       query =
           query.concat(
               String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.globalBudget.company.id = %d",
+                  " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
                   purchaseOrder.getCompany().getId()));
     }
     return query;

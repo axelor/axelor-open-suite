@@ -108,8 +108,8 @@
     <boolean name="automaticReconcile" title="Automatic reconcile"/>
     <many-to-one name="miscOpeJournal" title="Misc. Operation Journal"
       ref="com.axelor.apps.account.db.Journal"/>
-    <many-to-many name="journalSet" ref="com.axelor.apps.account.db.Journal"
-      title="Research journals"/>
+    <many-to-one name="researchJournal" title="Research Journal"
+      ref="com.axelor.apps.account.db.Journal"/>
     <integer name="cutOffMoveStatusSelect" title="Cut off moves status"
       selection="iaccount.move.status.select" default="1"/>
     <boolean name="previewRecordsToProcess" title="Preview records to process"/>

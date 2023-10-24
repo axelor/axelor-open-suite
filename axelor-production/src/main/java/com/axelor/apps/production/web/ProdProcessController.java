@@ -83,6 +83,17 @@ public class ProdProcessController {
     }
   }
 
+  public void print(ActionRequest request, ActionResponse response) {
+
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      String fileLink = Beans.get(ProdProcessService.class).print(prodProcess);
+      response.setView(ActionView.define(prodProcess.getName()).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkOriginalProductionProcess(ActionRequest request, ActionResponse response) {
 
     ProdProcessRepository prodProcessRepository = Beans.get(ProdProcessRepository.class);

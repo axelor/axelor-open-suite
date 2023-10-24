@@ -78,8 +78,14 @@ public interface ContractLineService {
    */
   ContractLine computeTotal(ContractLine contractLine) throws AxelorException;
 
+  /**
+   * Create analytic move lines using analytic distribution template
+   *
+   * @param contractLine
+   * @return ContractLine filled with analytic move lines
+   */
+  ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
+
   ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
       throws AxelorException;
-
-  void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException;
 }

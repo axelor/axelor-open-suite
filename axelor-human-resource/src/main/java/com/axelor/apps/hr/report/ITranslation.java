@@ -74,7 +74,6 @@ public class ITranslation {
   public static final String LUNCH_VOUCHER_TO = /*$$(*/ "LunchVoucher.to"; /*)*/
   public static final String LUNCH_VOUCHER_NAMES = /*$$(*/ "LunchVoucher.names"; /*)*/
   public static final String LUNCH_VOUCHER_QTY = /*$$(*/ "LunchVoucher.qty"; /*)*/
-  public static final String LUNCH_VOUCHER_PAPER_NUMBER = /*$$(*/ "LunchVoucher.paperNumber"; /*)*/
   public static final String LUNCH_VOUCHER_AMOUNT = /*$$(*/ "LunchVoucher.amount"; /*)*/
   public static final String LUNCH_VOUCHER_COMMENT = /*$$(*/ "LunchVoucher.comment"; /*)*/
   public static final String LUNCH_VOUCHER_EMPLOYER_SHARE = /*$$(*/

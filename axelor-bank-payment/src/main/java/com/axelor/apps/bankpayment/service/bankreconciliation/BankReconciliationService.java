@@ -79,6 +79,8 @@ public interface BankReconciliationService {
 
   BankReconciliation computeEndingBalance(BankReconciliation bankReconciliation);
 
+  String printNewBankReconciliation(BankReconciliation bankReconciliation) throws AxelorException;
+
   BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext);
 
   String createDomainForMoveLine(BankReconciliation bankReconciliation) throws AxelorException;

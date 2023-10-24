@@ -54,18 +54,13 @@ public class TimesheetLineController {
       } else {
         timesheet = timesheetLine.getTimesheet();
       }
-      TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
       BigDecimal hoursDuration =
-          timesheetLineService.computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
-
-      // check daily limit
-      timesheetLineService.checkDailyLimit(timesheet, timesheetLine, hoursDuration);
+          Beans.get(TimesheetLineService.class)
+              .computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
 
       response.setValue(HOURS_DURATION_FIELD, hoursDuration);
 
     } catch (Exception e) {
-      response.setValue(DURATION_FIELD, 0);
-      response.setValue(HOURS_DURATION_FIELD, 0);
       TraceBackService.trace(response, e);
     }
   }
@@ -114,25 +109,6 @@ public class TimesheetLineController {
       response.setValue("toInvoice", timesheetLine.getToInvoice());
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkDailyLimit(ActionRequest request, ActionResponse response) {
-    try {
-      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      Timesheet timesheet;
-      Context parent = request.getContext().getParent();
-      if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
-        timesheet = parent.asType(Timesheet.class);
-      } else {
-        timesheet = timesheetLine.getTimesheet();
-      }
-      Beans.get(TimesheetLineService.class)
-          .checkDailyLimit(timesheet, timesheetLine, timesheetLine.getHoursDuration());
-    } catch (Exception e) {
-      response.setValue(DURATION_FIELD, 0);
-      response.setValue(HOURS_DURATION_FIELD, 0);
       TraceBackService.trace(response, e);
     }
   }

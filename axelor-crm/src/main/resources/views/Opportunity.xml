@@ -182,10 +182,6 @@
           onClick="save,action-opportunity-view-task-event" colSpan="3"/>
         <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
           onClick="save,action-opportunity-view-note-event" colSpan="3"/>
-        <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-opportunity-view-all-events" readonlyIf="id == null"/>
-        <field name="lastEventDateT" readonly="true" colSpan="3"/>
-        <field name="nextScheduledEventDateT" readonly="true" colSpan="3"/>
         <panel-dashlet name="eventPanelDashlet"
           action="action-opportunity-view-events" title="Events" height="550" colSpan="12"/>
       </panel>
@@ -226,6 +222,10 @@
           if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox"
           onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form"
           grid-view="bank-details-grid"/>
+        <panel name="eventDateTPanel" colSpan="12">
+          <field name="lastEventDateT" readonly="true"/>
+          <field name="nextScheduledEventDateT" readonly="true"/>
+        </panel>
         <panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
           <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
           <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr"
@@ -454,14 +454,6 @@
   </action-view>
 
   <action-view name="action-opportunity-view-events" title="Events"
-    model="com.axelor.apps.crm.db.Event">
-    <view type="cards" name="event-cards"/>
-    <view type="grid" name="list-event-grid"/>
-    <view type="form" name="event-form"/>
-    <domain>self.opportunity.id = :_id</domain>
-  </action-view>
-
-  <action-view name="action-opportunity-view-all-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>

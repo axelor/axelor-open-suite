@@ -46,10 +46,6 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Disposal quantity can not be equal to 0" /*)*/;
   public static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
-  public static final String IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND =
-      /*$$(*/ "No implementation of FixedAssetLineComputationService found" /*)*/;
-  public static final String IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND =
-      /*$$(*/ "No implementation of FixedAssetLineService found" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
@@ -200,6 +196,7 @@ public final class AccountExceptionMessage {
       "%s : You must configure shit to irrecoverable sequence for the company %s" /*)*/;
   public static final String IRRECOVERABLE_5 = /*$$(*/ "Treatment finished" /*)*/;
   public static final String IRRECOVERABLE_6 = /*$$(*/ "Anomalies generated" /*)*/;
+  public static final String IRRECOVERABLE_7 = /*$$(*/ "You must select a printing type" /*)*/;
 
   /** Journal service */
   public static final String JOURNAL_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -1606,19 +1603,16 @@ public final class AccountExceptionMessage {
       "Report type %s doesn't have any line." /*)*/;
 
   public static final String REPORT_TYPE_DIFFERENT_RESULT_SELECT = /*$$(*/
-      "Computation methods are different." /*)*/;
+      "Report type %s has intersecting column %s and line %s with different computation method." /*)*/;
 
   public static final String REPORT_TYPE_NO_RESULT_SELECT = /*$$(*/
-      "No computation method is defined." /*)*/;
+      "Report type %s has intersecting column %s and line %s with no defined computation method." /*)*/;
 
   public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
       "Report type %s has group columns of different types." /*)*/;
 
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
-      "Computation method is the same as the group but there is none." /*)*/;
-
-  public static final String REPORT_TYPE_TOTAL_LINE_NOT_EXISTS = /*$$(*/
-      "The given percentage total line does not exist." /*)*/;
+      "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
 
   public static final String COMPENSATION_ON_SESSION_BY_INVOICE_TERM = /*$$(*/
       "Compensation is not allowed on payment session accounted by invoice term, please unselect them" /*)*/;
@@ -1689,9 +1683,4 @@ public final class AccountExceptionMessage {
 
   public static final String MONO_INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
       "The move lines are still linked to invoice payment(s) related to invoices: <br> %s <br> You can't modify them." /*)*/;
-
-  public static final String ACCOUNT_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
-      "Fiscal year and periods have been generated successfully." /*)*/;
-  public static final String ACCOUNT_CHART_AND_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
-      "The chart of account has been loaded and fiscal year/periods have been correctly generated." /*)*/;
 }

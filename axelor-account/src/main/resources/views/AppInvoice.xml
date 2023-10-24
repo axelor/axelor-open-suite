@@ -6,6 +6,7 @@
   <form name="app-invoice-config-form" title="App invoice"
     model="com.axelor.studio.db.AppInvoice" canDelete="false" canNew="false" width="large">
     <panel name="appInvoiceConfigFormPanel">
+      <field name="isInvoiceMoveConsolidated" widget="boolean-switch"/>
       <field name="isVentilationSkipped" widget="boolean-switch"/>
       <field name="isEnabledProductDescriptionCopyForCustomers" widget="boolean-switch"/>
       <field name="isEnabledProductDescriptionCopyForSuppliers" widget="boolean-switch"/>

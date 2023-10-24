@@ -78,7 +78,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
   protected UnitConversionService unitConversionService;
   protected StockMoveLineRepository stockMoveLineRepository;
-  protected PurchaseOrderLineServiceSupplyChainImpl purchaseOrderLineServiceSupplychainImpl;
+  protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
   protected AppBaseService appBaseService;
   protected ShippingCoefService shippingCoefService;
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
@@ -91,7 +91,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   public PurchaseOrderStockServiceImpl(
       UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      PurchaseOrderLineServiceSupplyChainImpl purchaseOrderLineServiceSupplychainImpl,
+      PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl,
       AppBaseService appBaseService,
       ShippingCoefService shippingCoefService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,

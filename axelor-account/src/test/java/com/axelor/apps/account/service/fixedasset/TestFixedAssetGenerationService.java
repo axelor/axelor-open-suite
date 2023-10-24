@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -58,7 +57,6 @@ public class TestFixedAssetGenerationService {
   protected SequenceService sequenceService;
   protected FixedAssetLineService fixedAssetLineService;
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
-  protected FixedAssetLineComputationServiceFactory fixedAssetLineComputationServiceFactory;
   protected FixedAssetFailOverControlService fixedAssetFailOverControlService;
   protected FixedAssetValidateService fixedAssetValidateService;
   protected AppBaseService appBaseService;
@@ -80,7 +78,6 @@ public class TestFixedAssetGenerationService {
     appBaseService = mock(AppBaseService.class);
     fixedAssetLineService = mock(FixedAssetLineService.class);
     fixedAssetLineServiceFactory = mock(FixedAssetLineServiceFactory.class);
-    fixedAssetLineComputationServiceFactory = mock(FixedAssetLineComputationServiceFactory.class);
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetValidateService = mock(FixedAssetValidateService.class);
     fixedAssetDateService = mock(FixedAssetDateService.class);
@@ -89,14 +86,12 @@ public class TestFixedAssetGenerationService {
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
-    when(fixedAssetLineComputationServiceFactory.getFixedAssetComputationService(
+    when(fixedAssetLineServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);
     fixedAssetLineGenerationService =
         new FixedAssetLineGenerationServiceImpl(
-            fixedAssetLineService,
-            fixedAssetDerogatoryLineService,
-            fixedAssetLineComputationServiceFactory);
+            fixedAssetLineService, fixedAssetDerogatoryLineService, fixedAssetLineServiceFactory);
     fixedAssetGenerationService =
         new FixedAssetGenerationServiceImpl(
             fixedAssetLineGenerationService,

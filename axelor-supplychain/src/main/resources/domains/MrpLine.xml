@@ -22,7 +22,7 @@
     <decimal name="reOrderQty" title="Refill Qty" precision="20" scale="10"/>
     <string name="relatedToSelectName" title="Related to"/>
     <one-to-one ref="com.axelor.apps.supplychain.db.MrpLine"
-      name="estimatedDeliveryMrpLine" title="Associated estimated delivery mrp line" unique="true"/>
+      name="estimatedDeliveryMrpLine" title="Associated estimated delivery mrp line"/>
     <date name="deliveryDelayDate" title="Date to match delivery delay" readonly="true"/>
     <date name="estimatedDeliveryDate" title="Estimated delivery date" readonly="true"/>
 

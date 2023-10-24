@@ -367,8 +367,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       moveLine.setDebit(moveLine.getDebit().add(amount));
     }
 
-    BigDecimal signum = BigDecimal.valueOf(moveLine.getAmountRemaining().signum());
-    moveLine.setAmountRemaining(moveLine.getAmountRemaining().abs().add(amount).multiply(signum));
+    moveLine.setAmountRemaining(moveLine.getAmountRemaining().add(amount));
   }
 
   protected Account getHoldbackAccount(MoveLine moveLine, Move move) throws AxelorException {

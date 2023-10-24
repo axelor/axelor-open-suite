@@ -7,7 +7,7 @@
 
   <entity name="AppExpense" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <boolean name="computeDistanceWithWebService"/>
 

@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -126,9 +125,10 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getGlobalBudget()
+                .getParentBudgetLevel()
                 .getTotalAmountAvailable();
-        budgetName = budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getName();
+        budgetName =
+            budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getName();
         break;
     }
     if (budgetToCompare.compareTo(amount) < 0) {
@@ -140,7 +140,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               budget
                   .getBudgetLevel()
                   .getParentBudgetLevel()
-                  .getGlobalBudget()
+                  .getParentBudgetLevel()
                   .getCompany()
                   .getCurrency()
                   .getSymbol());
@@ -254,51 +254,5 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     } else {
       budgetDistribution.setBudgetAmountAvailable(BigDecimal.ZERO);
     }
-  }
-
-  @Override
-  public String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect) {
-    String budget = "self.budgetLevel.parentBudgetLevel.globalBudget";
-    String query =
-        String.format(
-            "self.totalAmountExpected > 0 AND self.statusSelect = %d ",
-            BudgetRepository.STATUS_VALIDATED);
-
-    if (company != null) {
-      query.concat(
-          String.format(" AND %s.company.id = %d", budget, company != null ? company.getId() : 0));
-    }
-    if (date != null) {
-      query =
-          query.concat(
-              String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
-    }
-    if (AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect)) {
-      query =
-          query.concat(
-              String.format(
-                  " AND %s.budgetTypeSelect = %d ",
-                  budget, BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE));
-    } else if (AccountTypeRepository.TYPE_CHARGE.equals(technicalTypeSelect)) {
-      query =
-          query.concat(
-              String.format(
-                  " AND %s.budgetTypeSelect in (%d,%d) ",
-                  budget,
-                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
-                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
-    } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(technicalTypeSelect)) {
-      query =
-          query.concat(
-              String.format(
-                  " AND %s.budgetTypeSelect in (%d,%d) ",
-                  budget,
-                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
-                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
-    } else {
-      query = "self.id = 0";
-    }
-
-    return query;
   }
 }

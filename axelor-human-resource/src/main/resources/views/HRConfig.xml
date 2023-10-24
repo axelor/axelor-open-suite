@@ -135,11 +135,6 @@
       <panel name="dpaePanel" title="DPAE">
         <field name="enableDPAE" widget="BooleanSwitch"/>
       </panel>
-      <panel name="printingsPanel" title="Printings" colSpan="12">
-        <field name="employeeAnnualReportBirtTemplate"/>
-        <field name="employeePhoneBookBirtTemplate"/>
-        <field name="expenseReportBirtTemplate"/>
-      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">

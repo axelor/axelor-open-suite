@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
@@ -52,12 +51,8 @@ import com.google.inject.persist.Transactional;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class ImportMove {
 
@@ -217,8 +212,6 @@ public class ImportMove {
 
       move.addMoveLineListItem(moveLine);
 
-      setMovePartner(move, moveLine);
-
       if (values.get("Montantdevise") == null || "".equals(values.get("Montantdevise"))) {
         moveLine.setMove(move);
         moveLineToolService.setCurrencyAmount(moveLine);
@@ -232,24 +225,6 @@ public class ImportMove {
           fecImport, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
     return moveLine;
-  }
-
-  protected void setMovePartner(Move move, MoveLine moveLine) {
-    List<Partner> partnerList =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getPartner)
-            .filter(Objects::nonNull)
-            .distinct()
-            .collect(Collectors.toList());
-    if (CollectionUtils.isNotEmpty(partnerList)) {
-      if (partnerList.size() == 1) {
-        move.setPartner(moveLine.getPartner());
-      }
-
-      if (partnerList.size() > 1) {
-        move.setPartner(null);
-      }
-    }
   }
 
   protected Company getCompany(Map<String, Object> values) {

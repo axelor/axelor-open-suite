@@ -17,7 +17,6 @@
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
     <integer name="templateEngineSelect" title="Template engine"
       selection="template.engine.select" default="1"/>
-    <boolean name="attach" title="Attach"/>
 
   </entity>
 

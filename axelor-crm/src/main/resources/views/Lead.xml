@@ -14,7 +14,6 @@
     <field name="nextScheduledEventDateT"/>
     <field name="leadScoringSelect"/>
     <field name="user"/>
-    <field name="description"/>
     <hilite color="default" if="leadScoringSelect == 0.00"/>
     <hilite color="danger" if="leadScoringSelect == 1.00"/>
     <hilite color="warning" if="leadScoringSelect == 2.00"/>
@@ -50,7 +49,7 @@
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printItem" title="Print" action="action-method-print-birt-list"/>
+        <item name="printItem" title="Print" action="action-crm-lead-method-print"/>
       </menu>
       <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
         <item name="assignToMeItem" title="Assign to me"
@@ -82,11 +81,11 @@
 
   <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead"
     onLoad="action-group-crm-lead-onload" onNew="action-group-crm-lead-onnew"
-    onSave="action-crm-lead-method-check-name,action-lead-method-show-duplicate-records-fullname">
+    onSave="action-crm-lead-method-check-name">
 
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
+        <item name="printItem" title="Print" action="save,action-crm-lead-method-print"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -232,10 +231,6 @@
           onClick="save,action-lead-view-task-event" colSpan="3"/>
         <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
           onClick="save,action-lead-view-note-event" colSpan="3"/>
-        <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-lead-view-all-events" readonlyIf="id == null"/>
-        <field name="lastEventDateT" readonly="true" colSpan="3"/>
-        <field name="nextScheduledEventDateT" readonly="true" colSpan="3"/>
         <panel-dashlet name="eventPanelDashlet" action="action-lead-view-events"
           title="Events" height="550" colSpan="12"/>
       </panel>
@@ -264,10 +259,6 @@
         onClick="action-lead-view-lose" css="btn-danger" icon="fa-times-circle"/>
     </panel>
 
-    <panel sidebar="true" name="activityPanel" title="Activity" colSpan="12" showIf="id">
-      <panel-dashlet action="action-lead-view-lead-activity-custom" height="550"/>
-    </panel>
-
     <panel sidebar="true" name="followUpPanel" title="Follow-up" colSpan="12">
       <field name="user" canNew="false" canEdit="false" canView="false" colSpan="6"
         form-view="user-form" grid-view="user-grid"/>
@@ -278,6 +269,8 @@
       <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
         if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
+      <field name="lastEventDateT" readonly="true" hideIf="!lastEventDateT"/>
+      <field name="nextScheduledEventDateT" readonly="true" hideIf="!nextScheduledEventDateT"/>
       <field name="lostReason" hidden="true" colSpan="6"/>
       <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
       <field name="lostReason.freeText" hidden="true"/>
@@ -412,6 +405,10 @@
 
   <action-method name="action-lead-event-add-attendee">
     <call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
+  </action-method>
+
+  <action-method name="action-crm-lead-method-print">
+    <call method="print" class="com.axelor.apps.crm.web.LeadController"/>
   </action-method>
 
   <action-method name="action-crm-lead-method-check-name">
@@ -562,15 +559,6 @@
 
   <action-view name="action-lead-view-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
-    <view type="cards" name="event-cards"/>
-    <view type="grid" name="list-event-grid"/>
-    <view type="form" name="event-form"/>
-    <domain>self.eventLead.id = :_leadId </domain>
-    <context name="_leadId" expr="eval: __id__"/>
-  </action-view>
-
-  <action-view name="action-lead-view-all-events" title="Events"
-    model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
     <domain>self.eventLead.id = :_leadId </domain>
@@ -587,10 +575,6 @@
 
   <action-method name="action-lead-method-view-lead-with-same-domain-name">
     <call class="com.axelor.apps.crm.web.LeadController" method="viewLeadWithSameDomainName"/>
-  </action-method>
-
-  <action-method name="action-lead-method-show-duplicate-records-fullname">
-    <call class="com.axelor.apps.crm.web.LeadController" method="showDuplicateRecordsFullName"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"

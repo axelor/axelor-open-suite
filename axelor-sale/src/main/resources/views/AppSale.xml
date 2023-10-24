@@ -11,8 +11,6 @@
         onChange="action-app-sale-attrs-manage-sale-order-version-onchange"/>
       <field name="printingOnSOFinalization" widget="boolean-switch"
         readonlyIf="manageSaleOrderVersion"/>
-      <field name="isPastVersionRecovery" widget="boolean-switch"
-        readonlyIf="!manageSaleOrderVersion"/>
       <field name="enableConfigurator" widget="boolean-switch"/>
       <field name="allowPendingOrderModification" widget="boolean-switch"/>
       <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
@@ -26,16 +24,10 @@
       <field name="enableSalesProductByTradName" widget="boolean-switch"/>
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
+      <field name="enablePricingScale" widget="boolean-switch"/>
+      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
+        showIf="enablePricingScale"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
-      <panel name="pricingScalePanel" colSpan="12">
-        <field name="enablePricingScale" widget="boolean-switch"/>
-        <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
-          showIf="enablePricingScale"/>
-        <field name="isPricingComputingOrder" title="Pricing computing order"
-          widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
-          showIf="enablePricingScale"/>
-      </panel>
-      <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
@@ -60,8 +52,6 @@
   <action-attrs name="action-app-sale-attrs-manage-sale-order-version-onchange">
     <attribute name="value" expr="eval: true" for="printingOnSOFinalization"
       if="manageSaleOrderVersion"/>
-    <attribute name="value" expr="eval: false" for="isPastVersionRecovery"
-      if="!manageSaleOrderVersion"/>
   </action-attrs>
 
   <action-attrs name="action-sale-attrs-set-hidden"

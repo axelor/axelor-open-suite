@@ -20,7 +20,6 @@ package com.axelor.apps.base.service.birt.template;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.Model;
 import java.io.File;
 import java.util.Map;
@@ -31,12 +30,7 @@ public interface BirtTemplateService {
       throws AxelorException;
 
   String generateBirtTemplateLink(
-      BirtTemplate template,
-      Model model,
-      Map<String, Object> context,
-      String outputName,
-      Boolean toAttach,
-      String format)
+      BirtTemplate template, Model model, String outputName, Boolean toAttach, String format)
       throws AxelorException;
 
   File generateBirtTemplateFile(BirtTemplate template, Model model, String outputName)
@@ -48,15 +42,6 @@ public interface BirtTemplateService {
 
   File generateBirtTemplateFile(
       BirtTemplate template,
-      Map<String, Object> context,
-      String outputName,
-      Boolean toAttach,
-      String format)
-      throws AxelorException;
-
-  ReportSettings generate(
-      BirtTemplate template,
-      Model model,
       Map<String, Object> context,
       String outputName,
       Boolean toAttach,

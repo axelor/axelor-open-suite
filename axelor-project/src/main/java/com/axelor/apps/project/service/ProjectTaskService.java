@@ -54,6 +54,4 @@ public interface ProjectTaskService {
   void deleteProjectTask(ProjectTask projectTask);
 
   public String getTaskLink(String value);
-
-  public void fillSubtask(ProjectTask projectTask);
 }

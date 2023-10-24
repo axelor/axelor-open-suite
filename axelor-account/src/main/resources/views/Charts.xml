@@ -1410,21 +1410,13 @@ from InvoiceTerm as self
 	   SELECT
 	     ROUND(SUM(self.amountPaid), 2) AS amount,
 	     CASE WHEN ROUND(SUM(self.amountPaid), 2) > 0 THEN 2 ELSE 1 END AS statusSelect,
-	     CONCAT(_partner.name, CASE
-	       WHEN _subrogationPartner IS NOT NULL THEN CONCAT(' (', _subrogationPartner.name, ')')
-	       ELSE ''
-	     END) AS supplier,
-	     CASE
-	       WHEN _subrogationPartner IS NOT NULL THEN _subrogationBankDetails.fullName
-	       ELSE _bankDetails.fullName
-	     END AS bankDetails
+	     _partner.name AS supplier,
+	     _bankDetails.fullName AS bankDetails
 	   FROM InvoiceTerm AS self
 	   LEFT JOIN self.moveLine.partner AS _partner
 	   LEFT JOIN self.bankDetails AS _bankDetails
-	   LEFT JOIN self.subrogationPartner AS _subrogationPartner
-	   LEFT JOIN BankDetails AS _subrogationBankDetails ON _subrogationBankDetails.partner = _subrogationPartner.id
 	   WHERE self.isSelectedOnPaymentSession IS TRUE AND self.paymentSession.id = :_id
-	   GROUP BY _partner.id, _subrogationPartner.id, _bankDetails.id, _subrogationBankDetails.id
+	   GROUP BY _partner.id, _bankDetails.id
 	   ORDER BY _partner.name
 	 ]]></dataset>
 

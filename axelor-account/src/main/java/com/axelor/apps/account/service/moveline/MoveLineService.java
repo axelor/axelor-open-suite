@@ -55,6 +55,8 @@ public interface MoveLineService {
 
   MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
+  public boolean checkManageAnalytic(Move move) throws AxelorException;
+
   @CallMethod
   LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine);
 

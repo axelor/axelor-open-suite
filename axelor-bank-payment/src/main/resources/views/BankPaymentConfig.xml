@@ -83,10 +83,6 @@
         <field name="bnkStmtAutoReconcileDateMargin" requiredIf="hasAutomaticReconciliation"/>
       </panel>
     </panel>
-    <panel name="printingsPanel" title="Printings" colSpan="12">
-      <field name="bankStatementLinesBirtTemplate"/>
-      <field name="bankReconciliationStatementBirtTemplate"/>
-    </panel>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

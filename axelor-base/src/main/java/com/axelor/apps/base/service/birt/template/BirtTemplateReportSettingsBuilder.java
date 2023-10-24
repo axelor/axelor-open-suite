@@ -24,8 +24,6 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.BirtTemplateViewService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -36,7 +34,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,26 +48,15 @@ class BirtTemplateReportSettingsBuilder {
   private Model model;
   private Map<String, Object> context;
 
-  public BirtTemplateReportSettingsBuilder(BirtTemplate template, String outputName)
-      throws AxelorException {
+  public BirtTemplateReportSettingsBuilder(BirtTemplate template, String outputName) {
     this.template = template;
     this.context = new HashMap<>();
-    try {
-      this.settings = initReportSettings(outputName);
-    } catch (AxelorException | IOException e) {
-      TraceBackService.trace(e);
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
-    }
+    this.settings = initReportSettings(outputName);
   }
 
-  private ReportSettings initReportSettings(String outputName) throws AxelorException, IOException {
+  private ReportSettings initReportSettings(String outputName) {
     String designPath = this.template.getTemplateLink();
     MetaFile templateMetaFile = this.template.getTemplateMetaFile();
-    if (templateMetaFile == null) {
-      templateMetaFile = Beans.get(BirtTemplateViewService.class).getTemplateFile(designPath);
-    }
     if (templateMetaFile != null) {
       designPath = MetaFiles.getPath(templateMetaFile).toString();
     }
@@ -112,16 +98,9 @@ class BirtTemplateReportSettingsBuilder {
   }
 
   public ReportSettings build() throws AxelorException {
-    try {
-      computeBirtParameters();
-      settings.generate();
-      return settings;
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
-    }
+    computeBirtParameters();
+    settings.generate();
+    return settings;
   }
 
   private void computeBirtParameters() throws AxelorException {
@@ -136,7 +115,7 @@ class BirtTemplateReportSettingsBuilder {
         settings.addParam(
             birtTemplateParameter.getName(),
             convertValue(birtTemplateParameter.getType(), parseValue));
-      } catch (Exception e) {
+      } catch (BirtException e) {
         throw new AxelorException(
             e,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -155,9 +134,6 @@ class BirtTemplateReportSettingsBuilder {
 
   private Object convertValue(String type, String value) throws BirtException {
 
-    if ("null".equals(value)) {
-      return null;
-    }
     if (DesignChoiceConstants.PARAM_TYPE_BOOLEAN.equals(type)) {
       return DataTypeUtil.toBoolean(value);
     } else if (DesignChoiceConstants.PARAM_TYPE_DATETIME.equals(type)) {

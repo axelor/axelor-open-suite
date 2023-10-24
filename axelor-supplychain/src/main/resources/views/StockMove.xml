@@ -13,7 +13,7 @@
     <field name="availableStatusSelect"/>
     <field name="statusSelect"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
-      icon="fa-print" onClick="action-stock-move-group-print-stock-move"/>
+      icon="fa-print" onClick="action-print-stock-move"/>
     <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
       width="32" icon="fa-location-arrow"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -29,7 +29,7 @@
     <field name="availableStatusSelect"/>
     <field name="statusSelect"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
-      icon="fa-print" onClick="action-stock-move-group-print-stock-move"/>
+      icon="fa-print" onClick="action-print-stock-move"/>
     <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
       width="32" icon="fa-location-arrow"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -56,7 +56,7 @@
       <hilite strong="true" color="success" if="statusSelect==3"/>
     </field>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
-      onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
+      onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="fa-location-arrow"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>

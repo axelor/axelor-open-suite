@@ -66,7 +66,6 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
   protected MoveCancelService moveCancelService;
   protected BankOrderRepository bankOrderRepository;
   protected ExpenseRepository expenseRepository;
-  protected ExpenseFetchMoveService expenseFetchMoveService;
 
   @Inject
   public ExpensePaymentServiceImpl(
@@ -80,8 +79,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
       BankOrderService bankOrderService,
       MoveCancelService moveCancelService,
       BankOrderRepository bankOrderRepository,
-      ExpenseRepository expenseRepository,
-      ExpenseFetchMoveService expenseFetchMoveService) {
+      ExpenseRepository expenseRepository) {
     this.bankOrderCreateServiceHr = bankOrderCreateServiceHr;
     this.accountConfigService = accountConfigService;
     this.paymentModeService = paymentModeService;
@@ -93,7 +91,6 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     this.moveCancelService = moveCancelService;
     this.bankOrderRepository = bankOrderRepository;
     this.expenseRepository = expenseRepository;
-    this.expenseFetchMoveService = expenseFetchMoveService;
   }
 
   @Override
@@ -148,7 +145,6 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     BigDecimal paymentAmount = expense.getInTaxTotal();
     BankDetails bankDetails = expense.getBankDetails();
     String origin = expense.getExpenseSeq();
-    Move move = expenseFetchMoveService.getExpenseMove(expense);
 
     Account employeeAccount;
 
@@ -161,11 +157,11 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     }
     employeeAccount = expenseMoveLine.getAccount();
 
-    Move movePayment =
+    Move move =
         moveCreateService.createMove(
             journal,
             company,
-            move.getCurrency(),
+            expense.getMove().getCurrency(),
             partner,
             paymentDate,
             paymentDate,
@@ -177,9 +173,9 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
             null,
             bankDetails);
 
-    movePayment.addMoveLineListItem(
+    move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
-            movePayment,
+            move,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails),
             paymentAmount,
@@ -192,7 +188,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
 
     MoveLine employeeMoveLine =
         moveLineCreateService.createMoveLine(
-            movePayment,
+            move,
             partner,
             employeeAccount,
             paymentAmount,
@@ -204,26 +200,21 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
             null);
     employeeMoveLine.setTaxAmount(expense.getTaxTotal());
 
-    movePayment.addMoveLineListItem(employeeMoveLine);
+    move.addMoveLineListItem(employeeMoveLine);
 
-    moveValidateService.accounting(movePayment);
-    expense.setPaymentMove(movePayment);
-    movePayment.setExpensePayment(expense);
+    moveValidateService.accounting(move);
+    expense.setPaymentMove(move);
 
     reconcileService.reconcile(expenseMoveLine, employeeMoveLine, true, false);
 
     expenseRepository.save(expense);
 
-    return movePayment;
+    return move;
   }
 
   protected MoveLine getExpenseEmployeeMoveLineByLoop(Expense expense) {
     MoveLine expenseEmployeeMoveLine = null;
-    Move move = expenseFetchMoveService.getExpenseMove(expense);
-    if (move == null) {
-      return null;
-    }
-    for (MoveLine moveline : move.getMoveLineList()) {
+    for (MoveLine moveline : expense.getMove().getMoveLineList()) {
       if (moveline.getCredit().compareTo(BigDecimal.ZERO) > 0) {
         expenseEmployeeMoveLine = moveline;
       }

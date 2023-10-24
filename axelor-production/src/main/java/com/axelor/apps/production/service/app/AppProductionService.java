@@ -30,6 +30,4 @@ public interface AppProductionService extends AppBaseService {
   public int getNbDecimalDigitForBomQty();
 
   public void updatePartnerSubcontractTag();
-
-  public boolean getIsCostPerProcessLine();
 }

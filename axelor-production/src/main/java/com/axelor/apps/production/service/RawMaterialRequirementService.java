@@ -24,6 +24,14 @@ import com.axelor.apps.production.db.RawMaterialRequirement;
 public interface RawMaterialRequirementService {
 
   /**
+   * Print the raw material requirement report.
+   *
+   * @param rawMaterialRequirement the user defined parameter of the report.
+   * @return URL to the printed report.
+   */
+  String print(RawMaterialRequirement rawMaterialRequirement) throws AxelorException;
+
+  /**
    * Fetch next value for the sequence linked to the given raw material requirement.
    *
    * @param rawMaterialRequirement the report needing a sequence.

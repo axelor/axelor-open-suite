@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -91,8 +92,8 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial =
         billOfMaterialRepository.find(request.getContext().asType(BillOfMaterial.class).getId());
 
-    List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
-    billOfMaterialList =
+    List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
+    BillOfMaterialSet =
         billOfMaterialRepository
             .all()
             .filter("self.originalBillOfMaterial = :origin")
@@ -100,10 +101,10 @@ public class BillOfMaterialController {
             .fetch();
     String message;
 
-    if (!billOfMaterialList.isEmpty()) {
+    if (!BillOfMaterialSet.isEmpty()) {
 
       String existingVersions = "";
-      for (BillOfMaterial billOfMaterialVersion : billOfMaterialList) {
+      for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
         existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
       }
       message =
@@ -151,23 +152,37 @@ public class BillOfMaterialController {
     }
   }
 
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    BillOfMaterialService billOfMaterialService = Beans.get(BillOfMaterialService.class);
+    String language = ReportSettings.getPrintingLocale(null);
+
+    String name = billOfMaterialService.getFileName(billOfMaterial);
+
+    String fileLink =
+        billOfMaterialService.getReportLink(
+            billOfMaterial, name, language, ReportSettings.FORMAT_PDF);
+
+    LOG.debug("Printing " + name);
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
   public void openBomTree(ActionRequest request, ActionResponse response) {
-    try {
-      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-      TempBomTree tempBomTree =
-          Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-      response.setView(
-          ActionView.define(I18n.get("Bill of materials"))
-              .model(TempBomTree.class.getName())
-              .add("tree", "bill-of-material-tree")
-              .context("_tempBomTreeId", tempBomTree.getId())
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    TempBomTree tempBomTree =
+        Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
+
+    response.setView(
+        ActionView.define(I18n.get("Bill of materials"))
+            .model(TempBomTree.class.getName())
+            .add("tree", "bill-of-material-tree")
+            .context("_tempBomTreeId", tempBomTree.getId())
+            .map());
   }
 
   public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {

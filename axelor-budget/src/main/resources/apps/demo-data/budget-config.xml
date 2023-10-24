@@ -6,36 +6,6 @@
   <input file="studio_appBudget.csv" separator=";" search="self.app.code = :code"
     update="true" type="com.axelor.studio.db.AppBudget"/>
 
-  <input file="budget_budget_scenario_variable.csv" separator=";"
-    search="self.importId = :importId" type="com.axelor.apps.budget.db.BudgetScenarioVariable"/>
-
-  <input file="budget_budget_scenario.csv" separator=";"
-    type="com.axelor.apps.budget.db.BudgetScenario" search="self.importId = :importId">
-    <bind column="years" to="yearSet" search="self.importId in :years"
-      eval="years.split('\\|') as List"/>
-  </input>
-
-  <input file="budget_budget_scenario_line.csv" separator=";"
-    type="com.axelor.apps.budget.db.BudgetScenarioLine" search="self.importId = :importId">
-  </input>
-
-  <input file="budget_global_budget_template.csv" separator=";"
-    type="com.axelor.apps.budget.db.GlobalBudgetTemplate" search="self.importId = :importId">
-    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
-      column="fromDate"/>
-    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
-      column="toDate"/>
-  </input>
-
-  <input file="budget_global_budget.csv" separator=";"
-    type="com.axelor.apps.budget.db.GlobalBudget" search="self.importId = :importId">
-    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
-      column="fromDate"/>
-    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
-      column="toDate"/>
-  </input>
-
-
   <input file="budget_budgetLevel.csv" separator=";"
     type="com.axelor.apps.budget.db.BudgetLevel" search="self.importId = :importId">
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
@@ -48,25 +18,13 @@
       column="endDate"/>
   </input>
 
-  <input file="budget_budget_level_template.csv" separator=";"
-    type="com.axelor.apps.budget.db.BudgetLevel" search="self.importId = :importId">
-    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
-      column="fromDate"/>
-    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
-      column="toDate"/>
-    <bind column="variables" to="budgetScenarioVariableSet"
-      search="self.importId in :variables" eval="variables.split('\\|') as List"/>
-  </input>
-
   <input file="budget_budget.csv" separator=";" type="com.axelor.apps.budget.db.Budget"
     search="self.importId = :importId">
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
       column="toDate"/>
-    <bind to="company" search="self.importId in :companyImportId" column="companyImportId"/>
-    <bind column="accountSet" to="accountSet"
-      search="self.code in :accountSet AND self.company.importId = :companyImportId"
+    <bind column="accountSet" to="accountSet" search="self.code in :accountSet"
       eval="accountSet.split('\\|') as List"/>
   </input>
 

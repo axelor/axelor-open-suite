@@ -32,7 +32,7 @@ import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.leave.LeaveLineService;
+import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -40,6 +40,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -57,21 +58,20 @@ public class BatchLeaveManagement extends BatchStrategy {
   protected LeaveLineRepository leaveLineRepository;
   protected LeaveManagementRepository leaveManagementRepository;
   protected EmployeeService employeeService;
-  protected LeaveLineService leaveLineService;
+
+  @Inject private Provider<LeaveService> leaveServiceProvider;
 
   @Inject
   public BatchLeaveManagement(
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
       LeaveManagementRepository leaveManagementRepository,
-      EmployeeService employeeService,
-      LeaveLineService leaveLineService) {
+      EmployeeService employeeService) {
 
     super(leaveManagementService);
     this.leaveLineRepository = leaveLineRepository;
     this.leaveManagementRepository = leaveManagementRepository;
     this.employeeService = employeeService;
-    this.leaveLineService = leaveLineService;
   }
 
   @Override
@@ -175,7 +175,7 @@ public class BatchLeaveManagement extends BatchStrategy {
     LeaveLine leaveLine = null;
     LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
 
-    leaveLine = leaveLineService.addLeaveReasonOrCreateIt(employee, leaveReason);
+    leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
 
     BigDecimal dayNumber =
         batch.getHrBatch().getUseWeeklyPlanningCoef()

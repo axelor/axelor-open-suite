@@ -42,8 +42,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
-import com.axelor.apps.account.service.JournalService;
-import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -93,8 +91,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
-  protected JournalService journalService;
-  protected PartnerAccountService partnerAccountService;
   protected UserRepository userRepo;
   protected PfpService pfpService;
 
@@ -107,8 +103,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      JournalService journalService,
-      PartnerAccountService partnerAccountService,
       UserRepository userRepo,
       PfpService pfpService) {
     this.invoiceTermRepo = invoiceTermRepo;
@@ -119,8 +113,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.userRepo = userRepo;
-    this.journalService = journalService;
-    this.partnerAccountService = partnerAccountService;
     this.pfpService = pfpService;
   }
 
@@ -1115,9 +1107,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());
 
-      invoiceTerm.setSubrogationPartner(
-          partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
-
       if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
         invoiceTerm.setOrigin(invoice.getInvoiceId());
       } else {
@@ -1130,26 +1119,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     } else if (moveLine != null) {
       invoiceTerm.setOrigin(moveLine.getOrigin());
 
-      if (moveLine.getPartner() != null) {
-        invoiceTerm.setPartner(moveLine.getPartner());
-      }
-
       if (move != null) {
         invoiceTerm.setCompany(move.getCompany());
         invoiceTerm.setCurrency(move.getCurrency());
+      }
 
-        if (invoiceTerm.getPartner() == null) {
-          invoiceTerm.setPartner(move.getPartner());
-        }
-
-        if (journalService.isSubrogationOk(move.getJournal())) {
-          invoiceTerm.setSubrogationPartner(
-              partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
-        }
+      if (moveLine.getPartner() != null) {
+        invoiceTerm.setPartner(moveLine.getPartner());
+      } else {
+        invoiceTerm.setPartner(move.getPartner());
       }
     }
 
-    if (moveLine != null && move != null && invoiceTerm.getOriginDate() == null) {
+    if (moveLine != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
     }
   }
@@ -1669,7 +1651,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
-        && moveLine.getAmountRemaining().abs().compareTo(thresholdDistanceFromRegulation) <= 0) {
+        && moveLine.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
       BigDecimal reconcileAmount = this.getReconcileAmount(moveLine);
       List<InvoiceTerm> unpaidInvoiceTermList =
           moveLine.getInvoiceTermList().stream()
@@ -1713,7 +1695,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountToPay,
       BigDecimal currencyRate) {
     BigDecimal moveLineAmountRemaining =
-        companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
+        companyAmountRemaining.subtract(amountToPayInCompanyCurrency);
     BigDecimal invoiceTermAmountRemaining =
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmountRemaining)

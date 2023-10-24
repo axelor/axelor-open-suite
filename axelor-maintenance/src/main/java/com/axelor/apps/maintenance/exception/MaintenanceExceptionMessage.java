@@ -24,7 +24,4 @@ public final class MaintenanceExceptionMessage {
 
   public static final String EQUIPEMENT_MAINTENANCE_MISSING_SEQUENCE = /*$$(*/
       "Missing equipement maintenance sequence." /*)*/;
-
-  public static final String MANUF_ORDER_1 = /*$$(*/
-      "Please select the Manufacturing order(s) to print." /*)*/;
 }

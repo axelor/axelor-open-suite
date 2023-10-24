@@ -1,4 +1,0 @@
-"importId";"birtTemplate.importId";"name";"value";"type"
-531;81;"QualityControlId";"$QualityControl.id";"decimal"
-532;81;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale(QualityControl.project?.clientPartner)}";"string"
-533;81;"Timezone";"${QualityControl.project?.company?.timezone}";"string"

@@ -97,7 +97,7 @@ public interface TimesheetService {
       Product product)
       throws AxelorException;
 
-  public Timesheet getCurrentTimesheet() throws AxelorException;
+  public Timesheet getCurrentTimesheet();
 
   public Timesheet getCurrentOrCreateTimesheet() throws AxelorException;
 
@@ -151,8 +151,4 @@ public interface TimesheetService {
 
   @CallMethod
   public Set<Long> getContextProjectIds();
-
-  Timesheet getOrCreateOpenTimesheet(Employee employee, LocalDate date) throws AxelorException;
-
-  Timesheet getDraftTimesheet(Employee employee, LocalDate date);
 }

@@ -36,7 +36,6 @@
     <decimal name="quantityBeforeValidation" title="Available quantity (before validation)"
       scale="4" precision="8"/>
     <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
-    <boolean name="isPayrollInput" title="Payroll input" default="false" readonly="true"/>
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

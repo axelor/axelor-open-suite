@@ -91,60 +91,6 @@ public class DayPlanningServiceImpl implements DayPlanningService {
         nbDaysJump + 1);
   }
 
-  @Override
-  public Optional<LocalDateTime> getAllowedEndDateTPeriodAt(
-      DayPlanning dayPlanning, LocalDateTime dateT) {
-    return getAllowedEndDateTPeriodAt(dayPlanning, dateT, 0);
-  }
-
-  protected Optional<LocalDateTime> getAllowedEndDateTPeriodAt(
-      DayPlanning dayPlanning, LocalDateTime dateT, int nbDaysJump) {
-
-    if (nbDaysJump == 8) {
-      return Optional.empty();
-    }
-
-    if (dayPlanning == null) {
-      return Optional.of(dateT);
-    }
-
-    LocalTime morningFromTime = dayPlanning.getMorningFrom();
-    LocalTime morningToTime = dayPlanning.getMorningTo();
-    LocalTime afternoonFromTime = dayPlanning.getAfternoonFrom();
-    LocalTime afternoonToTime = dayPlanning.getAfternoonTo();
-
-    LocalTime localTime = dateT.toLocalTime();
-
-    if (afternoonFromTime != null && afternoonToTime != null) {
-
-      if (localTime.compareTo(afternoonFromTime) >= 0 && localTime.compareTo(afternoonToTime) < 0) {
-        return Optional.of(dateT);
-      }
-
-      if (localTime.isAfter(afternoonToTime)) {
-        return Optional.of(getDateTAtLocalTime(dateT, afternoonToTime));
-      }
-    }
-
-    if (morningFromTime != null && morningToTime != null) {
-
-      if (localTime.compareTo(morningFromTime) >= 0 && localTime.compareTo(morningToTime) < 0) {
-        return Optional.of(dateT);
-      }
-
-      if (localTime.isAfter(morningToTime)) {
-        return Optional.of(getDateTAtLocalTime(dateT, morningToTime));
-      }
-    }
-
-    LocalDateTime previousDay = dateT.minusDays(1).with(LocalTime.MAX);
-    return getAllowedStartDateTPeriodAt(
-        weeklyPlanningService.findDayPlanning(
-            dayPlanning.getWeeklyPlanning(), previousDay.toLocalDate()),
-        previousDay,
-        nbDaysJump + 1);
-  }
-
   protected LocalDateTime getDateTAtLocalTime(LocalDateTime dateT, LocalTime localTime) {
 
     return dateT

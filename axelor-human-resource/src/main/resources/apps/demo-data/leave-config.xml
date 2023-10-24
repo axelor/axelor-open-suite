@@ -27,13 +27,5 @@
   <input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";"
     search="self.importId = :importId" update="true"/>
 
-  <input file="hr_leaveRequest.csv" separator=";" type="com.axelor.apps.hr.db.LeaveRequest"
-    search="self.importId = :importId">
-    <bind to="fromDateT"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(fromDateT)" column="fromDateT"/>
-    <bind to="toDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(toDateT)"
-      column="toDateT"/>
-  </input>
-
 </csv-inputs>
 

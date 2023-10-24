@@ -20,60 +20,35 @@ package com.axelor.apps.account.service.fixedasset.factory;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicServiceImpl;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineFiscalServiceImpl;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsServiceImpl;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicComputationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicUpdateComputationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineFiscalComputationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsComputationServiceImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import com.axelor.inject.Beans;
 
 public class FixedAssetLineServiceFactory {
-  protected FixedAssetLineEconomicServiceImpl fixedAssetLineEconomicService;
-  protected FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService;
-  protected FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService;
 
-  @Inject
-  public FixedAssetLineServiceFactory(
-      FixedAssetLineEconomicServiceImpl fixedAssetLineEconomicService,
-      FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService,
-      FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService) {
-    this.fixedAssetLineEconomicService = fixedAssetLineEconomicService;
-    this.fixedAssetLineFiscalService = fixedAssetLineFiscalService;
-    this.fixedAssetLineIfrsService = fixedAssetLineIfrsService;
-  }
-
-  public FixedAssetLineService getFixedAssetService(int typeSelect) throws AxelorException {
+  public FixedAssetLineComputationService getFixedAssetComputationService(
+      FixedAsset fixedAsset, int typeSelect) throws AxelorException {
 
     switch (typeSelect) {
       case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
-        return fixedAssetLineEconomicService;
+        if (fixedAsset.getCorrectedAccountingValue() != null
+            && fixedAsset.getCorrectedAccountingValue().signum() != 0) {
+          return Beans.get(FixedAssetLineEconomicUpdateComputationServiceImpl.class);
+        }
+        return Beans.get(FixedAssetLineEconomicComputationServiceImpl.class);
       case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
-        return fixedAssetLineFiscalService;
+        return Beans.get(FixedAssetLineFiscalComputationServiceImpl.class);
       case FixedAssetLineRepository.TYPE_SELECT_IFRS:
-        return fixedAssetLineIfrsService;
+        return Beans.get(FixedAssetLineIfrsComputationServiceImpl.class);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND));
+            "There is no implementation for this typeSelect");
     }
-  }
-
-  public List<Integer> getTypeSelectList(FixedAsset fixedAsset) {
-    String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
-    List<Integer> typeSelectList = new ArrayList<>();
-    if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
-      typeSelectList.add(FixedAssetLineRepository.TYPE_SELECT_FISCAL);
-    }
-    if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
-      typeSelectList.add(FixedAssetLineRepository.TYPE_SELECT_IFRS);
-    }
-    typeSelectList.add(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
-    return typeSelectList;
   }
 }

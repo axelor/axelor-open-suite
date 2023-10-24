@@ -81,13 +81,11 @@ public final class BudgetExceptionMessage {
   public static final String ADVANCED_IMPORT_IMPORT_DATA = /*$$(*/
       "Data imported successfully" /*)*/;
 
-  public static final String NO_BUDGET_VALUES_FOUND_ERROR = /*$$(*/
-      "Budget distribution has not been configured. It is required for the rest of the process." /*)*/;
+  public static final String NO_BUDGET_DISTRIBUTION_GENERATED = /*$$(*/
+      "The budget distribution has not been computed yet. By launching this action, you can no longer compute the budget distribution. Do you want to proceed ?" /*)*/;
 
   public static final String BUGDET_EXCEED_ERROR = /*$$(*/
       "Warning : There is a budget overrun for %s. The available balance is %.2f %s. If you click OK you will be in excess, do you want to continue ?"; /*)*/
 
   public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
-
-  public static final String BUDGET_VARIABLE = /*$$(*/ "Budget Scenario Variable %s" /*)*/;
 }

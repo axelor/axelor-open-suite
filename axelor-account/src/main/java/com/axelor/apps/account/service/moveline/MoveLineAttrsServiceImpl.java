@@ -19,13 +19,15 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -45,23 +47,23 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   private final int endAxisPosition = 5;
 
   protected AccountConfigService accountConfigService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
   protected PeriodServiceAccount periodServiceAccount;
-  protected JournalService journalService;
 
   @Inject
   public MoveLineAttrsServiceImpl(
       AccountConfigService accountConfigService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService,
-      PeriodServiceAccount periodServiceAccount,
-      JournalService journalService) {
+      PeriodServiceAccount periodServiceAccount) {
     this.accountConfigService = accountConfigService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
     this.periodServiceAccount = periodServiceAccount;
-    this.journalService = journalService;
   }
 
   protected void addAttr(
@@ -71,6 +73,54 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     }
 
     attrsMap.get(field).put(attr, value);
+  }
+
+  @Override
+  public void addAnalyticAxisAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    if (move != null && move.getCompany() != null) {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
+
+      if (moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
+        AnalyticAxis analyticAxis = null;
+
+        for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+          this.addAttr(
+              String.format("axis%dAnalyticAccount", i),
+              "hidden",
+              !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
+              attrsMap);
+
+          for (AnalyticAxisByCompany analyticAxisByCompany :
+              accountConfig.getAnalyticAxisByCompanyList()) {
+            if (analyticAxisByCompany.getSequence() + 1 == i) {
+              analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+            }
+          }
+
+          if (analyticAxis != null) {
+            this.addAttr(
+                String.format("axis%dAnalyticAccount", i),
+                "title",
+                analyticAxis.getName(),
+                attrsMap);
+
+            analyticAxis = null;
+          }
+        }
+      } else {
+        this.addAttr("analyticDistributionTemplate", "hidden", true, attrsMap);
+        this.addAttr("analyticMoveLineList", "hidden", true, attrsMap);
+
+        for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+          this.addAttr(
+              "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+              "hidden",
+              true,
+              attrsMap);
+        }
+      }
+    }
   }
 
   @Override
@@ -260,14 +310,5 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     if (company.getCurrency() != move.getCurrency()) {
       this.addAttr("currencyAmount", "focus", true, attrsMap);
     }
-  }
-
-  @Override
-  public void addSubrogationPartnerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr(
-        "invoiceTermList.subrogationPartner",
-        "hidden",
-        !journalService.isSubrogationOk(move.getJournal()),
-        attrsMap);
   }
 }

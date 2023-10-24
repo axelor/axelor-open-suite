@@ -25,10 +25,8 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.HrBatch;
-import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
-import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
@@ -62,15 +60,10 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
   @Inject HRConfigService hrConfigService;
 
-  protected LeaveRequestRepository leaveRequestRepo;
-
   @Inject
-  public BatchPayrollPreparationExport(
-      PayrollPreparationService payrollPreparationService,
-      LeaveRequestRepository leaveRequestRepo) {
+  public BatchPayrollPreparationExport(PayrollPreparationService payrollPreparationService) {
     super();
     this.payrollPreparationService = payrollPreparationService;
-    this.leaveRequestRepo = leaveRequestRepo;
   }
 
   @Override
@@ -121,14 +114,6 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       case HrBatchRepository.EXPORT_TYPE_SILAE:
         try {
           batch.setMetaFile(silaeExport(payrollPreparationList));
-        } catch (Exception e) {
-          incrementAnomaly();
-          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
-        }
-        break;
-      case HrBatchRepository.EXPORT_TYPE_SAGE:
-        try {
-          batch.setMetaFile(sageExport(payrollPreparationList));
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
@@ -248,22 +233,5 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     FileInputStream inStream = new FileInputStream(file);
     MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
     return metaFile;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public MetaFile sageExport(List<PayrollPreparation> payrollPreparationList)
-      throws IOException, AxelorException {
-    MetaFile file = standardExport(payrollPreparationList);
-
-    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-      payrollPreparationService.fillInLeaves(payrollPreparation).stream()
-          .map(PayrollLeave::getLeaveRequest)
-          .forEach(
-              leaveReq -> {
-                leaveReq.setIsPayrollInput(true);
-                leaveRequestRepo.save(leaveReq);
-              });
-    }
-    return file;
   }
 }

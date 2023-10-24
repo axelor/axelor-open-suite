@@ -1,9 +1,0 @@
-"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
-7;"Invoice";"Invoice.rptdesign";"com.axelor.apps.account.db.Invoice";2;"pdf";false
-21;"PaymentVoucher";"PaymentVoucher.rptdesign";"com.axelor.apps.account.db.PaymentVoucher";2;"pdf";false
-30;"DebtRecovery";"PaymentReminder.rptdesign";"com.axelor.apps.account.db.DebtRecoveryHistory";2;"pdf";true
-91;"SaleInvoicesDetails";"SaleInvoicesDetails.rptdesign";"com.axelor.apps.account.db.AssistantReportInvoice";2;"pdf";false
-92;"PurchaseInvoicesDetails";"PurchaseInvoicesDetails.rptdesign";"com.axelor.apps.account.db.AssistantReportInvoice";2;"pdf";false
-93;"Move";"AccountMove.rptdesign";"com.axelor.apps.account.db.Move";2;"pdf";false
-94;"SubrogationRelease";"SubrogationRelease.rptdesign";"com.axelor.apps.account.db.SubrogationRelease";2;"pdf";true
-95;"ChequeDepositSlip";"ChequeDepositSlip.rptdesign";"com.axelor.apps.account.db.DepositSlip";2;"pdf";true

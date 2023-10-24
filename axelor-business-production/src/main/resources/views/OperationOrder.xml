@@ -21,7 +21,6 @@
 
   <action-group name="action-operation-order-group-finish"
     id="action-business-production-operation-order-group-finish">
-    <action name="action-business-production-operation-order-group-checks"/>
     <action name="action-operation-order-business-production-method-alert-timesheet"/>
     <action name="action-operation-order-method-finish"/>
     <action name="action-operation-order-method-compute-duration"/>
@@ -32,27 +31,5 @@
     <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
       method="alertNonValidatedTimesheet"/>
   </action-method>
-
-  <action-group id="action-business-production-operation-order-group-pause"
-    name="action-operation-order-group-pause">
-    <action name="action-business-production-operation-order-group-checks"/>
-    <action name="action-operation-order-method-pause"/>
-  </action-group>
-
-
-  <action-method name="action-business-production-operation-order-check">
-    <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
-      method="checkOperationOrder"/>
-  </action-method>
-
-  <action-group name="action-business-production-operation-order-group-checks">
-    <action name="action-business-production-operation-order-check"/>
-  </action-group>
-
-  <action-group id="action-business-production-operation-order-group-cancel"
-    name="action-operation-order-group-cancel">
-    <action name="action-business-production-operation-order-group-checks"/>
-    <action name="action-operation-order-method-cancel"/>
-  </action-group>
 
 </object-views>

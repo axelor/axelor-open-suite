@@ -29,7 +29,6 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
@@ -45,14 +44,8 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
       LeaveManagementRepository leaveManagementRepository,
-      EmployeeService employeeService,
-      LeaveLineService leaveLineService) {
-    super(
-        leaveManagementService,
-        leaveLineRepository,
-        leaveManagementRepository,
-        employeeService,
-        leaveLineService);
+      EmployeeService employeeService) {
+    super(leaveManagementService, leaveLineRepository, leaveManagementRepository, employeeService);
   }
 
   @Override

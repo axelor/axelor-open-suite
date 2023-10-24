@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockInternalMovePostRequest;
@@ -136,8 +137,10 @@ public class StockMoveRestController {
                 requestBody.fetchCompany(),
                 StockInternalMoveStockMoveLinePostRequestMapper.map(requestBody.getLineList()));
 
-    return ResponseConstructor.buildCreateResponse(
-        stockmove, new StockInternalMoveResponse(stockmove));
+    return ResponseConstructor.build(
+        Response.Status.CREATED,
+        Beans.get(ResponseComputeService.class).compute(stockmove),
+        new StockInternalMoveResponse(stockmove));
   }
 
   /**

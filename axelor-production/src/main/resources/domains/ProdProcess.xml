@@ -20,7 +20,6 @@
       selection="production.prod.process.status.select" default="1"/>
 
     <boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
-    <boolean name="operationContinuity" title="Operation Continuity"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Production stock location" massUpdate="true"/>

@@ -16,11 +16,6 @@
     <option value="7">Merged</option>
   </selection>
 
-  <selection name="production.manuf.operation.continuity.select">
-    <option value="0">No continuity</option>
-    <option value="1">Optional continuity</option>
-    <option value="2">Continuity by default</option>
-  </selection>
   <selection name="production.bill.of.material.status.select">
     <option value="1">Draft</option>
     <option value="2">Validated</option>
@@ -137,6 +132,11 @@
     <option value="2">Machine</option>
   </selection>
 
+  <selection name="production.sop.line.status">
+    <option value="1">Draft</option>
+    <option value="2">Confirmed</option>
+  </selection>
+
   <selection name="production.cost.calculations.status.select">
     <option value="1">Draft</option>
     <option value="2">Costs computed</option>
@@ -157,16 +157,6 @@
 
   <selection name="batch.batch.type.select" id="production.batch.batch.type.select">
     <option value="700">Production batch</option>
-  </selection>
-
-  <selection name="production.config.capacity.select">
-    <option value="1">Infinite</option>
-    <option value="2">Finite</option>
-  </selection>
-
-  <selection name="production.config.scheduling.select">
-    <option value="1">As soon as possible</option>
-    <option value="2">At the latest</option>
   </selection>
 
 </object-views>

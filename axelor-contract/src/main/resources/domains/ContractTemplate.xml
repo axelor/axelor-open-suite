@@ -18,7 +18,6 @@
     <string name="name" title="Name" required="true" namecolumn="true"/>
 
     <boolean name="isInvoicingManagement" title="Manage invoices"/>
-    <boolean name="isGroupedInvoicing" title="Grouped Invoicing" default="false"/>
     <boolean name="isConsumptionManagement" title="Consumption management"/>
     <boolean name="isAdditionaBenefitManagement" title="Additional benefit management"/>
     <boolean name="automaticInvoicing" title="Automatic invoicing" default="false"/>

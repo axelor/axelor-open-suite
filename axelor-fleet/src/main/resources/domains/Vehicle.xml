@@ -12,7 +12,7 @@
     <string name="chasisNo" title="Chassis Number"/>
     <many-to-one name="driverPartner" title="Driver"
       ref="com.axelor.apps.base.db.Partner"/>
-    <many-to-one name="vehicleModel" ref="com.axelor.apps.fleet.db.VehicleModel"
+    <one-to-one name="vehicleModel" ref="com.axelor.apps.fleet.db.VehicleModel"
       title="Model"/>
     <one-to-many name="vehicleFuelLogList" ref="VehicleFuelLog" title="Fuel log"
       mappedBy="vehicle"/>

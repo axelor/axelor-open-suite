@@ -1,4 +1,0 @@
-"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
-82;"Maintenance bill of materials";"MaintenanceBillOfMaterial.rptdesign";"com.axelor.apps.production.db.BillOfMaterial";2;"pdf";false
-83;"Maintenance manuf order";"MaintenanceManufOrder.rptdesign";"com.axelor.apps.production.db.ManufOrder";2;"pdf";false
-84;"Maintenance prod process";"MaintenanceProdProcess.rptdesign";"com.axelor.apps.production.db.ProdProcess";2;"pdf";false

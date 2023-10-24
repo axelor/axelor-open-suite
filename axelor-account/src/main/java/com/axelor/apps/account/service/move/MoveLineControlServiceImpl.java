@@ -298,7 +298,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   public boolean canReconcile(MoveLine moveLine) {
     return (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0
+        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
         && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
             || moveLine.getInvoiceTermList().stream()
                 .allMatch(invoiceTermService::isNotAwaitingPayment));

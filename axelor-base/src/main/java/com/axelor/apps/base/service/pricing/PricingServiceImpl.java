@@ -39,10 +39,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,33 +66,10 @@ public class PricingServiceImpl implements PricingService {
       Product product,
       ProductCategory productCategory,
       String modelName,
-      Pricing pricing) {
-    return getPricings(company, product, productCategory, modelName, null).stream().findAny();
-  }
+      Pricing previousPricing) {
 
-  @Override
-  public Optional<Pricing> getRootPricingForNextPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName) {
-    List<Pricing> pricings = getAllPricings(company, product, productCategory, modelName);
-
-    Set<Long> pricingsPointedTo =
-        pricings.stream()
-            .map(Pricing::getLinkedPricing)
-            .filter(Objects::nonNull)
-            .map(Pricing::getId)
-            .collect(Collectors.toSet());
-
-    Optional<Pricing> rootPricing = Optional.empty();
-
-    // find the pricing that doesn't have any pricing pointing to it, that's the root
-    for (Pricing pricing : pricings) {
-      if (!pricingsPointedTo.contains(pricing.getId())) {
-        rootPricing = Optional.of(pricing);
-        break;
-      }
-    }
-
-    return rootPricing;
+    return getPricings(company, product, productCategory, modelName, previousPricing).stream()
+        .findAny();
   }
 
   @Override
@@ -104,42 +78,11 @@ public class PricingServiceImpl implements PricingService {
       Product product,
       ProductCategory productCategory,
       String modelName,
-      Pricing pricing) {
-    StringBuilder filter = new StringBuilder();
-    Map<String, Object> bindings = new HashMap<>();
-    pricingFetchFilter(filter, bindings, company, modelName);
+      Pricing previousPricing) {
 
-    if (pricing != null) {
-      filter.append("AND self.linkedPricing = :linkedPricing ");
-      bindings.put("linkedPricing", pricing);
-    } else {
-      filter.append("AND self.linkedPricing is NULL ");
-    }
-
-    filter.append("AND (self.archived = false OR self.archived is null) ");
-
-    appendProductFilter(product, productCategory, filter, bindings);
-    LOG.debug("Filtering pricing with {}", filter);
-    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
-  }
-
-  @Override
-  public List<Pricing> getAllPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName) {
-    StringBuilder filter = new StringBuilder();
-    Map<String, Object> bindings = new HashMap<>();
-    pricingFetchFilter(filter, bindings, company, modelName);
-
-    filter.append("AND (self.archived = false OR self.archived is null) ");
-
-    appendProductFilter(product, productCategory, filter, bindings);
-    LOG.debug("Filtering pricing with {}", filter);
-    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
-  }
-
-  protected void pricingFetchFilter(
-      StringBuilder filter, Map<String, Object> bindings, Company company, String modelName) {
     LOG.debug("Fetching pricings");
+    StringBuilder filter = new StringBuilder();
+    Map<String, Object> bindings = new HashMap<>();
 
     filter.append("self.startDate <= :todayDate ");
     filter.append("AND (self.endDate > :todayDate OR self.endDate = NULL) ");
@@ -154,6 +97,18 @@ public class PricingServiceImpl implements PricingService {
       filter.append("AND self.concernedModel.name = :modelName ");
       bindings.put("modelName", modelName);
     }
+
+    if (previousPricing != null) {
+      filter.append("AND self.previousPricing = :previousPricing ");
+      bindings.put("previousPricing", previousPricing);
+    } else {
+      filter.append("AND self.previousPricing is NULL ");
+    }
+    filter.append("AND (self.archived = false OR self.archived is null) ");
+
+    appendProductFilter(product, productCategory, filter, bindings);
+    LOG.debug("Filtering pricing with {}", filter.toString());
+    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
   }
 
   protected void appendProductFilter(
@@ -232,7 +187,7 @@ public class PricingServiceImpl implements PricingService {
     currentPricing.setClass4PricingRule(pricing.getClass4PricingRule());
     currentPricing.setCompany(pricing.getCompany());
     currentPricing.setConcernedModel(pricing.getConcernedModel());
-    currentPricing.setLinkedPricing(pricing.getLinkedPricing());
+    currentPricing.setPreviousPricing(pricing.getPreviousPricing());
     currentPricing.setResult1PricingRule(pricing.getResult1PricingRule());
     currentPricing.setResult2PricingRule(pricing.getResult2PricingRule());
     currentPricing.setResult3PricingRule(pricing.getResult3PricingRule());

@@ -45,7 +45,8 @@
         showIf="statusSelect == 1 || !id"
         readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
-        icon="fa-print" onClick="save,action-method-print-birt"/>
+        icon="fa-print"
+        onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
@@ -241,7 +242,7 @@
 
   <action-attrs name="action-pv-moveLine-domain">
     <attribute name="domain" for="moveLine"
-      expr="eval: &quot;self.account.useForPartnerBalance = 't' and self.partner.id = ${partner?.id?: 0} and (self.move.statusSelect = 2 or self.move.statusSelect = 3) and self.amountRemaining != 0 and self.credit &gt; 0.0&quot;"/>
+      expr="eval: &quot;self.account.useForPartnerBalance = 't' and self.partner.id = ${partner?.id?: 0} and (self.move.statusSelect = 2 or self.move.statusSelect = 3) and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-payment-voucher-manage-bank-details">

@@ -205,6 +205,4 @@ public interface MoveToolService {
   BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
 
   boolean isMultiCurrency(Move move);
-
-  List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
 }

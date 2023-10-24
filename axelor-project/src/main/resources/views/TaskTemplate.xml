@@ -6,7 +6,6 @@
   <grid name="task-template-grid" title="Task template"
     model="com.axelor.apps.project.db.TaskTemplate">
     <field name="name"/>
-    <field name="product"/>
     <field name="assignedTo"/>
     <field name="team"/>
     <field name="delayToStart"/>
@@ -19,8 +18,6 @@
     model="com.axelor.apps.project.db.TaskTemplate" width="large">
     <panel name="mainPanel">
       <field name="name" colSpan="12" css="label-bold bold large"/>
-      <field name="product" domain="self.productTypeSelect = 'service'"/>
-      <field name="qty"/>
       <field name="delayToStart"/>
       <field name="duration"/>
       <field name="totalPlannedHrs"/>

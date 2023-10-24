@@ -29,6 +29,4 @@ public interface ExpenseConfirmationService {
 
   public Message sendConfirmationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
-
-  boolean checkAllLineHaveFile(Expense expense);
 }

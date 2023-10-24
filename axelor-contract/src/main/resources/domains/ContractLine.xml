@@ -49,16 +49,6 @@
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
-    <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
-      ref="com.axelor.apps.account.db.AnalyticAccount"/>
-    <many-to-one name="axis2AnalyticAccount" title="Cpte Ana. AXIS2"
-      ref="com.axelor.apps.account.db.AnalyticAccount"/>
-    <many-to-one name="axis3AnalyticAccount" title="Cpte Ana. AXIS3"
-      ref="com.axelor.apps.account.db.AnalyticAccount"/>
-    <many-to-one name="axis4AnalyticAccount" title="Cpte Ana. AXIS4"
-      ref="com.axelor.apps.account.db.AnalyticAccount"/>
-    <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
-      ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
     <date name="fromDate"/>
 

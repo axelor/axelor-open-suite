@@ -598,8 +598,7 @@
     <view type="form" name="agency-form"/>
   </action-view>
 
-  <menuitem name="crm-search" parent="crm-root" title="Search" order="700" icon="fa-search"
-    if="__config__.app.getApp('crm')?.isSearchFunctionalityEnabled"/>
+  <menuitem name="crm-search" parent="crm-root" title="Search" order="60" icon="fa-search"/>
 
   <menuitem name="crm-search-request" parent="crm-search" title="Request"
     action="crm.root.crm.search.request" order="1"/>
@@ -625,28 +624,6 @@
     model="com.axelor.apps.base.db.ResearchParameterConfig">
     <view type="grid" name="research-parameter-config-grid"/>
     <view type="form" name="research-parameter-config-form"/>
-  </action-view>
-
-  <menuitem name="crm-conf-internal" parent="crm-conf"
-    if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled" title="Corporate partner"
-    order="1200"/>
-
-  <menuitem name="crm-conf-corporate-partner-domain" parent="crm-conf-internal"
-    title="Corporate partner work domain" action="crm.conf.corporate.partner.domain" order="100"/>
-
-  <action-view name="crm.conf.corporate.partner.domain"
-    title="Corporate partner work domain" model="com.axelor.apps.crm.db.CorporatePartnerDomain">
-    <view type="grid" name="corporate-partner-domain-grid"/>
-    <view type="form" name="corporate-partner-domain-form"/>
-  </action-view>
-
-  <menuitem name="crm-conf-fidelity" parent="crm-conf-internal"
-    title="Corporate partner fidelity" action="crm.conf.fidelity" order="200"/>
-
-  <action-view name="crm.conf.fidelity" title="Corporate partner fidelity"
-    model="com.axelor.apps.crm.db.Fidelity">
-    <view type="grid" name="fidelity-grid"/>
-    <view type="form" name="fidelity-form"/>
   </action-view>
 
 </object-views>

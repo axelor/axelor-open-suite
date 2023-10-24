@@ -7,7 +7,7 @@
 
   <entity name="AppSupplierPortal" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <boolean name="managePurchaseOrders" title="Manage purchase orders" default="true"/>
     <boolean name="manageInvoices" title="Manage invoices" default="true"/>

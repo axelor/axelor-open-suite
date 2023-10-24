@@ -115,14 +115,4 @@ public class ProjectTaskController {
       TraceBackService.trace(response, e);
     }
   }
-
-  public void fillSubtask(ActionRequest request, ActionResponse response) {
-    try {
-      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-      Beans.get(ProjectTaskService.class).fillSubtask(projectTask);
-      response.setValues(projectTask);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 }

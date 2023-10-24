@@ -27,6 +27,8 @@ import com.axelor.apps.quality.db.repo.ControlPointRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityProcessRepository;
 import com.axelor.apps.quality.service.QualityControlService;
+import com.axelor.apps.quality.service.print.QualityControlPrintServiceImpl;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -125,6 +127,21 @@ public class QualityControlController {
         .preFillOperationsFromOptionals(qualityControl, optionalControlPointList);
 
     response.setCanClose(true);
+  }
+
+  public void printQualityControl(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    QualityControl qualityControl = request.getContext().asType(QualityControl.class);
+    qualityControl = Beans.get(QualityControlRepository.class).find(qualityControl.getId());
+
+    String fileLink;
+    String title = Beans.get(QualityControlPrintServiceImpl.class).getFileName(qualityControl);
+    fileLink =
+        Beans.get(QualityControlPrintServiceImpl.class)
+            .printQualityControl(qualityControl, ReportSettings.FORMAT_PDF);
+
+    response.setView(ActionView.define(title).add("html", fileLink).map());
   }
 
   @SuppressWarnings("unchecked")

@@ -323,7 +323,7 @@ public class DebtRecoveryService {
     query.append("AND (ml.dueDate <= :todayDate) ");
     query.append("AND account.id IS NOT NULL ");
     query.append("AND account.useForPartnerBalance IS TRUE ");
-    query.append("AND ABS(ml.amountRemaining) > 0 ");
+    query.append("AND ml.amountRemaining > 0 ");
     query.append("AND move.ignoreInDebtRecoveryOk IS FALSE ");
 
     if (tradingName != null) {
@@ -591,16 +591,17 @@ public class DebtRecoveryService {
               debtRecovery,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               "%s :\n"
-                  + I18n.get("Partner")
-                  + " %s, "
-                  + I18n.get("Company")
-                  + " %s : "
-                  + (tradingName != null ? I18n.get("Trading name") + " %s : " : "")
-                  + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_2),
+                          + I18n.get("Partner")
+                          + " %s, "
+                          + I18n.get("Company")
+                          + " %s : "
+                          + tradingName
+                      != null
+                  ? I18n.get("Trading name") + " %s : "
+                  : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_2),
               I18n.get(BaseExceptionMessage.EXCEPTION),
               partner.getName(),
-              company.getName(),
-              tradingName != null ? tradingName.getName() : "");
+              company.getName());
         }
         if (debtRecovery.getDebtRecoveryMethod() == null) {
           fetchDebtRecoveryMethod(partner, company, tradingName, debtRecovery);

@@ -26,7 +26,6 @@
 		public static final String APP_SEQUENCE_MANUFACTURING = "app-manufacturing";
 		public static final String APP_SEQUENCE_CRM = "app-crm";
 		public static final String APP_SEQUENCE_HELPDESK = "app-helpdesk";
-		public static final String APP_SEQUENCE_HR = "app-hr";
 
 	]]></extra-code>
 

@@ -26,8 +26,6 @@
     <string name="priceRequest" title="Message for requesting prices" large="true"/>
     <boolean name="isAnalyticDistributionRequired"
       title="Analytic distribution required on purchase order line"/>
-    <many-to-one name="purchaseOrderBirtTemplate" title="Purchase order template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
     <track>
       <field name="company" on="UPDATE"/>
       <field name="purchaseOrderInAtiSelect" on="UPDATE"/>
@@ -40,7 +38,6 @@
       <field name="priceRequest" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
       <field name="displayPriceOnQuotationRequest" on="UPDATE"/>
-      <field name="purchaseOrderBirtTemplate" on="UPDATE"/>
     </track>
   </entity>
 

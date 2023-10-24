@@ -6,8 +6,6 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="TempBomTree">
-    <many-to-one name="billOfMaterialLine"
-      ref="com.axelor.apps.production.db.BillOfMaterialLine" title="Bill of material line"/>
     <many-to-one name="bom" ref="com.axelor.apps.production.db.BillOfMaterial"
       title="BOM"/>
     <many-to-one name="parentBom" ref="com.axelor.apps.production.db.BillOfMaterial"

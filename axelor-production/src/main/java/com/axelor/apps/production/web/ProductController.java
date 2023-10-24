@@ -20,7 +20,6 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.i18n.I18n;
@@ -33,22 +32,18 @@ public class ProductController {
 
   public void openProductTree(ActionRequest request, ActionResponse response) {
 
-    try {
-      Product product = request.getContext().asType(Product.class);
-      product = Beans.get(ProductRepository.class).find(product.getId());
+    Product product = request.getContext().asType(Product.class);
+    product = Beans.get(ProductRepository.class).find(product.getId());
 
-      TempBomTree tempBomTree =
-          Beans.get(BillOfMaterialService.class)
-              .generateTree(product.getDefaultBillOfMaterial(), true);
+    TempBomTree tempBomTree =
+        Beans.get(BillOfMaterialService.class)
+            .generateTree(product.getDefaultBillOfMaterial(), true);
 
-      response.setView(
-          ActionView.define(I18n.get("Bill of materials"))
-              .model(TempBomTree.class.getName())
-              .add("tree", "bill-of-material-tree")
-              .context("_tempBomTreeId", tempBomTree.getId())
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    response.setView(
+        ActionView.define(I18n.get("Bill of materials"))
+            .model(TempBomTree.class.getName())
+            .add("tree", "bill-of-material-tree")
+            .context("_tempBomTreeId", tempBomTree.getId())
+            .map());
   }
 }

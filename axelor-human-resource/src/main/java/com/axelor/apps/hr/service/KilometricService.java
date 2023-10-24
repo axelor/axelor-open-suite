@@ -237,7 +237,7 @@ public class KilometricService {
    * @return
    * @throws AxelorException
    */
-  public BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
+  protected BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
 
     BigDecimal distance = BigDecimal.ZERO;
     if (StringUtils.isEmpty(fromCity)

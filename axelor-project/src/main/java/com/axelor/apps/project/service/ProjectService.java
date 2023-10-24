@@ -60,6 +60,8 @@ public interface ProjectService {
 
   public Map<String, Object> getPerStatusKanban(Project project, Map<String, Object> context);
 
+  public String getTimeZone(Project project);
+
   public ProjectStatus getDefaultProjectStatus();
 
   boolean checkIfResourceBooked(Project project);

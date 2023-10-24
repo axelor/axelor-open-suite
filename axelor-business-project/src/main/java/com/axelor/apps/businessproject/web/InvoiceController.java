@@ -23,13 +23,36 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProject;
+import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class InvoiceController {
+
+  public void exportAnnex(ActionRequest request, ActionResponse response) throws AxelorException {
+
+    Invoice invoice =
+        Beans.get(InvoiceRepository.class).find(request.getContext().asType(Invoice.class).getId());
+
+    try {
+      List<String> reportInfo =
+          Beans.get(InvoiceServiceProjectImpl.class)
+              .editInvoiceAnnex(invoice, invoice.getId().toString(), false);
+
+      if (reportInfo == null || reportInfo.isEmpty()) {
+        return;
+      }
+
+      response.setView(ActionView.define(reportInfo.get(0)).add("html", reportInfo.get(1)).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     try {

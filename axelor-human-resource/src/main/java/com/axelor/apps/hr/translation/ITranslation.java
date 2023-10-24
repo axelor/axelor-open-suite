@@ -64,22 +64,6 @@ public interface ITranslation {
   public static final String EMPLOYEE_POSITION = /*$$(*/ "Employee.position"; /*)*/
   public static final String EMPLOYEE_CONTRACT_TYPE = /*$$(*/ "Employee.contractType"; /*)*/
 
-  public static final String EMPLOYEE_CODE = /*$$(*/ "Employee code"; /*)*/
-  public static final String EMPLOYEE_CODE_NATURE = /*$$(*/ "Code nature"; /*)*/
-  public static final String EMPLOYEE_NAME_AND_SURNAME = /*$$(*/ "Name and surname"; /*)*/
-  public static final String EMPLOYEE_LUNCH_VOUCHER_NUMBER = /*$$(*/ "Lunch Voucher's number"; /*)*/
-  public static final String LEAVE_REQUEST_START_DATE = /*$$(*/ "Start date"; /*)*/
-  public static final String LEAVE_REQUEST_END_DATE = /*$$(*/ "End date"; /*)*/
-  public static final String LEAVE_REQUEST_START_ON = /*$$(*/ "Start On"; /*)*/
-  public static final String LEAVE_REQUEST_END_ON = /*$$(*/ "End On"; /*)*/
-
   public static final String EDITOR_TEAM_TASK = /*$$(*/ "TeamTask"; /*)*/
   public static final String EDITOR_ADD_A_LINE = /*$$(*/ "ADD A LINE"; /*)*/
-
-  String MEDICAL_VISIT = /*$$(*/ "Medical visit"; /*)*/
-
-  String SET_TOTAL_TAX_ZERO = /*$$(*/
-      "The total tax has been set to zero since the expense type blocks taxes."; /*)*/
-
-  String DISTANCE_BETWEEN_CITIES = /*$$(*/ "The distance between %s and %s." /*)*/;
 }

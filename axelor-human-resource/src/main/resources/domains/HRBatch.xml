@@ -69,7 +69,6 @@
 		public static final int EXPORT_TYPE_STANDARD = 1;
 		public static final int EXPORT_TYPE_NIBELIS = 2;
 		public static final int EXPORT_TYPE_SILAE = 3;
-		public static final int EXPORT_TYPE_SAGE = 4;
 
 		//EMPLOYMENT CONTRACT EXPORT TYPE SELECT
 		public static final int EMPLOYMENT_CONTRACT_EXPORT_TYPE_SILAE = 1;

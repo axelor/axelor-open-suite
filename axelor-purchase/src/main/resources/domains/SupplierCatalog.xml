@@ -20,10 +20,6 @@
     <decimal name="calculatedPrice" title="Calculated price/Qty"/>
     <one-to-many name="shippingCoefList" mappedBy="supplierCatalog"
       title="Shipping Coefficients" ref="com.axelor.apps.base.db.ShippingCoef"/>
-    <one-to-many name="productMultipleQtyList"
-      ref="com.axelor.apps.base.db.ProductMultipleQty" title="Multiple quantities"
-      mappedBy="supplierCatalog" orderBy="multipleQty"/>
-    <boolean name="isTakeProductMultipleQty" title="Take product multiple qty"/>
     <decimal name="minQty" title="Quantity min" precision="20" scale="10" min="0"/>
     <boolean name="isTakingProductPurchasePrice" title="Take product purchase price"
       default="false"/>

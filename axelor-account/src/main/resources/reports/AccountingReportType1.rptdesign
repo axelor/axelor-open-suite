@@ -617,7 +617,7 @@ Account.code as account_code , Account.name as account_name , Move.reference as 
 		    ELSE  
 				MetaTranslation.message_value
 			END) as select_title,
-ABS(MoveLine.amount_remaining) as amount_remaining,
+MoveLine.amount_remaining,
 MoveLine.currency_amount,
 Move.currency_code,
 MoveLine.currency_rate,
@@ -666,7 +666,7 @@ Move.company = AccountingReport.company AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
 AND Move.ignore_in_accounting_ok = false
-AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
+AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND (ReportType.type_select = 1 OR (ReportType.type_select != 1 AND Account.use_for_partner_balance is true))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
@@ -674,7 +674,7 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND (ABS(MoveLine.amount_remaining) > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
+AND (MoveLine.amount_remaining > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
 group by MoveLine.id, ReconcileGroup.code, Journal.code, Account.code, Account.name, Move.reference, MetaTranslation.message_value, Meta.select_title, Move.currency_code
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
@@ -821,6 +821,11 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <text-property name="displayName">display_cumulative_balance</text-property>
                     <text-property name="heading">display_cumulative_balance</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">display_simulated_move</property>
+                    <property name="alias">display_simulated_move</property>
+                    <property name="analysis">measure</property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -939,6 +944,11 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">21</property>
+                        <property name="name">display_simulated_move</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -1068,6 +1078,12 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
+                    <property name="name">display_simulated_move</property>
+                    <property name="nativeName">display_simulated_move</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
@@ -1094,6 +1110,7 @@ AccountingReport.display_move_line_sequence_on_printing as display_move_line_seq
 AccountingReport.display_name_account_column_on_printing as display_name_account,
 AccountingReport.display_only_not_completely_lettered_move_lines,
 AccountingReport.display_cumulative_balance,
+AccountingReport.display_simulated_move as display_simulated_move,
 AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
@@ -1608,6 +1625,13 @@ this.height=row["logo_height"];]]></method>
                     <text-property name="displayName">DateTo</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">display_simulated_move</property>
+                    <text-property name="displayName">display_simulated_move</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
+                    <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>

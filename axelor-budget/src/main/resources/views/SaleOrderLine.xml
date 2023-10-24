@@ -21,15 +21,9 @@
 
     </extend>
 
-
-    <extend target="//field[@name='product' and @grid-view='product-grid']">
+    <extend target="//field[@name='product']">
       <attribute name="onChange"
-        value="budget-action-sale-order-line-group-product-onchange"/>
-    </extend>
-
-    <extend target="//field[@name='product' and @grid-view='stock-move-line-product-grid']">
-      <attribute name="onChange"
-        value="budget-action-sale-order-line-group-product-onchange"/>
+        value="action-budget-group-sale-sale-orderline-product-onchange"/>
     </extend>
 
     <extend target="//panel[@name='analyticDistributionPanel']">
@@ -61,7 +55,7 @@
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
           <panel name="accountPanel" colSpan="12">
             <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"
-              onChange="action-sale-order-line-method-set-analytic-distribution-panel-hidden"/>
+              onChange="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
           </panel>
           <panel-related if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="budgetDistributionListPanel" colSpan="12" field="budgetDistributionList"
@@ -75,23 +69,48 @@
   </form>
 
   <action-group name="action-budget-group-sale-saleorderline-onnew">
-    <action name="supplychain-action-sale-order-line-group-onnew"/>
+    <action name="action-supplychain-group-sale-saleorderline-onnew"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-sale-order-line-group-onload">
-    <action name="supplychain-action-sale-order-line-group-onload"/>
+    <action name="action-sale-order-line-supplychain-group-onload"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
-  <action-group name="budget-action-sale-order-line-group-product-onchange">
-    <action name="supplychain-action-sale-order-line-group-product-onchange"/>
+  <action-group name="action-group-sale-saleorderline-product-onchange"
+    id="action-budget-group-sale-saleorderline-product-onchange">
+    <action name="action-sale-order-line-method-get-product-information"/>
+    <action name="action-sale-order-line-method-compute"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-get-production-information"/>
+    <action name="action-sale-order-line-method-supplier-partner-default"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-method-check-stock"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
+    <action name="action-sale-order-line-method-check-qty"
+      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
+    <action if="__config__.app.isApp('supplychain')"
+      name="action-sale-order-line-attrs-show-delivery-panel"/>
+    <action name="action-method-sale-order-line-available-and-allocated-stock"/>
+    <action name="action-sale-order-attrs-hide-ati"/>
+    <action name="action-record-sale-order-line-future-qty"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-record-complementary-products-to-handle"/>
+    <action name="action-sale-order-line-method-fill-max-discount"/>
+    <action name="action-sale-order-line-method-translate-product-description-and-name"/>
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
     <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
+
+  <action-attrs name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"
+    id="action-budget-sale-order-line-attrs-hidden-analytic-distribution-panel">
+    <attribute name="hidden" for="analyticDistributionPanel"
+      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; account &amp;&amp; !account.analyticDistributionAuthorized)"/>
+  </action-attrs>
 
   <action-method name="action-budget-sale-order-line-method-group-domain">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController"

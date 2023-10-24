@@ -95,27 +95,28 @@
       </replace>
     </extend>
     <extend target="//field[@name='isSupplier']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
     </extend>
     <extend target="//field[@name='isInternal']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
     </extend>
     <extend target="//field[@name='isSubcontractor']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
     </extend>
     <extend target="//field[@name='isCarrier']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
     </extend>
     <extend target="//field[@name='isFactor']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
     </extend>
     <extend target="//button[@name='$positiveBalanceBtn']">
       <attribute name="showIf" value="id &amp;&amp; !isProspect"/>
     </extend>
-    <extend target="//field[@name='isEmployee']">
-      <insert position="before">
+    <extend target="//field[@name='isFactor']">
+      <insert position="after">
+        <spacer colSpan="6"/>
         <field name="leadScoringSelect" showIf="isProspect" widget="ImageSelect"
-          x-labels="false" colSpan="12"/>
+          x-labels="false" colSpan="2"/>
       </insert>
     </extend>
     <extend target="//field[@name='department']">
@@ -205,42 +206,6 @@
           </editor>
         </field>
       </replace>
-    </extend>
-    <extend target="//field[@name='isInternal']">
-      <insert position="after">
-        <field name="isCorporatePartner" widget="InlineCheckbox"
-          if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled"/>
-      </insert>
-    </extend>
-    <extend target="//panel[@name='customerPanel']">
-      <insert position="after">
-        <panel name="corporatePanel" title="Corporate partner" showIf="isCorporatePartner">
-          <panel name="mainInformationPanel" title="General information"
-            showIf="isCorporatePartner" colSpan="6">
-            <field name="corporatePartnerDomainSet" widget="TagSelect"/>
-            <field name="workAreaSet" widget="TagSelect"/>
-            <panel-related name="fidelityListPanel" field="fidelityList"
-              form-view="fidelity-form" grid-view="fidelity-grid" colSpan="12"/>
-            <field name="corporatePartnerSince"/>
-          </panel>
-          <panel name="followUpPanel" title="Corporate partner monitoring"
-            showIf="isCorporatePartner" colSpan="6">
-            <field name="takenOpportunities"/>
-            <field name="wonOpportunities"/>
-          </panel>
-        </panel>
-      </insert>
-    </extend>
-    <extend target="//panel[@name='deliveryPanel']">
-      <insert position="after">
-        <panel name="activityPanel" title="Activity" showIf="id &amp;&amp; isProspect"
-          hidden="true" if="__config__.app.getApp('crm')?.crmProcessOnPartner">
-          <panel-dashlet action="action-partner-view-prospect-recent-activity-custom"
-            title="Activity" height="550"/>
-          <panel-dashlet action="action-partner-view-prospect-past-activity-custom"
-            title="Activity" height="550"/>
-        </panel>
-      </insert>
     </extend>
   </form>
 

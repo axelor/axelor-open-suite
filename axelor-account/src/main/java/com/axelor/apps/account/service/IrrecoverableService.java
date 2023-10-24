@@ -824,7 +824,7 @@ public class IrrecoverableService {
     BigDecimal prorataRate = null;
     if (isInvoiceReject) {
       prorataRate =
-          (invoice.getRejectMoveLine().getAmountRemaining().abs())
+          (invoice.getRejectMoveLine().getAmountRemaining())
               .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
     } else {
       prorataRate =
@@ -895,7 +895,7 @@ public class IrrecoverableService {
     }
 
     if (isInvoiceReject) {
-      creditAmount = invoice.getRejectMoveLine().getAmountRemaining().abs();
+      creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
     } else {
       creditAmount = invoice.getCompanyInTaxTotalRemaining();
     }
@@ -996,7 +996,7 @@ public class IrrecoverableService {
 
     Company company = moveLine.getMove().getCompany();
     Partner payerPartner = moveLine.getPartner();
-    BigDecimal amount = moveLine.getAmountRemaining().abs();
+    BigDecimal amount = moveLine.getAmountRemaining();
 
     AccountConfig accountConfig = company.getAccountConfig();
 
@@ -1340,11 +1340,7 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine
-                  .getRejectMoveLine()
-                  .getAmountRemaining()
-                  .abs()
-                  .compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }
@@ -1383,11 +1379,7 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine
-                  .getRejectMoveLine()
-                  .getAmountRemaining()
-                  .abs()
-                  .compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }

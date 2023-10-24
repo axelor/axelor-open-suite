@@ -35,25 +35,6 @@ import Service from "./../services/service";
 import { translate } from "./cellComponent";
 import { connect } from "react-redux";
 import { changeMode, changeKeyPress } from "./../store/redux";
-import Snackbar from "./snackbar.js";
-
-const DAILY_LIMIT_EXCEED_MESSAGE = translate(
-  "You can't exceed the daily limit of %s hours on the %s."
-);
-
-const convertAlertMessage = (dailyLimit, dailyLimitExceedDate) => {
-  if (dailyLimit && dailyLimitExceedDate) {
-    const convertedDate = new Date(dailyLimitExceedDate).toLocaleDateString(
-      "en-GB"
-    );
-    const message = DAILY_LIMIT_EXCEED_MESSAGE.replace(
-      "%s",
-      dailyLimit
-    ).replace("%s", convertedDate);
-    return message;
-  }
-  return "";
-};
 
 export const validateDuration = (duration) => {
   const numbers = duration.split(":");
@@ -120,55 +101,6 @@ export const convertNumberToTime = (duration) => {
   return time;
 };
 
-const handleDateWise = (dateWise, obj, showActivity, lastDuration, tasks) => {
-  const { date, projectId, taskId, projectTaskId } = obj;
-  const changedDateObject = dateWise[date];
-  let changedTask = "";
-
-  if (!showActivity) {
-    let value = "";
-    let dateEntries = {};
-    Object.keys(dateWise).forEach((detail) => {
-      if (detail === date) {
-        dateEntries = dateWise[detail].tasks;
-      }
-    });
-    Object.keys(dateEntries).forEach((entry) => {
-      const data = dateEntries[entry];
-      if (entry.includes("project")) {
-        if (
-          data.projectId === projectId &&
-          data.date === date &&
-          data.taskId === taskId &&
-          data.projectTaskId === projectTaskId
-        ) {
-          value = entry;
-        }
-      }
-    });
-    changedTask = value;
-  } else {
-    const tasksKeyName = `${projectId}_${taskId}_${projectTaskId}`;
-    const id = tasks[tasksKeyName] && tasks[tasksKeyName].id;
-    changedTask = `${projectId}_${taskId}_${projectTaskId}_${id}`;
-  }
-
-  const updateDateWise = {
-    ...dateWise,
-    [date]: {
-      ...changedDateObject,
-      tasks: {
-        ...changedDateObject.tasks,
-        [changedTask]: {
-          ...changedDateObject.tasks[changedTask],
-          duration: lastDuration.toFixed(2),
-        },
-      },
-    },
-  };
-  return updateDateWise;
-};
-
 const week = [
   "sunday",
   "monday",
@@ -214,7 +146,6 @@ class Container extends Component {
       timeSheetUser: null,
       params: {},
       defaultActivity: null,
-      showAlert: false,
       sortingList: [
         {
           fieldName: "project.fullName",
@@ -229,7 +160,6 @@ class Container extends Component {
       ],
       collapseProject: [],
       HRConfig: {},
-      dailyLimitExceedDate: null,
     };
   }
 
@@ -387,7 +317,7 @@ class Container extends Component {
           }
         }
       } else {
-        const { taskId, projectId, projectTaskId } = tasks[t];
+        const { taskId, projectId, projectTaskId} = tasks[t];
         /* check collapse data */
         const isProjectCollapse =
           this.state.collapseProject.filter((p) => p === projectId).length > 0;
@@ -728,20 +658,13 @@ class Container extends Component {
       obj;
     const service = new Service();
     let record = {};
-    const {
-      taskData,
-      params: { dailyLimit, showActivity },
-      tasks,
-      dateWise,
-    } = this.state;
-
-    const newTaskData = [...taskData];
+    const { taskData } = this.state;
     let flag = false;
     let isChanged = false;
     let counter = 0;
     if (duration !== "") {
-      for (let i = 0; i < newTaskData.length; i++) {
-        let task = newTaskData[i];
+      for (let i = 0; i < taskData.length; i++) {
+        let task = taskData[i];
         if (
           date === task.date &&
           task.taskId === taskId &&
@@ -751,7 +674,7 @@ class Container extends Component {
           if (task.enableEditor) {
             counter = 0;
             flag = true;
-            const unableDuration = newTaskData.map((t) => {
+            const unableDuration = taskData.map((t) => {
               if (
                 t.date === task.date &&
                 t.taskId === task.taskId &&
@@ -785,9 +708,9 @@ class Container extends Component {
             task: obj.task,
           };
         }
-        newTaskData.push(newTask);
+        taskData.push(newTask);
       }
-      const totalDuration = newTaskData
+      const totalDuration = taskData
         .map((task) => {
           if (
             date === task.date &&
@@ -808,7 +731,7 @@ class Container extends Component {
         isChanged = false;
         let object = {};
         if (Object.keys(record).length > 0) {
-          const total = newTaskData
+          const total = taskData
             .map((task) => {
               if (
                 date === task.date &&
@@ -843,42 +766,6 @@ class Container extends Component {
             projectTask,
           };
         }
-
-        let currentDateTotalDuration = 0;
-        newTaskData.forEach((task) => {
-          if (date === task.date) {
-            if (
-              task.taskId === taskId &&
-              projectId === task.projectId &&
-              projectTaskId === task.projectTaskId
-            ) {
-              currentDateTotalDuration = currentDateTotalDuration + duration;
-            } else {
-              currentDateTotalDuration += task.duration;
-            }
-          }
-        });
-        if (currentDateTotalDuration > Number(dailyLimit)) {
-          const updatedDateWise = handleDateWise(
-            dateWise,
-            obj,
-            showActivity,
-            totalDuration,
-            tasks
-          );
-
-          this.setState({
-            showAlert: true,
-            dailyLimitExceedDate: date,
-            dateWise: updatedDateWise,
-          });
-          return;
-        } else {
-          this.setState({ showAlert: false, dailyLimitExceedDate: "" });
-        }
-        this.setState({
-          taskData: newTaskData,
-        });
         const model = "com.axelor.apps.hr.db.TimesheetLine";
         const action = "action-timesheet-line-method-set-duration";
         const data = {
@@ -1397,7 +1284,6 @@ class Container extends Component {
     const params = new URL(document.location).searchParams;
     const timesheetId = params.get("timesheetId");
     const showActivity = JSON.parse(params.get("showActivity"));
-    const dailyLimit = params.get("dailyLimit");
 
     const HREntity = "com.axelor.apps.hr.db.HRConfig";
     service.search(HREntity).then((res) => {
@@ -1412,7 +1298,6 @@ class Container extends Component {
           params: {
             timesheetId,
             showActivity,
-            dailyLimit,
           },
           user: res,
           mode: this.props.mode,
@@ -1673,12 +1558,6 @@ class Container extends Component {
   render() {
     let close = () => this.setState({ show: false });
     let closeConfirm = () => this.setState({ confirmPopUp: false });
-
-    const {
-      params: { dailyLimit },
-      dailyLimitExceedDate,
-    } = this.state;
-
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div>
@@ -1910,14 +1789,6 @@ class Container extends Component {
             </button>
           </Modal.Footer>
         </Modal>
-        <Snackbar
-          visible={this.state.showAlert}
-          handleAlert={() => {
-            this.setState({ showAlert: false });
-          }}
-          type="danger"
-          message={convertAlertMessage(dailyLimit, dailyLimitExceedDate)}
-        />
       </div>
     );
   }

@@ -39,5 +39,7 @@ public interface SaleOrderWorkflowService {
 
   void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException;
 
+  String getFileName(SaleOrder saleOrder);
+
   void completeSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

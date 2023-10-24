@@ -1,8 +1,0 @@
-"importId";"birtTemplate.importId";"name";"value";"type"
-541;82;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
-542;82;"BillOfMaterialId";"$BillOfMaterial.id";"decimal"
-545;83;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
-546;83;"ManufOrderId";"${ManufOrder.id.toString()}";"string"
-547;83;"activateBarCodeGeneration";"${com.axelor.inject.Beans.get(com.axelor.apps.base.service.app.AppBaseService.class).getAppBase().getActivateBarCodeGeneration()}";"boolean"
-551;84;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
-552;84;"ProdProcessId";"${ProdProcess.id.toString()}";"string"

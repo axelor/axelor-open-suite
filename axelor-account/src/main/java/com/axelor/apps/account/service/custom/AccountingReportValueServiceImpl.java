@@ -34,7 +34,6 @@ import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -276,8 +275,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               endDate,
               analyticCounter);
 
-      if (nullCount == previousNullCount || this.isThereTraceback(accountingReport)) {
-        this.clearTracebacks(accountingReport);
+      if (nullCount == previousNullCount) {
         accountingReport.setTraceAnomalies(true);
 
         this.createReportValues(
@@ -298,20 +296,13 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     }
   }
 
-  protected boolean isThereTraceback(AccountingReport accountingReport) {
-    return this.getTracebackQuery(accountingReport).count() > 0;
-  }
-
   @Transactional
   protected void clearTracebacks(AccountingReport accountingReport) {
-    this.getTracebackQuery(accountingReport).remove();
-  }
-
-  protected Query<TraceBack> getTracebackQuery(AccountingReport accountingReport) {
-    return traceBackRepository
+    traceBackRepository
         .all()
         .filter("self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = :id")
-        .bind("id", accountingReport.getId());
+        .bind("id", accountingReport.getId())
+        .remove();
   }
 
   protected void checkAccountingReportType(AccountingReportType accountingReportType)
@@ -381,8 +372,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     if (CollectionUtils.isNotEmpty(groupColumnList) && groupByAccountColumn != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.REPORT_TYPE_MULTIPLE_GROUPS),
-          accountingReport.getRef());
+          AccountExceptionMessage.REPORT_TYPE_MULTIPLE_GROUPS);
     }
 
     if (groupByAccountColumn != null) {

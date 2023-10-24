@@ -39,9 +39,21 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Joiner;
+import com.google.common.base.Throwables;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,23 +69,19 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 
   protected AppBaseService appBaseService;
 
-  protected MetaFiles metaFiles;
-
   @Inject
   public LunchVoucherMgtServiceImpl(
       LunchVoucherMgtLineService lunchVoucherMgtLineService,
       LunchVoucherAdvanceService lunchVoucherAdvanceService,
       LunchVoucherMgtRepository lunchVoucherMgtRepository,
       HRConfigService hrConfigService,
-      AppBaseService appBaseService,
-      MetaFiles metaFiles) {
+      AppBaseService appBaseService) {
 
     this.lunchVoucherMgtLineService = lunchVoucherMgtLineService;
     this.lunchVoucherMgtRepository = lunchVoucherMgtRepository;
     this.lunchVoucherAdvanceService = lunchVoucherAdvanceService;
     this.hrConfigService = hrConfigService;
     this.appBaseService = appBaseService;
-    this.metaFiles = metaFiles;
   }
 
   protected boolean isEmployeeFormerNewOrArchived(
@@ -233,6 +241,66 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
     hrConfig.setAvailableStockLunchVoucher(newLunchVoucherQty);
     Beans.get(HRConfigRepository.class).save(hrConfig);
     return hrConfig.getAvailableStockLunchVoucher();
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
+    MetaFile metaFile = new MetaFile();
+    metaFile.setFileName(
+        I18n.get("LunchVoucherCommand")
+            + " - "
+            + appBaseService
+                .getTodayDate(lunchVoucherMgt.getCompany())
+                .format(DateTimeFormatter.ISO_DATE)
+            + ".csv");
+
+    Path tempFile = MetaFiles.createTempFile(null, ".csv");
+    final OutputStream os = new FileOutputStream(tempFile.toFile());
+
+    try (final Writer writer = new OutputStreamWriter(os)) {
+
+      List<String> header = new ArrayList<>();
+      header.add(escapeCsv(I18n.get("Company code")));
+      header.add(escapeCsv(I18n.get("Lunch Voucher's number")));
+      header.add(escapeCsv(I18n.get("Employee")));
+      header.add(escapeCsv(I18n.get("Lunch Voucher format")));
+
+      writer.write(Joiner.on(";").join(header));
+
+      for (LunchVoucherMgtLine lunchVoucherMgtLine : lunchVoucherMgt.getLunchVoucherMgtLineList()) {
+
+        List<String> line = new ArrayList<>();
+        line.add(escapeCsv(lunchVoucherMgt.getCompany().getCode()));
+        line.add(escapeCsv(lunchVoucherMgtLine.getLunchVoucherNumber().toString()));
+        line.add(escapeCsv(lunchVoucherMgtLine.getEmployee().getName()));
+        line.add(
+            escapeCsv(lunchVoucherMgtLine.getEmployee().getLunchVoucherFormatSelect().toString()));
+
+        writer.write("\n");
+        writer.write(Joiner.on(";").join(line));
+      }
+
+      Beans.get(MetaFiles.class).upload(tempFile.toFile(), metaFile);
+
+    } catch (Exception e) {
+      Throwables.propagate(e);
+    } finally {
+      Files.deleteIfExists(tempFile);
+    }
+    /*
+     */
+    // lunchVoucherMgt.setExported(true);
+    lunchVoucherMgt.setCsvFile(metaFile);
+    lunchVoucherMgt.setExportDateTime(
+        appBaseService.getTodayDateTime(lunchVoucherMgt.getCompany()).toLocalDateTime());
+
+    lunchVoucherMgtRepository.save(lunchVoucherMgt);
+  }
+
+  protected String escapeCsv(String value) {
+    if (value == null) return "";
+    if (value.indexOf('"') > -1) value = value.replaceAll("\"", "\"\"");
+    return '"' + value + '"';
   }
 
   @Override

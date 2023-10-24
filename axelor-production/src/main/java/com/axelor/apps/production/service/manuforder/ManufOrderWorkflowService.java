@@ -35,7 +35,7 @@ public interface ManufOrderWorkflowService {
 
   void start(ManufOrder manufOrder) throws AxelorException;
 
-  void pause(ManufOrder manufOrder) throws AxelorException;
+  void pause(ManufOrder manufOrder);
 
   void resume(ManufOrder manufOrder);
 
@@ -71,8 +71,6 @@ public interface ManufOrderWorkflowService {
    * @param manufOrder
    */
   void updatePlannedDates(ManufOrder manufOrder);
-
-  void setOperationOrderMaxPriority(ManufOrder manufOrder);
 
   String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;
 

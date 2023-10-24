@@ -25,13 +25,6 @@
     <many-to-one name="partFinishMoMessageTemplate" title="Message template"
       ref="com.axelor.message.db.Template"/>
 
-    <integer name="capacity" title="Capacity" selection="production.config.capacity.select"
-      nullable="false" default="1"/>
-    <integer name="scheduling" title="Scheduling"
-      selection="production.config.scheduling.select" nullable="false" default="1"/>
-
-    <many-to-one name="prodProcessBirtTemplate" title="Prod process template"
-      ref="com.axelor.apps.base.db.BirtTemplate"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -39,12 +32,6 @@
 		<![CDATA[
    			public static final int REALIZE_START = 0;
    			public static final int REALIZE_FINISH = 1;
-
-   			public static final int INFINITE_CAPACITY_SCHEDULING = 1;
-   			public static final int FINITE_CAPACITY_SCHEDULING = 2;
-
-   			public static final int AS_SOON_AS_POSSIBLE_SCHEDULING = 1;
-   			public static final int AT_THE_LATEST_SCHEDULING = 2;
    		]]>
     </extra-code>
 
@@ -56,7 +43,7 @@
       <field name="finishMoMessageTemplate" on="UPDATE"/>
       <field name="partFinishMoAutomaticEmail" on="UPDATE"/>
       <field name="partFinishMoMessageTemplate" on="UPDATE"/>
-      <field name="prodProcessBirtTemplate" on="UPDATE"/>
+
     </track>
 
   </entity>

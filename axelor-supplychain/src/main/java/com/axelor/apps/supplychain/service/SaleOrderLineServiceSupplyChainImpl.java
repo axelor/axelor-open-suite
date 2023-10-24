@@ -18,6 +18,11 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -54,9 +59,10 @@ import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -67,9 +73,11 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 
@@ -81,8 +89,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AppSupplychainService appSupplychainService;
   protected AccountConfigService accountConfigService;
   protected InvoiceLineRepository invoiceLineRepository;
-  protected SaleInvoicingStateService saleInvoicingStateService;
-  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -101,9 +107,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       PricingService pricingService,
       TaxService taxService,
       SaleOrderMarginService saleOrderMarginService,
-      InvoiceLineRepository invoiceLineRepository,
-      SaleInvoicingStateService saleInvoicingStateService,
-      AnalyticLineModelService analyticLineModelService) {
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         currencyService,
         priceListService,
@@ -121,8 +125,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
     this.invoiceLineRepository = invoiceLineRepository;
-    this.saleInvoicingStateService = saleInvoicingStateService;
-    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -134,9 +136,83 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     if (appAccountService.isApp("supplychain")) {
       saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+      this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
     }
+  }
+
+  public SaleOrderLine getAndComputeAnalyticDistribution(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(saleOrder.getCompany());
+
+    if (!accountConfig.getManageAnalyticAccounting()
+        || accountConfig.getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+      return saleOrderLine;
+    }
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            saleOrder.getClientPartner(),
+            saleOrderLine.getProduct(),
+            saleOrder.getCompany(),
+            saleOrder.getTradingName(),
+            false);
+
+    saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    if (saleOrderLine.getAnalyticMoveLineList() != null) {
+      saleOrderLine.getAnalyticMoveLineList().clear();
+    }
+
+    this.computeAnalyticDistribution(saleOrderLine);
+
+    return saleOrderLine;
+  }
+
+  @Override
+  public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine) {
+
+    List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
+
+    if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
+      createAnalyticDistributionWithTemplate(saleOrderLine);
+    }
+    if (analyticMoveLineList != null) {
+      LocalDate date =
+          appAccountService.getTodayDate(
+              saleOrderLine.getSaleOrder() != null
+                  ? saleOrderLine.getSaleOrder().getCompany()
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLineService.updateAnalyticMoveLine(
+            analyticMoveLine, saleOrderLine.getCompanyExTaxTotal(), date);
+      }
+    }
+    return saleOrderLine;
+  }
+
+  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) {
+    List<AnalyticMoveLine> analyticMoveLineList =
+        analyticMoveLineService.generateLines(
+            saleOrderLine.getAnalyticDistributionTemplate(),
+            saleOrderLine.getCompanyExTaxTotal(),
+            AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
+            appAccountService.getTodayDate(
+                saleOrderLine.getSaleOrder() != null
+                    ? saleOrderLine.getSaleOrder().getCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)));
+
+    if (ObjectUtils.isEmpty(analyticMoveLineList)) {
+      saleOrderLine.clearAnalyticMoveLineList();
+    } else {
+      analyticMoveLineList.forEach(saleOrderLine::addAnalyticMoveLineListItem);
+    }
+    return saleOrderLine;
   }
 
   @Override
@@ -330,8 +406,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       return saleOrderLine;
     }
     if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, null);
-      analyticLineModelService.computeAnalyticDistribution(analyticLineModel);
+      this.computeAnalyticDistribution(saleOrderLine);
     }
     if (appSupplychainService.getAppSupplychain().getManageStockReservation()
         && (saleOrderLine.getRequestedReservedQty().compareTo(qty) > 0
@@ -355,20 +430,14 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
     if (soLine != null && soLine.getProduct() != null) {
       soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
-
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(soLine, null);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
-
+      getAndComputeAnalyticDistribution(soLine, saleOrder);
       if (ObjectUtils.notEmpty(soLine.getAnalyticMoveLineList())) {
-        soLine
-            .getAnalyticMoveLineList()
+        soLine.getAnalyticMoveLineList().stream()
             .forEach(analyticMoveLine -> analyticMoveLine.setSaleOrderLine(soLine));
       }
-
       try {
         SupplyChainConfig supplyChainConfig =
             Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
-
         if (supplyChainConfig.getAutoRequestReservedQty()) {
           Beans.get(ReservedQtyService.class).requestQty(soLine);
         }

@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
-import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
@@ -128,7 +127,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   @Override
   public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     String query =
-        "self.totalAmountExpected > 0 AND self.statusSelect = 2 AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect = 2";
+        "self.totalAmountExpected > 0 AND self.statusSelect = 2 AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2";
     if (saleOrderLine != null) {
       if (saleOrderLine.getLine() != null) {
         query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getLine().getId()));
@@ -203,8 +202,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
 
     String query =
         String.format(
-            "self.globalBudget.budgetTypeSelect = %d AND self.parentBudgetLevel IS NULL AND self.statusSelect = '%s'",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
+            "self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.budgetTypeSelect = %d AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.statusSelect = '%s'",
+            BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE,
             BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
 
     if (saleOrderLine.getBudget() != null
@@ -219,7 +218,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       query =
           query.concat(
               String.format(
-                  " AND self.globalBudget.company.id = %d", saleOrder.getCompany().getId()));
+                  " AND self.parentBudgetLevel.company.id = %d", saleOrder.getCompany().getId()));
     }
     return query;
   }
@@ -233,8 +232,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
 
     String query =
         String.format(
-            "self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.globalBudget.budgetTypeSelect = %d AND self.statusSelect = '%s'",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
+            "self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = %d AND self.statusSelect = '%s'",
+            BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE,
             BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
     if (saleOrderLine.getBudget() != null && saleOrderLine.getBudget().getBudgetLevel() != null) {
       query =
@@ -250,8 +249,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       query =
           query.concat(
               String.format(
-                  " AND self.parentBudgetLevel.globalBudget.company.id = %d",
-                  saleOrder.getCompany().getId()));
+                  " AND self.parentBudgetLevel.company.id = %d", saleOrder.getCompany().getId()));
     }
     return query;
   }
@@ -266,9 +264,9 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
 
     String query =
         String.format(
-            "self.budgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect = %d AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect = %d",
-            GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE,
-            GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID);
+            "self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = %d AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = '%s'",
+            BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE,
+            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
     if (saleOrderLine.getBudget() != null && !isBudget) {
       query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getBudget().getId()));
     } else if (saleOrderLine.getLine() != null && isBudget) {
@@ -287,7 +285,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       query =
           query.concat(
               String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.globalBudget.company.id = %d",
+                  " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
                   saleOrder.getCompany().getId()));
     }
     return query;

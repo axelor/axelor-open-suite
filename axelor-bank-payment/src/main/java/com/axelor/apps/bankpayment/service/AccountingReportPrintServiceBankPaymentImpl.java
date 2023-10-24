@@ -18,36 +18,25 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
 import com.axelor.apps.account.service.custom.AccountingReportValueService;
-import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
-import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.google.inject.Inject;
 
 public class AccountingReportPrintServiceBankPaymentImpl extends AccountingReportPrintServiceImpl {
-
-  protected BankPaymentConfigService bankPaymentConfigService;
-  protected BirtTemplateService birtTemplateService;
 
   @Inject
   public AccountingReportPrintServiceBankPaymentImpl(
       AppBaseService appBaseService,
       AccountingReportValueService accountingReportValueService,
-      AccountingReportRepository accountingReportRepository,
-      BankPaymentConfigService bankPaymentConfigService,
-      BirtTemplateService birtTemplateService) {
+      AccountingReportRepository accountingReportRepository) {
     super(appBaseService, accountingReportValueService, accountingReportRepository);
-    this.bankPaymentConfigService = bankPaymentConfigService;
-    this.birtTemplateService = birtTemplateService;
   }
 
   @Override
@@ -55,23 +44,13 @@ public class AccountingReportPrintServiceBankPaymentImpl extends AccountingRepor
       throws AxelorException {
     if (accountingReport.getReportType().getTypeSelect()
         == AccountingReportRepository.REPORT_BANK_RECONCILIATION_STATEMENT) {
-
-      BirtTemplate bankReconciliationStatementBirtTemplate =
-          bankPaymentConfigService
-              .getBankPaymentConfig(accountingReport.getCompany())
-              .getBankReconciliationStatementBirtTemplate();
-      if (ObjectUtils.isEmpty(bankReconciliationStatementBirtTemplate)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
-      }
-      return birtTemplateService.generateBirtTemplateLink(
-          bankReconciliationStatementBirtTemplate,
-          accountingReport,
-          null,
-          name + "-${date}",
-          bankReconciliationStatementBirtTemplate.getAttach(),
-          accountingReport.getExportTypeSelect());
+      return ReportFactory.createReport(IReport.BANK_PAYMENT_REPORT_TYPE, name + "-${date}")
+          .addParam("AccountingReportId", accountingReport.getId())
+          .addParam("Locale", ReportSettings.getPrintingLocale(null))
+          .addFormat(accountingReport.getExportTypeSelect())
+          .toAttach(accountingReport)
+          .generate()
+          .getFileLink();
     } else {
       return super.getReportFileLink(accountingReport, name);
     }

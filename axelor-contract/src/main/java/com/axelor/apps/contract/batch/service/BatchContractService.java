@@ -22,11 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.contract.batch.BatchContract;
-import com.axelor.apps.contract.batch.BatchContractInvoicing;
 import com.axelor.apps.contract.batch.BatchContractRevaluate;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
-import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 
@@ -45,10 +43,6 @@ public class BatchContractService extends AbstractBatchService {
       case ContractBatchRepository.REVALUATE_CONTRACTS:
         batch = revaluateContracts(contractBatch);
         break;
-
-      case ContractBatchRepository.INVOICING:
-        batch = invoiceContracts(contractBatch);
-        break;
       default:
         batch = Beans.get(BatchContract.class).run(contractBatch);
     }
@@ -58,16 +52,5 @@ public class BatchContractService extends AbstractBatchService {
 
   protected Batch revaluateContracts(ContractBatch contractBatch) {
     return Beans.get(BatchContractRevaluate.class).run(contractBatch);
-  }
-
-  protected Batch invoiceContracts(ContractBatch contractBatch) {
-    Batch batch = null;
-    if (contractBatch.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT) {
-      batch = Beans.get(BatchContractInvoicing.class).run(contractBatch);
-    }
-    if (contractBatch.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT) {
-      batch = Beans.get(BatchContract.class).run(contractBatch);
-    }
-    return batch;
   }
 }

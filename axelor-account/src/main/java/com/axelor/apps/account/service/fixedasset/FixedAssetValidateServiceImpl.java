@@ -100,7 +100,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
 
       Optional<FixedAssetLine> lastRealizedLine =
           fixedAssetLineService.findNewestFixedAssetLine(
-              fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
+              fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0);
       if (lastRealizedLine.isPresent()) {
         fixedAsset.setAccountingValue(lastRealizedLine.get().getAccountingValue());
       } else if (fixedAsset.getIsEqualToFiscalDepreciation()) {

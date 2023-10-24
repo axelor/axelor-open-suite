@@ -1,4 +1,0 @@
-"importId";"birtTemplate.importId";"name";"value";"type"
-27;8;"Timezone";"$Lead.user.activeCompany.timezone$";"string"
-28;8;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}$";"string"
-29;8;"LeadId";"$Lead.id$";"string"

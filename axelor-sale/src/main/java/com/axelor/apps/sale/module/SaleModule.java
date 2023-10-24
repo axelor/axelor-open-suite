@@ -68,26 +68,16 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineCalculationComboService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineCalculationComboServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeComputationServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
@@ -130,12 +120,5 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderDomainService.class).to(SaleOrderDomainServiceImpl.class);
     bind(SaleOrderMergingViewService.class).to(SaleOrderMergingViewServiceImpl.class);
     bind(SaleOrderMergingService.class).to(SaleOrderMergingServiceImpl.class);
-    bind(SaleOrderOnLineChangeService.class).to(SaleOrderOnLineChangeServiceImpl.class);
-    bind(SaleOrderVersionService.class).to(SaleOrderVersionServiceImpl.class);
-    bind(SaleOrderLineTreeService.class).to(SaleOrderLineTreeServiceImpl.class);
-    bind(SaleOrderLineTreeComputationService.class)
-        .to(SaleOrderLineTreeComputationServiceImpl.class);
-    bind(SaleOrderLineCalculationComboService.class)
-        .to(SaleOrderLineCalculationComboServiceImpl.class);
   }
 }

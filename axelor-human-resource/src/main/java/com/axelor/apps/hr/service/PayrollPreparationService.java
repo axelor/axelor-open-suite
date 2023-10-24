@@ -46,7 +46,7 @@ import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -73,7 +73,7 @@ public class PayrollPreparationService {
   private static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
+  protected LeaveService leaveService;
   protected LeaveRequestRepository leaveRequestRepo;
   protected WeeklyPlanningService weeklyPlanningService;
 
@@ -85,11 +85,11 @@ public class PayrollPreparationService {
 
   @Inject
   public PayrollPreparationService(
-      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
+      LeaveService leaveService,
       LeaveRequestRepository leaveRequestRepo,
       WeeklyPlanningService weeklyPlanningService) {
 
-    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
+    this.leaveService = leaveService;
     this.leaveRequestRepo = leaveRequestRepo;
     this.weeklyPlanningService = weeklyPlanningService;
   }
@@ -171,8 +171,7 @@ public class PayrollPreparationService {
       }
 
       payrollLeave.setDuration(
-          leaveRequestComputeDurationService.computeLeaveDaysByLeaveRequest(
-              fromDate, toDate, leaveRequest, employee));
+          leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
       payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
       payrollLeave.setLeaveRequest(leaveRequest);
       payrollLeaveList.add(payrollLeave);

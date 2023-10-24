@@ -13,9 +13,6 @@
     <field name="relatedToSelect"/>
     <field name="forecastRecapLineType.name" title="Forecast Recap Line Type"/>
     <field name="relatedToSelectName"/>
-    <field name="relatedToSelectPaymentMode"/>
-    <field name="relatedToSelectBankDetails"
-      if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="amount" aggregate="sum"/>
     <field name="balance"/>
     <field name="forecastRecapLineType.sequence" hidden="true"/>
@@ -32,9 +29,6 @@
     <field name="relatedToSelect"/>
     <field name="forecastRecapLineType.name" title="Forecast Recap Line Type"/>
     <field name="relatedToSelectName"/>
-    <field name="relatedToSelectPaymentMode"/>
-    <field name="relatedToSelectBankDetails"
-      if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="amount" aggregate="sum"/>
     <field name="balance"/>
     <field name="forecastRecap.company"/>

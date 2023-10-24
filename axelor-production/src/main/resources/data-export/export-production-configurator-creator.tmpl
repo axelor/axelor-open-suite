@@ -333,6 +333,13 @@
 					}
 					configProdProcessLine += """</durationPerCycleFormula>
 					<defDurationFormula>${cppl.defDurationFormula}</defDurationFormula>
+					<timingOfImplementation>${cppl.timingOfImplementation}</timingOfImplementation>
+					<timingOfImplementationFormula>"""
+					if (cppl.timingOfImplementationFormula != null) {
+						configProdProcessLine += "${cppl.timingOfImplementationFormula}"
+					}
+					configProdProcessLine += """</timingOfImplementationFormula>
+					<defTimingOfImplementationFormula>${cppl.defTimingOfImplementationFormula}</defTimingOfImplementationFormula>
 					<useCondition>"""
 					if (cppl.useCondition != null) {
 						configProdProcessLine += "${cppl.useCondition}"

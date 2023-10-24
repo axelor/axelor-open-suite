@@ -20,9 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -31,7 +29,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,18 +39,15 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   protected ProjectTaskRepository projectTaskRepo;
   protected ProductCompanyService productCompanyService;
-  protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProductTaskTemplateServiceImpl(
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskRepository projectTaskRepo,
-      ProductCompanyService productCompanyService,
-      AppBusinessProjectService appBusinessProjectService) {
+      ProductCompanyService productCompanyService) {
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
-    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override
@@ -67,11 +61,9 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       SaleOrderLine saleOrderLine)
       throws AxelorException {
     List<ProjectTask> tasks = new ArrayList<>();
-
-    BigDecimal taskQty;
+    Product product = saleOrderLine.getProduct();
 
     for (TaskTemplate template : templates) {
-      Product product = template.getProduct();
       BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
 
       while (qtyTmp.signum() > 0) {
@@ -79,15 +71,9 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
 
         ProjectTask task =
             projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
+        task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
         task.setName(saleOrderLine.getSaleOrder().getSaleOrderSeq() + " - " + task.getName());
-
-        if (!template.getIsUniqueTaskForMultipleQuantity()) {
-          taskQty = BigDecimal.ONE;
-        } else {
-          taskQty = product != null ? template.getQty() : qty;
-        }
-
-        fillProjectTask(project, taskQty, saleOrderLine, tasks, product, task, parent);
+        fillProjectTask(project, qty, saleOrderLine, tasks, product, task, parent);
 
         // Only parent task can have multiple quantities
         List<ProjectTask> children =
@@ -117,29 +103,14 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       ProjectTask parent)
       throws AxelorException {
     task.setParentTask(parent);
-    if (product == null) {
-      product = saleOrderLine.getProduct();
-    }
     task.setProduct(product);
-    BigDecimal costPrice = product.getCostPrice();
-    task.setUnitCost(costPrice);
-    task.setTotalCosts(costPrice.multiply(qty).setScale(2, RoundingMode.HALF_UP));
-    task.setInvoicingUnit(product.getUnit());
-    task.setCurrency(product.getSaleCurrency());
-    task.setUnitPrice(
-        (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
-
     if (Objects.isNull(parent)) {
       task.setSaleOrderLine(saleOrderLine);
     }
-
-    task.setQuantity(qty);
-
-    Unit orderLineUnit = saleOrderLine.getUnit();
-    if (projectTaskBusinessProjectService.isTimeUnitValid(orderLineUnit)) {
-      task.setTimeUnit(orderLineUnit);
-    }
-
+    task.setPlannedTime(qty);
+    task.setTimeUnit(product.getUnit());
+    task.setUnitPrice(
+        (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
     task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
     if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
       task.setToInvoice(true);

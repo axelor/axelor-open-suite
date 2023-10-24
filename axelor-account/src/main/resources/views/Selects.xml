@@ -865,9 +865,4 @@
     <option value="1" color="red">Error</option>
     <option value="2" color="green">Ready</option>
   </selection>
-
-  <selection name="base.partner.link.type.type.select"
-    id="account.partner.link.type.type.select">
-    <option value="Payed by">Payed by</option>
-  </selection>
 </object-views>

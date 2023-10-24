@@ -27,6 +27,7 @@
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <date name="moveDate" title="Move Date"/>
+    <many-to-one name="move" ref="com.axelor.apps.account.db.Move"/>
     <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
       readonly="true"/>
     <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By"

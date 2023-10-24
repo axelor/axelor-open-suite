@@ -180,7 +180,6 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setTradingName(invoice.getTradingName());
         paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
-        move.setSubrogationPartner(invoice.getSubrogationPartner());
 
         move.setDueDate(invoice.getDueDate());
 

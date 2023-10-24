@@ -18,17 +18,19 @@
  */
 package com.axelor.apps.bankpayment.service.bankstatement.file.afb120;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
-import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.mapper.Mapper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -42,13 +44,8 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
 
   @Inject
   public BankStatementLineAFB120Service(
-      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
-      BankPaymentConfigService bankPaymentConfigService,
-      BirtTemplateService birtTemplateService) {
-    super(
-        bankPaymentBankStatementLineAFB120Repository,
-        bankPaymentConfigService,
-        birtTemplateService);
+      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
+    super(bankPaymentBankStatementLineAFB120Repository);
   }
 
   public BankStatementLineAFB120 createBankStatementLine(
@@ -131,6 +128,29 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
 
     return bankPaymentBankStatementLineAFB120Repository.findLinesBetweenDate(
         fromDate, toDate, BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT, bankDetails);
+  }
+
+  public String print(
+      BankStatementLineAFB120 initialLine,
+      BankStatementLineAFB120 finalLine,
+      LocalDate fromDate,
+      LocalDate toDate,
+      BankDetails bankDetails,
+      String extention)
+      throws AxelorException {
+    String reportName = IReport.BANK_STATEMENT_LINES_AFB120;
+    return ReportFactory.createReport(
+            reportName, initialLine.getBankStatement().getName() + "-${date}")
+        .addParam("InitialLineId", initialLine.getId())
+        .addParam("FinalLineId", finalLine.getId())
+        .addParam("FromDate", fromDate)
+        .addParam("ToDate", toDate)
+        .addParam("BankDetails", bankDetails)
+        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam("Timezone", getTimezone(initialLine))
+        .addFormat(extention)
+        .generate()
+        .getFileLink();
   }
 
   protected String getTimezone(BankStatementLineAFB120 bankStatementLine) {

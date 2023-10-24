@@ -20,10 +20,6 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerLink;
-import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
-import com.axelor.meta.CallMethod;
-import org.apache.commons.collections.CollectionUtils;
 
 public class PartnerAccountService {
 
@@ -35,22 +31,5 @@ public class PartnerAccountService {
     }
 
     return fiscalPosition.getCustomerSpecificNoteText();
-  }
-
-  @CallMethod
-  public Partner getPayedByPartner(Partner partner) {
-    if (partner == null || CollectionUtils.isEmpty(partner.getManagedByPartnerLinkList())) {
-      return null;
-    }
-
-    return partner.getManagedByPartnerLinkList().stream()
-        .filter(
-            it ->
-                it.getPartnerLinkType()
-                    .getTypeSelect()
-                    .equals(PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY))
-        .map(PartnerLink::getPartner2)
-        .findFirst()
-        .orElse(null);
   }
 }

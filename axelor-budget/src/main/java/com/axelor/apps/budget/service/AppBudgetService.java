@@ -24,6 +24,4 @@ import com.axelor.studio.db.AppBudget;
 public interface AppBudgetService extends AppBaseService {
 
   public AppBudget getAppBudget();
-
-  Boolean isMissingBudgetCheckError();
 }

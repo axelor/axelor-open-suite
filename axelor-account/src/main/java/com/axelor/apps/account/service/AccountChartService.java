@@ -22,16 +22,12 @@ import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountChartRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -54,42 +50,22 @@ public class AccountChartService {
   protected AccountConfigRepository accountConfigRepo;
   protected CompanyRepository companyRepo;
   protected AccountChartRepository accountChartRepository;
-  protected AccountRepository accountRepository;
 
   @Inject
   public AccountChartService(
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo,
-      AccountChartRepository accountChartRepository,
-      AccountRepository accountRepository) {
+      AccountChartRepository accountChartRepository) {
 
     this.accountConfigRepo = accountConfigRepo;
     this.companyRepo = companyRepo;
     this.accountChartRepository = accountChartRepository;
-    this.accountRepository = accountRepository;
   }
 
-  public boolean installAccountChart(AccountConfig accountConfig) throws AxelorException {
-
-    AccountChart act = accountConfig.getAccountChart();
-    Company company = accountConfig.getCompany();
-    long accountCounter =
-        accountRepository
-            .all()
-            .filter("self.company.id = ?1 AND self.parentAccount != null", company.getId())
-            .count();
-
-    if (accountCounter > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.ACCOUNT_CHART_3));
-    }
-
-    return installProcess(accountConfig, act, company);
-  }
-
-  protected boolean installProcess(AccountConfig accountConfig, AccountChart act, Company company)
+  public Boolean installAccountChart(AccountChart act, Company company, AccountConfig accountConfig)
       throws AxelorException {
     try {
+
       if (act.getMetaFile() == null) {
         return false;
       }
@@ -139,14 +115,13 @@ public class AccountChartService {
 
     accountConfig = accountConfigRepo.find(accountConfig.getId());
     accountConfig.setHasChartImported(true);
+    accountConfigRepo.save(accountConfig);
     act = accountChartRepository.find(act.getId());
-    accountConfig.setAccountChart(act);
     company = companyRepo.find(company.getId());
     Set<Company> companySet = act.getCompanySet();
     companySet.add(company);
     act.setCompanySet(companySet);
     accountChartRepository.save(act);
-    accountConfigRepo.save(accountConfig);
   }
 
   public void importAccountChartData(

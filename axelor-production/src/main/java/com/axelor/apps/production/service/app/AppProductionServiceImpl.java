@@ -53,7 +53,7 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
 
   @Override
   public AppProduction getAppProduction() {
-    return Query.of(AppProduction.class).autoFlush(false).fetchOne();
+    return Query.of(AppProduction.class).fetchOne();
   }
 
   @Override
@@ -89,10 +89,5 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
         .createQuery(
             "UPDATE Partner self SET self.isSubcontractor = FALSE WHERE self.isSubcontractor IS TRUE")
         .executeUpdate();
-  }
-
-  @Override
-  public boolean getIsCostPerProcessLine() {
-    return getAppProduction().getIsCostPerProcessLine();
   }
 }

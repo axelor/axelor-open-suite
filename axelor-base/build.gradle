@@ -55,8 +55,7 @@ dependencies {
 
 	implementation libs.logback
 
-	implementation libs.swagger_jaxrs
-	implementation libs.pdfbox
+	implementation libs.swagger_jaxrs;
 	implementation libs.boxable
 	implementation libs.bcprov_jdk15on
 	implementation libs.bcpkix_jdk15on

@@ -1,6 +1,0 @@
-"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
-51;"Mrp Weekly breakdown";"MrpWeeks.rptdesign";"com.axelor.apps.supplychain.db.Mrp";2;"pdf";false
-52;"Mrp List";"MrpList.rptdesign";"com.axelor.apps.supplychain.db.Mrp";2;"pdf";false
-53;"PackingList";"PackingList.rptdesign";"com.axelor.apps.stock.db.LogisticalForm";2;"pdf";false
-54;"DeclarationOfExchangesOfGoods";"DeclarationOfExchangesOfGoods.rptdesign";"com.axelor.apps.supplychain.db.DeclarationOfExchanges";2;"pdf";true
-55;"DeclarationOfServices";"DeclarationOfServices.rptdesign";"com.axelor.apps.supplychain.db.DeclarationOfExchanges";2;"pdf";true

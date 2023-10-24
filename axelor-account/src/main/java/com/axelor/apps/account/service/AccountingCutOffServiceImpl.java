@@ -62,8 +62,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
@@ -138,19 +136,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   @Override
   public Query<Move> getMoves(
       Company company,
-      Set<Journal> journalSet,
+      Journal researchJournal,
       LocalDate moveDate,
       int accountingCutOffTypeSelect) {
-    List<Long> journalIdList = null;
-    String queryStr;
-    if (CollectionUtils.isNotEmpty(journalSet)) {
-      journalIdList = journalSet.stream().map(Journal::getId).collect(Collectors.toList());
-      queryStr = "self.journal.id IN (:journals)";
-    } else {
-      queryStr = "self.journal.journalType.technicalTypeSelect = :journalType";
-    }
-    queryStr +=
-        " AND self.date <= :date "
+    String queryStr =
+        "((:researchJournal > 0 AND self.journal.id = :researchJournal) "
+            + "  OR (:researchJournal = 0 AND self.journal.journalType.technicalTypeSelect = :journalType))"
+            + "AND self.date <= :date "
             + "AND self.statusSelect IN (2, 3, 5) "
             + "AND EXISTS(SELECT 1 FROM MoveLine ml "
             + " WHERE ml.move = self "
@@ -166,7 +158,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         moveRepository
             .all()
             .filter(queryStr)
-            .bind("journals", journalIdList)
+            .bind("researchJournal", researchJournal == null ? 0 : researchJournal.getId())
             .bind(
                 "journalType",
                 accountingCutOffTypeSelect
@@ -185,19 +177,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   @Override
   public Query<MoveLine> getMoveLines(
       Company company,
-      Set<Journal> journalSet,
+      Journal researchJournal,
       LocalDate moveDate,
       int accountingCutOffTypeSelect) {
-    List<Long> journalIdList = null;
-    String queryStr;
-    if (CollectionUtils.isNotEmpty(journalSet)) {
-      journalIdList = journalSet.stream().map(Journal::getId).collect(Collectors.toList());
-      queryStr = "self.move.journal.id IN (:journals)";
-    } else {
-      queryStr = "self.move.journal.journalType.technicalTypeSelect = :journalType";
-    }
-    queryStr +=
-        " AND self.move.date <= :date "
+    String queryStr =
+        "((:researchJournal > 0 AND self.move.journal.id = :researchJournal) "
+            + "  OR (:researchJournal = 0 AND self.move.journal.journalType.technicalTypeSelect = :journalType))"
+            + "AND self.move.date <= :date "
             + "AND self.move.statusSelect IN (2, 3, 5) "
             + "AND self.account.manageCutOffPeriod IS TRUE "
             + "AND self.cutOffStartDate != null AND self.cutOffEndDate != null "
@@ -211,7 +197,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         moveLineRepository
             .all()
             .filter(queryStr)
-            .bind("journals", journalIdList)
+            .bind("researchJournal", researchJournal == null ? 0 : researchJournal.getId())
             .bind(
                 "journalType",
                 accountingCutOffTypeSelect
@@ -679,12 +665,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            move.getPartner(),
-            product,
-            move.getCompany(),
-            move.getTradingName(),
-            moveLine.getAccount(),
-            isPurchase);
+            move.getPartner(), product, move.getCompany(), move.getTradingName(), isPurchase);
 
     moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

@@ -21,10 +21,6 @@
       title="Customer referral"/>
     <many-to-one name="saleOrderLine" title="Related sale order line"
       ref="com.axelor.apps.sale.db.SaleOrderLine"/>
-    <one-to-many name="purchaseOrderList" title="Related purchase orders"
-      ref="com.axelor.apps.purchase.db.PurchaseOrder" mappedBy="projectTask"/>
-    <one-to-many name="purchaseOrderLineList" title="Related purchase order lines"
-      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" mappedBy="projectTask"/>
     <many-to-one name="invoiceLine" title="Related Invoice line"
       ref="com.axelor.apps.account.db.InvoiceLine"/>
     <boolean name="isTaskRefused" title="Refused"/>
@@ -49,19 +45,15 @@
     <decimal name="initialCosts" title="ProjectTask.Costs"/>
     <decimal name="initialMargin" title="ProjectTask.Margin"/>
     <decimal name="initialMarkup" title="ProjectTask.Markup"/>
+    <decimal name="unitCost" title="Unit cost"/>
     <decimal name="realTurnover" title="Real turnover"/>
     <decimal name="realCosts" title="ProjectTask.Costs"/>
     <decimal name="realMargin" title="ProjectTask.Margin"/>
     <decimal name="realMarkup" title="ProjectTask.Markup"/>
+    <decimal name="forecastUnitCost" title="Forecast unit cost"/>
     <decimal name="forecastCosts" title="ProjectTask.Costs"/>
     <decimal name="forecastMargin" title="ProjectTask.Margin"/>
     <decimal name="forecastMarkup" title="ProjectTask.Markup"/>
-    <decimal name="landingCosts" title="ProjectTask.Costs"/>
-    <decimal name="landingMargin" title="ProjectTask.Margin"/>
-    <decimal name="landingMarkup" title="ProjectTask.Markup"/>
-
-    <decimal name="unitCost" title="Unit cost"/>
-    <decimal name="totalCosts" title="Total cost" readonly="true"/>
 
     <extra-code>
 			<![CDATA[

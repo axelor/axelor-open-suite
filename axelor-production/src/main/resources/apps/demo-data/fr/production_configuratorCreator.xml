@@ -68,6 +68,9 @@
             <durationPerCycle>1800</durationPerCycle>
             <durationPerCycleFormula></durationPerCycleFormula>
             <defDurationFormula>false</defDurationFormula>
+            <timingOfImplementation></timingOfImplementation>
+            <timingOfImplementationFormula></timingOfImplementationFormula>
+            <defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
             <configuratorProdProductList></configuratorProdProductList>
           </configuratorProdProcessLine>
 
@@ -91,6 +94,9 @@
             <durationPerCycle>1800</durationPerCycle>
             <durationPerCycleFormula></durationPerCycleFormula>
             <defDurationFormula>false</defDurationFormula>
+            <timingOfImplementation></timingOfImplementation>
+            <timingOfImplementationFormula></timingOfImplementationFormula>
+            <defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
             <configuratorProdProductList></configuratorProdProductList>
           </configuratorProdProcessLine>
 
@@ -114,6 +120,9 @@
             <durationPerCycle>3600</durationPerCycle>
             <durationPerCycleFormula></durationPerCycleFormula>
             <defDurationFormula>false</defDurationFormula>
+            <timingOfImplementation></timingOfImplementation>
+            <timingOfImplementationFormula></timingOfImplementationFormula>
+            <defTimingOfImplementationFormula>false</defTimingOfImplementationFormula>
             <configuratorProdProductList></configuratorProdProductList>
           </configuratorProdProcessLine>
         </configuratorProdProcessLineList>

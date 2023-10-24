@@ -184,13 +184,11 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     BigDecimal debitTotalRemaining =
         debitMoveLines.stream()
             .map(MoveLine::getAmountRemaining)
-            .map(BigDecimal::abs)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     BigDecimal creditTotalRemaining =
         creditMoveLines.stream()
             .map(MoveLine::getAmountRemaining)
-            .map(BigDecimal::abs)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 

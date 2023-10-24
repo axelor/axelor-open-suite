@@ -16,19 +16,10 @@
   </input>
 
   <input file="base_birtTemplate.csv" separator=";"
-    call="com.axelor.csv.script.ImportBirtTemplate:importTemplate"
-    type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
-    <bind to="metaModel" search="self.fullName = :modelName"/>
-  </input>
+    type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId"/>
 
   <input file="base_birtTemplateParameter.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
-
-  <input file="base_birtTemplateConfigLine.csv"
-    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
-    search="self.importId = :importId">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
-  </input>
 
   <input file="base_templateContext.csv" separator=";"
     type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>

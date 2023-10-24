@@ -21,7 +21,6 @@ package com.axelor.apps.base.service.birt.template;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import java.io.File;
 import java.util.Map;
@@ -31,21 +30,15 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
   @Override
   public String generateBirtTemplateLink(BirtTemplate template, Model model, String outputName)
       throws AxelorException {
-    return generateBirtTemplateLink(
-        template, model, null, outputName, template.getAttach(), template.getFormat());
+    return generateBirtTemplateLink(template, model, outputName, true, template.getFormat());
   }
 
   @Override
   public String generateBirtTemplateLink(
-      BirtTemplate template,
-      Model model,
-      Map<String, Object> context,
-      String outputName,
-      Boolean toAttach,
-      String format)
+      BirtTemplate template, Model model, String outputName, Boolean toAttach, String format)
       throws AxelorException {
 
-    ReportSettings settings = generate(template, model, context, outputName, toAttach, format);
+    ReportSettings settings = generate(template, model, outputName, toAttach, format);
 
     return settings.getFileLink();
   }
@@ -53,8 +46,7 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
   @Override
   public File generateBirtTemplateFile(BirtTemplate template, Model model, String outputName)
       throws AxelorException {
-    return generateBirtTemplateFile(
-        template, model, outputName, template.getAttach(), template.getFormat());
+    return generateBirtTemplateFile(template, model, outputName, true, template.getFormat());
   }
 
   @Override
@@ -62,7 +54,7 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
       BirtTemplate template, Model model, String outputName, Boolean toAttach, String format)
       throws AxelorException {
 
-    ReportSettings settings = generate(template, model, null, outputName, toAttach, format);
+    ReportSettings settings = generate(template, model, outputName, toAttach, format);
 
     return settings.getFile();
   }
@@ -86,24 +78,13 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
     return settings.getFile();
   }
 
-  @Override
-  public ReportSettings generate(
-      BirtTemplate template,
-      Model model,
-      Map<String, Object> context,
-      String outputName,
-      Boolean toAttach,
-      String format)
+  protected ReportSettings generate(
+      BirtTemplate template, Model model, String outputName, Boolean toAttach, String format)
       throws AxelorException {
-    BirtTemplateReportSettingsBuilder builder =
-        new BirtTemplateReportSettingsBuilder(template, outputName);
-    if (ObjectUtils.notEmpty(model)) {
-      builder.addInContext(model);
-    }
-    if (ObjectUtils.notEmpty(context)) {
-      builder.addInContext(context);
-    }
-
-    return builder.toAttach(toAttach).withFormat(format).build();
+    return new BirtTemplateReportSettingsBuilder(template, outputName)
+        .addInContext(model)
+        .toAttach(toAttach)
+        .withFormat(format)
+        .build();
   }
 }

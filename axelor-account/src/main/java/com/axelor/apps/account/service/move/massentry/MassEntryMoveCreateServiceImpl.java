@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
@@ -63,7 +62,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected MoveRepository moveRepository;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
-  protected MoveRecordSetService moveRecordSetService;
 
   @Inject
   public MassEntryMoveCreateServiceImpl(
@@ -77,8 +75,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       MoveSimulateService moveSimulateService,
       MoveRepository moveRepository,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      MoveRecordSetService moveRecordSetService) {
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
@@ -90,7 +87,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     this.moveRepository = moveRepository;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
-    this.moveRecordSetService = moveRecordSetService;
   }
 
   @Override
@@ -123,8 +119,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       newMove.setPaymentCondition(move.getPaymentCondition());
       newMove.setPfpValidatorUser(move.getPfpValidatorUser());
       newMove.setPfpValidateStatusSelect(move.getPfpValidateStatusSelect());
-
-      moveRecordSetService.setSubrogationPartner(newMove);
 
       int counter = 1;
 

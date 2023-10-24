@@ -12,12 +12,14 @@
     <one-to-many name="sopLineList" ref="com.axelor.apps.production.db.SopLine"
       mappedBy="sop" title="Sales and Operations Planning Lines"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="periodYear" ref="com.axelor.apps.base.db.Year" title="Period"/>
+    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year"/>
     <boolean name="isForecastOnHistoric" title="Forecast on historic"/>
-    <many-to-one name="historicPeriodYear" ref="com.axelor.apps.base.db.Year"
-      title="Historic period"/>
+    <many-to-one name="yearbasedHistoric" ref="com.axelor.apps.base.db.Year"
+      title="Historic year"/>
     <decimal name="growthCoef" title="Growth Coefficient"/>
     <boolean name="isGenerated" default="false"/>
+    <many-to-many name="stockLocationSet" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location"/>
   </entity>
 
 </domain-models>

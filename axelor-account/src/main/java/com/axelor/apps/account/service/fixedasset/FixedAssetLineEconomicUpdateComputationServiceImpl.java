@@ -188,10 +188,10 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           "You can not call this implementation without a corrected accounting value");
     }
-
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
     Optional<FixedAssetLine> optFixedAssetLine =
         fixedAssetLineService.findOldestFixedAssetLine(
-            fixedAsset, FixedAssetLineRepository.STATUS_PLANNED, 0);
+            fixedAssetLineList, FixedAssetLineRepository.STATUS_PLANNED, 0);
 
     if (!optFixedAssetLine.isPresent()) {
       throw new AxelorException(
@@ -200,7 +200,6 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     }
 
     // We can proceed the next part.
-    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
     FixedAssetLine firstPlannedFixedAssetLine = optFixedAssetLine.get();
     clearPlannedFixedAssetLineListExcept(fixedAssetLineList, firstPlannedFixedAssetLine);
     this.listSizeAfterClear = fixedAssetLineList.size();
@@ -209,7 +208,8 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           "You can not declare a number of depreciation smaller or equal than number of realized lines + 1 (The first planned line)");
     }
-    recomputeFirstPlannedLine(fixedAsset, firstPlannedFixedAssetLine, correctedAccountingValue);
+    recomputeFirstPlannedLine(
+        fixedAssetLineList, firstPlannedFixedAssetLine, correctedAccountingValue);
     this.firstPlannedFixedAssetLine = firstPlannedFixedAssetLine;
     this.canGenerateLines = true;
   }
@@ -224,11 +224,16 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
                     fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
                         && !fixedAssetLine.equals(firstPlannedFixedAssetLine))
             .collect(Collectors.toList());
-    fixedAssetLineService.clear(fixedAssetLineList, linesToRemove);
+
+    fixedAssetLineList.removeIf(
+        fixedAssetLine ->
+            fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
+                && !fixedAssetLine.equals(firstPlannedFixedAssetLine));
+    fixedAssetLineService.clear(linesToRemove);
   }
 
   protected void recomputeFirstPlannedLine(
-      FixedAsset fixedAsset,
+      List<FixedAssetLine> fixedAssetLineList,
       FixedAssetLine firstPlannedFixedAssetLine,
       BigDecimal correctedAccountingValue) {
     firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
@@ -240,7 +245,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     BigDecimal depreciation = firstPlannedFixedAssetLine.getDepreciation();
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
-            fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
+            fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
     if (previousLastRealizedFAL.isPresent()) {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
           previousLastRealizedFAL

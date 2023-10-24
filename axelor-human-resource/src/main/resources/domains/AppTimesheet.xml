@@ -7,7 +7,7 @@
 
   <entity name="AppTimesheet" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times"
       selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
@@ -37,8 +37,6 @@
     <boolean name="needValidation" title="Need validation" default="false"/>
     <boolean name="enableActivity" title="Enable activity"
       help="Allow to associate a product to the timesheet line (pre-requisite: only for product type that are services and Activity field is TRUE). Additional configuration can also be found in Application config --> Users/companies --> Companies --> Human resources config."/>
-    <integer name="dailyLimit" title="Daily limit"
-      help="Time limit for a day in a timesheet"/>
 
     <track>
       <field name="invoicingTypeLogTimesSelect" on="UPDATE"/>

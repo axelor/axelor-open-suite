@@ -19,11 +19,6 @@
     <many-to-one name="parentBudgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Parent Level"/>
 
-    <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
-      title="Global level"/>
-    <many-to-one name="globalBudgetTemplate"
-      ref="com.axelor.apps.budget.db.GlobalBudgetTemplate" title="Global budget template"/>
-
     <string name="statusSelect" title="Status" selection="budget.level.status.select"
       default="draft"/>
     <string name="typeSelect" readonly="true" title="Type"
@@ -50,8 +45,6 @@
       title="Budget Levels" mappedBy="parentBudgetLevel"/>
     <one-to-many name="budgetList" ref="com.axelor.apps.budget.db.Budget"
       title="Budgets" mappedBy="budgetLevel"/>
-    <many-to-many name="budgetScenarioVariableSet"
-      ref="com.axelor.apps.budget.db.BudgetScenarioVariable" title="Budget scenario variables"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 
     <many-to-one name="companyDepartment"
@@ -100,23 +93,7 @@
 
     </string>
 
-    <string name="globalId" search="globalBudget,globalBudgetTemplate">
-      <![CDATA[
-         if (globalBudget != null && globalBudget.getId() != null){
-
-            return globalBudget.getId().toString();
-         } else if (globalBudgetTemplate != null && globalBudgetTemplate.getId() != null){
-
-            return globalBudgetTemplate.getId().toString();
-         }
-         else {
-         	return "0";
-         }
-         ]]>
-    </string>
-
-    <unique-constraint
-      columns="code,parentId,globalId,typeSelect,company,fromDate,toDate"/>
+    <unique-constraint columns="code,parentId,company,fromDate,toDate"/>
 
     <extra-code>
 	      <![CDATA[

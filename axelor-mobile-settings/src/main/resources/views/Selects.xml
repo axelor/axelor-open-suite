@@ -10,7 +10,6 @@
     <option value="app-manufacturing">Manufacturing</option>
     <option value="app-crm">CRM</option>
     <option value="app-helpdesk">Helpdesk</option>
-    <option value="app-hr">HR</option>
   </selection>
 
   <selection name='trace.back.origin.select' id="trace.back.origin.select.mobilesettings">

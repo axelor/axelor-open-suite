@@ -21,8 +21,6 @@
       onChange="action-lunch-voucher-mgt-line-compute"/>
     <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
     <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-    <field name="paperFormatNumber"/>
-    <field name="cardFormatNumber"/>
     <field name="givenToEmployee" title="Given"/>
     <field name="lunchVoucherFormatSelect" width="200"/>
     <field name="statusSelect"/>
@@ -43,8 +41,6 @@
     <field name="invitation" aggregate="sum" title="Invitation"/>
     <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
     <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-    <field name="paperFormatNumber"/>
-    <field name="cardFormatNumber"/>
     <field name="givenToEmployee" title="Given"/>
     <field name="lunchVoucherMgt.statusSelect"/>
     <field name="lunchVoucherMgt" hidden="true"/>
@@ -59,8 +55,6 @@
     <field name="invitation" aggregate="sum" title="Invitation"/>
     <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
     <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
-    <field name="paperFormatNumber"/>
-    <field name="cardFormatNumber"/>
     <field name="givenToEmployee" title="Given"/>
     <field name="lunchVoucherMgt" hidden="true"/>
   </grid>
@@ -71,8 +65,6 @@
       <field name="employee" colSpan="6" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
       <field name="lunchVoucherNumber" css="label-bold bold" colSpan="12"/>
-      <field name="paperFormatNumber"/>
-      <field name="cardFormatNumber"/>
     </panel>
     <panel name="detailsPanel" title="Details">
       <field name="canteenEntries" colSpan="6"

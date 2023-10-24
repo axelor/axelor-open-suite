@@ -34,7 +34,7 @@
     onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent,action-timesheet-line-default-project"
     orderBy="-date">
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
+    <field name="date"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -67,8 +67,7 @@
     <field name="projectTask" width="200" form-view="project-task-form"
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
       onChange="action-timesheet-line-method-set-default-to-invoice"/>
-    <field name="date" width="100"
-      onChange="action-timesheet-line-validate-date,action-timesheet-line-method-check-daily-limit"/>
+    <field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" width="200" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -116,8 +115,7 @@
     <field name="project" onChange="action-timesheet-line-group-project-onchange"
       requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project"
       form-view="project-form" grid-view="project-grid"/>
-    <field name="date"
-      onChange="action-timesheet-line-validate-date,action-timesheet-line-method-check-daily-limit"/>
+    <field name="date" onChange="action-timesheet-line-validate-date"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -170,7 +168,7 @@
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
       <field name="projectTask"/>
-      <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
+      <field name="date"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
@@ -205,7 +203,7 @@
       <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"
         onSelect="action-timesheet-line-attrs-domain-project-task"
         onChange="action-timesheet-line-method-set-default-to-invoice"/>
-      <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
+      <field name="date"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
@@ -256,7 +254,7 @@
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
         grid-view="project-grid"/>
       <field name="projectTask"/>
-      <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
+      <field name="date"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
@@ -411,12 +409,6 @@
     model="com.axelor.apps.hr.db.TimesheetLine">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
       method="setStoredDuration"/>
-  </action-method>
-
-  <action-method name="action-timesheet-line-method-check-daily-limit"
-    model="com.axelor.apps.hr.db.TimesheetLine">
-    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
-      method="checkDailyLimit"/>
   </action-method>
 
   <action-method name="action-timesheet-line-method-set-duration"

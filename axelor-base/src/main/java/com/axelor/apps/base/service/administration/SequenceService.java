@@ -46,7 +46,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
@@ -59,8 +58,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class SequenceService {
 
-  private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
   protected static final String DRAFT_PREFIX = "#";
 
   protected static final String PATTERN_FULL_YEAR = "%YYYY";
@@ -69,10 +66,8 @@ public class SequenceService {
   protected static final String PATTERN_FULL_MONTH = "%FM";
   protected static final String PATTERN_DAY = "%D";
   protected static final String PATTERN_WEEK = "%WY";
-  protected static final String PADDING_LETTER = "A";
-  protected static final String PADDING_DIGIT = "0";
+  protected static final String PADDING_STRING = "0";
   protected static final int SEQ_MAX_LENGTH = 14;
-  protected static final int NUMBER_OF_LETTERS = 26;
 
   protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -238,14 +233,19 @@ public class SequenceService {
   }
 
   protected String computeNextSeq(
-      SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate)
-      throws AxelorException {
+      SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate) {
 
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
     String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String sequenceValue;
 
-    String sequenceValue = getSequenceValue(sequenceVersion);
-
+    if (sequence.getSequenceTypeSelect() == SequenceTypeSelect.NUMBERS) {
+      sequenceValue =
+          StringUtils.leftPad(
+              sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
+    } else {
+      sequenceValue = findNextLetterSequence(sequenceVersion);
+    }
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
             .replace(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
@@ -261,101 +261,32 @@ public class SequenceService {
     return nextSeq;
   }
 
-  protected String getSequenceValue(SequenceVersion sequenceVersion) throws AxelorException {
-
-    Sequence sequence = sequenceVersion.getSequence();
-    SequenceTypeSelect sequenceTypeSelect = sequence.getSequenceTypeSelect();
-    Long nextNum = sequenceVersion.getNextNum();
-
-    String padStr;
-    String nextSequence;
-
-    switch (sequenceTypeSelect) {
-      case NUMBERS:
-        padStr = PADDING_DIGIT;
-        nextSequence = nextNum.toString();
-        break;
-
-      case LETTERS:
-        SequenceLettersTypeSelect lettersType = sequence.getSequenceLettersTypeSelect();
-        padStr = applyCase(PADDING_LETTER, lettersType);
-        nextSequence = findNextLetterSequence(nextNum, lettersType);
-        break;
-
-      default:
-        throw new AxelorException(
-            sequenceVersion,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.SEQUENCE_TYPE_UNHANDLED),
-            sequenceTypeSelect);
-    }
-
-    return StringUtils.leftPad(nextSequence, sequence.getPadding(), padStr);
-  }
-
   /**
-   * Computes a test sequence by computing the next seq without any save. Used for checking validity
-   * purpose.
+   * Compute a test sequence by computing the next seq without any save Use for checking validity
+   * purpose
    *
    * @param sequence
    * @param refDate
    * @return the test sequence
-   * @throws AxelorException
    */
-  public String computeTestSeq(Sequence sequence, LocalDate refDate) throws AxelorException {
+  public String computeTestSeq(Sequence sequence, LocalDate refDate) {
     SequenceVersion sequenceVersion = getVersion(sequence, refDate);
     return computeNextSeq(sequenceVersion, sequence, refDate);
   }
 
-  protected String findNextLetterSequence(long nextNum, SequenceLettersTypeSelect lettersType)
-      throws AxelorException {
-
-    String result;
-    if (nextNum <= 0) {
-      throw new IllegalArgumentException("Input should be a strictly positive long.");
-    } else if (nextNum == 1) {
-      result = "A";
-    } else {
-      result = convertNextSeqLongToString(nextNum);
+  protected String findNextLetterSequence(SequenceVersion sequenceVersion) {
+    long n = sequenceVersion.getNextNum();
+    char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))];
+    for (int i = buf.length - 1; i >= 0; i--) {
+      n--;
+      buf[i] = (char) ('A' + n % 26);
+      n /= 26;
     }
-
-    return applyCase(result, lettersType);
-  }
-
-  protected static String applyCase(String result, SequenceLettersTypeSelect lettersType)
-      throws AxelorException {
-
-    if (lettersType == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.SEQUENCE_LETTERS_TYPE_IS_NULL));
+    if (sequenceVersion.getSequence().getSequenceLettersTypeSelect()
+        == SequenceLettersTypeSelect.UPPERCASE) {
+      return new String(buf);
     }
-    switch (lettersType) {
-      case UPPERCASE:
-        return result;
-
-      case LOWERCASE:
-        return result.toLowerCase();
-
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.SEQUENCE_LETTERS_TYPE_UNHANDLED),
-            lettersType);
-    }
-  }
-
-  protected String convertNextSeqLongToString(long nextNum) {
-    if (nextNum == 1) {
-      return "";
-    }
-
-    int alphabetLength = ALPHABET.length();
-
-    long q = (nextNum - 1) / alphabetLength;
-    int r = (int) (nextNum - 1) % alphabetLength;
-
-    return convertNextSeqLongToString(q + 1) + ALPHABET.charAt(r);
+    return new String(buf).toLowerCase();
   }
 
   public SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {
@@ -384,15 +315,6 @@ public class SequenceService {
   }
 
   /**
-   * Get draft sequence number prefix.
-   *
-   * @return
-   */
-  protected String getDraftPrefix() {
-    return Optional.ofNullable(appBaseService.getAppBase().getDraftPrefix()).orElse(DRAFT_PREFIX);
-  }
-
-  /**
    * Get draft sequence number.
    *
    * @param model
@@ -406,28 +328,26 @@ public class SequenceService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
-    String draftPrefix = getDraftPrefix();
-    return String.format("%s%d", draftPrefix, model.getId());
+    return String.format("%s%d", DRAFT_PREFIX, model.getId());
   }
 
   /**
    * Get draft sequence number with leading zeros.
    *
    * @param model
-   * @param zeroPadding
+   * @param padding
    * @return
    */
-  public String getDraftSequenceNumber(Model model, int padding) throws AxelorException {
+  public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
     if (model.getId() == null) {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
-    String draftPrefix = getDraftPrefix();
     return String.format(
         "%s%s",
-        draftPrefix, StringTool.fillStringLeft(String.valueOf(model.getId()), '0', padding));
+        DRAFT_PREFIX, StringTool.fillStringLeft(String.valueOf(model.getId()), '0', zeroPadding));
   }
 
   /**
@@ -482,16 +402,5 @@ public class SequenceService {
         .forEach(sequenceVersion -> sequenceVersion.setEndDate(endOfDate));
 
     return sequenceVersionList;
-  }
-
-  public void validateSequence(Sequence sequence) throws AxelorException {
-    String draftPrefix = getDraftPrefix();
-
-    if (sequence.getPrefixe().startsWith(draftPrefix))
-      throw new AxelorException(
-          sequence,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          BaseExceptionMessage.SEQUENCE_PREFIX,
-          draftPrefix);
   }
 }

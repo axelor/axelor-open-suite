@@ -20,5 +20,12 @@ package com.axelor.apps.bankpayment.report;
 
 public interface IReport {
 
+  public static final String BANK_ORDER = "BankOrder.rptdesign";
   public static final String EBICS_CERTIFICATE = "EbicsCertificate.rptdesign";
+  public static final String BANK_STATEMENT_AFB120 = "BankStatementAFB120.rptdesign";
+  public static final String BANK_STATEMENT_LINES_AFB120 = "BankStatementLinesAFB120.rptdesign";
+  public static final String BANK_RECONCILIATION = "BankReconciliation.rptdesign";
+  public static final String BANK_RECONCILIATION2 = "BankReconciliationNew.rptdesign";
+  public static final String BANK_PAYMENT_REPORT_TYPE = "BankReconciliationStatement.rptdesign";
+  public static final String BANK_STATEMENT_LINES = "BankStatementLines.rptdesign";
 }

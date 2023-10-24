@@ -85,24 +85,13 @@ public interface FixedAssetDerogatoryLineService {
   void clear(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList);
 
   /**
-   * Filter list with depreciationDate after date. Filtered lines will be remove from database by
-   * calling {@link FixedAssetDerogatoryLineRepository#remove(FixedAssetDerogatoryLine)}
+   * Filter list with statusSelect = status. Filtered lines will be remove from database by calling
+   * {@link FixedAssetDerogatoryLineRepository#remove(FixedAssetLine)}
    *
-   * @param fixedAssetDerogatoryLineList
-   * @param date
+   * @param fixedAssetLineList
+   * @param status
    */
-  void filterListByDate(
-      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, LocalDate date);
+  void filterListByStatus(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status);
 
-  /**
-   * This method will remove every linesToRemove from database and from fixedAssetDerogatoryLineList
-   *
-   * @param fixedAssetDerogatoryLineList
-   * @param linesToRemove
-   */
-  void clear(
-      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList,
-      List<FixedAssetDerogatoryLine> linesToRemove);
-
-  void remove(FixedAssetDerogatoryLine line);
+  public void remove(FixedAssetDerogatoryLine line);
 }

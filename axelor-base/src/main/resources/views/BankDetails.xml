@@ -22,23 +22,12 @@
     title="Bank details" onLoad="action-group-account-bank-details-form-onload"
     model="com.axelor.apps.base.db.BankDetails" width="large">
     <panel name="ownerPanel" title="Owner">
-      <panel name="ownerInfoPanel" colSpan="12">
-        <spacer colSpan="10"/>
-        <field name="$activeLabel" showIf="$readonly()" showTitle="false" colSpan="2">
-          <viewer depends="active">
-            <![CDATA[
-                <span class="label label-success" ng-show="record.active" x-translate>Active</span>
-                <span class="label label-important" ng-show="!record.active" x-translate>Inactive</span>
-            ]]>
-          </viewer>
-        </field>
+      <panel name="ownerInfoPanel" colSpan="9">
         <field name="partner"
           onChange="action-set-owner-name,action-bank-details-attrs-specific-notes"
           domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"
           colSpan="10"/>
-        <field name="active" widget="boolean-radio" colSpan="2" showTitle="false"
-          showIf="!$readonly()" x-true-text="Active" x-false-text="Inactive"/>
-        <field name="ownerName" colSpan="12"/>
+        <field name="ownerName" colSpan="10"/>
         <field name="company" hidden="true"/>
       </panel>
     </panel>
@@ -52,6 +41,9 @@
         domain="self.company = :company AND self.statusSelect = 1" if-module="axelor-account"
         if="__config__.app.isApp('account')"/>
       <field name="code" x-bind="{{code|uppercase}}" hidden="true"/>
+    </panel>
+    <panel name="activePanel" sidebar="true">
+      <field name="active" widget="boolean-switch"/>
     </panel>
     <panel name="ibanPanel" title="IBAN / BBAN">
       <field name="bank.bankDetailsTypeSelect" readonly="true"/>

@@ -13,7 +13,4 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
-  <input file="purchase_purchaseConfig.csv" separator=";"
-    type="com.axelor.apps.purchase.db.PurchaseConfig" search="self.importId = :importId"/>
-
 </csv-inputs>

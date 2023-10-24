@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
@@ -47,7 +46,6 @@ import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.AppPurchase;
 import com.axelor.utils.ContextTool;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -578,35 +576,19 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public void checkMultipleQty(
-      Company company,
-      Partner supplierPartner,
-      PurchaseOrderLine purchaseOrderLine,
-      ActionResponse response)
-      throws AxelorException {
-    Product product = purchaseOrderLine.getProduct();
-    AppPurchase appPurchase = appPurchaseService.getAppPurchase();
+  public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response) {
 
-    if (product == null || Boolean.FALSE.equals(appPurchase.getManageMultiplePurchaseQuantity())) {
+    Product product = purchaseOrderLine.getProduct();
+
+    if (product == null) {
       return;
     }
 
-    SupplierCatalog supplierCatalog =
-        supplierCatalogService.getSupplierCatalog(product, supplierPartner, company);
-    List<ProductMultipleQty> productMultipleQties = product.getPurchaseProductMultipleQtyList();
-
-    if (supplierCatalog != null
-        && Boolean.FALSE.equals(supplierCatalog.getIsTakeProductMultipleQty())) {
-      productMultipleQties = supplierCatalog.getProductMultipleQtyList();
-    }
-
-    if (CollectionUtils.isNotEmpty(productMultipleQties)) {
-      productMultipleQtyService.checkMultipleQty(
-          purchaseOrderLine.getQty(),
-          productMultipleQties,
-          product.getAllowToForcePurchaseQty(),
-          response);
-    }
+    productMultipleQtyService.checkMultipleQty(
+        purchaseOrderLine.getQty(),
+        product.getPurchaseProductMultipleQtyList(),
+        product.getAllowToForcePurchaseQty(),
+        response);
   }
 
   @Override

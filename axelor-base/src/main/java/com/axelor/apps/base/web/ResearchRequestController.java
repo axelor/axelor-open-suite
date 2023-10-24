@@ -84,9 +84,11 @@ public class ResearchRequestController {
   public void getResearch1PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
     ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
     try {
+
       String domain =
           Beans.get(ResearchRequestService.class).getStringResearchKeyDomain(researchRequest);
       response.setAttr("research1", "domain", domain);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -95,6 +97,7 @@ public class ResearchRequestController {
   public void getResearch2PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
     ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
     try {
+
       String domain =
           Beans.get(ResearchRequestService.class).getStringResearchKeyDomain(researchRequest);
       response.setAttr("research2", "domain", domain);
@@ -107,9 +110,11 @@ public class ResearchRequestController {
   public void getResearch3PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
     ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
     try {
+
       String domain =
           Beans.get(ResearchRequestService.class).getStringResearchKeyDomain(researchRequest);
       response.setAttr("research3", "domain", domain);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -118,9 +123,11 @@ public class ResearchRequestController {
   public void getResearch4PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
     ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
     try {
+
       String domain =
           Beans.get(ResearchRequestService.class).getStringResearchKeyDomain(researchRequest);
       response.setAttr("research4", "domain", domain);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -129,18 +136,13 @@ public class ResearchRequestController {
   public void getDateResearch1PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
     ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
     try {
+
       String domain =
           Beans.get(ResearchRequestService.class).getDateResearchKeyDomain(researchRequest);
       response.setAttr("dateResearch1", "domain", domain);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-  }
-
-  public void openResultObjectForm(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    ResearchResultLine researchResultLine = request.getContext().asType(ResearchResultLine.class);
-    response.setView(
-        Beans.get(ResearchRequestService.class).getResultObjectView(researchResultLine));
   }
 }

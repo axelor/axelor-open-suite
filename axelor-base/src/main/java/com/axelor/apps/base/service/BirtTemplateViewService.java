@@ -19,13 +19,10 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 
 public interface BirtTemplateViewService {
 
   void setTemplateMetaFile(Long birtId, String templateFileName)
       throws AxelorException, IOException;
-
-  MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException;
 }

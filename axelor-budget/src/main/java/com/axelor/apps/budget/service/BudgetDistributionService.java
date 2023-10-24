@@ -66,6 +66,4 @@ public interface BudgetDistributionService {
 
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate);
-
-  String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect);
 }

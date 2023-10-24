@@ -12,7 +12,6 @@
         //SEQUENCE SELECT
   		public static final String QUALITY_ALERT = "qualityAlert";
   		public static final String QUALITY_CONTROL = "qualityControl";
-  		public static final String QUALITY_IMPROVEMENT = "qualityImprovement";
 
      ]]></extra-code>
 

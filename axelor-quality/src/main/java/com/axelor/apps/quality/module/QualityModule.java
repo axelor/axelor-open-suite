@@ -23,14 +23,6 @@ import com.axelor.apps.quality.db.repo.QualityAlertManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityAlertRepository;
 import com.axelor.apps.quality.db.repo.QualityControlManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
-import com.axelor.apps.quality.db.repo.QualityImprovementManagementRepository;
-import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
-import com.axelor.apps.quality.service.QIAnalysisService;
-import com.axelor.apps.quality.service.QIAnalysisServiceImpl;
-import com.axelor.apps.quality.service.QIIdentificationService;
-import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
-import com.axelor.apps.quality.service.QIResolutionDecisionService;
-import com.axelor.apps.quality.service.QIResolutionDecisionServiceImpl;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.QualityControlServiceImpl;
 import com.axelor.apps.quality.service.app.AppQualityService;
@@ -44,9 +36,5 @@ public class QualityModule extends AxelorModule {
     bind(QualityAlertRepository.class).to(QualityAlertManagementRepository.class);
     bind(QualityControlRepository.class).to(QualityControlManagementRepository.class);
     bind(AppQualityService.class).to(AppQualityServiceImpl.class);
-    bind(QualityImprovementRepository.class).to(QualityImprovementManagementRepository.class);
-    bind(QIIdentificationService.class).to(QIIdentificationServiceImpl.class);
-    bind(QIResolutionDecisionService.class).to(QIResolutionDecisionServiceImpl.class);
-    bind(QIAnalysisService.class).to(QIAnalysisServiceImpl.class);
   }
 }

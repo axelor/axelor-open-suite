@@ -287,12 +287,11 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       Product product,
       TrackingNumber trackingNumber,
       BigDecimal realQty,
-      StockCorrectionReason reason,
-      String comments) {
+      StockCorrectionReason reason) {
 
     StockCorrection stockCorrection = new StockCorrection();
     setNewStockCorrectionInformation(
-        stockLocation, product, trackingNumber, realQty, reason, stockCorrection, comments);
+        stockLocation, product, trackingNumber, realQty, reason, stockCorrection);
     this.stockCorrectionRepository.save(stockCorrection);
 
     return stockCorrection;
@@ -304,8 +303,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       TrackingNumber trackingNumber,
       BigDecimal realQty,
       StockCorrectionReason reason,
-      StockCorrection stockCorrection,
-      String comments) {
+      StockCorrection stockCorrection) {
     stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_DRAFT);
     stockCorrection.setStockLocation(stockLocation);
     stockCorrection.setProduct(product);
@@ -316,7 +314,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     stockCorrection.setStockCorrectionReason(reason);
 
     stockCorrection.setBaseQty(getProductBaseQty(stockCorrection));
-    stockCorrection.setComments(comments);
   }
 
   protected BigDecimal getProductBaseQty(StockCorrection stockCorrection) {
@@ -339,15 +336,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
       stockCorrection.setStockCorrectionReason(reason);
       this.stockCorrectionRepository.save(stockCorrection);
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateComments(StockCorrection stockCorrection, String comments) {
-    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
-      stockCorrection.setComments(comments);
-      stockCorrectionRepository.save(stockCorrection);
     }
   }
 }

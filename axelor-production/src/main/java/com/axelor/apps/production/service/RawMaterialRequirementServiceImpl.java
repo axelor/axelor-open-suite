@@ -18,16 +18,41 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.RawMaterialRequirement;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.report.IReport;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class RawMaterialRequirementServiceImpl implements RawMaterialRequirementService {
+
+  /** The title of the report. */
+  public static final String RAW_MATERIAL_REPORT_TITLE = "Raw material requirement";
+
+  @Override
+  public String print(RawMaterialRequirement rawMaterialRequirement) throws AxelorException {
+    String name = String.format("%s - ${date}", I18n.get(RAW_MATERIAL_REPORT_TITLE));
+    ReportSettings reportSetting =
+        ReportFactory.createReport(IReport.RAW_MATERIAL_REQUIREMENT, name);
+
+    String locale = ReportSettings.getPrintingLocale(null);
+    return reportSetting
+        .addParam("RawMaterialRequirementId", rawMaterialRequirement.getId())
+        .addParam(
+            "Timezone",
+            rawMaterialRequirement.getCompany() != null
+                ? rawMaterialRequirement.getCompany().getTimezone()
+                : null)
+        .addParam("Locale", locale)
+        .generate()
+        .getFileLink();
+  }
 
   @Override
   public String getSequence(RawMaterialRequirement rawMaterialRequirement) throws AxelorException {

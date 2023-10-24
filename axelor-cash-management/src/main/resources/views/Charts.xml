@@ -63,25 +63,4 @@
     <series key="amount" type="bar" title="Amount" aggregate="sum"/>
   </chart>
 
-  <custom name="action-forecast-recap-view-balance-by-bank-details-dashlet-custom"
-    title="Custom">
-    <dataset type="jpql"><![CDATA[
-	   SELECT
-	     ROUND(SUM(self.amount), 2) AS amount,
-	     CASE
-	       WHEN self.relatedToSelectBankDetails IS NULL OR self.relatedToSelectBankDetails = ''
-	       THEN ''
-	       ELSE self.relatedToSelectBankDetails
-	     END AS bankDetails
-	   FROM ForecastRecapLine AS self
-	   WHERE self.forecastRecap.id = :_forecastRecapId
-	   GROUP BY self.relatedToSelectBankDetails
-	   ORDER BY self.relatedToSelectBankDetails
-	 ]]></dataset>
-
-    <template><![CDATA[
-	   <report-table data='data' columns='bankDetails,amount'/>
-	 ]]></template>
-  </custom>
-
 </object-views>

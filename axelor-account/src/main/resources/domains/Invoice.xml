@@ -27,8 +27,6 @@
       title="Partner"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
       title="Contact"/>
-    <many-to-one name="subrogationPartner" ref="com.axelor.apps.base.db.Partner"
-      title="Subrogation"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode"/>
     <many-to-one name="paymentCondition"
