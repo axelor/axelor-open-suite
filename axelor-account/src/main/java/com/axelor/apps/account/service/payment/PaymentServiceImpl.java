@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
@@ -39,6 +40,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,18 +59,21 @@ public class PaymentServiceImpl implements PaymentService {
 
   protected AppAccountService appAccountService;
   protected AppBaseService appBaseService;
+  protected CurrencyService currencyService;
 
   @Inject
   public PaymentServiceImpl(
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       ReconcileService reconcileService,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      CurrencyService currencyService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -370,12 +375,20 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
         BigDecimal amountDebit = amountMap.min(remainingPaidAmount2);
         if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
+          BigDecimal currencyRate =
+              currencyService.getCurrencyConversionRate(move.getCurrency(), company.getCurrency());
+          BigDecimal moveLineAmount = amountDebit;
+          if (currencyRate.signum() > 0) {
+            moveLineAmount =
+                moveLineAmount.divide(
+                    currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          }
           MoveLine debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   accountMap,
-                  amountDebit,
+                  moveLineAmount,
                   true,
                   date,
                   dueDate,
