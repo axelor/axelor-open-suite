@@ -98,6 +98,10 @@ public class PickedProductServiceImpl implements PickedProductService {
 
     stockMove.setMassStockMove(massStockMove);
 
+    if (massStockMove.getSequence() != null && stockMove.getOrigin() == null) {
+      stockMove.setOrigin(massStockMove.getSequence());
+    }
+
     StockMoveLine stockMoveLine =
         stockMoveLineService.createStockMoveLine(
             stockMove,
@@ -245,8 +249,15 @@ public class PickedProductServiceImpl implements PickedProductService {
       storedProduct.setMassStockMove(null);
       storedProductRepository.remove(storedProduct);
     }
+    StockMove stockMove = pickedProduct.getStockMoveLine().getStockMove();
+    if (stockMove != null) {
+      stockMoveService.cancel(stockMove);
+    }
     pickedProduct.setStockMoveLine(null);
     pickedProduct.setPickedQty(BigDecimal.ZERO);
+    if (massStockMove.getStoredProductList().isEmpty()) {
+      massStockMove.setStatusSelect(MassStockMoveRepository.STATUS_DRAFT);
+    }
     massStockMoveRepository.save(massStockMove);
     pickedProductRepository.save(pickedProduct);
   }

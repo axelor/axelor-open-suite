@@ -108,6 +108,7 @@ public class StoredProductServiceImpl implements StoredProductService {
             fromStockLocation,
             toStockLocation);
     stockMove.setMassStockMove(storedProduct.getMassStockMove());
+    stockMove.setOrigin(storedProduct.getMassStockMove().getSequence());
     stockMoveService.plan(stockMove);
     stockMoveService.realize(stockMove);
     storedProduct.setStockMoveLine(stockMoveLine);
@@ -160,19 +161,28 @@ public class StoredProductServiceImpl implements StoredProductService {
               ? storedProduct.getTrackingNumber().getTrackingNumberSeq()
               : "");
     }
-
-    if (checkIfAllStoredProductAreStored(storedProduct.getMassStockMove())) {
+    MassStockMove massStockMove = storedProduct.getMassStockMove();
+    if (checkIfAllStoredProductAreStored(massStockMove)
+        && checkIfAllPickedProductArePicked(massStockMove)) {
       storedProduct.getMassStockMove().setStatusSelect(MassStockMoveRepository.STATUS_REALIZED);
       massStockMoveRepository.save(storedProduct.getMassStockMove());
     }
   }
 
   public boolean checkIfAllStoredProductAreStored(MassStockMove massStockMove) {
-    return massStockMove.getStoredProductList().stream()
+    return !massStockMove.getStoredProductList().stream()
         .anyMatch(
             it ->
-                !(it.getStoredQty().compareTo(it.getCurrentQty()) == 0
-                    && it.getStockMoveLine() != null));
+                it.getStoredQty().compareTo(it.getCurrentQty()) != 0
+                    && it.getStockMoveLine() == null);
+  }
+
+  public boolean checkIfAllPickedProductArePicked(MassStockMove massStockMove) {
+    return !massStockMove.getPickedProductList().stream()
+        .anyMatch(
+            it ->
+                it.getPickedQty().compareTo(it.getCurrentQty()) != 0
+                    && it.getStockMoveLine() == null);
   }
 
   @Override
@@ -182,6 +192,14 @@ public class StoredProductServiceImpl implements StoredProductService {
       stockMoveService.cancel(storedProduct.getStockMoveLine().getStockMove());
       storedProduct.setStockMoveLine(null);
       storedProduct.setStoredQty(BigDecimal.ZERO);
+      if (storedProduct
+          .getMassStockMove()
+          .getStatusSelect()
+          .equals(MassStockMoveRepository.STATUS_REALIZED)) {
+        storedProduct
+            .getMassStockMove()
+            .setStatusSelect(MassStockMoveRepository.STATUS_IN_PROGRESS);
+      }
       storedProductRepository.save(storedProduct);
     }
   }
