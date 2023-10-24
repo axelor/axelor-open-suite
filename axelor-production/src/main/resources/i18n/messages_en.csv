@@ -789,7 +789,7 @@
 "The time the machine starts before it can be used.",,,
 "The unit of the bill of material %s is missing. Please correct it.",,,
 "There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&OP forecast. Proceed?",,,
-"There is no applicable bill of material for %s",,,
+"There is no applicable bill of materials for %s",,,
 "There no's defined nomenclature for product %s (%s)",,,
 "There's no configured sequence for fabrication's orders",,,
 "There's no configured sequence for production's orders",,,
