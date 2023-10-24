@@ -449,7 +449,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
       for (ContractLine line : lines) {
         ContractLine tmp = contractLineRepo.copy(line, false);
-        if (isPeriodicInvoicing) {
+        if (isPeriodicInvoicing && isTimeProratedInvoice) {
           LocalDate start = computeStartDate(contract, line, version);
           tmp.setFromDate(start);
           ratio =
