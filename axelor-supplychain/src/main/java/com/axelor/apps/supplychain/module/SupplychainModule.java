@@ -148,8 +148,6 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateServiceImpl;
-import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
-import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
@@ -194,6 +192,8 @@ import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.TimetableServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
@@ -314,7 +314,6 @@ public class SupplychainModule extends AxelorModule {
     bind(InvoiceMergingServiceImpl.class).to(InvoiceMergingServiceSupplychainImpl.class);
     bind(CommonInvoiceService.class).to(CommonInvoiceServiceImpl.class);
     bind(MrpForecastService.class).to(MrpForecastServiceImpl.class);
-    bind(SaleOrderCheckAnalyticService.class).to(SaleOrderCheckAnalyticServiceImpl.class);
     bind(BatchAccountingCutOff.class).to(BatchAccountingCutOffSupplyChain.class);
     bind(StockProductRestServiceImpl.class).to(StockProductRestServiceSupplychainImpl.class);
     bind(AnalyticMoveLineServiceImpl.class).to(AnalyticMoveLineSupplychainServiceImpl.class);
@@ -336,5 +335,6 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderOnLineChangeSupplyChainServiceImpl.class);
     bind(SaleOrderLineTreeComputationServiceImpl.class)
         .to(SaleOrderLineTreeComputationServiceSupplychainImpl.class);
+    bind(AnalyticToolSupplychainService.class).to(AnalyticToolSupplychainServiceImpl.class);
   }
 }
