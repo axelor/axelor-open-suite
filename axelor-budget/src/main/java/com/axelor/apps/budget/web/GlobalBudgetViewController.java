@@ -89,9 +89,7 @@ public class GlobalBudgetViewController {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     List<Long> budgetIdList = Beans.get(GlobalBudgetService.class).getAllBudgetIds(globalBudget);
 
-    String domain =
-        String.format(
-            "self.budget.id IN (%s) AND self.purchase", Joiner.on(",").join(budgetIdList));
+    String domain = String.format("self.budget.id IN (%s)", Joiner.on(",").join(budgetIdList));
 
     response.setView(
         ActionView.define(I18n.get("Distribution lines"))
