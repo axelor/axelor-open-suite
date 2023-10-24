@@ -320,4 +320,7 @@ public final class ProductionExceptionMessage {
 
   public static final String PURCHASE_ORDER_NO_END_UNIT = /*$$(*/
       "Impossible to generate outsourcing purchase order. Please fill unit on your product." /*)*/;
+
+  public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
+      "There is no applicable bill of materials for %s" /*)*/;
 }
