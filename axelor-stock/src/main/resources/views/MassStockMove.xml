@@ -34,7 +34,7 @@
     </panel>
     <panel name="pickedProductPanel">
       <button name="selectPickedProductFromStockLocationBtn"
-        title="Select products from location" readonlyIf="statusSelect != 1"
+        title="Select products from location"
         onClick="save,action-mass-stock-move-method-import-picked-product"
         help="Allows to add every product from the common stock location"/>
       <panel-related name="pickedProductListPanel" field="pickedProductList"
