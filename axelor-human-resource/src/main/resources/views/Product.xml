@@ -25,7 +25,7 @@
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="save,action-send-by-email-with-template"/>
       <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-method-show-product-sheet"/>
+        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="name" required="true" showTitle="false" css="label-bold bold"
@@ -38,6 +38,7 @@
         if="__config__.app.getApp('base')?.getGenerateProductSequence()" readonly="true"/>
       <panel name="productTypologyPanel" title="Product typology" colSpan="12">
         <field name="productTypeSelect" required="true" readonly="true"/>
+        <field name="amountLimit"/>
         <field name="deductLunchVoucher" hideIf="!expense"/>
         <field name="blockExpenseTax"/>
         <field name="personalExpense"/>
@@ -116,7 +117,7 @@
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="save,action-send-by-email-with-template"/>
       <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-method-show-product-sheet"/>
+        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="productTypeSelect" required="true" hidden="true"/>

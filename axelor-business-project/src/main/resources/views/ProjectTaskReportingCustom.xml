@@ -9,9 +9,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.turnover}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.turnover}}</h1>
         </div>
       ]]>
     </template>
@@ -22,9 +21,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.initialCosts}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.initialCosts}}</h1>
         </div>
       ]]>
     </template>
@@ -35,9 +33,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.initialMargin}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.initialMargin}}</h1>
         </div>
       ]]>
     </template>
@@ -56,15 +53,53 @@
     </template>
   </custom>
 
+  <!-- FORECAST -->
+  <custom title="ProjectTask.Costs" name="project-task-forecast-costs-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <div style='display:inline-block;'>
+          <h1><b>{{first.currencySymbol}}</b> {{first.forecastCosts}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Margin" name="project-task-forecast-margin-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <div style='display:inline-block;'>
+          <h1><b>{{first.currencySymbol}}</b> {{first.forecastMargin}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="ProjectTask.Markup" name="project-task-forecast-markup-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.forecastMarkup}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+
   <!-- REAL -->
   <custom title="Real turnover" name="project-task-real-turnover-custom"
     css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realTurnover}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.realTurnover}}</h1>
         </div>
       ]]>
     </template>
@@ -75,9 +110,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realCosts}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.realCosts}}</h1>
         </div>
       ]]>
     </template>
@@ -88,9 +122,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realMargin}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.realMargin}}</h1>
         </div>
       ]]>
     </template>
@@ -110,41 +143,79 @@
   </custom>
 
 
-  <!-- FORECAST -->
-  <custom title="ProjectTask.Costs" name="project-task-forecast-costs-custom"
+  <!-- LANDING -->
+  <custom title="ProjectTask.Costs" name="project-task-landing-costs-custom"
     css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastCosts}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.landingCosts}}</h1>
         </div>
       ]]>
     </template>
   </custom>
 
-  <custom title="ProjectTask.Margin" name="project-task-forecast-margin-custom"
+  <custom title="ProjectTask.Margin" name="project-task-landing-margin-custom"
     css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastMargin}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.landingMargin}}</h1>
         </div>
       ]]>
     </template>
   </custom>
 
-  <custom title="ProjectTask.Markup" name="project-task-forecast-markup-custom"
+  <custom title="ProjectTask.Markup" name="project-task-landing-markup-custom"
     css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskFinancialReportingData</dataset>
     <template>
       <![CDATA[
         <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastMarkup}}</h1>
+          <h1>{{first.landingMarkup}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <!-- time follow up -->
+  <custom title="% of progress" name="project-task-percentage-progress-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-line-chart'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.progress}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="% of consumption" name="project-task-percentage-consumption-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-hourglass-half'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.consumption}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Remaining amount to do" name="project-task-remaining-to-do-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-tasks'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.remaining}} <span style="font-size:20px;">{{first.unit}}</span></h1>
         </div>
       ]]>
     </template>
@@ -198,6 +269,35 @@
     <view type="custom" name="project-task-forecast-markup-custom"/>
   </action-view>
 
+  <action-view name="action-project-task-view-landing-costs-custom"
+    title="ProjectTask.Costs">
+    <view type="custom" name="project-task-landing-costs-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-landing-margin-custom"
+    title="ProjectTask.Margin">
+    <view type="custom" name="project-task-landing-margin-custom"/>
+  </action-view>
+  <action-view name="action-project-task-view-landing-markup-custom"
+    title="ProjectTask.Markup">
+    <view type="custom" name="project-task-landing-markup-custom"/>
+  </action-view>
+
+
+  <!-- time follow up -->
+  <action-view name="action-project-task-view-percentage-progress-custom"
+    title="% of progress">
+    <view type="custom" name="project-task-percentage-progress-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-percentage-consumption-custom"
+    title="% of consumption">
+    <view type="custom" name="project-task-percentage-consumption-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-remaining-to-do-custom"
+    title="Remaining amount to do">
+    <view type="custom" name="project-task-remaining-to-do-custom"/>
+  </action-view>
 
 
 </object-views>

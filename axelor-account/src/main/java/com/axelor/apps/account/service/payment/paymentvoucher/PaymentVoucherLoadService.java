@@ -98,7 +98,7 @@ public class PaymentVoucherLoadService {
 
     String query =
         "(self.moveLine.partner = :partner OR self.invoice.partner = :partner) "
-            + "and (self.isPaid = FALSE OR self.amountRemaining > 0) "
+            + "and (self.isPaid = FALSE OR self.amountRemaining != 0) "
             + "and (self.moveLine.move.company = :company OR self.invoice.company = :company) "
             + "and self.moveLine.account.useForPartnerBalance = 't' "
             + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
@@ -383,7 +383,7 @@ public class PaymentVoucherLoadService {
       BigDecimal maxAmountToPayRemaining = amountToPay;
       for (MoveLine moveLine : moveLineInvoiceToPay) {
         if (maxAmountToPayRemaining.compareTo(BigDecimal.ZERO) > 0) {
-          BigDecimal amountPay = maxAmountToPayRemaining.min(moveLine.getAmountRemaining());
+          BigDecimal amountPay = maxAmountToPayRemaining.min(moveLine.getAmountRemaining().abs());
           moveLine.setMaxAmountToReconcile(amountPay);
           debitMoveLines.add(moveLine);
           maxAmountToPayRemaining = maxAmountToPayRemaining.subtract(amountPay);

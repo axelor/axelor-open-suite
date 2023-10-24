@@ -95,6 +95,13 @@
     <decimal name="forecastCosts" title="ProjectTask.Costs"/>
     <decimal name="forecastMargin" title="ProjectTask.Margin"/>
     <decimal name="forecastMarkup" title="ProjectTask.Markup"/>
+    <decimal name="landingCosts" title="ProjectTask.Costs"/>
+    <decimal name="landingMargin" title="ProjectTask.Margin"/>
+    <decimal name="landingMarkup" title="ProjectTask.Markup"/>
+    <decimal name="totalInvoiced" title="Total invoiced"/>
+    <decimal name="invoicedThisMonth" title="Invoiced this month"/>
+    <decimal name="invoicedLastMonth" title="Invoiced last month"/>
+    <decimal name="totalPaid" title="Total paid"/>
 
     <one-to-many name="projectHistoryLineList"
       ref="com.axelor.apps.project.db.ProjectHistoryLine" title="Project history" mappedBy="project"/>

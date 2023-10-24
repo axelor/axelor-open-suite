@@ -123,7 +123,7 @@
     onLoad="action-bank-order-group-on-load">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-bank-order-method-print"/>
+        onClick="save,action-method-print-birt"/>
     </toolbar>
     <panel title="Status" name="statusPanel" readonlyIf="technicalOriginSelect == 1">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
@@ -387,7 +387,7 @@
     model="com.axelor.apps.bankpayment.db.BankOrder" onNew="action-bank-order-group-onnew">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-bank-order-method-print"/>
+        onClick="save,action-method-print-birt"/>
     </toolbar>
     <panel name="statusPanel" title="Status" readonlyIf="technicalOriginSelect == 1">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"/>
@@ -789,10 +789,6 @@
 
   <action-method name="action-bank-order-method-merge">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="merge"/>
-  </action-method>
-
-  <action-method name="action-bank-order-method-print">
-    <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="print"/>
   </action-method>
 
   <action-method name="action-bank-order-method-fill-signatory-ebics-user"

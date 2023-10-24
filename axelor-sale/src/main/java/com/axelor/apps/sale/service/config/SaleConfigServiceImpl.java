@@ -19,15 +19,18 @@
 package com.axelor.apps.sale.service.config;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 
 public class SaleConfigServiceImpl implements SaleConfigService {
 
+  @Override
   public SaleConfig getSaleConfig(Company company) throws AxelorException {
 
     SaleConfig saleConfig = company.getSaleConfig();
@@ -42,5 +45,16 @@ public class SaleConfigServiceImpl implements SaleConfigService {
     }
 
     return saleConfig;
+  }
+
+  @Override
+  public BirtTemplate getSaleOrderBirtTemplate(Company company) throws AxelorException {
+    BirtTemplate saleOrderBirtTemplate = getSaleConfig(company).getSaleOrderBirtTemplate();
+    if (ObjectUtils.isEmpty(saleOrderBirtTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return saleOrderBirtTemplate;
   }
 }

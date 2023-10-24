@@ -580,7 +580,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
    * client partner.
    */
   protected Partner computePartnerToUseForStockMove(SaleOrder saleOrder) {
-    if (appSupplychainService.getAppSupplychain().getActivatePartnerRelations()
+    if (appBaseService.getAppBase().getActivatePartnerRelations()
         && saleOrder.getDeliveredPartner() != null) {
       return saleOrder.getDeliveredPartner();
     } else {

@@ -18,20 +18,23 @@
  */
 package com.axelor.apps.stock.web;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryProductService;
 import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -63,24 +66,28 @@ public class InventoryController {
   public void showInventory(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
+      inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
+      BirtTemplate inventoryBirtTemplate =
+          Beans.get(StockConfigService.class)
+              .getStockConfig(inventory.getCompany())
+              .getInventoryBirtTemplate();
+      if (ObjectUtils.isEmpty(inventoryBirtTemplate)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+      }
 
       String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
-
+      String outputName = Beans.get(InventoryService.class).computeExportFileName(inventory);
       String fileLink =
-          ReportFactory.createReport(
-                  IReport.INVENTORY,
-                  Beans.get(InventoryService.class).computeExportFileName(inventory))
-              .addParam("InventoryId", inventory.getId())
-              .addParam(
-                  "Timezone",
-                  inventory.getCompany() != null ? inventory.getCompany().getTimezone() : null)
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "activateBarCodeGeneration",
-                  Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
-              .addFormat(inventory.getFormatSelect())
-              .generate()
-              .getFileLink();
+          Beans.get(BirtTemplateService.class)
+              .generateBirtTemplateLink(
+                  inventoryBirtTemplate,
+                  inventory,
+                  null,
+                  outputName,
+                  inventoryBirtTemplate.getAttach(),
+                  inventory.getFormatSelect());
 
       logger.debug("Printing " + name);
 

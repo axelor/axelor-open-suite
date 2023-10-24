@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="qi-resolution-default-grid" title="QI Resolution Defaults"
+    model="com.axelor.apps.quality.db.QIResolutionDefault">
+    <field name="name"/>
+    <field name="qiDefault"/>
+    <field name="quantity"/>
+    <field name="criticality"/>
+    <field name="identification"/>
+  </grid>
+
+  <form name="qi-resolution-default-form" title="QI Resolution Default"
+    model="com.axelor.apps.quality.db.QIResolutionDefault">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="qiDefault" grid-view="qi-default-grid" form-view="qi-default-form"
+        onSelect="action-qi-resolution-default-attrs-set-qi-default-domain"
+        onChange="action-qi-resolution-default-record-set-fields"/>
+      <field name="quantity" readonlyIf="qiDefault.isDocumentary"
+        onChange="action-qi-resolution-default-validate-check-quantity"/>
+      <field name="criticality"/>
+      <field name="identification"/>
+      <field name="manualIdentification" hidden="true" showIf="identification == 1"/>
+      <panel-related field="trackingNumbersSet" grid-view="tracking-number-grid"
+        form-view="tracking-number-form" colSpan="12" hidden="true" showIf="identification == 2"/>
+      <field name="description" widget="html" colSpan="12"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-attrs name="action-qi-resolution-default-attrs-set-qi-default-domain">
+    <attribute name="domain" for="qiDefault"
+      expr="eval: &quot; self.isProductDefault = true AND self.company = ${__parent__?.qi?.company?.id} &quot;"
+      if="__parent__?._model == 'com.axelor.apps.quality.db.QIResolution'"/>
+    <attribute name="domain" for="qiDefault"
+      expr="eval: &quot; self.isProductDefault = true AND self.company = ${qiResolution?.qi?.company?.id} &quot;"
+      if="qiResolution &amp;&amp; __parent__?._model != 'com.axelor.apps.quality.db.QIResolution'"/>
+  </action-attrs>
+
+  <action-record name="action-qi-resolution-default-record-set-fields"
+    model="com.axelor.apps.quality.db.QIResolutionDefault">
+    <field name="quantity" expr="eval: 0" if="qiDefault?.isDocumentary"/>
+    <field name="description" expr="eval: qiDefault?.name" if="!description"/>
+    <field name="name" expr="eval: qiDefault?.name" if="!name"/>
+  </action-record>
+
+  <action-record name="action-qi-resolution-default-record-reset-quantity"
+    model="com.axelor.apps.quality.db.QIResolutionDefault">
+    <field name="quantity" expr="eval: 0"/>
+  </action-record>
+
+  <action-validate name="action-qi-resolution-default-validate-check-quantity">
+    <error message="Quantity can not be greater than non conforming quantity"
+      if="__parent__?._model == 'com.axelor.apps.quality.db.QIResolution' &amp;&amp; quantity > __parent__?.qi?.qiIdentification?.nonConformingQuantity"
+      action="action-qi-resolution-default-record-reset-quantity"/>
+    <error message="Quantity can not be greater than non conforming quantity"
+      if="qiResolution &amp;&amp; __parent__?._model != 'com.axelor.apps.quality.db.QIResolution' &amp;&amp; quantity > qiResolution?.qi?.qiIdentification?.nonConformingQuantity"
+      action="action-qi-resolution-default-record-reset-quantity"/>
+  </action-validate>
+
+</object-views>
