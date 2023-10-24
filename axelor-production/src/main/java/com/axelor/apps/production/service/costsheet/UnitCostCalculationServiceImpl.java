@@ -275,6 +275,13 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     BillOfMaterial billOfMaterial = billOfMaterialService.getBOM(product, company);
 
+    if (billOfMaterial == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.NO_APPLICABLE_BILL_OF_MATERIALS),
+          product.getFullName());
+    }
+
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
 
