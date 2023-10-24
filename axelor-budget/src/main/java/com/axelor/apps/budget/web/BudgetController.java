@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.db.GlobalBudgetTemplate;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
@@ -286,6 +287,7 @@ public class BudgetController {
             .map(BudgetLevel::getParentBudgetLevel)
             .map(BudgetLevel::getGlobalBudget)
             .orElse(null);
+    Company company = null;
     if (globalBudget != null && globalBudget.getCompany() != null) {
       return globalBudget.getCompany();
     } else if (budget.getId() != null) {
@@ -296,11 +298,20 @@ public class BudgetController {
               .map(Context::getParent)
               .map(context -> context.asType(Object.class))
               .orElse(null);
-      if(contextObject instanceof GlobalBudget){
+      if (contextObject instanceof GlobalBudget) {
         globalBudget = (GlobalBudget) contextObject;
-      }
-      if (globalBudget != null && globalBudget.getCompany() != null) {
-        return globalBudget.getCompany();
+        if (globalBudget.getCompany() != null) {
+          return globalBudget.getCompany();
+        }
+      } else {
+        GlobalBudgetTemplate globalBudgetTemplate =
+            Optional.ofNullable(budget.getBudgetLevel())
+                .map(BudgetLevel::getParentBudgetLevel)
+                .map(BudgetLevel::getGlobalBudgetTemplate)
+                .orElse(null);
+        if (globalBudgetTemplate != null && globalBudgetTemplate.getCompany() != null) {
+          return globalBudgetTemplate.getCompany();
+        }
       }
     }
     return null;
