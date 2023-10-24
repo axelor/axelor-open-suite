@@ -28,6 +28,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.google.inject.Inject;
@@ -41,13 +43,17 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      AnalyticToolService analyticToolService) {
+      AnalyticToolService analyticToolService,
+      SaleConfigService saleConfigService,
+      PurchaseConfigService purchaseConfigService) {
     super(
         appBaseService,
         appAccountService,
         analyticMoveLineService,
         accountManagementAccountService,
-        analyticToolService);
+        analyticToolService,
+        saleConfigService,
+        purchaseConfigService);
   }
 
   @Override
