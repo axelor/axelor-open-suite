@@ -194,13 +194,8 @@ public class DebtRecoveryService {
    * @param debtRecovery Une relance
    * @return La date de référence
    */
-  public LocalDate getReferenceDate(DebtRecovery debtRecovery) {
+  public LocalDate getReferenceDate(DebtRecovery debtRecovery, List<InvoiceTerm> invoiceTermList) {
     AccountingSituation accountingSituation = this.getAccountingSituation(debtRecovery);
-    List<InvoiceTerm> invoiceTermList =
-        this.getInvoiceTerms(
-            accountingSituation.getPartner(),
-            accountingSituation.getCompany(),
-            debtRecovery.getTradingName());
 
     // 1: Date la plus ancienne des échéances
     LocalDate minInvoiceTermDate =
@@ -484,7 +479,7 @@ public class DebtRecoveryService {
         }
 
         LocalDate oldReferenceDate = debtRecovery.getReferenceDate();
-        LocalDate referenceDate = this.getReferenceDate(debtRecovery);
+        LocalDate referenceDate = this.getReferenceDate(debtRecovery, invoiceTermList);
 
         boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate);
 
