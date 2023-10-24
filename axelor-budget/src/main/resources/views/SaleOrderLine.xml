@@ -109,7 +109,7 @@
   <action-attrs name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"
     id="action-budget-sale-order-line-attrs-hidden-analytic-distribution-panel">
     <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; account &amp;&amp; !account.analyticDistributionAuthorized)"/>
+      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; (!account?.analyticDistributionAuthorized || !product))"/>
   </action-attrs>
 
   <action-method name="action-budget-sale-order-line-method-group-domain">
