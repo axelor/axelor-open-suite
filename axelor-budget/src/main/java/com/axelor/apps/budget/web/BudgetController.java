@@ -289,13 +289,16 @@ public class BudgetController {
     if (globalBudget != null && globalBudget.getCompany() != null) {
       return globalBudget.getCompany();
     } else if (budget.getId() != null) {
-      globalBudget =
+      Object contextObject =
           Optional.ofNullable(request.getContext())
               .map(Context::getParent)
               .map(Context::getParent)
               .map(Context::getParent)
-              .map(context -> context.asType(GlobalBudget.class))
+              .map(context -> context.asType(Object.class))
               .orElse(null);
+      if(contextObject instanceof GlobalBudget){
+        globalBudget = (GlobalBudget) contextObject;
+      }
       if (globalBudget != null && globalBudget.getCompany() != null) {
         return globalBudget.getCompany();
       }
