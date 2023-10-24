@@ -42,9 +42,10 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
   @Inject
   public InvoiceMergingServiceSupplychainImpl(
       InvoiceService invoiceService,
+      InvoiceRepository invoiceRepository,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderInvoiceService saleOrderInvoiceService) {
-    super(invoiceService);
+    super(invoiceService, invoiceRepository);
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderInvoiceService = saleOrderInvoiceService;
   }
