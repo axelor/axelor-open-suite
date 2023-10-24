@@ -20,9 +20,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -111,13 +109,6 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
     Map<List<Object>, MoveLine> map = new HashMap<>();
     MoveLine consolidateMoveLine = null;
-    boolean haveHoldBack =
-        moveLines.stream()
-            .anyMatch(
-                ml ->
-                    ObjectUtils.notEmpty(ml.getMove().getPaymentCondition())
-                        && ml.getMove().getPaymentCondition().getPaymentConditionLineList().stream()
-                            .anyMatch(PaymentConditionLine::getIsHoldback));
 
     for (MoveLine moveLine : moveLines) {
 
@@ -128,10 +119,9 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       keys.add(moveLine.getAnalyticDistributionTemplate());
       keys.add(moveLine.getCutOffStartDate());
       keys.add(moveLine.getCutOffEndDate());
+      keys.add(moveLine.getIsHoldback());
 
-      if (!haveHoldBack) {
-        consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
-      }
+      consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
 
       if (consolidateMoveLine != null) {
 

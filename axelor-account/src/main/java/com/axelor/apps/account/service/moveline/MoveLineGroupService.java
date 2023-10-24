@@ -100,4 +100,7 @@ public interface MoveLineGroupService {
 
   Map<String, Map<String, Object>> getAnalyticMoveLineOnChangeAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException;
+
+  Map<String, Object> getIsHoldbackOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException;
 }

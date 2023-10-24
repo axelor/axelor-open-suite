@@ -516,6 +516,18 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     return attrsMap;
   }
 
+  @Override
+  public Map<String, Object> getIsHoldbackOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
+
+    valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+
+    return valuesMap;
+  }
+
   protected Map<String, Object> createAnalyticValuesMap(MoveLine moveLine) {
     Map<String, Object> valuesMap = new HashMap<>();
 

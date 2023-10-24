@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -274,8 +273,7 @@ public interface InvoiceTermService {
 
   public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine);
 
-  BigDecimal getTotalInvoiceTermsAmount(
-      MoveLine moveLine, Account holdbackAccount, boolean holdback);
+  BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine, boolean holdback);
 
   void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
 

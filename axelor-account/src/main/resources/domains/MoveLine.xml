@@ -19,6 +19,7 @@
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>
     <boolean name="isCutOffGenerated" default="false"/>
+    <boolean name="isHoldback" title="Holdback" default="false"/>
     <integer name="counter" title="Line Nbr." initParam="true"/>
     <decimal name="debit" title="Debit" initParam="true" scale="3" precision="20"/>
     <decimal name="credit" title="Credit" initParam="true" scale="3" precision="20"/>

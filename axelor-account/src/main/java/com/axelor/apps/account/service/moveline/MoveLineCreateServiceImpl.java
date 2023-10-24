@@ -694,6 +694,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
         account = accountingSituationService.getPartnerAccount(invoice, true);
+
         holdBackMoveLine =
             this.createMoveLine(
                 move,
@@ -709,7 +710,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 moveLineId++,
                 origin,
                 null);
+
+        holdBackMoveLine.setIsHoldback(true);
         holdBackMoveLine.addInvoiceTermListItem(invoiceTerm);
+
         moveLines.add(holdBackMoveLine);
       } else {
         if (moveLine == null) {
