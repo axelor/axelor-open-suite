@@ -46,9 +46,9 @@
             readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0" required="true"/>
           <field name="company.currency" colSpan="3" readonly="true" hideIf="!company"/>
           <field name="fromDate" colSpan="3" requiredIf="statusSelect == 0"
-            onChange="action-global-budget-validate-from-to-dates,action-global-budget-method-show-update-dates-btn"/>
+            onChange="action-global-budget-group-from-to-dates-onchange"/>
           <field name="toDate" colSpan="3" requiredIf="statusSelect == 0"
-            onChange="action-global-budget-validate-from-to-dates,action-global-budget-method-show-update-dates-btn"/>
+            onChange="action-global-budget-group-from-to-dates-onchange"/>
           <button name="updateDatesBtn" colSpan="3" title="Update dates" css="btn-light"
             onClick="save,action-global-budget-method-set-dates"
             readonlyIf="fromDate == null || toDate == null" hidden="true"/>
@@ -261,6 +261,11 @@
       if="__this__?.budgetTypeSelect != 2"/>
     <action name="action-global-budget-view-global-sale-order-line"
       if="__this__?.budgetTypeSelect == 2"/>
+  </action-group>
+
+  <action-group name="action-global-budget-group-from-to-dates-onchange">
+    <action name="action-global-budget-validate-from-to-dates"/>
+    <action name="action-global-budget-method-show-update-dates-btn"/>
   </action-group>
 
   <action-view name="action-global-budget-view-global-purchase-order-line"

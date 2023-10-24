@@ -150,11 +150,15 @@ public class GlobalBudgetController {
 
   public void showUpdateDatesBtn(ActionRequest request, ActionResponse response) {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    if (globalBudget.getId() != null) {
+    if (globalBudget.getId() == null) {
+      response.setAttr("updateDatesBtn", "hidden", false);
+    } else {
       GlobalBudget myGlobalBudget =
           Beans.get(GlobalBudgetRepository.class).find(globalBudget.getId());
-      if (!(globalBudget.getFromDate().equals(myGlobalBudget.getFromDate())
-          && globalBudget.getToDate().equals(myGlobalBudget.getToDate()))) {
+      boolean datesMatch =
+          globalBudget.getFromDate().equals(myGlobalBudget.getFromDate())
+              && globalBudget.getToDate().equals(myGlobalBudget.getToDate());
+      if (!datesMatch) {
         response.setAttr("updateDatesBtn", "hidden", false);
       }
     }

@@ -160,11 +160,14 @@ public class BudgetLevelController {
 
   public void showUpdateDatesBtn(ActionRequest request, ActionResponse response) {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    if (budgetLevel.getId() != null) {
+    if (budgetLevel.getId() == null) {
+      response.setAttr("updateDatesBtn", "hidden", false);
+    } else {
       BudgetLevel myBudgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
-
-      if (!(budgetLevel.getFromDate().equals(myBudgetLevel.getFromDate())
-          && budgetLevel.getToDate().equals(myBudgetLevel.getToDate()))) {
+      boolean datesMatch =
+          budgetLevel.getFromDate().equals(myBudgetLevel.getFromDate())
+              && budgetLevel.getToDate().equals(myBudgetLevel.getToDate());
+      if (!datesMatch) {
         response.setAttr("updateDatesBtn", "hidden", false);
       }
     }
