@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -60,6 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
   protected AppAccountService appAccountService;
   protected AppBaseService appBaseService;
   protected CurrencyService currencyService;
+  protected MoveInvoiceTermService moveInvoiceTermService;
 
   @Inject
   public PaymentServiceImpl(
@@ -67,13 +69,15 @@ public class PaymentServiceImpl implements PaymentService {
       AppBaseService appBaseService,
       ReconcileService reconcileService,
       MoveLineCreateService moveLineCreateService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      MoveInvoiceTermService moveInvoiceTermService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
+    this.moveInvoiceTermService = moveInvoiceTermService;
   }
 
   /**
@@ -431,6 +435,7 @@ public class PaymentServiceImpl implements PaymentService {
           }
         }
       }
+      moveInvoiceTermService.generateInvoiceTerms(move);
 
       for (Reconcile reconcile : reconcileList) {
         reconcileService.confirmReconcile(reconcile, true, true);
