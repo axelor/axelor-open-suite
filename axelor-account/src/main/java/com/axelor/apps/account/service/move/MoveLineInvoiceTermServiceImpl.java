@@ -36,7 +36,6 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
@@ -318,7 +317,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
-            ? total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
+            ? scaleServiceAccount.getScaledValue(move, total, false)
             : total
                 .multiply(percentage)
                 .divide(
@@ -330,7 +329,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       amount =
           amount.divide(
               moveLine.getCurrencyRate(),
-              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              scaleServiceAccount.getScale(move, false),
               RoundingMode.HALF_UP);
     }
 

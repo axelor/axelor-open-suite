@@ -160,8 +160,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                         RoundingMode.HALF_UP));
       }
     }
-    return sum.multiply(BigDecimal.valueOf(100))
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+    return scaleServiceAccount.getScaledValue(
+        invoice, sum.multiply(BigDecimal.valueOf(100)), false);
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
