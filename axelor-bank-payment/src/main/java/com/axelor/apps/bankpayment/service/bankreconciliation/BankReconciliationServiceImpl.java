@@ -1032,7 +1032,8 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
         for (MoveLine moveLine : moveLines) {
           bankStatementLine.setMoveLine(moveLine);
 
-          scriptContext = this.getScriptContext(bankStatementLine, bankReconciliationLine);
+          scriptContext =
+              this.getScriptContext(bankReconciliation, bankStatementLine, bankReconciliationLine, moveLine);
           String query =
               computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
           Boolean result = (Boolean) new GroovyScriptHelper(scriptContext).eval(query);
@@ -1074,12 +1075,28 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   }
 
   protected Context getScriptContext(
-      BankStatementLine bankStatementLine, BankReconciliationLine bankReconciliationLine) {
+      BankReconciliation bankReconciliation,
+      BankStatementLine bankStatementLine,
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine)
+      throws AxelorException {
     Context scriptContext =
         new Context(Mapper.toMap(bankStatementLine), BankStatementLineAFB120.class);
 
-    scriptContext.put("debit", bankReconciliationLine.getDebit());
-    scriptContext.put("credit", bankReconciliationLine.getCredit());
+    BigDecimal debit = bankReconciliationLine.getDebit();
+    BigDecimal credit = bankReconciliationLine.getCredit();
+
+    BigDecimal currencyAmount = debit.compareTo(BigDecimal.ZERO) == 0 ? credit : debit;
+    currencyAmount =
+        currencyAmount.divide(
+            currencyService.getCurrencyConversionRate(
+                bankReconciliation.getCurrency(),
+                moveLine.getMove().getCurrency(),
+                dateService.date()),
+            RoundingMode.HALF_UP);
+
+    scriptContext.put("debit", debit);
+    scriptContext.put("credit", credit);
+    scriptContext.put("currencyAmount", currencyAmount);
 
     return scriptContext;
   }
