@@ -26,7 +26,7 @@
     search="self.importId  = :importId"/>
 
   <input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId" update="true"/>
 
   <input file="hr_kilometricAllowParam.csv" type="com.axelor.apps.hr.db.KilometricAllowParam"
     separator=";" search="self.code = :code"/>

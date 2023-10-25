@@ -1,0 +1,7 @@
+"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
+101;"BankOrder";"BankOrder.rptdesign";"com.axelor.apps.bankpayment.db.BankOrder";2;"pdf";false
+102;"BankStatementAFB120";"BankStatementAFB120.rptdesign";"com.axelor.apps.bankpayment.db.BankStatement";2;"pdf";true
+103;"BankReconciliation";"BankReconciliation.rptdesign";"com.axelor.apps.bankpayment.db.BankReconciliation";2;"pdf";true
+104;"BankReconciliationDetailed";"BankReconciliationNew.rptdesign";"com.axelor.apps.bankpayment.db.BankReconciliation";2;"pdf";true
+105;"BankStatementLines";"BankStatementLines.rptdesign";"com.axelor.apps.bankpayment.db.BankStatementLine";2;"pdf";false
+106;"BankReconciliationStatement";"BankReconciliationStatement.rptdesign";"com.axelor.apps.account.db.AccountingReport";2;"pdf";true

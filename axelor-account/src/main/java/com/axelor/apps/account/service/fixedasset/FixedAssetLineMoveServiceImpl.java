@@ -178,7 +178,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             .orElse(null);
 
     if (plannedFixedAssetLine == null
-        && fixedAsset.getDisposalValue().compareTo(BigDecimal.ZERO) == 0) {
+        && fixedAsset.getDisposalValue().compareTo(BigDecimal.ZERO) == 0
+        && fixedAsset.getStatusSelect() < FixedAssetRepository.STATUS_DEPRECIATED) {
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DEPRECIATED);
     }
 

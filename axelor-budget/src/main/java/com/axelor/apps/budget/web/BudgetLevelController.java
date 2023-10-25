@@ -44,40 +44,6 @@ import java.util.Map;
 
 public class BudgetLevelController {
 
-  public void createGlobalBudget(ActionRequest request, ActionResponse response) {
-
-    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    BudgetLevel globalBudgetLevel =
-        Beans.get(BudgetLevelService.class).createGlobalBudgets(budgetLevel);
-
-    if (globalBudgetLevel.getId() != null) {
-      String title = "";
-      switch (globalBudgetLevel.getBudgetTypeSelect()) {
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE:
-          title = "Purchase budget";
-          break;
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE:
-          title = "Sale budget";
-          break;
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT:
-          title = "Investment budget";
-          break;
-        default:
-          title = "Purchase and investment budget";
-          break;
-      }
-      response.setView(
-          ActionView.define(I18n.get(title))
-              .model(BudgetLevel.class.getName())
-              .add("grid", "budget-level-grid")
-              .add("form", "global-budget-budget-level-form")
-              .param("forceTitle", "true")
-              .context("_showRecord", globalBudgetLevel.getId())
-              .context("_isParent", true)
-              .map());
-    }
-  }
-
   public void importBudgetLevel(ActionRequest request, ActionResponse response) {
 
     try {
@@ -93,12 +59,6 @@ public class BudgetLevelController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-  }
-
-  public void archiveBudgetLevel(ActionRequest request, ActionResponse response) {
-    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    Beans.get(BudgetLevelService.class).archiveBudgetLevel(budgetLevel);
-    response.setReload(true);
   }
 
   public void exportBudgetLevel(ActionRequest request, ActionResponse response) {
@@ -167,10 +127,6 @@ public class BudgetLevelController {
     BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
 
     switch (levelTypeSelect) {
-      case "global":
-        budgetLevelService.getUpdatedGroupBudgetLevelList(budgetLevelList, fromDate, toDate);
-        response.setReload(true);
-        break;
       case "group":
         budgetLevelService.getUpdatedSectionBudgetList(budgetLevelList, fromDate, toDate);
         response.setReload(true);
@@ -193,55 +149,10 @@ public class BudgetLevelController {
     }
   }
 
-  public void validateChildren(ActionRequest request, ActionResponse response) {
-    try {
-      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
-      Beans.get(BudgetLevelService.class).validateChildren(budgetLevel);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void draftChildren(ActionRequest request, ActionResponse response) {
-    try {
-      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
-      Beans.get(BudgetLevelService.class).draftChildren(budgetLevel);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void computeChildrenKey(ActionRequest request, ActionResponse response) {
     try {
       BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
       Beans.get(BudgetLevelService.class).computeChildrenKey(budgetLevel);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void recomputeBudgetKey(ActionRequest request, ActionResponse response) {
-    try {
-      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      if (budgetLevel.getId() != null) {
-        Beans.get(BudgetLevelService.class).computeBudgetLevel(budgetLevel);
-      }
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void checkBudgetDates(ActionRequest request, ActionResponse response) {
-    try {
-      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      if (budgetLevel != null) {
-        Beans.get(BudgetLevelService.class).validateDates(budgetLevel);
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

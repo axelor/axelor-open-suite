@@ -120,4 +120,8 @@ public interface TimesheetLineService {
    * @return {@link Map}
    */
   Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList);
+
+  public void checkDailyLimit(
+      Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
+      throws AxelorException;
 }
