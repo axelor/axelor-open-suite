@@ -27,9 +27,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import org.apache.commons.collections.CollectionUtils;
@@ -104,5 +107,18 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     }
 
     return getGlobalBudgetUsingBudgetLevel(budgetLevel.getParentBudgetLevel());
+  }
+
+  @Override
+  public String getBudgetExceedMessage(String budgetExceedAlert, boolean isOrder, boolean isError) {
+    if (Strings.isNullOrEmpty(budgetExceedAlert)) {
+      return "";
+    }
+    if (isOrder && isError) {
+      return budgetExceedAlert;
+    }
+    return String.format(
+        "%s %s",
+        I18n.get(budgetExceedAlert), I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ERROR_ALERT));
   }
 }

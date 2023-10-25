@@ -138,6 +138,9 @@ public class InvoiceController {
 
         String budgetExceedAlert = budgetInvoiceService.getBudgetExceedAlert(invoice);
         if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
+          budgetExceedAlert =
+              Beans.get(BudgetToolsService.class)
+                  .getBudgetExceedMessage(budgetExceedAlert, false, false);
           response.setAlert(budgetExceedAlert);
         }
       } else {

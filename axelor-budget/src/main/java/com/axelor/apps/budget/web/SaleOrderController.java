@@ -185,6 +185,9 @@ public class SaleOrderController {
         if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
           Boolean isError = Beans.get(AppBudgetService.class).isBudgetExceedValuesError(true);
           if (isError != null) {
+            budgetExceedAlert =
+                Beans.get(BudgetToolsService.class)
+                    .getBudgetExceedMessage(budgetExceedAlert, true, isError);
             if (isError) {
               response.setError(I18n.get(budgetExceedAlert));
             } else {

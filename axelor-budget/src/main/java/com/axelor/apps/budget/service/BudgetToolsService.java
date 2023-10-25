@@ -42,4 +42,6 @@ public interface BudgetToolsService {
   GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
 
   GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
+
+  String getBudgetExceedMessage(String budgetExceedAlert, boolean isOrder, boolean isError);
 }
