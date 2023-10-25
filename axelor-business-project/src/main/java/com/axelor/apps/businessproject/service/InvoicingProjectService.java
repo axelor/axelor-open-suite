@@ -69,7 +69,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -501,8 +501,7 @@ public class InvoicingProjectService {
   public void generateAnnex(InvoicingProject invoicingProject) throws AxelorException, IOException {
     BirtTemplate invoicingProjectAnnexBirtTemplate =
         appBusinessProjectService.getAppBusinessProject().getInvoicingProjectAnnexBirtTemplate();
-    if (invoicingProjectAnnexBirtTemplate == null
-        || invoicingProjectAnnexBirtTemplate.getTemplateMetaFile() == null) {
+    if (invoicingProjectAnnexBirtTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
@@ -536,7 +535,7 @@ public class InvoicingProjectService {
               .print(invoice, null, ReportSettings.FORMAT_PDF, null));
       fileList.add(reportSettings.generate().getFile());
 
-      MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));
+      MetaFile metaFile = metaFiles.upload(PdfHelper.mergePdf(fileList));
       metaFile.setFileName(title + ".pdf");
       metaFiles.attach(metaFile, null, invoicingProject);
       return;

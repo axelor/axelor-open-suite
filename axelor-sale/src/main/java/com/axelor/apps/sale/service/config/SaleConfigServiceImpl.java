@@ -50,8 +50,7 @@ public class SaleConfigServiceImpl implements SaleConfigService {
   @Override
   public BirtTemplate getSaleOrderBirtTemplate(Company company) throws AxelorException {
     BirtTemplate saleOrderBirtTemplate = getSaleConfig(company).getSaleOrderBirtTemplate();
-    if (ObjectUtils.isEmpty(saleOrderBirtTemplate)
-        || ObjectUtils.isEmpty(saleOrderBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(saleOrderBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

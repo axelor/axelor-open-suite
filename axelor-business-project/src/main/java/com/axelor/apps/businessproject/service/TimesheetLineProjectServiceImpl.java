@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Employee;
@@ -39,7 +40,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -62,13 +63,15 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       ProjectTaskRepository projectTaskaRepo,
       TimesheetLineRepository timesheetLineRepo,
       AppHumanResourceService appHumanResourceService,
-      UserHrService userHrService) {
+      UserHrService userHrService,
+      DateService dateService) {
     super(
         timesheetService,
         employeeRepository,
         timesheetRepo,
         appHumanResourceService,
-        userHrService);
+        userHrService,
+        dateService);
 
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskaRepo;

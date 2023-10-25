@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -51,7 +50,9 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
@@ -67,18 +68,15 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.EmailAccountRepository;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService {
@@ -89,7 +87,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ProductCompanyService productCompanyService;
   protected ProductionConfigRepository productionConfigRepo;
   protected PurchaseOrderService purchaseOrderService;
+  protected AppBaseService appBaseService;
   protected OperationOrderService operationOrderService;
+  protected AppProductionService appProductionService;
+  protected ProductionConfigService productionConfigService;
+  protected OperationOrderPlanningService operationOrderPlanningService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -100,7 +102,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
       PurchaseOrderService purchaseOrderService,
-      OperationOrderService operationOrderService) {
+      AppBaseService appBaseService,
+      OperationOrderService operationOrderService,
+      AppProductionService appProductionService,
+      ProductionConfigService productionConfigService,
+      OperationOrderPlanningService operationOrderPlanningService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -108,7 +114,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.productCompanyService = productCompanyService;
     this.productionConfigRepo = productionConfigRepo;
     this.purchaseOrderService = purchaseOrderService;
+    this.appBaseService = appBaseService;
     this.operationOrderService = operationOrderService;
+    this.appProductionService = appProductionService;
+    this.productionConfigService = productionConfigService;
+    this.operationOrderPlanningService = operationOrderPlanningService;
   }
 
   @Override
@@ -173,6 +183,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
               operationOrderService.computeEntireCycleDuration(
                   order, order.getManufOrder().getQty()); // in seconds
         }
+        // This is a estimation only, it will be updated later
+        // It does not take into configuration such as machine planning etc...
         manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
       }
       manufOrder.setRealStartDateT(null);
@@ -180,10 +192,32 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
-      if (manufOrder.getOperationOrderList() != null) {
-        for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-          operationOrderWorkflowService.plan(operationOrder);
-        }
+      LocalDateTime todayDateT =
+          appBaseService.getTodayDateTime(manufOrder.getCompany()).toLocalDateTime();
+      List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
+      if (CollectionUtils.isNotEmpty(operationOrders)) {
+        operationOrderPlanningService.plan(operationOrders);
+      }
+      // Updating plannedStartDate since, it may be different now that operation orders are
+      // planned
+      manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
+
+      ProductionConfig productionConfig =
+          productionConfigService.getProductionConfig(manufOrder.getCompany());
+
+      int qtyScale = appBaseService.getNbDecimalDigitForQty();
+
+      if (productionConfig.getScheduling() == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING
+          && manufOrder.getPlannedStartDateT().isBefore(todayDateT)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(ProductionExceptionMessage.PLAN_IS_BEFORE_TODAY_DATE),
+            String.format(
+                "%s %s",
+                manufOrder.getQty() != null
+                    ? manufOrder.getQty().setScale(qtyScale, RoundingMode.HALF_UP)
+                    : null,
+                manufOrder.getProduct().getFullName()));
       }
     }
 
@@ -240,8 +274,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
-  public void pause(ManufOrder manufOrder) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void pause(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
@@ -255,7 +289,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void resume(ManufOrder manufOrder) {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -269,9 +303,18 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     manufOrderRepo.save(manufOrder);
   }
 
+  /**
+   * CAUTION : This method can not be called from a Transactional method or the mail sending method
+   * could not work correctly.
+   */
   @Override
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
     finishManufOrder(manufOrder);
+    return sendFinishedMail(manufOrder);
+  }
+
+  @Override
+  public boolean sendFinishedMail(ManufOrder manufOrder) {
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -282,8 +325,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     return true;
   }
 
+  /** CAUTION : Must be called in a different transaction from sending mail method. */
   @Transactional(rollbackOn = {Exception.class})
-  protected void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
+  public void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
@@ -291,7 +335,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
               && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
             operationOrderWorkflowService.start(operationOrder);
           }
-
           operationOrderWorkflowService.finish(operationOrder);
         }
       }
@@ -355,7 +398,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     BigDecimal qty = manufOrder.getQty();
     if (qty.signum() != 0) {
       int scale = Beans.get(AppProductionService.class).getNbDecimalDigitForUnitPrice();
-      return manufOrder.getCostPrice().divide(qty, scale, BigDecimal.ROUND_HALF_UP);
+      return manufOrder.getCostPrice().divide(qty, scale, RoundingMode.HALF_UP);
     } else {
       return BigDecimal.ZERO;
     }
@@ -384,6 +427,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
     manufOrderStockMoveService.partialFinish(manufOrder);
+    return sendPartialFinishMail(manufOrder);
+  }
+
+  public boolean sendPartialFinishMail(ManufOrder manufOrder) {
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -469,18 +516,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
-    int count = 0;
-    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
-    for (OperationOrder operationOrderIt : operationOrderList) {
-      if (operationOrderIt.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
-        count++;
-      }
-    }
-
-    if (count == operationOrderList.size()) {
-      this.finish(manufOrder);
+    if (manufOrder.getOperationOrderList().stream()
+        .allMatch(
+            operationOrder ->
+                operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED)) {
+      this.finishManufOrder(manufOrder);
     }
   }
 
@@ -526,13 +567,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       throws AxelorException {
     manufOrder.setPlannedStartDateT(plannedStartDateT);
 
-    if (manufOrder.getOperationOrderList() != null) {
-      List<OperationOrder> operationOrderList = getSortedOperationOrderList(manufOrder);
-      operationOrderWorkflowService.resetPlannedDates(operationOrderList);
-
-      for (OperationOrder operationOrder : operationOrderList) {
-        operationOrderWorkflowService.replan(operationOrder);
-      }
+    List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
+    if (operationOrders != null) {
+      operationOrderWorkflowService.resetPlannedDates(operationOrders);
+      operationOrderPlanningService.replan(operationOrders);
     }
 
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
@@ -550,30 +588,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   public void updatePlannedDates(ManufOrder manufOrder) {
 
     manufOrder.setPlannedStartDateT(computePlannedStartDateT(manufOrder));
-    ;
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
-  }
-
-  /**
-   * Get a list of operation orders sorted by priority and id from the specified manufacturing
-   * order.
-   *
-   * @param manufOrder
-   * @return
-   */
-  protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
-    List<OperationOrder> operationOrderList =
-        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
-    Comparator<OperationOrder> byPriority =
-        Comparator.comparing(
-            OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()));
-    Comparator<OperationOrder> byId =
-        Comparator.comparing(
-            OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
-
-    return operationOrderList.stream()
-        .sorted(byPriority.thenComparing(byId))
-        .collect(Collectors.toList());
   }
 
   protected boolean sendMail(ManufOrder manufOrder, Template template) {
@@ -606,30 +621,39 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
     PurchaseOrderLine purchaseOrderLine;
-    BigDecimal quantity = BigDecimal.ONE;
-    Unit startUnit =
-        Beans.get(UnitRepository.class)
-            .all()
-            .filter("self.name = 'Hour' AND self.unitTypeSelect = :unitType")
-            .bind("unitType", UnitRepository.UNIT_TYPE_TIME)
-            .fetchOne();
+    BigDecimal quantity;
+    Unit startUnit = appBaseService.getAppBase().getUnitHours();
 
-    WorkCenter workCenter = operationOrder.getWorkCenter();
+    if (ObjectUtils.isEmpty(startUnit)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT));
+    }
 
-    if (ObjectUtils.notEmpty(workCenter) && ObjectUtils.notEmpty(workCenter.getHrProduct())) {
-
-      Product product = workCenter.getHrProduct();
+    Product product = getHrProduct(operationOrder);
+    if (product != null) {
       Unit purchaseUnit = product.getPurchasesUnit();
+      Unit stockUnit = product.getUnit();
 
-      if (purchaseUnit != null) {
-        quantity =
-            unitConversionService.convert(
-                startUnit,
-                purchaseUnit,
-                new BigDecimal(workCenter.getHrDurationPerCycle() / 3600),
-                0,
-                product);
+      Unit endUnit = (purchaseUnit != null) ? purchaseUnit : stockUnit;
+
+      if (endUnit == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_END_UNIT));
       }
+      final int COMPUTATION_SCALE = 20;
+      quantity =
+          unitConversionService.convert(
+              startUnit,
+              endUnit,
+              new BigDecimal(operationOrder.getWorkCenter().getHrDurationPerCycle())
+                  .divide(BigDecimal.valueOf(3600), COMPUTATION_SCALE, RoundingMode.HALF_UP),
+              appBaseService.getNbDecimalDigitForQty(),
+              product);
+      // have to force the scale as the conversion service will not round if the start unit and the
+      // end unit are equals.
+      quantity = quantity.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
 
       purchaseOrderLine =
           purchaseOrderLineService.createPurchaseOrderLine(
@@ -637,6 +661,24 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
       purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
     }
+  }
+
+  protected Product getHrProduct(OperationOrder operationOrder) {
+    boolean isCostPerProcessLine = appProductionService.getIsCostPerProcessLine();
+
+    if (isCostPerProcessLine) {
+      ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+      if (prodProcessLine != null && prodProcessLine.getHrProduct() != null) {
+        return prodProcessLine.getHrProduct();
+      }
+    } else {
+      WorkCenter workCenter = operationOrder.getWorkCenter();
+      if (workCenter != null && workCenter.getHrProduct() != null) {
+        return workCenter.getHrProduct();
+      }
+    }
+
+    return null;
   }
 
   protected PurchaseOrder setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
@@ -772,5 +814,30 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         && !statusSelect.equals(ManufOrderRepository.STATUS_CANCELED)
         && ObjectUtils.notEmpty(prodProcessLine)
         && prodProcessLine.getOptional() == optional;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException {
+
+    StringBuilder messageBuilder = new StringBuilder();
+
+    for (ManufOrder manufOrder : manufOrderList) {
+      this.plan(manufOrder);
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+        messageBuilder.append(manufOrder.getMoCommentFromSaleOrder());
+      }
+
+      if (Boolean.TRUE.equals(manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning())) {
+        this.createPurchaseOrder(manufOrder);
+      }
+
+      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+        messageBuilder
+            .append(System.lineSeparator())
+            .append(manufOrder.getMoCommentFromSaleOrderLine());
+      }
+    }
+    return messageBuilder.toString();
   }
 }

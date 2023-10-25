@@ -7,8 +7,6 @@
     model="com.axelor.studio.db.AppExpense" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="computeDistanceWithWebService"/>
-      <field name="pfxCertificate" canNew="true" canEdit="true"/>
-      <field name="signatureLogo" widget="Image"/>
     </panel>
 
     <panel-mail name="mailPanel">

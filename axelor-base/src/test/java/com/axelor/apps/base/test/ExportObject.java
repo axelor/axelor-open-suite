@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.base.test;
 
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -170,7 +170,7 @@ public class ExportObject {
       updateObjectList(menuList);
       updateFieldList();
       String[] headers = fieldAttrs.toArray(new String[fieldAttrs.size()]);
-      CsvTool.csvWriter(csvPath, "ExportObj.csv", ';', headers, fieldDataList);
+      CsvHelper.csvWriter(csvPath, "ExportObj.csv", ';', headers, fieldDataList);
     } catch (IOException e) {
       e.printStackTrace();
     }

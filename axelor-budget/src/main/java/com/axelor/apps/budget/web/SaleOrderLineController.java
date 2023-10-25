@@ -35,7 +35,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -135,7 +135,7 @@ public class SaleOrderLineController {
     Set<Account> accountsSet =
         saleOrderLine.getBudget() != null ? saleOrderLine.getBudget().getAccountSet() : null;
     if (!CollectionUtils.isEmpty(accountsSet)) {
-      domain = domain.replace("(0)", "(" + StringTool.getIdListString(accountsSet) + ")");
+      domain = domain.replace("(0)", "(" + StringHelper.getIdListString(accountsSet) + ")");
     }
     response.setAttr("account", "domain", domain);
   }
@@ -151,7 +151,14 @@ public class SaleOrderLineController {
 
   public void checkBudget(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      SaleOrder saleOrder;
+      if (request.getContext().getParent() == null) {
+        saleOrder =
+            Beans.get(SaleOrderRepository.class)
+                .find(Long.valueOf((Integer) request.getContext().get("_parentId")));
+      } else {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      }
       if (saleOrder != null && saleOrder.getCompany() != null) {
 
         response.setAttr(

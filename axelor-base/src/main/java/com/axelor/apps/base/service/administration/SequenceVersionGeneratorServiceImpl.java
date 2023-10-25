@@ -21,7 +21,7 @@ package com.axelor.apps.base.service.administration;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -118,7 +118,7 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
   protected Optional<LocalDate> fetchLastSequenceVersionEndDateIfSameMonth(
       Sequence sequence, LocalDate refDate) {
     return fetchLastSequenceVersionEndDate(sequence)
-        .filter(versionDate -> DateTool.isInTheSameMonth(versionDate, refDate));
+        .filter(versionDate -> LocalDateHelper.isInTheSameMonth(versionDate, refDate));
   }
 
   /**

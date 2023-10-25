@@ -171,6 +171,23 @@
     <view type="form" name="qi-decision-form"/>
   </action-view>
 
+  <menuitem name="qi.analysis.method" parent="quality-configurations"
+    title="Analysis methods" action="qi.analysis.method" order="1200"/>
+
+  <action-view name="qi.analysis.method" title="Analysis methods"
+    model="com.axelor.apps.quality.db.QIAnalysisMethod">
+    <view type="grid" name="qi-analysis-method-grid"/>
+    <view type="form" name="qi-analysis-method-form"/>
+  </action-view>
+
+  <menuitem name="qi.analysis.method.item" parent="quality-configurations"
+    title="Analysis method lines" action="qi.analysis.method.item" order="1300"/>
+
+  <action-view name="qi.analysis.method.item" title="Analysis method lines"
+    model="com.axelor.apps.quality.db.QIAnalysisMethodItem">
+    <view type="grid" name="qi-analysis-method-item-grid"/>
+    <view type="form" name="qi-analysis-method-item-form"/>
+  </action-view>
   <menuitem name="qi.cause" parent="quality-configurations" title="Causes"
     action="qi.cause" order="900"/>
 

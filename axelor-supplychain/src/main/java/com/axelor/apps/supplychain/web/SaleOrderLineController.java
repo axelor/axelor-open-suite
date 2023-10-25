@@ -29,11 +29,11 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
@@ -47,7 +47,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
@@ -62,7 +62,8 @@ public class SaleOrderLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
       AnalyticLineModelService analyticLineModelService = Beans.get(AnalyticLineModelService.class);
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
@@ -83,7 +84,8 @@ public class SaleOrderLineController {
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
 
@@ -98,29 +100,23 @@ public class SaleOrderLineController {
 
   public void checkStocks(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    SaleOrder saleOrder =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class).getSaleOrder(request.getContext());
-    if (saleOrder.getStockLocation() == null) {
-      return;
-    }
     try {
-      if (saleOrderLine.getSaleSupplySelect() != SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK) {
+      SaleOrder saleOrder =
+          Beans.get(SaleOrderLineServiceSupplyChainImpl.class).getSaleOrder(request.getContext());
+      Product product = saleOrderLine.getProduct();
+      StockLocation stockLocation = saleOrder.getStockLocation();
+      Unit unit = saleOrderLine.getUnit();
+      if (product == null
+          || stockLocation == null
+          || unit == null
+          || saleOrderLine.getSaleSupplySelect()
+              != SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK) {
         return;
       }
-      // Use the unit to get the right quantity
-      Unit unit = null;
-      if (saleOrderLine.getProduct() != null) unit = saleOrderLine.getProduct().getUnit();
-      BigDecimal qty = saleOrderLine.getQty();
-      if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
-        qty =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
-      }
       Beans.get(StockLocationLineService.class)
-          .checkIfEnoughStock(saleOrder.getStockLocation(), saleOrderLine.getProduct(), qty);
+          .checkIfEnoughStock(stockLocation, product, unit, saleOrderLine.getQty());
     } catch (Exception e) {
-      response.setAlert(e.getLocalizedMessage());
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -401,7 +397,8 @@ public class SaleOrderLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null) {
         return;
@@ -418,7 +415,8 @@ public class SaleOrderLineController {
 
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null) {
         return;
@@ -438,7 +436,8 @@ public class SaleOrderLineController {
 
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;
@@ -456,7 +455,8 @@ public class SaleOrderLineController {
 
   public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;
@@ -475,7 +475,8 @@ public class SaleOrderLineController {
 
   public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;

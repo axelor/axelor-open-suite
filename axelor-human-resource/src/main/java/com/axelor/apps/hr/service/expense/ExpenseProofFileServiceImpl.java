@@ -1,14 +1,32 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PfxCertificate;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.base.service.pdf.PdfSignatureService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.db.AppExpense;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -18,16 +36,19 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
 
   protected PdfService pdfService;
   protected PdfSignatureService pdfSignatureService;
-  protected AppHumanResourceService appHumanResourceService;
+  protected AppBaseService appBaseService;
+  protected ExpenseLineService expenseLineService;
 
   @Inject
   public ExpenseProofFileServiceImpl(
       PdfService pdfService,
       PdfSignatureService pdfSignatureService,
-      AppHumanResourceService appHumanResourceService) {
+      AppBaseService appBaseService,
+      ExpenseLineService expenseLineService) {
     this.pdfService = pdfService;
     this.pdfSignatureService = pdfSignatureService;
-    this.appHumanResourceService = appHumanResourceService;
+    this.appBaseService = appBaseService;
+    this.expenseLineService = expenseLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -39,37 +60,50 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
     }
 
     for (ExpenseLine expenseLine : expenseLineList) {
-      convertProofFileToPdf(expenseLine);
+      signJustificationFile(expenseLine);
+    }
+  }
+
+  protected void signJustificationFile(ExpenseLine expenseLine) throws AxelorException {
+    AppBase appBase = appBaseService.getAppBase();
+    PfxCertificate pfxCertificate = appBase.getPfxCertificate();
+    if (pfxCertificate != null) {
+      convertProofFileToPdf(pfxCertificate, expenseLine);
+      signPdf(pfxCertificate, expenseLine);
     }
   }
 
   @Override
-  public void convertProofFileToPdf(ExpenseLine expenseLine) throws AxelorException {
+  public void convertProofFileToPdf(PfxCertificate pfxCertificate, ExpenseLine expenseLine)
+      throws AxelorException {
     MetaFile metaFile = expenseLine.getJustificationMetaFile();
-    if (metaFile == null || expenseLine.getIsJustificationFileDigitallySigned()) {
+    if (metaFile == null || pfxCertificate == null) {
       return;
     }
 
-    MetaFile result;
-    MetaFile pdfToSign = pdfService.convertImageToPdf(metaFile);
-
-    result = getSignedPdf(pdfToSign);
-    expenseLine.setJustificationMetaFile(result);
-    expenseLine.setIsJustificationFileDigitallySigned(true);
+    expenseLine.setJustificationMetaFile(pdfService.convertImageToPdf(metaFile));
   }
 
-  protected MetaFile getSignedPdf(MetaFile pdfToSign) throws AxelorException {
-    AppExpense appExpense = appHumanResourceService.getAppExpense();
-    PfxCertificate pfxCertificate = appExpense.getPfxCertificate();
-    MetaFile signatureLogo = appExpense.getSignatureLogo();
+  protected void signPdf(PfxCertificate pfxCertificate, ExpenseLine expenseLine)
+      throws AxelorException {
+
+    if (!expenseLineService.isFilePdf(expenseLine)
+        || expenseLine.getIsJustificationFileDigitallySigned()) {
+      return;
+    }
+
+    MetaFile signedPdf = getSignedPdf(pfxCertificate, expenseLine);
+    expenseLine.setJustificationMetaFile(signedPdf);
+  }
+
+  protected MetaFile getSignedPdf(PfxCertificate pfxCertificate, ExpenseLine expenseLine)
+      throws AxelorException {
+    MetaFile pdfToSign = expenseLine.getJustificationMetaFile();
+
     if (pfxCertificate != null) {
+      expenseLine.setIsJustificationFileDigitallySigned(true);
       return pdfSignatureService.digitallySignPdf(
-          pdfToSign,
-          pfxCertificate.getCertificate(),
-          pfxCertificate.getPassword(),
-          signatureLogo,
-          "Expense",
-          "France");
+          pdfToSign, pfxCertificate.getCertificate(), pfxCertificate.getPassword(), "Expense");
     }
     return pdfToSign;
   }

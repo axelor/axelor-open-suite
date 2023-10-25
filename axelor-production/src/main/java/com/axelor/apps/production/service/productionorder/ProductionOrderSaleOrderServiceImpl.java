@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.production.service.productionorder;
 
+import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE;
+
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -25,11 +27,15 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -39,7 +45,9 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
 
@@ -48,6 +56,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   protected ProductionOrderRepository productionOrderRepo;
   protected AppProductionService appProductionService;
   protected BillOfMaterialService billOfMaterialService;
+  protected ProductionConfigService productionConfigService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
@@ -55,13 +64,15 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      ProductionConfigService productionConfigService) {
 
     this.unitConversionService = unitConversionService;
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
     this.appProductionService = appProductionService;
     this.billOfMaterialService = billOfMaterialService;
+    this.productionConfigService = productionConfigService;
   }
 
   @Override
@@ -173,6 +184,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
     List<BillOfMaterial> childBomList = new ArrayList<>();
     childBomList.add(billOfMaterial);
+
+    Map<BillOfMaterial, ManufOrder> subBomManufOrderParentMap = new HashMap<>();
     // prevent infinite loop
     int depth = 0;
     while (!childBomList.isEmpty()) {
@@ -181,20 +194,51 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(ProductionExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
       }
+      ProductionConfig productionConfig =
+          productionConfigService.getProductionConfig(saleOrder.getCompany());
+
+      LocalDateTime endDate = null;
+      if (productionConfig.getScheduling()
+          != ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
+        if (saleOrderLine.getEstimatedShippingDate() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(
+                  YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE),
+              saleOrderLine.getSequence());
+        }
+        endDate = saleOrderLine.getEstimatedShippingDate().atStartOfDay();
+        // Start date will be filled at plan
+        startDate = null;
+      }
+
       List<BillOfMaterial> tempChildBomList = new ArrayList<>();
+
+      // Map for future manufOrder and its manufOrder Parent
+
       for (BillOfMaterial childBom : childBomList) {
-        productionOrder =
-            productionOrderService.addManufOrder(
-                productionOrder,
+
+        ManufOrder manufOrder =
+            productionOrderService.generateManufOrder(
                 childBom.getProduct(),
                 childBom,
                 qtyRequested.multiply(childBom.getQty()),
                 startDate,
-                null,
+                endDate,
                 saleOrder,
                 saleOrderLine,
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER);
-        tempChildBomList.addAll(billOfMaterialService.getSubBillOfMaterial(childBom));
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER,
+                subBomManufOrderParentMap.get(childBom));
+
+        productionOrderService.addManufOrder(productionOrder, manufOrder);
+
+        List<BillOfMaterial> subBomList = billOfMaterialService.getSubBillOfMaterial(childBom);
+        subBomList.forEach(
+            bom -> {
+              subBomManufOrderParentMap.putIfAbsent(bom, manufOrder);
+            });
+
+        tempChildBomList.addAll(subBomList);
       }
       childBomList.clear();
       childBomList.addAll(tempChildBomList);

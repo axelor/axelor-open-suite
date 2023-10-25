@@ -77,7 +77,7 @@
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
-        onClick="save,action-account-move-method-print-move"/>
+        onClick="save,action-method-print-birt"/>
       <button name="reverseBtn" title="Reverse" icon="fa-exchange"
 
         onClick="save,action-move-view-open-generate-reverse-wizard"
@@ -173,19 +173,13 @@
             showTitle="false" colSpan="6"/>
           <field name="$functionalOriginTag" showTitle="false" readonly="true" colSpan="6">
             <viewer depends="functionalOriginSelect">
-                        <![CDATA[
-                            <span class="text-left">
-                        <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 1" x-translate>Opening</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 2" x-translate>Closure</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 3" x-translate>Sale</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 4" x-translate>Purchase</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 5" x-translate>Payment</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 6" x-translate>Cut Off</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 7" x-translate>Fixed asset</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 8" x-translate>Doubtful customer</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 9" x-translate>Irrecoverable</span>
-                            </span>
-                        ]]>
+		          <![CDATA[
+		          		<>
+          					<Badge bg="danger">
+          						{_t(['Opening','Closure','Sale','Purchase','Payment','Cut Off','Fixed asset','Doubtful customer','Irrecoverable'][move.functionalOriginSelect-1])}
+          					</Badge>
+          				</>
+		          ]]>
             </viewer>
           </field>
 
@@ -193,11 +187,11 @@
             if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
             <viewer>
               <![CDATA[
-	                        <h4 class="text-left">
-                                    <span class="label label-warning" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 1" x-translate>Awaiting PFP</span>
-                                    <span class="label label-success" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3)  && record.pfpValidateStatusSelect == 2" x-translate>PFP validated</span>
-                                    <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 3" x-translate>Litigation</span>
-	                        </h4>
+	                        <>
+	                        	{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 1 && <Badge bg="warning">{_t('Awaiting PFP')}</Badge>}
+	                        	{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 2 && <Badge bg="success">{_t('PFP validated')}</Badge>}
+	                        	{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 3 && <Badge bg="danger">{_t('Litigation')}</Badge>}
+	                        </>
 	                    ]]>
             </viewer>
           </field>
@@ -206,11 +200,7 @@
             css="label-bold bold" colSpan="5"/>
           <field name="$adjustingMoveTag" showTitle="false" readonly="true" colSpan="8">
             <viewer depends="adjustingMove">
-                        <![CDATA[
-                            <span class="text-left">
-                                       <span class="label label-default" style="background-color: #337AB7; margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.adjustingMove" x-translate>Adjusting Move</span>
-                            </span>
-                        ]]>
+              <![CDATA[<>{adjustingMove && <Badge style={{ backgroundColor: "#337AB7" }}>{_t('Adjusting Move')}</Badge>}</>]]>
             </viewer>
 
           </field>
@@ -241,7 +231,7 @@
           <field name="reasonOfRefusalToPayStr" readonly="true"
             showIf="reasonOfRefusalToPay &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3"
             colSpan="12" css="red">
-            <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
+            <viewer><![CDATA[<>{reasonOfRefusalToPayStr}</>]]></viewer>
           </field>
           <field name="pfpValidateStatusSelect" hidden="true"/>
           <field name="reasonOfRefusalToPay" hidden="true"/>
@@ -287,44 +277,44 @@
           canRemove="false"/>
         <field name="$reconcileTags" showTitle="false" hidden="true" readonly="true"
           colSpan="12">
-          <viewer depends="moveLineList"><![CDATA[
-                          <h4 class="text-left">
-                                                 <span class="label label-info" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;"  x-translate>It is not possible to edit the amount of a reconciled and/or lettered accounting move line.</span>
-                          </h4>
-        ]]></viewer>
+          <viewer depends="moveLineList">
+            <![CDATA[<><Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('It is not possible to edit the amount of a reconciled and/or lettered accounting move line.')}</Badge></>]]>
+          </viewer>
         </field>
         <field name="$totalLines" title="Lines" readonly="true" colSpan="1" type="integer">
-          <viewer><![CDATA[
-                                <h3>{{$fmt('$totalLines')}}</h3>
-        ]]></viewer>
+          <viewer>
+          	<![CDATA[<><h3>{$fmt('$totalLines')}</h3></>]]>
+          </viewer>
         </field>
         <field name="$totalCurrency" title="Total Currency" readonly="true"
           showIf="currency.id != companyCurrency.id" colSpan="3" type="decimal"
           x-scale="currency.numberOfDecimals">
-          <viewer><![CDATA[
-          <h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
-        ]]></viewer>
+          <viewer>
+            <![CDATA[<><h3>{$fmt('$totalCurrency')} {$fmt('currencyCode')}</h3></>]]>
+          </viewer>
         </field>
         <field name="$totalDebit" title="Total debit" readonly="true" colSpan="3"
           type="decimal" x-scale="companyCurrency.numberOfDecimals">
-          <viewer><![CDATA[
-                                <h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
-        ]]></viewer>
+          <viewer>
+            <![CDATA[<><h3>{$fmt('$totalDebit')} {$fmt('$companyCurrencyCodeIso')}</h3></>]]>
+          </viewer>
         </field>
         <field name="$totalCredit" title="Total credit" readonly="true" colSpan="3"
           type="decimal" x-scale="companyCurrency.numberOfDecimals">
-          <viewer><![CDATA[
-                                <h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
-        ]]></viewer>
+          <viewer>
+            <![CDATA[<><h3>{$fmt('$totalCredit')} {$fmt('$companyCurrencyCodeIso')}</h3></>]]>
+          </viewer>
         </field>
         <field name="$difference" title="Difference" readonly="true" colSpan="2"
           type="decimal" x-scale="companyCurrency.numberOfDecimals">
-          <viewer><![CDATA[
-                                <h3>
-                                        <span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
-                                        <span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
-                                </h3>
-        ]]></viewer>
+          <viewer>
+          		<![CDATA[
+          				<>
+                           	<h3>
+                                <Box as="span" style={{ color: !$difference ? "#D9534F" : "normal"}}>{$fmt('$difference')} {$fmt('$companyCurrencyCodeIso')}</Box>
+                            </h3>
+                        </>
+        	]]></viewer>
         </field>
       </panel>
       <panel name="detailsPanel" title="Details">
@@ -419,10 +409,12 @@
         <field name="massEntryStatusSelect" showTitle="false" readonly="true" colSpan="4">
           <viewer depends="massEntryStatusSelect">
             <![CDATA[
-                      <h4 class="text-right">
-	                      <span class="label label-success" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 1" x-translate>Ongoing</span>
-	                      <span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 2" x-translate>Closed</span>
-                      </h4>
+ 	                  <>
+	                      <Box d="flex" justifyContent="flex-end">
+	                          {massEntryStatusSelect == 1 && <Badge bg="success">{_t('Ongoing')}</Badge>}
+	                          {massEntryStatusSelect == 2 && <Badge bg="warning">{_t('Closed')}</Badge>}
+	                      </Box>
+	                  </>
                     ]]>
           </viewer>
         </field>
@@ -577,6 +569,7 @@
 
   <action-group name="action-move-group-date-onchange">
     <action name="action-account-move-method-date-onchange"/>
+    <action name="action-move-method-check-period-permission"/>
     <action name="action-move-method-check-period"/>
   </action-group>
 
@@ -619,10 +612,6 @@
 
   <action-method name="action-move-method-show-move-lines">
     <call class="com.axelor.apps.account.web.MoveController" method="showMoveLines"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-print-move">
-    <call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
   </action-method>
 
   <action-method name="action-move-method-set-status-simulate">
@@ -802,6 +791,10 @@
 
   <action-method name="action-move-method-check-period">
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-period-permission">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodPermission"/>
   </action-method>
 
   <!-- ACTION VIEW -->

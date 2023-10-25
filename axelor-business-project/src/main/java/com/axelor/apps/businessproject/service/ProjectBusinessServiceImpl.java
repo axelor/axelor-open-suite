@@ -53,7 +53,7 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
-import com.axelor.utils.date.LocalDateUtils;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -501,7 +501,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   protected BigDecimal processInvoicedThisMonth(Invoice ventilatedInvoice) {
-    if (LocalDateUtils.isInTheSameMonth(
+    if (LocalDateHelper.isInTheSameMonth(
         ventilatedInvoice.getInvoiceDate(),
         appBaseService.getTodayDateTime(ventilatedInvoice.getCompany()).toLocalDate())) {
       return processTotalInvoiced(ventilatedInvoice);
@@ -554,11 +554,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected BigDecimal getConvertedTime(
       BigDecimal duration, Unit fromUnit, Unit toUnit, BigDecimal numberHoursADay)
       throws AxelorException {
-    if (fromUnit.equals(appBusinessProjectService.getDaysUnit())
-        && toUnit.equals(appBusinessProjectService.getHoursUnit())) {
+    if (appBusinessProjectService.getDaysUnit().equals(fromUnit)
+        && appBusinessProjectService.getHoursUnit().equals(toUnit)) {
       return duration.multiply(numberHoursADay);
-    } else if (fromUnit.equals(appBusinessProjectService.getHoursUnit())
-        && toUnit.equals(appBusinessProjectService.getDaysUnit())) {
+    } else if (appBusinessProjectService.getHoursUnit().equals(fromUnit)
+        && appBusinessProjectService.getDaysUnit().equals(toUnit)) {
       return duration.divide(numberHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
     } else {
       return duration;
@@ -668,6 +668,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     data.put("invoicedThisMonth", invoicedThisMonth);
     data.put("invoicedLastMonth", invoicedLastMonth);
     data.put("totalPaid", totalPaid);
+    if (project.getCompany() != null && project.getCompany().getCurrency() != null) {
+      data.put("currencySymbol", project.getCompany().getCurrency().getSymbol());
+    }
 
     List<ProjectHistoryLine> projectHistoryLineList = project.getProjectHistoryLineList();
 

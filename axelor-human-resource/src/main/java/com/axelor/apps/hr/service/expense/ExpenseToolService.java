@@ -43,4 +43,6 @@ public interface ExpenseToolService {
 
   void addExpenseLinesToExpenseAndCompute(Expense expense, List<ExpenseLine> expenseLineList)
       throws AxelorException;
+
+  boolean isKilometricExpenseLine(ExpenseLine expenseLine);
 }

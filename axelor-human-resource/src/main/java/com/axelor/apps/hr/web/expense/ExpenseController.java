@@ -85,8 +85,8 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -427,6 +427,14 @@ public class ExpenseController {
     }
   }
 
+  public void checkLineFile(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    if (Beans.get(ExpenseConfirmationService.class).checkAllLineHaveFile(expense)) {
+      response.setAlert(I18n.get(HumanResourceExceptionMessage.EXPENSE_JUSTIFICATION_FILE_MISSING));
+    }
+  }
+
   public void newExpense(ActionResponse response) {
 
     response.setView(
@@ -596,7 +604,7 @@ public class ExpenseController {
         response.setAttr(
             "kilometricAllowParam",
             "domain",
-            "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+            "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
       }
 
       KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
@@ -650,7 +658,7 @@ public class ExpenseController {
       response.setAttr(
           "kilometricAllowParam",
           "domain",
-          "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+          "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

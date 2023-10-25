@@ -1378,7 +1378,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (fromStockLocation == null) {
-        fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          fromStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        } else {
+          fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        }
       }
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
       fromStockLocation =
@@ -1386,7 +1390,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (fromStockLocation == null) {
-        fromStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          fromStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        } else {
+          fromStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        }
       }
     }
     return fromStockLocation;
@@ -1407,7 +1415,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (toStockLocation == null) {
-        toStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          toStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        } else {
+          toStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        }
       }
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
       toStockLocation =
@@ -1415,7 +1427,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (toStockLocation == null) {
-        toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          toStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        } else {
+          toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        }
       }
     }
     return toStockLocation;

@@ -605,4 +605,19 @@ public final class BaseExceptionMessage {
 
   public static final String NO_RECORD_SELECTED_TO_PRINT = /*$$(*/
       "Please select records to print" /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_PASSWORD = /*$$(*/
+      "Error while opening the certificate, please check the password." /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_FILE = /*$$(*/
+      "Error with the certificate, please check if the file is a PFX certificate." /*)*/;
+
+  public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
+      "Error while accessing certificate information." /*)*/;
+
+  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
+      "No view configured for model %s." /*)*/;
+
+  public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
+      "The file could not be generated." /*)*/;
 }

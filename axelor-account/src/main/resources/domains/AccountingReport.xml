@@ -56,7 +56,8 @@
 
     <!--Report 7 : Partner genereal ledger -->
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines"
-      title="Display only not completely lettered move lines" default="false"/>
+      title="Display only not completely lettered move lines" default="false"
+      help="By selecting this option, only move lines not lettered or partially lettered are displayed."/>
     <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
 
 

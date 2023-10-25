@@ -24,9 +24,11 @@
       <field name="name" showTitle="false">
         <viewer depends="name">
 					<![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-						</h3>
+						<>
+							<h3>
+								<span>{name}</span>
+							</h3>
+						</>
 					]]>
         </viewer>
         <editor>
@@ -73,12 +75,7 @@
             onClick="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:testConnect"/>
           <field name="isValid" readonly="true" showTitle="false">
             <viewer depends="isValid">
-							<![CDATA[
-								<h4>
-									<span class="label label-default" style="background-color: #2FA042; padding: 5px !important; display: inline-table; line-height: initial;" ng-show="record.isValid" x-translate>Valid</span>
-									<span class="label label-default" style="background-color: #B6473F; padding: 5px !important; display: inline-table; line-height: initial;" ng-show="!record.isValid" x-translate>Not valid</span>
-								</h4>
-							]]>
+			  <![CDATA[<><Badge bg={isValid ? "success" : "danger"}>{isValid ? _t('Valid') : _t('Not valid')}</Badge></>]]>
             </viewer>
           </field>
         </panel>

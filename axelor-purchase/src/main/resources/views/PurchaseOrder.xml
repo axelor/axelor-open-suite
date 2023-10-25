@@ -131,19 +131,23 @@
       <panel name="mainPanel" readonlyIf="statusSelect == 4" colSpan="12">
         <field name="purchaseOrderSeq" showTitle="false" colSpan="10">
           <viewer depends="statusSelect,purchaseOrderSeq"><![CDATA[
-	          <h3>
-	           <span ng-show="[1,2,5].includes(record.statusSelect) &amp;&amp; record.purchaseOrderSeq" x-translate>Quotation</span>
-	           <span ng-show="[3,4].includes(record.statusSelect)" x-translate>Purchase order</span>
-	           {{record.purchaseOrderSeq}}
-	          </h3>
+	          <>
+	             <h3>
+	             	{[1,2,5].includes(statusSelect) && purchaseOrderSeq && <span>{_t('Quotation')} </span>}
+	             	{[3,4].includes(statusSelect) && <span>{_t('Purchase order')} </span>}
+	             	{purchaseOrderSeq}
+	             </h3>
+	          </>
 	       ]]></viewer>
         </field>
         <field name="receiptState" showTitle="false"
           showIf="statusSelect == 3 || statusSelect == 4" css="label-bold bold" colSpan="2">
           <viewer><![CDATA[
-	          <span class="label label-important" ng-show="record.receiptState == 1" x-translate>Not received</span>
-	          <span class="label label-warning" ng-show="record.receiptState == 2" x-translate>Partially received</span>
-	          <span class="label label-success" ng-show="record.receiptState == 3" x-translate>Received</span>
+	          <>
+	             {receiptState == 1 && <Badge bg="danger">{_t('Not received')}</Badge>}
+	             {receiptState == 2 && <Badge bg="warning">{_t('Partially received')}</Badge>}
+	             {receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
+	          </>
 	        ]]></viewer>
         </field>
         <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
@@ -321,22 +325,38 @@
     </panel>
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
-      <separator/>
-      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+      <field name="inTaxTotal" showTitle="false" colSpan="12">
         <viewer depends="exTaxTotal,currency.symbol,taxTotal,amountInvoiced,advanceTotal">
                     <![CDATA[
-                    <dl class="dl-horizontal">
-                        <dt x-translate>Total W.T.</dt>
-                        <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
-                        <dt x-translate>Total tax</dt>
-                        <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
-                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
-                        <dt x-translate>Amount invoiced W.T.</dt>
-                        <dd>{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
-                    	<dt x-translate>Advance payment A.T.I. total</dt>
-                        <dd>{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
-                    </dl>
+	                  <>
+	                     <dl>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
+	                     	</Box>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
+	                     	</Box>
+	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
+	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
+	                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
+	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
+	                     	</Box>
+	                     	{statusSelect >= 3 &&
+	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
+	                     			<dd>{currency.symbol} {$fmt('amountInvoiced')}</dd>
+	                     		</Box>
+	                     	}
+	                     	{statusSelect >= 2 &&
+	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
+	                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
+	                     			<dd>{currency.symbol} {$fmt('advanceTotal')}</dd>
+	                     		</Box>
+	                     	}
+	                     </dl>
+	                  </>
                     ]]>
         </viewer>
       </field>
@@ -364,11 +384,7 @@
       <field name="internalReference"/>
       <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
         <viewer>
-          <![CDATA[
-            <h5>
-              <span ng-show="true" class='label label-warning' x-translate>Reference already existing</span>
-            </h5>
-          ]]>
+          <![CDATA[<><Badge bg="warning">{_t('Reference already existing')}</Badge></>]]>
         </viewer>
       </field>
     </panel>
@@ -398,7 +414,7 @@
   </form>
 
   <cards name="purchase-quotations-order-cards" title="Supplier RFQ/PO"
-    model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" width="360px" css="rect-image"
     orderBy="-orderDate">
     <menubar>
       <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -424,54 +440,51 @@
     <field name="company"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <template><![CDATA[
-		    <div class="span12">
-		    	<strong><span x-translate>Supplier RFQ/PO</span> {{ purchaseOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
-		    	<a class="pull-right muted">{{ $fmt('orderDate') }}</a>
-	    	</div>
-			<div>
-			  <div>
-				  <div class="span8">
-				    <i class="fa fa-users" aria-hidden="true"></i>
-				  	{{ supplierPartner.fullName }}
-				  </div>
-					<div class="span4 pull-right">
-						<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-						<span ng-show="record.statusSelect == 1" x-translate>Draft</span>
-						<span ng-show="record.statusSelect == 2" x-translate>Requested</span>
-						<span ng-show="record.statusSelect == 3" x-translate>Validated</span>
-						<span ng-show="record.statusSelect == 4" x-translate>Finished</span>
-						<span ng-show="record.statusSelect == 5" x-translate>Canceled</span>
-					</div>
-			  </div>
-			  <div>
-				  <div class="span6">
-					  	<h5>
-							<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-							<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-							<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
-						</h5>
-						<h5>
-							<span class="label label-important" ng-show="record.receiptState > 0 && record.receiptState == 1" x-translate>Not received</span>
-							<span class="label label-warning" ng-show="record.receiptState > 0 && record.receiptState == 2" x-translate>Partially received</span>
-							<span class="label label-success" ng-show="record.receiptState > 0 && record.receiptState == 3" x-translate>Received</span>
-						</h5>
-				  </div>
-				  <div class="span6">
-				    <span><strong><span x-translate>WT</span> : {{$fmt('exTaxTotal') | currency: currency.symbol}}</strong><br/>
-				    <strong><span x-translate>ATI</span> : {{$fmt('inTaxTotal') | currency: currency.symbol}}</strong></span>
-				  </div>
-			  </div>
-			</div>
-			<div class="span12" style="margin-left:0px;">
-			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
-			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
-			</div>
+			<>
+				<strong>
+					<span>{_t('Supplier RFQ/PO')}</span> {purchaseOrderSeq}
+					{externalReference && <span> ( {externalReference} )</span>}
+				</strong>
+				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('orderDate')}</Box>
+				<Box d="grid" gridTemplateColumns="67% 33%">
+					<Box>
+						<Icon icon="people-fill"/> {supplierPartner.fullName}
+					</Box>
+					<Box>
+						<Icon icon="arrow-right"/>
+						{statusSelect == 1 && <span>{_t('Draft')}</span>}
+						{statusSelect == 2 && <span>{_t('Requested')}</span>}
+						{statusSelect == 3 && <span>{_t('Validated')}</span>}
+						{statusSelect == 4 && <span>{_t('Finished')}</span>}
+						{statusSelect == 5 && <span>{_t('Canceled')}</span>}
+					</Box>
+				</Box>
+				<Box d="flex" justifyContent="space-between" mt={1}>
+					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
+						{amountInvoiced == 0 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+						{amountInvoiced > 0 && (amountInvoiced < exTaxTotal) && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+						{amountInvoiced > 0 && (amountInvoiced == exTaxTotal) && <Badge bg="success">{_t('Invoiced')}</Badge>}
+
+	                	{receiptState == 1 && <Badge bg="danger">{_t('Not received')}</Badge>}
+	                	{receiptState == 2 && <Badge bg="warning">{_t('Partially received')}</Badge>}
+	                	{receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
+		            </Box>
+		            <Box>
+			            <strong>{_t('WT')} : {currency.symbol}{$fmt('exTaxTotal')}</strong> <Box/>
+			            <strong>{_t('ATI')} : {currency.symbol}{$fmt('inTaxTotal')}</strong>
+		            </Box>
+				</Box>
+				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
+					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(company.name)}</Badge>
+					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+				</Box>
+			</>
 		]]>
     </template>
   </cards>
 
   <cards name="purchase-order-cards" title="Supplier RFQ/PO"
-    model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" width="360px" css="rect-image"
     orderBy="-orderDate">
     <menubar>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -492,48 +505,45 @@
     <field name="company"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <template><![CDATA[
-		    <div class="span12">
-		    	<strong><span x-translate>Supplier RFQ/PO</span> {{ purchaseOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
-		    	<a class="pull-right muted">{{ $fmt('orderDate') }}</a>
-	    	</div>
-			<div>
-			  <div>
-				  <div class="span8">
-				    <i class="fa fa-users" aria-hidden="true"></i>
-				  	{{ supplierPartner.fullName }}
-				  </div>
-					<div class="span4 pull-right">
-						<i class="fa fa-long-arrow-right" aria-hidden="true"></i>
-						<span ng-show="record.statusSelect == 1" x-translate>Draft</span>
-						<span ng-show="record.statusSelect == 2" x-translate>Requested</span>
-						<span ng-show="record.statusSelect == 3" x-translate>Validated</span>
-						<span ng-show="record.statusSelect == 4" x-translate>Finished</span>
-						<span ng-show="record.statusSelect == 5" x-translate>Canceled</span>
-					</div>
-			  </div>
-			  <div>
-				  <div class="span6">
-				  	<h5>
-						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-					<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
-					</h5>
-					<h5>
-						<span class="label label-important" ng-show="record.receiptState > 0 && record.receiptState == 1" x-translate>Not received</span>
-						<span class="label label-warning" ng-show="record.receiptState > 0 && record.receiptState == 2" x-translate>Partially received</span>
-						<span class="label label-success" ng-show="record.receiptState > 0 && record.receiptState == 3" x-translate>Received</span>
-					</h5>
-				  </div>
-				  <div class="span6">
-				    <span><strong><span x-translate>WT</span> : {{$fmt('exTaxTotal') | currency: currency.symbol}}</strong><br/>
-				    <strong><span x-translate>ATI</span> : {{$fmt('inTaxTotal') | currency: currency.symbol}}</strong></span>
-				  </div>
-			  </div>
-			</div>
-			<div class="span12" style="margin-left:0px;">
-			  <span class="label label-default" style="background-color: #2185D0;" x-translate>{{ company.name }}</span>
-			  <span class="label label-default pull-right muted" style="background-color: #2185D0; padding: 5px;" x-translate>{{ stockLocation.name }}</span>
-			</div>
+			<>
+				<strong>
+					<span>{_t('Supplier RFQ/PO')}</span> {purchaseOrderSeq}
+					{externalReference && <span> ( {externalReference} )</span>}
+				</strong>
+				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('orderDate')}</Box>
+				<Box d="grid" gridTemplateColumns="67% 33%">
+					<Box>
+						<Icon icon="people-fill"/> {supplierPartner.fullName}
+					</Box>
+					<Box>
+						<Icon icon="arrow-right"/>
+						{statusSelect == 1 && <span>{_t('Draft')}</span>}
+						{statusSelect == 2 && <span>{_t('Requested')}</span>}
+						{statusSelect == 3 && <span>{_t('Validated')}</span>}
+						{statusSelect == 4 && <span>{_t('Finished')}</span>}
+						{statusSelect == 5 && <span>{_t('Canceled')}</span>}
+					</Box>
+				</Box>
+				<Box d="flex" justifyContent="space-between" mt={1}>
+					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
+						{amountInvoiced == 0 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+						{amountInvoiced > 0 && (amountInvoiced < exTaxTotal) && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+						{amountInvoiced > 0 && (amountInvoiced == exTaxTotal) && <Badge bg="success">{_t('Invoiced')}</Badge>}
+
+	                	{receiptState == 1 && <Badge bg="danger">{_t('Not received')}</Badge>}
+	                	{receiptState == 2 && <Badge bg="warning">{_t('Partially received')}</Badge>}
+	                	{receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
+		            </Box>
+		            <Box>
+			            <strong>{_t('WT')} : {currency.symbol}{$fmt('exTaxTotal')}</strong> <Box/>
+			            <strong>{_t('ATI')} : {currency.symbol}{$fmt('inTaxTotal')}</strong>
+		            </Box>
+				</Box>
+				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
+					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(company.name)}</Badge>
+					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+				</Box>
+			</>
 		]]>
     </template>
   </cards>
@@ -983,8 +993,7 @@
   <action-method
     name="action-purchase-order-method-check-analytic-distribution-template">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="checkPurchaseOrderAnalyticDistributionTemplate"
-      if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
+      method="checkPurchaseOrderAnalyticDistributionTemplate"/>
   </action-method>
 
   <action-method name="action-purchase-order-method-set-status-to-validated">

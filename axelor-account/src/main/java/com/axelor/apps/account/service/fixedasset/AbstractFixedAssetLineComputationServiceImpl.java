@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -293,22 +293,28 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       LocalDate nextDate) {
     BigDecimal prorataTemporis;
 
-    BigDecimal nbDaysBetweenAcqAndFirstDepDate =
-        nbDaysBetween(
-            fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
-            acquisitionDate,
-            depreciationDate);
+    boolean isUSProrataTemporis = fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis();
+
+    BigDecimal nbDaysBetweenAcqAndFirstDepDate;
+    if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
+        fixedAsset.getComputationMethodSelect())) {
+      nextDate = null;
+      nbDaysBetweenAcqAndFirstDepDate =
+          nbDaysBetween(
+              isUSProrataTemporis,
+              acquisitionDate.withDayOfMonth(1),
+              depreciationDate.withDayOfMonth(30));
+    } else {
+      nbDaysBetweenAcqAndFirstDepDate =
+          nbDaysBetween(isUSProrataTemporis, acquisitionDate, depreciationDate);
+    }
 
     BigDecimal maxNbDaysOfPeriod =
         BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
             .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod;
     if (nextDate != null) {
-      nbDaysOfPeriod =
-          nbDaysBetween(
-              fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
-              acquisitionDate,
-              nextDate);
+      nbDaysOfPeriod = nbDaysBetween(isUSProrataTemporis, acquisitionDate, nextDate);
       if (nbDaysOfPeriod.compareTo(maxNbDaysOfPeriod) > 0) {
         nbDaysOfPeriod = maxNbDaysOfPeriod;
       }
@@ -495,10 +501,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (isProrataTemporis(fixedAsset)
         && numberOfDepreciationDone(fixedAsset)
             .equals(getNumberOfDepreciation(fixedAsset).setScale(0, RoundingMode.DOWN))) {
-      depreciationDate = computeLastProrataDepreciationDate(fixedAsset);
+      depreciationDate = computeLastProrataDepreciationDate(fixedAsset, previousFixedAssetLine);
     } else {
       depreciationDate =
-          DateTool.plusMonths(
+          LocalDateHelper.plusMonths(
               previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
     }
 
@@ -545,16 +551,21 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     return previousFixedAssetLine.getDepreciationBase();
   }
 
-  protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset) {
+  protected LocalDate computeLastProrataDepreciationDate(
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
 
     LocalDate firstServiceDate =
         fixedAsset.getFirstServiceDate() == null
             ? fixedAsset.getAcquisitionDate()
             : fixedAsset.getFirstServiceDate();
-    LocalDate d = DateTool.plusMonths(firstServiceDate, getDurationInMonth(fixedAsset));
+    LocalDate d = LocalDateHelper.plusMonths(firstServiceDate, getDurationInMonth(fixedAsset));
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
         getComputationMethodSelect(fixedAsset))) {
-      d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));
+      d = LocalDateHelper.minusMonths(d, getPeriodicityInMonth(fixedAsset));
+    } else {
+      d =
+          LocalDateHelper.plusMonths(
+              previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
     }
     return d;
   }

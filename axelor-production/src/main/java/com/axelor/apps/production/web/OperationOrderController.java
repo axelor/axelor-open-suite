@@ -18,32 +18,27 @@
  */
 package com.axelor.apps.production.web;
 
-import com.axelor.apps.ReportFactory;
+import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE;
+
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +54,20 @@ public class OperationOrderController {
 
     Beans.get(OperationOrderPlanningService.class).computeDuration(operationOrder);
     response.setReload(true);
+  }
+
+  public void alertPlannedEndDateOverflow(ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      if (Beans.get(OperationOrderPlanningService.class)
+          .willPlannedEndDateOverflow(operationOrder)) {
+        response.setAlert(
+            I18n.get(
+                LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setPlannedDates(ActionRequest request, ActionResponse response) {
@@ -175,71 +184,6 @@ public class OperationOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  /**
-   * Method that generate a Pdf file for an operation order
-   *
-   * @param request
-   * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
-   */
-  public void print(ActionRequest request, ActionResponse response) {
-    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-    String operationOrderIds = "";
-    try {
-
-      @SuppressWarnings("unchecked")
-      List<Integer> lstSelectedOperationOrder = (List<Integer>) request.getContext().get("_ids");
-      if (lstSelectedOperationOrder != null) {
-        for (Integer it : lstSelectedOperationOrder) {
-          operationOrderIds += it.toString() + ",";
-        }
-      }
-
-      if (!operationOrderIds.equals("")) {
-        operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length() - 1);
-        operationOrder =
-            Beans.get(OperationOrderRepository.class)
-                .find(new Long(lstSelectedOperationOrder.get(0)));
-      } else if (operationOrder.getId() != null) {
-        operationOrderIds = operationOrder.getId().toString();
-      }
-
-      if (!operationOrderIds.equals("")) {
-
-        String name = " ";
-        if (operationOrder.getName() != null) {
-          name += lstSelectedOperationOrder == null ? "Op " + operationOrder.getName() : "Ops";
-        }
-
-        String fileLink =
-            ReportFactory.createReport(IReport.OPERATION_ORDER, name + "-${date}")
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addParam("Timezone", getTimezone(operationOrder))
-                .addParam("OperationOrderId", operationOrderIds)
-                .generate()
-                .getFileLink();
-
-        LOG.debug("Printing " + name);
-
-        response.setView(ActionView.define(name).add("html", fileLink).map());
-      } else {
-        response.setInfo(I18n.get(ProductionExceptionMessage.OPERATION_ORDER_1));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  protected String getTimezone(OperationOrder operationOrder) {
-    if (operationOrder.getManufOrder() == null
-        || operationOrder.getManufOrder().getCompany() == null) {
-      return null;
-    }
-    return operationOrder.getManufOrder().getCompany().getTimezone();
   }
 
   public void chargeByMachineHours(ActionRequest request, ActionResponse response) {

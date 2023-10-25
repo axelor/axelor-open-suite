@@ -30,11 +30,13 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import javax.inject.Singleton;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -61,17 +63,26 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     this.moveRemoveService = moveRemoveService;
   }
 
-  public void close(Period period) throws AxelorException {
-    if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
-      moveValidateService.accountingMultiple(
-          getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_DAYBOOK));
-      period = periodRepo.find(period.getId());
-    }
-    moveRemoveService.deleteMultiple(
-        getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
+  @Override
+  // must not rollback on AxelorException
+  @Transactional
+  public void close(Period period) {
+    try {
+      if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
+        moveValidateService.accountingMultiple(
+            getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_DAYBOOK));
+        period = periodRepo.find(period.getId());
+      }
+      moveRemoveService.deleteMultiple(
+          getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
 
-    period = periodRepo.find(period.getId());
-    super.close(period);
+      period = periodRepo.find(period.getId());
+      super.close(period);
+    } catch (AxelorException e) {
+      super.resetStatusSelect(period);
+      periodRepo.save(period);
+      TraceBackService.trace(e);
+    }
   }
 
   public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status) {

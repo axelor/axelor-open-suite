@@ -49,4 +49,8 @@ public interface SaleOrderSupplychainService {
   StockLocation getToStockLocation(Partner clientPartner, Company company) throws AxelorException;
 
   public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder);
+
+  public void setAdvancePayment(SaleOrder saleOrder);
+
+  public void updateTimetableAmounts(SaleOrder saleOrder);
 }

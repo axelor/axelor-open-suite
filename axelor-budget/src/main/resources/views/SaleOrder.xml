@@ -61,6 +61,7 @@
     <action name="
       action-budget-sale-order-method-update-budget-lines "
       if="__config__.app.isApp('budget')"/>
+    <action name="action-sale-order-line-tree-method-update-hasTree"/>
   </action-group>
 
   <action-group name="action-group-budget-saleorder-onnew">

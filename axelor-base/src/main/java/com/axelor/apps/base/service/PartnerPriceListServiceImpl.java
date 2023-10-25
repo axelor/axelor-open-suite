@@ -32,7 +32,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -180,7 +180,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                                                 .orElse(null)))
                                 >= 0))
             .collect(Collectors.toList());
-    return "self.id IN (" + StringTool.getIdListString(priceLists) + ")";
+    return "self.id IN (" + StringHelper.getIdListString(priceLists) + ")";
   }
 
   public PartnerPriceList getPartnerPriceList(Partner partner, int priceListTypeSelect) {

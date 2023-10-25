@@ -37,7 +37,7 @@
         showIf="id">
         <viewer>
                     <![CDATA[
-                        <span>{{record.abcAnalysisSeq}}</span>
+                        <>{abcAnalysisSeq && <span>{abcAnalysisSeq}</span>}</>
                     ]]>
         </viewer>
       </field>

@@ -27,7 +27,7 @@
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice"/>
     <field name="justificationMetaFile" widget="binary-link"
-      onChange="action-expense-line-reset-is-signed"/>
+      onChange="action-expense-line-group-justification-line-onchange"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct.blockExpenseTax" hidden="true"/>
@@ -106,7 +106,7 @@
         </viewer>
       </field>
       <field name="justificationMetaFile" widget="binary-link"
-        onChange="action-expense-line-reset-is-signed"/>
+        onChange="action-expense-line-group-justification-line-onchange"/>
       <field name="isJustificationFileDigitallySigned" hidden="true"/>
       <field name="isAloneMeal" hidden="true" showIf="expenseProduct.deductLunchVoucher"
         onChange="action-expense-line-record-alone-meal-on-change"/>
@@ -347,5 +347,15 @@
     <action name="action-expense-line-method-compute-analytic-distribution"/>
     <action name="action-expense-line-validate-totalAmount"/>
   </action-group>
+
+  <action-group name="action-expense-line-group-justification-line-onchange">
+    <action name="action-expense-line-method-check-file-format"/>
+    <action name="action-expense-line-reset-is-signed"/>
+  </action-group>
+
+  <action-method name="action-expense-line-method-check-file-format">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="checkJustificationFile"/>
+  </action-method>
 
 </object-views>

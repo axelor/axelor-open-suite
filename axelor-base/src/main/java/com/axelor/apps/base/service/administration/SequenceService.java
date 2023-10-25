@@ -35,7 +35,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -427,7 +427,7 @@ public class SequenceService {
     String draftPrefix = getDraftPrefix();
     return String.format(
         "%s%s",
-        draftPrefix, StringTool.fillStringLeft(String.valueOf(model.getId()), '0', padding));
+        draftPrefix, StringHelper.fillStringLeft(String.valueOf(model.getId()), '0', padding));
   }
 
   /**

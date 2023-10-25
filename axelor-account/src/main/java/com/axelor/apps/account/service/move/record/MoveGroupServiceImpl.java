@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.move.record;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -60,10 +60,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
-  protected AppAccountService appAccountService;
   protected MassEntryService massEntryService;
   protected MassEntryVerificationService massEntryVerificationService;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
+  protected PfpService pfpService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -81,10 +81,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      AppAccountService appAccountService,
       MassEntryService massEntryService,
       MassEntryVerificationService massEntryVerificationService,
-      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService,
+      PfpService pfpService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -99,10 +99,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodService = periodService;
     this.moveRepository = moveRepository;
-    this.appAccountService = appAccountService;
     this.massEntryService = massEntryService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
+    this.pfpService = pfpService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -121,7 +121,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void onSave(Move move, boolean paymentConditionChange, boolean headerChange)
+  public void onSave(
+      Move move, boolean paymentConditionChange, boolean dateChange, boolean headerChange)
       throws AxelorException {
     moveRecordUpdateService.updatePartner(move);
 
@@ -132,7 +133,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
           move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
     }
 
-    moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange);
+    moveRecordUpdateService.updateInvoiceTerms(
+        move, paymentConditionChange || dateChange, headerChange);
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
     moveRecordUpdateService.updateSubrogationPartner(move);
 
@@ -167,7 +169,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("originDate", move.getOriginDate());
 
-    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+    if (pfpService.isManagePassedForPayment(move.getCompany())) {
       moveRecordSetService.setPfpStatus(move);
       valuesMap.put("pfpValidateStatusSelect", move.getOriginDate());
     }
@@ -198,7 +200,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
 
-    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+    if (pfpService.isManagePassedForPayment(move.getCompany())) {
       moveAttrsService.getPfpAttrs(move, user, attrsMap);
     }
 
@@ -240,9 +242,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      moveCheckService.checkPeriodPermission(move);
       moveRecordSetService.setPeriod(move);
     }
+
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
     moveRecordSetService.setOriginDate(move);
@@ -250,6 +252,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+
+    this.addPeriodDummyFields(move, valuesMap);
 
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("dueDate", move.getDueDate());
@@ -293,7 +297,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
     }
 
-    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+    if (pfpService.isManagePassedForPayment(move.getCompany())) {
       moveRecordSetService.setPfpStatus(move);
       valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
     }
@@ -337,7 +341,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setSubrogationPartner(move);
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
 
-    if (appAccountService.getAppAccount().getActivatePassedForPayment()
+    if (pfpService.isManagePassedForPayment(move.getCompany())
         && move.getPfpValidateStatusSelect() > MoveRepository.PFP_NONE) {
       moveRecordSetService.setPfpValidatorUser(move);
       valuesMap.put("pfpValidatorUser", move.getPfpValidatorUser());
@@ -385,8 +389,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
                 MoveRepository.STATUS_ACCOUNTED,
                 MoveRepository.STATUS_SIMULATED)
             .contains(move.getStatusSelect())
-        && appAccountService.getAppAccount() != null
-        && appAccountService.getAppAccount().getActivatePassedForPayment()) {
+        && pfpService.isManagePassedForPayment(move.getCompany())) {
       Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
       if (pfpStatus != null) {
         valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());

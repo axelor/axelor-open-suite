@@ -86,9 +86,6 @@ public final class ProductionExceptionMessage {
       "Unrecognized capacity for company %s production configuration" /*)*/;
 
   /** Manuf Order Controller */
-  public static final String MANUF_ORDER_1 = /*$$(*/
-      "Please select the Manufacturing order(s) to print." /*)*/;
-
   public static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
       "Please select more than one manufacturing order." /*)*/;
 
@@ -103,10 +100,6 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE = /*$$(*/
       "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles." /*)*/;
-
-  /** Operation Order Controller */
-  public static final String OPERATION_ORDER_1 = /*$$(*/
-      "Please select the Operation order(s) to print." /*)*/;
 
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
@@ -317,4 +310,31 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
       /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_HOURS_UNIT = /*$$(*/
+      "Outsourcing purchase order cannot be generated. Please fill hours unit in your base configuration." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_END_UNIT = /*$$(*/
+      "Impossible to generate outsourcing purchase order. Please fill unit on your product." /*)*/;
+
+  public static final String
+      YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE =
+          /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the estimated shipping date to be able to plan your manufacturing orders." /*)*/;
+
+  public static final String
+      YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE =
+          /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders." /*)*/;
+
+  public static final String PLAN_IS_BEFORE_TODAY_DATE =
+      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please adjust it." /*)*/;
+
+  public static final String INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION =
+      /*$$(*/ "Invalid scheduling and capacity configuration." /*)*/;
+
+  public static final String
+      LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
+          "The last operation order planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
+
+  public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
+      "There is no applicable bill of materials for %s" /*)*/;
 }

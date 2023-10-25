@@ -26,7 +26,9 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.repo.AppRepository;
@@ -47,13 +49,22 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+      AppSettingsStudioService appSettingsService,
+      MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo) {
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
   }
 
   @Override
   public AppProduction getAppProduction() {
-    return Query.of(AppProduction.class).fetchOne();
+    return Query.of(AppProduction.class).autoFlush(false).fetchOne();
   }
 
   @Override
@@ -89,5 +100,10 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
         .createQuery(
             "UPDATE Partner self SET self.isSubcontractor = FALSE WHERE self.isSubcontractor IS TRUE")
         .executeUpdate();
+  }
+
+  @Override
+  public boolean getIsCostPerProcessLine() {
+    return getAppProduction().getIsCostPerProcessLine();
   }
 }

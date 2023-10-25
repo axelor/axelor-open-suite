@@ -45,7 +45,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.io.MoreFiles;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -139,7 +139,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
 
     try {
       MoreFiles.createParentDirectories(path);
-      CsvTool.csvWriter(
+      CsvHelper.csvWriter(
           path.getParent().toString(),
           path.getFileName().toString(),
           ';',
@@ -328,8 +328,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
         supplyChainConfigService.getSupplyChainConfig(declarationOfExchanges.getCompany());
     BirtTemplate declarationOfExchGoodsBirtTemplate =
         supplyChainConfig.getDeclarationOfExchGoodsBirtTemplate();
-    if (ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate)
-        || ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(declarationOfExchGoodsBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

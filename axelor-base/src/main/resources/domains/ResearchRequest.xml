@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ResearchRequest" lang="java">
+  <entity name="ResearchRequest">
 
 
     <string name="models" title="Models to search" selection="research.model.selection"/>
