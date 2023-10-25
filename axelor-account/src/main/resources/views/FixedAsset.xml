@@ -135,7 +135,8 @@
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
         readonlyIf="statusSelect > 1" hidden="true">
         <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value"/>
+          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value"
+          showIf="depreciationPlanSelect.includes(&quot;1&quot;)"/>
         <field name="firstDepreciationDate"
           onChange="action-fixed-asset-validate-check-first-depreciation-date"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"/>
