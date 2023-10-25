@@ -682,6 +682,17 @@ public class MoveController {
     }
   }
 
+  public void onSelectSubrogationPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setAttrs(
+          Beans.get(MoveGroupService.class).getSubrogationPartnerOnSelectAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
       response.setAttrs(Beans.get(MoveGroupService.class).getHeaderChangeAttrsMap());
