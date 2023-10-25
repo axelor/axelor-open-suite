@@ -1022,7 +1022,8 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
           bankStatementLine.setMoveLine(moveLine);
 
           scriptContext =
-              this.getScriptContext(bankReconciliation, bankStatementLine, bankReconciliationLine, moveLine);
+              this.getScriptContext(
+                  bankReconciliation, bankStatementLine, bankReconciliationLine, moveLine);
           String query =
               computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
           Boolean result = (Boolean) new GroovyScriptHelper(scriptContext).eval(query);
@@ -1066,7 +1067,8 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   protected Context getScriptContext(
       BankReconciliation bankReconciliation,
       BankStatementLine bankStatementLine,
-      BankReconciliationLine bankReconciliationLine, MoveLine moveLine)
+      BankReconciliationLine bankReconciliationLine,
+      MoveLine moveLine)
       throws AxelorException {
     Context scriptContext =
         new Context(Mapper.toMap(bankStatementLine), BankStatementLineAFB120.class);
