@@ -36,14 +36,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -435,29 +431,13 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
 
   @Override
   public void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
-    List<Company> companyList = companyRepository.all().fetch();
-    List<Company> companyWithAccountConfig = new ArrayList<>();
-
-    if (ObjectUtils.notEmpty(companyList)) {
-      for (Company company : companyList) {
-        try {
-          accountConfigService.getAccountConfig(company);
-          companyWithAccountConfig.add(company);
-        } catch (AxelorException e) {
-          TraceBackService.trace(e);
-        }
-      }
-    }
-
     String companyIds =
-        CollectionUtils.isEmpty(companyList)
-            ? "0"
-            : companyWithAccountConfig.stream()
-                .map(Company::getId)
-                .map(Objects::toString)
-                .collect(Collectors.joining(","));
+        companyRepository.all().filter("self.accountConfig IS NOT NULL").fetch().stream()
+            .map(Company::getId)
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
 
-    String domain = String.format("self.id IN (%s)", companyIds);
+    String domain = String.format("self.id IN (%s)", companyIds.isEmpty() ? "0" : companyIds);
 
     this.addAttr("company", "domain", domain, attrsMap);
   }
