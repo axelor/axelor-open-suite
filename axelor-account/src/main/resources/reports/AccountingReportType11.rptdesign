@@ -2555,7 +2555,7 @@ this.height=row["logo_height"];]]></method>
                                 <list-property name="filter">
                                     <structure>
                                         <property name="operator">ne</property>
-                                        <expression name="expr" type="javascript">row["Debit"]</expression>
+                                        <expression name="expr" type="javascript">row["SumDebitPerAccount"]</expression>
                                         <simple-property-list name="value1">
                                             <value>0</value>
                                         </simple-property-list>
@@ -2697,7 +2697,7 @@ this.height=row["logo_height"];]]></method>
                                 <list-property name="filter">
                                     <structure>
                                         <property name="operator">ne</property>
-                                        <expression name="expr" type="javascript">row["Credit"]</expression>
+                                        <expression name="expr" type="javascript">row["SumCreditPerAccount"]</expression>
                                         <simple-property-list name="value1">
                                             <value>0</value>
                                         </simple-property-list>
