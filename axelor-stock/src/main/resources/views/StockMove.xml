@@ -1001,7 +1001,7 @@
 
   <action-attrs name="action-stock-move-generate-invoice-button">
     <attribute name="title" for="generateInvoiceBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Generate refund')" if="isReversion"/>
+      expr="eval: com.axelor.i18n.I18n.get('Generate credit note')" if="isReversion"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-attrs-domain-address">

@@ -332,7 +332,7 @@
   </action-view>
 
   <action-view name="dashlet.invoice.sale.refund.situation"
-    title="Invoice and Refunds Sale situation (tax incl.)">
+    title="Invoice and Credit notes Sale situation (tax incl.)">
     <view type="chart" name="chart.invoice.sale.refund.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_language" expr="eval: __user__.getLanguage()"/>
