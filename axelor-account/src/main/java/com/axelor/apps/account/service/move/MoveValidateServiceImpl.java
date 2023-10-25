@@ -288,6 +288,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       }
 
       moveLineTaxService.checkDuplicateTaxMoveLines(move);
+      moveLineTaxService.checkEmptyTaxLines(move.getMoveLineList());
       this.checkTaxAmount(move);
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);

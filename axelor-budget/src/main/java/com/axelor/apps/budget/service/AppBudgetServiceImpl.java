@@ -28,6 +28,7 @@ import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Optional;
 
 @Singleton
 public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudgetService {
@@ -49,5 +50,20 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
   @Override
   public AppBudget getAppBudget() {
     return appBudgetRepo.all().fetchOne();
+  }
+
+  @Override
+  public Boolean isMissingBudgetCheckError() {
+    Integer missingBudgetCheck =
+        Optional.ofNullable(this.getAppBudget())
+            .map(AppBudget::getMissingBudgetCheckSelect)
+            .orElse(0);
+    switch (missingBudgetCheck) {
+      case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_OPTIONAL:
+        return Boolean.FALSE;
+      case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_REQUIRED:
+        return Boolean.TRUE;
+    }
+    return null;
   }
 }

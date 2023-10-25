@@ -7,12 +7,13 @@
 
   <entity name="AppMobileSettings" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="isStockAppEnabled" title="Stock" default="false"/>
     <boolean name="isProductionAppEnabled" title="Manufacturing" default="false"/>
     <boolean name="isCrmAppEnabled" title="CRM" default="false"/>
     <boolean name="isHelpdeskAppEnabled" title="Helpdesk" default="false"/>
+    <boolean name="isHRAppEnabled" title="HR" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -49,11 +50,18 @@
     <boolean name="isVerifyInventoryLineEnabled"
       title="Enable line verification on inventories" default="false"/>
 
+    <boolean name="isMultiCurrencyEnabled" title="Activate multi currency" default="false"/>
+    <boolean name="isProjectInvoicingEnabled" title="Activate invoicing on projects"
+      default="false"/>
+    <boolean name="isKilometricExpenseLineAllowed" title="Allow kilometric expenses"
+      default="false"/>
+
     <track>
       <field name="isStockAppEnabled" on="UPDATE"/>
       <field name="isProductionAppEnabled" on="UPDATE"/>
       <field name="isCrmAppEnabled" on="UPDATE"/>
       <field name="isHelpdeskAppEnabled" on="UPDATE"/>
+      <field name="isHRAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>
@@ -67,6 +75,9 @@
       <field name="isCustomerDeliveryLineAdditionEnabled" on="UPDATE"/>
       <field name="isSupplierArrivalLineAdditionEnabled" on="UPDATE"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
+      <field name="isMultiCurrencyEnabled" on="UPDATE"/>
+      <field name="isProjectInvoicingEnabled" on="UPDATE"/>
+      <field name="isKilometricExpenseLineAllowed" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

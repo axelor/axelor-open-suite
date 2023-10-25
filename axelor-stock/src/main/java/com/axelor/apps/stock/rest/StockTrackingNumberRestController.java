@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberPostRequest;
@@ -70,9 +69,7 @@ public class StockTrackingNumberRestController {
                 requestBody.getOrigin(),
                 requestBody.getNotes());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        Beans.get(ResponseComputeService.class).compute(trackingNumber),
-        new StockTrackingNumberResponse(trackingNumber));
+    return ResponseConstructor.buildCreateResponse(
+        trackingNumber, new StockTrackingNumberResponse(trackingNumber));
   }
 }

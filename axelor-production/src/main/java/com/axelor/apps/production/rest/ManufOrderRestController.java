@@ -19,7 +19,6 @@
 package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
@@ -174,10 +173,8 @@ public class ManufOrderRestController {
 
     Beans.get(ManufOrderProductRestService.class).addWasteProduct(manufOrder, prodProduct);
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        Beans.get(ResponseComputeService.class).compute(prodProduct),
-        new WastedProductResponse(prodProduct));
+    return ResponseConstructor.buildCreateResponse(
+        prodProduct, new WastedProductResponse(prodProduct));
   }
 
   @Operation(
@@ -227,9 +224,7 @@ public class ManufOrderRestController {
                 manufOrder,
                 requestBody.getProductType());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        Beans.get(ResponseComputeService.class).compute(stockMoveLine),
-        new ManufOrderStockMoveLineResponse(stockMoveLine));
+    return ResponseConstructor.buildCreateResponse(
+        stockMoveLine, new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 }
