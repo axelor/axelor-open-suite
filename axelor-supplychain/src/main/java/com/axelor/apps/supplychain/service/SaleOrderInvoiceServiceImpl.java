@@ -543,7 +543,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     // do not use invoiced partner if the option is disabled
-    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
       saleOrder.setInvoicedPartner(null);
     }
 

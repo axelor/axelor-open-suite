@@ -201,12 +201,21 @@
     <view type="form" name="cost-calculations-form"/>
   </action-view>
 
-  <menuitem name="manufacturing-mps" parent="manufacturing-root" title="MPS" order="1200"
-    if="__config__.app.isApp('supplychain')"/>
+  <menuitem name="manufacturing-mps" parent="manufacturing-root" title="S&amp;OP/MPS"
+    order="1200" if="__config__.app.isApp('supplychain')"/>
+
+  <menuitem name="manufacturing-mps-sop" parent="manufacturing-mps" title="S&amp;OP"
+    action="manufacturing.mps.sop" order="100"/>
+
+  <action-view name="manufacturing.mps.sop" title="Sales and Operations Planning"
+    model="com.axelor.apps.production.db.Sop">
+    <view type="grid" name="sop-grid"/>
+    <view type="form" name="sop-form"/>
+  </action-view>
 
   <menuitem name="manufacturing-mps-master-production-scheduling"
     parent="manufacturing-mps" title="MPS" action="manufacturing.mps.master.production.scheduling"
-    order="100"/>
+    order="200"/>
 
   <action-view name="manufacturing.mps.master.production.scheduling" title="MPS"
     model="com.axelor.apps.supplychain.db.Mrp">
@@ -217,7 +226,7 @@
   </action-view>
 
   <menuitem name="manufacturing-mps-forecast" parent="manufacturing-mps" title="Forecasts"
-    action="manufacturing.mps.forecast" order="200"/>
+    action="manufacturing.mps.forecast" order="300"/>
 
   <action-view name="manufacturing.mps.forecast" title="Forecasts"
     model="com.axelor.apps.supplychain.db.MrpForecast">
@@ -227,7 +236,7 @@
   </action-view>
 
   <menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration"
-    icon="fa-cog" order="300"/>
+    icon="fa-cog" order="400"/>
 
   <menuitem name="manufacturing-mps-conf-mrp-line-type" parent="manufacturing-mps-conf"
     title="Move types" action="manufacturing.mps.conf.mrp.line.type" order="100"/>
@@ -247,15 +256,6 @@
     <view type="grid" name="year-account-grid"/>
     <view type="form" name="year-manuf-order-form"/>
     <domain>self.typeSelect = 3</domain>
-  </action-view>
-
-  <menuitem name="manufacturing-root-sop" parent="manufacturing-root" title="S&amp;OP"
-    action="manufacturing.root.sop" order="1600"/>
-
-  <action-view name="manufacturing.root.sop" title="Sales and Operations Planning"
-    model="com.axelor.apps.production.db.Sop">
-    <view type="grid" name="sop-grid"/>
-    <view type="form" name="sop-form"/>
   </action-view>
 
   <menuitem name="manufacturing-root-mps-charge" parent="manufacturing-root"

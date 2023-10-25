@@ -18,13 +18,11 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -42,7 +40,6 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -298,29 +295,6 @@ public class MoveController {
 
       response.setInfo(flashMessage);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void printMove(ActionRequest request, ActionResponse response) {
-
-    Move move = request.getContext().asType(Move.class);
-    try {
-      move = Beans.get(MoveRepository.class).find(move.getId());
-
-      String moveName = move.getReference().toString();
-
-      String fileLink =
-          ReportFactory.createReport(IReport.ACCOUNT_MOVE, moveName + "-${date}")
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "Timezone", move.getCompany() != null ? move.getCompany().getTimezone() : null)
-              .addParam("moveId", move.getId())
-              .generate()
-              .getFileLink();
-
-      response.setView(ActionView.define(moveName).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -703,6 +677,17 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
 
       response.setAttrs(Beans.get(MoveGroupService.class).getTradingNameOnSelectAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onSelectSubrogationPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setAttrs(
+          Beans.get(MoveGroupService.class).getSubrogationPartnerOnSelectAttrsMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

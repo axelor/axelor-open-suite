@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankstatement;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
@@ -29,14 +28,12 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementLineAFB120Service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -134,58 +131,6 @@ public class BankStatementService {
 
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
     bankStatementRepository.save(bankStatement);
-  }
-
-  /**
-   * Print bank statement.
-   *
-   * @param bankStatement
-   * @return
-   * @throws AxelorException
-   */
-  public String print(BankStatement bankStatement) throws AxelorException {
-    String reportName;
-
-    switch (bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect()) {
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-        reportName = IReport.BANK_STATEMENT_AFB120;
-        break;
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_FILE_UNKNOWN_FORMAT));
-    }
-
-    return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")
-        .addParam("BankStatementId", bankStatement.getId())
-        .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .addParam("Timezone", getTimezone(bankStatement))
-        .addFormat("pdf")
-        .toAttach(bankStatement)
-        .generate()
-        .getFileLink();
-  }
-
-  protected String getTimezone(BankStatement bankStatement) {
-    if (bankStatement.getEbicsPartner() == null
-        || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser() == null
-        || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser().getAssociatedUser()
-            == null
-        || bankStatement
-                .getEbicsPartner()
-                .getDefaultSignatoryEbicsUser()
-                .getAssociatedUser()
-                .getActiveCompany()
-            == null) {
-      return null;
-    }
-    return bankStatement
-        .getEbicsPartner()
-        .getDefaultSignatoryEbicsUser()
-        .getAssociatedUser()
-        .getActiveCompany()
-        .getTimezone();
   }
 
   /**

@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
@@ -39,9 +40,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetController {
@@ -124,37 +125,12 @@ public class BudgetController {
       }
 
       Budget budget = request.getContext().asType(Budget.class);
-      Company company = null;
-      if (budget.getBudgetLevel() != null && budget.getBudgetLevel().getCompany() != null) {
-        company = budget.getBudgetLevel().getCompany();
-      } else if (budget.getBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel().getCompany() != null) {
-        company = budget.getBudgetLevel().getParentBudgetLevel().getCompany();
-      } else if (budget.getBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany()
-              != null) {
-        company =
-            budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany();
-      } else if (budget.getId() != null
-          && request.getContext().getParent() != null
-          && request.getContext().getParent().getParent() != null
-          && request.getContext().getParent().getParent().getParent() != null) {
-        company =
-            request
-                .getContext()
-                .getParent()
-                .getParent()
-                .getParent()
-                .asType(BudgetLevel.class)
-                .getCompany();
-      }
+      Company company = getGlobalCompany(request, response);
 
       if (company != null && company.getId() != null) {
         company = Beans.get(CompanyRepository.class).find(company.getId());
         boolean checkBudgetKey = Beans.get(BudgetService.class).checkBudgetKeyInConfig(company);
+        response.setAttr("accountSet", "hidden", !checkBudgetKey);
         response.setAttr("analyticAxis", "hidden", !checkBudgetKey);
         response.setAttr("analyticAccount", "hidden", !checkBudgetKey);
         response.setAttr("budgetKey", "hidden", !checkBudgetKey);
@@ -181,55 +157,28 @@ public class BudgetController {
       Long companyId = 0L;
       int budgetType = 0;
 
-      if (budget.getBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany()
-              != null) {
-        companyId =
-            budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getParentBudgetLevel()
-                .getCompany()
-                .getId();
+      GlobalBudget globalBudget =
+          Optional.ofNullable(budget.getBudgetLevel())
+              .map(BudgetLevel::getParentBudgetLevel)
+              .map(BudgetLevel::getGlobalBudget)
+              .orElse(null);
+      if (globalBudget != null && globalBudget.getCompany() != null) {
+        companyId = globalBudget.getCompany().getId();
 
-        budgetType =
-            budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getParentBudgetLevel()
-                .getBudgetTypeSelect();
-      } else if (request.getContext() != null
-          && request.getContext().getParent() != null
-          && request.getContext().getParent().getParent() != null
-          && request.getContext().getParent().getParent().getParent() != null
-          && request
-                  .getContext()
-                  .getParent()
-                  .getParent()
-                  .getParent()
-                  .asType(BudgetLevel.class)
-                  .getCompany()
-              != null) {
-        companyId =
-            request
-                .getContext()
-                .getParent()
-                .getParent()
-                .getParent()
-                .asType(BudgetLevel.class)
-                .getCompany()
-                .getId();
+        budgetType = globalBudget.getBudgetTypeSelect();
+      } else {
+        globalBudget =
+            Optional.ofNullable(request.getContext())
+                .map(Context::getParent)
+                .map(Context::getParent)
+                .map(Context::getParent)
+                .map(context -> context.asType(GlobalBudget.class))
+                .orElse(null);
+        if (globalBudget != null && globalBudget.getCompany() != null) {
+          companyId = globalBudget.getCompany().getId();
 
-        budgetType =
-            request
-                .getContext()
-                .getParent()
-                .getParent()
-                .getParent()
-                .asType(BudgetLevel.class)
-                .getBudgetTypeSelect();
+          budgetType = globalBudget.getBudgetTypeSelect();
+        }
       }
 
       response.setAttr(
@@ -249,7 +198,10 @@ public class BudgetController {
       Budget budget = request.getContext().asType(Budget.class);
       boolean periodNotHidden = budget != null && budget.getId() != null;
 
-      response.setAttr("periodsGenerationAssistantPanel", "hidden", !periodNotHidden);
+      response.setAttr(
+          "periodsGenerationAssistantPanel",
+          "hidden",
+          !periodNotHidden || budget.getStatusSelect() == BudgetRepository.STATUS_VALIDATED);
       response.setAttr("budgetLineListPanel", "hidden", !periodNotHidden);
       response.setAttr("budgetLineList", "hidden", !periodNotHidden);
       response.setAttr("$periodNotAvailable", "hidden", periodNotHidden);
@@ -284,38 +236,9 @@ public class BudgetController {
       if (budget.getAnalyticAccount() != null) {
         response.setValue("analyticAccount", null);
       } else {
-        List<Long> idList = new ArrayList<Long>();
-        Company company = null;
-        if (budget != null
-            && budget.getBudgetLevel() != null
-            && budget.getBudgetLevel().getParentBudgetLevel() != null
-            && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel() != null
-            && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany()
-                != null) {
-          company =
-              budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany();
-        } else if (request.getContext() != null
-            && request.getContext().getParent() != null
-            && request.getContext().getParent().getParent() != null
-            && request.getContext().getParent().getParent().getParent() != null
-            && request
-                    .getContext()
-                    .getParent()
-                    .getParent()
-                    .getParent()
-                    .asType(BudgetLevel.class)
-                    .getCompany()
-                != null) {
-          company =
-              request
-                  .getContext()
-                  .getParent()
-                  .getParent()
-                  .getParent()
-                  .asType(BudgetLevel.class)
-                  .getCompany();
-        }
-        idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
+        Company company = getGlobalCompany(request, response);
+
+        List<Long> idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
 
         if (CollectionUtils.isNotEmpty(idList)) {
           response.setAttr(
@@ -338,39 +261,10 @@ public class BudgetController {
             "domain",
             "self.analyticAxis.id = " + budget.getAnalyticAxis().getId());
       } else {
-        List<Long> idList = new ArrayList<Long>();
-        Company company = null;
-        if (budget != null
-            && budget.getBudgetLevel() != null
-            && budget.getBudgetLevel().getParentBudgetLevel() != null
-            && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel() != null
-            && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany()
-                != null) {
-          company =
-              budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany();
-        } else if (request.getContext() != null
-            && request.getContext().getParent() != null
-            && request.getContext().getParent().getParent() != null
-            && request.getContext().getParent().getParent().getParent() != null
-            && request
-                    .getContext()
-                    .getParent()
-                    .getParent()
-                    .getParent()
-                    .asType(BudgetLevel.class)
-                    .getCompany()
-                != null) {
-          company =
-              request
-                  .getContext()
-                  .getParent()
-                  .getParent()
-                  .getParent()
-                  .asType(BudgetLevel.class)
-                  .getCompany();
-        }
+        Company company = getGlobalCompany(request, response);
 
-        idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
+        List<Long> idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
+
         if (CollectionUtils.isNotEmpty(idList)) {
           response.setAttr(
               "analyticAccount",
@@ -383,5 +277,29 @@ public class BudgetController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public Company getGlobalCompany(ActionRequest request, ActionResponse response) {
+    Budget budget = request.getContext().asType(Budget.class);
+    GlobalBudget globalBudget =
+        Optional.ofNullable(budget.getBudgetLevel())
+            .map(BudgetLevel::getParentBudgetLevel)
+            .map(BudgetLevel::getGlobalBudget)
+            .orElse(null);
+    if (globalBudget != null && globalBudget.getCompany() != null) {
+      return globalBudget.getCompany();
+    } else if (budget.getId() != null) {
+      globalBudget =
+          Optional.ofNullable(request.getContext())
+              .map(Context::getParent)
+              .map(Context::getParent)
+              .map(Context::getParent)
+              .map(context -> context.asType(GlobalBudget.class))
+              .orElse(null);
+      if (globalBudget != null && globalBudget.getCompany() != null) {
+        return globalBudget.getCompany();
+      }
+    }
+    return null;
   }
 }

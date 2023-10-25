@@ -7,7 +7,8 @@
     search="self.app.code = :code"/>
 
   <input file="purchase_purchaseConfig.csv" separator=";"
-    type="com.axelor.apps.purchase.db.PurchaseConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.purchase.db.PurchaseConfig" search="self.importId = :importId"
+    update="true"/>
 
   <input file="purchase_purchaseOrder.csv" separator=";"
     type="com.axelor.apps.purchase.db.PurchaseOrder">

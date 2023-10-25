@@ -87,7 +87,7 @@
     onLoad="action-group-product-onload" width="large">
     <toolbar>
       <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-method-show-product-sheet"/>
+        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="action-send-by-email-with-template"/>
     </toolbar>
@@ -472,7 +472,8 @@
       <panel name="taskPanel" title="Task templates"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct"
         if-module="axelor-business-project">
-        <field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
+        <field name="taskTemplateSet" widget="TagSelect" colSpan="12"
+          domain="self.parentTaskTemplate = null or self.parentTaskTemplate in :taskTemplateSet"/>
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-stock"
         if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged"
@@ -795,9 +796,10 @@
     <call class="com.axelor.apps.base.web.ProductController" method="printProductCatalog"/>
   </action-method>
 
-  <action-method name="action-product-method-show-product-sheet">
-    <call class="com.axelor.apps.base.web.ProductController" method="printProductSheet"/>
-  </action-method>
+  <action-validate name="action-product-validate-user-active-company">
+    <error message="No active company for this user, please define an active company."
+      if="!__user__.activeCompany"/>
+  </action-validate>
 
   <action-method name="action-product-method-generate-product-variant">
     <call class="com.axelor.apps.base.web.ProductController" method="generateProductVariants"/>
