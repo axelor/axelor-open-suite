@@ -164,8 +164,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
   }
 
-  @Override
-  public void addMoveLineAnalyticHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+  protected void addMoveLineAnalyticHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
     String fieldNameToSet = this.getMoveLineFieldName(move);
 
     this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);

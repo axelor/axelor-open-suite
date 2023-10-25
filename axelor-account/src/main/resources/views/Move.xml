@@ -583,7 +583,6 @@
   <action-group name="action-move-group-company-onchange">
     <action name="action-move-method-company-onchange"/>
     <action name="action-move-method-check-period"/>
-    <action name="action-move-method-check-accounting-config"/>
   </action-group>
 
   <!-- ACTION METHOD ON CLICK -->
@@ -799,9 +798,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodPermission"/>
   </action-method>
 
-  <action-method name="action-move-method-check-accounting-config">
-    <call class="com.axelor.apps.account.web.MoveController" method="checkAccountingConfig"/>
-  </action-method>
   <!-- ACTION VIEW -->
 
   <action-view name="action-move-view-open-generate-reverse-wizard"

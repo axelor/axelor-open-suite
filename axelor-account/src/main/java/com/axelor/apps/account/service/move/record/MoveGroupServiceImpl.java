@@ -536,15 +536,11 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getCompanyOnChangeAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getCompanyOnChangeAttrsMap(Move move)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    try {
-      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
-    } catch (AxelorException e) {
-      moveAttrsService.addMoveLineAnalyticHidden(move, attrsMap);
-    }
-
+    moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
 

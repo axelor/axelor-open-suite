@@ -80,7 +80,7 @@ public interface MoveGroupService {
   Map<String, Object> getCompanyOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException;
 
-  Map<String, Map<String, Object>> getCompanyOnChangeAttrsMap(Move move);
+  Map<String, Map<String, Object>> getCompanyOnChangeAttrsMap(Move move) throws AxelorException;
 
   Map<String, Object> getPaymentModeOnChangeValuesMap(Move move) throws AxelorException;
 

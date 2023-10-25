@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -33,7 +32,6 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -61,7 +59,6 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected InvoiceTermService invoiceTermService;
   protected PaymentConditionService paymentConditionService;
-  protected AccountConfigService accountConfigService;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -74,8 +71,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       JournalCheckPartnerTypeService journalCheckPartnerTypeService,
       MoveInvoiceTermService moveInvoiceTermService,
       PaymentConditionService paymentConditionService,
-      InvoiceTermService invoiceTermService,
-      AccountConfigService accountConfigService) {
+      InvoiceTermService invoiceTermService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
@@ -86,7 +82,6 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
-    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -274,17 +269,6 @@ public class MoveCheckServiceImpl implements MoveCheckService {
         periodService.getActivePeriod(
             move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
       }
-    } catch (AxelorException axelorException) {
-      return axelorException.getMessage();
-    }
-
-    return null;
-  }
-
-  @Override
-  public String getAccountingConfigAlert(Company company) {
-    try {
-      accountConfigService.getAccountConfig(company);
     } catch (AxelorException axelorException) {
       return axelorException.getMessage();
     }
