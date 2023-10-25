@@ -60,7 +60,7 @@
     </panel>
     <panel sidebar="true" itemSpan="12" showIf="reportExportTypeSelect">
       <field name="template" widget="binary-link" hideIf="reportExportTypeSelect == 2"/>
-      <field name="useLegacyCustomReports"
+      <field name="useLegacyCustomReports" showIf="typeSelect == 3000"
         help="To use legacy custom reports, you have to put the old rptdesign file as a template"/>
     </panel>
   </form>
