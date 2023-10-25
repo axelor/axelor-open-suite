@@ -181,13 +181,14 @@
           title="Display simulated moves" colSpan="12"/>
       </panel>
       <panel name="datesPanel" colSpan="8" showIf="$popup()">
-        <field name="fromDate" colSpan="4" required="true"
-          onChange="action-budget-level-validate-from-to-dates"/>
-        <field name="toDate" colSpan="4" required="true"
-          onChange="action-budget-level-validate-from-to-dates"/>
-        <button name="updateDatesBtn" colSpan="4" title="Update dates"
+        <field name="fromDate" colSpan="3" required="true"
+          onChange="action-budget-level-group-from-to-dates-onchange"/>
+        <field name="toDate" colSpan="3" required="true"
+          onChange="action-budget-level-group-from-to-dates-onchange"/>
+        <button name="updateDatesBtn" colSpan="3" title="Update dates" css="btn-light"
           onClick="save,action-budget-budget-level-method-set-dates"
-          readonlyIf="code == null || name == null || parentBudgetLevel == null || parentBudgetLevel.globalBudget == null || parentBudgetLevel.globalBudget.statusSelect &gt;= 1"/>
+          readonlyIf="code == null || name == null || parentBudgetLevel == null || parentBudgetLevel.globalBudget == null || parentBudgetLevel.globalBudget.statusSelect &gt;= 1"
+          hidden="true"/>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
         title="Total amounts">
