@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.stock.rest;
 
-import com.axelor.apps.base.service.api.ResponseComputeService;
 import com.axelor.apps.stock.db.StockCorrection;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
@@ -68,16 +67,15 @@ public class StockCorrectionRestController {
                 requestBody.fetchProduct(),
                 requestBody.fetchTrackingNumber(),
                 requestBody.getRealQty(),
-                requestBody.fetchReason());
+                requestBody.fetchReason(),
+                requestBody.getComments());
 
     if (requestBody.getStatus() == StockCorrectionRepository.STATUS_VALIDATED) {
       Beans.get(StockCorrectionService.class).validate(stockCorrection);
     }
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        Beans.get(ResponseComputeService.class).compute(stockCorrection),
-        new StockCorrectionResponse(stockCorrection));
+    return ResponseConstructor.buildCreateResponse(
+        stockCorrection, new StockCorrectionResponse(stockCorrection));
   }
 
   @Operation(
@@ -118,6 +116,12 @@ public class StockCorrectionRestController {
           message += "Status updated; ";
         }
       }
+    }
+
+    final String comments = requestBody.getComments();
+    if (comments != null) {
+      Beans.get(StockCorrectionService.class).updateComments(stockCorrection, comments);
+      message += "Comments updated; ";
     }
 
     StockCorrectionResponse objectBody = new StockCorrectionResponse(stockCorrection);

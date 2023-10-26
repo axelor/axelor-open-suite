@@ -34,24 +34,34 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.LeaveExportService;
+import com.axelor.apps.hr.service.leave.LeaveLineService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.JpaSecurity;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.axelor.rpc.Criteria;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Singleton
 public class LeaveController {
@@ -157,8 +167,12 @@ public class LeaveController {
               .add("form", "leave-request-form")
               .param("search-filters", "leave-request-filters");
 
-      actionView.domain(
-          "(self.statusSelect = 1 OR self.statusSelect = 3 OR self.statusSelect = 4)");
+      actionView
+          .domain("(self.statusSelect IN :statusSelectList)")
+          .context(
+              "statusSelectList",
+              List.of(
+                  LeaveRequestRepository.STATUS_VALIDATED, LeaveRequestRepository.STATUS_REFUSED));
 
       if (employee == null || !employee.getHrManager()) {
         actionView
@@ -182,7 +196,7 @@ public class LeaveController {
               .add("grid", "leave-request-grid")
               .add("form", "leave-request-form");
 
-      actionView.domain(Beans.get(LeaveService.class).getLeaveCalendarDomain(user));
+      actionView.domain(Beans.get(LeaveRequestService.class).getLeaveCalendarDomain(user));
       actionView.context("userId", user.getId());
       response.setView(actionView.map());
     } catch (Exception e) {
@@ -235,7 +249,8 @@ public class LeaveController {
       if (employee == null) {
         return;
       }
-      response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
+      response.setValue(
+          "duration", Beans.get(LeaveRequestComputeDurationService.class).computeDuration(leave));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -245,7 +260,8 @@ public class LeaveController {
   public void send(ActionRequest request, ActionResponse response) {
 
     try {
-      LeaveService leaveService = Beans.get(LeaveService.class);
+      LeaveRequestService leaveRequestService = Beans.get(LeaveRequestService.class);
+      LeaveLineService leaveLineService = Beans.get(LeaveLineService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
@@ -257,11 +273,11 @@ public class LeaveController {
         return;
       }
 
-      LeaveLine leaveLine = leaveService.getLeaveLine(leaveRequest);
+      LeaveLine leaveLine = leaveLineService.getLeaveLine(leaveRequest);
       if (leaveLine != null
           && leaveLine.getQuantity().subtract(leaveRequest.getDuration()).signum() < 0) {
         if (!leaveRequest.getLeaveReason().getAllowNegativeValue()
-            && !leaveService.willHaveEnoughDays(leaveRequest)) {
+            && !leaveRequestService.willHaveEnoughDays(leaveRequest)) {
           String instruction = leaveRequest.getLeaveReason().getInstruction();
           if (instruction == null) {
             instruction = "";
@@ -281,9 +297,10 @@ public class LeaveController {
         }
       }
 
-      leaveService.confirm(leaveRequest);
+      Beans.get(LeaveRequestWorkflowService.class).confirm(leaveRequest);
 
-      Message message = leaveService.sendConfirmationEmail(leaveRequest);
+      Message message =
+          Beans.get(LeaveRequestMailService.class).sendConfirmationEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -308,13 +325,12 @@ public class LeaveController {
   public void validate(ActionRequest request, ActionResponse response) {
 
     try {
-      LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
-      leaveService.validate(leaveRequest);
+      Beans.get(LeaveRequestWorkflowService.class).validate(leaveRequest);
 
-      Message message = leaveService.sendValidationEmail(leaveRequest);
+      Message message = Beans.get(LeaveRequestMailService.class).sendValidationEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -344,13 +360,12 @@ public class LeaveController {
   public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
-      LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
-      leaveService.refuse(leaveRequest);
+      Beans.get(LeaveRequestWorkflowService.class).refuse(leaveRequest);
 
-      Message message = leaveService.sendRefusalEmail(leaveRequest);
+      Message message = Beans.get(LeaveRequestMailService.class).sendRefusalEmail(leaveRequest);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -369,11 +384,9 @@ public class LeaveController {
     try {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
       leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
-      LeaveService leaveService = Beans.get(LeaveService.class);
+      Beans.get(LeaveRequestWorkflowService.class).cancel(leave);
 
-      leaveService.cancel(leave);
-
-      Message message = leaveService.sendCancellationEmail(leave);
+      Message message = Beans.get(LeaveRequestMailService.class).sendCancellationEmail(leave);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -420,7 +433,8 @@ public class LeaveController {
 
       if (employee != null) {
         employee = Beans.get(EmployeeRepository.class).find(employee.getId());
-        leaveLine = Beans.get(LeaveService.class).addLeaveReasonOrCreateIt(employee, leaveReason);
+        leaveLine =
+            Beans.get(LeaveLineService.class).addLeaveReasonOrCreateIt(employee, leaveReason);
         response.setValue("leaveLine", leaveLine);
       }
     } catch (AxelorException e) {
@@ -433,5 +447,48 @@ public class LeaveController {
 
     return Beans.get(HRMenuTagService.class)
         .countRecordsTag(LeaveRequest.class, LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void exportLeaveRequest(ActionRequest request, ActionResponse response) {
+    try {
+
+      Context context = request.getContext();
+      List<Long> ids = null;
+
+      if (context.get("_ids") == null) {
+        JpaSecurity security = Beans.get(JpaSecurity.class);
+        ids =
+            Criteria.parse(request)
+                .createQuery(
+                    LeaveRequest.class,
+                    security.getFilter(JpaSecurity.CAN_READ, LeaveRequest.class))
+                .select("id").fetch(0, 0).stream()
+                .map(m -> (Long) m.get("id"))
+                .collect(Collectors.toList());
+      } else {
+        List<Integer> idIntList = (List<Integer>) context.get("_ids");
+        ids = idIntList.stream().map(Long::valueOf).collect(Collectors.toList());
+      }
+
+      MetaFile metaFile = Beans.get(LeaveExportService.class).export(ids, request.getUser());
+
+      if (metaFile != null) {
+        response.setView(
+            ActionView.define(I18n.get("Export file"))
+                .model(LeaveRequest.class.getName())
+                .add(
+                    "html",
+                    "ws/rest/com.axelor.meta.db.MetaFile/"
+                        + metaFile.getId()
+                        + "/content/download?v="
+                        + metaFile.getVersion())
+                .param("download", "true")
+                .map());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

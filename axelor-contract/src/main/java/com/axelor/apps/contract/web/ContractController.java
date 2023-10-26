@@ -21,7 +21,10 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
@@ -33,6 +36,7 @@ import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -266,5 +270,32 @@ public class ContractController {
         "currentContractVersion.contractLineList.yearlyPriceRevalued",
         "hidden",
         !contract.getCurrentContractVersion().getIsPeriodicInvoicing());
+  }
+
+  public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = request.getContext().asType(Contract.class);
+      String strFilter =
+          Beans.get(PartnerLinkService.class)
+              .computePartnerFilter(
+                  contract.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+
+      response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillInvoicedPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = request.getContext().asType(Contract.class);
+      Partner partner =
+          Beans.get(PartnerLinkSupplychainService.class).getPartnerIfOnlyOne(contract.getPartner());
+      if (partner != null) {
+        response.setValue("invoicedPartner", partner);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -73,11 +73,11 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
+    onNew="action-account-group-onnew" onLoad="action-account-move-method-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
-        onClick="save,action-account-move-method-print-move"/>
+        onClick="save,action-method-print-birt"/>
       <button name="reverseBtn" title="Reverse" icon="fa-exchange"
 
         onClick="save,action-move-view-open-generate-reverse-wizard"
@@ -126,22 +126,22 @@
             onChange="action-account-move-method-partner-onchange"
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
-          <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
-            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
-            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
+          <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
+            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || subrogationPartner"
+            form-view="partner-form" grid-view="partner-grid"
+            if="__config__.app.getApp('base')?.activatePartnerRelations"
+            onSelect="action-move-method-subrogation-partner-onselect"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
+          <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
+            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
+            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-method-payment-mode-onchange"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
             onSelect="action-move-method-payment-mode-onselect"/>
-          <field name="partnerBankDetails"
-            showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
-            onChange="action-move-method-partner-bank-details-onchange"
-            onSelect="action-move-method-partner-bank-details-onselect"
-            form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
             readonlyIf="$validatePeriod || statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
@@ -149,7 +149,11 @@
           <field name="dueDate" title="Due date"
             help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."
             hidden="true" readonlyIf="!paymentCondition.isFree" type="date" colSpan="2"/>
-          <spacer/>
+          <field name="partnerBankDetails"
+            showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
+            onChange="action-move-method-partner-bank-details-onchange"
+            onSelect="action-move-method-partner-bank-details-onselect"
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="origin" readonlyIf="$validatePeriod" colSpan="4"
@@ -326,7 +330,7 @@
       <panel name="detailsPanel" title="Details">
         <panel name="relatedToPanel" title="Related to" readonly="true" colSpan="12"
           itemSpan="4" stacked="true"
-          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves">
+          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense &amp;&amp; !expensePayment">
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
             readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher" readonlyIf="$validatePeriod"
@@ -580,11 +584,6 @@
     <action name="action-move-method-check-period"/>
   </action-group>
 
-  <action-group name="action-account-group-onLoad">
-    <action name="action-account-move-method-onLoad"/>
-    <action name="action-move-method-check-period"/>
-  </action-group>
-
   <action-group name="action-move-group-company-onchange">
     <action name="action-move-method-company-onchange"/>
     <action name="action-move-method-check-period"/>
@@ -614,10 +613,6 @@
 
   <action-method name="action-move-method-show-move-lines">
     <call class="com.axelor.apps.account.web.MoveController" method="showMoveLines"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-print-move">
-    <call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
   </action-method>
 
   <action-method name="action-move-method-set-status-simulate">
@@ -744,6 +739,11 @@
 
   <action-method name="action-move-method-trading-name-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectTradingName"/>
+  </action-method>
+
+  <action-method name="action-move-method-subrogation-partner-onselect">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onSelectSubrogationPartner"/>
   </action-method>
 
   <action-method name="action-move-method-partner-bank-details-onchange">

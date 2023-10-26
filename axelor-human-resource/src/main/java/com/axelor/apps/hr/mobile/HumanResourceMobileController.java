@@ -51,7 +51,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
@@ -538,7 +538,7 @@ public class HumanResourceMobileController {
                 requestData.get("toDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
       leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
-      leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
+      leave.setDuration(Beans.get(LeaveRequestComputeDurationService.class).computeDuration(leave));
       leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
       if (requestData.get("comments") != null) {
         leave.setComments(requestData.get("comments").toString());

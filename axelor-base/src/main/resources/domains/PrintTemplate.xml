@@ -27,7 +27,6 @@
       ref="com.axelor.apps.base.db.PrintTemplate"/>
     <string name="metaModelDefaultPath" title="Model default Path" large="true"/>
 
-    <boolean name="isFooterUnderLine" title="UnderLine"/>
     <decimal name="footerFontSize" title="Font Size"/>
     <string name="footerTextAlignment" title="Text Alignment"
       selection="base.print.settings.footer.text.alignment.select"/>

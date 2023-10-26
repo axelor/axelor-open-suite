@@ -140,8 +140,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         log.debug(
             "Overpayment usage : credit move line (remaining to pay): {})",
-            creditMoveLine.getAmountRemaining());
-        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
+            creditMoveLine.getAmountRemaining().abs());
+        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining().abs());
       }
       for (MoveLine debitMoveLine : debitMoveLines) {
 
@@ -155,8 +155,8 @@ public class PaymentServiceImpl implements PaymentService {
 
       for (MoveLine creditMoveLine : creditMoveLines) {
         for (MoveLine debitMoveLine : debitMoveLines) {
-          if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-              && debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
+              && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
             try {
               createReconcile(
                   debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
@@ -195,10 +195,11 @@ public class PaymentServiceImpl implements PaymentService {
     Reconcile reconcile;
     if (debitMoveLine.getMaxAmountToReconcile() != null
         && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
-      amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
+      amount =
+          debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining().abs());
       debitMoveLine.setMaxAmountToReconcile(null);
     } else {
-      amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
+      amount = creditMoveLine.getAmountRemaining().abs().min(debitMoveLine.getAmountRemaining());
     }
     log.debug("amount : {}", amount);
     log.debug("debitTotalRemaining : {}", debitTotalRemaining);
@@ -412,7 +413,7 @@ public class PaymentServiceImpl implements PaymentService {
                 break;
               }
 
-              BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining());
+              BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining().abs());
 
               // Gestion du passage en 580
               if (i == 0) {

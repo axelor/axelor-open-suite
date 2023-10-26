@@ -42,6 +42,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -91,6 +92,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected JournalService journalService;
   protected UserRepository userRepo;
   protected PfpService pfpService;
 
@@ -103,6 +105,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
+      JournalService journalService,
       UserRepository userRepo,
       PfpService pfpService) {
     this.invoiceTermRepo = invoiceTermRepo;
@@ -113,6 +116,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.userRepo = userRepo;
+    this.journalService = journalService;
     this.pfpService = pfpService;
   }
 
@@ -1107,6 +1111,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());
 
+      this.setSubrogationPartner(invoiceTerm);
+
       if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
         invoiceTerm.setOrigin(invoice.getInvoiceId());
       } else {
@@ -1119,20 +1125,43 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     } else if (moveLine != null) {
       invoiceTerm.setOrigin(moveLine.getOrigin());
 
+      if (moveLine.getPartner() != null) {
+        invoiceTerm.setPartner(moveLine.getPartner());
+      }
+
       if (move != null) {
         invoiceTerm.setCompany(move.getCompany());
         invoiceTerm.setCurrency(move.getCurrency());
-      }
 
-      if (moveLine.getPartner() != null) {
-        invoiceTerm.setPartner(moveLine.getPartner());
-      } else {
-        invoiceTerm.setPartner(move.getPartner());
+        if (invoiceTerm.getPartner() == null) {
+          invoiceTerm.setPartner(move.getPartner());
+        }
+
+        if (journalService.isSubrogationOk(move.getJournal())) {
+          this.setSubrogationPartner(invoiceTerm);
+        }
       }
     }
 
-    if (moveLine != null && invoiceTerm.getOriginDate() == null) {
+    if (moveLine != null && move != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
+    }
+  }
+
+  protected void setSubrogationPartner(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
+      if (invoiceTerm.getInvoice() != null) {
+        invoiceTerm.setSubrogationPartner(invoiceTerm.getInvoice().getSubrogationPartner());
+      } else {
+        Partner subrogationPartner =
+            Optional.of(invoiceTerm)
+                .map(InvoiceTerm::getMoveLine)
+                .map(MoveLine::getMove)
+                .map(Move::getSubrogationPartner)
+                .orElse(null);
+
+        invoiceTerm.setSubrogationPartner(subrogationPartner);
+      }
     }
   }
 
@@ -1651,7 +1680,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
-        && moveLine.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
+        && moveLine.getAmountRemaining().abs().compareTo(thresholdDistanceFromRegulation) <= 0) {
       BigDecimal reconcileAmount = this.getReconcileAmount(moveLine);
       List<InvoiceTerm> unpaidInvoiceTermList =
           moveLine.getInvoiceTermList().stream()
@@ -1695,7 +1724,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal amountToPay,
       BigDecimal currencyRate) {
     BigDecimal moveLineAmountRemaining =
-        companyAmountRemaining.subtract(amountToPayInCompanyCurrency);
+        companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
     BigDecimal invoiceTermAmountRemaining =
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmountRemaining)

@@ -4,10 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
   <input file="account_accountType.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountType" search="self.name = :name"/>
+    type="com.axelor.apps.account.db.AccountType"
+    search="self.name = :name AND self.importId = :importId"/>
 
   <input file="account_fiscalPosition.csv" separator=";"
-    type="com.axelor.apps.account.db.FiscalPosition" search="self.code = :code"/>
+    type="com.axelor.apps.account.db.FiscalPosition"
+    search="self.code = :code AND self.importId = :importId"/>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account">
     <bind to="company" search="self.id = :_companyId" update="true"/>
@@ -31,7 +33,7 @@
   </input>
 
   <input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax"
-    search="self.code = :code"/>
+    search="self.code = :code AND self.importId = :importId"/>
 
   <input file="account_taxLine.csv" separator=";" type="com.axelor.apps.account.db.TaxLine"
     search="self.tax.code = :tax_code AND self.importId = :importId">
@@ -43,7 +45,7 @@
   </input>
 
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
-    search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
+    search="self.importId = :importId AND self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
 
   <input file="account_accountManagement.csv" separator=";"
     type="com.axelor.apps.account.db.AccountManagement">
