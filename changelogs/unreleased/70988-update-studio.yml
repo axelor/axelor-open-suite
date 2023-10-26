@@ -1,0 +1,5 @@
+---
+title: "App builder: update studio dependency to 1.2.5 to get the following fix:"
+type: fix
+description: |
+  "- fixed StudioActionView duplication on every save"
