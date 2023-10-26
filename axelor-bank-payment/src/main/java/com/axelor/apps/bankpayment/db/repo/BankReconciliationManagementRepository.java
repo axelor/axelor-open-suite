@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -47,7 +47,7 @@ public class BankReconciliationManagementRepository extends BankReconciliationRe
   public BankReconciliation save(BankReconciliation entity) {
 
     if (Strings.isNullOrEmpty(entity.getName())) {
-      entity.setName(Beans.get(BankReconciliationCreateServiceImpl.class).computeName(entity));
+      entity.setName(Beans.get(BankReconciliationCreateService.class).computeName(entity));
     }
 
     return super.save(entity);
