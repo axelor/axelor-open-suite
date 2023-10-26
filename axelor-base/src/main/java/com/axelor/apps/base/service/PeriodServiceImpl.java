@@ -305,7 +305,7 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   @Override
-  @Transactional(rollbackOn = AxelorException.class)
+  @Transactional
   public void resetStatusSelect(Period period) {
     if (period != null) {
       period.setStatusSelect(this.oldPeriodStatusSelect);
