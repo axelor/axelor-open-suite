@@ -168,6 +168,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
           .map(MoveLine::getInvoiceTermList)
           .filter(CollectionUtils::isNotEmpty)
           .flatMap(Collection::stream)
+          .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
           .forEach(it -> it.setSubrogationPartner(move.getSubrogationPartner()));
     }
   }

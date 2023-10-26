@@ -73,7 +73,7 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
+    onNew="action-account-group-onnew" onLoad="action-account-move-method-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
@@ -128,8 +128,9 @@
             grid-view="partner-grid"/>
           <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
             showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || subrogationPartner"
-            readonlyIf="amountRemaining != inTaxTotal" form-view="partner-form"
-            grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+            form-view="partner-form" grid-view="partner-grid"
+            if="__config__.app.getApp('base')?.activatePartnerRelations"
+            onSelect="action-move-method-subrogation-partner-onselect"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
@@ -575,11 +576,6 @@
     <action name="action-move-method-check-period"/>
   </action-group>
 
-  <action-group name="action-account-group-onLoad">
-    <action name="action-account-move-method-onLoad"/>
-    <action name="action-move-method-check-period"/>
-  </action-group>
-
   <action-group name="action-move-group-company-onchange">
     <action name="action-move-method-company-onchange"/>
     <action name="action-move-method-check-period"/>
@@ -735,6 +731,11 @@
 
   <action-method name="action-move-method-trading-name-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectTradingName"/>
+  </action-method>
+
+  <action-method name="action-move-method-subrogation-partner-onselect">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onSelectSubrogationPartner"/>
   </action-method>
 
   <action-method name="action-move-method-partner-bank-details-onchange">
