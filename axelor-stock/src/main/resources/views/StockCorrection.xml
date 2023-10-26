@@ -49,6 +49,9 @@
       <field name="stockCorrectionReason" canEdit="false" colSpan="12" required="true"/>
       <field name="validationDateT"/>
     </panel>
+    <panel name="commentsPanel" title="Comments" readonlyIf="statusSelect == 2" colSpan="12">
+      <field name="comments" showTitle="false" colSpan="12" widget="html"/>
+    </panel>
   </form>
 
   <action-group name="action-stock-correction-onnew-group">

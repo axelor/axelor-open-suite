@@ -26,7 +26,7 @@
   <input file="sale_saleBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch"/>
 
   <input file="sale_saleConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId" update="true"/>
 
   <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.apps.sale.db.SaleOrder">

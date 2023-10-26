@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
@@ -48,15 +49,18 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
   protected ProductionOrderRepository productionOrderRepo;
+  protected ProductionConfigService productionConfigService;
 
   @Inject
   public ProductionOrderServiceImpl(
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
-      ProductionOrderRepository productionOrderRepo) {
+      ProductionOrderRepository productionOrderRepo,
+      ProductionConfigService productionConfigService) {
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
     this.productionOrderRepo = productionOrderRepo;
+    this.productionConfigService = productionConfigService;
   }
 
   public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
@@ -134,6 +138,44 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       throws AxelorException {
 
     ManufOrder manufOrder =
+        generateManufOrder(
+            product,
+            billOfMaterial,
+            qtyRequested,
+            startDate,
+            endDate,
+            saleOrder,
+            saleOrderLine,
+            manufOrderOriginType,
+            null);
+
+    return addManufOrder(productionOrder, manufOrder);
+  }
+
+  @Override
+  public ProductionOrder addManufOrder(ProductionOrder productionOrder, ManufOrder manufOrder) {
+    if (manufOrder != null) {
+      productionOrder.addManufOrderSetItem(manufOrder);
+      manufOrder.addProductionOrderSetItem(productionOrder);
+    }
+
+    productionOrder = updateProductionOrderStatus(productionOrder);
+    return productionOrderRepo.save(productionOrder);
+  }
+
+  @Override
+  public ManufOrder generateManufOrder(
+      Product product,
+      BillOfMaterial billOfMaterial,
+      BigDecimal qtyRequested,
+      LocalDateTime startDate,
+      LocalDateTime endDate,
+      SaleOrder saleOrder,
+      SaleOrderLine saleOrderLine,
+      ManufOrderOriginType manufOrderOriginType,
+      ManufOrder manufOrderParent)
+      throws AxelorException {
+    ManufOrder manufOrder =
         manufOrderService.generateManufOrder(
             product,
             qtyRequested,
@@ -150,6 +192,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         manufOrder.setClientPartner(saleOrder.getClientPartner());
         manufOrder.setMoCommentFromSaleOrder("");
         manufOrder.setMoCommentFromSaleOrderLine("");
+
         if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
           manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
         }
@@ -158,12 +201,10 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
           manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
       }
-      productionOrder.addManufOrderSetItem(manufOrder);
-      manufOrder.addProductionOrderSetItem(productionOrder);
-    }
 
-    productionOrder = updateProductionOrderStatus(productionOrder);
-    return productionOrderRepo.save(productionOrder);
+      manufOrder.setParentMO(manufOrderParent);
+    }
+    return manufOrder;
   }
 
   @Override

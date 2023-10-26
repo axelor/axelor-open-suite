@@ -151,7 +151,14 @@ public class SaleOrderLineController {
 
   public void checkBudget(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      SaleOrder saleOrder;
+      if (request.getContext().getParent() == null) {
+        saleOrder =
+            Beans.get(SaleOrderRepository.class)
+                .find(Long.valueOf((Integer) request.getContext().get("_parentId")));
+      } else {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      }
       if (saleOrder != null && saleOrder.getCompany() != null) {
 
         response.setAttr(

@@ -65,22 +65,6 @@ public class SubrogationReleaseController {
     }
   }
 
-  public void printToPDF(ActionRequest request, ActionResponse response) {
-    try {
-      SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
-      String name =
-          String.format(
-              "%s %s", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
-      String fileLink =
-          Beans.get(SubrogationReleaseService.class).printToPDF(subrogationRelease, name);
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-      response.setReload(true);
-    } catch (Exception e) {
-      response.setError(e.getMessage());
-      TraceBackService.trace(e);
-    }
-  }
-
   public void exportToCSV(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
