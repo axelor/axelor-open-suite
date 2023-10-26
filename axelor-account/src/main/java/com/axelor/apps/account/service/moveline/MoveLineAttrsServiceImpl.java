@@ -34,7 +34,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -281,11 +280,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.addAttr(
         "taxLine",
         "required",
-        (moveLineTaxService.isMoveLineTaxAccount(moveLine)
-                && Lists.newArrayList(
-                        MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
-                        MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-                    .contains(move.getFunctionalOriginSelect()))
+        moveLineTaxService.isMoveLineTaxAccountRequired(moveLine, move.getFunctionalOriginSelect())
             || (moveLine.getAccount() != null
                 && moveLine.getAccount().getIsTaxRequiredOnMoveLine()),
         attrsMap);

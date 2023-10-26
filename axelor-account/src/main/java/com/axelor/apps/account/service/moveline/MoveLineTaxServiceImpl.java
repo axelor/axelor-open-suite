@@ -312,8 +312,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
   }
 
-  @Override
-  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
+  protected boolean isMoveLineTaxAccount(MoveLine moveLine) {
     return moveLine.getAccount() != null
         && moveLine.getAccount().getAccountType() != null
         && AccountTypeRepository.TYPE_TAX.equals(
@@ -354,14 +353,20 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     for (MoveLine moveLine : moveLineList) {
       if (moveLine.getMove() != null
-          && this.isMoveLineTaxAccount(moveLine)
-          && Lists.newArrayList(
-                  MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-              .contains(moveLine.getMove().getFunctionalOriginSelect())
+          && this.isMoveLineTaxAccountRequired(
+              moveLine, moveLine.getMove().getFunctionalOriginSelect())
           && moveLine.getTaxLine() == null) {
         moveLineWithoutTaxList.add(moveLine.getId());
       }
     }
     return moveLineWithoutTaxList;
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect) {
+    return this.isMoveLineTaxAccount(moveLine)
+        && Lists.newArrayList(
+                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+            .contains(functionalOriginSelect);
   }
 }
