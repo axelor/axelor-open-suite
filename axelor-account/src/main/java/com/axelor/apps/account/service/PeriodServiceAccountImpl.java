@@ -77,23 +77,21 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   protected void resetStatus(Period period) {
     super.resetStatusSelect(period);
     periodRepo.save(period);
-
   }
-
 
   @Transactional(rollbackOn = {Exception.class})
   protected void processClosePeriod(Period period) throws AxelorException {
-      if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
-        moveValidateService.accountingMultiple(
-                getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_DAYBOOK));
-        period = periodRepo.find(period.getId());
-      }
-      moveRemoveService.deleteMultiple(
-              getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
-
+    if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
+      moveValidateService.accountingMultiple(
+          getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_DAYBOOK));
       period = periodRepo.find(period.getId());
+    }
+    moveRemoveService.deleteMultiple(
+        getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
 
-      super.close(period);
+    period = periodRepo.find(period.getId());
+
+    super.close(period);
   }
 
   public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status) {
