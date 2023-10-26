@@ -454,7 +454,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           tmp.setFromDate(start);
           ratio =
               durationService.computeRatio(
-                  start, end, contract.getCurrentContractVersion().getInvoicingDuration());
+                  start, end, contract.getStartDate(), contract.getInvoicePeriodEndDate());
         }
 
         tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
