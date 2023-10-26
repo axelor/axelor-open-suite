@@ -882,6 +882,8 @@ public class MoveController {
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
       if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+        response.setAttrs(Beans.get(MoveGroupService.class).getMassEntryAttrsMap(move));
+
         MoveAttrsService moveAttrsService = Beans.get(MoveAttrsService.class);
         moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
         moveAttrsService.addMassEntryHidden(move, attrsMap);
