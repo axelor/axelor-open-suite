@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -44,6 +45,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
@@ -294,46 +296,61 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     Integer durationInMonth = fixedAssetCategory.getDurationInMonth();
     BigDecimal degressiveCoef = fixedAssetCategory.getDegressiveCoef();
 
-    fixedAsset.setComputationMethodSelect(computationMethodSelect);
-    fixedAsset.setIfrsComputationMethodSelect(computationMethodSelect);
     fixedAsset.setFiscalComputationMethodSelect(computationMethodSelect);
-
-    if (computationMethodSelect.equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
-      fixedAsset.setFirstDepreciationDateInitSelect(
-          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
-      fixedAsset.setFiscalFirstDepreciationDateInitSelect(
-          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
-      fixedAsset.setIfrsFirstDepreciationDateInitSelect(
-          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE);
-    } else {
-      fixedAsset.setFirstDepreciationDateInitSelect(
-          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
-      fixedAsset.setFiscalFirstDepreciationDateInitSelect(
-          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
-      fixedAsset.setIfrsFirstDepreciationDateInitSelect(
-          FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION);
-    }
-
-    fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
+    fixedAsset.setFiscalFirstDepreciationDateInitSelect(
+        getFirstDepreciationDateInitSelect(computationMethodSelect));
     fixedAsset.setFiscalNumberOfDepreciation(numberOfDepreciation);
-    fixedAsset.setIfrsNumberOfDepreciation(numberOfDepreciation);
-
-    fixedAsset.setPeriodicityInMonth(periodicityInMonth);
     fixedAsset.setFiscalPeriodicityInMonth(periodicityInMonth);
-    fixedAsset.setIfrsPeriodicityInMonth(periodicityInMonth);
-
-    fixedAsset.setPeriodicityTypeSelect(periodicityTypeSelect);
     fixedAsset.setFiscalPeriodicityTypeSelect(periodicityTypeSelect);
-    fixedAsset.setIfrsPeriodicityTypeSelect(periodicityTypeSelect);
-
-    fixedAsset.setDurationInMonth(durationInMonth);
     fixedAsset.setFiscalDurationInMonth(durationInMonth);
-    fixedAsset.setIfrsDurationInMonth(durationInMonth);
-
-    fixedAsset.setDegressiveCoef(degressiveCoef);
     fixedAsset.setFiscalDegressiveCoef(degressiveCoef);
-    fixedAsset.setIfrsDegressiveCoef(degressiveCoef);
 
+    checkPlansToCopy(fixedAsset);
+  }
+
+  protected void checkPlansToCopy(FixedAsset fixedAsset) {
+    List<String> depreciationPlans =
+        Arrays.asList(
+            (fixedAsset.getFixedAssetCategory().getDepreciationPlanSelect().replace(" ", ""))
+                .split(","));
+    if (ObjectUtils.notEmpty(depreciationPlans)
+        && depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+      if (depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+        copyFiscalPlanToEconomicPlan(fixedAsset);
+      }
+      if (depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+        copyFiscalPlanToIfrsPlan(fixedAsset);
+      }
+    }
+  }
+
+  protected void copyFiscalPlanToEconomicPlan(FixedAsset fixedAsset) {
+    fixedAsset.setComputationMethodSelect(fixedAsset.getFiscalComputationMethodSelect());
+    fixedAsset.setFirstDepreciationDateInitSelect(
+        fixedAsset.getFiscalFirstDepreciationDateInitSelect());
+    fixedAsset.setNumberOfDepreciation(fixedAsset.getFiscalNumberOfDepreciation());
+    fixedAsset.setPeriodicityInMonth(fixedAsset.getFiscalPeriodicityInMonth());
+    fixedAsset.setPeriodicityTypeSelect(fixedAsset.getFiscalPeriodicityTypeSelect());
+    fixedAsset.setDurationInMonth(fixedAsset.getFiscalPeriodicityTypeSelect());
+    fixedAsset.setDegressiveCoef(fixedAsset.getFiscalDegressiveCoef());
+    fixedAsset.setIsEqualToFiscalDepreciation(true);
+  }
+
+  protected void copyFiscalPlanToIfrsPlan(FixedAsset fixedAsset) {
+    fixedAsset.setIfrsComputationMethodSelect(fixedAsset.getFiscalComputationMethodSelect());
+    fixedAsset.setIfrsFirstDepreciationDateInitSelect(
+        fixedAsset.getFiscalFirstDepreciationDateInitSelect());
+    fixedAsset.setIfrsNumberOfDepreciation(fixedAsset.getFiscalNumberOfDepreciation());
+    fixedAsset.setIfrsPeriodicityInMonth(fixedAsset.getFiscalPeriodicityInMonth());
+    fixedAsset.setIfrsPeriodicityTypeSelect(fixedAsset.getFiscalPeriodicityTypeSelect());
+    fixedAsset.setIfrsDurationInMonth(fixedAsset.getFiscalPeriodicityTypeSelect());
+    fixedAsset.setIfrsDegressiveCoef(fixedAsset.getFiscalDegressiveCoef());
     fixedAsset.setIsIfrsEqualToFiscalDepreciation(true);
+  }
+
+  protected int getFirstDepreciationDateInitSelect(String computationMethodSelect) {
+    return computationMethodSelect.equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)
+        ? FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+        : FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION;
   }
 }
