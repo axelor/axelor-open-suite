@@ -703,4 +703,16 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Map<String, Object>> getMassEntryAttrsMap(Move move) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+    moveAttrsService.addMassEntryHidden(move, attrsMap);
+    moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
+    moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+
+    return attrsMap;
+  }
 }
