@@ -32,9 +32,6 @@ public interface MoveAttrsService {
 
   void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException;
-
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addPaymentModeDomain(Move move, Map<String, Map<String, Object>> attrsMap);

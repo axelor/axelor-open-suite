@@ -26,6 +26,10 @@ import java.util.Map;
 public interface AnalyticAttrsService {
 
   void addAnalyticAxisAttrs(
+      Company company, int massEntryStatusSelect, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
+
+  void addAnalyticAxisAttrs(
       Company company, String parentField, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
 
