@@ -23,10 +23,13 @@ import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.stock.db.StockMoveLine;
+import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -102,5 +105,26 @@ public interface OperationOrderService {
   void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException;
 
-  public void createBarcode(OperationOrder operationOrder);
+  void createBarcode(OperationOrder operationOrder);
+
+  long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
+      throws AxelorException;
+
+  /**
+   * Computes the duration of all the {@link OperationOrderDuration} of {@code operationOrder}
+   *
+   * @param operationOrder An operation order
+   * @return Real duration of {@code operationOrder}
+   */
+  Duration computeRealDuration(OperationOrder operationOrder);
+
+  LocalDateTime getNextOperationDate(OperationOrder operationOrder);
+
+  LocalDateTime getLastOperationDate(OperationOrder operationOrder);
+
+  long getDuration(OperationOrder operationOrder) throws AxelorException;
+
+  List<OperationOrder> getSortedOperationOrderList(List<OperationOrder> operationOrders);
+
+  List<OperationOrder> getReversedSortedOperationOrderList(List<OperationOrder> operationOrders);
 }

@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
-import java.io.IOException;
 import java.util.List;
 
 public interface LunchVoucherMgtService {
@@ -36,8 +35,6 @@ public interface LunchVoucherMgtService {
       List<LunchVoucherMgtLine> oldLunchVoucherMgtLines,
       Company company)
       throws AxelorException;
-
-  public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException;
 
   public int checkStock(Company company, int numberToUse) throws AxelorException;
 

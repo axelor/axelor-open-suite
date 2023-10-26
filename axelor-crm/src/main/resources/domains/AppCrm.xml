@@ -6,7 +6,7 @@
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppCrm" cacheable="true">
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <integer name="assignableUsers" title="Assignable Users"
       selection="crm.app.crm.assignable.user.select"/>
@@ -19,6 +19,10 @@
     <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
     <boolean name="agenciesManagement" title="Agencies management"/>
     <boolean name="crmProcessOnPartner" title="Manage status on prospect" default="false"/>
+    <boolean name="isSearchFunctionalityEnabled" title="Enable search functionality"
+      default="false"/>
+    <boolean name="isCorporatePartnerEnabled" title="Enable corporate partner"
+      default="false"/>
     <many-to-one name="closedWinOpportunityStatus"
       ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"/>
     <many-to-one name="closedLostOpportunityStatus"

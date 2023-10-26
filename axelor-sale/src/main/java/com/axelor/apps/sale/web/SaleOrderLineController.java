@@ -55,13 +55,9 @@ import java.util.Optional;
 public class SaleOrderLineController {
 
   public void compute(ActionRequest request, ActionResponse response) {
-
     Context context = request.getContext();
-
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
-
     try {
       compute(response, saleOrder, saleOrderLine);
     } catch (Exception e) {

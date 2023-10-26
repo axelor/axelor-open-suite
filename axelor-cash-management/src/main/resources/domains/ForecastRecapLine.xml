@@ -20,6 +20,8 @@
       selection="forecast.recap.line.related.to.select"/>
     <long name="relatedToSelectId"/>
     <string name="relatedToSelectName" title="Reference"/>
+    <string name="relatedToSelectPaymentMode" title="Payment mode"/>
+    <string name="relatedToSelectBankDetails" title="Bank details"/>
 
   </entity>
 

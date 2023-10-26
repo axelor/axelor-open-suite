@@ -26,7 +26,7 @@
   </selection>
 
   <selection name="budget.budget.level.type.select">
-    <option value="global">Global Level</option>
+    <option value="global">Global budget</option>
     <option value="group">Group Level</option>
     <option value="section">Section Level</option>
   </selection>
@@ -45,4 +45,52 @@
     <option value="3">Investment</option>
     <option value="4">Purchase and investment</option>
   </selection>
+
+  <selection name="global.budget.budget.type.select">
+    <option value="1">Budget.Purchase</option>
+    <option value="2">Budget.Sale</option>
+    <option value="3">Investment</option>
+    <option value="4">Purchase and investment</option>
+  </selection>
+
+  <selection name="global.budget.status.select">
+    <option value="0">Draft</option>
+    <option value="1">Validated structure</option>
+    <option value="2">Validated</option>
+    <option value="3">Archived</option>
+  </selection>
+
+  <selection name="budget.scenario.entry.method.select">
+    <option value="0">Manual</option>
+    <option value="1">Formula</option>
+  </selection>
+
+  <selection name="budget.scenario.category.select">
+    <option value="1">Revenue</option>
+    <option value="2">RH</option>
+    <option value="3">Production</option>
+    <option value="4">Results</option>
+    <option value="5">Current Expenses</option>
+    <option value="6">Operations</option>
+    <option value="7">Financing</option>
+    <option value="8">Investment</option>
+    <option value="9">Tax</option>
+  </selection>
+
+  <selection name="app.budget.check.missing.select">
+    <option value="0">None</option>
+    <option value="1">Optional</option>
+    <option value="2">Required</option>
+  </selection>
+
+  <selection name="budget.scenario.status.select">
+    <option value="0">Draft</option>
+    <option value="1">Validated</option>
+  </selection>
+
+  <selection name='accounting.report.type.select'
+    id="budget.accounting.report.type.select">
+    <option order="25" value="25">Revenue and expenditure state</option>
+  </selection>
+
 </object-views>

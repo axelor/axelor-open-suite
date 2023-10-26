@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,7 @@ public interface ConformityCertificatePrintService {
    */
   String printConformityCertificates(List<Long> ids) throws IOException;
 
-  ReportSettings prepareReportSettings(StockMove stockMove, String format) throws AxelorException;
+  File prepareReportSettings(StockMove stockMove, String format) throws AxelorException;
 
   File print(StockMove stockMove, String format) throws AxelorException;
 
