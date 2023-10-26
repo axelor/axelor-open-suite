@@ -343,6 +343,8 @@ public class InvoiceToolService {
     copy.setNextDueDate(getNextDueDate(copy));
     setPfpStatus(copy);
     copy.setHasPendingPayments(false);
+    copy.setSubrogationRelease(null);
+    copy.setSubrogationReleaseMove(null);
   }
 
   /**
