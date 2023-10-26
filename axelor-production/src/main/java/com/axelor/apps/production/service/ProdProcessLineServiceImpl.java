@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
@@ -119,6 +120,16 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     }
 
     return plannedDuration;
+  }
+
+  @Override
+  public long computeEntireDuration(ProdProcess prodProcess, BigDecimal qty)
+      throws AxelorException {
+    long totalDuration = 0;
+    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+      totalDuration += this.computeEntireCycleDuration(null, prodProcessLine, qty);
+    }
+    return totalDuration;
   }
 
   protected Pair<Long, BigDecimal> getDurationNbCyclesPair(
