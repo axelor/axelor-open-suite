@@ -91,10 +91,11 @@ public class ContractVersionController {
         response.setError(I18n.get(ContractExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
         return;
       }
-      Beans.get(ContractService.class)
-          .activeNextVersion(
-              contractVersion.getNextContract(),
-              getTodayDate(contractVersion.getNextContract().getCompany()));
+      LocalDate date =
+          contractVersion.getSupposedActivationDate() == null
+              ? getTodayDate(contractVersion.getNextContract().getCompany())
+              : contractVersion.getSupposedActivationDate();
+      Beans.get(ContractService.class).activeNextVersion(contractVersion.getNextContract(), date);
       response.setView(
           ActionView.define("Contract")
               .model(Contract.class.getName())
