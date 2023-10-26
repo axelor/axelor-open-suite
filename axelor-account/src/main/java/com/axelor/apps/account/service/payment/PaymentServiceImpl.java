@@ -378,7 +378,7 @@ public class PaymentServiceImpl implements PaymentService {
       for (Map<Account, BigDecimal> map : allMap) {
         Account accountMap = (Account) map.values().toArray()[0];
         BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
-        BigDecimal amountDebit = amountMap.min(remainingPaidAmount2);
+        BigDecimal amountDebit = amountMap.abs().min(remainingPaidAmount2);
         if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
           BigDecimal currencyRate =
               currencyService.getCurrencyConversionRate(move.getCurrency(), company.getCurrency());
