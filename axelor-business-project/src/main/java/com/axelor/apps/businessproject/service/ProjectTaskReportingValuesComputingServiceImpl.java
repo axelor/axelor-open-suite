@@ -97,7 +97,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     computeProjectTaskTimes(projectTask);
     computeFinancialReporting(projectTask, project);
-
+    projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
     projectTaskRepo.save(projectTask);
   }
 
