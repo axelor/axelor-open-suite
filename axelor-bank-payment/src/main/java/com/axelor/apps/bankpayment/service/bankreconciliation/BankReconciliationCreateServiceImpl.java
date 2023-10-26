@@ -35,14 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
 
-public class BankReconciliationCreateService {
+public class BankReconciliationCreateServiceImpl {
 
   protected BankReconciliationRepository bankReconciliationRepository;
   protected CompanyRepository companyRepository;
   protected BankReconciliationService bankReconciliationService;
 
   @Inject
-  public BankReconciliationCreateService(
+  public BankReconciliationCreateServiceImpl(
       BankReconciliationRepository bankReconciliationRepository,
       CompanyRepository companyRepository,
       BankReconciliationService bankReconciliationService) {

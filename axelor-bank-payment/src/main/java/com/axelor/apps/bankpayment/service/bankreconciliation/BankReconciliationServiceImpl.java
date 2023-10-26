@@ -60,7 +60,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
+import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120ServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -120,7 +120,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected BankDetailsService bankDetailsService;
-  protected BankReconciliationLoadAFB120Service bankReconciliationLoadAFB120Service;
+  protected BankReconciliationLoadAFB120ServiceImpl bankReconciliationLoadAFB120ServiceImpl;
   protected BankReconciliationLoadService bankReconciliationLoadService;
   protected JournalRepository journalRepository;
   protected AccountRepository accountRepository;
@@ -150,7 +150,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       BankDetailsService bankDetailsService,
-      BankReconciliationLoadAFB120Service bankReconciliationLoadAFB120Service,
+      BankReconciliationLoadAFB120ServiceImpl bankReconciliationLoadAFB120ServiceImpl,
       BankReconciliationLoadService bankReconciliationLoadService,
       JournalRepository journalRepository,
       AccountRepository accountRepository,
@@ -179,7 +179,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.bankDetailsService = bankDetailsService;
-    this.bankReconciliationLoadAFB120Service = bankReconciliationLoadAFB120Service;
+    this.bankReconciliationLoadAFB120ServiceImpl = bankReconciliationLoadAFB120ServiceImpl;
     this.bankReconciliationLoadService = bankReconciliationLoadService;
     this.journalRepository = journalRepository;
     this.accountRepository = accountRepository;
@@ -734,7 +734,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-        bankReconciliationLoadAFB120Service.loadBankStatement(
+        bankReconciliationLoadAFB120ServiceImpl.loadBankStatement(
             bankReconciliation, includeBankStatement);
         break;
 

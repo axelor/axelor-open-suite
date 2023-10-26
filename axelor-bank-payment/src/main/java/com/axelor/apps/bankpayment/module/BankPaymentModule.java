@@ -78,8 +78,18 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileService;
+import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementLineAFB120ServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryService;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
@@ -200,5 +210,10 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveCancelBankPaymentService.class).to(MoveCancelBankPaymentServiceImpl.class);
 
     bind(BankReconciliationService.class).to(BankReconciliationServiceImpl.class);
+    bind(BankStatementService.class).to(BankStatementServiceImpl.class);
+    bind(BankStatementCreateService.class).to(BankStatementCreateServiceImpl.class);
+    bind(BankStatementFileService.class).to(BankStatementFileAFB120ServiceImpl.class);
+    bind(BankStatementLineService.class).to(BankStatementLineAFB120ServiceImpl.class);
+    bind(BankReconciliationLoadService.class).to(BankReconciliationLoadAFB120ServiceImpl.class);
   }
 }

@@ -24,7 +24,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineServiceImpl;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -38,10 +38,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class BankStatementLineAFB120Service extends BankStatementLineService {
+public class BankStatementLineAFB120ServiceImpl extends BankStatementLineServiceImpl {
 
   @Inject
-  public BankStatementLineAFB120Service(
+  public BankStatementLineAFB120ServiceImpl(
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
       BankPaymentConfigService bankPaymentConfigService,
       BirtTemplateService birtTemplateService) {

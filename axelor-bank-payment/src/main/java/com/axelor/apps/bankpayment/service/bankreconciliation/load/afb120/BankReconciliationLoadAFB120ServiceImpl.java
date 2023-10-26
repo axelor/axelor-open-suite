@@ -25,7 +25,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -34,12 +34,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadService {
+public class BankReconciliationLoadAFB120ServiceImpl extends BankReconciliationLoadServiceImpl {
 
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
 
   @Inject
-  public BankReconciliationLoadAFB120Service(
+  public BankReconciliationLoadAFB120ServiceImpl(
       BankReconciliationLineService bankReconciliationLineService,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
 

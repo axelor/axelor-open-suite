@@ -1,0 +1,3 @@
+---
+title: "Many services in BankPayment module are classes that should be interfaces with an implementation"
+type: feature

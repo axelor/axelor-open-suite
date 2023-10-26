@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
-import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileService;
+import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileServiceImpl;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -51,11 +51,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BankStatementFileAFB120Service extends BankStatementFileService {
+public class BankStatementFileAFB120ServiceImpl extends BankStatementFileServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected BankStatementLineAFB120Service bankStatementLineAFB120Service;
+  protected BankStatementLineAFB120ServiceImpl bankStatementLineAFB120ServiceImpl;
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
   protected CfonbToolService cfonbToolService;
   protected CurrencyRepository currencyRepository;
@@ -70,7 +70,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("ddMMyy");
 
   @Inject
-  public BankStatementFileAFB120Service(BankStatementService bankStatementService) {
+  public BankStatementFileAFB120ServiceImpl(BankStatementService bankStatementService) {
 
     super(bankStatementService);
 
@@ -79,7 +79,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     this.bankDetailsRepository = Beans.get(BankDetailsRepository.class);
     this.interbankCodeLineRepository = Beans.get(InterbankCodeLineRepository.class);
 
-    this.bankStatementLineAFB120Service = Beans.get(BankStatementLineAFB120Service.class);
+    this.bankStatementLineAFB120ServiceImpl = Beans.get(BankStatementLineAFB120ServiceImpl.class);
     this.bankStatementLineAFB120Repository = Beans.get(BankStatementLineAFB120Repository.class);
   }
 
@@ -158,7 +158,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     }
 
     BankStatementLineAFB120 bankStatementLineAFB120 =
-        bankStatementLineAFB120Service.createBankStatementLine(
+        bankStatementLineAFB120ServiceImpl.createBankStatementLine(
             findBankStatement(),
             sequence,
             bankDetails,

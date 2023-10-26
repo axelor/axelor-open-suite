@@ -22,7 +22,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.AxelorException;
@@ -66,7 +66,7 @@ public class BankStatementController {
       BankStatement bankStatement = request.getContext().asType(BankStatement.class);
       bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
       List<BankReconciliation> bankReconciliationList =
-          Beans.get(BankReconciliationCreateService.class)
+          Beans.get(BankReconciliationCreateServiceImpl.class)
               .createAllFromBankStatement(bankStatement);
 
       if (bankReconciliationList != null) {
