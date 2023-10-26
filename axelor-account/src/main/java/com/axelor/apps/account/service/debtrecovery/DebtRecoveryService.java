@@ -290,7 +290,7 @@ public class DebtRecoveryService {
     query.append("FROM InvoiceTerm invoiceterm ");
     query.append(
         "LEFT JOIN PaymentSession paymentsession ON paymentsession.id = invoiceterm.paymentSession ");
-    query.append("LEFT JOIN MoveLine moveline ON moveline.id = invoiceterm.id ");
+    query.append("LEFT JOIN MoveLine moveline ON moveline.id = invoiceterm.moveLine ");
     query.append("LEFT JOIN Move move ON move.id = moveline.move ");
   }
 
