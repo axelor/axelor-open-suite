@@ -257,7 +257,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
       holdbackMoveLine.setIsHoldback(true);
       holdbackMoveLine.setDescription(moveLine.getDescription());
-      this.updateMoveLine(moveLine, holdbackAmount, true);
+      this.updateMoveLine(moveLine, companyHoldbackAmount, true);
 
       moveLineToolService.setCurrencyAmount(moveLine);
       moveLineToolService.setCurrencyAmount(holdbackMoveLine);
@@ -358,19 +358,20 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total));
   }
 
-  protected void updateMoveLine(MoveLine moveLine, BigDecimal amount, boolean subtract) {
+  protected void updateMoveLine(MoveLine moveLine, BigDecimal companyAmount, boolean subtract) {
     if (subtract) {
-      amount = amount.negate();
+      companyAmount = companyAmount.negate();
     }
 
     if (moveLine.getCredit().signum() > 0) {
-      moveLine.setCredit(moveLine.getCredit().add(amount));
+      moveLine.setCredit(moveLine.getCredit().add(companyAmount));
     } else {
-      moveLine.setDebit(moveLine.getDebit().add(amount));
+      moveLine.setDebit(moveLine.getDebit().add(companyAmount));
     }
 
     BigDecimal signum = BigDecimal.valueOf(moveLine.getAmountRemaining().signum());
-    moveLine.setAmountRemaining(moveLine.getAmountRemaining().abs().add(amount).multiply(signum));
+    moveLine.setAmountRemaining(
+        moveLine.getAmountRemaining().abs().add(companyAmount).multiply(signum));
   }
 
   protected Account getHoldbackAccount(MoveLine moveLine, Move move) throws AxelorException {
