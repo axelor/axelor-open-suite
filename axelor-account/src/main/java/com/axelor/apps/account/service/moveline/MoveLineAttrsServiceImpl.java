@@ -136,6 +136,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
     this.addAttr("informationsPanel", "readonly", statusCondition, attrsMap);
     this.addAttr("analyticDistributionPanel", "readonly", statusCondition, attrsMap);
+    this.addAttr("isHoldback", "readonly", statusCondition, attrsMap);
     this.addAttr("irrecoverableDetailsPanel", "readonly", singleStatusCondition, attrsMap);
     this.addAttr("currency", "readonly", singleStatusCondition, attrsMap);
     this.addAttr("otherPanel", "readonly", singleStatusCondition, attrsMap);

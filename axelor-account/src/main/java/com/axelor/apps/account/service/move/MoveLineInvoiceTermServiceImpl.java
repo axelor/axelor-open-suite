@@ -323,14 +323,6 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                     currencyScaleServiceAccount.getScale(move),
                     RoundingMode.HALF_UP);
 
-    if (isHoldback) {
-      amount =
-          amount.divide(
-              moveLine.getCurrencyRate(),
-              currencyScaleServiceAccount.getScale(move),
-              RoundingMode.HALF_UP);
-    }
-
     User pfpUser = null;
     if (invoiceTermService.getPfpValidatorUserCondition(move.getInvoice(), moveLine)) {
       Partner partner = move.getInvoice() != null ? move.getPartner() : moveLine.getPartner();

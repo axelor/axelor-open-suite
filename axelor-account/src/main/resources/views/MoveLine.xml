@@ -468,7 +468,7 @@
         <field name="currencyRate"
           onChange="action-move-line-method-currency-amount-rate-onchange"
           readonlyIf="!isOtherCurrency"/>
-        <field name="isHoldback" colSpan="3" readonlyIf="![1,2].includes(move.statusSelect)"
+        <field name="isHoldback" colSpan="3"
           onChange="action-move-line-method-is-holdback-onchange"/>
         <field name="taxAmount" colSpan="3" hidden="true" x-scale="companyCurrencyDecimals"/>
       </panel>
