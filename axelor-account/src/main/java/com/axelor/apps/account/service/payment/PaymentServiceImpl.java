@@ -46,6 +46,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -380,8 +381,19 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
         BigDecimal amountDebit = amountMap.abs().min(remainingPaidAmount2);
         if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
-          BigDecimal currencyRate =
-              currencyService.getCurrencyConversionRate(move.getCurrency(), company.getCurrency());
+          BigDecimal currencyRate;
+
+          Optional<MoveLine> optionalMoveLine =
+              creditMoveLines.stream().filter(ml -> accountMap.equals(ml.getAccount())).findFirst();
+
+          if (optionalMoveLine.isPresent()) {
+            currencyRate = optionalMoveLine.get().getCurrencyRate();
+          } else {
+            currencyRate =
+                currencyService.getCurrencyConversionRate(
+                    move.getCurrency(), company.getCurrency());
+          }
+
           BigDecimal moveLineAmount = amountDebit;
           if (currencyRate.signum() > 0) {
             moveLineAmount =
@@ -394,12 +406,16 @@ public class PaymentServiceImpl implements PaymentService {
                   partner,
                   accountMap,
                   moveLineAmount,
+                  amountDebit,
+                  currencyRate,
                   true,
                   date,
                   dueDate,
+                  date,
                   moveLineNo2,
                   null,
                   null);
+
           move.getMoveLineList().add(debitMoveLine);
           moveLineNo2++;
 

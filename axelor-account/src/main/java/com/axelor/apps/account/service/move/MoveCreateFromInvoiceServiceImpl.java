@@ -49,6 +49,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -348,15 +349,9 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         if (move != null) {
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
           BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
-          BigDecimal currencyRate =
-              currencyService.getCurrencyConversionRate(
-                  invoice.getCurrency(), company.getCurrency());
-          BigDecimal moveLineAmount = amount;
-          if (currencyRate.signum() > 0) {
-            moveLineAmount =
-                moveLineAmount.divide(
-                    currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-          }
+
+          BigDecimal moveLineAmount = moveToolService.getTotalCurrencyAmount(creditMoveLineList);
+          LocalDate date = appAccountService.getTodayDate(company);
 
           // credit move line creation
           MoveLine creditMoveLine =
@@ -365,8 +360,13 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                   partner,
                   account,
                   moveLineAmount,
+                  totalCreditAmount,
+                  totalCreditAmount.divide(
+                      moveLineAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
                   false,
-                  appAccountService.getTodayDate(company),
+                  date,
+                  date,
+                  date,
                   1,
                   origin,
                   null);
