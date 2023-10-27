@@ -237,13 +237,15 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK));
       }
 
+      BigDecimal companyHoldbackAmount = holdbackAmount.multiply(moveLine.getCurrencyRate());
+
       holdbackMoveLine =
           moveLineCreateService.createMoveLine(
               move,
               moveLine.getPartner(),
               this.getHoldbackAccount(moveLine, move),
-              BigDecimal.ZERO,
               holdbackAmount,
+              companyHoldbackAmount,
               BigDecimal.ZERO,
               moveLine.getDebit().signum() > 0,
               moveLine.getDate(),

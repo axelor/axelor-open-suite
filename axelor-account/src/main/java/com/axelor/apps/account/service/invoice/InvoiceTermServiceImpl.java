@@ -292,7 +292,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 ? invoice.getCompanyInTaxTotal()
                 : moveLine.getDebit().max(moveLine.getCredit());
 
-        BigDecimal percentage = isHoldback ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
+        BigDecimal percentage =
+            isHoldback && invoice != null ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
 
         companyAmount =
             companyTotal
