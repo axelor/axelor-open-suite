@@ -24,14 +24,10 @@ import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.WorkCenterGroup;
-import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -43,46 +39,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
-  protected ProdProcessLineRepository prodProcessLineRepo;
   protected WorkCenterService workCenterService;
 
   @Inject
-  public ProdProcessLineServiceImpl(
-      ProdProcessLineRepository prodProcessLineRepo, WorkCenterService workCenterService) {
-    this.prodProcessLineRepo = prodProcessLineRepo;
+  public ProdProcessLineServiceImpl(WorkCenterService workCenterService) {
     this.workCenterService = workCenterService;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
-      throws AxelorException {
-    prodProcessLine = copyWorkCenterGroup(prodProcessLine, workCenterGroup);
-    WorkCenter workCenter =
-        workCenterService.getMainWorkCenterFromGroup(prodProcessLine.getWorkCenterGroup());
-    prodProcessLine.setWorkCenter(workCenter);
-    prodProcessLine.setDurationPerCycle(
-        workCenterService.getMachineDurationFromWorkCenter(workCenter));
-    prodProcessLine.setHumanDuration(workCenterService.getHumanDurationFromWorkCenter(workCenter));
-    prodProcessLine.setMinCapacityPerCycle(
-        workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
-    prodProcessLine.setMaxCapacityPerCycle(
-        workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
-  }
-
-  /**
-   * Create a work center group from a template. Since a template is also a work center group, we
-   * copy and set template field to false.
-   */
-  protected ProdProcessLine copyWorkCenterGroup(
-      ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup) {
-    WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
-    workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
-    workCenterGroupCopy.setTemplate(false);
-    workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
-
-    prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
-    return prodProcessLineRepo.save(prodProcessLine);
   }
 
   @Override
