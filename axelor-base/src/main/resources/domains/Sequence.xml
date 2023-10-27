@@ -17,6 +17,8 @@
     <enum name="sequenceLettersTypeSelect" default="UPPERCASE" ref="SequenceLettersTypeSelect"
       title="Uppercase / lowercase"/>
     <string name="prefixe" title="Prefix"/>
+    <boolean name="groovyOk" title="Groovy"/>
+    <string name="prefixeGroovy" title="Prefix"/>
     <string name="suffixe" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
     <string name="pattern" title="Pattern"/>

@@ -546,4 +546,87 @@ public class SequenceService {
           I18n.get(BaseExceptionMessage.SEQUENCE_PATTERN_LENGTH_NOT_VALID));
     }
   }
+
+  public String getSequenceNumber(String code, Class objectClass, String fieldName, Model model)
+      throws AxelorException {
+
+    return this.getSequenceNumber(code, null, objectClass, fieldName, model);
+  }
+
+  public String getSequenceNumber(
+      String code, Company company, Class objectClass, String fieldName, Model model)
+      throws AxelorException {
+
+    Sequence sequence = getSequence(code, company);
+
+    if (sequence == null) {
+      return null;
+    }
+    if (sequence.getGroovyOk())
+      return this.getGroovySequenceNumber(
+          sequence, appBaseService.getTodayDate(company), objectClass, fieldName, model);
+    return this.getSequenceNumber(
+        sequence, appBaseService.getTodayDate(company), objectClass, fieldName);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public String getGroovySequenceNumber(
+      Sequence sequence, LocalDate refDate, Class objectClass, String fieldName, Model model)
+      throws AxelorException {
+    Sequence seq =
+        JPA.em()
+            .createQuery("SELECT self FROM Sequence self WHERE id = :id", Sequence.class)
+            .setParameter("id", sequence.getId())
+            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+            .setFlushMode(FlushModeType.COMMIT)
+            .getSingleResult();
+    SequenceVersion sequenceVersion = getVersion(seq, refDate);
+    String nextSeq = computeGroovySeq(sequenceVersion, seq, refDate, model);
+
+    if (appBaseService.getAppBase().getCheckExistingSequenceOnGeneration()
+        && objectClass != null
+        && !Strings.isNullOrEmpty(fieldName)) {
+      this.isSequenceAlreadyExisting(objectClass, fieldName, nextSeq, seq);
+    }
+
+    sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
+    if (sequenceVersion.getId() == null) {
+      sequenceVersionRepository.save(sequenceVersion);
+    }
+    return nextSeq;
+  }
+
+  protected String computeGroovySeq(
+      SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate, Model model)
+      throws AxelorException {
+
+    String seqPrefixe = getSeqPrefixe(sequence, model);
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+
+    String sequenceValue = getSequenceValue(sequenceVersion);
+
+    String nextSeq =
+        (seqPrefixe + sequenceValue + seqSuffixe)
+            .replace(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
+            .replace(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
+            .replace(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
+            .replace(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
+            .replace(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
+            .replace(
+                PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
+
+    log.debug("nextSeq : : : : {}", nextSeq);
+
+    return nextSeq;
+  }
+
+  public String getSeqPrefixe(Sequence sequence, Model model) {
+    Context cxt = new Context(model.getId(), model.getClass());
+    if (Boolean.TRUE.equals(sequence.getGroovyOk())) {
+      String prefix = String.valueOf(new GroovyScriptHelper(cxt).eval(sequence.getPrefixeGroovy()));
+      sequence.setPrefixe(prefix);
+      return sequence.getPrefixe();
+    }
+    return sequence.getPrefixe();
+  }
 }

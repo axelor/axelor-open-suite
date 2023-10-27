@@ -103,7 +103,20 @@ public class SequenceController {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
       sequence = EntityHelper.getEntity(sequence);
-      Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
+     // Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getGroovyValue(ActionRequest request, ActionResponse response) {
+
+    try {
+
+      Sequence sequence = request.getContext().asType(Sequence.class);
+      sequence = EntityHelper.getEntity(sequence);
+      String seqPrefix = Beans.get(SequenceService.class).getSeqPrefixe(sequence, sequence);
+      response.setValue("prefixe", seqPrefix);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
