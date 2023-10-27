@@ -664,16 +664,14 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      if (moveLine.getId() == null) {
-        return;
-      }
+      if (moveLine.getId() != null) {
+        moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
 
-      moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
-
-      if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-        if (Beans.get(InvoiceTermPfpService.class)
-            .generateInvoiceTermsAfterPfpPartial(moveLine.getInvoiceTermList())) {
-          response.setReload(true);
+        if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+          if (Beans.get(InvoiceTermPfpService.class)
+              .generateInvoiceTermsAfterPfpPartial(moveLine.getInvoiceTermList())) {
+            response.setReload(true);
+          }
         }
       }
 

@@ -71,7 +71,7 @@ public class InvoiceTermController {
 
         BigDecimal total = this.getCustomizedTotal(request.getContext().getParent());
 
-        this.setResponseParentContext(request, invoiceTerm, response);
+        this.setParentContext(request, invoiceTerm);
 
         if (Beans.get(InvoiceTermService.class)
             .setCustomizedAmounts(invoiceTerm, invoiceTermList, total)) {
@@ -99,7 +99,7 @@ public class InvoiceTermController {
           return;
         }
 
-        this.setResponseParentContext(request, invoiceTerm, response);
+        this.setParentContext(request, invoiceTerm);
 
         BigDecimal percentage =
             invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
@@ -165,7 +165,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
-      this.setResponseParentContext(request, invoiceTerm, response);
+      this.setParentContext(request, invoiceTerm);
 
       Invoice invoice = invoiceTerm.getInvoice();
       MoveLine moveLine = invoiceTerm.getMoveLine();
@@ -450,7 +450,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      this.setResponseParentContext(request, invoiceTerm, response);
+      this.setParentContext(request, invoiceTerm);
 
       if (invoiceTerm.getMoveLine() == null && request.getContext().containsKey("_moveLineId")) {
         invoiceTerm.setMoveLine(
@@ -469,7 +469,7 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      this.setResponseParentContext(request, invoiceTerm, response);
+      this.setParentContext(request, invoiceTerm);
 
       boolean isMultiCurrency = Beans.get(InvoiceTermService.class).isMultiCurrency(invoiceTerm);
 
@@ -477,7 +477,6 @@ public class InvoiceTermController {
       MoveLine moveLine = invoiceTerm.getMoveLine();
       Invoice invoice = invoiceTerm.getInvoice();
 
-      // this.setMoveParentContextFields(moveLine, request);
       if (Beans.get(InvoiceToolService.class).isMultiCurrency(invoice)
           || (invoice == null
               && moveLine != null
@@ -493,20 +492,9 @@ public class InvoiceTermController {
   protected void setParentContext(ActionRequest request, InvoiceTerm invoiceTerm) {
     this.setInvoice(request, invoiceTerm);
 
-    MoveLine contextMoveLine = invoiceTerm.getMoveLine();
     this.setMoveLine(request, invoiceTerm);
 
     this.setMove(request, invoiceTerm.getMoveLine());
-  }
-
-  protected void setResponseParentContext(
-      ActionRequest request, InvoiceTerm invoiceTerm, ActionResponse response) {
-    this.setParentContext(request, invoiceTerm);
-
-    response.setValue("invoice", invoiceTerm.getInvoice());
-    response.setValue("moveLine", invoiceTerm.getMoveLine());
-
-    // response.setValue("move", invoiceTerm.getMoveLine().getMove());
   }
 
   protected void setInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
@@ -516,7 +504,7 @@ public class InvoiceTermController {
   }
 
   protected void setMove(ActionRequest request, MoveLine moveLine) {
-    if (moveLine != null && moveLine.getMove() == null) {
+    if (moveLine != null && (moveLine.getMove() == null || moveLine.getId() == null)) {
       moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 2));
     }
   }
@@ -525,13 +513,6 @@ public class InvoiceTermController {
     if (invoiceTerm.getMoveLine() == null) {
       invoiceTerm.setMoveLine(
           ContextTool.getContextParent(request.getContext(), MoveLine.class, 1));
-    }
-  }
-
-  protected void setMoveParentContextFields(MoveLine moveLine, ActionRequest request) {
-    // TODO verifier si on ne peut pas le supprimer
-    if (moveLine != null && (moveLine.getMove() == null || moveLine.getId() == null)) {
-      moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 2));
     }
   }
 
