@@ -265,10 +265,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal ratioPaid = BigDecimal.ONE;
 
     if (invoiceTermAmount.signum() != 0 && this.isMultiCurrency(invoiceTerm)) {
-      BigDecimal companyTotal =
-          invoice != null
-              ? invoice.getCompanyInTaxTotal()
-              : moveLine.getDebit().max(moveLine.getCredit());
+      BigDecimal lastInvoiceTermCompanyAmount = this.getLastInvoiceTermCompanyAmount(invoiceTerm);
+
+      if (lastInvoiceTermCompanyAmount != null) {
+        companyAmount = lastInvoiceTermCompanyAmount;
+      } else {
+        BigDecimal companyTotal =
+            invoice != null
+                ? invoice.getCompanyInTaxTotal()
+                : moveLine.getDebit().max(moveLine.getCredit());
+
+        BigDecimal percentage = isHoldback ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
+
+        companyAmount =
+            companyTotal
+                .multiply(percentage)
+                .divide(
+                    BigDecimal.valueOf(100),
+                    AppBaseService.COMPUTATION_SCALING,
+                    RoundingMode.HALF_UP);
+      }
 
       if (!isUpdate) {
         ratioPaid =
@@ -276,15 +292,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 invoiceTermAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       }
 
-      BigDecimal percentage = isHoldback ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
-
-      companyAmount =
-          companyTotal
-              .multiply(percentage)
-              .divide(
-                  BigDecimal.valueOf(100),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP);
       companyAmountRemaining =
           companyAmount
               .multiply(ratioPaid)
@@ -295,6 +302,41 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     invoiceTerm.setCompanyAmount(companyAmount);
     invoiceTerm.setCompanyAmountRemaining(companyAmountRemaining);
+  }
+
+  protected BigDecimal getLastInvoiceTermCompanyAmount(InvoiceTerm invoiceTerm) {
+    List<InvoiceTerm> invoiceTermList;
+    BigDecimal total, companyTotal;
+
+    if (invoiceTerm.getInvoice() != null) {
+      invoiceTermList = invoiceTerm.getInvoice().getInvoiceTermList();
+      total = invoiceTerm.getInvoice().getInTaxTotal();
+      companyTotal = invoiceTerm.getInvoice().getCompanyInTaxTotal();
+    } else {
+      invoiceTermList = invoiceTerm.getMoveLine().getInvoiceTermList();
+      total = invoiceTerm.getMoveLine().getCurrencyAmount();
+      companyTotal =
+          invoiceTerm.getMoveLine().getDebit().max(invoiceTerm.getMoveLine().getCredit());
+    }
+
+    BigDecimal currentTotal =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (currentTotal.add(invoiceTerm.getAmount()).compareTo(total) == 0) {
+      BigDecimal currentCompanyTotal =
+          invoiceTermList.stream()
+              .filter(it -> !it.equals(invoiceTerm))
+              .map(InvoiceTerm::getCompanyAmount)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      return companyTotal.subtract(currentCompanyTotal);
+    }
+
+    return null;
   }
 
   @Override
