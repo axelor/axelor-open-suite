@@ -558,8 +558,7 @@ public class SequenceService {
     if (sequence.getPattern() != null && sequence.getPadding() != sequence.getPattern().length()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.SEQUENCE_PATTERN_LENGTH_NOT_VALID));
-    }
+          I18n.get(BaseExceptionMessage.SEQUENCE_PATTERN_LENGTH_NOT_VALID));}
   }
 
   public String getSequenceNumber(String code, Class objectClass, String fieldName, Model model)
