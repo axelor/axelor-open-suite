@@ -1,3 +1,23 @@
+## [6.5.20] (2023-10-27)
+
+#### Fixed
+
+* Debt Recovery: fixed error message on debt recovery generation to display correctly trading name.
+* Invoice/Move: fixed due date when we set invoice date, move date or when we update payment condition.
+* FEC Import: the header partner is now filled correctly
+
+Multi-partner: no partner in header
+Mono-partner: fill partner in header
+
+* Analytic: fixed analytic distribution verification at validation/confirmation of purchase order/sale order when analytic is not managed.
+* Payment Voucher: fixed display of load/reset imputation lines and payment voucher confirm button when paid amount is 0 or when we do not select any line.
+* Period closure: fixed a bug where status of period was reset on error on closure.
+* Manufacturing order: fixed an issue where outsourcing was not activated in operations while it was active on production process lines.
+* Payment voucher: fixed error at payment voucher confirmation without move lines.
+* Payment voucher: removed paid line control at payment voucher confirmation.
+* Fixed asset: fixed popup error "Cannot get property 'fixedAssetType' on null object" displayed when clearing fixed asset category field.
+* Cost sheet: replaced 'NullPointerException' error by a correct message when an applicable bill of materials is not found on cost calculation.
+
 ## [6.5.19] (2023-10-18)
 
 #### Fixed
@@ -890,6 +910,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.20]: https://github.com/axelor/axelor-open-suite/compare/v6.5.19...v6.5.20
 [6.5.19]: https://github.com/axelor/axelor-open-suite/compare/v6.5.18...v6.5.19
 [6.5.18]: https://github.com/axelor/axelor-open-suite/compare/v6.5.17...v6.5.18
 [6.5.17]: https://github.com/axelor/axelor-open-suite/compare/v6.5.16...v6.5.17
