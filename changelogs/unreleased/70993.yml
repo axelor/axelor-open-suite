@@ -1,3 +1,0 @@
----
-title: "PaymentVoucher : Fix display of load/reset imputation lines and payment voucher confirm button when paid amount is 0 or when we don't select any line"
-type: fix

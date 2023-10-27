@@ -1,3 +1,34 @@
+## [7.1.8] (2023-10-27)
+
+#### Fixed
+
+* App builder: update studio dependency to 1.2.5 to get the following fix:
+
+    - fixed StudioActionView duplication on every save
+
+* Timesheet: fixed error when generating lines from expected planning.
+* Debt Recovery: fixed error message on debt recovery generation to display correctly trading name.
+* Project task: fixed a bug where boolean to invoice via task was not working when generating a task from a sale order.
+* Invoice/Move: fixed due date when we set invoice date, move date or when we update payment condition.
+* FEC Import: fixed issue when importing FEC with empty date of lettering.
+* FEC Import: the header partner is now filled correctly
+
+    - Multi-partner: no partner in header
+    - Mono-partner: fill partner in header
+
+* Analytic: fixed analytic distribution verification at validation/confirmation of purchase order/sale order when analytic is not managed.
+* Project: fixed project task time follow-up values computation.
+* Payment Voucher: fixed display of load/reset imputation lines and payment voucher confirm button when paid amount is 0 or when we do not select any line.
+* Period closure: fixed a bug where status of period was reset on error on closure.
+* Custom accounting report: fixed demo data result computation in sum of accounts lines.
+* Manufacturing order: fixed an issue where outsourcing was not activated in operations while it was active on production process lines.
+* Payment voucher: fixed error at payment voucher confirmation without move lines.
+* Move: removed period verification when we opening a move.
+* Payment voucher: removed paid line control at payment voucher confirmation.
+* Fixed asset: fixed popup error "Cannot get property 'fixedAssetType' on null object" displayed when clearing fixed asset category field.
+* Cost sheet: replaced 'NullPointerException' error by a correct message when an applicable bill of materials is not found on cost calculation.
+* axelor-config.properties: enabled Modern theme by default.
+
 ## [7.1.7] (2023-10-18)
 
 #### Fixed
@@ -557,6 +588,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.8]: https://github.com/axelor/axelor-open-suite/compare/v7.1.7...v7.1.8
 [7.1.7]: https://github.com/axelor/axelor-open-suite/compare/v7.1.6...v7.1.7
 [7.1.6]: https://github.com/axelor/axelor-open-suite/compare/v7.1.5...v7.1.6
 [7.1.5]: https://github.com/axelor/axelor-open-suite/compare/v7.1.4...v7.1.5
