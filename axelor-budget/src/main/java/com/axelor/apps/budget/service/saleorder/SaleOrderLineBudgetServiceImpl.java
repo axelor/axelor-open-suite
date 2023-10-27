@@ -146,9 +146,9 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       LocalDate date = null;
       if (saleOrder != null) {
         date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
+            saleOrder.getOrderDate() != null
+                ? saleOrder.getOrderDate()
+                : saleOrder.getCreationDate();
       }
       if (date != null) {
         query =
@@ -163,6 +163,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   public void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getBudgetDistributionList() != null
         && !saleOrderLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
           throw new AxelorException(
@@ -170,7 +171,15 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_PO),
               budgetDistribution.getBudget().getCode(),
               saleOrderLine.getProductName());
+        } else {
+          totalAmount = totalAmount.add(budgetDistribution.getAmount());
         }
+      }
+      if (totalAmount.compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO),
+            saleOrderLine.getProductName());
       }
     }
   }

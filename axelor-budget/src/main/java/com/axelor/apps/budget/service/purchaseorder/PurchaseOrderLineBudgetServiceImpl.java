@@ -205,6 +205,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       throws AxelorException {
     if (purchaseOrderLine.getBudgetDistributionList() != null
         && !purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : purchaseOrderLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().compareTo(purchaseOrderLine.getCompanyExTaxTotal())
             > 0) {
@@ -213,7 +214,15 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_PO),
               budgetDistribution.getBudget().getCode(),
               purchaseOrderLine.getProductCode());
+        } else {
+          totalAmount = totalAmount.add(budgetDistribution.getAmount());
         }
+      }
+      if (totalAmount.compareTo(purchaseOrderLine.getCompanyExTaxTotal()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO),
+            purchaseOrderLine.getProductCode());
       }
     }
   }

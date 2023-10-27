@@ -90,4 +90,13 @@ public final class BudgetExceptionMessage {
   public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
 
   public static final String BUDGET_VARIABLE = /*$$(*/ "Budget Scenario Variable %s" /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_INVOICE = /*$$(*/
+      "The sum of the budget distribution amounts exceeds the amount of the invoice line %s, please correct it" /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO = /*$$(*/
+      "The sum of the budget distribution amount for budget exceeds the amount of the order line %s, please correct it" /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_MOVE = /*$$(*/
+      "The sum of the budget distribution amount for budget exceeds the amount of the move line %s, please correct it" /*)*/;
 }
