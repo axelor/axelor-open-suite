@@ -59,7 +59,7 @@
       title="Budget Version" mappedBy="globalBudget"/>
 
     <boolean name="automaticBudgetComputation" title="Automatic budget computation"
-      help="If enable, an automatic budget computation will be done at request/finalize for orders"/>
+      help="If enabled, an automatic budget computation will be done at request/finalize for orders"/>
 
 
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">

@@ -35,16 +35,20 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class BudgetToolsServiceImpl implements BudgetToolsService {
 
   protected AccountConfigService accountConfigService;
+  protected BudgetService budgetService;
 
   @Inject
-  public BudgetToolsServiceImpl(AccountConfigService accountConfigService) {
+  public BudgetToolsServiceImpl(
+      AccountConfigService accountConfigService, BudgetService budgetService) {
     this.accountConfigService = accountConfigService;
+    this.budgetService = budgetService;
   }
 
   @Override
@@ -120,5 +124,14 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     return String.format(
         "%s %s",
         I18n.get(budgetExceedAlert), I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ERROR_ALERT));
+  }
+
+  @Override
+  public boolean canAutoComputeBudgetDistribution(Company company, List<Object> list)
+      throws AxelorException {
+    return !CollectionUtils.isEmpty(list)
+        && company != null
+        && checkBudgetKeyAndRole(company, AuthUtils.getUser())
+        && budgetService.checkBudgetKeyInConfig(company);
   }
 }

@@ -43,7 +43,6 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -51,6 +50,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -294,10 +294,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
 
   @Override
   public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
-    if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())
-        || saleOrder.getCompany() == null
-        || !budgetToolsService.checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
-        || !budgetService.checkBudgetKeyInConfig(saleOrder.getCompany())) {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        saleOrder.getCompany(), Collections.singletonList(saleOrder.getSaleOrderLineList()))) {
       return;
     }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {

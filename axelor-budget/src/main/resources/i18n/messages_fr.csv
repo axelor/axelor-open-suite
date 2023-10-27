@@ -148,7 +148,7 @@
 "Group Level","Niveau Groupe",,
 "Group line","Groupe",,
 "Groups","Groupes",,
-"If enable, an automatic budget computation will be done at request/finalize for orders","Si activé, un calcul automatique d'imputation budgétaire va être effectué à la demande/finalisation des commandes",,
+"If enabled, an automatic budget computation will be done at request/finalize for orders","Si activé, un calcul automatique d'imputation budgétaire va être effectué à la demande/finalisation des commandes",,
 "If you click OK you will be in excess, do you want to continue ?","Si vous cliquez sur OK, vous serez en dépassement, voulez vous continuer ?",,
 "Import budgets and budget templates","Import des modèles et budgets",,
 "Import file","fichier de données",,

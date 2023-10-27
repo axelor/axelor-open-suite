@@ -31,12 +31,12 @@ import com.axelor.apps.budget.service.BudgetAccountService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.auth.AuthUtils;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,11 +162,8 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
 
   @Override
   public void autoComputeBudgetDistribution(Move move) throws AxelorException {
-    if (CollectionUtils.isEmpty(move.getMoveLineList())
-        || move.getInvoice() != null
-        || move.getCompany() == null
-        || !budgetToolsService.checkBudgetKeyAndRole(move.getCompany(), AuthUtils.getUser())
-        || !budgetService.checkBudgetKeyInConfig(move.getCompany())) {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        move.getCompany(), Collections.singletonList(move.getMoveLineList()))) {
       return;
     }
     for (MoveLine moveLine : move.getMoveLineList()) {

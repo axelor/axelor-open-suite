@@ -25,6 +25,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.User;
+import java.util.List;
 
 public interface BudgetToolsService {
 
@@ -44,4 +45,7 @@ public interface BudgetToolsService {
   GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
 
   String getBudgetExceedMessage(String budgetExceedAlert, boolean isOrder, boolean isError);
+
+  boolean canAutoComputeBudgetDistribution(Company company, List<Object> list)
+      throws AxelorException;
 }

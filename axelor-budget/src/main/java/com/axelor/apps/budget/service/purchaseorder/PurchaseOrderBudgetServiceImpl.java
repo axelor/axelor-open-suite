@@ -39,7 +39,6 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
@@ -48,6 +47,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -342,11 +342,9 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
 
   @Override
   public void autoComputeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException {
-    if (CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())
-        || purchaseOrder.getCompany() == null
-        || !budgetToolsService.checkBudgetKeyAndRole(
-            purchaseOrder.getCompany(), AuthUtils.getUser())
-        || !budgetService.checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        purchaseOrder.getCompany(),
+        Collections.singletonList(purchaseOrder.getPurchaseOrderLineList()))) {
       return;
     }
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {

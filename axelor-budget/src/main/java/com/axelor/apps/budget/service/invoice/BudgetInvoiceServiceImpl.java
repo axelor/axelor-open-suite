@@ -51,7 +51,6 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.CallMethod;
@@ -62,6 +61,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -446,10 +446,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
 
   @Override
   public void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException {
-    if (CollectionUtils.isEmpty(invoice.getInvoiceLineList())
-        || invoice.getCompany() == null
-        || !budgetToolsService.checkBudgetKeyAndRole(invoice.getCompany(), AuthUtils.getUser())
-        || !budgetService.checkBudgetKeyInConfig(invoice.getCompany())) {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        invoice.getCompany(), Collections.singletonList(invoice.getInvoiceLineList()))) {
       return;
     }
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {

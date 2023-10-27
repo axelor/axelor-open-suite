@@ -197,8 +197,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                     budget,
                     amount
                         .multiply(analyticMoveLine.getPercentage())
-                        .divide(new BigDecimal(100))
-                        .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP));
             linkBudgetDistributionWithParent(budgetDistribution, object);
 
           } else {
@@ -328,8 +327,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                     budget,
                     amount
                         .multiply(analyticMoveLine.getPercentage())
-                        .divide(new BigDecimal(100))
-                        .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP));
             linkBudgetDistributionWithParent(budgetDistribution, object);
           }
         }

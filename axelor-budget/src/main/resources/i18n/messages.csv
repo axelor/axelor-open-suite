@@ -148,7 +148,7 @@
 "Group Level",,,
 "Group line",,,
 "Groups",,,
-"If enable, an automatic budget computation will be done at request/finalize for orders",,,
+"If enabled, an automatic budget computation will be done at request/finalize for orders",,,
 "If you click OK you will be in excess, do you want to continue ?",,,
 "Import budgets and budget templates",,,
 "Import file",,,
