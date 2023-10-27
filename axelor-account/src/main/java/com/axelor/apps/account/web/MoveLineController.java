@@ -62,6 +62,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -682,7 +683,16 @@ public class MoveLineController {
   protected Move getMove(ActionRequest request, MoveLine moveLine) {
     Context parentContext = request.getContext().getParent();
     if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
-      return parentContext.asType(Move.class);
+      Move move = parentContext.asType(Move.class);
+
+      if (CollectionUtils.isEmpty(move.getMoveLineList())) {
+        move.setMoveLineList(new ArrayList<>());
+      } else {
+        move.getMoveLineList().remove(moveLine);
+        move.getMoveLineList().add(moveLine);
+      }
+
+      return move;
     } else {
       return moveLine.getMove();
     }
