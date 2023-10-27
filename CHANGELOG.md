@@ -1,3 +1,12 @@
+## [6.3.31] (2023-10-27)
+
+#### Fixed
+
+* Debt Recovery: fixed error message on debt recovery generation to display correctly trading name.
+* Manufacturing order: fixed an issue where outsourcing was not activated in operations while it was active on production process lines.
+* Payment voucher: removed paid line control at payment voucher confirmation.
+* Fixed asset: fixed popup error "Cannot get property 'fixedAssetType' on null object" displayed when clearing fixed asset category field.
+
 ## [6.3.30] (2023-10-18)
 
 #### Fixed
@@ -890,6 +899,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.31]: https://github.com/axelor/axelor-open-suite/compare/v6.3.30...v6.3.31
 [6.3.30]: https://github.com/axelor/axelor-open-suite/compare/v6.3.29...v6.3.30
 [6.3.29]: https://github.com/axelor/axelor-open-suite/compare/v6.3.28...v6.3.29
 [6.3.28]: https://github.com/axelor/axelor-open-suite/compare/v6.3.27...v6.3.28
