@@ -109,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
         .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT)) {
       Sequence productSequence = appBaseService.getAppBase().getProductSequence();
       if (productSequence != null) {
-        seq = sequenceService.getSequenceNumber(productSequence, Product.class, "code");
+        seq = sequenceService.getSequenceNumber(productSequence, Product.class, "code", product);
       }
       if (seq == null) {
         throw new AxelorException(

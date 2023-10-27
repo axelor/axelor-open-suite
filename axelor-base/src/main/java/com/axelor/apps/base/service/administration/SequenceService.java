@@ -35,6 +35,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -539,6 +541,19 @@ public class SequenceService {
           draftPrefix);
   }
 
+  public String getSequenceNumber(
+      Sequence sequence, Class objectClass, String fieldName, Model model) throws AxelorException {
+    if (sequence.getGroovyOk())
+      return this.getSequenceNumber(
+          sequence,
+          appBaseService.getTodayDate(sequence.getCompany()),
+          objectClass,
+          fieldName,
+          model);
+    return this.getSequenceNumber(
+        sequence, appBaseService.getTodayDate(sequence.getCompany()), objectClass, fieldName);
+  }
+
   public void verifyPattern(Sequence sequence) throws AxelorException {
     if (sequence.getPattern() != null && sequence.getPadding() != sequence.getPattern().length()) {
       throw new AxelorException(
@@ -563,14 +578,14 @@ public class SequenceService {
       return null;
     }
     if (sequence.getGroovyOk())
-      return this.getGroovySequenceNumber(
+      return this.getSequenceNumber(
           sequence, appBaseService.getTodayDate(company), objectClass, fieldName, model);
     return this.getSequenceNumber(
         sequence, appBaseService.getTodayDate(company), objectClass, fieldName);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public String getGroovySequenceNumber(
+  public String getSequenceNumber(
       Sequence sequence, LocalDate refDate, Class objectClass, String fieldName, Model model)
       throws AxelorException {
     Sequence seq =

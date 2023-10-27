@@ -28,7 +28,7 @@
         onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid" readonlyIf="$popup() &amp;&amp; company"/>
-      <field name="prefixeGroovy"  />
+      <field name="prefixeGroovy"/>
 
     </panel>
     <panel name="tipsPanel" title="Tips" sidebar="true" itemSpan="12">
