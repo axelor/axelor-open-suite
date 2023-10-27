@@ -11,23 +11,29 @@
     </search-fields>
     <dataset type="jpql">
       SELECT
-      COUNT(self.id) AS _moves,
+      COUNT(DISTINCT(self.id)) AS _moves,
       country.name AS _country
       FROM
       StockMove self,
       StockLocation stockLocation,
       Address address,
-      Country country
+      Country country,
+      StockMoveLine
+      stockMoveLine
       WHERE
       self.typeSelect = 2 AND
       self.statusSelect = 3 AND
-      self.company =:activeCompany AND
-      self.stockMoveLineList.toStockLocation = stockLocation
+      self.company =:activeCompany
+      AND
+      stockMoveLine.toStockLocation = stockLocation
+      AND
+      stockMoveLine.stockMove = self
       AND
       stockLocation.typeSelect = 2 AND
       self.toAddress = address AND
       address.addressL7Country =
-      country AND
+      country
+      AND
       self.realDate BETWEEN
       DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND
       DATE(:todayDate)
@@ -35,7 +41,7 @@
       country.name
     </dataset>
     <category key="_country" type="text" title="Country"/>
-    <series key="_moves" type="bar" title="Quantity"/>
+    <series key="_moves" type="bar" title="Number of customer deliveries"/>
   </chart>
 
   <chart onInit="action.base.chart.set.date.6m"
