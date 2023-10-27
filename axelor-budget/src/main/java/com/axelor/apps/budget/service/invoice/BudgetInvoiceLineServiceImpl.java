@@ -124,6 +124,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
   public void checkAmountForInvoiceLine(InvoiceLine invoiceLine) throws AxelorException {
     if (invoiceLine.getBudgetDistributionList() != null
         && !invoiceLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal amountSum = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().compareTo(invoiceLine.getCompanyExTaxTotal()) > 0) {
           throw new AxelorException(
@@ -131,7 +132,15 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE),
               budgetDistribution.getBudget().getCode(),
               invoiceLine.getProduct().getCode());
+        } else {
+          amountSum = amountSum.add(budgetDistribution.getAmount());
         }
+      }
+      if (amountSum.compareTo(invoiceLine.getCompanyExTaxTotal()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_INVOICE),
+            invoiceLine.getProduct().getCode());
       }
     }
   }
