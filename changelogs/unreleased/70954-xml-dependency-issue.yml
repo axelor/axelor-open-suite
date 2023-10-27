@@ -1,3 +1,0 @@
----
-title: "Technical: fixed xml-apis dependency not excluded causing issue when building project"
-type: fix
