@@ -49,6 +49,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
   private TimesheetLineRepository timesheetLineRepository;
   private AppBusinessProjectService appBusinessProjectService;
 
+  private ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+
   public static final int RESULT_SCALE = 2;
   public static final int COMPUTATION_SCALE = 5;
 
@@ -61,10 +63,12 @@ public class ProjectTaskReportingValuesComputingServiceImpl
   public ProjectTaskReportingValuesComputingServiceImpl(
       ProjectTaskRepository projectTaskRepo,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
     this.projectTaskRepo = projectTaskRepo;
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
   @Override
