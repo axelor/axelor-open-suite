@@ -1,0 +1,3 @@
+---
+title: "Invoice / Move line : Fix amounts computing with multi currency"
+type: fix

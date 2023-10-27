@@ -230,6 +230,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
 
+    BigDecimal companyHoldbackAmount = holdbackAmount.multiply(moveLine.getCurrencyRate());
+
     if (holdbackMoveLine == null) {
       if (!canCreateHolbackMoveLine) {
         moveLine.clearInvoiceTermList();
@@ -243,8 +245,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
               move,
               moveLine.getPartner(),
               holdbackAccount,
-              BigDecimal.ZERO,
               holdbackAmount,
+              companyHoldbackAmount,
               BigDecimal.ZERO,
               moveLine.getDebit().signum() > 0,
               moveLine.getDate(),
