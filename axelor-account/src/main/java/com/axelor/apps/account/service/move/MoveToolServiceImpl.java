@@ -48,6 +48,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -651,7 +652,7 @@ public class MoveToolServiceImpl implements MoveToolService {
             "self.origin = :origin AND self.period.year = :periodYear AND self.journal = :journal ");
     Map<String, Object> params = new HashMap<>();
 
-    if (!move.getOrigin().isEmpty() && move.getPeriod() != null) {
+    if (!Strings.isNullOrEmpty(move.getOrigin()) && move.getPeriod() != null) {
       params.put("origin", move.getOrigin());
       params.put("periodYear", move.getPeriod().getYear());
       params.put("journal", move.getJournal());
