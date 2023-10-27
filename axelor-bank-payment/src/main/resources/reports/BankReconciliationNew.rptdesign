@@ -7498,14 +7498,26 @@ else {0};</expression>
                                         <structure>
                                             <property name="name">debit</property>
                                             <text-property name="displayName">debit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">credit</property>
                                             <text-property name="displayName">credit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">sum_debit</property>
@@ -7615,6 +7627,24 @@ else {0};</expression>
                                             <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">amount_remaining</property>
+                                            <text-property name="displayName">amount_remaining</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">is_posted_1</property>
+                                            <text-property name="displayName">is_posted</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["is_posted"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">currency_amount</property>
+                                            <text-property name="displayName">currency_amount</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                            <property name="dataType">decimal</property>
                                         </structure>
                                     </list-property>
                                     <column id="7069">

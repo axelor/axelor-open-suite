@@ -1502,17 +1502,11 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   @Override
   public BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation)
       throws AxelorException {
-    BigDecimal currencyRate =
-        currencyService.getCurrencyConversionRate(
-            bankReconciliation.getCurrency(),
-            bankReconciliation.getCompany().getCurrency(),
-            dateService.date());
 
     return bankReconciliation.getBankReconciliationLineList().stream()
         .filter(BankReconciliationLine::getIsSelectedBankReconciliation)
         .map(it -> it.getCredit().subtract(it.getDebit()))
-        .reduce(BigDecimal.ZERO, BigDecimal::add)
-        .divide(currencyRate, RoundingMode.HALF_UP);
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   @Override
