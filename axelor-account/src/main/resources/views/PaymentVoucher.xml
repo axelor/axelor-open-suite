@@ -43,7 +43,7 @@
       <button name="confirmPaymentVoucherBtn" title="Confirm payment" hidden="true"
         onClick="action-group-account-payment-voucher-confirm-click"
         showIf="statusSelect == 1 || !id"
-        readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"/>
+        readonlyIf="paidAmount == 0 || (moveLine != null &amp;&amp; payVoucherElementToPayList.length == 0)"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
         icon="fa-print" onClick="save,action-method-print-birt"/>
     </panel>
@@ -130,12 +130,10 @@
       <panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1">
         <button name="loadSelectedLinesBtn" title="Load selected lines"
           onClick="action-method-payment-voucher-load-selected-lines,save"
-          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherDueElementList.length == 0"
-          colSpan="6"/>
+          readonlyIf="paidAmount == 0 || payVoucherDueElementList.length == 0" colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
           onClick="action-payment-voucher-method-reset-imputation"
-          readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"
-          colSpan="6"/>
+          readonlyIf="payVoucherElementToPayList.length == 0" colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
         field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form"
@@ -155,6 +153,7 @@
 
   <action-group name="action-account-payment-voucher-onnew-group">
     <action name="action-record-payment-voucher-default-record"/>
+    <action name="action-payment-voucher-method-reset-imputation"/>
     <action name="action-payment-voucher-getDate"/>
     <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
     <action name="action-payment-voucher-method-set-receipt-display"/>

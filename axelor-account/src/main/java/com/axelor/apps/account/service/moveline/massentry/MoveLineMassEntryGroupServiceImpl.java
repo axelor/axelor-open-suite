@@ -258,8 +258,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         new HashMap<>(
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
-    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
-
+    analyticAttrsService.addAnalyticAxisAttrs(
+        move.getCompany(), move.getMassEntryStatusSelect(), attrsMap);
     moveLineMassEntryAttrsService.addDebitCreditFocus(
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);

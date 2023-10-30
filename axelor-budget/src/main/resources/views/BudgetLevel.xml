@@ -91,10 +91,6 @@
         <button name="showGroupOrderLineBtn" title="Display committed lines"
           onClick="action-budget-level-group-view-group-order-line"
           showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
-        <button name="seeBudgetDistributionLines"
-          showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"
-          onClick="action-budget-distribution-view-show-budget-group-distibution-lines"
-          title="Display distribution lines" colSpan="6"/>
         <button name="seeRealizedWithNoPo" showIf="realizedWithNoPo &gt; 0"
           onClick="action-budget-line-distribution-view-show-global-budget-group-distribution-lines-realized-without-po"
           title="Display realized with no po" colSpan="6"/>
@@ -165,10 +161,6 @@
           showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"
           onClick="action-budget-level-group-view-section-order-line"
           title="Display committed lines"/>
-        <button name="seeBudgetDistributionLines"
-          showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"
-          onClick="action-budget-distribution-view-show-budget-section-distibution-lines"
-          title="Display distribution lines" colSpan="6"/>
         <button name="seeRealizedWithNoPo" showIf="realizedWithNoPo &gt; 0"
           onClick="action-budget-line-distribution-view-show-global-budget-section-distribution-lines-realized-without-po"
           title="Display realized with no po" colSpan="6"/>
@@ -265,10 +257,6 @@
       <button name="showGroupOrderLineBtn" title="Display committed lines"
         showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"
         onClick="action-budget-level-group-view-group-order-line"/>
-      <button name="seeBudgetDistributionLines"
-        showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"
-        onClick="action-budget-distribution-view-show-budget-group-distibution-lines"
-        title="Display distribution lines" colSpan="6"/>
       <button name="seeRealizedWithNoPo" showIf="realizedWithNoPo &gt; 0"
         onClick="action-budget-line-distribution-view-show-global-budget-group-distribution-lines-realized-without-po"
         title="Display realized with no po" colSpan="6"/>
@@ -343,10 +331,6 @@
       <button name="showSectionOrderLineBtn"
         showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"
         onClick="action-budget-level-group-view-section-order-line" title="Display committed lines"/>
-      <button name="seeBudgetDistributionLines"
-        showIf="(totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"
-        onClick="action-budget-distribution-view-show-budget-section-distibution-lines"
-        title="Display distribution lines" colSpan="6"/>
       <button name="seeRealizedWithNoPo" showIf="realizedWithNoPo &gt; 0"
         onClick="action-budget-line-distribution-view-show-global-budget-section-distribution-lines-realized-without-po"
         title="Display realized with no po" colSpan="6"/>
@@ -649,17 +633,6 @@
   </action-view>
 
   <action-view
-    name="action-budget-distribution-view-show-budget-section-distibution-lines"
-    title="Display distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-line-grid"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.budgetLevel.id= :_sectionId]]></domain>
-    <context name="_sectionId" expr="eval: id"/>
-  </action-view>
-
-  <action-view
     name="action-budget-line-distribution-view-show-global-budget-section-distribution-lines-realized-without-po"
     title="Display realized with no po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-without-po-line-grid"/>
@@ -700,17 +673,6 @@
     <view-param name="show-confirm" value="true"/>
     <domain><![CDATA[self.budget.budgetLevel.id= :_sectionId and self.moveLine.move.statusSelect = 5]]></domain>
     <context name="_sectionId" expr="eval: id"/>
-  </action-view>
-
-  <action-view
-    name="action-budget-distribution-view-show-budget-group-distibution-lines"
-    title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-line-grid"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.id= :_groupId]]></domain>
-    <context name="_groupId" expr="eval: id"/>
   </action-view>
 
   <action-view

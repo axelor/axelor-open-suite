@@ -653,6 +653,7 @@ public class BudgetServiceImpl implements BudgetService {
       BudgetDistribution budgetDistribution, Move move, MoveLine moveLine) {
     if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
       LocalDate date = move.getDate();
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);

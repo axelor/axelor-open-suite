@@ -43,7 +43,6 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
-import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ScaleServiceAccount;
@@ -95,7 +94,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected JournalService journalService;
-  protected PartnerAccountService partnerAccountService;
   protected UserRepository userRepo;
   protected PfpService pfpService;
   protected ScaleServiceAccount scaleServiceAccount;
@@ -110,7 +108,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
       JournalService journalService,
-      PartnerAccountService partnerAccountService,
       UserRepository userRepo,
       PfpService pfpService,
       ScaleServiceAccount scaleServiceAccount) {
@@ -123,7 +120,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.userRepo = userRepo;
     this.journalService = journalService;
-    this.partnerAccountService = partnerAccountService;
     this.pfpService = pfpService;
     this.scaleServiceAccount = scaleServiceAccount;
   }
@@ -1139,8 +1135,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());
 
-      invoiceTerm.setSubrogationPartner(
-          partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
+      this.setSubrogationPartner(invoiceTerm);
 
       if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
         invoiceTerm.setOrigin(invoice.getInvoiceId());
@@ -1167,14 +1162,30 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         }
 
         if (journalService.isSubrogationOk(move.getJournal())) {
-          invoiceTerm.setSubrogationPartner(
-              partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
+          this.setSubrogationPartner(invoiceTerm);
         }
       }
     }
 
     if (moveLine != null && move != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
+    }
+  }
+
+  protected void setSubrogationPartner(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
+      if (invoiceTerm.getInvoice() != null) {
+        invoiceTerm.setSubrogationPartner(invoiceTerm.getInvoice().getSubrogationPartner());
+      } else {
+        Partner subrogationPartner =
+            Optional.of(invoiceTerm)
+                .map(InvoiceTerm::getMoveLine)
+                .map(MoveLine::getMove)
+                .map(Move::getSubrogationPartner)
+                .orElse(null);
+
+        invoiceTerm.setSubrogationPartner(subrogationPartner);
+      }
     }
   }
 

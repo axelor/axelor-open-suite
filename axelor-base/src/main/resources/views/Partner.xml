@@ -262,12 +262,12 @@
           </viewer>
         </field>
         <field name="isContact" hidden="true" colSpan="12"/>
-        <panel name="blockingPanel" hideIf="!$readonly()" colOffset="9" colSpan="3">
+        <panel name="blockingPanel" hideIf="!$readonly()" colSpan="12">
           <field name="$activeBlockings" showTitle="false" colSpan="12">
             <viewer><![CDATA[
                             <>
-	                            <Box d="flex" flexDirection="column" justifyContent="flex-end">
-		                            {blockingList.map((b) => {
+	                            <Box d="flex" flexDirection="column" justifyContent="flex-end" alignItems="end">
+		                            {blockingList.map((b,index) => {
 		                            	const selectMap = {
 		                            	'1': _t('Remin._block'),
 		                            	'2': _t('Inv._block'),
@@ -278,8 +278,8 @@
 		                            };
 		                            return (
 		                            ($moment(b.blockingToDate) > $moment(today)) &&
-		                            	<Badge bg="danger" mt={2}>
-		                            		<Icon icon="slash-circle"/> {selectMap[b.blockingSelect]} <Icon icon="caret-right-fill"/> {$moment(b.blockingToDate).format('L')}
+		                            	<Badge key={index} bg="danger" mt={2}>
+		                            		<Icon icon="ban" fontSize="12px"/>{selectMap[b.blockingSelect]} <Icon icon="caret-right-fill" fontSize="12px"/> {$moment(b.blockingToDate).format('L')}
 		                            	</Badge>
 		                            );
 		                           })}
@@ -838,7 +838,7 @@
 		<>
 			<Box>
 				<strong>{fullName}</strong>
-				<Box d="grid" gridTemplateColumns="33% 67%">
+				<Box d="grid" gridTemplateColumns="33% 67%" mt={2}>
 					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
 						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
 		     			{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg"></Image>}
@@ -850,10 +850,10 @@
 						{mainAddress.fullName} <Box/>
 						{fixedPhone} <Box/>
 						{emailAddress.address} <Box/>
-						{partnerCategory.name} <Box/>
+						{partnerCategory.name}
 					</Box>
 				</Box>
-				<Box d="flex" justifyContent="flex-end" gap="4" mt={4}>
+				<Box d="flex" justifyContent="flex-end" gap="4" mt={3}>
 					{isProspect && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Prospect')}</Badge>}
 					{isEmployee && <Badge style={{ backgroundColor: "#5680FC" }}>{_t('Employee')}</Badge>}
 					{isCustomer && <Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Customer')}</Badge>}
@@ -889,24 +889,47 @@
     <field name="simpleFullName"/>
     <template><![CDATA[
 		<>
-		  	<Box d="grid" gridTemplateColumns="33% 67%">
-				<Box d="flex" flexDirection="column" alignItems="center">
-					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
-						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
-	     				{!picture && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
-	     				{!picture && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
-	     				{!picture && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
-					</Box>
-					<Box as="strong" textAlign="center">{partnerSeq}</Box>
-					<Box as="strong" textAlign="center">{simpleFullName}</Box>
-				</Box>
-				<Box>
-					{fixedPhone && <Box><Icon icon="telephone-fill"/> {fixedPhone} </Box>}
-					{mobilePhone && <Box><Icon icon="phone-fill"/> {mobilePhone} </Box>}
-					{emailAddress?.address && <Box><Icon icon="envelope-fill"/> {emailAddress.address} </Box>}
-					{mainPartner?.simpleFullName && <Box><Icon icon="building-fill"/> {mainPartner.simpleFullName} </Box>}
-					{mainAddress?.fullName && <Box><Icon icon="house-door-fill"/> {mainAddress.fullName} </Box>}
-				</Box>
+			<Box style={{ height: 180 }}>
+			    <Box d="grid" gridTemplateColumns="35% 65%" style={{ height: 150 }}>
+			        <Box d="flex" flexDirection="column" alignItems="center" justifyContent="center">
+						<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+							{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+		     				{!picture && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
+		     				{!picture && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
+		     				{!picture && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
+						</Box>
+						<Box as="strong" textAlign="center">{partnerSeq}</Box>
+						<Box as="strong" textAlign="center">{simpleFullName}</Box>
+			        </Box>
+			        <Box position="absolute" ps={4} style={{ width: "60%", height: "100%", left: "35%", top: 0 }}>
+			            <Box d="flex" alignItems="center" borderStart borderWidth={2} w={100} h={100} style={{ transform: "skew(-20deg, 0deg)" }}>
+			                <Box style={{ height: "70%", width: "2rem", boxShadow: "rgb(0 0 0 / 25%) 3px 3px 8px", backgroundColor: "#20BCB5" }} />
+			                <Box d="flex" alignItems="center" w={100} style={{ position: "absolute", top: "15%", left: "0.5rem", minHeight: "70%" }}>
+			                    <Box as="ul" m={0} p={0} w={100} style={{ listStyle: "none" }}>
+			                        {(() => {
+			                            const renderItem = (icon, value) => {
+			                                return value && String(value).trim() && (
+			                                    <Box as="li" d="flex" gap={24} style={{ transform: "skew(20deg, 0deg)" }}>
+			                                        <Icon icon={icon} color="white" fontSize="15px"/>
+			                                        <Box as="span" style={{ fontSize: 15 }}> {value} </Box>
+			                                    </Box>
+			                                );
+			                            };
+			                            return (
+			                                <>
+			                                    {renderItem("telephone", fixedPhone)}
+			                                    {renderItem("phone", mobilePhone)}
+			                                    {renderItem("envelope-fill", emailAddress.address)}
+			                                    {renderItem("building", mainPartner.simpleFullName)}
+			                                    {renderItem("house-fill", mainAddress.fullName)}
+			                                </>
+			                            );
+			                        })()}
+			                    </Box>
+			                </Box>
+			            </Box>
+			        </Box>
+			    </Box>
 			</Box>
 		</>
 		]]>

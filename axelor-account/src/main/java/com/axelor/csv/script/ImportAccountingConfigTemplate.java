@@ -18,7 +18,7 @@
  */
 package com.axelor.csv.script;
 
-import com.axelor.apps.account.db.AccountChart;
+import com.axelor.apps.account.db.AccountingConfigTemplate;
 import com.axelor.common.FileUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -37,19 +37,23 @@ import java.util.zip.ZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ImportAccountChart {
+public class ImportAccountingConfigTemplate {
 
   private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject private MetaFiles metaFiles;
 
-  protected File getDataFile(AccountChart accountChart) throws IOException {
+  protected File getDataFile(AccountingConfigTemplate accountingConfigTemplate) throws IOException {
 
-    File tempDir = new File(Files.createTempDir(), accountChart.getCode());
+    File tempDir = new File(Files.createTempDir(), accountingConfigTemplate.getCode());
     if (!tempDir.exists()) tempDir.mkdir();
 
     String chartPath =
-        "/l10n/l10n_" + accountChart.getCountryCode() + "/" + accountChart.getCode() + "/";
+        "/l10n/l10n_"
+            + accountingConfigTemplate.getCountryCode()
+            + "/"
+            + accountingConfigTemplate.getCode()
+            + "/";
 
     String[] files =
         new String[] {
@@ -85,10 +89,10 @@ public class ImportAccountChart {
     return tempDir;
   }
 
-  protected File getZipFile(AccountChart accountChart) throws IOException {
+  protected File getZipFile(AccountingConfigTemplate accountingConfigTemplate) throws IOException {
 
-    File directory = this.getDataFile(accountChart);
-    String fileName = accountChart.getCode() + ".zip";
+    File directory = this.getDataFile(accountingConfigTemplate);
+    String fileName = accountingConfigTemplate.getCode() + ".zip";
 
     File zipFile = new File(directory.getParent(), fileName);
 
@@ -124,24 +128,28 @@ public class ImportAccountChart {
     }
   }
 
-  public Object importAccountChart(Object bean, Map<String, Object> values) throws IOException {
+  public Object importAccountingConfigTemplate(Object bean, Map<String, Object> values)
+      throws IOException {
 
-    assert bean instanceof AccountChart;
-    AccountChart accountChart = (AccountChart) bean;
+    assert bean instanceof AccountingConfigTemplate;
+    AccountingConfigTemplate accountConfigTemplate = (AccountingConfigTemplate) bean;
 
-    File zipFile = this.getZipFile(accountChart);
+    File zipFile = this.getZipFile(accountConfigTemplate);
 
     try {
       final MetaFile metaFile = metaFiles.upload(zipFile);
-      accountChart.setMetaFile(metaFile);
+      accountConfigTemplate.setMetaFile(metaFile);
 
     } catch (Exception e) {
       e.printStackTrace();
-      LOG.warn("Can't load file {} for accountChart {}", zipFile.getName(), accountChart.getName());
+      LOG.warn(
+          "Can't load file {} for accountConfigTemplate {}",
+          zipFile.getName(),
+          accountConfigTemplate.getName());
     }
 
     FileUtils.deleteDirectory(zipFile.getParentFile());
 
-    return accountChart;
+    return accountConfigTemplate;
   }
 }

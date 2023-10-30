@@ -146,9 +146,9 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       LocalDate date = null;
       if (saleOrder != null) {
         date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
+            saleOrder.getOrderDate() != null
+                ? saleOrder.getOrderDate()
+                : saleOrder.getCreationDate();
       }
       if (date != null) {
         query =
