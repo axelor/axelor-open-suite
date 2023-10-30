@@ -93,7 +93,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineRecordService.setCurrencyFields(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
     moveLineService.computeFinancialDiscount(moveLine);
+    moveLineRecordService.setCounter(moveLine, move);
 
+    valuesMap.put("counter", moveLine.getCounter());
     valuesMap.put("account", moveLine.getAccount());
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("date", moveLine.getDate());
