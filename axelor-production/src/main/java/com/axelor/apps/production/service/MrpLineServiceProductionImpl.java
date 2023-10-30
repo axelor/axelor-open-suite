@@ -176,13 +176,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     if (prodProcess != null) {
       totalDuration = prodProcessLineService.computeEntireDuration(prodProcess, qty);
     }
-
-    // If days should be rounded to an upper value
-    if (totalDuration != 0 && totalDuration % TimeUnit.DAYS.toSeconds(1) != 0) {
-      return TimeUnit.SECONDS.toDays(totalDuration) + 1;
-    } else {
-      return TimeUnit.SECONDS.toDays(totalDuration);
-    }
+    return TimeUnit.SECONDS.toDays(totalDuration);
   }
 
   @Override
