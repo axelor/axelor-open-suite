@@ -350,7 +350,10 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
           BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
 
-          BigDecimal moveLineAmount = moveToolService.getTotalCurrencyAmount(creditMoveLineList);
+          BigDecimal moveLineAmount =
+              moveToolService
+                  .getTotalCurrencyAmount(creditMoveLineList)
+                  .min(invoiceCustomerMoveLine.getCurrencyAmount());
           LocalDate date = appAccountService.getTodayDate(company);
 
           // credit move line creation
@@ -360,8 +363,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                   partner,
                   account,
                   moveLineAmount,
-                  totalCreditAmount,
-                  totalCreditAmount.divide(
+                  amount,
+                  amount.divide(
                       moveLineAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
                   false,
                   date,
