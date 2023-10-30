@@ -23,8 +23,10 @@ import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.account.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportFactoryService;
 import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileService;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineAFB120Service;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -70,9 +72,11 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("ddMMyy");
 
   @Inject
-  public BankStatementFileAFB120Service(BankStatementService bankStatementService) {
+  public BankStatementFileAFB120Service(
+      BankStatementRepository bankStatementRepository,
+      BankStatementImportFactoryService bankStatementService) {
 
-    super(bankStatementService);
+    super(bankStatementRepository, bankStatementService);
 
     this.cfonbToolService = Beans.get(CfonbToolService.class);
     this.currencyRepository = Beans.get(CurrencyRepository.class);
