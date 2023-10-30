@@ -39,7 +39,7 @@ public class EmploymentContractHRRepository extends EmploymentContractRepository
                 SequenceRepository.EMPLOYMENT_CONTRACT,
                 employmentContract.getPayCompany(),
                 EmploymentContract.class,
-                "ref");
+                "ref",employmentContract);
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
       }
