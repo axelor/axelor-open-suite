@@ -107,9 +107,9 @@
         <panel name="ifrsAccountsPanel" title="IFRS depreciation"
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="ifrsDepreciationAccount" form-view="account-form"
-            domain="self.company = :company AND self.statusSelect = 1 AND self.accountType.technicalTypeSelect = 'charge'"/>
+            domain="self.company = :company AND self.statusSelect = 1 AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'special')"/>
           <field name="ifrsChargeAccount" form-view="account-form"
-            domain="self.company = :company AND self.statusSelect = 1 AND self.accountType.technicalTypeSelect = 'charge'"/>
+            domain="self.company = :company AND self.statusSelect = 1 AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'special')"/>
         </panel>
       </panel>
       <panel
