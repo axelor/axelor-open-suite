@@ -880,7 +880,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     bankOrder.setBankOrderSeq(
-        (sequenceService.getSequenceNumber(sequence, date, BankOrder.class, "bankOrderSeq")));
+        (sequenceService.getSequenceNumber(sequence, date, BankOrder.class, "bankOrderSeq",bankOrder)));
 
     if (bankOrder.getBankOrderSeq() != null) {
       return;
