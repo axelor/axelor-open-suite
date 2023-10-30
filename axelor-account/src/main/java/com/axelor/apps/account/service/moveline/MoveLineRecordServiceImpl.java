@@ -64,7 +64,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     BigDecimal currencyRate = BigDecimal.ONE;
 
     if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-      if (move.getMoveLineList().size() == 0) {
+      if (ObjectUtils.isEmpty(move.getMoveLineList())) {
         currencyRate =
             currencyService.getCurrencyConversionRate(currency, companyCurrency, move.getDate());
       } else {
