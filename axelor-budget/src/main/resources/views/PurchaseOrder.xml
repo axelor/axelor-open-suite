@@ -38,8 +38,12 @@
             onChange="budget-action-purchase-order-record-project-onchange"
             hideIf="orderTypeSelect == 4"/>
           <field name="companyDepartment" colSpan="3"
-            onChange="action-budget-purchase-order-attrs-company-dept-onchange"
-            requiredIf="$enableBudgetKey"/>
+            onChange="action-budget-purchase-order-attrs-company-dept-onchange"/>
+          <field name="budgetLevel" if="__config__.app.isApp('budget')"
+            onSelect="action-budget-purchase-order-attrs-budget-level-domain"
+            showIf="companyDepartment"
+            onChange="action-budget-purchase-order-group-budget-level-onchange"
+            form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
           <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"
             domain="self.company = :company AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect = 2 AND (:budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget = :budgetLevel ) OR (:budgetLevel IS NULL AND self.budgetLevel.parentBudgetLevel.globalBudget IS NOT NULL AND ((:companyDepartment IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL))"/>
           <button name="applyToAllBtn" title="Apply to all"
@@ -74,7 +78,6 @@
       target="panel-tabs[@name='mainPanelTab']/panel[@name='budgetDistributionPanel']/*[last()]">
       <insert position="after">
         <field name="$budgetExceedAlert" type="string" hidden="true"/>
-        <field name="$enableBudgetKey" type="boolean" hidden="true"/>
         <field name="budgetDistributionGenerated" hidden="true"/>
         <field name="company.accountConfig.enableBudgetKey" hidden="true"/>
       </insert>
@@ -155,16 +158,6 @@
       name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
   </action-group>
-
-  <action-record name="action-budget-purchase-order-record-load-budget-key-config"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="$enableBudgetKey"
-      expr="eval:__user__.activeCompany.accountConfig.enableBudgetKey"
-      if="__user__.activeCompany != null"/>
-    <field name="$enableBudgetKey"
-      expr="eval:__repo__(Company).all().fetchOne().accountConfig.enableBudgetKey"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-  </action-record>
 
   <action-attrs name="action-budget-purchase-order-attrs-budget-level-domain">
     <attribute name="domain" for="globalBudget"
