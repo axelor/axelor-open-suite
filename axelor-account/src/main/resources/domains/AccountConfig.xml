@@ -182,10 +182,14 @@
     <boolean name="isPrintInvoicesInCompanyLanguage"
       title="Print invoices in company language" default="true"/>
 
-    <!-- Account chart template -->
-    <many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart"
-      title="Account chart"/>
+    <!-- Accounting config template -->
+    <many-to-one name="accountingConfigTemplate"
+      ref="com.axelor.apps.account.db.AccountingConfigTemplate"
+      title="Accounting configurations template"/>
     <boolean name="hasChartImported" title="Chart imported"/>
+    <boolean name="isImportAccountChartOnly" title="Import account chart only"/>
+    <boolean name="hasAccountingConfigTemplateImported"
+      title="Accounting configurations imported"/>
     <integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select"
       default="1"/>
 
@@ -464,8 +468,11 @@
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
       <field name="isPrintInvoicesInCompanyLanguage" on="UPDATE"/>
 
-      <field name="accountChart" on="UPDATE"/>
+      <field name="accountingConfigTemplate" on="UPDATE"/>
       <field name="hasChartImported" on="UPDATE"/>
+      <field name="hasAccountingConfigTemplateImported" on="UPDATE"/>
+      <field name="isImportAccountChartOnly" on="UPDATE"/>
+
       <field name="invoiceInAtiSelect" on="UPDATE"/>
 
       <field name="accountingDaybook" on="UPDATE"/>

@@ -21,9 +21,10 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountChartService;
+import com.axelor.apps.account.service.AccountingConfigTemplateService;
 import com.axelor.apps.account.service.YearAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -34,13 +35,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Singleton
-public class AccountChartController {
+public class AccountingConfigTemplateController {
 
   public void installChart(ActionRequest request, ActionResponse response) throws AxelorException {
     AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
     accountConfig = Beans.get(AccountConfigRepository.class).find(accountConfig.getId());
 
-    if (Beans.get(AccountChartService.class).installAccountChart(accountConfig)) {
+    if (Beans.get(AccountingConfigTemplateService.class).installAccountChart(accountConfig)) {
       response.setInfo(I18n.get(AccountExceptionMessage.ACCOUNT_CHART_1));
     } else {
       response.setInfo(I18n.get(AccountExceptionMessage.ACCOUNT_CHART_2));
@@ -51,11 +52,17 @@ public class AccountChartController {
   public void installChartGenerateFiscalYear(ActionRequest request, ActionResponse response)
       throws AxelorException {
     AccountConfig accountConfig = request.getContext().asType(AccountConfig.class);
+    Company company = accountConfig.getCompany();
     accountConfig = Beans.get(AccountConfigRepository.class).find(accountConfig.getId());
-    Beans.get(AccountChartService.class).installAccountChart(accountConfig);
+
     generateFiscalYearAndPeriod(request);
+    Beans.get(AccountingConfigTemplateService.class)
+        .installProcess(accountConfig, accountConfig.getAccountingConfigTemplate(), company);
+
     response.setInfo(
-        I18n.get(AccountExceptionMessage.ACCOUNT_CHART_AND_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS));
+        String.format(
+            I18n.get(AccountExceptionMessage.ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS),
+            company.getName()));
     response.setReload(true);
   }
 

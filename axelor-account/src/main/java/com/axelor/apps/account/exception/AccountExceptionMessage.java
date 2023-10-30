@@ -1692,6 +1692,6 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
       "Fiscal year and periods have been generated successfully." /*)*/;
-  public static final String ACCOUNT_CHART_AND_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
-      "The chart of account has been loaded and fiscal year/periods have been correctly generated." /*)*/;
+  public static final String ACCOUNTING_CONFIGURATION_TEMPLATE_IMPORT_SUCCESS = /*$$(*/
+      "The accounting configurations have been imported successfully for the company %s." /*)*/;
 }

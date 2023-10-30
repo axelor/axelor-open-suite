@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="accounting-config-template-grid" title="Accounting configurations templates"
+    model="com.axelor.apps.account.db.AccountingConfigTemplate">
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="countryCode"/>
+  </grid>
+
+  <form name="accounting-config-template-form" title="Accounting configurations template"
+    model="com.axelor.apps.account.db.AccountingConfigTemplate">
+    <panel name="generalPanel" title="General">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="countryCode"/>
+      <field name="metaFile" widget="binary-link" form-view="meta-files-form"
+        grid-view="meta-files-grid"/>
+      <field name="description" colSpan="12" widget="html"/>
+    </panel>
+    <panel-dashlet name="accountingConfigTemplateCompanyPanel" title="Companies"
+      action="action-accounting-config-template-view-show-company-dashlet" colSpan="12"/>
+  </form>
+
+  <action-view name="action-accounting-config-template-view-show-company-dashlet"
+    title="Companies" model="com.axelor.apps.base.db.Company">
+    <view type="grid" name="company-grid"/>
+    <view type="form" name="company-form"/>
+    <domain>self.accountConfig.accountingConfigTemplate = :accountingConfigTemplate</domain>
+    <context name="accountingConfigTemplate" expr="eval:__self__"/>
+  </action-view>
+
+</object-views>
