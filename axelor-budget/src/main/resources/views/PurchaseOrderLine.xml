@@ -111,6 +111,7 @@
     <action name="action-group-purchase-purchase-orderline-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onnew">
@@ -125,7 +126,7 @@
     name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"
     id="action-budget-purchase-order-line-attrs-hidden-analytic-distribution-panel">
     <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; account &amp;&amp; !account.analyticDistributionAuthorized)"/>
+      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; (!account?.analyticDistributionAuthorized || !product))"/>
   </action-attrs>
 
   <action-record name="action-budget-purchase-orderline-record-set-global-budget"

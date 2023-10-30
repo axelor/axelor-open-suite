@@ -345,6 +345,7 @@
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
     <action name="action-purchase-order-line-method-check-different-supplier"/>
     <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
+    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-qty-onchange">
@@ -584,7 +585,7 @@
   <action-attrs
     name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel">
     <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting()"/>
+      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !product"/>
   </action-attrs>
 
   <!-- ACTION VIEW -->
