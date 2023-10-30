@@ -140,17 +140,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException {
-    String fieldNameToSet = "moveLineList";
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      fieldNameToSet = "moveLineMassEntryList";
-    }
-
-    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), fieldNameToSet, attrsMap);
-  }
-
-  @Override
   public void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
     if (move == null) {
       return;

@@ -73,7 +73,7 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
+    onNew="action-account-group-onnew" onLoad="action-account-move-method-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
@@ -581,11 +581,6 @@
 
   <action-group name="action-account-group-onnew">
     <action name="action-account-move-method-onnew"/>
-    <action name="action-move-method-check-period"/>
-  </action-group>
-
-  <action-group name="action-account-group-onLoad">
-    <action name="action-account-move-method-onLoad"/>
     <action name="action-move-method-check-period"/>
   </action-group>
 
