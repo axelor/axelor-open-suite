@@ -208,7 +208,8 @@
           title="Import parameters" readonlyIf="statusSelect > 1" hidden="true">
           <field name="importIfrsNbrOfPastDepreciations" requiredIf="originSelect == 99"
             min="0"/>
-          <field name="importIfrsAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"/>
+          <field name="importIfrsAlreadyDepreciatedAmount" requiredIf="originSelect == 99"
+            min="0"/>
         </panel>
         <panel-related name="ifrsFixedAssetLineListPanel"
           readonlyIf="statusSelect > 1" colSpan="12" field="ifrsFixedAssetLineList"
