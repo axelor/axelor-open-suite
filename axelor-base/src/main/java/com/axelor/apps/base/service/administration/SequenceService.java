@@ -29,8 +29,10 @@ import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
@@ -635,11 +637,12 @@ public class SequenceService {
   }
 
   public String getSeqPrefixe(Sequence sequence, Model model) {
-    Context cxt = new Context(model.getId(), model.getClass());
+
+    Context cxt = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
     if (Boolean.TRUE.equals(sequence.getGroovyOk())) {
-      String prefix = String.valueOf(new GroovyScriptHelper(cxt).eval(sequence.getPrefixeGroovy()));
-      sequence.setPrefixe(prefix);
-      return sequence.getPrefixe();
+      String prefix = String.valueOf(new GroovyScriptHelper(cxt).eval(sequence.getPrefixe()));
+      sequence.setPrefixeGroovy(prefix);
+      return sequence.getPrefixeGroovy();
     }
     return sequence.getPrefixe();
   }

@@ -364,7 +364,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       draftSeq = stockMove.getStockMoveSeq();
       stockMove.setStockMoveSeq(
           stockMoveToolService.getSequenceStockMove(
-              stockMove.getTypeSelect(), stockMove.getCompany()));
+              stockMove.getTypeSelect(), stockMove.getCompany(), stockMove));
     } else {
       draftSeq = null;
     }
@@ -745,7 +745,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setRealDate(null);
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
-            newStockMove.getTypeSelect(), newStockMove.getCompany()));
+            newStockMove.getTypeSelect(), newStockMove.getCompany(), stockMove));
     newStockMove.setName(
         stockMoveToolService.computeName(
             newStockMove,
@@ -859,7 +859,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
-            newStockMove.getTypeSelect(), newStockMove.getCompany()));
+            newStockMove.getTypeSelect(), newStockMove.getCompany(), stockMove));
 
     setStockMoveName(newStockMove, stockMove);
 
