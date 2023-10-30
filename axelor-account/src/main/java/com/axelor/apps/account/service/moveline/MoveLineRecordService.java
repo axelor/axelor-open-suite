@@ -45,8 +45,4 @@ public interface MoveLineRecordService {
   void setCounter(MoveLine moveLine, Move move);
 
   void resetPartnerFields(MoveLine moveLine);
-
-  void resetParentMove(Move move);
-
-  void resetParentMove(MoveLine moveLine);
 }
