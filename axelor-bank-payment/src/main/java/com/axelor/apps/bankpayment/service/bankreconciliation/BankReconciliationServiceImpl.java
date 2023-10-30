@@ -1078,12 +1078,11 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
 
     BigDecimal currencyAmount = debit.compareTo(BigDecimal.ZERO) == 0 ? credit : debit;
     currencyAmount =
-        currencyAmount.divide(
-            currencyService.getCurrencyConversionRate(
-                bankReconciliation.getCurrency(),
-                moveLine.getMove().getCurrency(),
-                dateService.date()),
-            RoundingMode.HALF_UP);
+        currencyService.getAmountCurrencyConvertedAtDate(
+            bankReconciliation.getCurrency(),
+            moveLine.getMove().getCurrency(),
+            currencyAmount,
+            dateService.date());
 
     scriptContext.put("debit", debit);
     scriptContext.put("credit", credit);
@@ -1591,12 +1590,10 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
 
   protected BigDecimal getConvertedAmount(BigDecimal value, BankReconciliation bankReconciliation)
       throws AxelorException {
-    BigDecimal currencyRate =
-        currencyService.getCurrencyConversionRate(
-            bankReconciliation.getCurrency(),
-            bankReconciliation.getCompany().getCurrency(),
-            dateService.date());
-
-    return value.divide(currencyRate, RoundingMode.HALF_UP);
+    return currencyService.getAmountCurrencyConvertedAtDate(
+        bankReconciliation.getCurrency(),
+        bankReconciliation.getCompany().getCurrency(),
+        value,
+        dateService.date());
   }
 }
