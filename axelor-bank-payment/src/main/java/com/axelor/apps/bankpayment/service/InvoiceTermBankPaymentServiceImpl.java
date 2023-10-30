@@ -54,7 +54,7 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
       JournalService journalService,
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
       PfpService pfpService,
-      ScaleServiceAccount scaleServiceAccount,) {
+      ScaleServiceAccount scaleServiceAccount) {
     super(
         invoiceTermRepo,
         invoiceRepo,
