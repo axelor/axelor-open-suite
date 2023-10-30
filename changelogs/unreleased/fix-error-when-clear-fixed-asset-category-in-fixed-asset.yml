@@ -1,0 +1,3 @@
+---
+title: "FIXED ASSET : Cannot get property 'fixedAssetType' on null object when we clear fixedAssetCategory field"
+type: fix

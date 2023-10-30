@@ -29,7 +29,11 @@
       <field name="hiringStage.name" showIf="$readonly()" showTitle="false">
         <viewer depends="hiringStage.name">
           <![CDATA[
-            <span class='label label-info' style="font-size: medium;">{{$fmt('hiringStage')}}</span>
+          	<>
+          		<Box d="flex" justifyContent="center">
+          			<Badge bg="info" fontSize={6}>{$fmt('hiringStage')}</Badge>
+          		</Box>
+          	</>
           ]]>
         </viewer>
       </field>
@@ -37,17 +41,19 @@
       <field name="picture" widget="Image" showTitle="false">
         <viewer>
           <![CDATA[
-              <div style="text-align: center;">
-                <img ng-show="record.picture" ng-src="{{$image('picture', 'content')}}"/>
-                <img ng-show="!record.picture" src="img/partner-default.png" />
-              </div>
+              <>
+                  {picture && <Image src={$image('picture', 'content')}></Image>}
+                  {!picture && <Image src="img/partner-default.png"></Image>}
+              </>
           ]]>
         </viewer>
       </field>
       <field name="fullName" showTitle="false">
         <viewer depends="fullName">
           <![CDATA[
-              <div style="text-align: center; font-weight: bold;">{{record.fullName}}</div>
+              <>
+                  <Box d="flex" justifyContent="center" fontWeight="bold">{fullName}</Box>
+              </>
           ]]>
         </viewer>
         <editor>
@@ -60,7 +66,13 @@
       <field name="creationDate" showIf="$readonly()" showTitle="false">
         <viewer depends="creationDate">
           <![CDATA[
-              <div ng-show="record.creationDate" style="text-align: center; font-weight: bold;"><span x-translate>Applied :</span> {{record.creationDate}}</div>
+              <>
+                 {creationDate &&
+                	<Box d="flex" justifyContent="center" fontWeight="bold">
+                 		<span>{_t('Applied :')} {creationDate}</span>
+                 	</Box>
+                 }
+              </>
           ]]>
         </viewer>
       </field>
@@ -75,9 +87,26 @@
         <field name="$contactDetails" showIf="$readonly()" showTitle="false">
           <viewer depends="emailAddress.address, mobilePhone, employeeAddress.addressL4">
             <![CDATA[
-            <div ng-show="record.emailAddress.address"><i class="fa fa-envelope"></i> <a href="mailto:{{record.emailAddress.address}}">{{record.emailAddress.address}}</a></div>
-            <div ng-show="record.mobilePhone"><i class="fa fa-phone"></i> <a href="tel:{{record.mobilePhone}}">{{record.mobilePhone}}</a></div>
-            <div ng-show="record.employeeAddress.addressL4"><i class="fa fa-map-marker"></i> <a href="http://maps.google.com/?q={{record.employeeAddress.addressL4}}">{{record.employeeAddress.addressL4}}</a></div>
+            <>
+            	{emailAddress.address &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="envelope-fill" fontSize="15px"/>
+            			<Link href={`mailto:${emailAddress.address}`}> {emailAddress.address} </Link>
+            		</Box>
+            	}
+            	{mobilePhone &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="telephone" fontSize="15px"/>
+            			<Link href={`tel:${mobilePhone}`}> {mobilePhone} </Link>
+            		</Box>
+            	}
+            	{employeeAddress?.addressL4 &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="geo-alt-fill" fontSize="15px"/>
+            			<Link href={`http://maps.google.com/?q=${employeeAddress.addressL4}`}> {employeeAddress.addressL4} </Link>
+            		</Box>
+            	}
+            </>
           ]]>
           </viewer>
         </field>
@@ -159,7 +188,9 @@
         <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
           <viewer depends="$inlineUrl">
             <![CDATA[
-              <iframe ng-src="{{record.$inlineUrl}}" frameborder="0" height="900" scrolling="auto"/>
+              <>
+                  <Box as="iframe" height="900" border="0" src={$inlineUrl}></Box>
+              </>
             ]]>
           </viewer>
         </field>
@@ -180,17 +211,19 @@
     <field name="fixedPhone"/>
     <field name="mobilePhone"/>
     <field name="jobPosition"/>
-    <field name="resumeId"/>
+    <field name="dmsFile"/>
     <template><![CDATA[
-			<h4>{{ fullName }}</h4>
-			<br>
-			<div class="card-body">
-				<span x-translate>Email</span><span> : {{ emailAddress.address }}<br></span>
-				<span x-translate>Fixed phone</span><span> : {{ fixedPhone }}<br></span>
-				<span x-translate>Mobile phone</span><span> : {{ mobilePhone }}<br></span>
-				<br>
-				<a ng-href="#/ds/dms.file/edit/{{ resumeId }}" ng-show="resumeId != null" x-translate>JobApplication.resume</a>
-			</div>
+			<>
+				<h4>{fullName}</h4>
+				<Box mt={4}>
+					<span>{_t('Email')}</span><span> : { emailAddress.address }</span> <Box/>
+					<span>{_t('Fixed phone')}</span><span> : { fixedPhone }</span> <Box/>
+					<span>{_t('Mobile phone')}</span><span> : { mobilePhone }</span>
+					<Box mt={2}>
+						{dmsFile && <Link href={`#/ds/dms.file/edit/${dmsFile.id}`}>{_t('JobApplication.resume')}</Link>}
+					</Box>
+				</Box>
+			</>
 		]]></template>
   </kanban>
 

@@ -17,11 +17,13 @@
       <field name="$statusSelectTag" colSpan="12" css="label-bold bold" showTitle="false"
         readonly="true">
         <viewer><![CDATA[
-					<h5 class="pull-right text-right">
-						<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Not sent</span>
-						<span class='label label-success' ng-show="record.statusSelect == 3 &amp;&amp; record.sentDateT != null" x-translate>Successful send</span>
-						<span class='label label-important' ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>In progress</span>
-					</h5>
+					<>
+						<Box d="flex" justifyContent="flex-end">
+							{statusSelect == 1 && sentDateT == null && <Badge bg="info">{_t('Not sent')}</Badge>}
+							{statusSelect == 3 && sentDateT != null && <Badge bg="success">{_t('Successful send')}</Badge>}
+							{statusSelect == 2 && sentDateT == null && <Badge bg="danger">{_t('In progress')}</Badge>}
+						</Box>
+					</>
 				]]></viewer>
       </field>
       <field name="mediaTypeSelect" readonlyIf="statusSelect != 1"/>

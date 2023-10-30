@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -111,7 +111,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset.getPeriodicityTypeSelect(),
-        DateTool.plusMonths(
+        LocalDateHelper.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
 
@@ -145,7 +145,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset.getPeriodicityTypeSelect(),
-        DateTool.plusMonths(
+        LocalDateHelper.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
 
@@ -153,7 +153,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset.getPeriodicityTypeSelect(),
-        DateTool.plusMonths(
+        LocalDateHelper.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
 

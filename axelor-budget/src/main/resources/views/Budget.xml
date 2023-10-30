@@ -184,10 +184,6 @@
           showIf="totalAmountCommitted &gt; 0 || totalAmountRealized &gt; 0"
           onClick="action-budget-group-view-budget-distribution-order-line"
           title="Display committed lines" colSpan="12"/>
-        <button name="seeBudgetDistributionLines"
-          showIf="totalAmountCommitted &gt; 0 || totalAmountRealized &gt; 0"
-          onClick="action-budget-distribution-view-show-budget-distibution-lines"
-          title="Display distribution lines" colSpan="12"/>
         <button name="seeRealizedWithNoPo" showIf="realizedWithNoPo &gt; 0"
           onClick="action-budget-line-distribution-view-show-budget-distribution-lines-realized-without-po"
           title="Display realized with no po" colSpan="12"/>
@@ -442,16 +438,6 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_budget" expr="eval: __this__"/>
-  </action-view>
-
-  <action-view name="action-budget-distribution-view-show-budget-distibution-lines"
-    title="Display distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-line-grid"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.id= :_budgetId]]></domain>
-    <context name="_budgetId" expr="eval: id"/>
   </action-view>
 
   <action-view

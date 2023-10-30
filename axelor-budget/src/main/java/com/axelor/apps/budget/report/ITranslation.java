@@ -50,4 +50,15 @@ public interface ITranslation {
       "AccountingReportType25.totalExpenditure"; /*)*/
   public static final String ACCOUNTING_REPORT_25_BALANCE = /*$$(*/
       "AccountingReportType25.balance"; /*)*/
+  public static final String ACCOUNTING_REPORT_25_CURRENCY = /*$$(*/
+      "AccountingReportType25.currency"; /*)*/
+
+  public static final String BUDGET_SCENARIO_TITLE = /*$$(*/ "BudgetScenario.title"; /*)*/
+
+  public static final String BUDGET_SCENARIO_NAME = /*$$(*/ "BudgetScenario.name"; /*)*/
+  public static final String BUDGET_SCENARIO_COMPANY = /*$$(*/ "BudgetScenario.company"; /*)*/
+  public static final String BUDGET_SCENARIO_DATE = /*$$(*/ "BudgetScenario.date"; /*)*/
+  public static final String BUDGET_SCENARIO_CURRENCY = /*$$(*/ "BudgetScenario.currency"; /*)*/
+  public static final String BUDGET_SCENARIO_EXPENSE_AND_REVENUE_ITEMS = /*$$(*/
+      "BudgetScenario.expenseAndRevenueItems"; /*)*/
 }

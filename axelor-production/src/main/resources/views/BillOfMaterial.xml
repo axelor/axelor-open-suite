@@ -199,14 +199,14 @@
     <action name="action-bill-of-material-default-record"/>
     <action name="action-bill-of-material-attrs-price-and-qty-digits"/>
     <action name="action-bill-of-material-record-count-number-of-components"/>
-    <action name="action-bill-of-material-attrs-component-panel-set-canselect"/>
+    <action name="action-bill-of-material-attrs-component-panel-set-canselect-and-product"/>
   </action-group>
 
   <action-group name="action-bill-of-material-group-on-load">
     <action name="action-bill-of-material-attrs-price-and-qty-digits"/>
     <action name="action-bill-of-material-record-count-number-of-components"/>
     <action name="action-bill-of-material-record-set-dummy-field"/>
-    <action name="action-bill-of-material-attrs-component-panel-set-canselect"/>
+    <action name="action-bill-of-material-attrs-component-panel-set-canselect-and-product"/>
   </action-group>
 
   <action-record name="action-bill-of-material-record-set-dummy-field"
@@ -228,6 +228,12 @@
     <field name="product" expr="eval:_product"/>
     <field name="name" expr="eval:_product?.name"/>
     <field name="unit" expr="eval: _product?.unit"/>
+    <field name="product" expr="eval:__parent__?.product"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null"/>
+    <field name="name" expr="eval:__parent__?.product?.name"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null &amp;&amp; __parent__.product.name != null"/>
+    <field name="unit" expr="eval: __parent__?.product?.unit"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null &amp;&amp; __parent__.product.unit != null"/>
   </action-record>
 
   <action-record name="action-bill-of-material-record-product"
@@ -311,9 +317,12 @@
     <attribute name="hidden" for="addComponentsEnMasseBtn" expr="eval: $rawMaterials"/>
   </action-attrs>
 
-  <action-attrs name="action-bill-of-material-attrs-component-panel-set-canselect">
+  <action-attrs
+    name="action-bill-of-material-attrs-component-panel-set-canselect-and-product">
     <attribute name="value" for="$canSelect"
       expr="eval:!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+    <attribute name="readonly" for="product" expr="eval: __parent__.product != null"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine'"/>
   </action-attrs>
 
 

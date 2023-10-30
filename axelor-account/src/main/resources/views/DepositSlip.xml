@@ -21,7 +21,7 @@
 
     <panel name="paymentVouchersOnInvoicePanel" colSpan="12"
       if="!__config__.app.getApp('account')?.paymentVouchersOnCustomerInvoice">
-      <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
+      <static><![CDATA[<><Badge bg="danger">Payment vouchers on invoice setting is disabled.</Badge></>]]></static>
     </panel>
 
     <panel name="definitionPanel" readonlyIf="paymentVoucherList.length > 0">

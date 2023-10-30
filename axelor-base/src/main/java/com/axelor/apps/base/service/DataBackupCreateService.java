@@ -44,7 +44,7 @@ import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.App;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -738,7 +738,7 @@ public class DataBackupCreateService {
   }
 
   public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = DateTool.getTodayDate(null);
+    LocalDate currentDate = LocalDateHelper.getTodayDate(null);
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 

@@ -27,10 +27,12 @@
           showIf="$readonly()">
           <viewer>
 						<![CDATA[
-							<h4 class="text-right">
-								<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOrigin == 1" x-translate>Created manually</span>
-								<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOrigin == 2" x-translate>Created from SOP</span>
-							</h4>
+							<>
+								<Box d="flex" justifyContent="flex-end">
+									{technicalOrigin == 1 && <Badge bg="info">{_t('Created manually')}</Badge>}
+									{technicalOrigin == 2 && <Badge bg="warning">{_t('Created from SOP')}</Badge>}
+								</Box>
+							</>
 						]]>
           </viewer>
         </field>
@@ -43,7 +45,7 @@
       </panel>
       <panel name="detailsPanel" colSpan="12">
         <field name="id" title="Ref"/>
-        <field name="forecastDate"/>
+        <field name="forecastDate" onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"
           domain="self.dtype = 'Product'"/>
         <field name="qty"/>

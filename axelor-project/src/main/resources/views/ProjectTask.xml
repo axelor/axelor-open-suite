@@ -57,13 +57,15 @@
           hidden="true">
           <viewer>
               <![CDATA[
-                   <h4 class="text-right">
-                     <span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
-                     <span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
-                     <span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
-                     <span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
-                     <span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
-                   </h4>
+                   <>
+                       <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+                           {assignment == 1 && <Badge bg="danger">{_t('Task assigned to the client')}</Badge>}
+                           {assignment == 2 && !$provider && <Badge bg="success">{_t('Task assigned to the provider')}</Badge>}
+                           {assignment == 2 && $provider && <Badge bg="success">{_t('Task assigned to')} {$provider}</Badge>}
+                           {((!isOrderAccepted && invoicingType == 2 && exTaxTotal != 0) || (!isOrderAccepted && invoicingType == 1)) && <Badge bg="danger">{_t('Order Proposed')}</Badge>}
+                           {isOrderAccepted && <Badge bg="success">{_t('Order Accepted')}</Badge>}
+                       </Box>
+                   </>
 	        ]]>
           </viewer>
         </field>
@@ -78,9 +80,11 @@
           <field name="fullName" showTitle="false" colSpan="12">
             <viewer depends="name">
 						<![CDATA[
-							<h3>
-								<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-							</h3>
+							<>
+								<h3>
+									<span>{name}</span>
+								</h3>
+							</>
 						]]>
             </viewer>
             <editor>
@@ -179,7 +183,7 @@
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
         <field name="budgetedTime" colSpan="4">
           <viewer><![CDATA[
-                   	<span>{{$fmt('budgetedTime')}} </span><span x-translate>hours</span>
+                   	<><span>{$fmt('budgetedTime')} </span><span>{_t('hours')}</span></>
        			]]></viewer>
         </field>
         <spacer name="budgetedTimeSpacer" colSpan="4"/>
@@ -335,30 +339,36 @@
     <field name="project.isShowProgress"/>
     <template>
 		<![CDATA[
-			<h4>{{name}}</h4>
-			<h4><span style="font-weight:normal;">{{project.fullName}}</span></h4>
-			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
-			<div class="card-body">
-				<div>
-					<i class="fa fa-calendar" aria-hidden="true"></i>
-					<span ng-if="!taskDeadline"> <span x-translate>Not specified</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day')"> <span x-translate>Deadline Yesterday</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment(), 'day')"> <span x-translate>Deadline Today</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day')"> <span x-translate>Deadline Tomorrow</span> </span>
-					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
-					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
-
-					<span class="label pull-right" ng-class="{1:'label-success',2:'label-info',3:'label-warning',4:'label-important'}[priority.technicalTypeSelect]">{{priority.name}}</span>
-
-				</div>
-				<div ng-if="project.isShowProgress" class="progress kanban-progress">
-					<span ng-if="progressSelect == 0">{{ progressSelect }}%</span>
-				  <div class="bar" style="width: {{ progressSelect }}%;">{{ progressSelect }}%</div>
-				</div>
-			</div>
-			<div class="card-footer">
-				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{$fmt('taskDate')}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
-			</div>
+			<>
+				<h4>{name}</h4>
+				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
+				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<Box d="flex" justifyContent="space-between">
+					<Box>
+						<Icon icon="calendar"/>
+						{!taskDeadline && <span> {_t('Not specified')} </span>}
+						{$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day') && <span> {_t('Deadline Yesterday')} </span>}
+						{$moment(taskDeadline).isSame($moment(), 'day') && <span> {_t('Deadline Today')} </span>}
+						{$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day') && <span> {_t('Deadline Tomorrow')} </span>}
+						{$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days') && <span> {_t('Deadline')} {$moment().to($moment(taskDeadline), false)} </span>}
+						{$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days') && <span> {_t('Deadline')} {$moment(taskDeadline).from($moment(), false)} </span>}
+					</Box>
+					<Box>
+						{priority.technicalTypeSelect == 1 && <Badge bg="success">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 2 && <Badge bg="info">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 3 && <Badge bg="warning">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 4 && <Badge bg="danger">{priority.name}</Badge>}
+					</Box>
+				</Box>
+				{project.isShowProgress &&
+					<Box mt={1}>
+						{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
+					</Box>
+				}
+         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
+         			<Icon icon="clock"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+         		</Box>
+			</>
 		]]>
     </template>
   </kanban>
@@ -375,30 +385,34 @@
     <field name="progressSelect"/>
     <template>
 		<![CDATA[
-			<h4>{{name}}</h4>
-			<h4><span style="font-weight:normal;">{{project.fullName}}</span></h4>
-			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
-			<div class="card-body">
-				<div>
-					<i class="fa fa-calendar" aria-hidden="true"></i>
-					<span ng-if="!taskDeadline"> <span x-translate>Not specified</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day')"> <span x-translate>Deadline Yesterday</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment(), 'day')"> <span x-translate>Deadline Today</span> </span>
-					<span ng-if="$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day')"> <span x-translate>Deadline Tomorrow</span> </span>
-					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
-					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
-
-					<span class="label pull-right" ng-class="{1:'label-success',2:'label-info',3:'label-warning',4:'label-important'}[priority.technicalTypeSelect]">{{priority.name}}</span>
-
-				</div>
-				<div class="progress kanban-progress">
-					<span ng-if="progressSelect == 0">{{ progressSelect }}%</span>
-				  <div class="bar" style="width: {{ progressSelect }}%;">{{ progressSelect }}%</div>
-				</div>
-			</div>
-			<div class="card-footer">
-				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{taskDate | date:'dd/MM/yyyy'}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
-			</div>
+			<>
+				<h4>{name}</h4>
+				<h4><Box as="span" fontWeight="normal">{project.fullName}</Box></h4>
+				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
+				<Box d="flex" justifyContent="space-between">
+					<Box>
+						<Icon icon="calendar"/>
+						{!taskDeadline && <span> {_t('Not specified')} </span>}
+						{$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day') && <span> {_t('Deadline Yesterday')} </span>}
+						{$moment(taskDeadline).isSame($moment(), 'day') && <span> {_t('Deadline Today')} </span>}
+						{$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day') && <span> {_t('Deadline Tomorrow')} </span>}
+						{$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days') && <span> {_t('Deadline')} {$moment().to($moment(taskDeadline), false)} </span>}
+						{$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days') && <span> {_t('Deadline')} {$moment(taskDeadline).from($moment(), false)} </span>}
+					</Box>
+					<Box>
+						{priority.technicalTypeSelect == 1 && <Badge bg="success">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 2 && <Badge bg="info">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 3 && <Badge bg="warning">{priority.name}</Badge>}
+						{priority.technicalTypeSelect == 4 && <Badge bg="danger">{priority.name}</Badge>}
+					</Box>
+				</Box>
+				<Box mt={1}>
+					{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
+				</Box>
+         		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
+         			<Icon icon="clock"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+         		</Box>
+			</>
 		]]>
     </template>
   </kanban>

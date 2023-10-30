@@ -57,7 +57,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import wslite.json.JSONException;
 
 public class GdprResponseErasureServiceImpl implements GdprResponseErasureService {
 
@@ -468,7 +467,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
       gdprResponse.setResponseMessage(message);
 
-    } catch (JSONException | IOException | ClassNotFoundException e) {
+    } catch (IOException | ClassNotFoundException e) {
       throw new AxelorException(
           e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

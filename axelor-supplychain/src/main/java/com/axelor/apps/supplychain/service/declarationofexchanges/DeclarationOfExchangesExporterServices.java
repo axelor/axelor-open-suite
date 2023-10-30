@@ -36,7 +36,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.io.MoreFiles;
 import com.google.inject.Inject;
 import java.io.IOException;
@@ -128,7 +128,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
 
     try {
       MoreFiles.createParentDirectories(path);
-      CsvTool.csvWriter(
+      CsvHelper.csvWriter(
           path.getParent().toString(),
           path.getFileName().toString(),
           ';',
