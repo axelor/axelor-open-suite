@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountType;
@@ -27,7 +26,6 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -61,7 +59,6 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
@@ -70,21 +67,17 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.utils.StringTool;
@@ -94,7 +87,6 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -132,7 +124,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   protected BankReconciliationLoadService bankReconciliationLoadService;
   protected JournalRepository journalRepository;
   protected AccountRepository accountRepository;
-  protected AccountConfigRepository accountConfigRepository;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected BankStatementRuleService bankStatementRuleService;
   protected ReconcileService reconcileService;
@@ -163,7 +154,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
       BankReconciliationLoadService bankReconciliationLoadService,
       JournalRepository journalRepository,
       AccountRepository accountRepository,
-      AccountConfigRepository accountConfigRepository,
       BankPaymentConfigService bankPaymentConfigService,
       BankStatementRuleService bankStatementRuleService,
       ReconcileService reconcileService,
@@ -193,7 +183,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     this.bankReconciliationLoadService = bankReconciliationLoadService;
     this.journalRepository = journalRepository;
     this.accountRepository = accountRepository;
-    this.accountConfigRepository = accountConfigRepository;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.bankStatementRuleService = bankStatementRuleService;
     this.reconcileService = reconcileService;
@@ -564,12 +553,8 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     offset = 0;
     JPA.clear();
     bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
-    moveLines =
-        moveLineRepository
-            .all()
-            .filter("self.account = :cashAccount")
-            .bind("cashAccount", bankReconciliation.getCashAccount())
-            .fetch(limit, offset);
+    moveLines = this.getMoveLines(bankReconciliation.getCashAccount(), limit, offset);
+
     do {
       for (MoveLine moveLine : moveLines) {
         movesReconciledLineBalance =
@@ -580,12 +565,8 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
       offset += limit;
       JPA.clear();
       bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
-      moveLines =
-          moveLineRepository
-              .all()
-              .filter("self.account = :cashAccount")
-              .bind("cashAccount", bankReconciliation.getCashAccount())
-              .fetch(limit, offset);
+      moveLines = this.getMoveLines(bankReconciliation.getCashAccount(), limit, offset);
+
     } while (moveLines.size() != 0);
     JPA.clear();
     bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
@@ -610,6 +591,16 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
         movesReconciledLineBalance.add(movesOngoingReconciledBalance));
     bankReconciliation = computeEndingBalance(bankReconciliation);
     return saveBR(bankReconciliation);
+  }
+
+  protected List<MoveLine> getMoveLines(Account cashAccount, int limit, int offset) {
+    return moveLineRepository
+        .all()
+        .filter("self.account = :cashAccount AND self.move.statusSelect IN (:daybook, :accounted)")
+        .bind("cashAccount", cashAccount)
+        .bind("daybook", MoveRepository.STATUS_DAYBOOK)
+        .bind("accounted", MoveRepository.STATUS_ACCOUNTED)
+        .fetch(limit, offset);
   }
 
   protected BigDecimal computeMovesReconciledLineBalance(
@@ -1193,54 +1184,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     }
     bankReconciliation.setEndingBalance(endingBalance);
     return bankReconciliation;
-  }
-
-  @Override
-  public String printNewBankReconciliation(BankReconciliation bankReconciliation)
-      throws AxelorException {
-    if (bankReconciliation.getCompany() == null) {
-      return null;
-    }
-    PrintingSettings printingSettings = bankReconciliation.getCompany().getPrintingSettings();
-    String watermark = null;
-    String fileLink = null;
-    if (accountConfigRepository.findByCompany(bankReconciliation.getCompany()).getInvoiceWatermark()
-        != null) {
-      watermark =
-          MetaFiles.getPath(
-                  accountConfigRepository
-                      .findByCompany(bankReconciliation.getCompany())
-                      .getInvoiceWatermark())
-              .toString();
-    }
-    BankPaymentConfig bankPaymentConfig =
-        Beans.get(BankPaymentConfigService.class)
-            .getBankPaymentConfig(bankReconciliation.getCompany());
-    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
-    fileLink =
-        ReportFactory.createReport(
-                IReport.BANK_RECONCILIATION2, I18n.get("Bank Reconciliation") + "-${date}")
-            .addParam("BankReconciliationId", bankReconciliation.getId())
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam(
-                "Timezone",
-                bankReconciliation.getCompany() != null
-                    ? bankReconciliation.getCompany().getTimezone()
-                    : null)
-            .addParam(
-                "BankReconciliationFromDate",
-                Date.valueOf(bankReconciliation.getFromDate().minusDays(dateMargin)))
-            .addParam(
-                "BankReconciliationToDate",
-                Date.valueOf(bankReconciliation.getToDate().plusDays(dateMargin)))
-            .addParam("HeaderHeight", printingSettings.getPdfHeaderHeight())
-            .addParam("Watermark", watermark)
-            .addParam("FooterHeight", printingSettings.getPdfFooterHeight())
-            .addFormat("pdf")
-            .toAttach(bankReconciliation)
-            .generate()
-            .getFileLink();
-    return fileLink;
   }
 
   @Override

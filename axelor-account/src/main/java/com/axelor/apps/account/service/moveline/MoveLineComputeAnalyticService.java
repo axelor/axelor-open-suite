@@ -50,6 +50,4 @@ public interface MoveLineComputeAnalyticService {
   MoveLine clearAnalyticAccounting(MoveLine moveLine);
 
   MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine);
-
-  boolean checkManageAnalytic(Company company) throws AxelorException;
 }

@@ -173,8 +173,7 @@ public class MachineServiceImpl implements MachineService {
             .fetch();
 
     if (concurrentOperationOrders.isEmpty()) {
-      MachineTimeSlot timeSlot = new MachineTimeSlot(plannedStartDateT, plannedEndDateT);
-      return timeSlot;
+      return new MachineTimeSlot(plannedStartDateT, plannedEndDateT);
     } else {
       OperationOrder lastOperationOrder = concurrentOperationOrders.get(0);
 
@@ -184,6 +183,140 @@ public class MachineServiceImpl implements MachineService {
           lastOperationOrder
               .getPlannedEndDateT()
               .plusSeconds(timeBeforeNextOperation + initialDuration),
+          operationOrder,
+          initialDuration);
+    }
+  }
+
+  @Override
+  public MachineTimeSlot getFurthestAvailableTimeSlotFrom(
+      Machine machine,
+      LocalDateTime startDateT,
+      LocalDateTime endDateT,
+      OperationOrder operationOrder)
+      throws AxelorException {
+
+    return getFurthestAvailableTimeSlotFrom(
+        machine,
+        startDateT,
+        endDateT,
+        operationOrder,
+        DurationTool.getSecondsDuration(Duration.between(startDateT, endDateT)));
+  }
+
+  @SuppressWarnings("unchecked")
+  protected MachineTimeSlot getFurthestAvailableTimeSlotFrom(
+      Machine machine,
+      LocalDateTime startDateT,
+      LocalDateTime endDateT,
+      OperationOrder operationOrder,
+      long initialDuration)
+      throws AxelorException {
+
+    EventsPlanning planning = machine.getPublicHolidayEventsPlanning();
+
+    if (planning != null
+        && planning.getEventsPlanningLineList() != null
+        && planning.getEventsPlanningLineList().stream()
+            .anyMatch(epl -> epl.getDate().equals(endDateT.toLocalDate()))) {
+
+      // If endDate is not available because of planning
+      // Then we try for the previous day
+      LocalDateTime previousDayDateT = endDateT.plusDays(1).with(LocalTime.MIN);
+
+      return getFurthestAvailableTimeSlotFrom(
+          machine,
+          previousDayDateT.minusSeconds(initialDuration),
+          previousDayDateT,
+          operationOrder,
+          initialDuration);
+    }
+
+    LocalDateTime plannedStartDateT = null;
+    LocalDateTime plannedEndDateT = null;
+
+    if (machine.getWeeklyPlanning() != null) {
+      // Planning on date at startDateT
+      DayPlanning dayPlanning =
+          weeklyPlanningService.findDayPlanning(
+              machine.getWeeklyPlanning(), startDateT.toLocalDate());
+      Optional<LocalDateTime> allowedEndDateTPeriodAt =
+          dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, startDateT);
+
+      if (allowedEndDateTPeriodAt.isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES),
+            operationOrder.getName());
+      }
+
+      plannedEndDateT = allowedEndDateTPeriodAt.get();
+      plannedStartDateT = plannedEndDateT.minusSeconds(initialDuration);
+
+      // Must end in an existing period.
+      plannedStartDateT =
+          dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, plannedStartDateT).get();
+      // Void duration is time when machine is not used (not in any period)
+      long voidDuration =
+          dayPlanningService.computeVoidDurationBetween(
+              dayPlanning, plannedStartDateT, plannedEndDateT);
+
+      long remainingTime =
+          initialDuration
+              - DurationTool.getSecondsDuration(
+                  Duration.between(plannedStartDateT, plannedEndDateT).minusSeconds(voidDuration));
+      // So the time 'spent' must be reported
+      plannedStartDateT = plannedStartDateT.plusSeconds(remainingTime);
+
+      // And of course it must start also in an existing period.
+      plannedStartDateT =
+          dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, plannedStartDateT).get();
+
+    } else {
+      // The machine does not have weekly planning so dates are ok for now.
+      plannedStartDateT = startDateT;
+      plannedEndDateT = endDateT;
+    }
+
+    long timeBeforeNextOperation =
+        Optional.ofNullable(operationOrder.getWorkCenter())
+            .map(WorkCenter::getTimeBeforeNextOperation)
+            .orElse(0l);
+    // Must check if dates are occupied by other operation orders
+    // The first one of the list will be the first to start
+
+    List<OperationOrder> concurrentOperationOrders =
+        operationOrderRepository
+            .all()
+            .filter(
+                "self.machine = :machine"
+                    + " AND ((self.plannedStartDateT <= :startDate AND self.plannedEndDateT > :startDateWithTime)"
+                    + " OR (self.plannedStartDateT < :endDate AND self.plannedEndDateT > :endDateWithTime)"
+                    + " OR (self.plannedStartDateT >= :startDate AND self.plannedEndDateT <= :endDateWithTime))"
+                    + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
+                    + " AND self.id != :operationOrderId")
+            .bind("startDate", plannedStartDateT)
+            .bind("endDate", plannedEndDateT)
+            .bind("startDateWithTime", plannedStartDateT.minusSeconds(timeBeforeNextOperation))
+            .bind("endDateWithTime", plannedEndDateT.minusSeconds(timeBeforeNextOperation))
+            .bind("machine", machine)
+            .bind("cancelled", ManufOrderRepository.STATUS_CANCELED)
+            .bind("finished", ManufOrderRepository.STATUS_FINISHED)
+            .bind("operationOrderId", operationOrder.getId())
+            .order("plannedStartDateT")
+            .fetch();
+
+    if (concurrentOperationOrders.isEmpty()) {
+      return new MachineTimeSlot(plannedStartDateT, plannedEndDateT);
+    } else {
+      OperationOrder firstOperationOrder = concurrentOperationOrders.get(0);
+
+      return getFurthestAvailableTimeSlotFrom(
+          machine,
+          firstOperationOrder
+              .getPlannedStartDateT()
+              .minusSeconds(initialDuration + timeBeforeNextOperation),
+          firstOperationOrder.getPlannedStartDateT().minusSeconds(timeBeforeNextOperation),
           operationOrder,
           initialDuration);
     }

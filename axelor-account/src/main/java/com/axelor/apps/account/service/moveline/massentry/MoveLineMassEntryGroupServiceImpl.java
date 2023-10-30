@@ -21,9 +21,9 @@ package com.axelor.apps.account.service.moveline.massentry;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
-import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
@@ -41,7 +41,6 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
 
   protected MassEntryService massEntryService;
   protected MoveLineGroupService moveLineGroupService;
-  protected MoveLineAttrsService moveLineAttrsService;
   protected MoveLineDefaultService moveLineDefaultService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineService moveLineService;
@@ -50,12 +49,12 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   protected MoveLineCheckService moveLineCheckService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineRecordService moveLineRecordService;
+  protected AnalyticAttrsService analyticAttrsService;
 
   @Inject
   public MoveLineMassEntryGroupServiceImpl(
       MassEntryService massEntryService,
       MoveLineGroupService moveLineGroupService,
-      MoveLineAttrsService moveLineAttrsService,
       MoveLineDefaultService moveLineDefaultService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineService moveLineService,
@@ -63,10 +62,10 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
       MoveLineCheckService moveLineCheckService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveLineRecordService moveLineRecordService) {
+      MoveLineRecordService moveLineRecordService,
+      AnalyticAttrsService analyticAttrsService) {
     this.massEntryService = massEntryService;
     this.moveLineGroupService = moveLineGroupService;
-    this.moveLineAttrsService = moveLineAttrsService;
     this.moveLineDefaultService = moveLineDefaultService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineService = moveLineService;
@@ -75,6 +74,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     this.moveLineCheckService = moveLineCheckService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineRecordService = moveLineRecordService;
+    this.analyticAttrsService = analyticAttrsService;
   }
 
   public MoveLineMassEntry initializeValues(MoveLineMassEntry moveLine, Move move)
@@ -251,12 +251,13 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         new HashMap<>(
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
-    moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    analyticAttrsService.addAnalyticAxisAttrs(
+        move.getCompany(), move.getMassEntryStatusSelect(), attrsMap);
     moveLineMassEntryAttrsService.addDebitCreditFocus(
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(
-        moveLine.getAccount(), move.getJournal(), attrsMap);
+        moveLine.getAccount(), move.getJournal(), move.getCompany(), attrsMap);
     moveLineMassEntryAttrsService.addCutOffReadonly(moveLine.getAccount(), attrsMap);
 
     return attrsMap;

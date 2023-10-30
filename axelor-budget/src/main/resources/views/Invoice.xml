@@ -124,7 +124,7 @@
     <view type="grid" name="invoice-budget-distribution-grid"/>
     <view type="form" name="invoice-budget-distribution-form"/>
     <view-param name="limit" value="200"/>
-    <domain>self.invoiceLine.invoice.id = :_invoiceId</domain>
+    <domain><![CDATA[self.invoiceLine.invoice.id = :_invoiceId]]></domain>
     <context name="_invoiceId" expr="eval: __this__.id"/>
   </action-view>
 
@@ -132,7 +132,7 @@
     title="See budget distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-grid-invoice-line-grid"/>
     <view type="form" name="budget-distribution-grid-invoice-line-form"/>
-    <domain>self.invoiceLine.invoice.statusSelect in (2,3)</domain>
+    <domain><![CDATA[self.invoiceLine.invoice.statusSelect in (2,3)]]></domain>
   </action-view>
 
 </object-views>

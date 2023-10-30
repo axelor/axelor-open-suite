@@ -178,7 +178,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             .orElse(null);
 
     if (plannedFixedAssetLine == null
-        && fixedAsset.getDisposalValue().compareTo(BigDecimal.ZERO) == 0) {
+        && fixedAsset.getDisposalValue().compareTo(BigDecimal.ZERO) == 0
+        && fixedAsset.getStatusSelect() < FixedAssetRepository.STATUS_DEPRECIATED) {
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DEPRECIATED);
     }
 
@@ -768,10 +769,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           taxLine.getTax().getAccountManagementList().stream()
               .filter(
                   accountManagement ->
-                      accountManagement
-                          .getCompany()
-                          .getName()
-                          .equals(fixedAsset.getCompany().getName()))
+                      accountManagement.getCompany().equals(fixedAsset.getCompany()))
               .collect(Collectors.toList());
       Account creditAccountTwo =
           !CollectionUtils.isEmpty(creditAccountTwoList)

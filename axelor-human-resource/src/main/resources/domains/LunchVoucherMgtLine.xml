@@ -16,6 +16,8 @@
     <integer name="invitation" title="Invitation"/>
     <integer name="inAdvanceNbr" title="In advance" readonly="true"/>
     <integer name="lunchVoucherNumber" title="Number of lunch vouchers" readonly="true"/>
+    <integer name="paperFormatNumber" title="Nbr in paper" readonly="true"/>
+    <integer name="cardFormatNumber" title="Nbr in card" readonly="true"/>
     <integer name="daysWorkedNbr" title="Number of days worked" readonly="true"/>
     <string name="comments" title="Comments" large="true"/>
     <integer name="givenToEmployee" title="Given to Employee"/>

@@ -16,6 +16,8 @@
     <one-to-many name="moveLineMassEntryList" ref="MoveLineMassEntry"
       title="Move lines mass entry" mappedBy="moveMassEntry"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="subrogationPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Subrogation"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
@@ -153,11 +155,11 @@
       <field name="pfpValidateStatusSelect" on="UPDATE"/>
       <field name="reasonOfRefusalToPay" on="UPDATE"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
-      <message if="true" on="CREATE">Move created</message>
+      <message if="true" on="CREATE">Move.created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
       <message if="statusSelect == 2" tag="info">Daybook move</message>
       <message if="statusSelect == 3" tag="success">Accounted move</message>
-      <message if="statusSelect == 4" tag="warning">Move canceled</message>
+      <message if="statusSelect == 4" tag="warning">Move.canceled</message>
       <message if="statusSelect == 5" tag="info">Simulated move</message>
     </track>
 

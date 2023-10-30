@@ -437,11 +437,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         || !moveMap.containsKey(partner)
         || (isGlobal && !partner.getIsCompensation())) {
       BankDetails partnerBankDetails = null;
+      Partner subrogationPartner = null;
+
       if (paymentSession.getAccountingMethodSelect()
           == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM) {
-        partnerBankDetails = invoiceTerm.getBankDetails();
+        subrogationPartner = invoiceTerm.getSubrogationPartner();
+        partnerBankDetails = this.getBankDetails(invoiceTerm);
       }
-      move = this.createMove(paymentSession, partner, accountingDate, partnerBankDetails);
+
+      move =
+          this.createMove(
+              paymentSession, partner, subrogationPartner, accountingDate, partnerBankDetails);
 
       if (!moveMap.containsKey(partner)) {
         moveMap.put(partner, new ArrayList<>());
@@ -458,9 +464,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return move;
   }
 
+  protected BankDetails getBankDetails(InvoiceTerm invoiceTerm) {
+    return Optional.of(invoiceTerm)
+        .map(InvoiceTerm::getSubrogationPartner)
+        .map(partnerService::getDefaultBankDetails)
+        .orElse(invoiceTerm.getBankDetails());
+  }
+
   protected Move createMove(
       PaymentSession paymentSession,
       Partner partner,
+      Partner subrogationPartner,
       LocalDate accountingDate,
       BankDetails partnerBankDetails)
       throws AxelorException {
@@ -480,9 +494,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             "",
             paymentSession.getBankDetails());
 
-    move.setPaymentSession(paymentSession);
     move.setPartnerBankDetails(partnerBankDetails);
+    move.setPaymentSession(paymentSession);
     move.setPaymentCondition(null);
+    move.setSubrogationPartner(subrogationPartner);
 
     return move;
   }
@@ -651,7 +666,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out)
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    Move move = this.createMove(paymentSession, null, accountingDate, null);
+    Move move = this.createMove(paymentSession, null, null, accountingDate, null);
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
@@ -1046,14 +1061,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     if (moveLine != null) {
-      if (out) {
-        moveLine.setCredit(moveLine.getCredit().add(pair.getRight()));
-      } else {
-        moveLine.setDebit(moveLine.getDebit().add(pair.getRight()));
-      }
-
-      moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(pair.getRight()));
-
+      this.updateMoveLine(moveLine, pair.getRight(), out);
     } else {
       moveLine =
           this.generateMoveLine(
@@ -1094,6 +1102,28 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         true);
   }
 
+  protected void updateMoveLine(MoveLine moveLine, BigDecimal amountToAdd, boolean out) {
+    if (out) {
+      moveLine.setCredit(moveLine.getCredit().add(amountToAdd));
+    } else {
+      moveLine.setDebit(moveLine.getDebit().add(amountToAdd));
+    }
+
+    moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(amountToAdd));
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      InvoiceTerm invoiceTerm = moveLine.getInvoiceTermList().get(0);
+
+      BigDecimal newAmount = moveLine.getCurrencyAmount();
+      BigDecimal amountPaid = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
+
+      invoiceTerm.setAmountRemaining(newAmount.subtract(amountPaid));
+      invoiceTerm.setAmount(newAmount);
+      invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getAmountRemaining());
+      invoiceTerm.setCompanyAmount(invoiceTerm.getAmount());
+    }
+  }
+
   @Override
   public boolean containsCompensativeInvoiceTerm(
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
@@ -1118,13 +1148,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected void recomputeAmountPaid(MoveLine moveLine) {
     if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      Optional<BigDecimal> amountPaid =
-          moveLine.getInvoiceTermList().stream()
-              .map(it -> it.getPaymentAmount())
-              .reduce(BigDecimal::add);
-      if (amountPaid.isPresent()) {
-        moveLine.setAmountPaid(amountPaid.get());
-      }
+      moveLine.getInvoiceTermList().stream()
+          .filter(InvoiceTerm::getIsPaid)
+          .map(InvoiceTerm::getPaymentAmount)
+          .reduce(BigDecimal::add)
+          .ifPresent(moveLine::setAmountPaid);
     }
   }
 }
