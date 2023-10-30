@@ -897,4 +897,14 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void onSelectCompany(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setAttrs(Beans.get(MoveGroupService.class).getCompanyOnSelectAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

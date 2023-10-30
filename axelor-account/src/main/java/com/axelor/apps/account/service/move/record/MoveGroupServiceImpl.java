@@ -715,4 +715,13 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addCompanyDomain(move, attrsMap);
+
+    return attrsMap;
+  }
 }

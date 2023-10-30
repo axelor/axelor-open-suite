@@ -32,8 +32,10 @@ import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -51,6 +53,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveViewHelperService moveViewHelperService;
   protected MovePfpService movePfpService;
+  protected CompanyRepository companyRepository;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -58,12 +61,14 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveViewHelperService moveViewHelperService,
-      MovePfpService movePfpService) {
+      MovePfpService movePfpService,
+      CompanyRepository companyRepository) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveViewHelperService = moveViewHelperService;
     this.movePfpService = movePfpService;
+    this.companyRepository = companyRepository;
   }
 
   protected void addAttr(
@@ -422,5 +427,18 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
                 == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
             || journal.getJournalType().getTechnicalTypeSelect()
                 == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
+  }
+
+  @Override
+  public void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    String companyIds =
+        companyRepository.all().filter("self.accountConfig IS NOT NULL").fetch().stream()
+            .map(Company::getId)
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
+
+    String domain = String.format("self.id IN (%s)", companyIds.isEmpty() ? "0" : companyIds);
+
+    this.addAttr("company", "domain", domain, attrsMap);
   }
 }
