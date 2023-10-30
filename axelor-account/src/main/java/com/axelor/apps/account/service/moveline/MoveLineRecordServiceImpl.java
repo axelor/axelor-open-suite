@@ -35,7 +35,6 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Comparator;
 
 public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected AppAccountService appAccountService;
@@ -186,15 +185,5 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       moveLine.setPartnerSeq(null);
       moveLine.setPartnerFullName(null);
     }
-  }
-
-  @Override
-  public void setCounter(MoveLine moveLine, Move move) {
-    moveLine.setCounter(
-        move.getMoveLineList().stream()
-                .map(MoveLine::getCounter)
-                .max(Comparator.naturalOrder())
-                .orElse(0)
-            + 1);
   }
 }
