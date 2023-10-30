@@ -6,7 +6,7 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Rep
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportAbstractService;
 import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
@@ -20,7 +20,7 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
 
-public class BankStatementImportAFB120Service extends BankStatementImportService {
+public class BankStatementImportAFB120Service extends BankStatementImportAbstractService {
 
   protected BankPaymentBankStatementLineAFB120Repository
       bankPaymentBankStatementLineAFB120Repository;

@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportFactoryService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileService;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineAFB120Service;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
@@ -74,7 +74,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   @Inject
   public BankStatementFileAFB120Service(
       BankStatementRepository bankStatementRepository,
-      BankStatementImportFactoryService bankStatementService) {
+      BankStatementImportService bankStatementService) {
 
     super(bankStatementRepository, bankStatementService);
 

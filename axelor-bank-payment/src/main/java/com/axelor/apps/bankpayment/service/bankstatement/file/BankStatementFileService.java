@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.bankstatement.file;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportFactoryService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.db.JPA;
 import com.axelor.meta.MetaFiles;
@@ -34,12 +34,12 @@ public abstract class BankStatementFileService {
   protected File file;
   protected String bankStatementFileFormat;
   protected final BankStatementRepository bankStatementRepository;
-  protected final BankStatementImportFactoryService bankStatementService;
+  protected final BankStatementImportService bankStatementService;
 
   @Inject
   public BankStatementFileService(
       BankStatementRepository bankStatementRepository,
-      BankStatementImportFactoryService bankStatementService) {
+      BankStatementImportService bankStatementService) {
     this.bankStatementRepository = bankStatementRepository;
     this.bankStatementService = bankStatementService;
   }
