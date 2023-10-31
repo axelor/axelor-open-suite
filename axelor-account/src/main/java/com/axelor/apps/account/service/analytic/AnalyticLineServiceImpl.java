@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -162,12 +163,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
         && line.getAccount() != null
         && line.getAccount().getCompany() != null) {
       Account account = line.getAccount();
-      Integer nbrAxis =
-          accountConfigService.getAccountConfig(account.getCompany()).getNbrOfAnalyticAxisSelect();
       return account.getAnalyticDistributionAuthorized()
           && account.getAnalyticDistributionRequiredOnMoveLines()
           && line.getAnalyticDistributionTemplate() == null
-          && position <= nbrAxis;
+          && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position);
     }
     return false;
   }
@@ -219,7 +218,27 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     return analyticLine;
   }
 
-  protected boolean checkAnalyticAxisPercentage(
+  @Override
+  public boolean checkAnalyticLinesByAxis(AnalyticLine analyticLine, int position, Company company)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
+      this.resetAxisAnalyticAccount(analyticLine);
+      return false;
+    }
+
+    List<AnalyticAxisByCompany> analyticAxisByCompany =
+        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList();
+    if (ObjectUtils.notEmpty(analyticAxisByCompany)
+        && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)) {
+      return analyticToolService.isAxisAccountSumValidated(
+          analyticLine.getAnalyticMoveLineList(),
+          analyticAxisByCompany.get(position - 1).getAnalyticAxis());
+    }
+
+    return false;
+  }
+
+  private boolean checkAnalyticAxisPercentage(
       AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
     return getAnalyticMoveLines(analyticLine, analyticAxis).size() == 1
         && getAnalyticMoveLineOnAxis(analyticLine, analyticAxis).count() == 1;
