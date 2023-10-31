@@ -76,7 +76,7 @@ public class ProjectManagementRepository extends ProjectRepository {
         String seq =
             Beans.get(SequenceService.class)
                 .getSequenceNumber(
-                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code",project);
+                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code", project);
 
         if (seq == null) {
           throw new AxelorException(
