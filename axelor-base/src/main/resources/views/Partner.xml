@@ -180,11 +180,11 @@
           <viewer>
             <![CDATA[
             		<>
-     					{picture && <Image src={$image('picture', 'content')} style={{ width: "80%" }}></Image>}
-     					{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg" style={{ width: "80%" }}></Image>}
-     					{!picture && partnerTypeSelect == 2 && titleSelect == 1 && <Image src="img/partner-m-default.png" style={{ width: "80%" }}></Image>}
-     					{!picture && partnerTypeSelect == 2 && titleSelect == 2 && <Image src="img/partner-w-default.png" style={{ width: "80%" }}></Image>}
-     					{!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png" style={{ width: "80%" }}></Image>}
+     					{id && <Image src={$image('id', 'content')} style={{ width: "80%" }}></Image>}
+     					{!id && _parent.partnerTypeSelect != 2 && <Image src="img/company-default.jpg" style={{ width: "80%" }}></Image>}
+     					{!id && _parent.partnerTypeSelect == 2 && _parent.titleSelect == 1 && <Image src="img/partner-m-default.png" style={{ width: "80%" }}></Image>}
+     					{!id && _parent.partnerTypeSelect == 2 && _parent.titleSelect == 2 && <Image src="img/partner-w-default.png" style={{ width: "80%" }}></Image>}
+     					{!id && _parent.partnerTypeSelect == 2 && (_parent.titleSelect > 2 || !_parent.titleSelect) && <Image src="img/partner-default.png" style={{ width: "80%" }}></Image>}
 					</>
 					]]>
           </viewer>
@@ -668,10 +668,10 @@
           <viewer>
             <![CDATA[
      					<>
-	     					{picture && <Image src={$image('picture', 'content')} style={{ width: "80%" }}></Image>}
-	     					{!picture && titleSelect == 1 && <Image src="img/partner-m-default.png" style={{ width: "80%" }}></Image>}
-	     					{!picture && titleSelect == 2 && <Image src="img/partner-w-default.png" style={{ width: "80%" }}></Image>}
-	     					{!picture && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png" style={{ width: "80%" }}></Image>}
+	     					{id && <Image src={$image('id', 'content')} style={{ width: "80%" }}></Image>}
+	     					{!id && _parent.titleSelect == 1 && <Image src="img/partner-m-default.png" style={{ width: "80%" }}></Image>}
+	     					{!id && _parent.titleSelect == 2 && <Image src="img/partner-w-default.png" style={{ width: "80%" }}></Image>}
+	     					{!id && (_parent.titleSelect > 2 || !_parent.titleSelect) && <Image src="img/partner-default.png" style={{ width: "80%" }}></Image>}
 						</>
 					]]>
           </viewer>
