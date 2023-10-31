@@ -66,4 +66,8 @@
   <input file="production_oneLine.csv" type="com.axelor.apps.sale.db.ConfiguratorCreator"
     call="com.axelor.csv.script.ImportConfiguratorCreator:importConfiguratorCreator"/>
 
+  <input file="production_mpsWeeklySchedule.csv" separator=";"
+    type="com.axelor.apps.production.db.MpsWeeklySchedule" search="self.importId = :importId">
+  </input>
+
 </csv-inputs>
