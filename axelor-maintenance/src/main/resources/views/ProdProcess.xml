@@ -36,11 +36,12 @@
       <field name="$numberOfPhases" showTitle="false" readonly="true"
         showIf="$numberOfPhases > 0" colSpan="4" type="integer">
         <viewer depends="$numberOfPhases"><![CDATA[
-
-                    <h4 class="text-right">
-                        <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of phases</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{fmt('$numberOfPhases')}}</span>
-                    </h4>
-
+					<>
+                    	<Box d="flex" justifyContent="flex-end">
+                    		<Badge style={{ backgroundColor: "#2185D0" }}>{_t('Number of phases')}</Badge>
+                    		<Badge style={{ backgroundColor: "#23C6C8" }}>{$fmt('$numberOfPhases')}</Badge>
+                    	</Box>
+					</>
     ]]></viewer>
       </field>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>

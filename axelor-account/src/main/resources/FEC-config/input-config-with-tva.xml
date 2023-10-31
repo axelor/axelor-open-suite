@@ -17,8 +17,8 @@
     <bind column="EcritureLet" search="self.code = :EcritureLet" if="EcritureLet"
       to="reconcileGroup">
       <bind column="EcritureLet" to="code"/>
-      <bind column="DateLet" if="DateLet" to="letteringDateTime"
-        eval="java.time.LocalDate.parse(DateLet,'yyyyMMdd').atTime(java.time.LocalTime.NOON)"/>
+      <bind column="DateLet" to="letteringDateTime"
+        eval="DateLet ? java.time.LocalDate.parse(DateLet,'yyyyMMdd').atTime(java.time.LocalTime.NOON) : null"/>
     </bind>
     <bind column="taxCode"
       search="self.tax.code = :taxCode and self.startDate &lt;= to_date(:EcritureDate, 'yyyyMMdd') and (self.endDate is null or self.endDate &gt;= to_date(:EcritureDate, 'yyyyMMdd'))"
