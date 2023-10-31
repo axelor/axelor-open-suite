@@ -146,8 +146,8 @@
           <viewer>
 					<![CDATA[
 						<>
-							{picture && <Image src={$image('picture', 'content')}></Image>}
-							{!picture && <Image src="img/product-default.png"></Image>}
+							{id && <Image src={$image('id', 'content')}></Image>}
+							{!id && <Image src="img/product-default.png"></Image>}
 						</>
 					]]>
           </viewer>
