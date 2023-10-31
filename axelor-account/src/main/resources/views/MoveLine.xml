@@ -535,13 +535,13 @@
         <field name="taxLineBeforeReverse" hidden="true"/>
       </panel>
       <panel name="cutOffPanel" title="Cut off period"
-        showIf="account.manageCutOffPeriod &amp;&amp; ![1,2,6].includes(functionalOriginSelect)"
+        showIf="account.manageCutOffPeriod &amp;&amp; ![1,2,6].includes(move.functionalOriginSelect)"
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+          validIf="[1,2,6].includes(move.functionalOriginSelect) || !cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+          validIf="[1,2,6].includes(move.functionalOriginSelect) || !cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
@@ -784,13 +784,13 @@
         <field name="taxLineBeforeReverse" hidden="true"/>
       </panel>
       <panel name="cutOffPanel" title="Cut off period"
-        showIf="account.manageCutOffPeriod &amp;&amp; ![1,2,6].includes(functionalOriginSelect)"
+        showIf="account.manageCutOffPeriod &amp;&amp; ![1,2,6].includes(move.functionalOriginSelect)"
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+          validIf="[1,2,6].includes(move.functionalOriginSelect) || !cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+          validIf="[1,2,6].includes(move.functionalOriginSelect) || !cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
