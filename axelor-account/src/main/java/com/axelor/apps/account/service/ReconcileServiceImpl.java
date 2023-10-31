@@ -776,7 +776,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       InvoicePayment invoicePayment)
       throws AxelorException {
     return this.reconcile(
-        debitMoveLine, creditMoveLine, invoicePayment, canBeZeroBalanceOk, updateInvoicePayments);
+        debitMoveLine, creditMoveLine, null, canBeZeroBalanceOk, updateInvoicePayments);
   }
 
   public Reconcile reconcile(
