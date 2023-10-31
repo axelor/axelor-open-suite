@@ -208,6 +208,10 @@ public class ImportMove {
               values.get("CompteNum"));
         }
         moveLine.setAccount(account);
+
+        if (!account.getUseForPartnerBalance()) {
+          moveLine.setPartner(null);
+        }
       }
 
       if (moveLine.getReconcileGroup() != null) {
