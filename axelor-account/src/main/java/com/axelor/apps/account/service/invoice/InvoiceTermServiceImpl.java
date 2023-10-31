@@ -43,7 +43,6 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
-import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -62,7 +61,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -94,7 +93,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected JournalService journalService;
-  protected PartnerAccountService partnerAccountService;
   protected UserRepository userRepo;
   protected PfpService pfpService;
 
@@ -108,7 +106,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
       JournalService journalService,
-      PartnerAccountService partnerAccountService,
       UserRepository userRepo,
       PfpService pfpService) {
     this.invoiceTermRepo = invoiceTermRepo;
@@ -120,7 +117,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.userRepo = userRepo;
     this.journalService = journalService;
-    this.partnerAccountService = partnerAccountService;
     this.pfpService = pfpService;
   }
 
@@ -1115,8 +1111,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());
 
-      invoiceTerm.setSubrogationPartner(
-          partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
+      this.setSubrogationPartner(invoiceTerm);
 
       if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
         invoiceTerm.setOrigin(invoice.getInvoiceId());
@@ -1143,14 +1138,30 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         }
 
         if (journalService.isSubrogationOk(move.getJournal())) {
-          invoiceTerm.setSubrogationPartner(
-              partnerAccountService.getPayedByPartner(invoiceTerm.getPartner()));
+          this.setSubrogationPartner(invoiceTerm);
         }
       }
     }
 
     if (moveLine != null && move != null && invoiceTerm.getOriginDate() == null) {
       invoiceTerm.setOriginDate(move.getOriginDate());
+    }
+  }
+
+  protected void setSubrogationPartner(InvoiceTerm invoiceTerm) {
+    if (invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
+      if (invoiceTerm.getInvoice() != null) {
+        invoiceTerm.setSubrogationPartner(invoiceTerm.getInvoice().getSubrogationPartner());
+      } else {
+        Partner subrogationPartner =
+            Optional.of(invoiceTerm)
+                .map(InvoiceTerm::getMoveLine)
+                .map(MoveLine::getMove)
+                .map(Move::getSubrogationPartner)
+                .orElse(null);
+
+        invoiceTerm.setSubrogationPartner(subrogationPartner);
+      }
     }
   }
 
@@ -1415,11 +1426,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public BigDecimal computeParentTotal(Context context) {
     BigDecimal total = BigDecimal.ZERO;
     if (context.getParent() != null) {
-      Invoice invoice = ContextTool.getContextParent(context, Invoice.class, 1);
+      Invoice invoice = ContextHelper.getContextParent(context, Invoice.class, 1);
       if (invoice != null) {
         total = invoice.getInTaxTotal();
       } else {
-        MoveLine moveLine = ContextTool.getContextParent(context, MoveLine.class, 1);
+        MoveLine moveLine = ContextHelper.getContextParent(context, MoveLine.class, 1);
         if (moveLine != null) {
           total = moveLine.getDebit().max(moveLine.getCredit());
         }

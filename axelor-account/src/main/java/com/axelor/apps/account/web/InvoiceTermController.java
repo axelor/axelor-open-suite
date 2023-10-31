@@ -43,7 +43,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -484,17 +484,17 @@ public class InvoiceTermController {
   protected void setParentContextFields(
       InvoiceTerm invoiceTerm, ActionRequest request, ActionResponse response) {
     if (invoiceTerm.getInvoice() == null) {
-      Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+      Invoice invoice = ContextHelper.getContextParent(request.getContext(), Invoice.class, 1);
       response.setValue("invoice", invoice);
       invoiceTerm.setInvoice(invoice);
     }
 
     if (invoiceTerm.getMoveLine() == null) {
-      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+      MoveLine moveLine = ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1);
       invoiceTerm.setMoveLine(moveLine);
       response.setValue("moveLine", moveLine);
       if (moveLine != null && moveLine.getMove() == null) {
-        Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+        Move move = ContextHelper.getContextParent(request.getContext(), Move.class, 2);
         moveLine.setMove(move);
         response.setValue("move", move);
       }
@@ -503,7 +503,7 @@ public class InvoiceTermController {
 
   protected void setMoveParentContextFields(MoveLine moveLine, ActionRequest request) {
     if (moveLine != null && (moveLine.getMove() == null || moveLine.getId() == null)) {
-      Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+      Move move = ContextHelper.getContextParent(request.getContext(), Move.class, 2);
       moveLine.setMove(move);
     }
   }

@@ -38,10 +38,12 @@
     <panel name="infoPanel">
       <field name="mrpSeq" showTitle="false" colSpan="12">
         <viewer depends="mrpSeq,mrpTypeSelect"><![CDATA[
-					<h3>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 1" x-translate>MRP</span>
-						{{record.mrpSeq}}
-					</h3>
+					<>
+						<h3>
+							{mrpSeq && mrpTypeSelect == 1 && <span> {_t('MRP')} </span>}
+							{mrpSeq}
+						</h3>
+					</>
 				]]></viewer>
       </field>
     </panel>

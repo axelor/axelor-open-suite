@@ -40,9 +40,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -91,7 +91,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
             + invoice.getInvoiceId()
             + "."
             + format;
-    return PdfTool.getFileLinkFromPdfFile(
+    return PdfHelper.getFileLinkFromPdfFile(
         printCopiesToFile(invoice, forceRefresh, reportType, format, locale), fileName);
   }
 
@@ -103,7 +103,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     int copyNumber = invoice.getInvoicesCopySelect();
     copyNumber = copyNumber == 0 ? 1 : copyNumber;
     return format.equals(ReportSettings.FORMAT_PDF)
-        ? PdfTool.printCopiesToFile(file, copyNumber)
+        ? PdfHelper.printCopiesToFile(file, copyNumber)
         : file;
   }
 
@@ -184,7 +184,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     }
 
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             Invoice.class,
             ids,
             new ThrowConsumer<Invoice, Exception>() {
@@ -215,7 +215,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
                         .orElse(null))
                 .format(DateTimeFormatter.BASIC_ISO_DATE)
             + ".pdf";
-    return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
+    return PdfHelper.mergePdfToFileLink(printedInvoices, fileName);
   }
 
   public List<String> checkInvalidPrintSettingsInvoices(List<Long> ids) {

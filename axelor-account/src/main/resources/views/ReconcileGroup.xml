@@ -18,9 +18,11 @@
       <field name="code" showTitle="false">
         <viewer depends="code">
           <![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.code}}</span>
-						</h3>
+          				<>
+							<h3>
+								<span>{code}</span>
+							</h3>
+						</>
 					]]>
         </viewer>
       </field>

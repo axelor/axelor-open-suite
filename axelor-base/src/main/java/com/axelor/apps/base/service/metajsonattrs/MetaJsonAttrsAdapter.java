@@ -24,7 +24,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaJsonField;
-import com.axelor.utils.MetaTool;
+import com.axelor.utils.helpers.MetaHelper;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.temporal.Temporal;
@@ -46,7 +46,7 @@ public class MetaJsonAttrsAdapter {
       MetaJsonField metaJsonField, Object value) throws AxelorException {
 
     Objects.requireNonNull(value);
-    String wantedType = MetaTool.jsonTypeToType(metaJsonField.getType());
+    String wantedType = MetaHelper.jsonTypeToType(metaJsonField.getType());
     String fieldName = metaJsonField.getName();
     logger.debug("Adapting value {} into {}", value, wantedType);
     switch (wantedType) {

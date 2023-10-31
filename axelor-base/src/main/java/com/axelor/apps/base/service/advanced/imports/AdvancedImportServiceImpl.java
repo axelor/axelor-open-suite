@@ -39,8 +39,8 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.JsonContext;
-import com.axelor.utils.reader.DataReaderFactory;
-import com.axelor.utils.reader.DataReaderService;
+import com.axelor.utils.service.reader.DataReader;
+import com.axelor.utils.service.reader.DataReaderFactory;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -103,14 +103,14 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       return false;
     }
 
-    DataReaderService reader = dataReaderFactory.getDataReader(extension);
+    DataReader reader = dataReaderFactory.getDataReader(extension);
     reader.initialize(advancedImport.getImportFile(), advancedImport.getFileSeparator());
 
     return this.process(reader, advancedImport);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public boolean process(DataReaderService reader, AdvancedImport advancedImport)
+  public boolean process(DataReader reader, AdvancedImport advancedImport)
       throws AxelorException, ClassNotFoundException {
 
     boolean isValid = true;
@@ -654,7 +654,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   @Override
   public int getTabConfigRowCount(
-      String sheet, DataReaderService reader, int totalLines, String[] objectRow) {
+      String sheet, DataReader reader, int totalLines, String[] objectRow) {
 
     int tabConfigRowCount = 0;
     if (objectRow[0] == null

@@ -34,7 +34,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.ArrayList;

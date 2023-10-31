@@ -28,7 +28,7 @@ import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class DebtRecoveryHistoryServiceImpl implements DebtRecoveryHistoryServic
                         .orElse(null))
                 .format(DateTimeFormatter.BASIC_ISO_DATE)
             + ".pdf";
-    return PdfTool.mergePdfToFileLink(printedDebtRecoveryHistory, fileName);
+    return PdfHelper.mergePdfToFileLink(printedDebtRecoveryHistory, fileName);
   }
 
   @Override

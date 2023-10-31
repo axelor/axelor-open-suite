@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
@@ -10,7 +28,6 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
@@ -221,17 +238,14 @@ public class CrmActivityServiceImpl implements CrmActivityService {
       for (Map<String, String> item : (List<Map>) bodyData.get("tracks")) {
         if (LEAD_STATUS_FIELD.equals(item.get("name"))
             || PARTNER_STATUS_FIELD.equals(item.get("name"))) {
-          String value = item.get("value");
-          String oldValue = item.get("oldValue");
-
-          String name = "";
-          if (!StringUtils.isBlank(oldValue)) {
-            name = oldValue + " <i class='fa fa-long-arrow-right'></i> ";
-          }
-          name += value;
 
           Map<String, Object> data =
-              createActivityCardData(mailMessage.getCreatedOn(), "statusChange", name, "", "");
+              createActivityCardData(
+                  mailMessage.getCreatedOn(),
+                  "statusChange",
+                  json.writeValueAsString(item),
+                  "",
+                  "");
           statusTrackingData.add(data);
         }
       }

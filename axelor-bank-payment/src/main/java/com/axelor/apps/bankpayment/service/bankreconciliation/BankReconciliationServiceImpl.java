@@ -80,7 +80,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -312,13 +312,13 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     if (bankStatementLine != null) {
       description = description.concat(bankStatementLine.getDescription());
     }
-    description = StringTool.cutTooLongString(description);
+    description = StringHelper.cutTooLongString(description);
 
     if (!Strings.isNullOrEmpty(bankReconciliationLine.getReference())) {
       String reference = "ref:";
       reference =
-          StringTool.cutTooLongString(reference.concat(bankReconciliationLine.getReference()));
-      description = StringTool.cutTooLongStringWithOffset(description, reference.length());
+          StringHelper.cutTooLongString(reference.concat(bankReconciliationLine.getReference()));
+      description = StringHelper.cutTooLongStringWithOffset(description, reference.length());
       description = description.concat(reference);
     }
     AccountManagement accountManagement = bankStatementRule.getAccountManagement();
@@ -1211,7 +1211,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
             .bind(getBindRequestMoveLine(bankReconciliation))
             .fetch();
 
-    String idList = StringTool.getIdListString(authorizedMoveLines);
+    String idList = StringHelper.getIdListString(authorizedMoveLines);
     if (idList.equals("")) {
       domain = "self.id IN (0)";
     } else {

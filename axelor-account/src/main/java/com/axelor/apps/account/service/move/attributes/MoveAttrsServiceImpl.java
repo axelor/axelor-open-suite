@@ -18,8 +18,10 @@
  */
 package com.axelor.apps.account.service.move.attributes;
 
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
@@ -36,6 +38,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -129,17 +132,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
 
     this.addAttr("functionalOriginSelect", "selection-in", selectionValue, attrsMap);
-  }
-
-  @Override
-  public void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException {
-    String fieldNameToSet = "moveLineList";
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      fieldNameToSet = "moveLineMassEntryList";
-    }
-
-    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), fieldNameToSet, attrsMap);
   }
 
   @Override
@@ -390,5 +382,17 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
                 == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
             || journal.getJournalType().getTechnicalTypeSelect()
                 == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
+  }
+
+  @Override
+  public void addSubrogationPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean isReadonly =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getInvoiceTermList)
+            .filter(CollectionUtils::isNotEmpty)
+            .flatMap(Collection::stream)
+            .allMatch(InvoiceTerm::getIsPaid);
+
+    this.addAttr("subrogationPartner", "readonly", isReadonly, attrsMap);
   }
 }
