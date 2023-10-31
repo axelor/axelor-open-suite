@@ -17,19 +17,18 @@
       expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
   </action-view>
 
-  <menuitem title="Project.versions" name="project-versions"
-    parent="project-configurations" action="action.project.version.view.all.versions" order="1100"
+  <menuitem title="Project.version" name="project-versions" parent="menu-project-root"
+    action="action.project.version.view.all.versions" order="700"
     if="__config__.app.isApp('business-support')"/>
 
-  <action-view name="action.project.version.view.all.versions" title="Project.versions"
+  <action-view name="action.project.version.view.all.versions" title="Project.version"
     model="com.axelor.apps.businesssupport.db.ProjectVersion">
     <view type="grid" name="project-version-grid"/>
     <view type="form" name="project-version-form"/>
   </action-view>
 
-  <menuitem name="project-task-customer" title="Tickets" order="700"
-    parent="menu-project-root" if="__config__.app.isApp('business-support')" icon="fa-tasks"
-    icon-background="#3f6bb9"/>
+  <menuitem name="project-task-customer" title="Tickets" order="-1100"
+    if="__config__.app.isApp('business-support')" icon="fa-tasks" icon-background="#3f6bb9"/>
 
   <menuitem name="project-task-customer-my-task" title="My Tickets"
     parent="project-task-customer" action="project.task.customer.my.task" order="100"/>
