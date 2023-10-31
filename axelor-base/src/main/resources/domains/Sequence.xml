@@ -18,7 +18,6 @@
       title="Uppercase / lowercase"/>
     <string name="prefixe" title="Prefix"/>
     <boolean name="groovyOk" title="Groovy"/>
-    <string name="prefixeGroovy" title="Prefix groovy"/>
     <string name="suffixe" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
     <string name="pattern" title="Pattern"/>

@@ -616,8 +616,8 @@ public class SequenceService {
       SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate, Model model)
       throws AxelorException {
 
-    String seqPrefixe = getSeqPrefixe(sequence, model);
-    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String seqPrefixe = StringUtils.defaultString( getGroovyValue(sequence,sequence.getPrefixe(), model), "");
+    String seqSuffixe = StringUtils.defaultString( getGroovyValue(sequence,sequence.getSuffixe(), model), "");
 
     String sequenceValue = getSequenceValue(sequenceVersion);
 
@@ -636,14 +636,11 @@ public class SequenceService {
     return nextSeq;
   }
 
-  public String getSeqPrefixe(Sequence sequence, Model model) {
-
+  public String getGroovyValue(Sequence sequence,String prefixOrSuffix, Model model) {
     Context cxt = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
-    if (Boolean.TRUE.equals(sequence.getGroovyOk())) {
-      String prefix = String.valueOf(new GroovyScriptHelper(cxt).eval(sequence.getPrefixe()));
-      sequence.setPrefixeGroovy(prefix);
-      return sequence.getPrefixeGroovy();
+    if (sequence.getGroovyOk()) {
+      return  String.valueOf(new GroovyScriptHelper(cxt).eval(prefixOrSuffix));
     }
-    return sequence.getPrefixe();
+    return prefixOrSuffix;
   }
 }
