@@ -163,7 +163,8 @@
   </action-view>
 
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"
-    parent="sc-root-sale-conf" action="sale.conf.timetable.template"/>
+    parent="sc-root-sale-conf" action="sale.conf.timetable.template"
+            if="__config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
 
   <action-view name="sale.conf.timetable.template" title="Timetable templates"
     model="com.axelor.apps.supplychain.db.TimetableTemplate">
