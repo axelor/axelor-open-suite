@@ -14,11 +14,12 @@
       partnerName, moveLine_origin, moveLineOriginDate, description, debit, credit, reconcileGroupCode, reconcileGroupDateOfLettering,
       validationDate, currencyAmount, move_currency</header> -->
     <bind to="partner" column="CompAuxNum" search="self.partnerSeq = :CompAuxNum" update="true"/>
-    <bind to="debit" eval="Debit.replace(',', '.')" column="Debit"/>
-    <bind to="credit" eval="Credit.replace(',', '.')" column="Credit"/>
+    <bind to="debit" column="Debit" eval="Debit ? Debit.replace(',', '.') : 0"/>
+    <bind to="credit" column="Credit" eval="Credit ? Credit.replace(',', '.') : 0"/>
     <bind to="origin" column="PieceRef"/>
     <bind to="description" column="EcritureLib"/>
-    <bind to="currencyAmount" eval="Montantdevise.replace(',', '.')" column="Montantdevise"/>
+    <bind to="currencyAmount" column="Montantdevise"
+      eval="Montantdevise ? Montantdevise.replace(',', '.') : 0"/>
     <bind to="reconcileGroup" column="EcritureLet" search="self.code = :EcritureLet">
       <bind to="code" column="EcritureLet"/>
       <bind to="letteringDateTime" column="DateLet" if="DateLet"
