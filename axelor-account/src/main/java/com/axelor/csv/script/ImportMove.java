@@ -220,7 +220,7 @@ public class ImportMove {
 
       move.addMoveLineListItem(moveLine);
 
-      setMovePartner(move, moveLine);
+      setMovePartner(move);
 
       if (values.get("Montantdevise") == null || "".equals(values.get("Montantdevise"))) {
         moveLine.setMove(move);
@@ -237,7 +237,7 @@ public class ImportMove {
     return moveLine;
   }
 
-  protected void setMovePartner(Move move, MoveLine moveLine) {
+  protected void setMovePartner(Move move) {
     List<Partner> partnerList =
         move.getMoveLineList().stream()
             .map(MoveLine::getPartner)
@@ -246,7 +246,7 @@ public class ImportMove {
             .collect(Collectors.toList());
     if (CollectionUtils.isNotEmpty(partnerList)) {
       if (partnerList.size() == 1) {
-        move.setPartner(moveLine.getPartner());
+        move.setPartner(partnerList.get(0));
       }
 
       if (partnerList.size() > 1) {
