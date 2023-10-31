@@ -27,15 +27,13 @@
     <integer name="invoicesCopySelect" title="Invoices copy" default="1"
       selection="grade.1.up.to.10.select"/>
 
+    <boolean name="isSubrogation" title="Subrogation" default="false"/>
+
     <!-- PAGE SEPA -->
     <one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner"
       title="UMR List"/>
     <many-to-one name="activeUmr" ref="com.axelor.apps.account.db.Umr"
       title="Active UMR" index="false"/>
-
-    <many-to-one name="analyticDistributionTemplate"
-      title="Analytic distribution template"
-      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" index="false"/>
 
     <string name="specificTaxNote" title="Specific tax note" large="true"/>
 

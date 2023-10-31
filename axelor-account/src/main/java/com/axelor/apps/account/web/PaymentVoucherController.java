@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PayVoucherDueElement;
@@ -27,7 +26,6 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
@@ -43,7 +41,6 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
@@ -113,9 +110,11 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherLoadService.class).resetImputation(paymentVoucher);
+
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+      response.setValue("remainingAmount", paymentVoucher.getPaidAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -158,32 +157,6 @@ public class PaymentVoucherController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void printPaymentVoucher(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-
-    String name = I18n.get("Payment voucher");
-    if (!Strings.isNullOrEmpty(paymentVoucher.getReceiptNo())) {
-      name += " " + paymentVoucher.getReceiptNo();
-    }
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PAYMENT_VOUCHER, name + "-${date}")
-            .addParam("PaymentVoucherId", paymentVoucher.getId())
-            .addParam(
-                "Timezone",
-                paymentVoucher.getCompany() != null
-                    ? paymentVoucher.getCompany().getTimezone()
-                    : null)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   /**

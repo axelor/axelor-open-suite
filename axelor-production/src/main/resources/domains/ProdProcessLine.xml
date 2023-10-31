@@ -18,6 +18,8 @@
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
     <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
+    <decimal name="durationPerCycleDecimal" title="Duration / cycle (in hours)"/>
+    <decimal name="humanDurationDecimal" title="Human Duration (in hours)"/>
     <boolean name="outsourcing" title="Outsourcing"/>
     <boolean name="optional" title="Optional"/>
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
@@ -39,6 +41,14 @@
     <boolean name="useLineInGeneratedPurchaseOrder"
       title="Use this line in the generated purchase order"
       help="Products associated with the work center will be used"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <integer name="costTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="costAmount" title="Cost (W.T.)"/>
+    <many-to-one name="hrProduct" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <integer name="hrCostTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="hrCostAmount" title="Cost (W.T.)"/>
 
     <track>
       <field name="prodProcess"/>
@@ -52,5 +62,9 @@
       <field name="optional"/>
       <field name="stockLocation"/>
     </track>
+
+    <entity-listener
+      class="com.axelor.apps.production.db.repo.ProdProcessLineListener"/>
+
   </entity>
 </domain-models>

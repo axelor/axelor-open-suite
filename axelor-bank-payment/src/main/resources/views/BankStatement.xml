@@ -27,7 +27,7 @@
     model="com.axelor.apps.bankpayment.db.BankStatement" width="large" canDelete="false">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
-        onClick="action-bank-statement-method-print"/>
+        onClick="action-bank-statement-validate-file-format,action-method-print-birt"/>
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation"
         readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-method-run-bank-reconciliation"/>
@@ -125,10 +125,6 @@
     <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runImport"/>
   </action-method>
 
-  <action-method name="action-bank-statement-method-print">
-    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="print"/>
-  </action-method>
-
   <action-method name="action-bank-statement-method-run-bank-reconciliation">
     <call class="com.axelor.apps.bankpayment.web.BankStatementController"
       method="runBankReconciliation"/>
@@ -143,6 +139,11 @@
     <call class="com.axelor.apps.bankpayment.web.BankStatementController"
       method="deleteStatement"/>
   </action-method>
+
+  <action-validate name="action-bank-statement-validate-file-format">
+    <error message="Unknown format for file import process"
+      if="['camt.xxx.cfonb120.stm','camt.xxx.cfonb120.rep'].indexOf(bankStatementFileFormat.statementFileFormatSelect) == -1"/>
+  </action-validate>
 
   <!-- SEARCH FILTERS -->
 

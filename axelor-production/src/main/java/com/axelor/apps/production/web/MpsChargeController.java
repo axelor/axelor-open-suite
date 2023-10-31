@@ -18,19 +18,9 @@
  */
 package com.axelor.apps.production.web;
 
-import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
-import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.MpsChargeService;
-import com.axelor.apps.production.translation.ITranslation;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -42,7 +32,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,35 +94,5 @@ public class MpsChargeController {
         mpsChargeService.getChartDataMapList(totalHoursCountMap);
 
     response.setData(dataMapList);
-  }
-
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    String name = I18n.get(ITranslation.MPS_CHARGE);
-    LocalDate startMonthDate = (LocalDate) request.getContext().get("startMonthDate");
-    LocalDate endMonthDate = (LocalDate) request.getContext().get("endMonthDate");
-    if (startMonthDate == null || endMonthDate == null) {
-      return;
-    }
-
-    String fileLink =
-        ReportFactory.createReport(IReport.MPS_CHARGE, name + "-${date}")
-            .addParam("mpsId", request.getContext().get("id"))
-            .addParam(
-                "logoPath",
-                Optional.ofNullable(AuthUtils.getUser())
-                    .map(User::getActiveCompany)
-                    .map(Company::getLogo)
-                    .map(MetaFile::getFilePath)
-                    .orElse(null))
-            .addParam(
-                "startMonthDate", startMonthDate.format(DateTimeFormatter.ofPattern("dd/MM/YYYY")))
-            .addParam(
-                "endMonthDate", endMonthDate.format(DateTimeFormatter.ofPattern("dd/MM/YYYY")))
-            .generate()
-            .getFileLink();
-
-    LOG.debug("Printing {}", name);
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 }

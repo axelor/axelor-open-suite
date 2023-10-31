@@ -52,6 +52,8 @@ import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.MoveTemplateManagementRepository;
+import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
@@ -69,6 +71,8 @@ import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
 import com.axelor.apps.account.service.analytic.AccountConfigAnalyticServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAccountServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticAxisFetchService;
@@ -79,6 +83,8 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionLineService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -91,6 +97,8 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
+import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
+import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
@@ -127,12 +135,12 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetImportService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetImportServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicComputationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineGenerationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineToolServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
@@ -171,8 +179,6 @@ import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeServiceImpl;
 import com.axelor.apps.account.service.journal.JournalControlService;
 import com.axelor.apps.account.service.journal.JournalControlServiceImpl;
-import com.axelor.apps.account.service.move.MoveComputeService;
-import com.axelor.apps.account.service.move.MoveComputeServiceImpl;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveControlServiceImpl;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
@@ -181,6 +187,8 @@ import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
+import com.axelor.apps.account.service.move.MoveCutOffService;
+import com.axelor.apps.account.service.move.MoveCutOffServiceImpl;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -472,13 +480,13 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetDerogatoryLineMoveService.class)
         .to(FixedAssetDerogatoryLineMoveServiceImpl.class);
 
-    bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
+    bind(FixedAssetLineService.class).to(FixedAssetLineEconomicServiceImpl.class);
 
     bind(FixedAssetFailOverControlService.class).to(FixedAssetFailOverControlServiceImpl.class);
 
     bind(FixedAssetGenerationService.class).to(FixedAssetGenerationServiceImpl.class);
 
-    bind(MoveComputeService.class).to(MoveComputeServiceImpl.class);
+    bind(MoveCutOffService.class).to(MoveCutOffServiceImpl.class);
 
     bind(MoveCounterPartService.class).to(MoveCounterPartServiceImpl.class);
 
@@ -682,5 +690,17 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountingReportAnalyticConfigLineService.class)
         .to(AccountingReportAnalyticConfigLineServiceImpl.class);
+
+    bind(MoveTemplateRepository.class).to(MoveTemplateManagementRepository.class);
+
+    bind(PfpService.class).to(PfpServiceImpl.class);
+
+    bind(AnalyticAttrsService.class).to(AnalyticAttrsServiceImpl.class);
+
+    bind(AnalyticGroupService.class).to(AnalyticGroupServiceImpl.class);
+
+    bind(TradingNameAnalyticService.class).to(TradingNameAnalyticServiceImpl.class);
+
+    bind(YearAccountService.class).to(YearAccountServiceImpl.class);
   }
 }

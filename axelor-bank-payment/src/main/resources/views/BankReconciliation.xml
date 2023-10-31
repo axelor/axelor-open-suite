@@ -23,10 +23,7 @@
     model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large"
     onNew="action-bank-reconciliation-onnew-group" onLoad="action-bank-reconciliation-onload-group">
     <toolbar>
-      <button name="printBtn" title="Print the bank reconciliation"
-        onClick="save,action-bank-reconciliation-method-print-bank-reconciliation"/>
-      <button name="print2Btn" title="Print detailed reconciliation statement"
-        onClick="save,action-bank-reconciliation-method-print-bank-reconciliation-detailed"/>
+      <button name="printBtn" title="Print" onClick="save,action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel" colSpan="12">
       <spacer colSpan="10"/>
@@ -294,17 +291,6 @@
   <action-method name="action-bank-reconciliation-method-validate">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
       method="validate"/>
-  </action-method>
-
-  <action-method name="action-bank-reconciliation-method-print-bank-reconciliation">
-    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
-      method="printBankReconciliation"/>
-  </action-method>
-
-  <action-method
-    name="action-bank-reconciliation-method-print-bank-reconciliation-detailed">
-    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
-      method="printBankReconciliationDetailed"/>
   </action-method>
 
   <action-method name="action-bank-reconciliation-method-auto-accounting">

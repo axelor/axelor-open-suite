@@ -43,12 +43,16 @@
 
   <!-- Dashboard MyRH -->
   <dashboard title="MyHR" name="my.hr.dashboard">
-    <dashlet action="custom:my-expenses-custom-view" colSpan="4" height="300"/>
-    <dashlet action="custom:my-leave-request-custom-view" colSpan="8" height="300"/>
+    <dashlet action="custom:my-expenses-custom-view" colSpan="4" height="300"
+      if="__config__.app.isApp('expense')"/>
+    <dashlet action="custom:my-leave-request-custom-view" colSpan="8" height="300"
+      if="__config__.app.isApp('leave')"/>
     <dashlet action="custom:my-trainings-custom-view" colSpan="4" height="300"
-      if-module="axelor-talent"/>
-    <dashlet action="custom:my-timesheets-custom-view" colSpan="4" height="300"/>
-    <dashlet action="custom:my-extra-hours-custom-view" colSpan="4" height="300"/>
+      if-module="axelor-talent" if="__config__.app.isApp('training')"/>
+    <dashlet action="custom:my-timesheets-custom-view" colSpan="4" height="300"
+      if="__config__.app.isApp('timesheet')"/>
+    <dashlet action="custom:my-extra-hours-custom-view" colSpan="4" height="300"
+      if="__config__.app.isApp('exthrs')"/>
   </dashboard>
 
   <action-view name="hr.dashboard.my.extrahours" title="My extra hours"
@@ -96,17 +100,26 @@
     </panel>
     <panel name="detailPanel">
       <panel-dashlet name="trainingPanel" title="Training" colSpan="6"
-        action="custom:hr-manager-training-custom-view" if-module="axelor-talent" height="400"/>
+        action="custom:hr-manager-training-custom-view" if-module="axelor-talent" height="400"
+        if="__config__.app.isApp('training')"/>
       <panel-dashlet name="recruitmentPanel" title="Recruitment" colSpan="6"
-        action="custom:hr-manager-recruitment-custom-view" if-module="axelor-talent" height="400"/>
+        action="custom:hr-manager-recruitment-custom-view" if-module="axelor-talent" height="400"
+        if="__config__.app.isApp('recruitment')"/>
       <panel-dashlet name="leaveRequestPanel" title="Leave requests" colSpan="6"
-        action="custom:hr-manager-leave-requests-custom-view" height="400"/>
+        action="custom:hr-manager-leave-requests-custom-view" height="400"
+        if="__config__.app.isApp('leave')"/>
       <panel-dashlet name="expensePanel" title="Expenses" colSpan="6"
-        action="custom:hr-manager-expenses-custom-view" height="400"/>
+        action="custom:hr-manager-expenses-custom-view" height="400"
+        if="__config__.app.isApp('expense')"/>
       <panel-dashlet name="timesheetPanel" title="Timesheets" colSpan="6"
-        action="custom:hr-manager-timesheets-custom-view" height="400"/>
+        action="custom:hr-manager-timesheets-custom-view" height="400"
+        if="__config__.app.isApp('timesheet')"/>
       <panel-dashlet name="extraHoursPanel" title="Extra hours" colSpan="6"
-        action="custom:hr-manager-extra-hours-custom-view" height="400"/>
+        action="custom:hr-manager-extra-hours-custom-view" height="400"
+        if="__config__.app.isApp('exthrs')"/>
+      <panel-dashlet name="medicalVisitPanel" title="Medical visits" colSpan="6"
+        action="custom:hr-manager-medical-visits-custom-view" height="400"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()"/>
     </panel>
   </form>
 
@@ -117,6 +130,7 @@
     <attribute name="refresh" for="expensePanel" expr="eval: true"/>
     <attribute name="refresh" for="timesheetPanel" expr="eval: true"/>
     <attribute name="refresh" for="extraHoursPanel" expr="eval: true"/>
+    <attribute name="refresh" for="medicalVisitPanel" expr="eval: true"/>
   </action-attrs>
 
 </object-views>

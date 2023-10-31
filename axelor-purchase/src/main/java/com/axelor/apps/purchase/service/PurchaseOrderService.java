@@ -101,4 +101,6 @@ public interface PurchaseOrderService {
       throws AxelorException;
 
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  void checkPrintingSettings(PurchaseOrder purchaseOrder) throws AxelorException;
 }

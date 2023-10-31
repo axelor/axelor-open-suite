@@ -6,7 +6,7 @@
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-manuf-order-method-print"/>
+        onClick="action-method-print-birt-list"/>
       <button name="mergeBtn" title="Merge" icon="fa-object-ungroup"
         onClick="action-manuf-order-group-merge"/>
     </toolbar>
@@ -43,45 +43,9 @@
       readonlyIf="statusSelect != 4"/>
     <button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel"
       readonlyIf="statusSelect == 2"/>
-    <button name="printBtn" title="Print" icon="fa-print"
-      onClick="action-manuf-order-method-print"/>
+    <button name="printBtn" title="Print" icon="fa-print" onClick="action-method-print-birt"/>
   </grid>
 
-  <grid name="manuf-order-business-grid" title="Manufacturing orders"
-    model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq"
-    groupBy="productionOrder">
-    <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-manuf-order-method-print"/>
-    </toolbar>
-    <field name="productionOrder" width="120"/>
-    <field name="manufOrderSeq" width="120"/>
-    <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="product" form-view="product-form" grid-view="product-grid"/>
-    <field name="billOfMaterial" grid-view="bill-of-material-grid"
-      form-view="bill-of-material-form"/>
-    <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
-    <field name="outsourcing"/>
-    <field name="plannedStartDateT"/>
-    <field name="plannedEndDateT"/>
-    <field name="realStartDateT"/>
-    <field name="realEndDateT"/>
-    <field name="statusSelect"/>
-    <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-plan"
-      readonlyIf="statusSelect >= 3"/>
-    <button name="startBtn" icon="fa-play"
-      onClick="action-manuf-order-method-start-or-resume"
-      readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-    <button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause"
-      readonlyIf="statusSelect != 4"/>
-    <button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish"
-      readonlyIf="statusSelect != 4"/>
-    <button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel"
-      readonlyIf="statusSelect == 2"/>
-    <button name="printBtn" title="Print" icon="fa-print"
-      onClick="action-manuf-order-method-print"/>
-  </grid>
 
   <grid name="manuf-order-invoicing-project-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq"
@@ -117,11 +81,12 @@
   <form name="manuf-order-form" title="Manufacturing order"
     model="com.axelor.apps.production.db.ManufOrder"
     onNew="action-attrs-production-manuf-order-set-default-plan-if-missing-on-new,action-manuf-order-group-onnew"
-    onLoad="action-manuf-order-group-onload" width="large">
+    onLoad="action-manuf-order-group-onload" width="large"
+    onSave="action-manuf-order-record-client-partner">
     <!-- TODO avec propagation -->
     <menubar>
       <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-manuf-order-method-print"
+        <item name="printItem" title="Print" action="save,action-method-print-birt"
           showIf="statusSelect > 1"/>
         <item name="printProductionProcessItem" title="Print Production Process"
           action="save,action-production-process-method-print"/>
@@ -190,7 +155,7 @@
           onChange="action-manuf-order-attrs-sale-order-onchange-client-partner" canEdit="false"/>
         <field name="saleOrderSet" widget="TagSelect" form-view="sale-order-form"
           grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect"
-          canEdit="false" onChange="action-manuf-order-record-client-partner"/>
+          canEdit="false"/>
         <field name="manufOrderMergeResult" showIf="manufOrderMergeResult"
           form-view="manuf-order-form" grid-view="manuf-order-grid" canNew="false" canEdit="false"
           canView="true"/>
@@ -228,6 +193,9 @@
           hidden="true"/>
         <button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12"
           showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel" hidden="true"/>
+        <button name="draftBtn" icon="fa-eraser " title="Return to draft status" colSpan="12"
+          showIf="statusSelect == 2" onClick="action-manuf-order-record-set-status-to-draft,save"
+          hidden="true"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
@@ -548,6 +516,11 @@
     <context name="_xApplicationType" expr="eval: _model"/>
   </action-view>
 
+  <action-record name="action-manuf-order-record-set-status-to-draft"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <field name="statusSelect" expr="eval: __repo__(ManufOrder).STATUS_DRAFT"/>
+  </action-record>
+
   <action-method name="action-manuf-order-method-update-planned-qty">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="updatePlannedQty"/>
   </action-method>
@@ -601,8 +574,9 @@
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-sale-order-onchange-client-partner">
-    <attribute name="value" expr="eval:null" for="saleOrderSet"
-      if="saleOrderSet?.any{it.clientPartner != clientPartner}"/>
+    <attribute name="value"
+      expr="eval: __repo__(SaleOrder).all().filter('self.clientPartner.id = ?1 AND self.id IN (?2)',clientPartner.id, saleOrderSet?.collect{it?.id}).fetch()"
+      for="saleOrderSet" if="clientPartner"/>
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-scale-and-precision">
@@ -721,10 +695,6 @@
     <action name="action-sale-order-cancel-reason-check" if="statusSelect > 3"/>
     <action name="action-manuf-order-method-cancel"/>
   </action-group>
-
-  <action-method name="action-manuf-order-method-print">
-    <call class="com.axelor.apps.production.web.ManufOrderController" method="print"/>
-  </action-method>
 
   <action-method name="action-production-process-method-print">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="printProdProcess"/>

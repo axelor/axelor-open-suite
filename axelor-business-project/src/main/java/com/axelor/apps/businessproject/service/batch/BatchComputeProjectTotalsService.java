@@ -64,12 +64,11 @@ public class BatchComputeProjectTotalsService extends AbstractBatch {
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get(BusinessProjectExceptionMessage.BATCH_COMPUTE_PROJECT_TOTALS_1),
-                      project.getId()),
-                  e),
-              batch.getId().toString());
+              e,
+              String.format(
+                  I18n.get(BusinessProjectExceptionMessage.BATCH_COMPUTE_PROJECT_TOTALS_1),
+                  project.getId()),
+              batch.getId());
         }
       }
       JPA.clear();

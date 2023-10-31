@@ -64,13 +64,11 @@ public class BatchBackupToProjectHistoryService extends AbstractBatch {
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get(
-                          BusinessProjectExceptionMessage.BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR),
-                      project.getId()),
-                  e),
-              batch.getId().toString());
+              e,
+              String.format(
+                  I18n.get(BusinessProjectExceptionMessage.BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR),
+                  project.getId()),
+              batch.getId());
         }
       }
       JPA.clear();

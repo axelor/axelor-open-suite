@@ -1,227 +1,274 @@
-## [7.1.0] (2023-07-12)
+## [7.2.1] (2023-10-27)
 
-### Features/Changes
+#### Fixed
+
+* App builder: update studio dependency to 1.3.3 to get the following fix:
+
+    - fixed StudioActionView duplication on every save
+
+* Timesheet: fixed error when generating lines from expected planning.
+* Timesheet: fixed a regression on timesheet editor react view due to daily limit.
+* Debt Recovery: fixed error message on debt recovery generation to display correctly trading name.
+* Project task: fixed a bug where boolean to invoice via task was not working when generating a task from a sale order.
+* Invoice/Move: fixed due date when we set invoice date, move date or when we update payment condition.
+* FEC Import: fixed issue when importing FEC with empty date of lettering.
+* FEC Import: the header partner is now filled correctly
+
+    - Multi-partner: no partner in header
+    - Mono-partner: fill partner in header
+
+* Analytic: fixed analytic distribution verification at validation/confirmation of purchase order/sale order when analytic is not managed.
+* Project: fixed project task time follow-up values computation.
+* Payment Voucher: fixed display of load/reset imputation lines and payment voucher confirm button when paid amount is 0 or when we do not select any line.
+* Period closure: fixed a bug where status of period was reset on error on closure.
+* Custom accounting report: fixed demo data result computation in sum of accounts lines.
+* Manufacturing order: fixed an issue where outsourcing was not activated in operations while it was active on production process lines.
+* Payment voucher: fixed error at payment voucher confirmation without move lines.
+* Move: removed period verification when we opening a move.
+* Payment voucher: removed paid line control at payment voucher confirmation.
+* Invoice / Move: fixed subrogation partner on invoice terms depending on parent move or invoice.
+* Fixed asset: fixed popup error "Cannot get property 'fixedAssetType' on null object" displayed when clearing fixed asset category field.
+* Cost sheet: replaced 'NullPointerException' error by a correct message when an applicable bill of materials is not found on cost calculation.
+* axelor-config.properties: enabled Modern theme by default.
+* Technical: fixed xml-apis dependency not excluded causing issue when building project.
+
+## [7.2.0] (2023-10-23)
+
+### Features
+
+* App builder: update axelor-studio dependency from 1.2 to 1.3.2
+
+Please see the corresponding [CHANGELOG](https://github.com/axelor/axelor-studio/blob/1.3.2/CHANGELOG.md) to see the changes.
 
 #### Base
 
-* Faker API Field: 
-- Add the possibility to use the api faker method parameters
-- Add data type to filter API fields in the anonymizer lines
-
-* Base Batch: New batch to force users password change
-* BirtTemplate: It is now possible to choose the .rptdesign file used to generate the attached file when sending a generated email. Parameters sent to the BIRT engine can also now be computed using groovy scripting.
+* BIRT templates: the configuration is now used inside existing processes generating documents from the ERP.
+Any existing printings using BIRT can now be overriden from the configuration, adding new printings is also a lot easier.
 
 #### Accounting
 
-* Move: 
-    - New mass entry feature
-    - Add management of currency amount negative value for credit
-    - Add PFP process like on Invoices
-    - Extend automatic cut off dates process to move confirmation
-    - On move creation or generation, originDate is filled with onChange of moveDate.
-    - Add an allowed tax gap on company account config and check consistency of tax values on daybooking, simulating or accounting.
-    - Add new technical origin for move generated from mass entry process
+* Move / Invoice / Payment session: added subrogation
 
-* Move, Move line: 
-
-Cut off dates are no longer required for functional origin: closure, opening, cut off
-
-* Cut off batches: Add three new columns displaying the number of days considered in the calculation for Cut-Off processing of Advance Accrued Expenses (CCA) and Advance Accrued Revenues (PCA), allowing users to verify the consistency of the days used in the calculation.
-* Move, Move Template: Set partner as required when journal is sale or expense
-* Reconcile: Add an effective date to the reconcile which will be used instead of reconciliation date for generated payment and moves. This effective date is computed from information in reconciled moves.
-* Reconcile: reconciliation of different accounts and payment differences management
-    - Added new fields in account config, one account for debit difference, one account for credit difference.
-    - When you pay an invoice term and the remaining amount is less than the threshold distance, a new payment will be made of the remaining amount.
-    - Reconciliation of different accounts are now managed, using a new payment move which reconciles both invoice terms.
-
-* Custom accounting report: 
-    - Fetch parent account when higher level analytic accounts are detailed
-    - Add previous start balance
-    - Can now filter result with accounts and analytic accounts from the report
-    - Allow to display debit or credit values instead of only the difference between them
-
-* Debt recovery: improve debt recovery and debt recovery history attachments management
-
-* Deposit slip: handle bank details and deposit date in deposit slip.
-
-* Payment session: 
-    - Show buttons to select all / unselect all.
-    - add compensation field on partner to compensate customer invoices on supplier payment or supplier invoices on customer payment.
-    - add partner set field to filter partners linked to these invoice terms.
-
-* Analytic distribution template: trading name now has an analytic distribution template field:
-
-In Account configuration, if the Analytic distribution type is 'Per trading name', 
-Analytic distribution template will be retrieved from the trading name when creating Purchase order, Sale order and invoice lines.
-
-#### Budget
-
-* Budget: integrate new budget module
-
-#### Stock
-
-* Stock location: Stock location can be now configured from the stock move line
-* Stock Move: Canceling a stock move will now set the wap price to its former value if nothing happened since the realization.
-* Stock moves: Change origin architecture from refSelect to M2O
-
-#### Supply Chain
-* Sale order: Sale orders and sale order lines can now be filtered with invoicing state.
-
-
-#### Production
-
-* Manufacturing order: 
-
-When planning a manufacturing order, operation orders dates now take into account available dates of the machine. 
-
-* Operation order: 
-
-New fields to distinguish human and machine planned times on operations.
-In the calendar view, the operation orders will now be updated (if needed) on change of another operation order.
-
-* Work Center & Prod process Line : 
-
-Moved starting, setup and ending duration from Machine to Work Center.
-Human resources panel refactoring
-
-* Machine : 
-
-Machine form view refactoring
+A partner can now have a "subrogation partner". When adding a payment, the subrogation partner will be the one used in the payment process.
 
 #### CRM
 
-* CRM: Redesign of the CRM menus architecture and multiple menus domains.
-* CRM Search: Added a powerful searching tool in multiple object type (opportunities, leads, event, etc …). Using keywords and configurable mapping. 
-* Opportunities: 
-Added a control on opportunities winning process that displays on-going opportunities for selected clients. With multiple closing functions. 
-Add controls on decimal and integer values in opportunities for process maintainability.
-* Partner, Leads, Opportunities: 
-Refactor on last event and next event on partner, leads, opportunities (to make it work properly). 
-Added back a drag and drop function on lead/opportunities/prospect status grid view.
-* Lead conversion: Added a new conversion process for leads.
-* Lead, Prospect: Added a Kanban view.
-* Improve emails display in all CRM views.
-* Added an automatic conversion function for similar leads (name, email, etc…) when converting one. 
-* Added a catalog email sending function in catalog grid view. 
-* Opportunity: added a panel in opportunity view displaying events related to the opportunity.
-* Partner: added partner status to the app. This feature permits the user to follow a prospect using a custom process. It follows the leads process before converting the prospect to customer. 
-* Partner: added related contacts in contact view (contacts with the same email address domain).
+* Partner: added a new type of partner "Corporate partner". Added a new panel to follow fidelity and opportunities won/lost of the partner.
 
+#### Sale
 
-#### Project
+* SaleOrder: Multi-level sale order lines
 
-* Project: Allowed deletion of planned times from the dashlet in Project.
-* Project: Added Time follow-up and Financial follow-up on Tasks, aggregated on Project level.
-* ProjectTask: Changed planning UX and constraints to fit with the new flow of project management.
-* Project: Added a batch to compute project and task’s time and financial reporting. Action can also be triggered from Project’s Tools menu. Invoicing Project Batches were renamed to Business Project Batches
-* Project: Removed obsolete time fields on Project and Tasks.
-* Project: Added demo data for Business Project (Task by line & Task by line using subtasks models) to allow demonstration of the new reporting.
-* Project: Added a batch to historize project reporting, as well as visual indicators to compare current values to last historized values.
-* Business Project: Improved App configuration UX
-* Project: Manage project time units (Hours, Days) and conversions to allow to manage a project in Hours or in Days, as well as to manage individual tasks in both units. Planning has also been changed to reflect these features.
-* Contract: invoicing pro rata per line
-* Contract: reevaluating contract yearly prices based on index values
-* Contract: added discount on contract lines.
+Enhance the functionality of the sale order line by introducing sub-components. These sub-components will be organized in a tree view, allowing users to effortlessly manage them. Users can easily delete existing sub-components or add new sub-elements to them as needed.
 
-#### Sales
+* SaleOrder: Improved versioning with past version recovery
 
-* Sale Order: Improve UX and help for project generation.
-* Sale Order: Generating task with subtask models has been fixed and improved
+#### Quality
 
-#### Helpdesk
+A rework of the quality module has been done:
 
-* Helpdesk: 
+Within the company, "quality improvement" enables non-quality and continuous improvement to be managed according to the PDCA (Plan, Do, Check, Act) model:
 
-Added a new field fullName to the ticket which will be used as namecolumn
-Add API to update ticket status
+* At Product level (directly or indirectly linked to a product sold)
+* At System level (linked to the company's processes)
 
-#### GDPR
+It can be used to carry out Hishikawa, PARETO or ABC-type analyses. It integrates real action plans with steering dashboards, following the following steps:
 
-* Processing register: option to not archive
+* Identify the problem
+* Treat it in the short term
+* Search for and correct root causes
+* Monitor the implementation of preventive actions
+* Capitalize for the future
 
-In GDPR Processing Register, add a boolean to enable/disable archiving data during the data processing.
+#### Human Resource
 
-* App GDPR: New config to exclude fields from the access request.
-* Erasure Request: Add the possibility to break links in an anonymised object.
+* Expense: Digital signature for justification file
 
-#### HR
+If the justification file is an image, it is converted to a pdf file.
+Then the pdf file is digitally signed.
 
-* New employee and manager dashboard with custom views
-* Reorganize HR menu items and add new HR menu with a new dashboard
-* Files :
+* Medical leave: added Medical Leave management in Employee.
+* HR API: new paths to create/send/validate an Expense.
+* Job application: creating an employee from job application now takes into account the title and every DMS files
+* Expense: prevent payment if expense was paid with company card.
+* Leaves, lunch voucher: added a new export format to Sage.
 
-Panel review
-Linked to skills
+#### Supply Chain
 
-* Lunch voucher: Process improvement (links with expenses, refacto, form review)
-* Employee: 
+* Disassociated MRP and MPS views.
+* MPS: added "validate scenario" configuration to control which MPS proposal is taken into account in the MRP computation.
+* Analytic line: added an Analytic line model to manage analytic between objects.
 
-New titles
-Dependent children
+#### Contract
 
-* Recruitment: Application form review
-* Expense:
+* Contract: Manage analytic accounts per axis and analytic move lines from contract line.
+* Contract: added grouped invoicing for contracts.
 
-Multi-currency expenses
-Analytic distribution template on employee form
-Add justication to expense line grid view
+#### Budget
 
-#### Cash management
+* GlobalBudget/BudgetVersion: added global budget for a better level management and budget version.
+* AccountingReport: New budget report 'Revenue and expenditure state'.
 
-* Forecast generator: add fortnightly and weekly periodicity in forecast generator.
+#### Production
 
-#### Mobile
+* Added production planification scheduling feature.
+* Added production planification capacity configuration and re-added infinite capacity features.
+* Manufacturing order: added configuration for operation continuity
 
-* Mobile Settings: add Helpdesk config for the mobile app
+Operation continuity feature is preventing operations from starting until the previous operations are terminated, canceled or optional. It can be configured on the production process.
 
-### Fixed
+* Operation Order: added a configuration to generate timesheet line when a operation order stops.
+* Bill of materials: Reworked bill of materials tree by introducing bill of materials line.
 
-#### Sale/Purchase
+#### Business Project
 
-* Sale and Purchase order: Change default view for historic menu, from card view to grid view
+* Project: added invoicing reporting.
+* Project Task: generate purchase orders from tasks.
 
-#### Stock
+#### Mobile Settings
 
-* Stock move: the field “filter on available products” is now stored in database.
+* Mobile Settings: added HR config for the mobile app.
+* MetaJsonField: added configuration to show app builder fields in mobile application.
 
-#### Project
+### Changes
 
-* Project and Task: Split ProjectStatus between ProjectStatus for project and TaskStatus for task.
+#### Base
 
-#### Base/HR
+* Research request: added a button to open the result object.
+* Sequence: letter sequence type has now an adjustable padding
+* Sequence: the draft prefix can now be configured
 
-* User, Employee: Improved behavior to avoid links errors and inconsistencies and for more coherence.
-* Partner: change companyStr length
-* Company: Add all java timezone in timezone selection in Company.
-* Training skill: graduation date and end of validity date are not required anymore.
+Configure the sequence prefix using the 'Draft prefix' field in the app base.
 
-#### Helpdesk
-
-* Ticket: Renamed the customer field into customerPartner
 
 #### Accounting
 
-* Accounting report analytic config line : Rule level maximum value is now the highest existing analytic level.
-* Custom accounting report: fixed comparison period order.
-* Move: origin date is now always filled in automatic creation.
-* Invoice term: rework partial pfp validation in invoice terms to be more user friendly and fix financial discount in second invoice term generation.
-* Journal type: field technicalTypeSelect is now compulsory.
+* Accounting report: added moves status filter.
+* Invoice: added mandatory mentions in invoices addressed to a legal entity (professional customer).
+* Move line: added more default filters on the grid view.
+* Move Line: amount remaining is now signed, positive if debit line and negative if credit line.
+* Accounting batch: added a list of journal for cut off batch.
+* Accounting report / VAT Statements: change message box content
+* Accounting configuration: allowed to generate fiscal year and period from accounting configuration.
+* Custom accounting report: improved errors management.
 
-### Removed
+#### Bank payment
 
-* App base configuration: remove OSM Routing API selection
+* Bank details: change display for active field
 
-Now, when computing distance for Kilometric Allowances, if using the Open Street Map mapping service provider, 
-it will use the OSRM API by default.
+#### CRM
 
-* Leave management: remove unused 'user' column in data model.
-* Alarms: removed everything related to alarms.
-* CRM : Leads : Remove 'Import Leads' feature.
-* [EXPENSE] Remove multi user expense.
-* Object data config: removed unused domain object data config.
-* WAP History: removed WAP history  (replaced by a new table “StockLocationLineHistory” with more information.
-* Skills : experienceSkillSet and skillSet are now removed from employee form.
-* Simplified moves: removed in favor of mass entry.
+* Lead: displayed the description on the kanban view.
+* Lead: added duplicate verification.
+* Lead/Prospect: added activity panel to lead and prospect.
+* Event: improved event form view.
+
+#### Sale
+
+* Pricing scale: Possibility to choose between previous and next scale for the computation.
+
+#### Purchase
+
+* Displayed product purchase price history in the purchase line form and in the product form.
+* Supplier catalog: added the possibility to manage multiple qty per supplier directly on the catalog.
+
+#### Stock
+
+* Stock Correction: added a comment field.
+* API Stock: manage comments field on requests.
+
+#### Human resource
+
+* Lunch voucher: added percentage distribution for both formats.
+
+New lunch voucher format "Both". Employee wil be able to choose the percentage of lunch voucher in paper format/card format.
+
+* Timesheet: added a time limit per day.
+* Employee: form view review.
+* Added demo data for MyHR dashboard.
+* Expense line: added an amount limit that can be configured on expense type, preventing expense line to be created if the value is too high.
+* Expense: added related expense in the generated move.
+* Expense: amount periodic limit for employee.
+* Expense line: added Currency field (used only for mobile application).
+* HR API: manage `toInvoice` field on expense line creation request.
+* HR API: added new API request to check errors and warnings of Expense and ExpenseLine.
+* HR API: added new API request to compute distance between two cities.
+
+#### Supply Chain
+
+* SOP/MPS: Rename `manufacturingYear` to `manufacturingPeriod` and added demo data.
+* Purchase Order / Sale Order: managed analytic accounts per axis and analytic move lines from sale order line and purchase order line.
+* Partner: Customer Situation reporting has been improved and completed with information on deliveries. Also, it is now possible to filter per date or company.
+
+#### Cash management
+
+* Forecast recap: added payment mode and company bank details to forecast recap.
+
+#### Budget
+
+* Budget: added new config in app budget to check if error must be throwed in invoice/moves/orders.
+
+#### Production
+
+* Configurator ProdProcessLine: When managing workcenter groups, work center can still be selected instead of having a default one.
+* Cost calculation: the cost prices that were only in work center, can now be overridden by production process lines.
+* Production process: added a new configuration to manage times in hundredth of an hour.
+* Manufacturing order: added return to draft button in manufacturing order form.
 
 
-[7.1.0]: https://github.com/axelor/axelor-open-suite/compare/v7.0.5...v7.1.0
+#### Maintenance
+
+* Maintenance request: Duration is now a number of hours in decimal, no longer an integer.
+
+#### Business project
+
+* Project: Improve UX of Task tree.
+
+### Fixed
+
+#### Base
+
+* Modelization fix: added unique true to all one-to-one.
+
+#### Accounting
+
+* AnalyticDistributionTemplate/TradingName/Partner: fixed analytic distribution template management.
+* Partner: moved analytic distribution template field to accounting situation.
+* Fixed asset: Correct disposal fixed asset depreciation lines which were not generated properly when disposing from a fixed asset.
+* Fixed asset: fixed wrong depreciation value for degressive method.
+* AppInvoice: removed configuration "is invoice move consolidated" which was not used.
+* Accounting report: re organize view form fields display.
+
+#### CRM
+
+* Added a configuration to activate "Search view" feature.
+
+#### Human Resource
+
+* Expense: added control on expense justification file
+
+    - Alert user if some expense lines do not have a justification file.
+    - Alert user to keep original document if the file is not a PDF nor an image.
+
+#### Supply Chain
+
+* SOP line: reviewed fields and grid behavior.
+* SOP: Removed unused status on SOP line.
+* MRP: MRP menu entry is now available from both Purchase and Stock menu.
+
+#### Fleet
+
+* Vehicle: change link between Vehicle and VehicleModel from a one-to-one to a many-to-one.
+
+#### Production
+
+* Manufacturing order: Creating manufacturing orders from sale order will now correctly link parent and child manufacturing orders.
+* SOP: Removed unused stock location field on SOP Line.
+
+#### Business Project
+
+* Project: Using company currency symbols on reporting
+* Business Project: improved task management and reporting, added a new forecast section.
+
+[7.2.1]: https://github.com/axelor/axelor-open-suite/compare/v7.2.0...v7.2.1
+[7.2.0]: https://github.com/axelor/axelor-open-suite/compare/v7.1.7...v7.2.0

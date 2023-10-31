@@ -23,7 +23,7 @@ dependencies {
 
     jaxb libs.jaxb_xjc
 
-	api files("src/main/lib/ebics-1.0.2.jar")
+	api 'com.axelor.apps:axelor-ebics-lib:1.0.2'
 
 	implementation libs.bcprov_jdk15on
 	implementation libs.bcpkix_jdk15on

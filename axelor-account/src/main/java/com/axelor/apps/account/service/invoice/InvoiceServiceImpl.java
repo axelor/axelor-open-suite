@@ -747,7 +747,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     filter +=
         " AND self.partner = :_partner "
             + "AND self.currency = :_currency "
-            + "AND self.operationTypeSelect = :_operationTypeSelect";
+            + "AND self.operationTypeSelect = :_operationTypeSelect "
+            + "AND self.internalReference IS NULL";
     advancePaymentInvoices =
         new HashSet<>(
             invoiceRepo
@@ -828,7 +829,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         continue;
       }
       for (MoveLine moveLine : moveLineList) {
-        BigDecimal amountRemaining = moveLine.getAmountRemaining();
+        BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
         if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
           return false;
         }
@@ -1219,5 +1220,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
     return invoice;
+  }
+
+  @Override
+  public void updateSubrogationPartner(Invoice invoice) {
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      invoice.getInvoiceTermList().stream()
+          .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
+          .forEach(it -> it.setSubrogationPartner(invoice.getSubrogationPartner()));
+    }
   }
 }

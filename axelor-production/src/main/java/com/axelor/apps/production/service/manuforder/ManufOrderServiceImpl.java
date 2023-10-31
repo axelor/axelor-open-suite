@@ -20,9 +20,11 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
@@ -33,6 +35,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
@@ -62,6 +65,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -112,7 +116,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ProductCompanyService productCompanyService;
   protected BarcodeGeneratorService barcodeGeneratorService;
   protected ProductStockLocationService productStockLocationService;
+  protected UnitConversionService unitConversionService;
   protected MetaFiles metaFiles;
+  protected PartnerRepository partnerRepository;
+  protected BillOfMaterialService billOfMaterialService;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -127,7 +134,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
-      MetaFiles metaFiles) {
+      UnitConversionService unitConversionService,
+      MetaFiles metaFiles,
+      PartnerRepository partnerRepository,
+      BillOfMaterialService billOfMaterialService) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderWorkflowService = manufOrderWorkflowService;
@@ -139,7 +149,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.productCompanyService = productCompanyService;
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.productStockLocationService = productStockLocationService;
+    this.unitConversionService = unitConversionService;
     this.metaFiles = metaFiles;
+    this.partnerRepository = partnerRepository;
+    this.billOfMaterialService = billOfMaterialService;
   }
 
   @Override
@@ -167,6 +180,18 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           I18n.get(ProductionExceptionMessage.GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO),
           billOfMaterial.getName());
     }
+    Unit unit = billOfMaterial.getUnit();
+    if (unit == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(ProductionExceptionMessage.GENERATE_MANUF_ORDER_BOM_MISSING_UNIT),
+          billOfMaterial.getName());
+    }
+    if (!unit.equals(product.getUnit())) {
+      qtyRequested =
+          unitConversionService.convert(
+              product.getUnit(), unit, qtyRequested, qtyRequested.scale(), product);
+    }
     BigDecimal qty =
         qtyRequested.divide(
             billOfMaterial.getQty(),
@@ -177,6 +202,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         this.createManufOrder(
             product,
             qty,
+            unit,
             priority,
             IS_TO_INVOICE,
             company,
@@ -189,6 +215,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
       manufOrder = manufOrderWorkflowService.plan(manufOrder);
+      if (Boolean.TRUE.equals(manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning())) {
+        manufOrderWorkflowService.createPurchaseOrder(manufOrder);
+      }
     }
 
     return manufOrderRepo.save(manufOrder);
@@ -203,10 +232,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     BigDecimal bomQty = billOfMaterial.getQty();
 
-    if (billOfMaterial.getBillOfMaterialSet() != null) {
+    if (billOfMaterial.getBillOfMaterialLineList() != null) {
 
-      for (BillOfMaterial billOfMaterialLine :
-          getSortedBillsOfMaterials(billOfMaterial.getBillOfMaterialSet())) {
+      for (BillOfMaterialLine billOfMaterialLine :
+          getSortedBillsOfMaterialsLine(billOfMaterial.getBillOfMaterialLineList())) {
 
         if (!billOfMaterialLine.getHasNoManageStock()) {
 
@@ -225,6 +254,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
   }
 
+  protected List<BillOfMaterialLine> getSortedBillsOfMaterialsLine(
+      Collection<BillOfMaterialLine> billsOfMaterialLines) {
+
+    billsOfMaterialLines = MoreObjects.firstNonNull(billsOfMaterialLines, Collections.emptyList());
+    return billsOfMaterialLines.stream()
+        .sorted(
+            Comparator.comparing(BillOfMaterialLine::getPriority)
+                .thenComparing(Comparator.comparing(BillOfMaterialLine::getId)))
+        .collect(Collectors.toList());
+  }
+
   @Override
   public BigDecimal computeToConsumeProdProductLineQuantity(
       BigDecimal bomQty, BigDecimal manufOrderQty, BigDecimal lineQty) {
@@ -238,17 +278,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
               .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     }
     return qty;
-  }
-
-  private List<BillOfMaterial> getSortedBillsOfMaterials(
-      Collection<BillOfMaterial> billsOfMaterials) {
-
-    billsOfMaterials = MoreObjects.firstNonNull(billsOfMaterials, Collections.emptyList());
-    return billsOfMaterials.stream()
-        .sorted(
-            Comparator.comparing(BillOfMaterial::getPriority)
-                .thenComparing(Comparator.comparing(BillOfMaterial::getId)))
-        .collect(Collectors.toList());
   }
 
   @Override
@@ -292,6 +321,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   public ManufOrder createManufOrder(
       Product product,
       BigDecimal qty,
+      Unit unit,
       int priority,
       boolean isToInvoice,
       Company company,
@@ -311,6 +341,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             null,
             priority,
             this.isManagedConsumedProduct(billOfMaterial),
+            unit,
             billOfMaterial,
             product,
             prodProcess,
@@ -918,17 +949,18 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throws AxelorException {
     List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
 
-    for (BillOfMaterial bom : billOfMaterial.getBillOfMaterialSet()) {
-      Product product = bom.getProduct();
+    for (BillOfMaterialLine boml : billOfMaterial.getBillOfMaterialLineList()) {
+      Product product = boml.getProduct();
       if (productList != null && !productList.contains(product)) {
         continue;
       }
 
       BigDecimal qtyReq =
           computeToConsumeProdProductLineQuantity(
-              mo.getBillOfMaterial().getQty(), mo.getQty(), bom.getQty());
+              mo.getBillOfMaterial().getQty(), mo.getQty(), boml.getQty());
 
-      if (bom.getDefineSubBillOfMaterial()) {
+      BillOfMaterial bom = boml.getBillOfMaterial();
+      if (bom != null) {
         if (bom.getProdProcess() != null) {
           bomList.add(Pair.of(bom, qtyReq));
         }
@@ -955,16 +987,25 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       int priority,
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
-      LocalDateTime plannedEndDateT) {
+      LocalDateTime plannedEndDateT)
+      throws AxelorException {
 
     ProdProcess prodProcess = billOfMaterial.getProdProcess();
     Company company = billOfMaterial.getCompany();
+
+    Unit unit = billOfMaterial.getUnit();
+    if (unit != null && !unit.equals(product.getUnit())) {
+      qtyRequested =
+          unitConversionService.convert(
+              product.getUnit(), unit, qtyRequested, qtyRequested.scale(), product);
+    }
     return new ManufOrder(
         qtyRequested,
         company,
         null,
         priority,
         false,
+        unit,
         billOfMaterial,
         product,
         prodProcess,
@@ -1019,6 +1060,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
        * If unit are the same, then add the qty If not, convert the unit and get the
        * converted qty
        */
+      if (manufOrder.getUnit() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(ProductionExceptionMessage.MANUF_ORDER_MERGE_MISSING_UNIT));
+      }
       if (manufOrder.getUnit().equals(unit)) {
         qty = qty.add(manufOrder.getQty());
       } else {
@@ -1211,30 +1257,36 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
       String backupSeq = manufOrder.getManualMOSeq();
 
-      if (manufOrder.getParentMO().getId() != null) {
-        if (!seqMOMap.containsKey(manufOrder.getParentMO().getId().toString())) {
-          seqMOMap.put(manufOrder.getParentMO().getId().toString(), manufOrder.getParentMO());
+      ManufOrder parentMO = manufOrder.getParentMO();
+      Long parentMOId = parentMO.getId();
+      if (parentMOId != null) {
+        if (!seqMOMap.containsKey(parentMOId.toString())) {
+          seqMOMap.put(parentMOId.toString(), parentMO);
         }
-        sequenceParentSeqMap.put(backupSeq, manufOrder.getParentMO().getId().toString());
+        sequenceParentSeqMap.put(backupSeq, parentMOId.toString());
       } else {
-        sequenceParentSeqMap.put(backupSeq, manufOrder.getParentMO().getManualMOSeq());
+        sequenceParentSeqMap.put(backupSeq, parentMO.getManualMOSeq());
       }
 
       if ((boolean) manufOrderMap.get("selected")) {
         BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
         billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
-
+        Partner clientPartner = manufOrder.getClientPartner();
+        if (ObjectUtils.notEmpty(clientPartner)) {
+          clientPartner = partnerRepository.find(clientPartner.getId());
+        }
         manufOrder =
             generateManufOrder(
                 product,
                 manufOrder.getQty().multiply(billOfMaterial.getQty()),
-                billOfMaterial.getPriority(),
+                billOfMaterialService.getPriority(billOfMaterial),
                 IS_TO_INVOICE,
                 billOfMaterial,
                 null,
                 manufOrder.getPlannedStartDateT(),
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
+        manufOrder.setClientPartner(clientPartner);
         manufOrder.setManualMOSeq(backupSeq);
         seqMOMap.put(backupSeq, manufOrder);
         ids.add(manufOrder.getId());
@@ -1266,13 +1318,14 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           createDraftManufOrder(
               childBom.getProduct(),
               qtyRequested,
-              childBom.getPriority(),
+              billOfMaterialService.getPriority(childBom),
               childBom,
               null,
               parentMO.getPlannedStartDateT());
 
       childMO.setManualMOSeq(this.getManualSequence());
       childMO.setParentMO(parentMO);
+      childMO.setClientPartner(parentMO.getClientPartner());
       manufOrderList.add(childMO);
 
       manufOrderList.addAll(
@@ -1320,14 +1373,14 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (company == null
         || billOfMaterial == null
         || billOfMaterial.getQty().compareTo(BigDecimal.ZERO) <= 0
-        || CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialSet())) {
+        || CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialLineList())) {
       return BigDecimal.ZERO;
     }
 
     BigDecimal producibleQty = null;
     BigDecimal bomQty = billOfMaterial.getQty();
 
-    for (BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet()) {
+    for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();

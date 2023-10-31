@@ -38,8 +38,7 @@
     <menubar>
       <menu name="debtRecovryHistoryReportsMenu" title="Reports" icon="fa-files-o"
         showTitle="true">
-        <item name="printReminderItem"
-          action="save,action-debit-recovery-history-print-payment-reminder-method"
+        <item name="printReminderItem" action="save,action-method-print-birt"
           title="Print payment reminder"/>
       </menu>
     </menubar>
@@ -102,11 +101,6 @@
     </panel>
 
   </form>
-
-  <action-method name="action-debit-recovery-history-print-payment-reminder-method">
-    <call class="com.axelor.apps.account.web.DebtRecoveryHistoryController"
-      method="printPaymentReminder"/>
-  </action-method>
 
   <action-method name="action-debit-recovery-history-print-dms-file-method">
     <call class="com.axelor.apps.account.web.DebtRecoveryHistoryController"
