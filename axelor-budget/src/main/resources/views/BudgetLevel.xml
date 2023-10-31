@@ -70,8 +70,8 @@
 
   <form model="com.axelor.apps.budget.db.BudgetLevel" title="Section"
     name="budget-level-intermediate-form" width="large"
-    onNew="action-budget-level-defaults-groups-onnew,action-global-budget-method-hide-amounts"
-    onLoad="action-budget-level-group-onload">
+    onNew="action-budget-level-intermediate-group-onnew"
+    onLoad="action-budget-level-group-onload,action-global-budget-method-filter-budget-level-list-onload">
     <panel name="mainPanel" colSpan="12">
       <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
         widget="NavSelect" selection-in="'draft','valid'"/>
@@ -90,6 +90,9 @@
         <field name="parentBudgetLevel" readonly="true" hideIf="!parentBudgetLevel"
           form-view="budget-level-intermediate-form"/>
         <field name="statusSelect" hidden="true"/>
+      </panel>
+      <panel name="redactorsValidatorsPanel" colSpan="12">
+        <field name="validatorSet" widget="TagSelect" canNew="false"/>
       </panel>
       <panel name="datesPanel" colSpan="12">
         <field name="fromDate" colSpan="4" required="true"
@@ -125,7 +128,7 @@
       <field name="budgetLevelList" title="Sections"
         form-view="budget-level-intermediate-form" grid-view="budget-level-node-grid" colSpan="12"
         canEdit="statusSelect == 'draft'" canNew="statusSelect == 'draft'"
-        canRemove="statusSelect == 'draft'"
+        onChange="action-budget-budget-level-method-save" canRemove="statusSelect == 'draft'"
         hideIf="budgetList != null &amp;&amp; budgetList.length &gt;= 1"/>
       <spacer colSpan="12"/>
       <label name="orLabel" title="Or" colSpan="12"
@@ -295,6 +298,11 @@
   <action-group name="action-budget-level-group-onload">
     <action name="action-budget-level-attrs-set-attrs"/>
     <action name="action-budget-level-method-show-validate-fields"/>
+  </action-group>
+
+  <action-group name="action-budget-level-intermediate-group-onnew">
+    <action name="action-budget-level-defaults-groups-onnew"/>
+    <action name="action-global-budget-method-hide-amounts"/>
   </action-group>
 
   <action-attrs name="action-budget-level-attrs-set-attrs">
@@ -484,6 +492,17 @@
     <call class="com.axelor.apps.budget.web.GlobalBudgetController"
       method="hideBudgetLevelAmounts"/>
   </action-method>
+
+  <action-method name="action-global-budget-method-filter-budget-level-list-onload">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController"
+      method="filterBudgetLevelList"/>
+  </action-method>
+
+  <action-method name="action-budget-budget-level-method-save">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="saveOnChange"/>
+  </action-method>
+
+
 
   <action-method name="action-budget-level-method-validate">
     <call class="com.axelor.apps.budget.web.BudgetLevelController" method="validate"/>

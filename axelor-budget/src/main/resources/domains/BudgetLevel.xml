@@ -23,6 +23,9 @@
       title="Global level"/>
     <many-to-one name="budgetStructure" ref="com.axelor.apps.budget.db.BudgetStructure"
       title="Budget structure"/>
+    <many-to-many name="validatorSet" title="Restreindre l'accés à"
+      ref="com.axelor.auth.db.User"/>
+
 
     <string name="statusSelect" title="Status" selection="budget.level.status.select"
       default="draft"/>

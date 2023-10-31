@@ -39,6 +39,7 @@ import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
@@ -51,6 +52,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -498,5 +500,31 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
       getLastSection(child, budgetLevelList);
     }
+  }
+
+  @Override
+  public List<BudgetLevel> getFilteredBudgetLevelList(BudgetLevel budgetLevel) {
+    List<BudgetLevel> filteredBudgetLevelList = new ArrayList<>();
+    if (budgetLevel.getBudgetLevelList().size() > 0) {
+      filteredBudgetLevelList =
+          budgetLevel.getBudgetLevelList().stream()
+              .filter(
+                  it ->
+                      ObjectUtils.isEmpty(it.getValidatorSet())
+                          || it.getValidatorSet().contains(AuthUtils.getUser()))
+              .collect(Collectors.toList());
+    }
+
+    return filteredBudgetLevelList;
+  }
+
+  @Override
+  public List<BudgetLevel> getOtherUsersBudgetLevelList(BudgetLevel budgetLevel) {
+    return budgetLevel.getBudgetLevelList().stream()
+        .filter(
+            it ->
+                !ObjectUtils.isEmpty(it.getValidatorSet())
+                    && !it.getValidatorSet().contains(AuthUtils.getUser()))
+        .collect(Collectors.toList());
   }
 }

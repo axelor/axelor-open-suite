@@ -3,10 +3,13 @@ package com.axelor.apps.budget.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
@@ -17,7 +20,10 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GlobalBudgetController {
 
@@ -168,5 +174,54 @@ public class GlobalBudgetController {
     for (String attribute : attributesToHide) {
       response.setAttr(attribute, "hidden", true);
     }
+  }
+
+  public void filterBudgetLevelList(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    if (globalBudget.getStatusSelect()
+        == GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT) {
+      return;
+    }
+    List<BudgetLevel> filteredBudgetLevelList =
+        Beans.get(GlobalBudgetService.class).getFilteredBudgetLevelList(globalBudget);
+    response.setValue("budgetLevelList", filteredBudgetLevelList);
+  }
+
+  public void saveBudgetLevelList(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    if (globalBudget.getId() != null) {
+      GlobalBudget myGlobalBudget =
+          Beans.get(GlobalBudgetRepository.class).find(globalBudget.getId());
+      List<BudgetLevel> requestBudgetLevelList = globalBudget.getBudgetLevelList();
+      List<BudgetLevel> otherUsersBudgetLevelList =
+          Beans.get(GlobalBudgetService.class).getOtherUsersBudgetLevelList(myGlobalBudget);
+      Set<BudgetLevel> uniqueSet = new HashSet<>(requestBudgetLevelList);
+      uniqueSet.addAll(otherUsersBudgetLevelList);
+
+      List<BudgetLevel> combinedList = new ArrayList<>(uniqueSet);
+      globalBudget.setBudgetLevelList(combinedList);
+      response.setValues(globalBudget);
+    }
+  }
+
+  public void onChangeSave(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    List<BudgetLevel> finalList = new ArrayList<>();
+    BudgetLevelRepository budgetLevelRepository = Beans.get(BudgetLevelRepository.class);
+    BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
+    for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
+      List<BudgetLevel> myList = budgetLevel.getBudgetLevelList();
+      if (budgetLevel.getId() != null) {
+        BudgetLevel myBudgetLevel = budgetLevelRepository.find(budgetLevel.getId());
+        List<BudgetLevel> list = budgetLevelService.getOtherUsersBudgetLevelList(myBudgetLevel);
+        Set<BudgetLevel> uniqueSet = new HashSet<>(myList);
+        uniqueSet.addAll(list);
+        List<BudgetLevel> combinedList = new ArrayList<>(uniqueSet);
+        budgetLevel.setBudgetLevelList(combinedList);
+      }
+      finalList.add(budgetLevel);
+    }
+    globalBudget.setBudgetLevelList(finalList);
+    response.setValues(globalBudget);
   }
 }
