@@ -410,7 +410,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null,
+            invoiceCustomerMoveLine.getDescription(),
             invoice.getCompanyBankDetails());
 
     if (oDmove != null) {
