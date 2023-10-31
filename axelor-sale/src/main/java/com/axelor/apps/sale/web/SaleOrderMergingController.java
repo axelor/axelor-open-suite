@@ -39,7 +39,7 @@ public class SaleOrderMergingController {
     String lineToMerge = getLineToMerge(request);
     try {
       List<SaleOrder> saleOrdersToMerge =
-          MapHelper.getCollection(context, SaleOrder.class, lineToMerge);
+          MapHelper.getCollection(request.getContext(), SaleOrder.class, lineToMerge);
       if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
         SaleOrderMergingResult result =
             Beans.get(SaleOrderMergingService.class).mergeSaleOrders(saleOrdersToMerge);
@@ -61,11 +61,11 @@ public class SaleOrderMergingController {
     String lineToMerge = getLineToMerge(request);
     try {
       List<SaleOrder> saleOrdersToMerge =
-          MapHelper.getCollection(context, SaleOrder.class, lineToMerge);
+          MapHelper.getCollection(request.getContext(), SaleOrder.class, lineToMerge);
       if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
         SaleOrderMergingResult result =
             Beans.get(SaleOrderMergingService.class)
-                .mergeSaleOrdersWithContext(saleOrdersToMerge, context);
+                .mergeSaleOrdersWithContext(saleOrdersToMerge, request.getContext());
         setResponseView(response, result);
       }
     } catch (Exception e) {
