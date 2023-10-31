@@ -190,7 +190,8 @@ public class ContractLineServiceImpl implements ContractLineService {
         priceListService.computeDiscount(
             contractLine.getPrice(),
             contractLine.getDiscountTypeSelect(),
-            contractLine.getDiscountAmount());
+            contractLine.getDiscountAmount(),
+            contractLine.getQty());
     contractLine.setPriceDiscounted(price);
     BigDecimal exTaxTotal = contractLine.getQty().multiply(price).setScale(2, RoundingMode.HALF_UP);
     contractLine.setExTaxTotal(exTaxTotal);

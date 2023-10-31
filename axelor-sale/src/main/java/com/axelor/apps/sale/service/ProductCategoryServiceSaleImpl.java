@@ -142,11 +142,21 @@ public class ProductCategoryServiceSaleImpl extends ProductCategoryServiceImpl
       case PriceListLineRepository.AMOUNT_TYPE_PERCENT:
         saleOrderLineDiscount = saleOrderLine.getDiscountAmount();
         break;
-      case PriceListLineRepository.AMOUNT_TYPE_FIXED:
+      case PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_UNIT_PRICE:
         saleOrderLineDiscount =
             saleOrderLine.getPrice().signum() != 0
                 ? saleOrderLine
                     .getDiscountAmount()
+                    .multiply(new BigDecimal("100"))
+                    .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+        break;
+      case PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_TOTAL_PRICE:
+        saleOrderLineDiscount =
+            saleOrderLine.getPrice().signum() != 0
+                ? saleOrderLine
+                    .getDiscountAmount()
+                    .divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_UP)
                     .multiply(new BigDecimal("100"))
                     .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;

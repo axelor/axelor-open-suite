@@ -174,7 +174,7 @@
             onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
             onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
-            hideIf="discountTypeSelect == 3"/>
+            hideIf="discountTypeSelect == 4"/>
           <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"/>
         </panel>
         <field name="taxLine" canEdit="false"
@@ -431,7 +431,8 @@
     <attribute name="title" for="discountAmount"
       expr="eval: com.axelor.i18n.I18n.get('Discount rate')" if="discountTypeSelect == 1"/>
     <attribute name="title" for="discountAmount"
-      expr="eval: com.axelor.i18n.I18n.get('Discount amount')" if="discountTypeSelect == 2"/>
+      expr="eval: com.axelor.i18n.I18n.get('Discount amount')"
+      if="discountTypeSelect == 2 || discountTypeSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-purchase-order-line-attrs-scale-and-precision">
