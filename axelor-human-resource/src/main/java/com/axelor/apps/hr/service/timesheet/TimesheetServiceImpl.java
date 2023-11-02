@@ -1225,93 +1225,85 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
   protected BigDecimal getConvertedPlannedTime(
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
-
+    BigDecimal dailyWorkHours = timesheet.getEmployee().getDailyWorkHours();
+    BigDecimal time = projectPlanningTime.getPlannedTime();
+    Unit timeUnit = projectPlanningTime.getTimeUnit();
     String timeLoggingPreference = timesheet.getTimeLoggingPreferenceSelect();
 
-    if (timeLoggingPreference == null) {
+    if (timeLoggingPreference == null && timesheet.getEmployee() != null) {
       timeLoggingPreference = timesheet.getEmployee().getTimeLoggingPreferenceSelect();
+    }
+
+    if (dailyWorkHours == null || dailyWorkHours.compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+    }
+
+    if (timeLoggingPreference == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIME_LOGGING_PREFERENCE));
     }
 
     switch (timeLoggingPreference) {
       case EmployeeRepository.TIME_PREFERENCE_DAYS:
-        return computeDaysDuration(timesheet, projectPlanningTime);
+        return computeDaysDuration(dailyWorkHours, time, timeUnit);
       case EmployeeRepository.TIME_PREFERENCE_HOURS:
-        return computeHoursDuration(timesheet, projectPlanningTime);
+        return computeHoursDuration(dailyWorkHours, time, timeUnit);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        return computeMinutesDuration(timesheet, projectPlanningTime);
+        return computeMinutesDuration(dailyWorkHours, time, timeUnit);
       default:
         return BigDecimal.ZERO;
     }
   }
 
-  public BigDecimal computeDaysDuration(
-      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+  public BigDecimal computeDaysDuration(BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit)
+      throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-    BigDecimal dailyWorkHours = timesheet.getEmployee().getDailyWorkHours();
-    BigDecimal time = projectPlanningTime.getPlannedTime();
-    Unit timeUnit = projectPlanningTime.getTimeUnit();
 
-    if (dailyWorkHours == null || dailyWorkHours.compareTo(BigDecimal.ZERO) == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
-    }
-
-    if (timeUnit.equals(appBase.getUnitDays())) {
+    if (Objects.equals(timeUnit, appBase.getUnitDays())) {
       return time;
-    } else if (timeUnit.equals(appBase.getUnitHours())) {
-      return time.divide(dailyWorkHours, 2, RoundingMode.HALF_DOWN);
-    } else if (timeUnit.equals(appBase.getUnitMinutes())) {
-      return time.divide(
-          dailyWorkHours.multiply(BigDecimal.valueOf(60)), 2, RoundingMode.HALF_DOWN);
+    } else if (Objects.equals(timeUnit, appBase.getUnitHours())) {
+      return time.divide(dailyWorkHours, 2, RoundingMode.HALF_UP);
+    } else if (Objects.equals(timeUnit, appBase.getUnitMinutes())) {
+      return time.divide(dailyWorkHours.multiply(BigDecimal.valueOf(60)), 2, RoundingMode.HALF_UP);
     }
-    return BigDecimal.ZERO;
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_WRONG_TIME_UNIT));
   }
 
-  public BigDecimal computeHoursDuration(
-      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+  public BigDecimal computeHoursDuration(BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit)
+      throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-    BigDecimal dailyWorkHours = timesheet.getEmployee().getDailyWorkHours();
-    BigDecimal time = projectPlanningTime.getPlannedTime();
-    Unit timeUnit = projectPlanningTime.getTimeUnit();
 
-    if (dailyWorkHours == null || dailyWorkHours.compareTo(BigDecimal.ZERO) == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
-    }
-
-    if (timeUnit.equals(appBase.getUnitDays())) {
+    if (Objects.equals(timeUnit, appBase.getUnitDays())) {
       return time.multiply(dailyWorkHours);
-    } else if (timeUnit.equals(appBase.getUnitHours())) {
+    } else if (Objects.equals(timeUnit, appBase.getUnitHours())) {
       return time;
-    } else if (timeUnit.equals(appBase.getUnitMinutes())) {
-      return time.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_DOWN);
+    } else if (Objects.equals(timeUnit, appBase.getUnitMinutes())) {
+      return time.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
     }
-    return BigDecimal.ZERO;
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_WRONG_TIME_UNIT));
   }
 
   public BigDecimal computeMinutesDuration(
-      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+      BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit) throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-    BigDecimal dailyWorkHours = timesheet.getEmployee().getDailyWorkHours();
-    BigDecimal time = projectPlanningTime.getPlannedTime();
-    Unit timeUnit = projectPlanningTime.getTimeUnit();
 
-    if (dailyWorkHours == null || dailyWorkHours.compareTo(BigDecimal.ZERO) == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
-    }
-
-    if (timeUnit.equals(appBase.getUnitDays())) {
+    if (Objects.equals(timeUnit, appBase.getUnitDays())) {
       return time.multiply(dailyWorkHours.multiply(BigDecimal.valueOf(60)));
-    } else if (timeUnit.equals(appBase.getUnitHours())) {
+    } else if (Objects.equals(timeUnit, appBase.getUnitHours())) {
       return time.multiply(BigDecimal.valueOf(60));
-    } else if (timeUnit.equals(appBase.getUnitMinutes())) {
+    } else if (Objects.equals(timeUnit, appBase.getUnitMinutes())) {
       return time;
     }
-    return BigDecimal.ZERO;
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_WRONG_TIME_UNIT));
   }
 
   @Override

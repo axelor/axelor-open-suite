@@ -83,6 +83,8 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_TIME_LOGGING_PREFERENCE = /*$$(*/
       "Please, configure the time logging unit preference." /*)*/;
+  public static final String PROJECT_PLANNING_WRONG_TIME_UNIT = /*$$(*/
+      "Project planning time unit not matching with time units in base configuration." /*)*/;
   public static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
   public static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
   public static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/
