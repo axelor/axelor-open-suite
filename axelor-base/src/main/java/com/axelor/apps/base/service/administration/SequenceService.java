@@ -56,6 +56,7 @@ import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.core.IsNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -616,8 +617,10 @@ public class SequenceService {
       SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate, Model model)
       throws AxelorException {
 
-    String seqPrefixe = StringUtils.defaultString( getGroovyValue(sequence,sequence.getPrefixe(), model), "");
-    String seqSuffixe = StringUtils.defaultString( getGroovyValue(sequence,sequence.getSuffixe(), model), "");
+    String seqPrefixe =
+        StringUtils.defaultString(getGroovyValue(sequence, sequence.getPrefixe(), model), "");
+    String seqSuffixe =
+        StringUtils.defaultString(getGroovyValue(sequence, sequence.getSuffixe(), model), "");
 
     String sequenceValue = getSequenceValue(sequenceVersion);
 
@@ -636,10 +639,10 @@ public class SequenceService {
     return nextSeq;
   }
 
-  public String getGroovyValue(Sequence sequence,String prefixOrSuffix, Model model) {
+  public String getGroovyValue(Sequence sequence, String prefixOrSuffix, Model model) {
     Context cxt = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
-    if (sequence.getGroovyOk()) {
-      return  String.valueOf(new GroovyScriptHelper(cxt).eval(prefixOrSuffix));
+    if (sequence.getGroovyOk() && !Strings.isNullOrEmpty(prefixOrSuffix) ) {
+      return String.valueOf(new GroovyScriptHelper(cxt).eval(prefixOrSuffix));
     }
     return prefixOrSuffix;
   }

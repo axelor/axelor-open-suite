@@ -103,8 +103,9 @@ public class SequenceController {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
       sequence = EntityHelper.getEntity(sequence);
-      if(!sequence.getGroovyOk())
-      {  Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);}
+      if (!sequence.getGroovyOk()) {
+        Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

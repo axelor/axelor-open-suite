@@ -41,7 +41,11 @@ public class QualityAlertManagementRepository extends QualityAlertRepository {
       try {
         qualityAlert.setReference(
             sequenceService.getSequenceNumber(
-                SequenceRepository.QUALITY_ALERT, null, QualityAlert.class, "reference",qualityAlert));
+                SequenceRepository.QUALITY_ALERT,
+                null,
+                QualityAlert.class,
+                "reference",
+                qualityAlert));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
       }
