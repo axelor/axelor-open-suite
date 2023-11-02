@@ -191,7 +191,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   @Override
   public void setCounter(MoveLine moveLine, Move move) {
     int counter =
-        ObjectUtils.notEmpty(moveLine)
+        ObjectUtils.notEmpty(move.getMoveLineList())
             ? move.getMoveLineList().stream()
                 .map(MoveLine::getCounter)
                 .max(Comparator.naturalOrder())
