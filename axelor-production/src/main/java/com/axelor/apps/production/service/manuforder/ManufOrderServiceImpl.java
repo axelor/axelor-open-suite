@@ -173,6 +173,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     Company company = billOfMaterial.getCompany();
+    if (company == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(ProductionExceptionMessage.NO_COMPANY_IN_BILL_OF_MATERIALS),
+          billOfMaterial.getProduct().getName());
+    }
 
     if (billOfMaterial.getQty().signum() == 0) {
       throw new AxelorException(
