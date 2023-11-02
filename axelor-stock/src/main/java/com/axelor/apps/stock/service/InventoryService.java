@@ -200,7 +200,7 @@ public class InventoryService {
 
     String ref =
         sequenceService.getSequenceNumber(
-            SequenceRepository.INVENTORY, company, Inventory.class, "inventorySeq");
+            SequenceRepository.INVENTORY, company, Inventory.class, "inventorySeq",company);
     if (ref == null)
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

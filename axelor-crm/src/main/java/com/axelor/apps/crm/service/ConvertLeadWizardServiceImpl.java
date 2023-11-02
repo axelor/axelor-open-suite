@@ -112,7 +112,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.setEmailAddress(partner);
 
     if (appBaseService.getAppBase().getGeneratePartnerSequence()) {
-      partner.setPartnerSeq(leadService.getSequence());
+      partner.setPartnerSeq(leadService.getSequence(partner));
     }
 
     partnerService.setPartnerFullName(partner);

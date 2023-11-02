@@ -156,35 +156,13 @@ public class SequenceService {
     return sequenceRepo.find(code, company);
   }
 
-  public String getSequenceNumber(String code, Class objectClass, String fieldName)
-      throws AxelorException {
-
-    return this.getSequenceNumber(code, null, objectClass, fieldName);
-  }
-
-  public String getSequenceNumber(String code, Company company, Class objectClass, String fieldName)
-      throws AxelorException {
-
-    Sequence sequence = getSequence(code, company);
-
-    if (sequence == null) {
-      return null;
-    }
-
-    return this.getSequenceNumber(
-        sequence, appBaseService.getTodayDate(company), objectClass, fieldName);
-  }
 
   public boolean hasSequence(String code, Company company) {
 
     return getSequence(code, company) != null;
   }
 
-  public String getSequenceNumber(Sequence sequence, Class objectClass, String fieldName)
-      throws AxelorException {
-    return getSequenceNumber(
-        sequence, appBaseService.getTodayDate(sequence.getCompany()), objectClass, fieldName);
-  }
+
 
   /**
    * Method returning a sequence number from a given generic sequence and a date
@@ -193,32 +171,6 @@ public class SequenceService {
    * @param refDate
    * @return
    */
-  @Transactional(rollbackOn = {Exception.class})
-  public String getSequenceNumber(
-      Sequence sequence, LocalDate refDate, Class objectClass, String fieldName)
-      throws AxelorException {
-    Sequence seq =
-        JPA.em()
-            .createQuery("SELECT self FROM Sequence self WHERE id = :id", Sequence.class)
-            .setParameter("id", sequence.getId())
-            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-            .setFlushMode(FlushModeType.COMMIT)
-            .getSingleResult();
-    SequenceVersion sequenceVersion = getVersion(seq, refDate);
-    String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
-
-    if (appBaseService.getAppBase().getCheckExistingSequenceOnGeneration()
-        && objectClass != null
-        && !Strings.isNullOrEmpty(fieldName)) {
-      this.isSequenceAlreadyExisting(objectClass, fieldName, nextSeq, seq);
-    }
-
-    sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
-    if (sequenceVersion.getId() == null) {
-      sequenceVersionRepository.save(sequenceVersion);
-    }
-    return nextSeq;
-  }
 
   protected void isSequenceAlreadyExisting(
       Class objectClass, String fieldName, String nextSeq, Sequence seq) throws AxelorException {
@@ -546,15 +498,12 @@ public class SequenceService {
 
   public String getSequenceNumber(
       Sequence sequence, Class objectClass, String fieldName, Model model) throws AxelorException {
-    if (sequence.getGroovyOk())
       return this.getSequenceNumber(
           sequence,
           appBaseService.getTodayDate(sequence.getCompany()),
           objectClass,
           fieldName,
           model);
-    return this.getSequenceNumber(
-        sequence, appBaseService.getTodayDate(sequence.getCompany()), objectClass, fieldName);
   }
 
   public void verifyPattern(Sequence sequence) throws AxelorException {
@@ -579,11 +528,10 @@ public class SequenceService {
     if (sequence == null) {
       return null;
     }
-    if (sequence.getGroovyOk())
+
       return this.getSequenceNumber(
           sequence, appBaseService.getTodayDate(company), objectClass, fieldName, model);
-    return this.getSequenceNumber(
-        sequence, appBaseService.getTodayDate(company), objectClass, fieldName);
+
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -48,7 +48,7 @@ public interface PaymentScheduleService {
       PaymentMode paymentMode)
       throws AxelorException;
 
-  String getPaymentScheduleSequence(Company company) throws AxelorException;
+  String getPaymentScheduleSequence(Company company,PaymentSchedule paymentSchedule) throws AxelorException;
 
   BigDecimal getInvoiceTermTotal(PaymentSchedule paymentSchedule);
 
