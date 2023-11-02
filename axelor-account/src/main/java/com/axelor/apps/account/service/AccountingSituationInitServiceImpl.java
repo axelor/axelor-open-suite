@@ -163,7 +163,16 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           situation.getCompany().getName());
     }
 
-    final String accountCode;
+  String accountCode = null;
+    Account account =
+            this.createAccount(
+                    partner.getFullName(),
+                    accountCode,
+                    accountConfig.getCustomerAccount(),
+                    accountConfig.getCustomerAccount().getAccountType(),
+                    true,
+                    situation.getCompany(),
+                    true);
     if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_PREFIX) {
       final String prefix = accountConfig.getCustomerAccountPrefix();
       if (StringUtils.isBlank(prefix)) {
@@ -183,7 +192,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_2),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code",account);
     } else {
       throw new AxelorException(
           situation,
@@ -191,16 +200,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_3),
           situation.getCompany().getName());
     }
-
-    Account account =
-        this.createAccount(
-            partner.getFullName(),
-            accountCode,
-            accountConfig.getCustomerAccount(),
-            accountConfig.getCustomerAccount().getAccountType(),
-            true,
-            situation.getCompany(),
-            true);
+    account.setCode(accountCode);
     situation.setCustomerAccount(account);
   }
 
@@ -219,7 +219,16 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           situation.getCompany().getName());
     }
 
-    final String accountCode;
+    String accountCode = null;
+    Account account =
+            this.createAccount(
+                    partner.getFullName(),
+                    accountCode,
+                    accountConfig.getSupplierAccount(),
+                    accountConfig.getSupplierAccount().getAccountType(),
+                    true,
+                    situation.getCompany(),
+                    true);
     if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_PREFIX) {
       final String prefix = accountConfig.getSupplierAccountPrefix();
       if (StringUtils.isBlank(prefix)) {
@@ -240,7 +249,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_5),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code",account);
     } else {
       throw new AxelorException(
           situation,
@@ -248,16 +257,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_3),
           situation.getCompany().getName());
     }
-
-    Account account =
-        this.createAccount(
-            partner.getFullName(),
-            accountCode,
-            accountConfig.getSupplierAccount(),
-            accountConfig.getSupplierAccount().getAccountType(),
-            true,
-            situation.getCompany(),
-            true);
+    account.setCode(accountCode);
     situation.setSupplierAccount(account);
   }
 
@@ -276,7 +276,17 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           situation.getCompany().getName());
     }
 
-    final String accountCode;
+    String accountCode = null;
+
+    Account account =
+            this.createAccount(
+                    partner.getFullName(),
+                    accountCode,
+                    accountConfig.getEmployeeAccount(),
+                    accountConfig.getEmployeeAccount().getAccountType(),
+                    true,
+                    situation.getCompany(),
+                    true);
     if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_PREFIX) {
       final String prefix = accountConfig.getEmployeeAccountPrefix();
       if (StringUtils.isBlank(prefix)) {
@@ -296,7 +306,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_7),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code",account);
     } else {
       throw new AxelorException(
           situation,
@@ -304,16 +314,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_3),
           situation.getCompany().getName());
     }
-
-    Account account =
-        this.createAccount(
-            partner.getFullName(),
-            accountCode,
-            accountConfig.getEmployeeAccount(),
-            accountConfig.getEmployeeAccount().getAccountType(),
-            true,
-            situation.getCompany(),
-            true);
+    account.setCode(accountCode);
     situation.setEmployeeAccount(account);
   }
 
