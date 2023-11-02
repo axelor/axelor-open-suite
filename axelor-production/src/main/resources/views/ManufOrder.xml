@@ -133,7 +133,7 @@
         <field name="manufOrderSeq" readonly="true" css="bold" colSpan="2"/>
         <field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"
           widget="SingleSelect"/>
-        <field name="company" widget="SuggestBox"
+        <field name="company" widget="SuggestBox" required="true"
           onChange="action-manuf-order-record-empty-workshop" canEdit="false"
           readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form"
           grid-view="company-grid"/>
