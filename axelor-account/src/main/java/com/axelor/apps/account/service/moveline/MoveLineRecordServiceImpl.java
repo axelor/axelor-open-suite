@@ -185,11 +185,13 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
   @Override
   public void setCounter(MoveLine moveLine, Move move) {
-    moveLine.setCounter(
-        move.getMoveLineList().stream()
+    int counter =
+        ObjectUtils.notEmpty(move.getMoveLineList())
+            ? move.getMoveLineList().stream()
                 .map(MoveLine::getCounter)
                 .max(Comparator.naturalOrder())
                 .orElse(0)
-            + 1);
+            : 0;
+    moveLine.setCounter(counter + 1);
   }
 }
