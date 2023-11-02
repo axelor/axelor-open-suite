@@ -290,4 +290,7 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
       /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
+
+  public static final String NO_COMPANY_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM." /*)*/;
 }
