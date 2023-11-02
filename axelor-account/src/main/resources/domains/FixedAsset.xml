@@ -73,7 +73,7 @@
     <integer name="originSelect" title="Origin" selection="account.fixed.asset.origin"/>
 
     <date name="firstServiceDate" title="First Service Date"/>
-    <date name="importDepreciationDate" title="Failover Date"/>
+    <date name="importDepreciationDate" title="Depreciation Import Date"/>
     <decimal name="accountingValue" title="Accounting value"/>
     <decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
 
