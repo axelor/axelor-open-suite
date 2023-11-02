@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -72,6 +73,16 @@ public interface TimesheetLineService {
    */
   TimesheetLine createTimesheetLine(
       Project project,
+      Product product,
+      Employee employee,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments);
+
+  TimesheetLine createTimesheetLine(
+      Project project,
+      ProjectTask projectTask,
       Product product,
       Employee employee,
       LocalDate date,

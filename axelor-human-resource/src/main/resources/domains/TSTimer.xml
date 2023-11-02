@@ -9,23 +9,26 @@
 
     <many-to-one name="employee" title="Employee" ref="Employee" readonly="true"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
-    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"
-      required="true"/>
+    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Task" required="true"/>
     <string name="comments" title="Comments" large="true"/>
     <datetime name="startDateTime" title="Start Time" readonly="true"/>
     <datetime name="timerStartDateT" title="Timer start date time" readonly="true"/>
     <long name="duration" title="Duration" required="true"/>
     <many-to-one name="timesheetLine" ref="com.axelor.apps.hr.db.TimesheetLine"
       title="Timesheet Line" readonly="true"/>
-    <integer name="statusSelect" title="Status Timer" default="2"
-      selection="hr.timer.status.select" readonly="true"></integer>
+    <integer name="statusSelect" title="Status Timer" default="1"
+      selection="hr.timer.status.select" readonly="true"/>
+    <datetime name="lastStartDateT" title="Last start date time" readonly="true"/>
+    <long name="updatedDuration" title="Updated duration" nullable="true"/>
 
     <extra-code><![CDATA[
 
 	   	// STATUS SELECT
-		public static final int STATUS_START = 1;
-		public static final int STATUS_PAUSE = 2;
-		public static final int STATUS_STOP = 3;
+        public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_START = 2;
+		public static final int STATUS_PAUSE = 3;
+		public static final int STATUS_STOP = 4;
 
 	]]></extra-code>
 

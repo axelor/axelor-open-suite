@@ -57,7 +57,9 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   public void stop(TSTimer timer) throws AxelorException {
     timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
     calculateDuration(timer);
-    if (timer.getDuration() > 59) {
+    Long duration = getDuration(timer);
+
+    if (duration > 59) {
       generateTimesheetLine(timer);
     } else {
       throw new AxelorException(
@@ -80,8 +82,9 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 
   @Transactional(rollbackOn = {Exception.class})
   public TimesheetLine generateTimesheetLine(TSTimer timer) throws AxelorException {
+    Long duration = getDuration(timer);
 
-    BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
+    BigDecimal durationHours = this.convertSecondDurationInHours(duration);
     Timesheet timesheet = Beans.get(TimesheetService.class).getCurrentOrCreateTimesheet();
     LocalDate startDateTime =
         (timer.getStartDateTime() == null)
@@ -91,7 +94,8 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
         Beans.get(TimesheetLineService.class)
             .createTimesheetLine(
                 timer.getProject(),
-                timer.getProduct(),
+                timer.getProjectTask(),
+                null,
                 timer.getEmployee(),
                 startDateTime,
                 timesheet,
@@ -120,5 +124,10 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
         .all()
         .filter("self.employee.user.id = ?1", AuthUtils.getUser().getId())
         .fetchOne();
+  }
+
+  protected Long getDuration(TSTimer timer) {
+    Long updatedDuration = timer.getUpdatedDuration();
+    return updatedDuration == null || updatedDuration == 0 ? timer.getDuration() : updatedDuration;
   }
 }

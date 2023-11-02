@@ -83,9 +83,10 @@
   </selection>
 
   <selection name="hr.timer.status.select">
-    <option value="1">Start</option>
-    <option value="2">Pause</option>
-    <option value="3">Stop</option>
+    <option value="1">Draft</option>
+    <option value="2">Start</option>
+    <option value="3">Pause</option>
+    <option value="4">Stop</option>
   </selection>
 
   <selection name="ihr.batch.action.select">
