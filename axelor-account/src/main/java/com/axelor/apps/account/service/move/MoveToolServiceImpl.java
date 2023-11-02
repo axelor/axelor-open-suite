@@ -704,4 +704,14 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     return statusList;
   }
+
+  @Override
+  public boolean isPartnerRequired(Journal journal) {
+    return journal != null
+        && journal.getJournalType() != null
+        && (journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
+  }
 }
