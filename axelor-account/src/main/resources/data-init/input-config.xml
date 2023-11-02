@@ -3,9 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
-  <input file="account_accountChart.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountChart" search="self.code = :code"
-    call="com.axelor.csv.script.ImportAccountChart:importAccountChart"/>
+  <input file="account_accountingConfigTemplate.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountingConfigTemplate" search="self.code = :code"
+    call="com.axelor.csv.script.ImportAccountingConfigTemplate:importAccountingConfigTemplate"/>
 
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
@@ -34,5 +34,20 @@
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name" update="true"/>
+
+  <input file="base_birtTemplate.csv" separator=";"
+    call="com.axelor.csv.script.ImportBirtTemplate:importTemplate"
+    type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
+    <bind to="metaModel" search="self.fullName = :modelName"/>
+  </input>
+
+  <input file="base_birtTemplateParameter.csv" separator=";"
+    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
+
+  <input file="base_birtTemplateConfigLine.csv"
+    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
+    search="self.importId = :importId">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+  </input>
 
 </csv-inputs>

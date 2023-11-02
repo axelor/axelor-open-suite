@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProductionConfig" cacheable="true">
+
+    <many-to-one name="maintenanceBillOfMaterialBirtTemplate"
+      title="Maintenance bill of materials template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="maintenanceManufOrderBirtTemplate"
+      title="Maintenance manuf order template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="maintenanceProdProcessBirtTemplate"
+      title="Maintenance prod process template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+
+    <track>
+      <field name="maintenanceBillOfMaterialBirtTemplate" on="UPDATE"/>
+      <field name="maintenanceManufOrderBirtTemplate" on="UPDATE"/>
+      <field name="maintenanceProdProcessBirtTemplate" on="UPDATE"/>
+    </track>
+
+  </entity>
+
+</domain-models>

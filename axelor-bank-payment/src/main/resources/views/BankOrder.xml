@@ -123,34 +123,36 @@
     onLoad="action-bank-order-group-on-load">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-bank-order-method-print"/>
+        onClick="save,action-method-print-birt"/>
     </toolbar>
     <panel title="Status" name="statusPanel" readonlyIf="technicalOriginSelect == 1">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="technicalOriginSelect">
           <![CDATA[
-            <h4 class="text-right">
-               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 0" x-translate>Entry</span>
-               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Automatic</span>
-               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Import</span>
-            </h4>
+            <>
+            	<Box d="flex" justifyContent="flex-end">
+            		<Badge bg="info">{_t(['Entry','Automatic','Import'][technicalOriginSelect])}</Badge>
+            	</Box>
+            </>
           ]]>
         </viewer>
       </field>
       <field name="$functionalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="functionalOriginSelect">
           <![CDATA[
-            <h4 class="text-right">
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 1" x-translate>Manual</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 10" x-translate>bankorder.invoicePayment</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 20" x-translate>Expense</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 30" x-translate>Payment session</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 40" x-translate>LCR</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 50" x-translate>Batch</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 51" x-translate>MonthlyPaymentScheduleLines (batch)</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 52" x-translate>CreditTransferPartnerReimbursement (batch)</span>
-            </h4>
+            <>
+            	<Box d="flex" justifyContent="flex-end">
+            		{functionalOriginSelect == 1 && <Badge bg="danger">{_t('Manual')}</Badge>}
+            		{functionalOriginSelect == 10 && <Badge bg="danger">{_t('bankorder.invoicePayment')}</Badge>}
+            		{functionalOriginSelect == 20 && <Badge bg="danger">{_t('Expense')}</Badge>}
+            		{functionalOriginSelect == 30 && <Badge bg="danger">{_t('Payment session')}</Badge>}
+            		{functionalOriginSelect == 40 && <Badge bg="danger">{_t('LCR')}</Badge>}
+            		{functionalOriginSelect == 50 && <Badge bg="danger">{_t('Batch')}</Badge>}
+            		{functionalOriginSelect == 51 && <Badge bg="danger">{_t('MonthlyPaymentScheduleLines (batch)')}</Badge>}
+            		{functionalOriginSelect == 52 && <Badge bg="danger">{_t('CreditTransferPartnerReimbursement (batch)')}</Badge>}
+            	</Box>
+            </>
           ]]>
         </viewer>
       </field>
@@ -200,9 +202,9 @@
           hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
           <viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
 		        	<![CDATA[
-		        		<h4>
-		        			<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.signatoryEbicsUser.ebicsPartner.testMode" x-translate="true">Test mode</span>
-		        		</h4>
+		        		<>
+		        			{signatoryEbicsUser?.ebicsPartner?.testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
+		        		</>
 		        	]]>
           </viewer>
         </field>
@@ -210,9 +212,9 @@
         <field name="$viewerTestMode" showTitle="false" showIf="testMode">
           <viewer depends="testMode">
 		        	<![CDATA[
-		        		<h4>
-		        			<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.testMode" x-translate="true">Test mode</span>
-		        		</h4>
+		        		<>
+		        			{testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
+		        		</>
 		        	]]>
           </viewer>
         </field>
@@ -355,7 +357,7 @@
       <button name="signBtn" title="Sign" showIf="statusSelect == 2"
         onClick="save,action-bank-order-method-sign"/>
       <button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3"
-        onClick="save,action-bank-order-method-realize,save"/>
+        onClick="save,action-bank-order-group-realize,save"/>
       <!-- <button name="reject" title="Reject" showIf="statusSelect == 3 || statusSelect == 4" onClick="save,action-bank-order-method-set-status-reject,action-method-bank-order-payment-cancel,save"/> -->
       <button name="cancelBtn" title="Cancel"
         showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3"
@@ -387,18 +389,18 @@
     model="com.axelor.apps.bankpayment.db.BankOrder" onNew="action-bank-order-group-onnew">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-bank-order-method-print"/>
+        onClick="save,action-method-print-birt"/>
     </toolbar>
     <panel name="statusPanel" title="Status" readonlyIf="technicalOriginSelect == 1">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"/>
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="technicalOriginSelect">
                     <![CDATA[
-                      <h4 class="text-right">
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 0" x-translate>Entry</span>
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Automatic</span>
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Import</span>
-                      </h4>
+                      <>
+                          <Box d="flex" justifyContent="flex-end">
+                              <Badge bg="info">{_t(['Entry','Automatic','Import'][technicalOriginSelect])}</Badge>
+                          </Box>
+                      </>
                     ]]>
         </viewer>
       </field>
@@ -439,9 +441,9 @@
           hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
           <viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
 					<![CDATA[
-					<h4>
-						<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.signatoryEbicsUser.ebicsPartner.testMode" x-translate="true">Test mode</span>
-					</h4>
+		        	<>
+		        		{signatoryEbicsUser?.ebicsPartner?.testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
+		        	</>
 					]]>
           </viewer>
         </field>
@@ -449,9 +451,9 @@
         <field name="$viewerTestMode" showTitle="false" showIf="testMode">
           <viewer depends="testMode">
 					<![CDATA[
-					<h4>
-						<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.testMode" x-translate="true">Test mode</span>
-					</h4>
+		        	<>
+		        		{testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
+		        	</>
 					]]>
           </viewer>
         </field>
@@ -462,17 +464,17 @@
       showIf="hasBeenSentToBank || areMovesGenerated" itemSpan="12" readonly="true">
       <field name="ptherTags" showTitle="false" readonlyIf="true">
         <viewer depends="areMovesGenerated"><![CDATA[
-          <h4 class="text-left">
-            <span class="label label-success" ng-show="record.areMovesGenerated" x-translate>Moves generated</span>
-          </h4>
+          <>
+              {areMovesGenerated && <Badge bg="success">{_t('Moves generated')}</Badge>}
+          </>
         ]]></viewer>
       </field>
 
       <field name="patherTags" showTitle="false" readonlyIf="true">
         <viewer depends="hasBeenSentToBank"><![CDATA[
-          <h4 class="text-left">
-            <span class="label label-success" ng-show="record.hasBeenSentToBank" x-translate>Sent to bank</span>
-          </h4>
+          <>
+              {hasBeenSentToBank && <Badge bg="success">{_t('Sent to bank')}</Badge>}
+          </>
         ]]></viewer>
       </field>
     </panel>
@@ -484,7 +486,7 @@
       <button name="signBtn" title="Sign" showIf="statusSelect == 2"
         onClick="save,action-bank-order-method-sign"/>
       <button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3"
-        onClick="save,action-bank-order-method-realize,save"/>
+        onClick="save,action-bank-order-group-realize,save"/>
       <button name="cancelBtn" title="Cancel"
         showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3"
         prompt="This action is irreversible, do you want to continue ?"
@@ -522,7 +524,7 @@
       <field name="$password" title="Password" widget="password" colOffset="1" colSpan="6"
         required="true"/>
       <button name="validateBtn" title="Validate" colOffset="1" colSpan="6"
-        onClick="save,action-bank-order-method-validate,close"/>
+        onClick="save,action-bank-order-group-validate,close"/>
       <field name="isMultiCurrency" hidden="true"/>
     </panel>
   </form>
@@ -547,6 +549,8 @@
 
   <action-group name="action-bank-order-group-confirm">
     <action name="save"/>
+    <action name="action-bank-order-validate-set-bank-order-date"
+      if="accountingTriggerSelect == 2"/>
     <action name="action-bank-order-method-confirm"/>
   </action-group>
 
@@ -577,6 +581,18 @@
     <action name="action-bank-order-attrs-bank-order-file-format-change"/>
     <action name="action-bank-order-record-update-bankorder-currency"/>
     <action name="action-bank-order-record-update-bank-order-parameter"/>
+  </action-group>
+
+  <action-group name="action-bank-order-group-realize">
+    <action name="action-bank-order-validate-set-bank-order-date"
+      if="accountingTriggerSelect == 4"/>
+    <action name="action-bank-order-method-realize"/>
+  </action-group>
+
+  <action-group name="action-bank-order-group-validate">
+    <action name="action-bank-order-validate-set-bank-order-date"
+      if="accountingTriggerSelect == 3"/>
+    <action name="action-bank-order-method-validate"/>
   </action-group>
 
   <!-- Actions Attributes -->
@@ -777,10 +793,6 @@
     <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="merge"/>
   </action-method>
 
-  <action-method name="action-bank-order-method-print">
-    <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="print"/>
-  </action-method>
-
   <action-method name="action-bank-order-method-fill-signatory-ebics-user"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController"
@@ -919,5 +931,10 @@
     <field name="signatoryEbicsUser" hidden="true"
       if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
   </search-filters>
+
+  <action-validate name="action-bank-order-validate-set-bank-order-date">
+    <alert message="As the date of your order is in the past, it will be updated to today."
+      if="bankOrderDate != null &amp;&amp; bankOrderDate &lt; __config__.date"/>
+  </action-validate>
 
 </object-views>

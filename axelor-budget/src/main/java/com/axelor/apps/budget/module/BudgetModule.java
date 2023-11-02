@@ -19,7 +19,6 @@
 package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
@@ -32,6 +31,8 @@ import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetManagementRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.PurchaseOrderManagementBudgetRepository;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
@@ -44,14 +45,34 @@ import com.axelor.apps.budget.service.BudgetAccountService;
 import com.axelor.apps.budget.service.BudgetAccountServiceImpl;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetDistributionServiceImpl;
+import com.axelor.apps.budget.service.BudgetLevelResetToolService;
+import com.axelor.apps.budget.service.BudgetLevelResetToolServiceImpl;
 import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.apps.budget.service.BudgetLevelServiceImpl;
+import com.axelor.apps.budget.service.BudgetLineResetToolService;
+import com.axelor.apps.budget.service.BudgetLineResetToolServiceImpl;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetLineServiceImpl;
+import com.axelor.apps.budget.service.BudgetResetToolService;
+import com.axelor.apps.budget.service.BudgetResetToolServiceImpl;
+import com.axelor.apps.budget.service.BudgetScenarioLineService;
+import com.axelor.apps.budget.service.BudgetScenarioLineServiceImpl;
+import com.axelor.apps.budget.service.BudgetScenarioService;
+import com.axelor.apps.budget.service.BudgetScenarioServiceImpl;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetServiceImpl;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
+import com.axelor.apps.budget.service.BudgetVersionService;
+import com.axelor.apps.budget.service.BudgetVersionServiceImpl;
+import com.axelor.apps.budget.service.GlobalBudgetGroupService;
+import com.axelor.apps.budget.service.GlobalBudgetGroupServiceImpl;
+import com.axelor.apps.budget.service.GlobalBudgetResetToolService;
+import com.axelor.apps.budget.service.GlobalBudgetResetToolServiceImpl;
+import com.axelor.apps.budget.service.GlobalBudgetService;
+import com.axelor.apps.budget.service.GlobalBudgetServiceImpl;
+import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
+import com.axelor.apps.budget.service.GlobalBudgetWorkflowServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
@@ -65,7 +86,6 @@ import com.axelor.apps.budget.service.move.MoveBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineGroupBudgetServiceImpl;
-import com.axelor.apps.budget.service.move.MoveRecordBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
@@ -108,13 +128,13 @@ public class BudgetModule extends AxelorModule {
     bind(MoveBankPaymentRepository.class).to(MoveBudgetManagementRepository.class);
     bind(BudgetAccountService.class).to(BudgetAccountServiceImpl.class);
     bind(BudgetService.class).to(BudgetServiceImpl.class);
+    bind(GlobalBudgetService.class).to(GlobalBudgetServiceImpl.class);
     bind(BudgetLevelService.class).to(BudgetLevelServiceImpl.class);
     bind(BudgetDistributionService.class).to(BudgetDistributionServiceImpl.class);
 
     bind(MoveLineBudgetService.class).to(MoveLineBudgetServiceImpl.class);
     bind(MoveBudgetService.class).to(MoveBudgetServiceImpl.class);
     bind(MoveRemoveServiceBankPaymentImpl.class).to(MoveRemoveBudgetService.class);
-    bind(MoveGroupServiceImpl.class).to(MoveRecordBudgetServiceImpl.class);
     bind(MoveLineGroupBankPaymentServiceImpl.class).to(MoveLineGroupBudgetServiceImpl.class);
 
     bind(PurchaseOrderLineBudgetService.class).to(PurchaseOrderLineBudgetServiceImpl.class);
@@ -135,5 +155,15 @@ public class BudgetModule extends AxelorModule {
     bind(ProjectStockMoveInvoiceServiceImpl.class).to(StockMoveInvoiceBudgetServiceImpl.class);
     bind(PurchaseOrderInvoiceProjectServiceImpl.class)
         .to(PurchaseOrderInvoiceBudgetServiceImpl.class);
+    bind(BudgetScenarioLineService.class).to(BudgetScenarioLineServiceImpl.class);
+    bind(BudgetVersionService.class).to(BudgetVersionServiceImpl.class);
+    bind(BudgetScenarioService.class).to(BudgetScenarioServiceImpl.class);
+    bind(GlobalBudgetWorkflowService.class).to(GlobalBudgetWorkflowServiceImpl.class);
+    bind(GlobalBudgetGroupService.class).to(GlobalBudgetGroupServiceImpl.class);
+    bind(GlobalBudgetRepository.class).to(GlobalBudgetManagementRepository.class);
+    bind(GlobalBudgetResetToolService.class).to(GlobalBudgetResetToolServiceImpl.class);
+    bind(BudgetLevelResetToolService.class).to(BudgetLevelResetToolServiceImpl.class);
+    bind(BudgetResetToolService.class).to(BudgetResetToolServiceImpl.class);
+    bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
   }
 }

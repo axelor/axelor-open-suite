@@ -56,6 +56,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -65,8 +66,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -1043,7 +1044,7 @@ public class InvoiceController {
   public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
       String idList =
-          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+          StringHelper.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
       response.setView(
           ActionView.define(I18n.get("Customer Invoice Line"))
               .model(InvoiceLine.class.getName())
@@ -1107,7 +1108,7 @@ public class InvoiceController {
   public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
       String idList =
-          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+          StringHelper.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
       response.setView(
           ActionView.define(I18n.get("Supplier Invoice Line"))
               .model(InvoiceLine.class.getName())
@@ -1216,7 +1217,7 @@ public class InvoiceController {
       response.setValue(
           "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
       response.setValue(
-          "financialDiscountDeadLineDate", invoice.getFinancialDiscountDeadlineDate());
+          "financialDiscountDeadlineDate", invoice.getFinancialDiscountDeadlineDate());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -1270,5 +1271,14 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void updateSubrogationPartner(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
   }
 }

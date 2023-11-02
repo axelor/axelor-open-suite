@@ -87,7 +87,7 @@
     onLoad="action-group-product-onload" width="large">
     <toolbar>
       <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-method-show-product-sheet"/>
+        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="action-send-by-email-with-template"/>
     </toolbar>
@@ -109,14 +109,16 @@
       </panel>
       <panel name="actionsPanel" colSpan="8">
         <spacer colSpan="3"/>
-        <panel name="tagsPanel" colSpan="2" if="__config__.app.isApp('sale')"
+        <panel name="tagsPanel" colSpan="3" if="__config__.app.isApp('sale')"
           if-module="axelor-sale">
           <field name="$viewerProductTags" showTitle="false" colSpan="12" readonly="true">
             <viewer depends="configurator">
 							<![CDATA[
-								<h4 style="text-align: right;">
-									<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.configurator != null" x-translate>Customised</span>
-								</h4>
+								<>
+									<Box d="flex" justifyContent="center">
+										{configurator && <Badge bg="danger">{_t('Customised')}</Badge>}
+									</Box>
+								</>
 							]]>
             </viewer>
           </field>
@@ -131,7 +133,7 @@
             onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
           <button name="$previewBtn" title="See stock details" colSpan="3"
             onClick="action-stock-location-line-view-for-a-product-from-product-view"
-            if-module="axelor-supplychain" widget="info-button" icon="fa-cubes"/>
+            if="__config__.app.isApp('supplychain')" widget="info-button" icon="fa-cubes"/>
           <spacer colSpan="9"/>
           <button name="$totalVariantsBtn" title="Total variants" showIf="isModel"
             colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants"
@@ -143,8 +145,10 @@
         <field name="picture" showTitle="false" colSpan="12" widget="Image">
           <viewer>
 					<![CDATA[
-			    		<img ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          				<img ng-show="!record.picture" src="img/product-default.png" />
+						<>
+							{picture && <Image src={$image('picture', 'content')}></Image>}
+							{!picture && <Image src="img/product-default.png"></Image>}
+						</>
 					]]>
           </viewer>
         </field>
@@ -216,7 +220,7 @@
             hideIf="isShippingCostsProduct || !sellable"/>
           <panel name="unitsPanel" title="Units" colSpan="12">
             <field name="unit" canEdit="false" colSpan="6" form-view="unit-form"
-              grid-view="unit-grid"/>
+              grid-view="unit-grid" onChange="action-product-method-update-cost-price"/>
             <button name="updateUnitBtn" title="Update stock location" colSpan="6"
               showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
               onClick="save,action-product-method-update-stock-location" if-module="axelor-stock"
@@ -227,7 +231,8 @@
             <spacer colSpan="6"/>
             <field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6"
               form-view="unit-form" grid-view="unit-grid"
-              if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>
+              if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"
+              onChange="action-product-method-update-cost-price"/>
           </panel>
           <panel name="configuratorPanel" title="Configurator" colSpan="12"
             showIf="configurator" if-module="axelor-sale"
@@ -365,7 +370,7 @@
         <field name="costSheetGroup" showIf="productSubTypeSelect == 3"
           if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
         <field name="economicManufOrderQty"
-          showIf="productSubTypeSelect == 3 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
+          showIf="productSubTypeSelect == 1 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
         <panel name="productionPanel" colSpan="12"
           showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
           <panel-include view="product-production-form"/>
@@ -471,7 +476,8 @@
       <panel name="taskPanel" title="Task templates"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct"
         if-module="axelor-business-project">
-        <field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
+        <field name="taskTemplateSet" widget="TagSelect" colSpan="12"
+          domain="self.parentTaskTemplate = null or self.parentTaskTemplate in :taskTemplateSet"/>
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-stock"
         if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged"
@@ -538,29 +544,29 @@
     </toolbar>
     <field name="picture"/>
     <field name="fullName"/>
-    <field name="salePrice" x-scale="2"/>
+    <field name="salePrice" x-scale="2" x-currency="saleCurrency.symbol"/>
     <field name="saleCurrency.symbol"/>
     <field name="productFamily"/>
     <field name="productCategory"/>
     <field name="internalDescription"/>
     <field name="configurator.id"/>
     <template><![CDATA[
-		    <div class="span12"><strong>{{$fmt('fullName')}}</strong></div>
-			<div>
-			  <div class="span4 card-image" style="width: 128px; height: 64px;">
-			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
-			    <img ng-show="!picture" src="img/product-default.png" />
-			  </div>
-			  <div class="span8" style="width: 60%;">
-			    <span>{{$fmt('salePrice') | currency: saleCurrency.symbol}}<br/>
-			    {{productFamily.name}}<br/>
-			    {{productCategory.name}}</span>
-			  </div>
-			</div>
-			<div class="span12" ng-bind-html="internalDescription"></div>
-			<div class="span12" style="margin-left:0px;">
-	  			<span class="label label-important" ng-show="record.configurator.id" x-translate>Customised</span>
-			</div>
+		<>
+			<strong>{$fmt('fullName')}</strong>
+			<Box d="grid" gridTemplateColumns="40% 60%">
+				<Box style={{ width: 128, height: 64 }}>
+					{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+					{!picture && <Image src="img/product-default.png"></Image>}
+				</Box>
+				<Box>
+					{$fmt('salePrice')} <Box/>
+					{productFamily.name} <Box/>
+					{productCategory.name}
+					</Box>
+				</Box>
+			<Box dangerouslySetInnerHTML={{__html : internalDescription}}></Box>
+			{configurator?.id && <Badge bg="danger">{_t('Customised')}</Badge>}
+		</>
 		]]>
     </template>
   </cards>
@@ -639,8 +645,13 @@
     <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
 
+
+  <action-method name="action-product-method-update-cost-price">
+    <call class="com.axelor.apps.base.web.ProductController" method="updateCostPrice"/>
+  </action-method>
+
   <action-group name="action-product-group-cost-type-select-onchange">
-    <action name="action-product-attrs-update-cost-price"/>
+    <action name="action-product-method-update-cost-price"/>
     <action name="action-product-record-compute-sale-price"/>
   </action-group>
 
@@ -707,18 +718,6 @@
       if="__config__.app.isApp('production')"/>
   </action-attrs>
 
-  <action-attrs name="action-product-attrs-update-cost-price">
-    <attribute for="costPrice" name="value"
-      expr="eval: shippingCoef ? lastPurchasePrice.multiply(shippingCoef) : lastPurchasePrice"
-      if="costTypeSelect == 2 &amp;&amp; lastPurchasePrice &gt; 0"/>
-    <attribute for="costPrice" name="value"
-      expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice"
-      if="costTypeSelect == 2  &amp;&amp; lastPurchasePrice &lt;= 0"/>
-    <attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
-    <attribute for="costPrice" name="value" expr="eval: lastProductionPrice"
-      if="costTypeSelect == 4"/>
-  </action-attrs>
-
   <action-attrs name="action-product-attrs-cost-price-variant">
     <attribute for="costPrice" name="readonly" expr="eval: true"
       if="parentProduct?.manageVariantPrice"/>
@@ -744,8 +743,8 @@
     <field name="salePrice" expr="0"/>
     <field name="purchasePrice" expr="0"/>
     <field name="lastPurchasePrice" expr="0"/>
-    <field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
-    <field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
+    <field name="saleCurrency" expr="eval: __user__?.activeCompany?.currency"/>
+    <field name="purchaseCurrency" expr="eval: __user__?.activeCompany?.currency"/>
     <field name="managPriceCoef" expr="1"/>
     <field name="isModel" expr="eval: _isModel"/>
     <field name="isShippingCostsProduct" expr="eval: _isShippingCostsProduct"/>
@@ -801,9 +800,10 @@
     <call class="com.axelor.apps.base.web.ProductController" method="printProductCatalog"/>
   </action-method>
 
-  <action-method name="action-product-method-show-product-sheet">
-    <call class="com.axelor.apps.base.web.ProductController" method="printProductSheet"/>
-  </action-method>
+  <action-validate name="action-product-validate-user-active-company">
+    <error message="No active company for this user, please define an active company."
+      if="!__user__.activeCompany"/>
+  </action-validate>
 
   <action-method name="action-product-method-generate-product-variant">
     <call class="com.axelor.apps.base.web.ProductController" method="generateProductVariants"/>

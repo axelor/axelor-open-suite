@@ -1,6 +1,8 @@
 def libs = ext.libs = [:]
 
-libs.axelor_studio = 'com.axelor.addons:axelor-studio:1.2.1'
+libs.axelor_studio = 'com.axelor.addons:axelor-studio:2.0.0-20231018.190419-27'
+libs.axelor_message = 'com.axelor.addons:axelor-message:2.0.0-20231018.190603-23'
+libs.axelor_utils = 'com.axelor.addons:axelor-utils:2.0.0-20231018.190607-32'
 
 libs.bcpkix_jdk15on = 'org.bouncycastle:bcpkix-jdk15on:1.70'
 libs.bcprov_jdk15on = 'org.bouncycastle:bcprov-jdk15on:1.70'
@@ -17,9 +19,7 @@ libs.commons_math3 = 'org.apache.commons:commons-math3:3.6.1'
 libs.commons_validator = 'commons-validator:commons-validator:1.7'
 
 libs.groovy = 'org.codehaus.groovy:groovy-all:3.0.13'
-libs.itextpdf = 'com.itextpdf:itextpdf:5.5.13.3'
-libs.itext7_core = 'com.itextpdf:itext7-core:7.2.3'
-libs.html2pdf = 'com.itextpdf:html2pdf:4.0.3'
+libs.pdfbox = 'org.apache.pdfbox:pdfbox:2.0.26'
 
 libs.iban4j = 'org.iban4j:iban4j:3.2.3-RELEASE'
 
@@ -72,3 +72,6 @@ libs.faker = 'net.datafaker:datafaker:1.6.0'
 libs.logback = 'ch.qos.logback:logback-classic:1.4.5'
 
 libs.swagger_jaxrs = 'io.swagger.core.v3:swagger-jaxrs2:2.2.8'
+
+libs.boxable = 'com.github.dhorions:boxable:1.7.0'
+libs.flyingsaucer_openpdf = 'org.xhtmlrenderer:flying-saucer-pdf-openpdf:9.2.2'

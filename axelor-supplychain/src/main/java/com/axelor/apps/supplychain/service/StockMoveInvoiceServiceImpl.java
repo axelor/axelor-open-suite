@@ -30,6 +30,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -42,14 +43,13 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -75,7 +75,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected InvoiceLineRepository invoiceLineRepository;
   protected SupplyChainConfigService supplyChainConfigService;
-  protected AppSupplychainService appSupplychainService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -88,7 +88,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppSupplychainService appSupplychainService) {
+      AppBaseService appBaseService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -98,7 +98,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
-    this.appSupplychainService = appSupplychainService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -317,7 +317,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
     // do not use invoiced partner if the option is disabled
-    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
       stockMove.setInvoicedPartner(null);
     }
 
@@ -367,7 +367,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice) {
 
     invoice.setInternalReference(
-        StringTool.cutTooLongString(
+        StringHelper.cutTooLongString(
             stockMove.getStockMoveSeq() + ":" + invoice.getInternalReference()));
 
     return invoice;

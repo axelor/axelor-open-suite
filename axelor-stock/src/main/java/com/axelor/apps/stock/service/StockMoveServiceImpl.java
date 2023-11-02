@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.Address;
@@ -35,8 +34,6 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -51,7 +48,6 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
@@ -808,13 +804,25 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     copyStockMoveLines(newStockMove, stockMoveLines, split);
 
-    if (ObjectUtils.isEmpty(newStockMove.getStockMoveLineList())) {
+    List<StockMoveLine> newStockMoveLineList = newStockMove.getStockMoveLineList();
+
+    if (ObjectUtils.isEmpty(newStockMoveLineList)) {
       return Optional.empty();
     }
+
+    reverseStockMoveLineStockLocation(stockMove, newStockMoveLineList);
 
     fillNewStockMoveFields(newStockMove, stockMove);
 
     return Optional.of(stockMoveRepo.save(newStockMove));
+  }
+
+  protected void reverseStockMoveLineStockLocation(
+      StockMove stockMove, List<StockMoveLine> newStockMoveLineList) {
+    for (StockMoveLine stockMoveLine : newStockMoveLineList) {
+      stockMoveLine.setFromStockLocation(stockMove.getToStockLocation());
+      stockMoveLine.setToStockLocation(stockMove.getFromStockLocation());
+    }
   }
 
   protected void copyStockMoveLines(
@@ -1240,78 +1248,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  public String printStockMove(
-      StockMove stockMove, List<Integer> lstSelectedMove, String reportType)
-      throws AxelorException {
-    List<Long> selectedStockMoveListId;
-    if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
-      selectedStockMoveListId =
-          lstSelectedMove.stream()
-              .map(integer -> Long.parseLong(integer.toString()))
-              .collect(Collectors.toList());
-      stockMove = stockMoveRepo.find(selectedStockMoveListId.get(0));
-    } else if (stockMove != null && stockMove.getId() != null) {
-      selectedStockMoveListId = new ArrayList<>();
-      selectedStockMoveListId.add(stockMove.getId());
-    } else {
-      throw new AxelorException(
-          StockMove.class,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(StockExceptionMessage.STOCK_MOVE_10));
-    }
-
-    List<StockMove> stockMoveList =
-        stockMoveRepo
-            .all()
-            .filter(
-                "self.id IN ("
-                    + selectedStockMoveListId.stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining(","))
-                    + ") AND self.printingSettings IS NULL")
-            .fetch();
-    if (!stockMoveList.isEmpty()) {
-      String exceptionMessage =
-          String.format(
-              I18n.get(StockExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
-              "<ul>"
-                  + stockMoveList.stream()
-                      .map(StockMove::getStockMoveSeq)
-                      .collect(Collectors.joining("</li><li>", "<li>", "</li>"))
-                  + "<ul>");
-      throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, exceptionMessage);
-    }
-
-    String stockMoveIds =
-        selectedStockMoveListId.stream().map(Object::toString).collect(Collectors.joining(","));
-
-    String title = I18n.get("Stock move");
-    if (stockMove.getStockMoveSeq() != null) {
-      title =
-          selectedStockMoveListId.size() == 1
-              ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq()
-              : I18n.get("StockMove(s)");
-    }
-
-    String locale =
-        reportType.equals(IReport.PICKING_STOCK_MOVE)
-            ? Beans.get(UserService.class).getLanguage()
-            : ReportSettings.getPrintingLocale(stockMove.getPartner());
-
-    ReportSettings reportSettings =
-        ReportFactory.createReport(reportType, title + "-${date}")
-            .addParam("StockMoveId", stockMoveIds)
-            .addParam("Timezone", null)
-            .addParam("Locale", locale);
-
-    if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {
-      reportSettings.toAttach(stockMove);
-    }
-
-    return reportSettings.generate().getFileLink();
-  }
-
-  @Override
   @Transactional
   public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
     stockMove.setFullySpreadOverLogisticalFormsFlag(
@@ -1442,7 +1378,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (fromStockLocation == null) {
-        fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          fromStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        } else {
+          fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        }
       }
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
       fromStockLocation =
@@ -1450,7 +1390,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (fromStockLocation == null) {
-        fromStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          fromStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        } else {
+          fromStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        }
       }
     }
     return fromStockLocation;
@@ -1471,7 +1415,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (toStockLocation == null) {
-        toStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          toStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+        } else {
+          toStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+        }
       }
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
       toStockLocation =
@@ -1479,7 +1427,11 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getPartner(), company, null);
 
       if (toStockLocation == null) {
-        toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        if (stockMove.getIsReversion()) {
+          toStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+        } else {
+          toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+        }
       }
     }
     return toStockLocation;
@@ -1512,5 +1464,17 @@ public class StockMoveServiceImpl implements StockMoveService {
       return;
     }
     stockMoveLineList.forEach(line -> line.setToStockLocation(stockLocation));
+  }
+
+  @Override
+  public void checkPrintingSettings(StockMove stockMove) throws AxelorException {
+    if (stockMove.getPrintingSettings() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          String.format(
+              I18n.get(StockExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
+              stockMove.getStockMoveSeq()),
+          stockMove);
+    }
   }
 }

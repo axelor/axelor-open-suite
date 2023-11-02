@@ -112,43 +112,41 @@
       <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
         showTitle="false">
         <viewer depends="$partnerLanguage">
-          <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
-              ]]>
+          <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
         </viewer>
       </field>
       <field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line"/>
       <field name="availableStatus" readonly="true" hidden="true" colSpan="2">
         <viewer><![CDATA[
-					<h4>
-						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.$availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
-						<span class="label label-info" style="font-weight:bold" ng-show="($number(record.$availableQtyForProduct) >= $number(record.realQty)) && record.product" x-translate>Av. for product</span>
-						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product" x-translate>Missing</span>
-						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && !record.product.trackingNumberConfiguration">{{record.$availableQty - record.realQty}}</span>
-						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.$availableQtyForProduct - record.realQty}}</span>
-					</h4>
+					<>
+						<Box d="flex" gap="4">
+							{($availableQty >= realQty) && product && <Badge bg="success">{_t('Available')}</Badge>}
+							{($availableQtyForProduct >= realQty) && product && <Badge bg="info">{_t('Av. for product')}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && <Badge bg="danger">{_t('Missing')}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && !product?.trackingNumberConfiguration && <Badge bg="danger">{$availableQty - realQty}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && product?.trackingNumberConfiguration && <Badge bg="danger">{$availableQtyForProduct - realQty}</Badge>}
+						</Box>
+					</>
 				]]></viewer>
       </field>
       <field name="$invoiced" colSpan="2" showTitle="false" readonly="true"
         showIf="id &amp;&amp; stockMove.statusSelect == 3  &amp;&amp; stockMove.typeSelect != 1"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
         <viewer depends="qtyInvoiced,realQty"><![CDATA[
-                        <h4>
-                            <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
-                            <span class="label label-warning" ng-show="record.qtyInvoiced > 0 && $number(record.qtyInvoiced) < $number(record.realQty)" x-translate>Partially invoiced</span>
-                            <span class="label label-important" ng-show="record.qtyInvoiced == 0" x-translate>Not invoiced</span>
-                        </h4>
+						<>
+							{qtyInvoiced > 0 && (qtyInvoiced == realQty) && <Badge bg="success">{_t('Invoiced')}</Badge>}
+							{qtyInvoiced > 0 && (qtyInvoiced < realQty) && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+							{qtyInvoiced == 0 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+						</>
                 ]]>
         </viewer>
       </field>
       <field name="isQtyRequested" showTitle="false" colSpan="2" readonly="true"
         showIf="isQtyRequested &amp;&amp; product &amp;&amp; product.productTypeSelect != 'service'"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-        <viewer><![CDATA[
-						<h4>
-							<span class="label label-success" ng-show="record.isQtyRequested" x-translate>Reservation requested</span>
-						</h4>
-					]]></viewer>
+        <viewer>
+          <![CDATA[<>{isQtyRequested && <Badge bg="success">{_t('Reservation requested')}</Badge>}</>]]>
+        </viewer>
       </field>
       <field name="fromStockLocation"
         onSelect="action-stock-move-line-method-compute-from-stock-location-domain"
@@ -422,24 +420,26 @@
       <field name="availableStatus" readonly="true"
         showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="3">
         <viewer><![CDATA[
-					<h4>
-						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.$availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
-						<span class="label label-info" style="font-weight:bold" ng-show="($number(record.$availableQtyForProduct) >= $number(record.realQty)) && record.product" x-translate>Av. for product</span>
-						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product" x-translate>Missing</span>
-						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && !record.product.trackingNumberConfiguration">{{record.$availableQty - record.realQty}}</span>
-						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.$availableQtyForProduct - record.realQty}}</span>
-					</h4>
+					<>
+						<Box d="flex" gap="4">
+							{($availableQty >= realQty) && product && <Badge bg="success">{_t('Available')}</Badge>}
+							{($availableQtyForProduct >= realQty) && product && <Badge bg="info">{_t('Av. for product')}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && <Badge bg="danger">{_t('Missing')}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && !product?.trackingNumberConfiguration && <Badge bg="danger">{$availableQty - realQty}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && product?.trackingNumberConfiguration && <Badge bg="danger">{$availableQtyForProduct - realQty}</Badge>}
+						</Box>
+					</>
 				]]></viewer>
       </field>
       <field name="$invoiced" showTitle="false" readonly="true"
         showIf="id  &amp;&amp; stockMove.statusSelect == 3" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')" colSpan="3">
         <viewer depends="qtyInvoiced,realQty"><![CDATA[
-                        <h4>
-                            <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
-                            <span class="label label-warning" ng-show="record.qtyInvoiced > 0 && $number(record.qtyInvoiced) < $number(record.realQty)" x-translate>Partially invoiced</span>
-                            <span class="label label-important" ng-show="record.qtyInvoiced == 0" x-translate>Not invoiced</span>
-                        </h4>
+						<>
+							{qtyInvoiced > 0 && (qtyInvoiced == realQty) && <Badge bg="success">{_t('Invoiced')}</Badge>}
+							{qtyInvoiced > 0 && (qtyInvoiced < realQty) && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+							{qtyInvoiced == 0 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+						</>
                 ]]>
         </viewer>
       </field>
@@ -763,28 +763,34 @@
   <action-attrs name="action-stock-move-line-attrs-tracking-number-domain">
     <attribute name="domain" for="trackingNumber"
       expr="eval: &quot;
-	                self.product = :product AND
-	                (self in
-	                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-	                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
-	                    WHERE sl.id = ${__parent__.fromStockLocation?.id}) OR
-                     self not in
-                        (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-                        join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation))
-	                &quot;"
+              self.product = :product AND (
+               EXISTS (
+                  SELECT sll.id FROM StockLocationLine sll
+                    WHERE sll.trackingNumber.id = self.id
+                    AND sll.detailsStockLocation.id = ${__parent__.fromStockLocation?.id}
+               )
+               OR NOT EXISTS (
+                 SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
+                   WHERE stockLocationLine.trackingNumber.id = self.id
+               )
+             )
+          &quot;"
       if="__parent__"/>
 
     <attribute name="domain" for="trackingNumber"
       expr="eval: &quot;
-	                self.product = :product AND
-	                (self in
-	                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-	                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
-	                    WHERE sl.id = ${__self__.fromStockLocation?.id}) OR
-                     self not in
-                        (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-                        join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation))
-	                &quot;"
+              self.product = :product AND (
+               EXISTS (
+                  SELECT sll.id FROM StockLocationLine sll
+                    WHERE sll.trackingNumber.id = self.id
+                    AND sll.detailsStockLocation.id = ${stockMove.fromStockLocation?.id}
+               )
+               OR NOT EXISTS (
+                 SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
+                   WHERE stockLocationLine.trackingNumber.id = self.id
+               )
+             )
+          &quot;"
       if="!__parent__ &amp;&amp; stockMove != null"/>
   </action-attrs>
 

@@ -56,7 +56,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -78,7 +78,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
   protected UnitConversionService unitConversionService;
   protected StockMoveLineRepository stockMoveLineRepository;
-  protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
+  protected PurchaseOrderLineServiceSupplyChainImpl purchaseOrderLineServiceSupplychainImpl;
   protected AppBaseService appBaseService;
   protected ShippingCoefService shippingCoefService;
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
@@ -91,7 +91,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   public PurchaseOrderStockServiceImpl(
       UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl,
+      PurchaseOrderLineServiceSupplyChainImpl purchaseOrderLineServiceSupplychainImpl,
       AppBaseService appBaseService,
       ShippingCoefService shippingCoefService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
@@ -613,7 +613,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             .getAppSupplychain()
             .getpOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
-      statusList = StringTool.getIntegerList(status);
+      statusList = StringHelper.getIntegerList(status);
     }
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
@@ -636,7 +636,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.purchaseOrder.stockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
+                  + StringHelper.getIdListString(stockLocationList)
                   + ") ";
         }
       }

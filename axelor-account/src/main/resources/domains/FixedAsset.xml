@@ -31,7 +31,7 @@
       selection="account.fixed.type.category.computation.method.select"/>
     <decimal name="degressiveCoef" title="Degressive coef"/>
     <integer name="periodicityInMonth" title="Periodicity in month" default="12"/>
-    <integer name="numberOfDepreciation" title="Number of depreciation" default="1"/>
+    <integer name="numberOfDepreciation" title="Number of depreciation" default="1" min="0"/>
     <integer name="durationInMonth" title="Duration in month"/>
     <integer name="nbrOfPastDepreciations" title="Nbr of past depreciations"/>
     <decimal name="alreadyDepreciatedAmount" title="Already Depreciated Amount"/>
@@ -74,7 +74,6 @@
 
     <date name="firstServiceDate" title="First Service Date"/>
     <date name="failoverDate" title="Failover Date"/>
-    <decimal name="pastDepreciation" title="Past Depreciation"/>
     <decimal name="accountingValue" title="Accounting value"/>
     <decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
 
@@ -84,7 +83,7 @@
     <string name="fiscalComputationMethodSelect" title="Fiscal Computation Method Select"
       selection="account.fixed.type.category.fiscal.computation.method.select"/>
     <decimal name="fiscalDegressiveCoef" title="Fiscal Degressive Coef"/>
-    <integer name="fiscalNumberOfDepreciation" title="Fiscal Number Of Depreciation"/>
+    <integer name="fiscalNumberOfDepreciation" title="Fiscal Number Of Depreciation" min="0"/>
     <integer name="fiscalPeriodicityTypeSelect" title="Fiscal Periodicity Type"
       selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
     <integer name="fiscalPeriodicityInMonth" title="Fiscal Periodicity In Month"
@@ -105,7 +104,7 @@
     <string name="ifrsComputationMethodSelect" title="IFRS Computation Method Select"
       selection="account.fixed.type.category.fiscal.computation.method.select"/>
     <decimal name="ifrsDegressiveCoef" title="IFRS Degressive Coef"/>
-    <integer name="ifrsNumberOfDepreciation" title="IFRS Number Of Depreciation"/>
+    <integer name="ifrsNumberOfDepreciation" title="IFRS Number Of Depreciation" min="0"/>
     <integer name="ifrsPeriodicityTypeSelect" title="IFRS Periodicity Type"
       selection="account.fixed.asset.fiscal.periodicity.type" default="12"/>
     <integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month" default="12"/>

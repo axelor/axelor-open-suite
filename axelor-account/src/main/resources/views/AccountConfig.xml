@@ -15,24 +15,79 @@
     width="large">
 
     <panel name="mainPanel">
-      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
+      <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
         grid-view="company-grid"/>
-      <spacer/>
-      <field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form"
-        grid-view="account-chart-grid" canNew="true" colSpan="3"/>
-      <field name="hasAccountCodeFixedNbrChar" colSpan="3" readonlyIf="hasChartImported"/>
-      <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
-        readonlyIf="hasChartImported"/>
-      <button name="installTemplateBtn" title="Import a chart"
-        readonlyIf="hasChartImported || company == null || accountChart == null || (hasAccountCodeFixedNbrChar &amp;&amp; (accountCodeNbrCharSelect == 0 || accountCodeNbrCharSelect == null))"
-        icon="fa-import" onClick="action-group-account-config-installchart-click"/>
+      <spacer colSpan="12"/>
+      <panel name="accountConfigInitPanel" title="Accounting configurations initialization"
+        colSpan="12">
+        <panel name="fiscalYearAndPeriodGenerationPanel" hidden="true"
+          hideIf="$existingFiscalYear" colSpan="12">
+          <field name="$noFiscalYearLabel" showTitle="false" readonly="true" colSpan="12">
+            <viewer>
+              <![CDATA[<><Badge bg="info">{_t('There is no fiscal year and periods defined. Please enter below the fiscal year dates (included-included) and the periods duration and click on the button \'Generate\' to create them automatically.')}</Badge></>]]>
+            </viewer>
+          </field>
+          <field name="$generateFiscalYear"
+            onChange="action-account-config-attrs-reset-is-import-account-chart-only"
+            title="Generate a fiscal year and associated periods" colSpan="3" type="boolean"/>
+          <field name="$fiscalYearFromDate" title="Fiscal year start date"
+            showIf="$generateFiscalYear" colSpan="3" type="date" requiredIf="$generateFiscalYear"/>
+          <field name="$fiscalYearToDate" title="End date" showIf="$generateFiscalYear"
+            colSpan="3" type="date" requiredIf="$generateFiscalYear"/>
+          <field name="$accountingPeriodDuration" title="Period duration"
+            showIf="$generateFiscalYear" colSpan="3" type="integer" requiredIf="$generateFiscalYear"
+            selection="base.year.period.duration.select"/>
+          <button name="generateFiscalYearBtn" title="Generate fiscal year / periods"
+            hidden="true"
+            showIf="(!accountingConfigTemplate || $existingChartAccount) &amp;&amp; $generateFiscalYear &amp;&amp; !isImportAccountChartOnly"
+            colSpan="3"
+            onClick="save,action-account-config-method-generate-fiscal-year-and-period-and-reload"/>
+        </panel>
+        <field name="$noAccountChartLabel" showTitle="false" hidden="true" readonly="true"
+          hideIf="$existingChartAccount || hasChartImported" colSpan="12">
+          <viewer>
+            <![CDATA[<><Badge bg="info">{_t('There is no account chart defined. Please define a chart from the account configuration menu or import a default one using the account charts available below and click on the button \'Import\'.')}</Badge></>]]>
+          </viewer>
+        </field>
+        <field name="accountingConfigTemplate" readonlyIf="hasChartImported" colSpan="3"
+          canNew="true" form-view="accounting-config-template-form"
+          grid-view="accounting-config-template-grid"/>
+        <field name="isImportAccountChartOnly"
+          readonlyIf="!accountingConfigTemplate || hasChartImported || $existingChartAccount"
+          colSpan="3" onChange="action-account-config-attrs-reset-generate-fiscal-year"/>
+        <field name="hasAccountCodeFixedNbrChar"
+          readonlyIf="!accountingConfigTemplate || hasChartImported" colSpan="3"/>
+        <field name="accountCodeNbrCharSelect" showIf="hasAccountCodeFixedNbrChar"
+          readonlyIf="hasChartImported" requiredIf="hasAccountCodeFixedNbrChar" colSpan="3"/>
+        <button name="installTemplateBtn" title="Import the chart" hidden="true"
+          showIf="(accountingConfigTemplate &amp;&amp; !$existingChartAccount &amp;&amp; !hasChartImported) &amp;&amp; ($existingFiscalYear || !$generateFiscalYear) &amp;&amp; isImportAccountChartOnly"
+          readonlyIf="company == null || accountingConfigTemplate == null || (hasAccountCodeFixedNbrChar &amp;&amp; (accountCodeNbrCharSelect == 0 || accountCodeNbrCharSelect == null)) || hasChartImported"
+          colSpan="3" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
+        <spacer colSpan="12"/>
 
-      <field name="hasChartImported"/>
-      <field name="generateMoveForAdvancePayment" colSpan="3"
-        if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
-      <field name="isActivateSimulatedMove" colSpan="3"/>
-      <field name="accountingDaybook" colSpan="3"
-        onChange="action-account-config-attrs-accounting-daybook-onchange"/>
+        <panel name="installTemplatePanel" hidden="true" showIf="accountingConfigTemplate"
+          colSpan="12">
+          <button name="importAccountConfigBtn"
+            title="Import/Generate accounting configurations" colSpan="3"
+            onClick="action-account-config-group-import-account-config"
+            readonlyIf="(!((accountingConfigTemplate || $existingChartAccount) &amp;&amp; ($generateFiscalYear || $existingFiscalYear)) || $existingFiscalYear || $existingChartAccount) &amp;&amp; (hasAccountingConfigTemplateImported || isImportAccountChartOnly)"/>
+          <field name="hasChartImported" colSpan="3"
+            readonlyIf="!hasChartImported || hasAccountingConfigTemplateImported"
+            onChange="action-account-config-attrs-reset-is-import-account-chart-only"/>
+          <field name="hasAccountingConfigTemplateImported" colSpan="3"
+            readonlyIf="!hasAccountingConfigTemplateImported"/>
+          <spacer colSpan="3"/>
+        </panel>
+        <panel name="moveConfigPanel" title="Accounting entries status" colSpan="12">
+          <field name="isActivateSimulatedMove" colSpan="3"/>
+          <field name="accountingDaybook" colSpan="3"
+            onChange="action-account-config-attrs-accounting-daybook-onchange"/>
+          <field if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
+            name="generateMoveForAdvancePayment" colSpan="3"/>
+        </panel>
+      </panel>
+      <field name="$existingFiscalYear" hidden="true"/>
+      <field name="$existingChartAccount" hidden="true"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -456,7 +511,11 @@
           orderBy="sequence"/>
         <field name="$isCanNew" type="boolean" hidden="true"/>
       </panel>
-
+      <panel name="printingsPanel" title="Printings" colSpan="12">
+        <field name="invoiceBirtTemplate"/>
+        <field name="purchaseInvoicesDetailsBirtTemplate"/>
+        <field name="chequeDepositSlipBirtTemplate"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -481,7 +540,8 @@
   </action-group>
 
   <action-method name="action-method-account-config-install-chart">
-    <call class="com.axelor.apps.account.web.AccountChartController" method="installChart"/>
+    <call class="com.axelor.apps.account.web.AccountingConfigTemplateController"
+      method="installChart"/>
   </action-method>
 
   <action-view name="action-company-view-account-config"
@@ -508,11 +568,13 @@
     <action name="action-account-config-record-default"/>
     <action name="action-attrs-account-config-set-is-can-new"/>
     <action name="action-account-config-attrs-analytic-distribution-type-select"/>
+    <action name="action-account-config-attrs-show-fiscal-year-generation-panel"/>
   </action-group>
 
   <action-group name="action-account-config-group-onload">
     <action name="action-attrs-account-config-set-is-can-new"/>
     <action name="action-account-config-attrs-analytic-distribution-type-select"/>
+    <action name="action-account-config-attrs-show-fiscal-year-generation-panel"/>
   </action-group>
 
   <action-validate name="action-account-config-validate-is-activate-simulated-move"
@@ -520,6 +582,14 @@
     <alert
       message="By deactivating simulated moves, all moves (including move lines) in this status will be deleted for the company ${company.name}. Do you wish to continue ?"
       if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
+  </action-validate>
+
+  <action-validate
+    name="action-account-config-validate-is-account-chart-already-imported"
+    model="com.axelor.apps.account.db.AccountConfig">
+    <alert
+      if="(hasChartImported || existingChartAccount) &amp;&amp; !hasAccountingConfigTemplateImported"
+      message="The chart of account being already existing or imported for this company, by importing the configuration template, an update of the financial accounts of the chart of accounts will be executed and/or new financial accounts may be possibly created. Do you wish to proceed ?"/>
   </action-validate>
 
   <action-method name="action-account-config-method-deactivate-simulated-moves">
@@ -548,5 +618,41 @@
     <attribute for="analyticDistributionTypeSelect" name="selection-in"
       expr="eval: !__config__.app.getApp('base')?.getEnableTradingNamesManagement() ? [1,2,3] : [1,2,3,4]"/>
   </action-attrs>
+
+  <action-attrs name="action-account-config-attrs-show-fiscal-year-generation-panel">
+    <attribute for="$existingFiscalYear" name="value"
+      expr="eval: __repo__(Year).all().filter('self.company = ?1 AND self.typeSelect = ?2', company,__repo__(Year).TYPE_FISCAL).count() > 0"/>
+    <attribute for="$existingChartAccount" name="value"
+      expr="eval: __repo__(Account).all().filter('self.company = ?1 AND self.parentAccount != null', company).count() > 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-account-config-attrs-reset-is-import-account-chart-only">
+    <attribute for="isImportAccountChartOnly" name="value"
+      if="generateFiscalYear || !hasChartImported" expr="eval: false"/>
+  </action-attrs>
+
+  <action-attrs name="action-account-config-attrs-reset-generate-fiscal-year">
+    <attribute for="$generateFiscalYear" name="value" if="isImportAccountChartOnly"
+      expr="eval: false"/>
+  </action-attrs>
+
+  <action-method
+    name="action-account-config-method-generate-fiscal-year-and-period-and-reload">
+    <call class="com.axelor.apps.account.web.AccountingConfigTemplateController"
+      method="generateFiscalYearAndPeriodAndReload"/>
+  </action-method>
+
+  <action-method
+    name="action-account-config-method-install-chart-and-generate-fiscal-year-and-period">
+    <call class="com.axelor.apps.account.web.AccountingConfigTemplateController"
+      method="installChartGenerateFiscalYear"/>
+  </action-method>
+
+  <action-group name="action-account-config-group-import-account-config">
+    <action name="save"/>
+    <action name="action-account-config-validate-is-account-chart-already-imported"/>
+    <action
+      name="action-account-config-method-install-chart-and-generate-fiscal-year-and-period"/>
+  </action-group>
 
 </object-views>

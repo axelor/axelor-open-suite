@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ManufOrder;
@@ -48,7 +49,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProduction;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -62,6 +63,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +76,6 @@ public class CostSheetServiceImpl implements CostSheetService {
   protected BillOfMaterialRepository billOfMaterialRepo;
   protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
-
   protected Unit hourUnit;
   protected Unit cycleUnit;
   protected boolean manageResidualProductOnBom;
@@ -303,9 +304,9 @@ public class CostSheetServiceImpl implements CostSheetService {
       UnitCostCalculation unitCostCalculation)
       throws AxelorException {
 
-    if (billOfMaterial.getBillOfMaterialSet() != null) {
+    if (billOfMaterial.getBillOfMaterialLineList() != null) {
 
-      for (BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
         Product product = billOfMaterialLine.getProduct();
 
@@ -322,7 +323,10 @@ public class CostSheetServiceImpl implements CostSheetService {
                   origin,
                   unitCostCalculation);
 
-          BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
+          BigDecimal wasteRate =
+              Optional.ofNullable(billOfMaterialLine.getBillOfMaterial())
+                  .map(BillOfMaterial::getWasteRate)
+                  .orElse(null);
 
           if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
             costSheetLineService.createConsumedProductWasteCostSheetLine(
@@ -337,9 +341,14 @@ public class CostSheetServiceImpl implements CostSheetService {
                 unitCostCalculation);
           }
 
-          if (billOfMaterialLine.getDefineSubBillOfMaterial()) {
+          if (billOfMaterialLine.getBillOfMaterial() != null) {
             this._computeCostPrice(
-                company, billOfMaterialLine, bomLevel, costSheetLine, origin, unitCostCalculation);
+                company,
+                billOfMaterialLine.getBillOfMaterial(),
+                bomLevel,
+                costSheetLine,
+                origin,
+                unitCostCalculation);
           }
         }
       }
@@ -367,6 +376,7 @@ public class CostSheetServiceImpl implements CostSheetService {
               || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
             this._computeHumanResourceCost(
+                prodProcessLine,
                 workCenter,
                 producedQty,
                 prodProcessLine.getHumanDuration(),
@@ -387,6 +397,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   protected void _computeHumanResourceCost(
+      ProdProcessLine prodProcessLine,
       WorkCenter workCenter,
       BigDecimal producedQty,
       Long humanDuration,
@@ -396,11 +407,16 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine)
       throws AxelorException {
 
-    int hrCostType = workCenter.getHrCostTypeSelect();
+    int hrCostType =
+        appProductionService.getIsCostPerProcessLine()
+            ? prodProcessLine.getHrCostTypeSelect()
+            : workCenter.getHrCostTypeSelect();
+    BigDecimal costAmount =
+        appProductionService.getIsCostPerProcessLine()
+            ? prodProcessLine.getHrCostAmount()
+            : workCenter.getHrCostAmount();
 
     if (hrCostType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
-      BigDecimal costPerHour = workCenter.getHrCostAmount();
-
       BigDecimal durationHours =
           BigDecimal.valueOf(humanDuration)
               .divide(
@@ -414,10 +430,10 @@ public class CostSheetServiceImpl implements CostSheetService {
           bomLevel,
           parentCostSheetLine,
           durationHours,
-          costPerHour.multiply(durationHours),
+          costAmount.multiply(durationHours),
           hourUnit);
     } else if (hrCostType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
-      BigDecimal costPrice = workCenter.getHrCostAmount().multiply(producedQty);
+      BigDecimal costPrice = costAmount.multiply(producedQty);
       costSheetLineService.createWorkCenterHRCostSheetLine(
           workCenter, priority, bomLevel, parentCostSheetLine, producedQty, costPrice, pieceUnit);
     }
@@ -441,8 +457,14 @@ public class CostSheetServiceImpl implements CostSheetService {
               : "null",
           prodProcessLine.getName());
     }
-    int costType = workCenter.getCostTypeSelect();
-
+    int costType =
+        appProductionService.getIsCostPerProcessLine()
+            ? prodProcessLine.getCostTypeSelect()
+            : workCenter.getCostTypeSelect();
+    BigDecimal costAmount =
+        appProductionService.getIsCostPerProcessLine()
+            ? prodProcessLine.getCostAmount()
+            : workCenter.getCostAmount();
     if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
@@ -451,7 +473,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           bomLevel,
           parentCostSheetLine,
           this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()),
-          workCenter.getCostAmount(),
+          costAmount,
           cycleUnit);
 
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
@@ -463,7 +485,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                   appProductionService.getNbDecimalDigitForUnitPrice(),
                   RoundingMode.HALF_UP)
               .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
-      BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
+      BigDecimal costPrice = costAmount.multiply(qty);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
@@ -475,8 +497,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           hourUnit);
 
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
-
-      BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
+      BigDecimal costPrice = costAmount.multiply(producedQty);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
@@ -798,7 +819,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       BigDecimal plannedDuration =
           new BigDecimal(
-                  DurationTool.getSecondsDuration(
+                  DurationHelper.getSecondsDuration(
                       Duration.between(
                           operationOrder.getPlannedStartDateT(),
                           operationOrder.getPlannedEndDateT())))
@@ -814,7 +835,12 @@ public class CostSheetServiceImpl implements CostSheetService {
       duration = (new BigDecimal(totalPlannedDuration).subtract(plannedDuration)).abs();
     }
     this.computeRealHumanResourceCost(
-        operationOrder.getWorkCenter(), priority, bomLevel, parentCostSheetLine, duration);
+        operationOrder.getProdProcessLine(),
+        operationOrder.getWorkCenter(),
+        priority,
+        bomLevel,
+        parentCostSheetLine,
+        duration);
   }
 
   protected void computeRealHumanResourceCost(
@@ -830,7 +856,7 @@ public class CostSheetServiceImpl implements CostSheetService {
             .divide(
                 new BigDecimal(3600),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
-                BigDecimal.ROUND_HALF_UP);
+                RoundingMode.HALF_UP);
 
     costSheetLineService.createWorkCenterHRCostSheetLine(
         workCenter,
@@ -850,7 +876,14 @@ public class CostSheetServiceImpl implements CostSheetService {
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       LocalDate previousCostSheetDate) {
-    int costType = workCenter.getCostTypeSelect();
+    int costType =
+        appProductionService.getIsCostPerProcessLine()
+            ? operationOrder.getProdProcessLine().getCostTypeSelect()
+            : workCenter.getCostTypeSelect();
+    BigDecimal costAmount =
+        appProductionService.getIsCostPerProcessLine()
+            ? operationOrder.getProdProcessLine().getCostAmount()
+            : workCenter.getCostAmount();
 
     if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
       costSheetLineService.createWorkCenterMachineCostSheetLine(
@@ -859,7 +892,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           bomLevel,
           parentCostSheetLine,
           this.getNbCycle(producedQty, workCenter.getMaxCapacityPerCycle()),
-          workCenter.getCostAmount(),
+          costAmount,
           cycleUnit);
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
       BigDecimal qty = BigDecimal.ZERO;
@@ -871,7 +904,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                 .divide(
                     new BigDecimal(3600),
                     appProductionService.getNbDecimalDigitForUnitPrice(),
-                    BigDecimal.ROUND_HALF_UP);
+                    RoundingMode.HALF_UP);
       } else {
 
         BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
@@ -880,7 +913,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                 .divide(
                     new BigDecimal(3600),
                     appProductionService.getNbDecimalDigitForUnitPrice(),
-                    BigDecimal.ROUND_HALF_UP);
+                    RoundingMode.HALF_UP);
 
         if (manufOrderQty.compareTo(workCenter.getMinCapacityPerCycle()) == 1) {
           BigDecimal maxCapacityPerCycle =
@@ -892,9 +925,9 @@ public class CostSheetServiceImpl implements CostSheetService {
                   .divide(
                       maxCapacityPerCycle,
                       appProductionService.getNbDecimalDigitForUnitPrice(),
-                      BigDecimal.ROUND_HALF_UP)
+                      RoundingMode.HALF_UP)
                   .multiply(durationPerCycle)
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_UP);
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
         } else {
           qty = durationPerCycle;
         }
@@ -903,7 +936,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           qty.multiply(
               costSheet
                   .getManufOrderProducedRatio()); // Using produced ratio for prorata calculation
-      BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
+      BigDecimal costPrice = costAmount.multiply(qty);
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           operationOrder.getPriority(),
@@ -914,7 +947,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           hourUnit);
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
 
-      BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
+      BigDecimal costPrice = costAmount.multiply(producedQty);
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           operationOrder.getPriority(),
@@ -955,18 +988,23 @@ public class CostSheetServiceImpl implements CostSheetService {
    * Changing the type of realDuration from Long to BigDecimal to use it with manufOrderProducedRatio
    */
   protected void computeRealHumanResourceCost(
+      ProdProcessLine prodProcessLine,
       WorkCenter workCenter,
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       BigDecimal realDuration)
       throws AxelorException {
-    BigDecimal costPerHour = workCenter.getCostAmount();
+
+    BigDecimal costPerHour =
+        appProductionService.getIsCostPerProcessLine()
+            ? prodProcessLine.getCostAmount()
+            : workCenter.getCostAmount();
     BigDecimal durationHours =
         realDuration.divide(
             new BigDecimal(3600),
             appProductionService.getNbDecimalDigitForUnitPrice(),
-            BigDecimal.ROUND_HALF_UP);
+            RoundingMode.HALF_UP);
 
     costSheetLineService.createWorkCenterHRCostSheetLine(
         workCenter,

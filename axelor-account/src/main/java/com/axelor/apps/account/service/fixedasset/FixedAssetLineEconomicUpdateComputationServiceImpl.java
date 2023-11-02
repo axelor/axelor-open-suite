@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -111,7 +111,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset.getPeriodicityTypeSelect(),
-        DateTool.plusMonths(
+        LocalDateHelper.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
 
@@ -145,7 +145,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset.getPeriodicityTypeSelect(),
-        DateTool.plusMonths(
+        LocalDateHelper.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
 
@@ -153,7 +153,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
         fixedAsset.getPeriodicityTypeSelect(),
-        DateTool.plusMonths(
+        LocalDateHelper.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
 
@@ -209,8 +209,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           "You can not declare a number of depreciation smaller or equal than number of realized lines + 1 (The first planned line)");
     }
-    recomputeFirstPlannedLine(
-        fixedAssetLineList, firstPlannedFixedAssetLine, correctedAccountingValue);
+    recomputeFirstPlannedLine(fixedAsset, firstPlannedFixedAssetLine, correctedAccountingValue);
     this.firstPlannedFixedAssetLine = firstPlannedFixedAssetLine;
     this.canGenerateLines = true;
   }
@@ -229,7 +228,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   protected void recomputeFirstPlannedLine(
-      List<FixedAssetLine> fixedAssetLineList,
+      FixedAsset fixedAsset,
       FixedAssetLine firstPlannedFixedAssetLine,
       BigDecimal correctedAccountingValue) {
     firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
@@ -241,7 +240,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     BigDecimal depreciation = firstPlannedFixedAssetLine.getDepreciation();
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
-            fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
+            fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
     if (previousLastRealizedFAL.isPresent()) {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
           previousLastRealizedFAL

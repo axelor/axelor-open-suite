@@ -38,14 +38,12 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
@@ -109,7 +107,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         .add("grid", "project-task-grid")
         .add("form", "project-task-form")
         .param("search-filters", "project-task-filters")
-        .domain(String.format("self.id in (%s)", StringTool.getIdListString(tasks)));
+        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(tasks)));
   }
 
   protected void processSaleOrderLine(
@@ -154,28 +152,20 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   protected ProjectTask createProjectTask(
       Project project, SaleOrder saleOrder, LocalDateTime startDate, SaleOrderLine saleOrderLine)
       throws AxelorException {
-    // check on product unit
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-    if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-        && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR),
-          saleOrderLine.getFullName(),
-          saleOrderLine.getUnit().getName());
-    }
 
     ProjectTask task =
         projectTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
 
     if (saleOrder.getToInvoiceViaTask()) {
+      task.setToInvoice(true);
       task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+    } else {
+      task.setToInvoice(project.getIsInvoicingTimesheet());
     }
 
     task.setTaskDate(startDate.toLocalDate());
     task.setUnitPrice(saleOrderLine.getPrice());
     task.setExTaxTotal(saleOrderLine.getExTaxTotal());
-    task.setToInvoice(project.getIsInvoicingTimesheet());
     projectTaskRepo.save(task);
     return task;
   }

@@ -17,16 +17,14 @@
         <field name="width" requiredIf="height"
           onChange="action-company-condition-validate-logo-height-and-width">
           <viewer depends="width"><![CDATA[
-				      {{$fmt('width')}}
-				      <span x-translate>px</span>
+				      <>{$fmt('width')} <span>{_t('px')}</span></>
 				  ]]></viewer>
         </field>
         <spacer name="widthSpacer"/>
         <field name="height" requiredIf="width"
           onChange="action-company-condition-validate-logo-height-and-width">
           <viewer depends="height"><![CDATA[
-				      {{$fmt('height')}}
-              <span x-translate>px</span>
+				      <>{$fmt('height')} <span>{_t('px')}</span></>
 				  ]]></viewer>
         </field>
         <spacer name="heightSpacer"/>

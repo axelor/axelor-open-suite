@@ -84,10 +84,15 @@
         <field name="$viewerProjectTags" showTitle="false" colSpan="4" readonly="true">
           <viewer depends="isBusinessProject,$toInvoiceCounter,id">
 							<![CDATA[
-								<h4 style="text-align: right;">
-									<span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject &amp;&amp; record.id">{{$fmt('$toInvoiceCounter')}}</span>
-									<span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
-								</h4>
+								<>
+									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+										<Box>
+											{isBusinessProject && <Badge style={{ backgroundColor: "#FD6217" }}>{_t('To Invoice')}</Badge>}
+											{isBusinessProject && id && <Badge style={{ backgroundColor: "#FFAA00" }}>{$fmt('$toInvoiceCounter')}</Badge>}
+										</Box>
+										{isBusinessProject && <Badge style={{ backgroundColor: "#2185D0" }}>{_t('Business')}</Badge>}
+									</Box>
+								</>
 							]]>
           </viewer>
         </field>
@@ -597,10 +602,10 @@
     <field name="sequence"/>
     <template>
 		<![CDATA[
-		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		 <div ng-bind-html="description"></div>
-	    </div>
+	    <>
+	    	<h4>{fullName}</h4>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
 		]]>
     </template>
   </kanban>
@@ -613,10 +618,10 @@
     <field name="sequence"/>
     <template>
 		<![CDATA[
-		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		 <div ng-bind-html="description"></div>
-	    </div>
+	    <>
+	    	<h4>{fullName}</h4>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
 		]]>
     </template>
   </kanban>
@@ -674,6 +679,7 @@
     <column name="taskDate" type="date"/>
     <column name="assignedTo" type="reference"/>
     <column name="openTaskBtn" type="button"/>
+    <column name="createSubtaskBtn" type="button"/>
     <column name="deleteTaskBtn" type="button"/>
 
     <node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id"
@@ -682,9 +688,12 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
-      <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+      <button name="createSubtaskBtn" icon="fa-plus"
+        onClick="save, action-project-view-add-subtask"/>
+      <button name="deleteTaskBtn" icon="fa-times"
+        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+      <button name="openTaskBtn" icon="fa-external-link"
+        onClick="action-project-task-open-task"/>
     </node>
 
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
@@ -693,9 +702,12 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
-      <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+      <button name="createSubtaskBtn" icon="fa-plus"
+        onClick="save, action-project-view-add-subtask"/>
+      <button name="deleteTaskBtn" icon="fa-times"
+        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+      <button name="openTaskBtn" icon="fa-external-link"
+        onClick="action-project-task-open-task"/>
     </node>
 
   </tree>
@@ -899,6 +911,18 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-project-view-add-subtask"
+    model="com.axelor.apps.project.db.ProjectTask" title="Task">
+    <view name="project-task-form" type="form"/>
+    <view name="project-task-grid" type="grid"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_project" expr="eval:__this__.project"/>
+    <context name="_parentTask" expr="eval:__this__"/>
+  </action-view>
+
   <action-record name="action-project-record-bind-customer-project"
     model="com.axelor.apps.project.db.Project">
     <field name="clientPartner" expr="eval: project?.clientPartner"/>
@@ -1001,7 +1025,7 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.contract.project.id = :_id</domain>
+    <domain>:_id IN self.contractSet.project.id</domain>
   </action-view>
 
   <action-attrs name="action-project-gantt-user-wizard-user-domain">

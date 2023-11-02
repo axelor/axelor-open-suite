@@ -20,7 +20,9 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.repo.AppBudgetRepository;
@@ -28,6 +30,7 @@ import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Optional;
 
 @Singleton
 public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudgetService {
@@ -40,14 +43,38 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
+      AppSettingsStudioService appSettingsService,
+      MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo,
       AppBudgetRepository appBudgetRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
     this.appBudgetRepo = appBudgetRepo;
   }
 
   @Override
   public AppBudget getAppBudget() {
     return appBudgetRepo.all().fetchOne();
+  }
+
+  @Override
+  public Boolean isMissingBudgetCheckError() {
+    Integer missingBudgetCheck =
+        Optional.ofNullable(this.getAppBudget())
+            .map(AppBudget::getMissingBudgetCheckSelect)
+            .orElse(0);
+    switch (missingBudgetCheck) {
+      case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_OPTIONAL:
+        return Boolean.FALSE;
+      case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_REQUIRED:
+        return Boolean.TRUE;
+    }
+    return null;
   }
 }

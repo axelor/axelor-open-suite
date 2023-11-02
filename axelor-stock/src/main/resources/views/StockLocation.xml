@@ -84,7 +84,7 @@
       <field name="stockLocationValue" readonly="true" showIf="isValued">
         <viewer>
 					<![CDATA[
-						<h4> {{$fmt('stockLocationValue')}} </h4>
+						<> {$fmt('stockLocationValue')} </>
 					]]>
         </viewer>
       </field>

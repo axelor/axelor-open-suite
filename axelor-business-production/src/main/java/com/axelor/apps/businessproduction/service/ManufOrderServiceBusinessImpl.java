@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
@@ -33,6 +34,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -68,7 +70,9 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      PartnerRepository partnerRepository,
+      BillOfMaterialService billOfMaterialService) {
     super(
         sequenceService,
         operationOrderService,
@@ -82,7 +86,9 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         barcodeGeneratorService,
         productStockLocationService,
         unitConversionService,
-        metaFiles);
+        metaFiles,
+        partnerRepository,
+        billOfMaterialService);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 

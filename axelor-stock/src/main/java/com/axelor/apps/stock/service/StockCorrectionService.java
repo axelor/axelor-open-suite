@@ -44,10 +44,13 @@ public interface StockCorrectionService {
       Product product,
       TrackingNumber trackingNumber,
       BigDecimal realQty,
-      StockCorrectionReason reason)
+      StockCorrectionReason reason,
+      String comments)
       throws Exception;
 
   void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty);
 
   void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason);
+
+  void updateComments(StockCorrection stockCorrection, String comments);
 }

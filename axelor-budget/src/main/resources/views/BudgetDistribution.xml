@@ -11,18 +11,6 @@
     <field name="amount" aggregate="sum"/>
   </grid>
 
-  <grid name="budget-distribution-line-grid" title="Distribution lines"
-    model="com.axelor.apps.budget.db.BudgetDistribution" width="large" canNew="false"
-    canEdit="false" canArchive="false" canDelete="false" groupBy="budget">
-    <field name="budget"/>
-    <field name="invoiceLine"/>
-    <field name="purchaseOrderLine"/>
-    <field name="saleOrderLine"/>
-    <field name="moveLine"/>
-    <field name="budgetAmountAvailable"/>
-    <field name="amount" aggregate="sum"/>
-  </grid>
-
   <grid title="Budget distributions" name="reduce-budget-distribution-grid"
     model="com.axelor.apps.budget.db.BudgetDistribution"
     onNew="action-group-on-new-parent-budget-distribution" edit-icon="true">
@@ -74,11 +62,11 @@
     <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
     <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
     <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
-    <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.productName"/>
     <field name="purchaseOrderLine.exTaxTotal"/>
     <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="budget.budgetLevel" title="Section line"/>
+    <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -87,9 +75,9 @@
     <field name="budget" title="Budget"/>
     <field name="saleOrderLine.saleOrder" title="Ref."/>
     <field name="saleOrderLine.saleOrder.statusSelect"/>
-    <field name="saleOrderLine.saleOrder.orderDate"/>
     <field name="saleOrderLine.productName"/>
     <field name="saleOrderLine.exTaxTotal"/>
+    <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -103,7 +91,7 @@
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.productName"/>
     <field name="purchaseOrderLine.exTaxTotal"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"/>
+    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel" title="Section line"/>
     <field name="amount" aggregate="sum"/>
   </grid>
@@ -118,7 +106,7 @@
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.productName"/>
     <field name="purchaseOrderLine.exTaxTotal"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"/>
+    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="amount" aggregate="sum"/>
   </grid>
@@ -136,6 +124,7 @@
     canArchive="false" canDelete="false" canEdit="false">
     <field name="budget"/>
     <field name="moveLine"/>
+    <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -147,6 +136,7 @@
     <field name="invoiceLine.invoice.purchaseOrder"/>
     <field name="invoiceLine.invoice.saleOrder"/>
     <field name="amount" aggregate="sum"/>
+    <field name="imputationDate"/>
     <field name="invoiceLine.invoice" hidden="true"/>
   </grid>
 
@@ -156,6 +146,7 @@
     <field name="budget"/>
     <field name="invoiceLine"/>
     <field name="moveLine"/>
+    <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -167,7 +158,7 @@
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.product"/>
     <field name="amount"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"/>
+    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="budget.budgetLevel" title="Section line"/>
   </grid>
@@ -255,8 +246,8 @@
     <panel name="mainPanel" readonly="true">
       <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
-      <field name="budget.budgetLevel.parentBudgetLevel.parentBudgetLevel"
-        title="Global budget" showIf="$fromGroup"/>
+      <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
+        showIf="$fromGroup"/>
       <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"
         showIf="$fromSection"/>
       <field name="budget.budgetLevel" title="Section line" showIf="$fromBudget"/>

@@ -182,10 +182,14 @@
     <boolean name="isPrintInvoicesInCompanyLanguage"
       title="Print invoices in company language" default="true"/>
 
-    <!-- Account chart template -->
-    <many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart"
-      title="Account chart"/>
+    <!-- Accounting config template -->
+    <many-to-one name="accountingConfigTemplate"
+      ref="com.axelor.apps.account.db.AccountingConfigTemplate"
+      title="Accounting configurations template"/>
     <boolean name="hasChartImported" title="Chart imported"/>
+    <boolean name="isImportAccountChartOnly" title="Import account chart only"/>
+    <boolean name="hasAccountingConfigTemplateImported"
+      title="Accounting configurations imported"/>
     <integer name="invoiceInAtiSelect" title="Invoice ATI/WT" selection="base.in.ati.select"
       default="1"/>
 
@@ -336,6 +340,13 @@
     <decimal name="allowedTaxGap" title="Allowed tax gap" default="0.00" initParam="true"
       help="Field allowing a tax gap during the accounting of a move. Its value specifies the tolerance applied during the tax values control and the move balance control."/>
 
+    <many-to-one name="invoiceBirtTemplate" title="Invoice template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="purchaseInvoicesDetailsBirtTemplate"
+      title="Purchase invoices details template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="chequeDepositSlipBirtTemplate"
+      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[
@@ -457,8 +468,11 @@
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
       <field name="isPrintInvoicesInCompanyLanguage" on="UPDATE"/>
 
-      <field name="accountChart" on="UPDATE"/>
+      <field name="accountingConfigTemplate" on="UPDATE"/>
       <field name="hasChartImported" on="UPDATE"/>
+      <field name="hasAccountingConfigTemplateImported" on="UPDATE"/>
+      <field name="isImportAccountChartOnly" on="UPDATE"/>
+
       <field name="invoiceInAtiSelect" on="UPDATE"/>
 
       <field name="accountingDaybook" on="UPDATE"/>
@@ -528,6 +542,10 @@
       <field name="accountAtPayment" on="UPDATE"/>
 
       <field name="retrieveDaybookMovesInPaymentSession" on="UPDATE"/>
+
+      <field name="invoiceBirtTemplate" on="UPDATE"/>
+      <field name="purchaseInvoicesDetailsBirtTemplate" on="UPDATE"/>
+      <field name="chequeDepositSlipBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

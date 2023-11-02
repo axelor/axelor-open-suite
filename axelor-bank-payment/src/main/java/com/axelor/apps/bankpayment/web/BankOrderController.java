@@ -18,19 +18,16 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -137,29 +134,6 @@ public class BankOrderController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
-  }
-
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-
-    String name = I18n.get("Bank Order") + " " + bankOrder.getBankOrderSeq();
-
-    String fileLink =
-        ReportFactory.createReport(IReport.BANK_ORDER, name + "-${date}")
-            .addParam("BankOrderId", bankOrder.getId())
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam(
-                "Timezone",
-                bankOrder.getSenderCompany() != null
-                    ? bankOrder.getSenderCompany().getTimezone()
-                    : null)
-            .generate()
-            .getFileLink();
-
-    log.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   @SuppressWarnings("unchecked")

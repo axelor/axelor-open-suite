@@ -37,6 +37,9 @@ public final class BaseExceptionMessage {
   public static final String CURRENCY_1 = /*$$(*/
       "No currency conversion found from '%s' to '%s' for date %s" /*)*/;
 
+  public static final String SEQUENCE_PREFIX = /*$$(*/
+      "Sequence prefix cannot start with the draft prefix '%s'." /*)*/;
+
   public static final String CURRENCY_2 = /*$$(*/
       "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/;
   public static final String CURRENCY_3 = /*$$(*/
@@ -193,8 +196,20 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
       "Can't generate draft sequence number on an unsaved record." /*)*/;
 
+  public static final String SEQUENCE_PATTERN_LENGTH_NOT_VALID = /*$$(*/
+      "The pattern length should be equal to padding ." /*)*/;
+
   public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
       "Total sequence length must be less than 15 characters." /*)*/;
+
+  public static final String SEQUENCE_TYPE_UNHANDLED = /*$$(*/
+      "The sequence type '%s' is not handled." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_IS_NULL = /*$$(*/
+      "The sequence letter type can't be null." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_UNHANDLED = /*$$(*/
+      "The sequence letter type '%s' is not handled." /*)*/;
 
   /** Address controller */
   public static final String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
@@ -243,8 +258,6 @@ public final class BaseExceptionMessage {
   /** Messsage controller */
   public static final String MESSAGE_1 = /*$$(*/
       "Error in print. Please check report configuration and print setting." /*)*/;
-
-  public static final String MESSAGE_2 = /*$$(*/ "Please select the Message(s) to print." /*)*/;
 
   /** Partner controller */
   public static final String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
@@ -374,8 +387,6 @@ public final class BaseExceptionMessage {
       "Invalid data format. Please check log for more details." /*)*/;
 
   /* ABC Analysis */
-  public static final String ABC_CLASSES_INVALID_STATE_FOR_REPORTING = /*$$(*/
-      "The analysis must be completed before the report can be printed." /*)*/;
   public static final String ABC_CLASSES_INVALID_QTY_OR_WORTH = /*$$(*/
       "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
@@ -486,7 +497,7 @@ public final class BaseExceptionMessage {
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
-      "The previous period is not closed or temporarily closed." /*)*/;
+      "The previous period is not closed or temporarily closed while it should be." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
       "The previous period is not closed." /*)*/;
@@ -583,4 +594,33 @@ public final class BaseExceptionMessage {
 
   public static final String UNKNOWN_DURATION = /*$$(*/
       "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
+
+  public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
+      "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
+
+  public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+      "The configuration to print this model has not been found" /*)*/;
+
+  public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
+
+  public static final String CONVERT_IMAGE_TO_PDF_ERROR = /*$$(*/
+      "Error while converting image to pdf : %s" /*)*/;
+
+  public static final String NO_RECORD_SELECTED_TO_PRINT = /*$$(*/
+      "Please select records to print" /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_PASSWORD = /*$$(*/
+      "Error while opening the certificate, please check the password." /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_FILE = /*$$(*/
+      "Error with the certificate, please check if the file is a PFX certificate." /*)*/;
+
+  public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
+      "Error while accessing certificate information." /*)*/;
+
+  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
+      "No view configured for model %s." /*)*/;
+
+  public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
+      "The file could not be generated." /*)*/;
 }

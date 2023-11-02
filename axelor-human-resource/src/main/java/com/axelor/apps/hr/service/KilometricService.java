@@ -44,7 +44,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.BufferedReader;
@@ -85,7 +85,8 @@ public class KilometricService {
     return employee.getKilometricLogList().stream()
         .filter(
             log ->
-                DateTool.isBetween(log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
+                LocalDateHelper.isBetween(
+                    log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
         .findFirst()
         .orElse(null);
   }
@@ -237,7 +238,7 @@ public class KilometricService {
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
+  public BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
 
     BigDecimal distance = BigDecimal.ZERO;
     if (StringUtils.isEmpty(fromCity)

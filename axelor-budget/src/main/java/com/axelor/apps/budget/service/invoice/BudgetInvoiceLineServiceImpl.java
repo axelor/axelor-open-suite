@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.budget.service.invoice;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -26,6 +28,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
@@ -48,6 +51,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequestScoped
 public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
@@ -94,8 +98,8 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(InvoiceLine invoiceLine) {
-    if (invoiceLine == null || invoiceLine.getInvoice() == null) {
+  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine) {
+    if (invoice == null || invoiceLine == null) {
       return "";
     }
     invoiceLine.clearBudgetDistributionList();
@@ -103,10 +107,10 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
         budgetDistributionService.createBudgetDistribution(
             invoiceLine.getAnalyticMoveLineList(),
             invoiceLine.getAccount(),
-            invoiceLine.getInvoice().getCompany(),
-            invoiceLine.getInvoice().getInvoiceDate() != null
-                ? invoiceLine.getInvoice().getInvoiceDate()
-                : invoiceLine.getInvoice().getCreatedOn().toLocalDate(),
+            invoice.getCompany(),
+            invoice.getInvoiceDate() != null
+                ? invoice.getInvoiceDate()
+                : invoice.getCreatedOn().toLocalDate(),
             invoiceLine.getCompanyExTaxTotal(),
             invoiceLine.getName(),
             invoiceLine);
@@ -136,7 +140,10 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
     List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
     PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
     BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = invoice.getInvoiceDate();
+    LocalDate computeDate =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
 
     if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder().getOrderDate() != null) {
       computeDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();
@@ -152,5 +159,28 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
       }
     }
     invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
+  }
+
+  @Override
+  public String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) {
+    Company company = null;
+    LocalDate date = null;
+    if (invoice != null) {
+      if (invoice.getCompany() != null) {
+        company = invoice.getCompany();
+        date = appBaseService.getTodayDate(invoice.getCompany());
+      }
+      if (invoice.getInvoiceDate() != null) {
+        date = invoice.getInvoiceDate();
+      }
+    }
+    String technicalTypeSelect =
+        Optional.of(invoiceLine)
+            .map(InvoiceLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(null);
+
+    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
   }
 }

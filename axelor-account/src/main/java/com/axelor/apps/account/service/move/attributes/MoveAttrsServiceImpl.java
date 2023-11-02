@@ -18,13 +18,14 @@
  */
 package com.axelor.apps.account.service.move.attributes;
 
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -32,11 +33,14 @@ import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -51,6 +55,9 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveViewHelperService moveViewHelperService;
   protected MovePfpService movePfpService;
+  protected AnalyticToolService analyticToolService;
+  protected AnalyticAttrsService analyticAttrsService;
+  protected CompanyRepository companyRepository;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -58,12 +65,18 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveViewHelperService moveViewHelperService,
-      MovePfpService movePfpService) {
+      MovePfpService movePfpService,
+      AnalyticToolService analyticToolService,
+      AnalyticAttrsService analyticAttrsService,
+      CompanyRepository companyRepository) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveViewHelperService = moveViewHelperService;
     this.movePfpService = movePfpService;
+    this.analyticToolService = analyticToolService;
+    this.analyticAttrsService = analyticAttrsService;
+    this.companyRepository = companyRepository;
   }
 
   protected void addAttr(
@@ -124,54 +137,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
 
     this.addAttr("functionalOriginSelect", "selection-in", selectionValue, attrsMap);
-  }
-
-  @Override
-  public void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException {
-    String fieldNameToSet = "moveLineList";
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      fieldNameToSet = "moveLineMassEntryList";
-    }
-
-    if (move.getCompany() != null) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
-
-      if (accountConfig != null
-          && appAccountService.getAppAccount().getManageAnalyticAccounting()
-          && accountConfig.getManageAnalyticAccounting()) {
-        AnalyticAxis analyticAxis = null;
-
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-          this.addAttr(
-              analyticAxisKey,
-              "hidden",
-              !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
-              attrsMap);
-
-          for (AnalyticAxisByCompany analyticAxisByCompany :
-              accountConfig.getAnalyticAxisByCompanyList()) {
-            if (analyticAxisByCompany.getSequence() + 1 == i) {
-              analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-            }
-          }
-
-          if (analyticAxis != null) {
-            this.addAttr(analyticAxisKey, "title", analyticAxis.getName(), attrsMap);
-            analyticAxis = null;
-          }
-        }
-      } else {
-        this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);
-        this.addAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true, attrsMap);
-
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
-          this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
-        }
-      }
-    }
   }
 
   @Override
@@ -422,5 +387,30 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
                 == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
             || journal.getJournalType().getTechnicalTypeSelect()
                 == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
+  }
+
+  @Override
+  public void addSubrogationPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean isReadonly =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getInvoiceTermList)
+            .filter(CollectionUtils::isNotEmpty)
+            .flatMap(Collection::stream)
+            .allMatch(InvoiceTerm::getIsPaid);
+
+    this.addAttr("subrogationPartner", "readonly", isReadonly, attrsMap);
+  }
+
+  @Override
+  public void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    String companyIds =
+        companyRepository.all().filter("self.accountConfig IS NOT NULL").fetch().stream()
+            .map(Company::getId)
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
+
+    String domain = String.format("self.id IN (%s)", companyIds.isEmpty() ? "0" : companyIds);
+
+    this.addAttr("company", "domain", domain, attrsMap);
   }
 }

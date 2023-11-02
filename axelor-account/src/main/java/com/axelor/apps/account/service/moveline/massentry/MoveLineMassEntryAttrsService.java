@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import java.util.Map;
@@ -45,7 +46,8 @@ public interface MoveLineMassEntryAttrsService {
       MoveLineMassEntry moveLine, Map<String, Map<String, Object>> attrsMap);
 
   void addMovePfpValidatorUserRequired(
-      Account account, Journal journal, Map<String, Map<String, Object>> attrsMap);
+      Account account, Journal journal, Company company, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 
   void addTemporaryMoveNumberFocus(Move move, Map<String, Map<String, Object>> attrsMap);
 

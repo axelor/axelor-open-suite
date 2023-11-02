@@ -42,7 +42,8 @@
     <boolean name="detailed" title="Detailed" default="false"/>
     <integer name="statusSelect" title="Status"
       selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
-
+    <string name="moveStatusSelect" title="Move statuses"
+      selection="iaccount.move.status.select"/>
     <decimal name="totalDebit" title="Total Debit" readonly="true"/>
     <decimal name="totalCredit" title="Total Credit" readonly="true"/>
     <decimal name="balance" title="Balance" readonly="true"/>
@@ -55,7 +56,8 @@
 
     <!--Report 7 : Partner genereal ledger -->
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines"
-      title="Display only not completely lettered move lines" default="false"/>
+      title="Display only not completely lettered move lines" default="false"
+      help="By selecting this option, only move lines not lettered or partially lettered are displayed."/>
     <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
 
 
@@ -81,7 +83,6 @@
       title="Analytic Distribution Template"/>
 
     <boolean name="subtotalByAnalyticDistribution" title="Subtotal by analytic distribution"/>
-    <boolean name="displaySimulatedMove" title="Show simulated moves"/>
 
     <!-- Report 19 & 20 DAS2 -->
     <decimal name="minAmountExcl" title="Min. amount (€)"

@@ -1,5 +1,24 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.interfaces.PdfViewer;
 import com.axelor.db.Model;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
@@ -19,26 +38,26 @@ public class DMSServiceImpl implements DMSService {
   }
 
   @Override
-  public Long setDmsFile(MetaFile metaFile, Long dmsId, Model entity) {
+  public DMSFile setDmsFile(MetaFile metaFile, PdfViewer pdfViewer) {
     if (metaFile == null) {
-      DMSFile toDelete = dmsFileRepository.find(dmsId);
-      if (toDelete != null) {
-        metaFiles.delete(toDelete);
+      pdfViewer.setDmsFile(null);
+
+      DMSFile previousDmsFile = pdfViewer.getDmsFile();
+      if (previousDmsFile != null) {
+        dmsFileRepository.remove(previousDmsFile);
       }
       return null;
-    } else {
-      DMSFile dmsFile = metaFiles.attach(metaFile, metaFile.getFileName(), entity);
-      return dmsFile.getId();
     }
+    DMSFile dmsFile = metaFiles.attach(metaFile, metaFile.getFileName(), (Model) pdfViewer);
+    pdfViewer.setDmsFile(dmsFile);
+    return dmsFile;
   }
 
   @Override
-  public String getInlineUrl(Long id) {
-    if (id == null || id == 0) {
+  public String getInlineUrl(DMSFile dmsFile) {
+    if (dmsFile == null) {
       return "";
     }
-
-    DMSFile dmsFile = dmsFileRepository.find(id);
     return String.format("ws/dms/inline/%d", dmsFile.getId());
   }
 }

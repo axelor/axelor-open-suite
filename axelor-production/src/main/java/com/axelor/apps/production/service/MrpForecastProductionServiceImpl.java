@@ -34,16 +34,24 @@ import java.util.List;
 
 public class MrpForecastProductionServiceImpl implements MrpForecastProductionService {
 
-  @Inject ProductRepository productRepo;
-  @Inject MrpForecastRepository mrpForecastRepo;
+  protected final ProductRepository productRepo;
+  protected final MrpForecastRepository mrpForecastRepo;
+
+  @Inject
+  public MrpForecastProductionServiceImpl(
+      ProductRepository productRepo, MrpForecastRepository mrpForecastRepo) {
+    this.productRepo = productRepo;
+    this.mrpForecastRepo = mrpForecastRepo;
+  }
 
   @Override
+  @SuppressWarnings("unchecked")
+  @Transactional(rollbackOn = Exception.class)
   public void generateMrpForecast(
       Period period,
       List<LinkedHashMap<String, Object>> mrpForecastList,
       StockLocation stockLocation,
       int technicalOrigin) {
-    LocalDate forecastDate = period.getToDate();
 
     for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
       Long id =
@@ -51,20 +59,21 @@ public class MrpForecastProductionServiceImpl implements MrpForecastProductionSe
               ? Long.parseLong(mrpForecastItem.get("id").toString())
               : null;
       BigDecimal qty = new BigDecimal(mrpForecastItem.get("qty").toString());
-      @SuppressWarnings("unchecked")
       LinkedHashMap<String, Object> productMap =
           (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
       Product product = productRepo.find(Long.parseLong(productMap.get("id").toString()));
+      LocalDate forecastDate = LocalDate.parse(mrpForecastItem.get("forecastDate").toString());
       if (id != null && qty.compareTo(BigDecimal.ZERO) == 0) {
-        this.RemoveMrpForecast(id);
+        mrpForecastRepo.remove(mrpForecastRepo.find(id));
       } else if (qty.compareTo(BigDecimal.ZERO) != 0) {
-        this.createMrpForecast(id, forecastDate, product, stockLocation, qty, technicalOrigin);
+        this.createOrUpdateMrpForecast(
+            id, forecastDate, product, stockLocation, qty, technicalOrigin);
       }
     }
   }
 
-  @Transactional
-  public void createMrpForecast(
+  @Transactional(rollbackOn = Exception.class)
+  protected void createOrUpdateMrpForecast(
       Long id,
       LocalDate forecastDate,
       Product product,
@@ -88,11 +97,5 @@ public class MrpForecastProductionServiceImpl implements MrpForecastProductionSe
     mrpForecast.setUnit(unit);
     mrpForecast.setStatusSelect(MrpForecastRepository.STATUS_CONFIRMED);
     mrpForecastRepo.save(mrpForecast);
-  }
-
-  @Transactional
-  public void RemoveMrpForecast(Long id) {
-    MrpForecast mrpForecast = id != null ? mrpForecastRepo.find(id) : new MrpForecast();
-    mrpForecastRepo.remove(mrpForecast);
   }
 }

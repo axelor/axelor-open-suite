@@ -139,7 +139,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     List<String> alertMessageTokenList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        String alertMessage = budgetInvoiceLineService.computeBudgetDistribution(invoiceLine);
+        String alertMessage =
+            budgetInvoiceLineService.computeBudgetDistribution(invoice, invoiceLine);
         if (Strings.isNullOrEmpty(alertMessage)) {
           invoice.setBudgetDistributionGenerated(true);
         } else {
@@ -300,6 +301,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           invoice.getInvoiceDate() != null
               ? invoice.getInvoiceDate()
               : invoice.getCreatedOn().toLocalDate();
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
@@ -345,6 +347,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
                 ? invoiceLine.getInvoice().getSaleOrder().getOrderDate()
                 : invoiceLine.getInvoice().getSaleOrder().getCreationDate();
       }
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);

@@ -21,7 +21,7 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -88,20 +88,13 @@ public interface ContractVersionService {
       if (version.getActivationDateTime() == null || version.getEndDateTime() == null) {
         continue;
       }
-      if (DateTool.isBetween(
+      if (LocalDateHelper.isBetween(
           version.getActivationDateTime().toLocalDate(),
           version.getEndDateTime().toLocalDate(),
           date)) {
         return version;
       }
     }
-    ContractVersion version = contract.getCurrentContractVersion();
-    if (DateTool.isBetween(
-        version.getActivationDateTime().toLocalDate(),
-        version.getEndDateTime().toLocalDate(),
-        date)) {
-      return version;
-    }
-    return null;
+    return contract.getCurrentContractVersion();
   }
 }

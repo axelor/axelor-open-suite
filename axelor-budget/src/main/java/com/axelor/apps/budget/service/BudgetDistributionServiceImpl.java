@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -37,7 +38,7 @@ import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -101,7 +102,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     switch (budgetControlLevel) {
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-          if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
+          if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
             budgetToCompare = budgetLine.getAvailableAmount();
             budgetName +=
                 ' ' + budgetLine.getFromDate().toString() + ':' + budgetLine.getToDate().toString();
@@ -125,10 +126,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getParentBudgetLevel()
+                .getGlobalBudget()
                 .getTotalAmountAvailable();
-        budgetName =
-            budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getName();
+        budgetName = budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getName();
         break;
     }
     if (budgetToCompare.compareTo(amount) < 0) {
@@ -140,7 +140,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               budget
                   .getBudgetLevel()
                   .getParentBudgetLevel()
-                  .getParentBudgetLevel()
+                  .getGlobalBudget()
                   .getCompany()
                   .getCurrency()
                   .getSymbol());
@@ -245,7 +245,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
         LocalDate fromDate = budgetLine.getFromDate();
         LocalDate toDate = budgetLine.getToDate();
 
-        if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
+        if (fromDate != null && LocalDateHelper.isBetween(fromDate, toDate, computeDate)) {
           BigDecimal amount = budgetLine.getAvailableAmount();
           budgetAmountAvailable = budgetAmountAvailable.add(amount);
         }
@@ -254,5 +254,51 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     } else {
       budgetDistribution.setBudgetAmountAvailable(BigDecimal.ZERO);
     }
+  }
+
+  @Override
+  public String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect) {
+    String budget = "self.budgetLevel.parentBudgetLevel.globalBudget";
+    String query =
+        String.format(
+            "self.totalAmountExpected > 0 AND self.statusSelect = %d ",
+            BudgetRepository.STATUS_VALIDATED);
+
+    if (company != null) {
+      query.concat(
+          String.format(" AND %s.company.id = %d", budget, company != null ? company.getId() : 0));
+    }
+    if (date != null) {
+      query =
+          query.concat(
+              String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+    }
+    if (AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect)) {
+      query =
+          query.concat(
+              String.format(
+                  " AND %s.budgetTypeSelect = %d ",
+                  budget, BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE));
+    } else if (AccountTypeRepository.TYPE_CHARGE.equals(technicalTypeSelect)) {
+      query =
+          query.concat(
+              String.format(
+                  " AND %s.budgetTypeSelect in (%d,%d) ",
+                  budget,
+                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+    } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(technicalTypeSelect)) {
+      query =
+          query.concat(
+              String.format(
+                  " AND %s.budgetTypeSelect in (%d,%d) ",
+                  budget,
+                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+    } else {
+      query = "self.id = 0";
+    }
+
+    return query;
   }
 }

@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected AppAccountService appAccountService;
@@ -61,7 +62,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     BigDecimal currencyRate = BigDecimal.ONE;
 
     if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-      if (move.getMoveLineList().size() == 0) {
+      if (ObjectUtils.isEmpty(move.getMoveLineList())) {
         currencyRate =
             currencyService.getCurrencyConversionRate(currency, companyCurrency, move.getDate());
       } else {
@@ -110,6 +111,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     Account accountingAccount = moveLine.getAccount();
 
     if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+      moveLine.setTaxLine(null);
       return;
     }
 
@@ -184,5 +186,15 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       moveLine.setPartnerSeq(null);
       moveLine.setPartnerFullName(null);
     }
+  }
+
+  @Override
+  public void setCounter(MoveLine moveLine, Move move) {
+    moveLine.setCounter(
+        move.getMoveLineList().stream()
+                .map(MoveLine::getCounter)
+                .max(Comparator.naturalOrder())
+                .orElse(0)
+            + 1);
   }
 }

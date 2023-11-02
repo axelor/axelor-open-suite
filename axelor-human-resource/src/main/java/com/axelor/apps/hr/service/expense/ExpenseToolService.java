@@ -21,6 +21,8 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
+import java.util.List;
 
 public interface ExpenseToolService {
 
@@ -35,4 +37,12 @@ public interface ExpenseToolService {
   public void setDraftSequence(Expense expense) throws AxelorException;
 
   public Expense updateMoveDateAndPeriod(Expense expense);
+
+  void addExpenseLinesToExpense(Expense expense, List<ExpenseLine> expenseLineList)
+      throws AxelorException;
+
+  void addExpenseLinesToExpenseAndCompute(Expense expense, List<ExpenseLine> expenseLineList)
+      throws AxelorException;
+
+  boolean isKilometricExpenseLine(ExpenseLine expenseLine);
 }

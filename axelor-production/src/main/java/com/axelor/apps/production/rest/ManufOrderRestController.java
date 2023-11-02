@@ -159,7 +159,8 @@ public class ManufOrderRestController {
   @POST
   @HttpExceptionHandler
   public Response addWastedProduct(
-      @PathParam("manufOrderId") long manufOrderId, WastedProductPostRequest requestBody) {
+      @PathParam("manufOrderId") long manufOrderId, WastedProductPostRequest requestBody)
+      throws AxelorException {
     RequestValidator.validateBody(requestBody);
 
     new SecurityCheck().writeAccess(ManufOrder.class).createAccess(ProdProduct.class).check();
@@ -172,10 +173,8 @@ public class ManufOrderRestController {
 
     Beans.get(ManufOrderProductRestService.class).addWasteProduct(manufOrder, prodProduct);
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Waste product successfully added to manufacturing order",
-        new WastedProductResponse(prodProduct));
+    return ResponseConstructor.buildCreateResponse(
+        prodProduct, new WastedProductResponse(prodProduct));
   }
 
   @Operation(
@@ -225,9 +224,7 @@ public class ManufOrderRestController {
                 manufOrder,
                 requestBody.getProductType());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Product successfully added to manufacturing order.",
-        new ManufOrderStockMoveLineResponse(stockMoveLine));
+    return ResponseConstructor.buildCreateResponse(
+        stockMoveLine, new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 }

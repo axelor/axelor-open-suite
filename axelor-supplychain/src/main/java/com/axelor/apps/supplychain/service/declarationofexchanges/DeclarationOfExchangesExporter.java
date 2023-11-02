@@ -20,13 +20,15 @@ package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.ImmutableMap;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -59,6 +61,8 @@ public abstract class DeclarationOfExchangesExporter {
   protected final String name;
 
   protected List<String> columnHeadersList;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected BirtTemplateService birtTemplateService;
 
   public DeclarationOfExchangesExporter(
       DeclarationOfExchanges declarationOfExchanges,
@@ -123,7 +127,7 @@ public abstract class DeclarationOfExchangesExporter {
   protected String getFileName() {
     String title = getTitle();
     String filename = String.format("%s.%s", title, declarationOfExchanges.getFormatSelect());
-    return StringTool.getFilename(filename);
+    return StringHelper.getFilename(filename);
   }
 
   protected Path getFilePath() {

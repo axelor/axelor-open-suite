@@ -69,9 +69,7 @@ public class StockTrackingNumberRestController {
                 requestBody.getOrigin(),
                 requestBody.getNotes());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Resource successfully created",
-        new StockTrackingNumberResponse(trackingNumber));
+    return ResponseConstructor.buildCreateResponse(
+        trackingNumber, new StockTrackingNumberResponse(trackingNumber));
   }
 }

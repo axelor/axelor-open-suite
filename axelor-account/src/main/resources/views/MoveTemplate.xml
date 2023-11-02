@@ -41,34 +41,29 @@
         onChange="action-move-template-group-line-list-onchange"/>
       <field name="$totalLines" title="Total lines" type="integer" colSpan="3" readonly="true">
         <viewer>
-						<![CDATA[
-							<h3>{{$fmt('$totalLines')}}</h3>
-						]]>
+		  <![CDATA[<><h3>{{$fmt('$totalLines')}}</h3></>]]>
         </viewer>
       </field>
       <field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true">
         <viewer>
-						<![CDATA[
-							<h3>{{$fmt('$totalDebit')}}</h3>
-						]]>
+		  <![CDATA[<><h3>{$fmt('$totalDebit')}</h3></>]]>
         </viewer>
       </field>
       <field name="$totalCredit" title="Total credit" type="decimal" colSpan="3"
         readonly="true">
         <viewer>
-						<![CDATA[
-							<h3>{{$fmt('$totalCredit')}}</h3>
-						]]>
+	      <![CDATA[<><h3>{$fmt('$totalCredit')}</h3></>]]>
         </viewer>
       </field>
       <field name="$difference" title="Difference" type="decimal" colSpan="3" readonly="true">
         <viewer>
-						<![CDATA[
-							<h3>
-								<span ng-show="record.$difference == 0">{{$fmt('$difference')}}</span>
-								<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')}}</span>
-							</h3>
-						]]>
+				<![CDATA[
+          				<>
+                           	<h3>
+                                <Box as="span" style={{ color: !$difference ? "#D9534F" : "normal" }}>{$fmt('$difference')}</Box>
+                            </h3>
+                        </>
+				]]>
         </viewer>
       </field>
     </panel>
@@ -92,7 +87,7 @@
   <form name="move-template-wizard-form" title="Generate move from template"
     model="com.axelor.utils.db.Wizard" width="large"
     onNew="action-move-template-wizard-set-active-company"
-    onLoad="action-move-template-wizard-set-active-company">
+    onLoad="action-move-template-group-wizard-onload">
     <panel name="mainPanel">
       <field name="moveTemplateType" canEdit="false" title="Type" target-name="name"
         type="many-to-one" target="com.axelor.apps.account.db.MoveTemplateType"
@@ -109,12 +104,15 @@
           requiredIf="moveTemplateType.typeSelect == 1" target-name="name" type="many-to-one"
           target="com.axelor.apps.account.db.MoveTemplate" title="Template"
           domain="self.moveTemplateType = :moveTemplateType AND self.isValid = true AND self.journal.company = :company AND self.journal.statusSelect = 1 AND (self.endOfValidityDate &gt;= CURRENT_DATE OR self.endOfValidityDate IS NULL)"
-          form-view="move-template-form" grid-view="move-template-grid"/>
+          form-view="move-template-form" grid-view="move-template-grid"
+          onChange="action-move-template-attrs-wizard-hide-subrogation"/>
         <field name="moveTemplate.journal" readonly="true" showIf="moveTemplate != null"
           target-name="name" type="many-to-one" target="com.axelor.apps.account.db.Journal"
           title="Journal" form-view="journal-form" grid-view="journal-grid"/>
         <field name="moveTemplate.description" title="Description" widget="text" colSpan="12"
           showIf="moveTemplateType.typeSelect == 1" readonly="true"/>
+        <field name="moveTemplate.journal.journalType" hidden="true"/>
+        <field name="moveTemplate.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <panel-related name="dataInputListPanel" field="dataInputList"
         type="one-to-many" showIf="moveTemplateType.typeSelect == 1"
@@ -149,6 +147,10 @@
     <field name="creditPartner" target-name="fullName" title="Partner to Credit"
       onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
       target="com.axelor.apps.base.db.Partner"/>
+    <field name="subrogationPartner" target-name="fullName" title="Subrogation"
+      type="many-to-one" target="com.axelor.apps.base.db.Partner"
+      onSelect="action-move-template-attrs-wizard-subrogation-partner-domain"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="moveTemplate" type="many-to-one"
       target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
   </grid>
@@ -167,8 +169,16 @@
       <field name="creditPartner" target-name="fullName" title="Partner to Credit"
         onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"/>
+      <field name="subrogationPartner" target-name="fullName" title="Subrogation"
+        type="many-to-one" target="com.axelor.apps.base.db.Partner"
+        showIf="[1,2,5].includes(moveTemplate.journal.journalType.technicalTypeSelect)"
+        onSelect="action-move-template-attrs-wizard-subrogation-partner-domain"
+        if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       <field name="moveTemplate" type="many-to-one"
         target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
+      <field name="moveTemplate.journal" hidden="true"/>
+      <field name="moveTemplate.journal.journalType" hidden="true"/>
+      <field name="moveTemplate.journal.journalType.technicalTypeSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -181,6 +191,11 @@
   <action-group name="action-move-template-group-line-list-onchange">
     <action name="action-move-template-method-set-is-valid"/>
     <action name="action-move-template-method-compute-totals"/>
+  </action-group>
+
+  <action-group name="action-move-template-group-wizard-onload">
+    <action name="action-move-template-wizard-set-active-company"/>
+    <action name="action-move-template-attrs-wizard-hide-subrogation"/>
   </action-group>
 
   <action-validate name="action-move-template-validate-check-tax-lines">
@@ -247,6 +262,16 @@
   <action-attrs name="action-account-attrs-move-template-partner-domain">
     <attribute name="domain" for="debitPartner,creditPartner"
       expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-template-attrs-wizard-subrogation-partner-domain">
+    <attribute name="domain" for="subrogationPartner"
+      expr="eval: &quot; self.isSubrogation IS TRUE AND ${__parent__?.company?.id} MEMBER OF self.companySet &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-template-attrs-wizard-hide-subrogation">
+    <attribute name="hidden" for="dataInputList.subrogationPartner"
+      expr="eval: !moveTemplate?.journal || ![1,2,5].contains(moveTemplate?.journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
 
   <action-record name="action-move-template-wizard-line-set-move-template"

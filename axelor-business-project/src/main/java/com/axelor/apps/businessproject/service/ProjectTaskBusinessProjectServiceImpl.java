@@ -62,7 +62,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -70,8 +70,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
@@ -111,14 +114,18 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   public ProjectTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
       throws AxelorException {
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
-    task.setProduct(saleOrderLine.getProduct());
-    task.setInvoicingUnit(saleOrderLine.getUnit());
-    task.setTimeUnit(saleOrderLine.getUnit());
+    Product product = saleOrderLine.getProduct();
+    task.setProduct(product);
+    task.setUnitCost(product.getCostPrice());
+    task.setTotalCosts(
+        product.getCostPrice().multiply(saleOrderLine.getQty()).setScale(2, RoundingMode.HALF_UP));
+    Unit orderLineUnit = saleOrderLine.getUnit();
+    task.setInvoicingUnit(orderLineUnit);
+
     task.setCurrency(project.getClientPartner().getCurrency());
     if (project.getPriceList() != null) {
       PriceListLine line =
-          priceListLineRepo.findByPriceListAndProduct(
-              project.getPriceList(), saleOrderLine.getProduct());
+          priceListLineRepo.findByPriceListAndProduct(project.getPriceList(), product);
       if (line != null) {
         task.setUnitPrice(line.getAmount());
       }
@@ -126,8 +133,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     if (task.getUnitPrice() == null) {
       Company company =
           saleOrderLine.getSaleOrder() != null ? saleOrderLine.getSaleOrder().getCompany() : null;
-      task.setUnitPrice(
-          (BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "salePrice", company));
+      task.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     }
     task.setDescription(saleOrderLine.getDescription());
     task.setQuantity(saleOrderLine.getQty());
@@ -137,8 +143,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
             : false);
 
-    task.setSoldTime(saleOrderLine.getQty());
-    task.setUpdatedTime(saleOrderLine.getQty());
+    if (isTimeUnitValid(orderLineUnit)) {
+      task.setTimeUnit(orderLineUnit);
+      task.setSoldTime(saleOrderLine.getQty());
+      task.setUpdatedTime(saleOrderLine.getQty());
+    }
     return task;
   }
 
@@ -164,6 +173,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     ProjectTask task = super.create(subject, project, assignedTo);
     task.setProjectTaskList(new ArrayList<>());
     task.setProjectPlanningTimeList(new ArrayList<>());
+    task.setPurchaseOrderLineList(new ArrayList<>());
     task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
@@ -219,6 +229,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     projectTask.setPriceDiscounted(priceDiscounted);
     projectTask.setExTaxTotal(exTaxTotal);
+
+    if (projectTask.getProduct() != null) {
+      projectTask.setTotalCosts(
+          projectTask
+              .getProduct()
+              .getCostPrice()
+              .multiply(projectTask.getQuantity())
+              .setScale(2, RoundingMode.HALF_UP));
+    }
 
     return projectTask;
   }
@@ -602,5 +621,59 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setPercentageOfProgress(percentageOfProgression);
     projectTask.setPercentageOfConsumption(percentageOfConsumption);
     projectTask.setRemainingAmountToDo(remainingAmountToDo);
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException {
+
+    ProjectTask projectTask = projectTaskRepo.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put(
+        "unit",
+        Optional.ofNullable(projectTask.getTimeUnit())
+            .map(unit -> unit.getName() + "(s)")
+            .orElse(""));
+    data.put("progress", projectTask.getPercentageOfProgress() + " %");
+    data.put("consumption", projectTask.getPercentageOfConsumption() + " %");
+    data.put("remaining", projectTask.getRemainingAmountToDo());
+
+    return data;
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayFinancialReporting(Long id)
+      throws AxelorException {
+
+    ProjectTask projectTask = projectTaskRepo.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put("turnover", projectTask.getTurnover());
+    data.put("initialCosts", projectTask.getInitialCosts());
+    data.put("initialMargin", projectTask.getInitialMargin());
+    data.put("initialMarkup", projectTask.getInitialMarkup());
+    data.put("realTurnover", projectTask.getRealTurnover());
+    data.put("realCosts", projectTask.getRealCosts());
+    data.put("realMargin", projectTask.getRealMargin());
+    data.put("realMarkup", projectTask.getRealMarkup());
+    data.put("landingCosts", projectTask.getLandingCosts());
+    data.put("landingMargin", projectTask.getLandingMargin());
+    data.put("landingMarkup", projectTask.getLandingMarkup());
+    data.put("forecastCosts", projectTask.getForecastCosts());
+    data.put("forecastMargin", projectTask.getForecastMargin());
+    data.put("forecastMarkup", projectTask.getForecastMarkup());
+    Optional.ofNullable(projectTask.getProject())
+        .map(Project::getCompany)
+        .map(Company::getCurrency)
+        .ifPresent(currency -> data.put("currencySymbol", currency.getSymbol()));
+
+    return data;
+  }
+
+  @Override
+  public boolean isTimeUnitValid(Unit unit) {
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    return Objects.equals(unit, appBusinessProject.getDaysUnit())
+        || Objects.equals(unit, appBusinessProject.getHoursUnit());
   }
 }

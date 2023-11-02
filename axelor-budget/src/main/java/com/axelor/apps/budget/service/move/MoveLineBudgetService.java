@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service.move;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 
@@ -29,10 +30,11 @@ public interface MoveLineBudgetService {
    * budget distribution with the credit or debit and save the move line. Return an alert message if
    * a budget distribution is not generated
    *
+   * @param move
    * @param moveLine
    * @return String
    */
-  public String computeBudgetDistribution(MoveLine moveLine);
+  public String computeBudgetDistribution(Move move, MoveLine moveLine);
 
   /**
    * Take all budget distribution and throw an error if the total amount of budget distribution is
@@ -42,4 +44,6 @@ public interface MoveLineBudgetService {
    * @throws AxelorException
    */
   public void checkAmountForMoveLine(MoveLine moveLine) throws AxelorException;
+
+  String getBudgetDomain(Move move, MoveLine moveLine);
 }

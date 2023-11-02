@@ -46,11 +46,11 @@ import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -73,7 +73,7 @@ public class PayrollPreparationService {
   private static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-  protected LeaveService leaveService;
+  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
   protected LeaveRequestRepository leaveRequestRepo;
   protected WeeklyPlanningService weeklyPlanningService;
 
@@ -85,11 +85,11 @@ public class PayrollPreparationService {
 
   @Inject
   public PayrollPreparationService(
-      LeaveService leaveService,
+      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
       LeaveRequestRepository leaveRequestRepo,
       WeeklyPlanningService weeklyPlanningService) {
 
-    this.leaveService = leaveService;
+    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
     this.leaveRequestRepo = leaveRequestRepo;
     this.weeklyPlanningService = weeklyPlanningService;
   }
@@ -171,7 +171,8 @@ public class PayrollPreparationService {
       }
 
       payrollLeave.setDuration(
-          leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
+          leaveRequestComputeDurationService.computeLeaveDaysByLeaveRequest(
+              fromDate, toDate, leaveRequest, employee));
       payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
       payrollLeave.setLeaveRequest(leaveRequest);
       payrollLeaveList.add(payrollLeave);
@@ -319,7 +320,7 @@ public class PayrollPreparationService {
     String fileName = this.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    CsvTool.csvWriter(file.getParent(), file.getName(), ';', headerLine, list);
+    CsvHelper.csvWriter(file.getParent(), file.getName(), ';', headerLine, list);
 
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, file.getName(), payrollPreparation);

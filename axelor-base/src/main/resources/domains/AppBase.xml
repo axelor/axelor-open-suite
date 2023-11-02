@@ -12,6 +12,7 @@
     <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
       title="Default Partner language"/>
+
     <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
     <boolean name="emailAccountByCompany" title="Manage mail account by company"
       default="false"/>
@@ -19,6 +20,10 @@
 
     <!-- Interfaces QAS et SVI -->
     <string name="qasWsdlUrl" title="URL to QAS WSDL"/>
+
+
+    <string name="draftPrefix" title="Draft prefix for sequences" default="#"
+      help="The default value is #"/>
 
     <!-- Mapping API -->
     <integer name="mapApiSelect" title="Mapping service provider"
@@ -107,6 +112,9 @@
     <boolean name="enableMultiCompany" title="Enable multi-company management"
       default="true"/>
 
+    <boolean name="activatePartnerRelations" title="Activate partner delegations"
+      default="false"/>
+
     <many-to-one name="passwordChangedTemplate" ref="com.axelor.message.db.Template"
       title="Template for changed password"/>
 
@@ -137,6 +145,10 @@
     <one-to-many name="emailLinkList" ref="com.axelor.apps.base.db.ModelEmailLink"
       title="Email links"/>
 
+    <one-to-many name="birtTemplateConfigLineList"
+      ref="com.axelor.apps.base.db.BirtTemplateConfigLine" title="BIRT printing settings"
+      mappedBy="appBase"/>
+
     <string name="geoNamesDumpUrl" title="GeoNames Dump URL"/>
     <string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
 
@@ -150,6 +162,18 @@
     <integer name="processTimeout" default="10" title="Timeout for processes (seconds)"
       help="Maximum time before a process called by an user starts running in the background"
       min="1"/>
+
+    <many-to-one name="pfxCertificate" title="PFX Certificate"
+      ref="com.axelor.apps.base.db.PfxCertificate"/>
+
+    <many-to-one name="clientSituationBirtTemplate"
+      ref="com.axelor.apps.base.db.BirtTemplate" title="Client situation template"/>
+    <many-to-one name="companyPhoneBookBirtTemplate"
+      ref="com.axelor.apps.base.db.BirtTemplate" title="Company phone book template"/>
+    <many-to-one name="contactPhoneBookBirtTemplate"
+      ref="com.axelor.apps.base.db.BirtTemplate" title="Contact phone book template"/>
+    <many-to-one name="productCatalogPGQLBirtTemplate"
+      ref="com.axelor.apps.base.db.BirtTemplate" title="Product catalog PGQL template"/>
 
     <extra-code>
 	   		<![CDATA[
@@ -229,7 +253,8 @@
       <field name="manageCcBccRelatedTo" on="UPDATE"/>
       <field name="customAppStyle" on="UPDATE"/>
       <field name="processTimeout" on="UPDATE"/>
-      <!-- 31 fields -->
+      <field name="activatePartnerRelations" on="UPDATE"/>
+      <!-- 32 fields -->
     </track>
 
   </entity>

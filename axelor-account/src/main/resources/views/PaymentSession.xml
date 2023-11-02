@@ -65,16 +65,14 @@
       </panel>
       <panel name="viewerTagsPanel">
         <field name="$viewerTags" showTitle="false" readonly="true">
-          <viewer><![CDATA[
-	                       <h4>
-	                           <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.sessionTotalAmountFormula < 0">Session total amount is negative</span>
-	                       </h4>
-	        ]]></viewer>
+          <viewer>
+            <![CDATA[<>{(sessionTotalAmountFormula < 0) && <Badge bg="info">{_t('Session total amount is negative')}</Badge>}</>]]>
+          </viewer>
         </field>
-        <button name="sessionTotalAmountFormula" title="Session total amount" icon="fa-money"
+        <button name="sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
           showIf="sessionTotalAmountFormula &gt; 0 || $hasUnselectedInvoiceTerm"
-          x-currency="company.currency.symbol" readonly="false"/>
+          x-currency="company.currency.symbol" x-field="sessionTotalAmountFormula"/>
       </panel>
       <panel name="btnPanel" colSpan="4" itemSpan="12">
         <button name="validateBtn" title="Validate" css="btn-success"
@@ -93,12 +91,9 @@
         <button name="viewSentEmailsBtn" title="View emails generated"
           onClick="save,action-payment-session-view-all-sent-emails" showIf="hasEmailsSent"/>
         <field name="hasEmailsSent" showTitle="false" readonly="true" colSpan="12">
-          <viewer><![CDATA[
-                       <h4>
-                           <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.hasEmailsSent == true">Email(s) generated</span>
-                           <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.hasEmailsSent == false">Email(s) not generated</span>
-                       </h4>
-        ]]></viewer>
+          <viewer>
+		    <![CDATA[<><Badge bg={hasEmailsSent ? "success" : "danger"}>{hasEmailsSent ? _t('Email(s) generated') : _t('Email(s) not generated')}</Badge></>]]>
+          </viewer>
         </field>
       </panel>
       <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3" colSpan="8">
@@ -130,7 +125,8 @@
       <field name="assignedToUser"/>
       <field name="journal" readonlyIf="!company"
         onSelect="action-payment-session-method-set-journal-domain"/>
-      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"
+        readonly="true"/>
       <field name="partnerSet" widget="TagSelect" canNew="false" canEdit="false"
         onSelect="action-payment-session-attrs-set-partner-domain" form-view="partner-form"
         readonlyIf="!company || !partnerTypeSelect"/>

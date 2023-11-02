@@ -57,6 +57,8 @@ public interface InvoiceTermService {
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
 
+  void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate, boolean isHoldback);
+
   void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
 
   void computeFinancialDiscount(
@@ -67,7 +69,7 @@ public interface InvoiceTermService {
       BigDecimal remainingAmountAfterFinDiscount);
 
   @CallMethod
-  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine);
+  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) throws AxelorException;
 
   /**
    * Method that creates a customized invoiceTerm
@@ -273,7 +275,8 @@ public interface InvoiceTermService {
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
 
-  BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total);
+  boolean setCustomizedAmounts(
+      InvoiceTerm invoiceTerm, List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
       List<InvoiceTerm> invoiceTermList,
@@ -328,6 +331,13 @@ public interface InvoiceTermService {
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
-  boolean isThresholdNotOnLastInvoiceTerm(
+  boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
+
+  BigDecimal adjustAmountInCompanyCurrency(
+      List<InvoiceTerm> invoiceTermList,
+      BigDecimal companyAmountRemaining,
+      BigDecimal amountToPayInCompanyCurrency,
+      BigDecimal amountToPay,
+      BigDecimal currencyRate);
 }

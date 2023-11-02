@@ -136,7 +136,8 @@
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
         readonlyIf="statusSelect > 1">
         <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value,action-fixed-asset-method-check-depreciation-plans"/>
+          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value,action-fixed-asset-method-check-depreciation-plans"
+          showIf="depreciationPlanSelect.includes(&quot;1&quot;)"/>
         <field name="firstDepreciationDate"
           onChange="action-fixed-asset-validate-check-first-depreciation-date"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"/>
@@ -905,13 +906,13 @@
 
   <action-attrs name="action-attrs-fixed-asset-set-readonly-residual-value">
     <attribute name="readonly" for="residualValue"
-      expr="eval:isEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      expr="eval:isEqualToFiscalDepreciation || (fixedAssetCategory?.fixedAssetType?.technicalTypeSelect == 3 || statusSelect > 1)"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;4&quot;)"/>
     <attribute name="readonly" for="residualValue"
-      expr="eval:isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      expr="eval:isIfrsEqualToFiscalDepreciation || (fixedAssetCategory?.fixedAssetType?.technicalTypeSelect == 3 || statusSelect > 1)"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;) &amp;&amp; !depreciationPlanSelect.contains(&quot;1&quot;)"/>
     <attribute name="readonly" for="residualValue"
-      expr="eval:isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation || (fixedAssetCategory.fixedAssetType.technicalTypeSelect == 3 || statusSelect > 1)"
+      expr="eval:isEqualToFiscalDepreciation &amp;&amp; isIfrsEqualToFiscalDepreciation || (fixedAssetCategory?.fixedAssetType?.technicalTypeSelect == 3 || statusSelect > 1)"
       if="depreciationPlanSelect != null &amp;&amp;  depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
     <attribute name="readonly" for="residualValue" expr="eval:false"
       if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;0&quot;)"/>
