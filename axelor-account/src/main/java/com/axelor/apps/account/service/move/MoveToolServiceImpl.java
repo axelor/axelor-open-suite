@@ -454,10 +454,12 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   @Override
   public void setOriginOnMoveLineList(Move move) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
-        moveLine.setOrigin(move.getOrigin());
-      }
+      moveLine.setOrigin(move.getOrigin());
     }
   }
 
