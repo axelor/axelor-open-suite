@@ -92,7 +92,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-group-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="2"/>
+            grid-view="company-grid" colSpan="2" onSelect="action-move-method-company-onselect"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
@@ -423,7 +423,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-method-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="3"/>
+            grid-view="company-grid" colSpan="3" onSelect="action-move-method-company-onselect"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
@@ -796,6 +796,10 @@
 
   <action-method name="action-move-method-check-period-permission">
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodPermission"/>
+  </action-method>
+
+  <action-method name="action-move-method-company-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectCompany"/>
   </action-method>
 
   <!-- ACTION VIEW -->

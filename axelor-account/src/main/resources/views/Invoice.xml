@@ -21,7 +21,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -2268,6 +2268,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-suppl-invoice-method-merge-from-popup">
     <call class="com.axelor.apps.account.web.InvoiceMergingController"
       method="mergeSupplInvoiceFromPopup"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-convert-selected-lines-to-merge-lines">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="convertSelectedLinesToMergeLines"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-advance-payment-domain">

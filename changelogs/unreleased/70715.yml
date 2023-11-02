@@ -1,3 +1,0 @@
----
-title : " Period closure: Fixed a bug where status of period was reset on error on closure."
-type: fix

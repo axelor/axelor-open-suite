@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service.bankreconciliation;
+package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.base.db.Company;

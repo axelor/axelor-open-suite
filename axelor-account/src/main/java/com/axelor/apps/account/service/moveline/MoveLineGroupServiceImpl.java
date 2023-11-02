@@ -99,7 +99,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineToolService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
     moveLineService.computeFinancialDiscount(moveLine);
+    moveLineRecordService.setCounter(moveLine, move);
 
+    valuesMap.put("counter", moveLine.getCounter());
     valuesMap.put("account", moveLine.getAccount());
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("date", moveLine.getDate());
