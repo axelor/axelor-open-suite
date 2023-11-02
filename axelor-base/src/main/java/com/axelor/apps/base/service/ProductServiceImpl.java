@@ -96,7 +96,8 @@ public class ProductServiceImpl implements ProductService {
       ProductCategory productCategory = product.getProductCategory();
       if (productCategory.getSequence() != null) {
         seq =
-            sequenceService.getSequenceNumber(productCategory.getSequence(), Product.class, "code",product);
+            sequenceService.getSequenceNumber(
+                productCategory.getSequence(), Product.class, "code", product);
       }
       if (seq == null) {
         throw new AxelorException(

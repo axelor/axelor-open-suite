@@ -50,13 +50,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.core.IsNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,13 +156,10 @@ public class SequenceService {
     return sequenceRepo.find(code, company);
   }
 
-
   public boolean hasSequence(String code, Company company) {
 
     return getSequence(code, company) != null;
   }
-
-
 
   /**
    * Method returning a sequence number from a given generic sequence and a date
@@ -171,7 +168,6 @@ public class SequenceService {
    * @param refDate
    * @return
    */
-
   protected void isSequenceAlreadyExisting(
       Class objectClass, String fieldName, String nextSeq, Sequence seq) throws AxelorException {
     String table = objectClass.getSimpleName();
@@ -498,12 +494,12 @@ public class SequenceService {
 
   public String getSequenceNumber(
       Sequence sequence, Class objectClass, String fieldName, Model model) throws AxelorException {
-      return this.getSequenceNumber(
-          sequence,
-          appBaseService.getTodayDate(sequence.getCompany()),
-          objectClass,
-          fieldName,
-          model);
+    return this.getSequenceNumber(
+        sequence,
+        appBaseService.getTodayDate(sequence.getCompany()),
+        objectClass,
+        fieldName,
+        model);
   }
 
   public void verifyPattern(Sequence sequence) throws AxelorException {
@@ -529,9 +525,8 @@ public class SequenceService {
       return null;
     }
 
-      return this.getSequenceNumber(
-          sequence, appBaseService.getTodayDate(company), objectClass, fieldName, model);
-
+    return this.getSequenceNumber(
+        sequence, appBaseService.getTodayDate(company), objectClass, fieldName, model);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -588,8 +583,10 @@ public class SequenceService {
   }
 
   public String getGroovyValue(Sequence sequence, String prefixOrSuffix, Model model) {
-    Context cxt = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
-    if (sequence.getGroovyOk() && !Strings.isNullOrEmpty(prefixOrSuffix) ) {
+    if (!Strings.isNullOrEmpty(prefixOrSuffix)
+        && sequence.getGroovyOk()
+        && Objects.nonNull(model)) {
+      Context cxt = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
       return String.valueOf(new GroovyScriptHelper(cxt).eval(prefixOrSuffix));
     }
     return prefixOrSuffix;

@@ -128,7 +128,9 @@ public class TrackingNumberService {
     Sequence sequence = trackingNumberConfiguration.getSequence();
     String seq;
     while (true) {
-      seq = sequenceService.getSequenceNumber(sequence, TrackingNumber.class, "trackingNumberSeq",trackingNumber);
+      seq =
+          sequenceService.getSequenceNumber(
+              sequence, TrackingNumber.class, "trackingNumberSeq", trackingNumber);
       if (trackingNumberRepo
               .all()
               .filter("self.product = ?1 AND self.trackingNumberSeq = ?2", product, seq)

@@ -41,7 +41,8 @@ public class PurchaseRequestManagementRepository extends PurchaseRequestReposito
                     SequenceRepository.PURCHASE_REQUEST,
                     entity.getCompany(),
                     PurchaseRequest.class,
-                    "purchaseRequestSeq",entity);
+                    "purchaseRequestSeq",
+                    entity);
         if (seq == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

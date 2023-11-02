@@ -171,7 +171,8 @@ public class ChequeRejectionService {
             SequenceRepository.CHEQUE_REJECT,
             chequeRejection.getCompany(),
             ChequeRejection.class,
-            "name",chequeRejection);
+            "name",
+            chequeRejection);
 
     if (seq == null) {
       throw new AxelorException(

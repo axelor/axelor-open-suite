@@ -309,7 +309,7 @@ public class ReimbursementExportService {
 
     reimbursement.setRef(
         sequenceService.getSequenceNumber(
-            SequenceRepository.REIMBOURSEMENT, company, Reimbursement.class, "ref",reimbursement));
+            SequenceRepository.REIMBOURSEMENT, company, Reimbursement.class, "ref", reimbursement));
 
     return reimbursement;
   }

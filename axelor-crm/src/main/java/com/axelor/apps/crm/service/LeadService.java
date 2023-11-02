@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.crm.service;
 
-import camundajar.impl.scala.concurrent.impl.FutureConvertersImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;

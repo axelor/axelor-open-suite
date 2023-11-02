@@ -135,7 +135,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             "subrogationRelease",
             subrogationRelease.getCompany(),
             SubrogationRelease.class,
-            "sequenceNumber",subrogationRelease);
+            "sequenceNumber",
+            subrogationRelease);
     if (Strings.isNullOrEmpty(sequenceNumber)) {
       throw new AxelorException(
           Sequence.class,

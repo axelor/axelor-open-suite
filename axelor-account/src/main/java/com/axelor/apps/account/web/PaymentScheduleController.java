@@ -87,7 +87,8 @@ public class PaymentScheduleController {
                     SequenceRepository.PAYMENT_SCHEDULE,
                     paymentSchedule.getCompany(),
                     PaymentSchedule.class,
-                    "paymentScheduleSeq",paymentSchedule);
+                    "paymentScheduleSeq",
+                    paymentSchedule);
 
         if (Strings.isNullOrEmpty(num)) {
           response.setError(
