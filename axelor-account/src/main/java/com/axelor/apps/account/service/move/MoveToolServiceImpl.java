@@ -462,10 +462,12 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   @Override
   public void setDescriptionOnMoveLineList(Move move) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
-        moveLine.setDescription(move.getDescription());
-      }
+      moveLine.setDescription(move.getDescription());
     }
   }
 
