@@ -2154,6 +2154,7 @@
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
     <error message="Incoterm must be filled"
       if="__config__.app.isApp('supplychain')
+                &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
           &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
@@ -2304,6 +2305,7 @@
   <action-attrs name="action-sale-order-attrs-incoterm-required">
     <attribute for="incoterm" name="required"
       expr="eval: __config__.app.isApp('supplychain')
+                      &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
           &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
