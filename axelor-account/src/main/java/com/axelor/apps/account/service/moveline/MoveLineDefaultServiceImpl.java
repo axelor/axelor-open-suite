@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -37,20 +36,17 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AnalyticToolService analyticToolService;
-  protected MoveToolService moveToolService;
 
   @Inject
   public MoveLineDefaultServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      AnalyticToolService analyticToolService,
-      MoveToolService moveToolService) {
+      AnalyticToolService analyticToolService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticToolService = analyticToolService;
-    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -78,11 +74,6 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
 
     if (accountingAccount != null) {
       moveLine.setAccount(accountingAccount);
-
-      if (!accountingAccount.getUseForPartnerBalance()
-          && !moveToolService.isPartnerRequired(move.getJournal())) {
-        moveLine.setPartner(null);
-      }
 
       AnalyticDistributionTemplate analyticDistributionTemplate =
           accountingAccount.getAnalyticDistributionTemplate();

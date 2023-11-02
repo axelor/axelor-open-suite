@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.move.attributes;
 
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
@@ -29,7 +30,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MovePfpService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -58,7 +58,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected AnalyticToolService analyticToolService;
   protected AnalyticAttrsService analyticAttrsService;
   protected CompanyRepository companyRepository;
-  protected MoveToolService moveToolService;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -69,8 +68,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       MovePfpService movePfpService,
       AnalyticToolService analyticToolService,
       AnalyticAttrsService analyticAttrsService,
-      CompanyRepository companyRepository,
-      MoveToolService moveToolService) {
+      CompanyRepository companyRepository) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
@@ -79,7 +77,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     this.analyticToolService = analyticToolService;
     this.analyticAttrsService = analyticAttrsService;
     this.companyRepository = companyRepository;
-    this.moveToolService = moveToolService;
   }
 
   protected void addAttr(
@@ -368,8 +365,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   @Override
   public void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap) {
     Objects.requireNonNull(move);
-    this.addAttr(
-        "partner", "required", moveToolService.isPartnerRequired(move.getJournal()), attrsMap);
+    this.addAttr("partner", "required", isPartnerRequired(move.getJournal()), attrsMap);
   }
 
   @Override
@@ -380,8 +376,17 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         "$mainPanelTabHidden",
         "value",
         move.getJournal() == null
-            || (moveToolService.isPartnerRequired(move.getJournal()) && move.getPartner() == null),
+            || (isPartnerRequired(move.getJournal()) && move.getPartner() == null),
         attrsMap);
+  }
+
+  protected boolean isPartnerRequired(Journal journal) {
+    return journal != null
+        && journal.getJournalType() != null
+        && (journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
   }
 
   @Override
