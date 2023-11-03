@@ -99,7 +99,10 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="company" hidden="true"/>
+    <field name="company.currency" hidden="true"/>
     <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
