@@ -81,7 +81,7 @@
       <field name="suffixeGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
         onChange="action-sequence-method-compute-fullname" widget="CodeEditor"
         x-code-syntax="groovy" showIf="groovyOk"/>
-      <field name="groovyOk"/>
+      <field name="groovyOk" hideIf="codeSelect == 'invoice' || codeSelect == 'expense' || codeSelect =='fixedAsset'  || codeSelect == 'move' || codeSelect =='bankOrder'"/>
       <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
         onChange="action-sequence-group-yearly-reset-on-change"/>
       <field name="monthlyResetOk" onChange="action-sequence-group-monthly-reset-on-change"/>
