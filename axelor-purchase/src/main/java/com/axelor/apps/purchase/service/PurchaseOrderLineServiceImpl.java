@@ -48,7 +48,7 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppPurchase;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -634,7 +634,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       String message = String.format(I18n.get(PurchaseExceptionMessage.DIFFERENT_SUPPLIER));
       String title =
           String.format(
-              "<span class='label %s'>%s</span>", ContextTool.SPAN_CLASS_WARNING, message);
+              "<span class='label %s'>%s</span>", ContextHelper.SPAN_CLASS_WARNING, message);
 
       response.setAttr("differentSupplierLabel", "title", title);
       response.setAttr("differentSupplierLabel", "hidden", false);

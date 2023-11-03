@@ -1,8 +1,27 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.PfxCertificate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -19,6 +38,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -74,8 +94,15 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
         createBasicExpenseLine(project, employee, expenseDate, comments, currency, toInvoice);
     setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
-    expenseProofFileService.convertProofFileToPdf(expenseLine);
+    convertJustificationFileToPdf(expenseLine);
+
     return expenseLineRepository.save(expenseLine);
+  }
+
+  protected void convertJustificationFileToPdf(ExpenseLine expenseLine) throws AxelorException {
+    AppBase appBase = appBaseService.getAppBase();
+    PfxCertificate pfxCertificate = appBase.getPfxCertificate();
+    expenseProofFileService.convertProofFileToPdf(pfxCertificate, expenseLine);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -238,11 +265,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Boolean toInvoice)
       throws AxelorException {
     ExpenseLine expenseLine = new ExpenseLine();
-    if (expenseDate.isAfter(appBaseService.getTodayDate(null))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          HumanResourceExceptionMessage.EXPENSE_LINE_DATE_ERROR);
-    }
 
     setCurrency(currency, expenseLine);
     expenseLine.setProject(project);

@@ -50,4 +50,6 @@ public interface ITranslation {
       "AccountingReportType25.totalExpenditure"; /*)*/
   public static final String ACCOUNTING_REPORT_25_BALANCE = /*$$(*/
       "AccountingReportType25.balance"; /*)*/
+  public static final String ACCOUNTING_REPORT_25_CURRENCY = /*$$(*/
+      "AccountingReportType25.currency"; /*)*/
 }

@@ -32,7 +32,7 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.model.machine.MachineTimeSlot;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -69,7 +69,7 @@ public class MachineServiceImpl implements MachineService {
         startDateT,
         endDateT,
         operationOrder,
-        DurationTool.getSecondsDuration(Duration.between(startDateT, endDateT)));
+        DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)));
   }
 
   @SuppressWarnings("unchecked")
@@ -130,7 +130,7 @@ public class MachineServiceImpl implements MachineService {
 
       long remainingTime =
           initialDuration
-              - DurationTool.getSecondsDuration(
+              - DurationHelper.getSecondsDuration(
                   Duration.between(plannedStartDateT, plannedEndDateT).minusSeconds(voidDuration));
       // So the time 'spent' must be reported
       plannedEndDateT = plannedEndDateT.plusSeconds(remainingTime);
@@ -201,7 +201,7 @@ public class MachineServiceImpl implements MachineService {
         startDateT,
         endDateT,
         operationOrder,
-        DurationTool.getSecondsDuration(Duration.between(startDateT, endDateT)));
+        DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)));
   }
 
   @SuppressWarnings("unchecked")
@@ -263,7 +263,7 @@ public class MachineServiceImpl implements MachineService {
 
       long remainingTime =
           initialDuration
-              - DurationTool.getSecondsDuration(
+              - DurationHelper.getSecondsDuration(
                   Duration.between(plannedStartDateT, plannedEndDateT).minusSeconds(voidDuration));
       // So the time 'spent' must be reported
       plannedStartDateT = plannedStartDateT.plusSeconds(remainingTime);
@@ -291,7 +291,8 @@ public class MachineServiceImpl implements MachineService {
             .filter(
                 "self.machine = :machine"
                     + " AND ((self.plannedStartDateT <= :startDate AND self.plannedEndDateT > :startDateWithTime)"
-                    + " OR (self.plannedStartDateT <= :endDate AND self.plannedEndDateT > :endDateWithTime))"
+                    + " OR (self.plannedStartDateT < :endDate AND self.plannedEndDateT > :endDateWithTime)"
+                    + " OR (self.plannedStartDateT >= :startDate AND self.plannedEndDateT <= :endDateWithTime))"
                     + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
                     + " AND self.id != :operationOrderId")
             .bind("startDate", plannedStartDateT)
@@ -312,10 +313,10 @@ public class MachineServiceImpl implements MachineService {
 
       return getFurthestAvailableTimeSlotFrom(
           machine,
-          firstOperationOrder.getPlannedStartDateT().plusSeconds(timeBeforeNextOperation),
           firstOperationOrder
-              .getPlannedEndDateT()
-              .plusSeconds(timeBeforeNextOperation + initialDuration),
+              .getPlannedStartDateT()
+              .minusSeconds(initialDuration + timeBeforeNextOperation),
+          firstOperationOrder.getPlannedStartDateT().minusSeconds(timeBeforeNextOperation),
           operationOrder,
           initialDuration);
     }

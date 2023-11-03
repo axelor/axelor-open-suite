@@ -47,7 +47,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -839,8 +839,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     String externalRef = String.join("|", externalRefList);
     String internalRef = String.join("|", internalRefList);
 
-    dummyInvoice.setExternalReference(StringTool.cutTooLongString(externalRef));
-    dummyInvoice.setInternalReference(StringTool.cutTooLongString(internalRef));
+    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef));
+    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef));
   }
 
   /**
@@ -868,8 +868,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     String externalRef = String.join("|", externalRefList);
     String internalRef = String.join("|", internalRefList);
 
-    dummyInvoice.setExternalReference(StringTool.cutTooLongString(externalRef));
-    dummyInvoice.setInternalReference(StringTool.cutTooLongString(internalRef));
+    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef));
+    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef));
   }
 
   /**

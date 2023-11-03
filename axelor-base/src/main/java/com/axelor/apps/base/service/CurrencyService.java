@@ -29,7 +29,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -248,7 +248,7 @@ public class CurrencyService {
             startCurrency.getCodeISO(),
             endCurrency.getCodeISO(),
             existingFromDate);
-      } else if (DateTool.isBetween(existingFromDate, existingToDate, fromDate)) {
+      } else if (LocalDateHelper.isBetween(existingFromDate, existingToDate, fromDate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.CURRENCY_11),

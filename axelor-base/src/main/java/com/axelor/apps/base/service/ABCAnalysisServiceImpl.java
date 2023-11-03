@@ -36,7 +36,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -202,7 +202,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     Query<Product> productQuery =
         productRepository
             .all()
-            .filter("self.id IN (" + StringTool.getIdListString(getProductSet(abcAnalysis)) + ")");
+            .filter(
+                "self.id IN (" + StringHelper.getIdListString(getProductSet(abcAnalysis)) + ")");
 
     while (!(productList = productQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());

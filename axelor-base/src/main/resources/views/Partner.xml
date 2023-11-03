@@ -174,34 +174,6 @@
       </menu>
     </menubar>
     <panel-include view="incl-event-actions-partner-form"/>
-    <panel name="propertiesPanel" title="Properties" canCollapse="true" sidebar="true"
-      hideIf="$readonly()">
-      <field name="isEmployee" colSpan="12" widget="InlineCheckbox"
-        hideIf="!_showIsEmployee || partnerTypeSelect != 2 || isCustomer || isSupplier || isCarrier || isFactor || isProspect || isCompensation || isContact || isInternal || isPartner || isSubcontractor"
-        onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
-      <field name="isProspect" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact || isCustomer || isEmployee || isSubcontractor || isInternal || isCarrier || isFactor"
-        onChange="action-partner-group-unset-customer,action-partner-record-unset-factor"/>
-      <field name="isCustomer" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact ||  isEmployee"
-        onChange="action-partner-group-check-can-change-customer,action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
-      <field name="isSupplier" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact ||  isEmployee"
-        onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
-      <field name="isSubcontractor" colSpan="12" widget="InlineCheckbox"
-        if-module="axelor-production"
-        if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
-      <field name="isInternal" colSpan="12" widget="InlineCheckbox"/>
-      <field name="isCarrier" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact ||  isEmployee" if="__config__.app.isApp('stock')"
-        onChange="action-partner-record-unset-factor"/>
-      <field name="isFactor" colSpan="12" widget="InlineCheckbox"
-        hideIf="isContact ||  isEmployee"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
-        if-module="axelor-account"
-        onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
-      <field name="isContact" hidden="true" colSpan="12"/>
-    </panel>
     <panel name="mainPanel">
       <panel name="imagePanel" colSpan="2">
         <field name="picture" showTitle="false" widget="Image" colSpan="12">
@@ -290,12 +262,12 @@
           </viewer>
         </field>
         <field name="isContact" hidden="true" colSpan="12"/>
-        <panel name="blockingPanel" hideIf="!$readonly()" colOffset="9" colSpan="3">
+        <panel name="blockingPanel" hideIf="!$readonly()" colSpan="12">
           <field name="$activeBlockings" showTitle="false" colSpan="12">
             <viewer><![CDATA[
                             <>
-	                            <Box d="flex" flexDirection="column" justifyContent="flex-end">
-		                            {blockingList.map((b) => {
+	                            <Box d="flex" flexDirection="column" justifyContent="flex-end" alignItems="end">
+		                            {blockingList.map((b,index) => {
 		                            	const selectMap = {
 		                            	'1': _t('Remin._block'),
 		                            	'2': _t('Inv._block'),
@@ -306,8 +278,8 @@
 		                            };
 		                            return (
 		                            ($moment(b.blockingToDate) > $moment(today)) &&
-		                            	<Badge bg="danger" mt={2}>
-		                            		<Icon icon="slash-circle"/> {selectMap[b.blockingSelect]} <Icon icon="caret-right-fill"/> {$moment(b.blockingToDate).format('L')}
+		                            	<Badge key={index} bg="danger" mt={2}>
+		                            		<Icon icon="ban" fontSize="12px"/>{selectMap[b.blockingSelect]} <Icon icon="caret-right-fill" fontSize="12px"/> {$moment(b.blockingToDate).format('L')}
 		                            	</Badge>
 		                            );
 		                           })}
@@ -320,6 +292,35 @@
         <field name="$supplierCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
         <field name="$factorCantBeRemoved" hidden="true" type="boolean" showIf="false"/>
       </panel>
+    </panel>
+    <panel name="propertiesPanel" title="Properties" canCollapse="true" collapseIf="id"
+      hidden="true" showIf="!$readonly()" itemSpan="4">
+      <panel name="leftPanel" itemSpan="12">
+        <field name="isEmployee" widget="InlineCheckbox"
+          hideIf="!_showIsEmployee || partnerTypeSelect != 2 || isCustomer || isSupplier || isCarrier || isFactor || isProspect || isCompensation || isContact || isInternal || isPartner || isSubcontractor"
+          onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
+        <field name="isProspect" widget="InlineCheckbox"
+          hideIf="isContact || isCustomer || isEmployee || isSubcontractor || isInternal || isCarrier || isFactor"
+          onChange="action-partner-group-unset-customer,action-partner-record-unset-factor"/>
+        <field name="isCustomer" widget="InlineCheckbox" hideIf="isContact ||  isEmployee"
+          onChange="action-partner-group-check-can-change-customer,action-partner-record-invoices-copy-default-value,action-partner-account-attrs-hide-customer-account,action-partner-attrs-unset-prospect,action-partner-record-unset-factor"/>
+        <field name="isSupplier" widget="InlineCheckbox" hideIf="isContact ||  isEmployee"
+          onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
+      </panel>
+      <panel name="middlePanel" itemSpan="12">
+        <field name="isInternal" widget="InlineCheckbox"/>
+        <field name="isFactor" widget="InlineCheckbox" hideIf="isContact ||  isEmployee"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
+          if-module="axelor-account"
+          onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
+      </panel>
+      <panel name="rightPanel" itemSpan="12">
+        <field name="isCarrier" widget="InlineCheckbox" hideIf="isContact ||  isEmployee"
+          if="__config__.app.isApp('stock')" onChange="action-partner-record-unset-factor"/>
+        <field name="isSubcontractor" widget="InlineCheckbox" if-module="axelor-production"
+          if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
+      </panel>
+      <field name="isContact" hidden="true"/>
     </panel>
     <panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
       form-view="partner-role-form" grid-view="partner-role-grid"
@@ -401,18 +402,19 @@
           </static>
           <field name="partnerAddressList" colSpan="12" form-view="partner-address-form"
             grid-view="partner-address-grid">
-            <editor x-show-titles="false" onNew="action-partner-address-attrs-set-canselect"
-              x-viewer="true">
+            <editor x-show-titles="false" x-viewer="true">
               <panel colSpan="12" css="field-append">
-                <field name="$canSelect" hidden="true" colSpan="12"/>
                 <label colSpan="12"
                   title="The following address is invalid. Please use '+' button to create a new one :"
                   showIf="address == null || address.addressL4 == null" hidden="true"
                   css="label-bold" name="addressHelperLabel"/>
                 <panel colSpan="12" stacked="true" css="field-append">
-                  <field name="address" canEdit="!$canSelect" canNew="true"
-                    form-view="address-form" grid-view="address-grid" canSelect="$canSelect"
-                    required="true"/>
+                  <field name="address" canNew="true" form-view="address-form"
+                    grid-view="address-grid" required="true"
+                    if="__config__.app.getApp('base')?.getIsSharedAddress()"/>
+                  <field name="address" canNew="true" canEdit="true" form-view="address-form"
+                    grid-view="address-grid" canSelect="false" required="true"
+                    if="!__config__.app.getApp('base')?.getIsSharedAddress()"/>
                   <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
                     x-icon="fa-list-alt"/>
                   <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
@@ -483,11 +485,16 @@
           <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
-      <panel-related name="accountingSituationListPanel" if-module="axelor-account"
-        if="__config__.app.isApp('account')" field="accountingSituationList"
-        title="Accounting situation" hideIf="isContact" colSpan="12"
-        grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form"
-        onSelect="action-account-accounting-situation-method-update-customer-account"/>
+      <panel name="accountingSituationPanel" if-module="axelor-account"
+        if="__config__.app.isApp('account')" title="Accounting situation" hideIf="isContact"
+        onSelect="action-account-accounting-situation-method-update-customer-account">
+        <field name="isCompensation" colSpan="12" widget="boolean-switch"
+          showIf="isCustomer &amp;&amp; isSupplier"/>
+        <panel-related name="accountingSituationListPanel"
+          field="accountingSituationList" title="Accounting situation" hideIf="isContact"
+          colSpan="12" grid-view="accounting-situation-partner-grid"
+          form-view="accounting-situation-partner-form"/>
+      </panel>
       <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
         if="__config__.app.isApp('account')"/>
       <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
@@ -831,7 +838,7 @@
 		<>
 			<Box>
 				<strong>{fullName}</strong>
-				<Box d="grid" gridTemplateColumns="33% 67%">
+				<Box d="grid" gridTemplateColumns="33% 67%" mt={2}>
 					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
 						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
 		     			{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg"></Image>}
@@ -843,10 +850,10 @@
 						{mainAddress.fullName} <Box/>
 						{fixedPhone} <Box/>
 						{emailAddress.address} <Box/>
-						{partnerCategory.name} <Box/>
+						{partnerCategory.name}
 					</Box>
 				</Box>
-				<Box d="flex" justifyContent="flex-end" gap="4" mt={4}>
+				<Box d="flex" justifyContent="flex-end" gap="4" mt={3}>
 					{isProspect && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Prospect')}</Badge>}
 					{isEmployee && <Badge style={{ backgroundColor: "#5680FC" }}>{_t('Employee')}</Badge>}
 					{isCustomer && <Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Customer')}</Badge>}
@@ -882,24 +889,47 @@
     <field name="simpleFullName"/>
     <template><![CDATA[
 		<>
-		  	<Box d="grid" gridTemplateColumns="33% 67%">
-				<Box d="flex" flexDirection="column" alignItems="center">
-					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
-						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
-	     				{!picture && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
-	     				{!picture && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
-	     				{!picture && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
-					</Box>
-					<Box as="strong" textAlign="center">{partnerSeq}</Box>
-					<Box as="strong" textAlign="center">{simpleFullName}</Box>
-				</Box>
-				<Box>
-					{fixedPhone && <Box><Icon icon="telephone-fill"/> {fixedPhone} </Box>}
-					{mobilePhone && <Box><Icon icon="phone-fill"/> {mobilePhone} </Box>}
-					{emailAddress?.address && <Box><Icon icon="envelope-fill"/> {emailAddress.address} </Box>}
-					{mainPartner?.simpleFullName && <Box><Icon icon="building-fill"/> {mainPartner.simpleFullName} </Box>}
-					{mainAddress?.fullName && <Box><Icon icon="house-door-fill"/> {mainAddress.fullName} </Box>}
-				</Box>
+			<Box style={{ height: 180 }}>
+			    <Box d="grid" gridTemplateColumns="35% 65%" style={{ height: 150 }}>
+			        <Box d="flex" flexDirection="column" alignItems="center" justifyContent="center">
+						<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+							{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+		     				{!picture && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
+		     				{!picture && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
+		     				{!picture && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
+						</Box>
+						<Box as="strong" textAlign="center">{partnerSeq}</Box>
+						<Box as="strong" textAlign="center">{simpleFullName}</Box>
+			        </Box>
+			        <Box position="absolute" ps={4} style={{ width: "60%", height: "100%", left: "35%", top: 0 }}>
+			            <Box d="flex" alignItems="center" borderStart borderWidth={2} w={100} h={100} style={{ transform: "skew(-20deg, 0deg)" }}>
+			                <Box style={{ height: "70%", width: "2rem", boxShadow: "rgb(0 0 0 / 25%) 3px 3px 8px", backgroundColor: "#20BCB5" }} />
+			                <Box d="flex" alignItems="center" w={100} style={{ position: "absolute", top: "15%", left: "0.5rem", minHeight: "70%" }}>
+			                    <Box as="ul" m={0} p={0} w={100} style={{ listStyle: "none" }}>
+			                        {(() => {
+			                            const renderItem = (icon, value) => {
+			                                return value && String(value).trim() && (
+			                                    <Box as="li" d="flex" gap={24} style={{ transform: "skew(20deg, 0deg)" }}>
+			                                        <Icon icon={icon} color="white" fontSize="15px"/>
+			                                        <Box as="span" style={{ fontSize: 15 }}> {value} </Box>
+			                                    </Box>
+			                                );
+			                            };
+			                            return (
+			                                <>
+			                                    {renderItem("telephone", fixedPhone)}
+			                                    {renderItem("phone", mobilePhone)}
+			                                    {renderItem("envelope-fill", emailAddress.address)}
+			                                    {renderItem("building", mainPartner.simpleFullName)}
+			                                    {renderItem("house-fill", mainAddress.fullName)}
+			                                </>
+			                            );
+			                        })()}
+			                    </Box>
+			                </Box>
+			            </Box>
+			        </Box>
+			    </Box>
 			</Box>
 		</>
 		]]>
@@ -1061,7 +1091,6 @@
     <action name="action-partner-attrs-partner-seq-editable"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
-    <action name="action-partner-attrs-set-canselect"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1072,7 +1101,6 @@
     <action name="action-partner-record-set-payment-modes"/>
     <action name="action-partner-record-payment-condition"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
-    <action name="action-partner-attrs-set-canselect"/>
   </action-group>
 
   <action-group name="action-group-base-partner-contact-name-onchange">
@@ -1259,11 +1287,6 @@
   <action-attrs name="action-partner-attrs-hide-invoice-and-delivery-address-text">
     <attribute name="hidden" for="invoiceAndDeliveryAddressText"
       expr="eval: partnerAddressList?.findAll{it.isInvoicingAddr}?.size() &gt; 0 &amp;&amp; partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0"/>
-  </action-attrs>
-
-  <action-attrs name="action-partner-attrs-set-canselect">
-    <attribute name="value" for="partnerAddressList.$canSelect"
-      expr="eval:__config__.app.getApp('base')?.getIsSharedAddress()"/>
   </action-attrs>
 
   <action-group name="action-partner-partner-type-select-change">
@@ -1552,6 +1575,7 @@
     <field name="isCustomer" expr="eval: false"/>
     <field name="isSupplier" expr="eval: false"/>
     <field name="isCarrier" expr="eval: false"/>
+    <field name="isSubrogation" expr="eval: false" if="__config__.app.isApp('account')"/>
   </action-record>
 
   <action-validate name="action-partner-validate-partner-stock-settings-list">

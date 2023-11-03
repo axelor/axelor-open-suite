@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.production.web;
 
+import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE;
+
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
@@ -27,6 +29,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderPlanningS
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -51,6 +54,20 @@ public class OperationOrderController {
 
     Beans.get(OperationOrderPlanningService.class).computeDuration(operationOrder);
     response.setReload(true);
+  }
+
+  public void alertPlannedEndDateOverflow(ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      if (Beans.get(OperationOrderPlanningService.class)
+          .willPlannedEndDateOverflow(operationOrder)) {
+        response.setAlert(
+            I18n.get(
+                LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setPlannedDates(ActionRequest request, ActionResponse response) {

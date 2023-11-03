@@ -55,7 +55,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -292,7 +292,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             debit,
             credit,
             Strings.isNullOrEmpty(move.getDescription())
-                ? StringTool.cutTooLongString(
+                ? StringHelper.cutTooLongString(
                     moveLineToolService.determineDescriptionMoveLine(
                         move.getJournal(), origin, description))
                 : move.getDescription(),
@@ -857,7 +857,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
     newOrUpdatedMoveLine.setDescription(
-        StringTool.cutTooLongString(
+        StringHelper.cutTooLongString(
             moveLineToolService.determineDescriptionMoveLine(
                 move.getJournal(), move.getOrigin(), move.getDescription())));
 
@@ -909,7 +909,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLineRC.setVatSystemSelect(vatSystem);
       newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
       newOrUpdatedMoveLineRC.setDescription(
-          StringTool.cutTooLongString(
+          StringHelper.cutTooLongString(
               moveLineToolService.determineDescriptionMoveLine(
                   move.getJournal(), move.getOrigin(), move.getDescription())));
 

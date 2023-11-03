@@ -33,9 +33,9 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
   @Override
   public String printConformityCertificates(List<Long> ids) throws IOException {
     List<File> printedConformityCertificates = new ArrayList<>();
-    ModelTool.apply(
+    ModelHelper.apply(
         StockMove.class,
         ids,
         new ThrowConsumer<StockMove, Exception>() {
@@ -73,7 +73,7 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
           }
         });
     String fileName = getConformityCertificateFilesName(true, ReportSettings.FORMAT_PDF);
-    return PdfTool.mergePdfToFileLink(printedConformityCertificates, fileName);
+    return PdfHelper.mergePdfToFileLink(printedConformityCertificates, fileName);
   }
 
   @Override
@@ -84,8 +84,7 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
         stockConfigService
             .getStockConfig(stockMove.getCompany())
             .getConformityCertificateBirtTemplate();
-    if (ObjectUtils.isEmpty(conformityCertificateBirtTemplate)
-        || ObjectUtils.isEmpty(conformityCertificateBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(conformityCertificateBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
@@ -105,7 +104,7 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
   public String printConformityCertificate(StockMove stockMove, String format)
       throws AxelorException, IOException {
     String fileName = getConformityCertificateFilesName(false, ReportSettings.FORMAT_PDF);
-    return PdfTool.getFileLinkFromPdfFile(print(stockMove, format), fileName);
+    return PdfHelper.getFileLinkFromPdfFile(print(stockMove, format), fileName);
   }
 
   /**

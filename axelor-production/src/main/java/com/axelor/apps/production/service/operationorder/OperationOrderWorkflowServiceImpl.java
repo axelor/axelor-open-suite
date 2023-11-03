@@ -37,7 +37,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -104,24 +104,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void plan(OperationOrder operationOrder) throws AxelorException {
-    operationOrderPlanningService.plan(operationOrder, null);
-  }
-
-  /**
-   * Plans the given {@link OperationOrder} and sets its planned dates for successive calls, must be
-   * called by order of operation order priority. The order must be ascending if useAsapScheduling
-   * is true and descending if not.
-   *
-   * @param operationOrder
-   * @param useAsapScheduling
-   * @return
-   * @throws AxelorException
-   */
-  @Override
-  @Transactional
-  public void plan(OperationOrder operationOrder, boolean useAsapScheduling)
-      throws AxelorException {
-    operationOrderPlanningService.plan(operationOrder, null, useAsapScheduling);
+    operationOrderPlanningService.plan(List.of(operationOrder));
   }
 
   /**
@@ -132,7 +115,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void replan(OperationOrder operationOrder) throws AxelorException {
-    operationOrderPlanningService.replan(operationOrder);
+    operationOrderPlanningService.replan(List.of(operationOrder));
   }
 
   /**
@@ -423,7 +406,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected void computeFinishDuration(OperationOrder operationOrder) {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong =
-          DurationTool.getSecondsDuration(
+          DurationHelper.getSecondsDuration(
               operationOrderService.computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
       Machine machine = operationOrder.getMachine();

@@ -18,7 +18,7 @@
       <field name="metaModel" hidden="true" readonly="true"/>
       <help>
         <![CDATA[
-          <><br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br></>
+          <br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>
         ]]>
       </help>
 

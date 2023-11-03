@@ -22,11 +22,9 @@
         colSpan="12">
         <field name="$noAccountChartLabel" showTitle="false" hidden="true" readonly="true"
           hideIf="$existingChartAccount || hasChartImported" colSpan="12">
-          <viewer><![CDATA[
-
-          <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate>There is no account chart defined. Please define a chart from the account configuration menu or import a default one using the account charts available below and click on the button 'Import'.</span>
-
-      ]]></viewer>
+          <viewer>
+            <![CDATA[<><Badge bg="info">{_t('There is no account chart defined. Please define a chart from the account configuration menu or import a default one using the account charts available below and click on the button \'Import\'.')}</Badge></>]]>
+          </viewer>
         </field>
         <field name="accountChart" readonlyIf="hasChartImported" colSpan="3" canNew="true"
           form-view="account-chart-form" grid-view="account-chart-grid"/>
@@ -42,11 +40,9 @@
         <panel name="fiscalYearAndPeriodGenerationPanel" hidden="true"
           hideIf="$existingFiscalYear" colSpan="12">
           <field name="$noFiscalYearLabel" showTitle="false" readonly="true" colSpan="12">
-            <viewer><![CDATA[
-
-          <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate>There is no fiscal year and periods defined. Please enter below the fiscal year dates (included-included) and the periods duration and click on the button 'Generate' to create them automatically.</span>
-
-        ]]></viewer>
+            <viewer>
+              <![CDATA[<><Badge bg="info">{_t('There is no fiscal year and periods defined. Please enter below the fiscal year dates (included-included) and the periods duration and click on the button \'Generate\' to create them automatically.')}</Badge></>]]>
+            </viewer>
           </field>
           <field name="$generateFiscalYear"
             title="Generate a fiscal year and associated periods" colSpan="3" type="boolean"/>

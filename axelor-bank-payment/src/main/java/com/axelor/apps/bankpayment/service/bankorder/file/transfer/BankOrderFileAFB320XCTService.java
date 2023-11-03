@@ -37,7 +37,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -444,18 +444,18 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
 
     switch (bankDetails.getBank().getBankDetailsTypeSelect()) {
       case BankRepository.BANK_IDENTIFIER_TYPE_IBAN:
-        return StringTool.fillStringRight(bankDetails.getIban(), ' ', 34);
+        return StringHelper.fillStringRight(bankDetails.getIban(), ' ', 34);
 
       case BankRepository.BANK_IDENTIFIER_TYPE_NATIONAL:
-        return StringTool.fillStringRight(
-            StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
+        return StringHelper.fillStringRight(
+            StringHelper.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
 
       case BankRepository.BANK_IDENTIFIER_TYPE_OTHER:
-        return StringTool.fillStringRight(
-            StringTool.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
+        return StringHelper.fillStringRight(
+            StringHelper.fillString(' ', 4) + bankDetails.getIban(), ' ', 34);
 
       default:
-        return StringTool.fillStringRight(bankDetails.getIban(), ' ', 34);
+        return StringHelper.fillStringRight(bankDetails.getIban(), ' ', 34);
     }
   }
 

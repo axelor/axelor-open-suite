@@ -38,7 +38,7 @@ import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -102,7 +102,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     switch (budgetControlLevel) {
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-          if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
+          if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
             budgetToCompare = budgetLine.getAvailableAmount();
             budgetName +=
                 ' ' + budgetLine.getFromDate().toString() + ':' + budgetLine.getToDate().toString();
@@ -126,10 +126,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getParentBudgetLevel()
+                .getGlobalBudget()
                 .getTotalAmountAvailable();
-        budgetName =
-            budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getName();
+        budgetName = budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getName();
         break;
     }
     if (budgetToCompare.compareTo(amount) < 0) {
@@ -141,7 +140,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               budget
                   .getBudgetLevel()
                   .getParentBudgetLevel()
-                  .getParentBudgetLevel()
+                  .getGlobalBudget()
                   .getCompany()
                   .getCurrency()
                   .getSymbol());
@@ -246,7 +245,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
         LocalDate fromDate = budgetLine.getFromDate();
         LocalDate toDate = budgetLine.getToDate();
 
-        if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
+        if (fromDate != null && LocalDateHelper.isBetween(fromDate, toDate, computeDate)) {
           BigDecimal amount = budgetLine.getAvailableAmount();
           budgetAmountAvailable = budgetAmountAvailable.add(amount);
         }

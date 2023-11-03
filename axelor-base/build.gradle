@@ -30,7 +30,6 @@ dependencies {
 	implementation libs.ical4j_connector
 
 	implementation libs.iban4j
-	implementation libs.html2pdf
 	implementation libs.jackrabbit_webdav
 	implementation libs.zxing_core
 		// JSch
@@ -44,12 +43,27 @@ dependencies {
 
 	api libs.tika
 
+	if (file("../../axelor-utils").exists()) {
+		api project(":modules:axelor-utils")
+	}
+	else {
+	   api libs.axelor_utils
+	}
+
+	if (file("../../axelor-message").exists()) {
+		api project(":modules:axelor-message")
+	}
+	else {
+		api libs.axelor_message
+   	}
+
 	if (file("../../axelor-studio").exists()) {
 		api project(":modules:axelor-studio")
 	}
 	else {
 		api libs.axelor_studio
 	}
+
 	implementation libs.faker
 	api libs.commons_csv
 	api libs.wslite
@@ -59,4 +73,7 @@ dependencies {
 	implementation libs.swagger_jaxrs
 	implementation libs.pdfbox
 	implementation libs.boxable
+	implementation libs.bcprov_jdk15on
+	implementation libs.bcpkix_jdk15on
+	implementation libs.flyingsaucer_openpdf
 }

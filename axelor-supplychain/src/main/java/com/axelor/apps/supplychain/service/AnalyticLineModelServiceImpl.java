@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticAccount;
@@ -13,6 +31,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -34,6 +54,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected AnalyticToolService analyticToolService;
+  protected SaleConfigService saleConfigService;
+  protected PurchaseConfigService purchaseConfigService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
@@ -41,12 +63,16 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      AnalyticToolService analyticToolService) {
+      AnalyticToolService analyticToolService,
+      SaleConfigService saleConfigService,
+      PurchaseConfigService purchaseConfigService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.analyticToolService = analyticToolService;
+    this.saleConfigService = saleConfigService;
+    this.purchaseConfigService = purchaseConfigService;
   }
 
   @Override
@@ -217,5 +243,17 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     invoiceLine.setAxis3AnalyticAccount(analyticLineModel.getAxis3AnalyticAccount());
     invoiceLine.setAxis4AnalyticAccount(analyticLineModel.getAxis4AnalyticAccount());
     invoiceLine.setAxis5AnalyticAccount(analyticLineModel.getAxis5AnalyticAccount());
+  }
+
+  @Override
+  public boolean analyticDistributionTemplateRequired(boolean isPurchase, Company company)
+      throws AxelorException {
+    return analyticToolService.isManageAnalytic(company)
+        && ((isPurchase
+                && purchaseConfigService
+                    .getPurchaseConfig(company)
+                    .getIsAnalyticDistributionRequired())
+            || (!isPurchase
+                && saleConfigService.getSaleConfig(company).getIsAnalyticDistributionRequired()));
   }
 }

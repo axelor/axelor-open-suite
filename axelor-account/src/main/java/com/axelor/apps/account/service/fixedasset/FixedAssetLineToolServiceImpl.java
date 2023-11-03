@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -72,7 +72,7 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
           fixedAssetLineList.stream()
               .filter(
                   fixedAssetLine ->
-                      DateTool.isBetween(
+                      LocalDateHelper.isBetween(
                           currentStartDate, currentEndDate, fixedAssetLine.getDepreciationDate()))
               .collect(Collectors.toList());
 

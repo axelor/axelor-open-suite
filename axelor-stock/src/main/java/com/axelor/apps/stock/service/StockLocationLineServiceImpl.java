@@ -43,7 +43,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -792,7 +792,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.stockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
+                  + StringHelper.getIdListString(stockLocationList)
                   + ") ";
         }
       }

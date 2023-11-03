@@ -18,11 +18,14 @@
  */
 package com.axelor.apps.bankpayment.ebics.service;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.bankpayment.db.EbicsBank;
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
+import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
-import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
+import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
@@ -30,9 +33,13 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.libs.ebics.certificate.CertificateManager;
+import com.axelor.libs.ebics.client.EbicsUtils;
+import com.axelor.libs.ebics.dto.EbicsLibUser;
+import com.axelor.libs.ebics.exception.EbicsLibException;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.ByteArrayInputStream;
@@ -41,6 +48,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchProviderException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -77,6 +85,11 @@ public class EbicsCertificateService {
 
   private static final String CONTEXT_CERTI_KEY = "CONTEXT_CERTI_KEY";
 
+  private static final String HTTP_PROXY_HOST = "http.proxy.host";
+  private static final String HTTP_PROXY_PORT = "http.proxy.port";
+  private static final String HTTP_PROXY_AUTH_USER = "http.proxy.auth.user";
+  private static final String HTTP_PROXY_AUTH_PASSWORD = "http.proxy.auth.password";
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject private EbicsCertificateRepository certRepo;
@@ -85,7 +98,27 @@ public class EbicsCertificateService {
 
   @Inject protected DateService dateService;
 
-  public static byte[] getCertificateContent(EbicsBank bank, String type) throws AxelorException {
+  public void generateCertificate(EbicsUser ebicsUser) throws AxelorException {
+    EbicsLibUser ebicsLibUser = EbicsLibConvertUtils.convertEbicsUser(ebicsUser);
+
+    // conversion
+    CertificateManager cm = new CertificateManager(ebicsLibUser);
+
+    try {
+      cm.create();
+
+      // distinct call from lib
+      setUserCertificates(ebicsUser, cm);
+
+      ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
+      Beans.get(EbicsUserRepository.class).save(ebicsUser);
+    } catch (GeneralSecurityException | IOException | EbicsLibException e) {
+      throw new AxelorException(
+          e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(e.getMessage()));
+    }
+  }
+
+  public byte[] getCertificateContent(EbicsBank bank, String type) throws AxelorException {
 
     EbicsCertificate cert = getEbicsCertificate(bank, type);
 
@@ -94,7 +127,7 @@ public class EbicsCertificateService {
     }
 
     if (bank.getUrl() != null && type.equals(EbicsCertificateRepository.TYPE_SSL)) {
-      return Beans.get(EbicsCertificateService.class).getSSLCertificate(bank);
+      return getSSLCertificate(bank);
     }
 
     throw new AxelorException(
@@ -124,8 +157,7 @@ public class EbicsCertificateService {
     return cert;
   }
 
-  public static X509Certificate getBankCertificate(EbicsBank bank, String type)
-      throws AxelorException {
+  public X509Certificate getBankCertificate(EbicsBank bank, String type) throws AxelorException {
 
     byte[] certificate = getCertificateContent(bank, type);
 
@@ -138,6 +170,12 @@ public class EbicsCertificateService {
 
   private byte[] getSSLCertificate(EbicsBank bank) {
 
+    AppSettings appSettings = AppSettings.get();
+    String proxyHost = appSettings.get(HTTP_PROXY_HOST);
+    int proxyPort = appSettings.getInt(HTTP_PROXY_PORT, 0);
+    String userName = appSettings.get(HTTP_PROXY_AUTH_USER);
+    String userPassword = appSettings.get(HTTP_PROXY_AUTH_PASSWORD);
+
     try {
       final URL bankUrl = new URL(bank.getUrl());
       log.debug("Bank url protocol: {}", bankUrl.getProtocol());
@@ -148,7 +186,7 @@ public class EbicsCertificateService {
 
       HttpClientBuilder builder = HttpClients.custom();
 
-      EbicsUtils.setProxy(builder);
+      EbicsUtils.setProxy(builder, proxyHost, proxyPort, userName, userPassword);
 
       builder.addInterceptorLast(
           new HttpResponseInterceptor() {
@@ -200,8 +238,8 @@ public class EbicsCertificateService {
     log.debug("certificat : {}", new String(certificate.getEncoded()));
     log.debug("certificat size : {}", certificate.getEncoded().length);
 
-    cert.setValidFrom(DateTool.toLocalDate(certificate.getNotBefore()));
-    cert.setValidTo(DateTool.toLocalDate(certificate.getNotAfter()));
+    cert.setValidFrom(LocalDateHelper.toLocalDate(certificate.getNotBefore()));
+    cert.setValidTo(LocalDateHelper.toLocalDate(certificate.getNotAfter()));
     cert.setIssuer(certificate.getIssuerDN().getName());
     cert.setSubject(certificate.getSubjectDN().getName());
     cert.setCertificate(certificate.getEncoded());
@@ -335,5 +373,61 @@ public class EbicsCertificateService {
       certificate.setInitLetterEditionDate(now);
       certRepo.save(certificate);
     }
+  }
+
+  /**
+   * Sets the user certificates
+   *
+   * @throws IOException
+   * @throws CertificateEncodingException
+   * @throws AxelorException
+   */
+  public void setUserCertificates(EbicsUser user, CertificateManager certificateManager)
+      throws IOException, AxelorException, CertificateEncodingException {
+
+    EbicsPartner ebicsPartner = user.getEbicsPartner();
+
+    if ((user.getUserTypeSelect() == EbicsUserRepository.USER_TYPE_TRANSPORT
+            && ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_TS)
+        || ebicsPartner.getEbicsTypeSelect() == EbicsPartnerRepository.EBICS_TYPE_T) {
+      user.setA005Certificate(
+          updateCertificate(
+              certificateManager.getA005Certificate(),
+              user.getA005Certificate(),
+              certificateManager.getA005PrivateKey().getEncoded(),
+              EbicsCertificateRepository.TYPE_SIGNATURE));
+    }
+
+    user.setX002Certificate(
+        updateCertificate(
+            certificateManager.getX002Certificate(),
+            user.getX002Certificate(),
+            certificateManager.getX002PrivateKey().getEncoded(),
+            EbicsCertificateRepository.TYPE_AUTHENTICATION));
+
+    user.setE002Certificate(
+        updateCertificate(
+            certificateManager.getE002Certificate(),
+            user.getE002Certificate(),
+            certificateManager.getE002PrivateKey().getEncoded(),
+            EbicsCertificateRepository.TYPE_ENCRYPTION));
+  }
+
+  private EbicsCertificate updateCertificate(
+      X509Certificate certificate, EbicsCertificate cert, byte[] privateKey, String type)
+      throws CertificateEncodingException, IOException, AxelorException {
+
+    if (cert == null) {
+      cert = new EbicsCertificate();
+      cert.setTypeSelect(type);
+    }
+
+    EbicsCertificateService certificateService = Beans.get(EbicsCertificateService.class);
+
+    cert = certificateService.updateCertificate(certificate, cert, true);
+
+    cert.setPrivateKey(privateKey);
+
+    return cert;
   }
 }

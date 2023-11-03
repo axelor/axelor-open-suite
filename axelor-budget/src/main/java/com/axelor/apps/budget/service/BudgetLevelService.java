@@ -151,6 +151,4 @@ public interface BudgetLevelService {
   public void computeBudgetLevelTotals(Budget budget);
 
   void recomputeBudgetLevelTotals(BudgetLevel budgetLevel);
-
-  void resetBudgetLevel(BudgetLevel budgetLevel);
 }
