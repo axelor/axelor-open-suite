@@ -19,6 +19,8 @@
     <string name="prefixe" title="Prefix"/>
     <boolean name="groovyOk" title="Groovy"/>
     <string name="suffixe" title="Suffix"/>
+    <string name="prefixeGroovy" title="Prefix"/>
+    <string name="suffixeGroovy" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
     <string name="pattern" title="Pattern"/>
     <integer name="toBeAdded" title="Increment" required="true" min="1"/>

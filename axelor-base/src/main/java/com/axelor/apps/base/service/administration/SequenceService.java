@@ -561,9 +561,19 @@ public class SequenceService {
       throws AxelorException {
 
     String seqPrefixe =
-        StringUtils.defaultString(getGroovyValue(sequence, sequence.getPrefixe(), model), "");
+        StringUtils.defaultString(
+            getGroovyValue(
+                sequence,
+                sequence.getGroovyOk() ? sequence.getPrefixeGroovy() : sequence.getPrefixe(),
+                model),
+            "");
     String seqSuffixe =
-        StringUtils.defaultString(getGroovyValue(sequence, sequence.getSuffixe(), model), "");
+        StringUtils.defaultString(
+            getGroovyValue(
+                sequence,
+                sequence.getGroovyOk() ? sequence.getSuffixeGroovy() : sequence.getSuffixe(),
+                model),
+            "");
 
     String sequenceValue = getSequenceValue(sequenceVersion);
 

@@ -72,9 +72,15 @@
       </panel>
 
       <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname"/>
+        onChange="action-sequence-method-compute-fullname" showIf="!groovyOk"/>
       <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname"/>
+        onChange="action-sequence-method-compute-fullname" showIf="!groovyOk"/>
+      <field name="prefixeGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" showIf="groovyOk"
+        onChange="action-sequence-method-compute-fullname" widget="CodeEditor"
+        x-code-syntax="groovy"/>
+      <field name="suffixeGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
+        onChange="action-sequence-method-compute-fullname" widget="CodeEditor"
+        x-code-syntax="groovy" showIf="groovyOk"/>
       <field name="groovyOk"/>
       <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
         onChange="action-sequence-group-yearly-reset-on-change"/>
