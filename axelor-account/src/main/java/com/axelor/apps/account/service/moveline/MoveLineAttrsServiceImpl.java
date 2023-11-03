@@ -187,30 +187,39 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   @Override
   public void addAccountDomain(
       Journal journal, Company company, Map<String, Map<String, Object>> attrsMap) {
-    String validAccountTypes =
-        journal.getValidAccountTypeSet().stream()
-            .map(AccountType::getId)
-            .map(Objects::toString)
-            .collect(Collectors.joining(","));
+    String validAccountTypes = "0";
+    String validAccounts = "0";
 
-    if (StringUtils.isEmpty(validAccountTypes)) {
-      validAccountTypes = "0";
-    }
+    if (journal != null) {
+      validAccountTypes =
+          journal.getValidAccountTypeSet().stream()
+              .map(AccountType::getId)
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
 
-    String validAccounts =
-        journal.getValidAccountSet().stream()
-            .map(Account::getId)
-            .map(Objects::toString)
-            .collect(Collectors.joining(","));
+      if (StringUtils.isEmpty(validAccountTypes)) {
+        validAccountTypes = "0";
+      }
 
-    if (StringUtils.isEmpty(validAccounts)) {
-      validAccounts = "0";
+      validAccounts =
+          journal.getValidAccountSet().stream()
+              .map(Account::getId)
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
+
+      if (StringUtils.isEmpty(validAccounts)) {
+        validAccounts = "0";
+      }
     }
 
     String domain =
         String.format(
-            "self.statusSelect = %s AND self.company.id = %d AND (self.accountType.id IN (%s) OR self.id IN (%s))",
-            AccountRepository.STATUS_ACTIVE, company.getId(), validAccountTypes, validAccounts);
+            "self.statusSelect = %s AND (self.accountType.id IN (%s) OR self.id IN (%s))",
+            AccountRepository.STATUS_ACTIVE, validAccountTypes, validAccounts);
+
+    if (company != null) {
+      domain = domain.concat(String.format(" AND self.company.id = %d", company.getId()));
+    }
 
     this.addAttr("account", "domain", domain, attrsMap);
   }

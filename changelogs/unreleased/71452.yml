@@ -1,0 +1,3 @@
+---
+title: "Move template : Fix error when we try to select an account in move template line when journal isn't filled"
+type: fix
