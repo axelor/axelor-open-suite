@@ -7,6 +7,7 @@
 
   <entity name="TSTimer" cacheable="true">
 
+    <string name="name" title="Name" namecolumn="true"/>
     <many-to-one name="employee" title="Employee" ref="Employee" readonly="true"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"

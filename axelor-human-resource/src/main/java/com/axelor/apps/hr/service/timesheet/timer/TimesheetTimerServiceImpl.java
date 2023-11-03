@@ -100,13 +100,23 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
                 startDateTime,
                 timesheet,
                 durationHours,
-                timer.getComments());
+                timer.getComments(),
+                timer);
 
     Beans.get(TimesheetRepository.class).save(timesheet);
     Beans.get(TimesheetLineRepository.class).save(timesheetLine);
     timer.setTimesheetLine(timesheetLine);
+    timer.setName(computeName(timer));
 
     return timesheetLine;
+  }
+
+  protected String computeName(TSTimer timer) {
+    StringBuilder name = new StringBuilder();
+    name.append(timer.getProject().getName());
+    name.append(" ");
+    name.append(timer.getProjectTask().getName());
+    return name.toString();
   }
 
   public BigDecimal convertSecondDurationInHours(long durationInSeconds) {

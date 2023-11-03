@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -210,10 +211,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
-      String comments) {
+      String comments,
+      TSTimer timer) {
     TimesheetLine timesheetLine =
         createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
     timesheetLine.setProjectTask(projectTask);
+    timesheetLine.setTimer(timer);
 
     return timesheetLine;
   }

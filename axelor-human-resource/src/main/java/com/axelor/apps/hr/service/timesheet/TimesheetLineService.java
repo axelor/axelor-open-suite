@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
@@ -88,7 +89,8 @@ public interface TimesheetLineService {
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
-      String comments);
+      String comments,
+      TSTimer timer);
 
   /**
    * Creates a timesheet line without project and product. Used to generate timesheet lines for
