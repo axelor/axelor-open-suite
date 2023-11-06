@@ -1,0 +1,3 @@
+---
+title: "Move Line : Fix error when we select and remove analytic distribution template on move line from move line grid"
+type: fix
