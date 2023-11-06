@@ -1114,7 +1114,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       InvoiceTerm invoiceTerm = moveLine.getInvoiceTermList().get(0);
 
-      BigDecimal newAmount = moveLine.getCurrencyAmount();
+      BigDecimal newAmount = moveLine.getCurrencyAmount().abs();
       BigDecimal amountPaid = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
 
       invoiceTerm.setAmountRemaining(newAmount.subtract(amountPaid));
