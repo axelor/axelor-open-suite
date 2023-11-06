@@ -56,6 +56,33 @@
     <boolean name="isKilometricExpenseLineAllowed" title="Allow kilometric expenses"
       default="false"/>
 
+    <many-to-many name="inventoryValidationRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="stockCorrectionValidationRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+
+    <many-to-many name="verifyCustomerDeliveryLineRoleSet"
+      ref="com.axelor.auth.db.Role" title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="verifySupplierArrivalLineRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="verifyInternalMoveLineRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="verifyInventoryLineRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+
+    <many-to-many name="customerDeliveryLineAdditionRoleSet"
+      ref="com.axelor.auth.db.Role" title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="supplierArrivalLineAdditionRoleSet"
+      ref="com.axelor.auth.db.Role" title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+
     <track>
       <field name="isStockAppEnabled" on="UPDATE"/>
       <field name="isProductionAppEnabled" on="UPDATE"/>
