@@ -165,4 +165,20 @@ public class GlobalBudgetController {
     }
     response.setAttr("$budgetVersion", "domain", domain);
   }
+
+  public void showUpdateDatesBtn(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    if (globalBudget.getId() == null) {
+      response.setAttr("updateDatesBtn", "hidden", false);
+    } else {
+      GlobalBudget myGlobalBudget =
+          Beans.get(GlobalBudgetRepository.class).find(globalBudget.getId());
+      boolean datesMatch =
+          globalBudget.getFromDate().equals(myGlobalBudget.getFromDate())
+              && globalBudget.getToDate().equals(myGlobalBudget.getToDate());
+      if (!datesMatch) {
+        response.setAttr("updateDatesBtn", "hidden", false);
+      }
+    }
+  }
 }
