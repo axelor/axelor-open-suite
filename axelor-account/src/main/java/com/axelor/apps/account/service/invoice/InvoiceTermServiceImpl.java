@@ -324,7 +324,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     BigDecimal currentTotal =
-        invoiceTermList.stream()
+        Optional.ofNullable(invoiceTermList).stream()
+            .flatMap(Collection::stream)
             .map(InvoiceTerm::getAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
