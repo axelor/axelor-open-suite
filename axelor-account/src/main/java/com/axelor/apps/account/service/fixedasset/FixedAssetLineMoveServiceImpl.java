@@ -143,30 +143,34 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       return;
     }
 
-    if (!isBatch && !isPreviousLineRealized(fixedAssetLine, fixedAsset)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
-    }
-    if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
-      if (generateMove) {
-        Move depreciationAccountMove = generateMove(fixedAssetLine, false, isDisposal);
-        if (fixedAssetLine.getIsSimulated() && depreciationAccountMove != null) {
-          this.moveValidateService.accounting(depreciationAccountMove);
+    BigDecimal depreciationAmount = fixedAssetLine.getDepreciation();
+    // If depreciationAmount they should be greater than 0
+    if (depreciationAmount != null && depreciationAmount.signum() != 0) {
+      if (!isBatch && !isPreviousLineRealized(fixedAssetLine, fixedAsset)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED));
+      }
+      if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
+        if (generateMove) {
+          Move depreciationAccountMove = generateMove(fixedAssetLine, false, isDisposal);
+          if (fixedAssetLine.getIsSimulated() && depreciationAccountMove != null) {
+            this.moveValidateService.accounting(depreciationAccountMove);
+          }
+          fixedAssetLine.setDepreciationAccountMove(depreciationAccountMove);
         }
-        fixedAssetLine.setDepreciationAccountMove(depreciationAccountMove);
+        Move impairementAccountMove = generateImpairementAccountMove(fixedAssetLine, false);
+        if (fixedAssetLine.getIsSimulated() && impairementAccountMove != null) {
+          this.moveValidateService.accounting(impairementAccountMove);
+        }
+        fixedAssetLine.setImpairmentAccountMove(impairementAccountMove);
       }
-      Move impairementAccountMove = generateImpairementAccountMove(fixedAssetLine, false);
-      if (fixedAssetLine.getIsSimulated() && impairementAccountMove != null) {
-        this.moveValidateService.accounting(impairementAccountMove);
-      }
-      fixedAssetLine.setImpairmentAccountMove(impairementAccountMove);
-    }
 
-    if (fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
-        && fixedAssetLine.getTypeSelect() == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC) {
-      BigDecimal accountingValue = fixedAsset.getAccountingValue();
-      fixedAsset.setAccountingValue(accountingValue.subtract(fixedAssetLine.getDepreciation()));
+      if (fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
+          && fixedAssetLine.getTypeSelect() == FixedAssetLineRepository.TYPE_SELECT_ECONOMIC) {
+        BigDecimal accountingValue = fixedAsset.getAccountingValue();
+        fixedAsset.setAccountingValue(accountingValue.subtract(fixedAssetLine.getDepreciation()));
+      }
     }
 
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
