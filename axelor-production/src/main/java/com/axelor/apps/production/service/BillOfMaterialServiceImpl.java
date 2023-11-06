@@ -48,10 +48,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -499,16 +499,21 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Override
   public List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException {
-
+    List<Long> productIds = new ArrayList<>(List.of(0l));
     if (companySet == null || companySet.isEmpty()) {
-      return Collections.emptyList();
+      return productIds;
     }
-    String stringQuery =
-        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
-    Query query = JPA.em().createQuery(stringQuery, Long.class);
 
-    query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));
-    List<Long> productIds = (List<Long>) query.getResultList();
+    billOfMaterialRepo
+        .all()
+        .filter("self.company.id in :companyIds")
+        .bind("companyIds", companySet.stream().map(Company::getId).collect(Collectors.toList()))
+        .fetchStream()
+        .map(BillOfMaterial::getProduct)
+        .filter(Objects::nonNull)
+        .map(Product::getId)
+        .distinct()
+        .forEach(productIds::add);
 
     return productIds;
   }
