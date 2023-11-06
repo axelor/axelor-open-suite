@@ -36,7 +36,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
@@ -52,8 +51,12 @@ import com.google.inject.persist.Transactional;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ImportMove {
 
@@ -170,14 +173,6 @@ public class ImportMove {
           move.setJournal(journal);
         }
 
-        if (values.get("CompAuxNum") != null) {
-          Partner partner =
-              Beans.get(PartnerRepository.class)
-                  .all()
-                  .filter("self.partnerSeq = ?", values.get("CompAuxNum").toString())
-                  .fetchOne();
-          move.setPartner(partner);
-        }
         if (values.get("PieceDate") != null) {
           move.setOriginDate(parseDate(values.get("PieceDate").toString()));
         }
@@ -213,6 +208,10 @@ public class ImportMove {
               values.get("CompteNum"));
         }
         moveLine.setAccount(account);
+
+        if (!account.getUseForPartnerBalance()) {
+          moveLine.setPartner(null);
+        }
       }
 
       if (moveLine.getReconcileGroup() != null) {
@@ -220,6 +219,8 @@ public class ImportMove {
       }
 
       move.addMoveLineListItem(moveLine);
+
+      setMovePartner(move);
 
       if (values.get("Montantdevise") == null || "".equals(values.get("Montantdevise"))) {
         moveLine.setMove(move);
@@ -234,6 +235,24 @@ public class ImportMove {
           fecImport, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
     return moveLine;
+  }
+
+  protected void setMovePartner(Move move) {
+    List<Partner> partnerList =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getPartner)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+    if (CollectionUtils.isNotEmpty(partnerList)) {
+      if (partnerList.size() == 1) {
+        move.setPartner(partnerList.get(0));
+      }
+
+      if (partnerList.size() > 1) {
+        move.setPartner(null);
+      }
+    }
   }
 
   protected Company getCompany(Map<String, Object> values) {
