@@ -134,50 +134,24 @@
               depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund,currency.symbol">
 		                    <![CDATA[
 			                  <>
-			                     <dl>
-			                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-			                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-			                     		<dd>{$fmt('exTaxTotal')}</dd>
-			                     	</Box>
-			                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-			                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-			                     		<dd>{$fmt('taxTotal')}</dd>
-			                     	</Box>
-			                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={1}/>
-			                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-			                     		<dt>{_t('Total A.T.I.')}</dt>
-			                     		<dd>{$fmt('inTaxTotal')}</dd>
-			                     	</Box>
-			                     	<Box borderTop borderColor="inherit" borderWidth={1}/>
-			                     	{personalExpenseAmount != 0 &&
-				                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-				                     		<Box as="dt" fontWeight="normal">{_t('Personal expense')}</Box>
-				                     		<dd>-{$fmt('personalExpenseAmount')}</dd>
-				                     	</Box>
-			                     	}
-			                     	{withdrawnCash != 0 &&
-				                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-				                     		<Box as="dt" fontWeight="normal">{_t('Withdrawn cash')}</Box>
-				                     		<dd>-{$fmt('withdrawnCash')}</dd>
-				                     	</Box>
-			                     	}
-			                     	{advanceAmount != 0 &&
-				                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-				                     		<Box as="dt" fontWeight="normal">{_t('Advance')}</Box>
-				                     		<dd>-{$fmt('advanceAmount')}</dd>
-				                     	</Box>
-			                     	}
-			                     	{(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) &&
-				                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" color="primary">
-				                     		<Box as="dt" fontWeight="normal">{_t('Payment')}</Box>
-				                     		<dd>-{$fmt('paymentAmount')}</dd>
-				                     	</Box>
-			                     	}
-			                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-			                     		<Box as="dt" fontWeight="normal">{_t('TotalToRefund')}</Box>
-			                     		<dd>{$fmt('$totalToRefund')}</dd>
-			                     	</Box>
-			                     </dl>
+			                      <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+			                          <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+			                     	  <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+			                     	  <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+			                     	  {personalExpenseAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Personal expense')}</Box>}
+			                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('personalExpenseAmount')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Withdrawn cash')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('withdrawnCash')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('paymentAmount')}</Box>}
+			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal" color="primary">{_t('Payment')}</Box>}
+			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">-{$fmt('paymentAmount')}</Box>}
+			                          <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('TotalToRefund')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('$totalToRefund')}</Box>
+			                      </Box>
 			                  </>
 		                    ]]>
             </viewer>
