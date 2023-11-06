@@ -32,7 +32,7 @@ import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
@@ -382,7 +382,7 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation =
           Beans.get(BankReconciliationRepository.class)
               .find(request.getContext().asType(BankReconciliation.class).getId());
-      Beans.get(BankStatementService.class)
+      Beans.get(BankStatementValidateService.class)
           .setIsFullyReconciled(bankReconciliation.getBankStatement());
       response.setReload(true);
     } catch (Exception e) {

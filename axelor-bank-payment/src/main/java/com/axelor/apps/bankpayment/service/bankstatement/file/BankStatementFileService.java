@@ -19,8 +19,10 @@
 package com.axelor.apps.bankpayment.service.bankstatement.file;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.db.JPA;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import java.io.File;
@@ -31,11 +33,14 @@ public abstract class BankStatementFileService {
   protected BankStatement bankStatement;
   protected File file;
   protected String bankStatementFileFormat;
-
-  protected final BankStatementService bankStatementService;
+  protected final BankStatementRepository bankStatementRepository;
+  protected final BankStatementImportService bankStatementService;
 
   @Inject
-  public BankStatementFileService(BankStatementService bankStatementService) {
+  public BankStatementFileService(
+      BankStatementRepository bankStatementRepository,
+      BankStatementImportService bankStatementService) {
+    this.bankStatementRepository = bankStatementRepository;
     this.bankStatementService = bankStatementService;
   }
 
@@ -62,7 +67,8 @@ public abstract class BankStatementFileService {
   }
 
   protected BankStatement findBankStatement() {
-    bankStatement = bankStatementService.find(bankStatement);
-    return bankStatement;
+    return JPA.em().contains(bankStatement)
+        ? bankStatement
+        : bankStatementRepository.find(bankStatement.getId());
   }
 }
