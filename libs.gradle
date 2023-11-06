@@ -1,6 +1,6 @@
 def libs = ext.libs = [:]
 
-libs.axelor_studio = 'com.axelor.addons:axelor-studio:1.0.4'
+libs.axelor_studio = 'com.axelor.addons:axelor-studio:1.0.5'
 
 libs.bcpkix_jdk15on = 'org.bouncycastle:bcpkix-jdk15on:1.70'
 libs.bcprov_jdk15on = 'org.bouncycastle:bcprov-jdk15on:1.70'
