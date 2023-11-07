@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -229,8 +229,8 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
-from meta_translation as LangTranslate 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation"
+from meta_translation as LangTranslate
 where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -453,16 +453,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
+            <xml-property name="queryText"><![CDATA[SELECT
 company.name AS company,
 company.height as logo_height,
 company.width as logo_width,
 bankReconciliation.created_on AS report_date ,
-currency.code AS currency ,  
-journal.name AS journal , 
-concat( account.code  ,' - ' , account.name) AS cash_account , 
+currency.code AS currency ,
+journal.name AS journal ,
+concat( account.code  ,' - ' , account.name) AS cash_account ,
 metaFile.file_path AS logo_path ,
-bankDetails.full_name AS account 
+bankDetails.full_name AS account
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
 LEFT JOIN public.base_company AS company ON company.id = bankReconciliation.company
 LEFT JOIN public.base_currency AS currency ON currency.id = bankReconciliation.currency
@@ -802,27 +802,27 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
-bankStatement.name AS code , 
-bankReconciliation.to_date AS to_date , 
-bankReconciliationLine.reference AS reference , 
-bankReconciliationLine.name AS name , 
-bankReconciliationLine.type_select  AS type , 
-bankReconciliationLine.debit AS debit , 
-bankReconciliationLine.credit AS credit , 
-(bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount , 
+            <xml-property name="queryText"><![CDATA[SELECT
+bankStatement.name AS code ,
+bankReconciliation.to_date AS to_date ,
+bankReconciliationLine.reference AS reference ,
+bankReconciliationLine.name AS name ,
+bankReconciliationLine.type_select  AS type ,
+bankReconciliationLine.debit AS debit ,
+bankReconciliationLine.credit AS credit ,
+(bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount ,
 (SUM(bankStatementLine.credit) - SUM(bankStatementLine.debit)) AS account_balance
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
 LEFT JOIN public.bankpayment_bank_statement_line AS bankStatementLine ON bankStatementLine.bank_statement = bankReconciliation.bank_statement
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
 LEFT JOIN public.bankpayment_bank_statement AS bankStatement ON bankReconciliation.bank_statement = bankStatement.id
 WHERE bankReconciliation.id = ?
-GROUP BY bankStatement.name , 
-bankReconciliation.to_date , 
-bankReconciliationLine.reference , 
-bankReconciliationLine.name , 
-bankReconciliationLine.type_select , 
-bankReconciliationLine.debit , 
+GROUP BY bankStatement.name ,
+bankReconciliation.to_date ,
+bankReconciliationLine.reference ,
+bankReconciliationLine.name ,
+bankReconciliationLine.type_select ,
+bankReconciliationLine.debit ,
 bankReconciliationLine.credit ;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineDS" id="5284">
@@ -874,6 +874,12 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <text-property name="heading">credit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">currency_amount</text-property>
+                    <text-property name="heading">currency_amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
@@ -938,6 +944,11 @@ bankReconciliationLine.credit ;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1003,21 +1014,29 @@ bankReconciliationLine.credit ;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
-bankReconciliation.account_balance AS account_balance , 
-moveLine.name AS code , 
-bankReconciliation.to_date AS to_date , 
-bankReconciliationLine.reference AS reference , 
-bankReconciliationLine.name AS name , 
-bankReconciliationLine.type_select  AS type , 
-moveLine.debit AS debit , 
+            <xml-property name="queryText"><![CDATA[SELECT
+bankReconciliation.account_balance AS account_balance ,
+moveLine.name AS code ,
+bankReconciliation.to_date AS to_date ,
+bankReconciliationLine.reference AS reference ,
+bankReconciliationLine.name AS name ,
+bankReconciliationLine.type_select  AS type ,
+moveLine.debit AS debit ,
 moveLine.credit AS credit ,
+moveLine.currency_amount AS currency_amount,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
@@ -2077,14 +2096,26 @@ WHERE bankReconciliation.id = ? AND (move.status_select = 2 OR move.status_selec
                             <structure>
                                 <property name="name">debit</property>
                                 <text-property name="displayName">debit</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">credit</property>
                                 <text-property name="displayName">credit</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">sum_debit</property>
@@ -2099,7 +2130,12 @@ WHERE bankReconciliation.id = ? AND (move.status_select = 2 OR move.status_selec
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["debit"]</expression>
+                                        <expression name="value" type="javascript">if(dataSetRow["debit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2111,7 +2147,12 @@ WHERE bankReconciliation.id = ? AND (move.status_select = 2 OR move.status_selec
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["credit"]</expression>
+                                        <expression name="value" type="javascript">if(dataSetRow["credit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2135,10 +2176,16 @@ WHERE bankReconciliation.id = ? AND (move.status_select = 2 OR move.status_selec
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["amount"]</expression>
+                                        <expression name="value" type="javascript">row["currency_amount"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">currency_amount</property>
+                                <text-property name="displayName">currency_amount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <column id="4751">
@@ -2602,7 +2649,7 @@ WHERE bankReconciliation.id = ? AND (move.status_select = 2 OR move.status_selec
                                         <property name="fontFamily">sans-serif</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["currency_amount"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

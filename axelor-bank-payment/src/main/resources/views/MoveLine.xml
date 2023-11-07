@@ -27,6 +27,32 @@
     <field name="isSelectedBankReconciliation" hidden="true"/>
   </grid>
 
+  <grid name="move-line-bank-reconciliation-grid-currency-amount" orderBy="date"
+    title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false"
+    canArchive="false" canNew="false">
+    <button onClick="action-move-line-method-set-selected" name="select"
+      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
+    <button onClick="action-move-line-method-set-selected" name="unselect"
+      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
+    <field name="postedNbr"/>
+    <field name="name"/>
+    <field name="date"/>
+    <field name="move.period" canView="false"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="description"/>
+    <field name="account" form-view="account-form" grid-view="account-grid"/>
+    <field name="debit" aggregate="sum">
+      <hilite if="debit > 0" color="green"/>
+    </field>
+    <field name="credit" aggregate="sum">
+      <hilite if="credit > 0" color="red"/>
+    </field>
+    <field name="currencyAmount"/>
+    <field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
+    <field name="move.statusSelect"/>
+    <field name="isSelectedBankReconciliation" hidden="true"/>
+  </grid>
+
   <action-group name="action-group-account-moveline-debitcredit-onchange"
     id="banck-payment-action-group-account-moveline-debitcredit-onchange">
     <action name="action-move-line-debit-credit-validate"/>
