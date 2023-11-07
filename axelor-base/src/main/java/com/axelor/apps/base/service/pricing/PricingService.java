@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.db.Model;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,11 @@ public interface PricingService {
       Pricing pricing);
 
   Optional<Pricing> getRootPricingForNextPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName);
+      Company company,
+      Product product,
+      ProductCategory productCategory,
+      String modelName,
+      Model model);
 
   /**
    * This method will get all pricings filtered with company, product, productCategory, modelName,
@@ -68,7 +73,11 @@ public interface PricingService {
       Pricing pricing);
 
   List<Pricing> getAllPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName);
+      Company company,
+      Product product,
+      ProductCategory productCategory,
+      String modelName,
+      Model model);
 
   public void historizePricing(Pricing pricing) throws AxelorException;
 

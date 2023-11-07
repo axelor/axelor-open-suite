@@ -71,6 +71,7 @@
         <field name="productCategory" readonlyIf="product" requiredIf="!product"/>
         <field name="linkedPricing"
           domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
+        <field name="formula"/>
       </panel>
       <panel-related field="pricingLineList" name="pricingLineListPanel" colSpan="12"
         grid-view="pricing-line-grid" form-view="pricing-line-form"
