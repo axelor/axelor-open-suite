@@ -18,10 +18,14 @@
  */
 package com.axelor.apps.purchase.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -58,5 +62,19 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public void remove(PurchaseOrder purchaseOrder) {
+    try {
+      if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_VALIDATED) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_CANNOT_DELETE_VALIDATED_ORDER));
+      }
+    } catch (AxelorException e) {
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    super.remove(purchaseOrder);
   }
 }
