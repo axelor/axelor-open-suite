@@ -8,16 +8,14 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
-import com.axelor.utils.MapTools;
+import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingService {
 
@@ -29,6 +27,7 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     private Partner commonContactPartner = null;
     private PriceList commonPriceList = null;
     private TradingName commonTradingName = null;
+    private boolean allTradingNamesAreNull = true;
 
     @Override
     public Company getCommonCompany() {
@@ -88,6 +87,16 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     @Override
     public void setCommonTradingName(TradingName commonTradingName) {
       this.commonTradingName = commonTradingName;
+    }
+
+    @Override
+    public boolean getAllTradingNamesAreNull() {
+      return allTradingNamesAreNull;
+    }
+
+    @Override
+    public void setAllTradingNamesAreNull(boolean allTradingNamesAreNull) {
+      this.allTradingNamesAreNull = allTradingNamesAreNull;
     }
   }
 
@@ -196,13 +205,9 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
 
   protected PurchaseOrderService purchaseOrderService;
 
-  protected PurchaseOrderRepository purchaseOrderRepository;
-
   @Inject
-  public PurchaseOrderMergingServiceImpl(
-      PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository) {
+  public PurchaseOrderMergingServiceImpl(PurchaseOrderService purchaseOrderService) {
     this.purchaseOrderService = purchaseOrderService;
-    this.purchaseOrderRepository = purchaseOrderRepository;
   }
 
   @Override
@@ -249,12 +254,11 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
   protected void updateResultWithContext(PurchaseOrderMergingResult result, Context context) {
     if (context.get("priceList") != null) {
       getCommonFields(result)
-          .setCommonPriceList(MapTools.findObject(PriceList.class, context.get("priceList")));
+          .setCommonPriceList(MapHelper.get(context, PriceList.class, "priceList"));
     }
     if (context.get("contactPartner") != null) {
       getCommonFields(result)
-          .setCommonContactPartner(
-              MapTools.findObject(Partner.class, context.get("contactPartner")));
+          .setCommonContactPartner(MapHelper.get(context, Partner.class, "contactPartner"));
     }
   }
 
@@ -317,8 +321,9 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
         || getCommonFields(result).getCommonCompany() == null) {
       fieldErrors.add(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
-    if (getChecks(result).isExistTradingNameDiff()
-        || getCommonFields(result).getCommonTradingName() == null) {
+    if ((getChecks(result).isExistTradingNameDiff()
+            || getCommonFields(result).getCommonTradingName() == null)
+        && !getCommonFields(result).getAllTradingNamesAreNull()) {
       fieldErrors.add(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
     }
   }
@@ -364,6 +369,7 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
         || (commonFields.getCommonTradingName() != purchaseOrder.getTradingName()
             && !commonFields.getCommonTradingName().equals(purchaseOrder.getTradingName()))) {
       commonFields.setCommonTradingName(null);
+      commonFields.setAllTradingNamesAreNull(false);
       checks.setExistTradingNameDiff(true);
     }
   }
@@ -377,12 +383,6 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     commonFields.setCommonPriceList(firstPurchaseOrder.getPriceList());
     commonFields.setCommonSupplierPartner(firstPurchaseOrder.getSupplierPartner());
     commonFields.setCommonTradingName(firstPurchaseOrder.getTradingName());
-  }
-
-  @Override
-  public List<PurchaseOrder> convertSelectedLinesToMergeLines(List<Integer> idList) {
-    return idList.stream()
-        .map(id -> purchaseOrderRepository.find(Long.valueOf(id)))
-        .collect(Collectors.toList());
+    commonFields.setAllTradingNamesAreNull(commonFields.getCommonTradingName() == null);
   }
 }

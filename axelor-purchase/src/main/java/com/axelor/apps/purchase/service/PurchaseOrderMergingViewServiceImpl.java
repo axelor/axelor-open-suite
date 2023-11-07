@@ -53,7 +53,7 @@ public class PurchaseOrderMergingViewServiceImpl implements PurchaseOrderMerging
               .orElse(null));
     }
 
-    confirmView.context("purchaseOrdersToMerge", purchaseOrdersToMerge);
+    confirmView.context("purchaseOrderToMerge", purchaseOrdersToMerge);
 
     return confirmView;
   }

@@ -36,6 +36,10 @@ public interface PurchaseOrderMergingService {
     TradingName getCommonTradingName();
 
     void setCommonTradingName(TradingName commonTradingName);
+
+    boolean getAllTradingNamesAreNull();
+
+    void setAllTradingNamesAreNull(boolean allTradingNamesAreNull);
   }
 
   interface Checks {
@@ -85,6 +89,4 @@ public interface PurchaseOrderMergingService {
 
   PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
       List<PurchaseOrder> saleOrdersToMerge, Context context) throws AxelorException;
-
-  List<PurchaseOrder> convertSelectedLinesToMergeLines(List<Integer> idList);
 }

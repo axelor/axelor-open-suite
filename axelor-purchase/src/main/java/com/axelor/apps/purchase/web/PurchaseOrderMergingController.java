@@ -10,7 +10,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.MapTools;
+import com.axelor.utils.helpers.MapHelper;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -20,7 +20,8 @@ public class PurchaseOrderMergingController {
   public void mergePurchaseOrder(ActionRequest request, ActionResponse response) {
     try {
       List<PurchaseOrder> purchaseOrdersToMerge =
-          MapTools.makeList(PurchaseOrder.class, request.getContext().get("purchaseOrdersToMerge"));
+          MapHelper.getCollection(
+              request.getContext(), PurchaseOrder.class, "purchaseOrderToMerge");
       if (CollectionUtils.isNotEmpty(purchaseOrdersToMerge)) {
         PurchaseOrderMergingResult result =
             Beans.get(PurchaseOrderMergingService.class).mergePurchaseOrders(purchaseOrdersToMerge);
@@ -41,7 +42,8 @@ public class PurchaseOrderMergingController {
   public void mergePurchaseOrderFromPopUp(ActionRequest request, ActionResponse response) {
     try {
       List<PurchaseOrder> purchaseOrdersToMerge =
-          MapTools.makeList(PurchaseOrder.class, request.getContext().get("purchaseOrdersToMerge"));
+          MapHelper.getCollection(
+              request.getContext(), PurchaseOrder.class, "purchaseOrderToMerge");
       if (CollectionUtils.isNotEmpty(purchaseOrdersToMerge)) {
         PurchaseOrderMergingResult result =
             Beans.get(PurchaseOrderMergingService.class)
