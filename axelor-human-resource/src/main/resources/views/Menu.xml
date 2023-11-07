@@ -59,6 +59,16 @@
     <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
+  <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="my-hr-root"
+    action="time.sheet.timer" order="450"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"
+    icon="fa-play" icon-background="#84429f"/>
+
+  <action-method name="time.sheet.timer">
+    <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
+      method="editTimesheetTimer"/>
+  </action-method>
+
   <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
     action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="fa-hourglass-end"
     icon-background="#84429f"/>
@@ -501,16 +511,6 @@
   <action-method name="timesheet.validate">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="validateTimesheet"/>
-  </action-method>
-
-  <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root"
-    action="time.sheet.timer"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"
-    order="400"/>
-
-  <action-method name="time.sheet.timer">
-    <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
-      method="editTimesheetTimer"/>
   </action-method>
 
   <menuitem title="Timesheet report" name="time-sheet-report" parent="timesheet-root"
