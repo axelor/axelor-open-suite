@@ -156,9 +156,18 @@ public class TicketController {
                 || timer.getStatusSelect().equals(TimerRepository.TIMER_STOPPED);
       }
 
-      response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);
-      response.setAttr("stopTimerBtn", HIDDEN_ATTR, !hideStart);
-      response.setAttr("cancelTimerBtn", HIDDEN_ATTR, hideCancel);
+      response.setAttr(
+          "startTimerBtn",
+          HIDDEN_ATTR,
+          hideStart || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
+      response.setAttr(
+          "stopTimerBtn",
+          HIDDEN_ATTR,
+          !hideStart || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
+      response.setAttr(
+          "cancelTimerBtn",
+          HIDDEN_ATTR,
+          hideCancel || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
