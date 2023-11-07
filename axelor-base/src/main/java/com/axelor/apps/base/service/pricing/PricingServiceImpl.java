@@ -29,9 +29,15 @@ import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -75,9 +81,19 @@ public class PricingServiceImpl implements PricingService {
 
   @Override
   public Optional<Pricing> getRootPricingForNextPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName) {
-    List<Pricing> pricings = getAllPricings(company, product, productCategory, modelName);
-
+      Company company,
+      Product product,
+      ProductCategory productCategory,
+      String modelName,
+      Model model) {
+    List<Pricing> pricings = getAllPricings(company, product, productCategory, modelName, model);
+    try {
+      Context scriptContext = new Context(Mapper.toMap(model), model.getClass());
+      ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+      scriptHelper.eval(pricings.get(0).getFormula());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
     Set<Long> pricingsPointedTo =
         pricings.stream()
             .map(Pricing::getLinkedPricing)
@@ -125,14 +141,18 @@ public class PricingServiceImpl implements PricingService {
 
   @Override
   public List<Pricing> getAllPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName) {
+      Company company,
+      Product product,
+      ProductCategory productCategory,
+      String modelName,
+      Model model) {
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
     pricingFetchFilter(filter, bindings, company, modelName);
 
     filter.append("AND (self.archived = false OR self.archived is null) ");
 
-    appendProductFilter(product, productCategory, filter, bindings);
+    // appendProductFilter(product, productCategory, filter, bindings);
     LOG.debug("Filtering pricing with {}", filter);
     return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
   }

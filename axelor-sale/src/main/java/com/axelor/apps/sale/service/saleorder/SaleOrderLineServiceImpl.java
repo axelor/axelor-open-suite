@@ -185,7 +185,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
           saleOrderLine.getProduct() != null
               ? saleOrderLine.getProduct().getProductCategory()
               : null,
-          SaleOrderLine.class.getSimpleName());
+          SaleOrderLine.class.getSimpleName(),
+          saleOrderLine);
     }
   }
 
