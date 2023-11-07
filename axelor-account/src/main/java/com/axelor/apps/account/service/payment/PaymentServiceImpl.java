@@ -265,7 +265,15 @@ public class PaymentServiceImpl implements PaymentService {
       if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) <= 0) {
         break;
       }
-      BigDecimal amountToPay = remainingPaidAmount2.min(amountRemaining);
+
+      BigDecimal currencyRate = debitMoveLine.getCurrencyRate();
+      BigDecimal amountToPay = remainingPaidAmount2.abs().min(amountRemaining);
+      BigDecimal moveLineAmount = amountToPay;
+      if (currencyRate.signum() > 0) {
+        moveLineAmount =
+            moveLineAmount.divide(
+                currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      }
 
       String invoiceName = "";
       if (debitMoveLine.getMove().getInvoice() != null) {
@@ -274,14 +282,20 @@ public class PaymentServiceImpl implements PaymentService {
         invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
       }
 
+      LocalDate date = appAccountService.getTodayDate(company);
+
       MoveLine creditMoveLine =
           moveLineCreateService.createMoveLine(
               move,
               debitMoveLine.getPartner(),
               debitMoveLine.getAccount(),
+              moveLineAmount,
               amountToPay,
+              currencyRate,
               false,
-              appAccountService.getTodayDate(company),
+              date,
+              date,
+              date,
               moveLineNo2,
               invoiceName,
               null);
@@ -314,6 +328,8 @@ public class PaymentServiceImpl implements PaymentService {
         remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
       }
     }
+
+    moveInvoiceTermService.generateInvoiceTerms(move);
 
     for (Reconcile reconcile : reconcileList) {
       reconcileService.confirmReconcile(reconcile, true, true);
