@@ -1282,8 +1282,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 billOfMaterialService.getPriority(billOfMaterial),
                 IS_TO_INVOICE,
                 billOfMaterial,
-                null,
                 manufOrder.getPlannedStartDateT(),
+                manufOrder.getPlannedEndDateT(),
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
         manufOrder.setClientPartner(clientPartner);

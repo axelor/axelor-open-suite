@@ -36,7 +36,6 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
-import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
@@ -97,7 +96,6 @@ public class ContractLineServiceImpl implements ContractLineService {
 
   @Override
   public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
-    Preconditions.checkNotNull(product, I18n.get(ContractExceptionMessage.CONTRACT_EMPTY_PRODUCT));
     Company company =
         contractLine.getContractVersion() != null
             ? contractLine.getContractVersion().getContract() != null
@@ -168,8 +166,10 @@ public class ContractLineServiceImpl implements ContractLineService {
   @Override
   public ContractLine fillAndCompute(ContractLine contractLine, Contract contract, Product product)
       throws AxelorException {
-    contractLine = fill(contractLine, product);
-    contractLine = compute(contractLine, contract, product);
+    if (product != null) {
+      contractLine = fill(contractLine, product);
+      contractLine = compute(contractLine, contract, product);
+    }
     computeAnalytic(contract, contractLine);
     return contractLine;
   }

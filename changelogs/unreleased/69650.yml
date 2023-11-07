@@ -1,0 +1,3 @@
+---
+title: "Configurator BOM: Fixed a concurrent error when generating line from the same configurator"
+type: fix
