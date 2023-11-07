@@ -184,7 +184,6 @@
 "Termination demand date",,,
 "The company %s doesn't have any configured sequence for contracts",,,
 "The next contract field is not set on the current contract version.",,,
-"The product can't be empty.",,,
 "There is no contract associated with this version.",,,
 "To closed",,,
 "Total A.T.I.",,,

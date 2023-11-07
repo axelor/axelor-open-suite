@@ -23,11 +23,8 @@ import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.i18n.I18n;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.util.Optional;
 
@@ -42,7 +39,6 @@ public class ConsumptionLineServiceImpl implements ConsumptionLineService {
 
   @Override
   public ConsumptionLine fill(ConsumptionLine line, Product product) {
-    Preconditions.checkNotNull(product, I18n.get(ContractExceptionMessage.CONTRACT_EMPTY_PRODUCT));
     line.setLineDate(
         appBaseService.getTodayDate(
             Optional.ofNullable(line.getContractLine())
@@ -53,9 +49,13 @@ public class ConsumptionLineServiceImpl implements ConsumptionLineService {
                     Optional.ofNullable(AuthUtils.getUser())
                         .map(User::getActiveCompany)
                         .orElse(null))));
-    line.setProduct(product);
-    line.setReference(product.getName());
-    line.setUnit(product.getUnit());
+    if (product != null) {
+      line.setReference(product.getName());
+      line.setUnit(product.getUnit());
+    } else {
+      line.setReference(null);
+      line.setUnit(null);
+    }
     return line;
   }
 }
