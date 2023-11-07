@@ -332,7 +332,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     if (currentTotal.add(invoiceTerm.getAmount()).compareTo(total) == 0) {
       BigDecimal currentCompanyTotal =
-          invoiceTermList.stream()
+          Optional.ofNullable(invoiceTermList).stream()
+              .flatMap(Collection::stream)
               .filter(it -> !it.equals(invoiceTerm))
               .map(InvoiceTerm::getCompanyAmount)
               .reduce(BigDecimal::add)
