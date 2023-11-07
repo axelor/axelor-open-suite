@@ -5,16 +5,19 @@
 
   <grid name="stored-products-mass-stock-move-grid" title="Stored products"
     model="com.axelor.apps.stock.db.StoredProduct" groupBy="storedProduct"
-    onNew="action-stored-products-group-onnew">
+    onNew="action-stored-products-group-onnew" canDelete="false">
     <field name="storedProduct" required="true" domain="self.productTypeSelect = 'storable'"
-      onChange="action-stored-products-group-product-onchange"/>
+      onChange="action-stored-products-group-product-onchange"
+      readonlyIf="$get('stockMoveLine.stockMove.statusSelect') == 3"/>
     <field name="trackingNumber"
       onSelect="action-stored-products-attrs-tracking-number-domain"
-      onChange="action-stored-products-record-set-currentqty"/>
+      onChange="action-stored-products-record-set-currentqty"
+      readonlyIf="$get('stockMoveLine.stockMove.statusSelect') == 3"/>
     <field name="currentQty" readonly="true"/>
     <field name="unit" readonly="true"/>
     <field name="toStockLocation" required="true"
-      domain="self.company = (SELECT company FROM MassStockMove WHERE id = :massStockMove) AND self.typeSelect != 3"/>
+      domain="self.company = (SELECT company FROM MassStockMove WHERE id = :massStockMove) AND self.typeSelect != 3"
+      readonlyIf="$get('stockMoveLine.stockMove.statusSelect') == 3"/>
     <field name="storedQty" required="true"
       readonlyIf="$get('stockMoveLine.stockMove.statusSelect') == 3"/>
     <field name="stockMoveLine.stockMove" readonly="true"/>
@@ -27,7 +30,8 @@
   </grid>
 
   <form name="stored-products-form" title="Stored products"
-    model="com.axelor.apps.stock.db.StoredProduct" onNew="action-stored-products-group-onnew">
+    model="com.axelor.apps.stock.db.StoredProduct" onNew="action-stored-products-group-onnew"
+    canDelete="false">
     <panel name="mainPanel">
       <field name="storedProduct" required="true" domain="self.productTypeSelect = 'storable'"
         onChange="action-stored-products-group-product-onchange"/>

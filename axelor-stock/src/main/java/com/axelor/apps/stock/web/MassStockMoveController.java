@@ -1,5 +1,7 @@
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
@@ -50,9 +52,16 @@ public class MassStockMoveController {
     try {
       MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
       massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
-      Beans.get(MassStockMoveService.class).cancelPicking(massStockMove);
+      int errors = Beans.get(MassStockMoveService.class).cancelPicking(massStockMove);
+
+      massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
       Beans.get(MassStockMoveService.class).setStatusSelectToDraft(massStockMove);
       response.setReload(true);
+      if (errors > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(StockExceptionMessage.MASS_STOCK_MOVE_LINE_ALREADY_STORED));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

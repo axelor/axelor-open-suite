@@ -298,6 +298,9 @@ public final class StockExceptionMessage {
   public static final String MASS_STOCK_MOVE_LINE_CANT_DELETE = /*$$(*/
       "Can't delete a line linked to a realized stock move line." /*)*/;
 
+  public static final String MASS_STOCK_MOVE_LINE_ALREADY_STORED = /*$$(*/
+      "Some moves couldn't be canceled because the associed products had already been stored." /*)*/;
+
   public static final String PICKED_QUANTITY_IS_ZERO = /*$$(*/
       "Picked quantity is equal to 0 (%s %s)" /*)*/;
 

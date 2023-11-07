@@ -9,7 +9,7 @@ public interface MassStockMoveService {
 
   public void realizeStorage(MassStockMove massStockMove);
 
-  public void cancelPicking(MassStockMove massStockMove);
+  public int cancelPicking(MassStockMove massStockMove);
 
   public void cancelStorage(MassStockMove massStockMove);
 

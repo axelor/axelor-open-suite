@@ -21,9 +21,6 @@
     <one-to-many ref="com.axelor.apps.stock.db.StoredProduct" name="storedProductList"
       mappedBy="pickedProduct"/>
 
-
-    <entity-listener class="com.axelor.apps.stock.db.repo.PickedProductListener"/>
-
   </entity>
 
 </domain-models>

@@ -79,16 +79,21 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   }
 
   @Override
-  public void cancelPicking(MassStockMove massStockMove) {
+  public int cancelPicking(MassStockMove massStockMove) {
+    int errors = 0;
     for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
       try {
         if (pickedProduct.getStockMoveLine() != null) {
+          massStockMove = massStockMoveRepository.find(massStockMove.getId());
+          pickedProduct = pickedProductRepo.find(pickedProduct.getId());
           pickedProductService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProduct);
         }
       } catch (AxelorException e) {
         TraceBackService.trace(e);
+        errors++;
       }
     }
+    return errors;
   }
 
   @Override
