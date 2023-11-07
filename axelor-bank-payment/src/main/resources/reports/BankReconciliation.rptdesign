@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -948,6 +948,12 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">currency_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">currency_amount</text-property>
+                    <text-property name="heading">currency_amount</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
@@ -1050,6 +1056,11 @@ bankReconciliationLine.credit ;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1115,6 +1126,13 @@ bankReconciliationLine.credit ;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
@@ -1130,6 +1148,7 @@ moveLine.description AS name ,
 bankReconciliationLine.type_select  AS type ,
 moveLine.debit AS debit ,
 moveLine.credit AS credit ,
+moveLine.currency_amount AS currency_amount,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
@@ -1141,7 +1160,7 @@ LEFT JOIN public.account_account_type AS accountType ON account.account_type = a
 WHERE bankReconciliation.id = ?
 AND accountType.technical_type_select = 'cash'
 AND (move.status_select = 2 OR move.status_select = 3)
-AND (company.currency = bankReconciliation.currency AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit)) OR (company.currency != bankReconciliation.currency AND moveLine.currency_amount > 0 AND moveLine.bank_reconciled_amount < moveLine.currency_amount))
+AND (company.currency = bankReconciliation.currency AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit)) OR (company.currency != bankReconciliation.currency AND abs(moveLine.currency_amount) > 0 AND moveLine.bank_reconciled_amount < abs(moveLine.currency_amount)))
 AND (bankReconciliation.include_other_bank_statements IS true
 OR ((moveLine.date_val >= ? OR moveLine.due_date >= ?)
 AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
@@ -2424,14 +2443,26 @@ this.height = row["logo_height"];]]></method>
                             <structure>
                                 <property name="name">debit</property>
                                 <text-property name="displayName">debit</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">credit</property>
                                 <text-property name="displayName">credit</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">sum_debit</property>
@@ -2446,7 +2477,12 @@ this.height = row["logo_height"];]]></method>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["debit"]</expression>
+                                        <expression name="value" type="javascript">if(dataSetRow["debit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2458,7 +2494,12 @@ this.height = row["logo_height"];]]></method>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["credit"]</expression>
+                                        <expression name="value" type="javascript">if(dataSetRow["credit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2482,10 +2523,16 @@ this.height = row["logo_height"];]]></method>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["amount"]</expression>
+                                        <expression name="value" type="javascript">row["currency_amount"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">currency_amount</property>
+                                <text-property name="displayName">currency_amount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <column id="4751">
@@ -2948,7 +2995,7 @@ this.height = row["logo_height"];]]></method>
                                         <property name="fontFamily">sans-serif</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["currency_amount"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
