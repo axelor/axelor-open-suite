@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import java.math.BigDecimal;
@@ -40,4 +41,6 @@ public interface ProdProcessLineService {
   public long computeEntireCycleDuration(
       OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException;
+
+  long computeEntireDuration(ProdProcess prodProcess, BigDecimal qty) throws AxelorException;
 }

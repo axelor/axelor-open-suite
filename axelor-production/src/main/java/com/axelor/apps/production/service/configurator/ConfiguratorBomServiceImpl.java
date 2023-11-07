@@ -179,8 +179,6 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     }
 
     billOfMaterial = billOfMaterialRepository.save(billOfMaterial);
-    configuratorBOM.setBillOfMaterialId(billOfMaterial.getId());
-    configuratorBOMRepo.save(configuratorBOM);
     return Optional.of(billOfMaterial);
   }
 
