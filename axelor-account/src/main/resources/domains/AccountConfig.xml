@@ -18,7 +18,7 @@
     <many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal"
       title="Supplier Purchase Journal"/>
     <many-to-one name="supplierCreditNoteJournal"
-      ref="com.axelor.apps.account.db.Journal" title="Supplier Credit Note Journal"/>
+      ref="com.axelor.apps.account.db.Journal" title="Supplier Credit note Journal"/>
     <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal"
       title="Rejects journal"/>
     <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal"

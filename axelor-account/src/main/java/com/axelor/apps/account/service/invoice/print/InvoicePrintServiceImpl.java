@@ -86,7 +86,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException {
     String fileName =
-        I18n.get(InvoiceToolService.isRefund(invoice) ? "Refund" : "Invoice")
+        I18n.get(InvoiceToolService.isRefund(invoice) ? "Credit note" : "Invoice").replace(" ", "")
             + "-"
             + invoice.getInvoiceId()
             + "."
