@@ -78,7 +78,6 @@ public class ContractLineServiceImpl implements ContractLineService {
 
   @Override
   public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
-    Preconditions.checkNotNull(product, I18n.get(ContractExceptionMessage.CONTRACT_EMPTY_PRODUCT));
     Company company =
         contractLine.getContractVersion() != null
             ? contractLine.getContractVersion().getContract() != null
@@ -143,8 +142,10 @@ public class ContractLineServiceImpl implements ContractLineService {
   @Override
   public ContractLine fillAndCompute(ContractLine contractLine, Contract contract, Product product)
       throws AxelorException {
-    contractLine = fill(contractLine, product);
-    contractLine = compute(contractLine, contract, product);
+    if (product != null) {
+      contractLine = fill(contractLine, product);
+      contractLine = compute(contractLine, contract, product);
+    }
     return contractLine;
   }
 
