@@ -113,4 +113,7 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_NO_NEW_VERSION = /*$$(*/
       "Actual version overwritten." /*)*/;
+
+  public static final String SALE_ORDER_CANNOT_DELETE_COMFIRMED_ORDER = /*$$(*/
+      "It is not possible to delete a confirmed order." /*)*/;
 }
