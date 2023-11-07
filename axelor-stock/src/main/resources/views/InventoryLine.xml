@@ -37,7 +37,8 @@
       <field name="stockLocation"
         onSelect="action-inventory-line-method-set-stock-location-domain"
         onChange="action-inventory-line-group-update-inventory-line"/>
-      <field name="currentQty" readonly="true" help="Does not include quantities from sub stock locations"/>
+      <field name="currentQty" readonly="true"
+        help="Does not include quantities from sub stock locations"/>
       <field name="realQty" onChange="action-inventory-line-method-compute"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
       <field name="description"/>
