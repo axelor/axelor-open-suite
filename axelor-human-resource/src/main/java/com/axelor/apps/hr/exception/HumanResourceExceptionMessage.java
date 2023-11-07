@@ -309,4 +309,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_DISTANCE_ERROR = /*$$(*/
       "This is a kilometric expense line. Distance must be greater than 0." /*)*/;
+
+  public static final String EXPENSE_LINE_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least one expense line." /*)*/;
 }

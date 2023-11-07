@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="expense-line-merge-form" model="com.axelor.utils.db.Wizard"
+    title="Create expense" width="large">
+    <panel name="mainPanel">
+      <field name="company" type="many-to-one" target="com.axelor.apps.base.db.Company"
+        title="Company" required="true" form-view="company-form" grid-view="company-grid"/>
+      <field name="currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
+        title="Currency" required="true" form-view="currency-form" grid-view="currency-grid"/>
+      <field name="employee" type="many-to-one" target="com.axelor.apps.hr.db.Employee"
+        title="Employee" required="true" form-view="employee-form" grid-view="employee-grid"
+        onChange="action-expense-create-wizard-method-get-bank-details"/>
+      <field name="period" type="many-to-one" target="com.axelor.apps.base.db.Period"
+        title="Period" form-view="period-form" grid-view="period-grid"/>
+      <field name="bankDetails" type="many-to-one"
+        target="com.axelor.apps.base.db.BankDetails" title="Bank details"
+        onSelect="action-expense-create-wizard-method-get-bank-details-domain"
+        form-view="bank-details-form" grid-view="bank-details-grid"
+        if="__config__.app.getApp('base')?.getManageMultiBanks()" readonlyIf="!company"/>
+      <field name="companyCbSelect" type="integer"
+        title="Expense paid with company's credit card" selection="hr.expense.company.cb.payment"
+        default="1"/>
+    </panel>
+    <panel-related name="expenseLinesToMergePanel" field="$expenseLinesToMerge"
+      form-view="expense-line-orphan-form" grid-view="expense-line-orphan-grid"
+      title="Expense lines to merge" colSpan="12" type="many-to-many"
+      target="com.axelor.apps.hr.db.ExpenseLine"
+      onSelect="action-expense-create-wizard-method-get-expense-line-domain" canNew="false"
+      canEdit="false"/>
+    <panel name="actionsPanel" sidebar="true" title="Actions">
+      <button name="createExpenseBtn" title="Create expense"
+        onClick="action-expense-create-wizard-method-create-expense"
+        readonlyIf="!company || !currency || !employee"/>
+    </panel>
+  </form>
+
+  <action-view name="expense.line.merge.wizard" title="Create expense"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="expense-line-merge-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="width" value="large"/>
+    <view-param name="popup-save" value="false"/>
+  </action-view>
+
+
+  <action-method name="action-expense-create-wizard-method-create-expense">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController" method="createExpense"/>
+  </action-method>
+
+  <action-method name="action-expense-create-wizard-method-get-bank-details">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController"
+      method="fillBankDetailsFromEmployee"/>
+  </action-method>
+
+  <action-method name="action-expense-create-wizard-method-get-bank-details-domain">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController"
+      method="getBankDetailsDomain"/>
+  </action-method>
+
+  <action-method name="action-expense-create-wizard-method-get-expense-line-domain">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController"
+      method="getExpenseLineDomain"/>
+  </action-method>
+</object-views>

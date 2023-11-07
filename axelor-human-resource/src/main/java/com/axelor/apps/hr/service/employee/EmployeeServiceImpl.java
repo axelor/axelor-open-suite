@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
@@ -311,5 +312,23 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
     }
     return employeePhoneBookBirtTemplate;
+  }
+
+  public BankDetails getBankDetails(Employee employee) {
+    if (employee == null) {
+      return null;
+    }
+
+    BankDetails bankDetails = null;
+    Company payCompany = employee.getMainEmploymentContract().getPayCompany();
+    if (payCompany != null) {
+      bankDetails = payCompany.getDefaultBankDetails();
+    } else {
+      User user = employee.getUser();
+      if (user != null && user.getActiveCompany() != null) {
+        bankDetails = user.getActiveCompany().getDefaultBankDetails();
+      }
+    }
+    return bankDetails;
   }
 }

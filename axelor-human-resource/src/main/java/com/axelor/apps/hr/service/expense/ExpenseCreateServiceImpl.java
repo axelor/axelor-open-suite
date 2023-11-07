@@ -75,6 +75,23 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
     return expenseRepository.save(expense);
   }
 
+  @Override
+  public String getExpenseLineToMergeDomain(Company company, Currency currency, Employee employee) {
+    Currency currencyCompany = company.getCurrency();
+    if (currencyCompany.equals(currency)) {
+      return "self.expense = null AND self.employee.id = "
+          + employee.getId()
+          + " AND  self.currency = "
+          + currency.getId();
+    } else {
+      return "self.expense = null AND self.employee.id = "
+          + employee.getId()
+          + " AND  self.currency = "
+          + currency.getId()
+          + " AND self.isKilometricLine IS FALSE";
+    }
+  }
+
   protected void setExpenseInfo(
       Company company,
       Employee employee,

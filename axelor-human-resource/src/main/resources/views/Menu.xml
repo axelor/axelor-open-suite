@@ -444,8 +444,19 @@
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-view>
 
+  <menuitem name="line-expense" parent="expense-root" title="Orphan expense line"
+    action="expense.line" order="400"
+    if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.getIsOrphanExpenseLineManaged()"/>
+
+  <action-view name="expense.line" title="Orphan expense line"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <view type="grid" name="expense-line-orphan-grid"/>
+    <view type="form" name="expense-line-orphan-form"/>
+    <domain>self.expense IS NULL</domain>
+  </action-view>
+
   <menuitem name="historic-expense" parent="expense-root" title="Historic team Expenses"
-    action="expense.historic" order="400"/>
+    action="expense.historic" order="500"/>
 
   <action-method name="expense.historic">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>

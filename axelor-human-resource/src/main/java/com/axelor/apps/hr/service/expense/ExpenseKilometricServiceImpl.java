@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeVehicle;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -72,11 +73,19 @@ public class ExpenseKilometricServiceImpl implements ExpenseKilometricService {
     }
 
     LocalDate expenseDate = expenseLine.getExpenseDate();
+    Employee employee = expense.getEmployee();
     if (expense.getEmployee() == null || expenseDate == null) {
       return kilometricAllowParamList;
     }
 
-    List<EmployeeVehicle> vehicleList = expense.getEmployee().getEmployeeVehicleList();
+    return getKilometricAllowParams(employee, expenseDate);
+  }
+
+  @Override
+  public List<KilometricAllowParam> getKilometricAllowParams(
+      Employee employee, LocalDate expenseDate) {
+    List<KilometricAllowParam> kilometricAllowParamList = new ArrayList<>();
+    List<EmployeeVehicle> vehicleList = employee.getEmployeeVehicleList();
 
     for (EmployeeVehicle vehicle : vehicleList) {
       LocalDate startDate = vehicle.getStartDate();

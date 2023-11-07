@@ -64,6 +64,30 @@
     <field name="toInvoice"/>
   </grid>
 
+  <grid name="expense-line-orphan-grid" title="Expense lines"
+    model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate">
+    <toolbar>
+      <button name="createExpenseBtn" title="Create expense"
+        onClick="expense.line.merge.wizard"/>
+    </toolbar>
+    <hilite if="untaxedAmount == 0" color="danger"/>
+    <hilite
+      if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"
+      background="danger"/>
+    <field name="project"/>
+    <field name="expenseProduct"/>
+    <field name="expenseDate"/>
+    <field name="employee" hidden="true"/>
+    <field name="totalAmount"/>
+    <field name="totalTax"/>
+    <field name="toInvoice"/>
+    <field name="justificationMetaFile"/>
+    <field name="untaxedAmount" hidden="true"/>
+    <field name="expenseProduct.blockExpenseTax" hidden="true"/>
+    <field name="isJustificationFileDigitallySigned" hidden="true"/>
+    <field name="expenseProduct.amountLimit" hidden="true"/>
+  </grid>
+
   <form name="expense-line-project-form" title="Expense line"
     model="com.axelor.apps.hr.db.ExpenseLine" readonlyIf="true" canEdit="false">
     <panel-include view="expense-line-form"/>
@@ -178,6 +202,91 @@
         form-view="analytic-move-line-distribution-form" colSpan="12"
         onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
       <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+    </panel>
+  </form>
+
+  <form title="Orphan expense line" name="expense-line-orphan-form"
+    model="com.axelor.apps.hr.db.ExpenseLine" onNew="action-expense-line-default"
+    onSave="action-expense-line-validate-expenseDate">
+
+    <panel name="mainPanel">
+      <field name="employee" form-view="employee-form" grid-view="employee-grid"
+        canNew="false" canEdit="false" canView="false" required="true"/>
+      <field name="currency" required="true"/>
+      <field name="expenseProduct" edit-icon="false" canEdit="false"
+        onSelect="action-expense-line-attrs-orphan-expense-product-domain" widget="SuggestBox"
+        form-view="product-expense-form" grid-view="product-expense-grid"
+        onChange="action-expense-line-group-expense-product-on-change"/>
+      <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+      <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
+        onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
+        form-view="project-form" grid-view="project-grid"/>
+      <field name="isKilometricLine"/>
+    </panel>
+
+    <panel name="classicPanel" title="Main" showIf="!isKilometricLine">
+      <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
+        onChange="action-expense-line-group-total-amount-on-change">
+        <hilite color="danger"
+          if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
+      </field>
+      <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
+        onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
+        readonlyIf="expenseProduct.blockExpenseTax == true"/>
+      <field name="untaxedAmount"/>
+      <field name="toInvoice" colSpan="3"/>
+      <field name="invoiced" colSpan="3"
+        showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
+        <viewer>
+          <![CDATA[<><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
+        </viewer>
+      </field>
+      <field name="justificationMetaFile" widget="binary-link"
+        onChange="action-expense-line-group-justification-line-onchange"/>
+      <field name="isJustificationFileDigitallySigned" hidden="true"/>
+      <field name="isAloneMeal" hidden="true" showIf="expenseProduct.deductLunchVoucher"
+        onChange="action-expense-line-record-alone-meal-on-change"/>
+      <field name="invitedCollaboratorSet" grid-view="employee-grid" form-view="employee-form"
+        onSelect="action-expense-line-attrs-set-invited-collaborators-domain" hidden="true"
+        showIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal"
+        requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="TagSelect"/>
+      <field name="comments" colSpan="12"/>
+      <field name="expense" hidden="true"/>
+      <field name="expense.companyCbSelect" hidden="true"/>
+      <field name="expenseProduct.deductLunchVoucher" hidden="true"/>
+    </panel>
+
+    <panel name="kilometricAllowancePanel" title="Kilometric Allowance"
+      showIf="isKilometricLine">
+      <field name="kilometricAllowParam" onSelect="action-expense-line-method-get-kap-domain"
+        onChange="action-kilometric-allowance-method-compute" required="true"/>
+      <field name="kilometricTypeSelect" required="true"/>
+      <field name="distance" onChange="action-kilometric-allowance-method-compute"
+        required="true"/>
+      <panel name="cityDetailsPanel" colSpan="12">
+        <field name="fromCity" required="true"
+          onChange="action-kilometric-allowance-method-compute-distance"/>
+        <field name="toCity" required="true"
+          onChange="action-kilometric-allowance-method-compute-distance"/>
+      </panel>
+      <field name="totalAmount"
+        onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
+        readonly="true"/>
+      <field name="comments" colSpan="12"/>
+    </panel>
+
+    <panel name="analyticDistributionPanel" title="Analytic distribution"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">
+      <field name="analyticDistributionTemplate"
+        grid-view="analytic-distribution-template-grid"
+        form-view="analytic-distribution-template-form" canEdit="false"
+        onChange="action-expense-line-method-create-distribution"/>
+      <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+        grid-view="analytic-move-line-distribution-grid"
+        form-view="analytic-move-line-distribution-form" colSpan="12"
+        onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+      <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      <field name="expenseProduct.amountLimit" hidden="true"/>
     </panel>
   </form>
 
@@ -352,5 +461,17 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
       method="checkJustificationFile"/>
   </action-method>
+
+  <action-method name="action-expense-line-method-get-kap-domain">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController" method="getKAPDomain"/>
+  </action-method>
+
+  <action-attrs name="action-expense-line-attrs-orphan-expense-product-domain">
+    <attribute for="expenseProduct" name="domain"
+      expr="self.expense = true AND self.dtype = 'Product'" if="__user__?.employee?.hrManager"/>
+    <attribute for="expenseProduct" name="domain"
+      expr="self.expense = true AND self.dtype = 'Product' AND self.unavailableToUsers IS FALSE"
+      if="!__user__?.employee?.hrManager"/>
+  </action-attrs>
 
 </object-views>
