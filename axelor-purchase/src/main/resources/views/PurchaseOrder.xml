@@ -11,7 +11,8 @@
           action="action-purchase-order-method-show-purchase-order"/>
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-        <item name="mergeQuotationsItem" title="Merge quotations" action="purchase.order.merge"/>
+        <item name="mergeQuotationsItem" title="Merge quotations"
+          action="action-purchase-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>

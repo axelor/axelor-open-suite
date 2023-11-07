@@ -37,9 +37,11 @@ public final class PurchaseExceptionMessage {
       "You must configure Purchase module for the company %s" /*)*/;
 
   /** Merge purchase order */
+  public static final String PURCHASE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
+      "List of sale orders to merge is empty" /*)*/;
+
   public static final String PURCHASE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/
       "The currency is required and must be the same for all purchase orders" /*)*/;
-
   public static final String PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER = /*$$(*/
       "The supplier Partner is required and must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/
