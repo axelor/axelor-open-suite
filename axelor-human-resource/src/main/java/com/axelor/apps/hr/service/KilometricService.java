@@ -288,15 +288,7 @@ public class KilometricService {
 
   protected BigDecimal getDistanceUsingOSM(String fromCity, String toCity)
       throws JSONException, AxelorException, URISyntaxException, IOException {
-    AppBase appBase = appBaseService.getAppBase();
-    BigDecimal distance = BigDecimal.ZERO;
-
-    if (appBase.getOsmRoutingServiceApiSelect() == AppBaseRepository.ROUTING_API_YOURS) {
-      distance = this.getDistanceUsingYOURSApi(fromCity, toCity);
-    } else if (appBase.getOsmRoutingServiceApiSelect() == AppBaseRepository.ROUTING_API_OSRM) {
-      distance = this.getDistanceUsingOSRMApi(fromCity, toCity);
-    }
-    return distance;
+    return this.getDistanceUsingOSRMApi(fromCity, toCity);
   }
 
   protected BigDecimal getDistanceUsingYOURSApi(String fromCity, String toCity)

@@ -268,4 +268,13 @@ public interface StockMoveLineService {
    * @param stockMoveLine a stock move line being realized.
    */
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine);
+
+  /**
+   * This method resets complety the stock move line. It does not remove the stock move line from
+   * database.
+   *
+   * @param stockMoveLine
+   * @return empty stock move line
+   */
+  public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine);
 }

@@ -292,19 +292,25 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       LocalDate nextDate) {
     BigDecimal prorataTemporis;
 
-    BigDecimal nbDaysBetweenAcqAndFirstDepDate =
-        nbDaysBetween(
-            fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
-            acquisitionDate,
-            depreciationDate);
+    boolean isUSProrataTemporis = fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis();
+
+    BigDecimal nbDaysBetweenAcqAndFirstDepDate;
+    if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
+        fixedAsset.getComputationMethodSelect())) {
+      nextDate = null;
+      nbDaysBetweenAcqAndFirstDepDate =
+          nbDaysBetween(
+              isUSProrataTemporis,
+              acquisitionDate.withDayOfMonth(1),
+              depreciationDate.withDayOfMonth(30));
+    } else {
+      nbDaysBetweenAcqAndFirstDepDate =
+          nbDaysBetween(isUSProrataTemporis, acquisitionDate, depreciationDate);
+    }
 
     BigDecimal nbDaysOfPeriod;
     if (nextDate != null) {
-      nbDaysOfPeriod =
-          nbDaysBetween(
-              fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
-              acquisitionDate,
-              nextDate);
+      nbDaysOfPeriod = nbDaysBetween(isUSProrataTemporis, acquisitionDate, nextDate);
     } else {
       nbDaysOfPeriod =
           BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
@@ -483,7 +489,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (isProrataTemporis(fixedAsset)
         && numberOfDepreciationDone(fixedAsset)
             .equals(getNumberOfDepreciation(fixedAsset).setScale(0, RoundingMode.DOWN))) {
-      depreciationDate = computeLastProrataDepreciationDate(fixedAsset);
+      depreciationDate = computeLastProrataDepreciationDate(fixedAsset, previousFixedAssetLine);
     } else {
       depreciationDate =
           DateTool.plusMonths(
@@ -527,7 +533,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     return previousFixedAssetLine.getDepreciationBase();
   }
 
-  protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset) {
+  protected LocalDate computeLastProrataDepreciationDate(
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
 
     LocalDate firstServiceDate =
         fixedAsset.getFirstServiceDate() == null
@@ -537,6 +544,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
         getComputationMethodSelect(fixedAsset))) {
       d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));
+    } else {
+      d =
+          DateTool.plusMonths(
+              previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
     }
     return d;
   }

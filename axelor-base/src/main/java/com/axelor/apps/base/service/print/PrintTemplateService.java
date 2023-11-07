@@ -15,16 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.print;
 
 import com.axelor.apps.base.db.Print;
+import com.axelor.apps.base.db.PrintTemplate;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaFile;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
 
-public interface PrintService {
-  public Map<String, Object> generatePDF(Print print) throws AxelorException;
+public interface PrintTemplateService {
 
-  public void attachMetaFiles(Print print, Set<MetaFile> metaFiles);
+  public Print generatePrint(Long objectId, PrintTemplate printTemplate)
+      throws AxelorException, IOException, ClassNotFoundException;
 }

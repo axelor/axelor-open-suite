@@ -25,9 +25,6 @@ dependencies {
 	implementation libs.ical4j_connector
 
 	implementation libs.iban4j
-	implementation libs.itextpdf
-	implementation libs.itext7_core
-	implementation libs.html2pdf
 	implementation libs.jackrabbit_webdav
 	implementation libs.zxing_core
 
@@ -36,4 +33,9 @@ dependencies {
 
 	implementation libs.pac4j_core
 	testImplementation libs.mockito
+
+	implementation libs.boxable
+	implementation libs.bcprov_jdk15on
+	implementation libs.bcpkix_jdk15on
+	implementation libs.flyingsaucer_openpdf
 }

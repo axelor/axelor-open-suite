@@ -48,7 +48,7 @@
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
 
     <!-- Dates -->
-    <date name="invoiceDate" title="Invoice Date"/>
+    <date name="invoiceDate" title="Invoice date"/>
     <date name="dueDate" title="Due Date"/>
     <date name="originDate" title="Origin date"/>
     <date name="paymentDate" title="Payment date"/>
@@ -244,6 +244,8 @@
     <unique-constraint columns="invoiceId,company"/>
 
     <finder-method name="findByMove" using="move"/>
+
+    <finder-method name="findByOldMove" using="oldMove"/>
 
     <extra-code><![CDATA[
 

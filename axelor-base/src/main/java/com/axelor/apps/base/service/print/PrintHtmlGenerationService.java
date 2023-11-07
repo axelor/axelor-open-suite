@@ -15,16 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.print;
 
-import com.axelor.apps.base.db.PrintTemplateLine;
-import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaModel;
-import java.io.IOException;
+import com.axelor.apps.base.db.Print;
 
-public interface PrintTemplateLineService {
-
-  public String checkExpression(
-      Long objectId, MetaModel metaModel, PrintTemplateLine printTemplateLine)
-      throws AxelorException, IOException, ClassNotFoundException;
+public interface PrintHtmlGenerationService {
+  String generateHtml(Print print, String attachmentPath);
 }

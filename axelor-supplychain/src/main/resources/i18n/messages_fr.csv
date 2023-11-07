@@ -243,7 +243,7 @@
 "Ignore end date","Ignorer la date de fin",,
 "Include element without date","Inclure les évènements sans date",,
 "Include elements with a date later than MRP end date.","Inclure les éléments dont la date est postérieure à la date de fin du CBN.",,
-"Include in DEB",,,
+"Include in DEB","Inclure dans la DEB",,
 "Include late sales","Inclure les commandes en retard",,
 "Include not stock managed product","Inclure les produits non gérés en stock",,
 "Include sales with a planned delivery date in the past but which have not yet been delivered.","Inclure les commandes avec une date de livraison estimée passée mais qui n'ont pas encore été livrées.",,

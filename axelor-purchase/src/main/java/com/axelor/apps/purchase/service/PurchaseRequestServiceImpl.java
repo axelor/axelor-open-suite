@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -106,19 +105,39 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
     for (PurchaseRequestLine purchaseRequestLine : purchaseRequest.getPurchaseRequestLineList()) {
 
-      Product product = purchaseRequestLine.getProduct();
-
       PurchaseOrderLine purchaseOrderLine =
-          purchaseOrderLineService.createPurchaseOrderLine(
-              purchaseOrder,
-              product,
-              purchaseRequestLine.getNewProduct() ? purchaseRequestLine.getProductTitle() : null,
-              null,
-              purchaseRequestLine.getQuantity(),
-              purchaseRequestLine.getUnit());
+          groupByProduct ? getPoLineByProductAndUnit(purchaseRequestLine, purchaseOrder) : null;
+      if (purchaseOrderLine != null) {
+        purchaseOrderLine.setQty(purchaseOrderLine.getQty().add(purchaseRequestLine.getQuantity()));
+      } else {
+        purchaseOrderLine =
+            purchaseOrderLineService.createPurchaseOrderLine(
+                purchaseOrder,
+                purchaseRequestLine.getProduct(),
+                purchaseRequestLine.getNewProduct() ? purchaseRequestLine.getProductTitle() : null,
+                null,
+                purchaseRequestLine.getQuantity(),
+                purchaseRequestLine.getUnit());
+        purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
+      }
 
-      purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
       purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
     }
+  }
+
+  protected PurchaseOrderLine getPoLineByProductAndUnit(
+      PurchaseRequestLine purchaseRequestLine, PurchaseOrder purchaseOrder) {
+
+    return purchaseOrder.getPurchaseOrderLineList().stream()
+        .filter(
+            l ->
+                l != null
+                    && (!purchaseRequestLine.getNewProduct()
+                        ? purchaseRequestLine.getProduct().equals(l.getProduct())
+                        : purchaseRequestLine.getProductTitle().equals(l.getProductName()))
+                    && (purchaseRequestLine.getUnit() == null
+                        || purchaseRequestLine.getUnit().equals(l.getUnit())))
+        .findFirst()
+        .orElse(null);
   }
 }

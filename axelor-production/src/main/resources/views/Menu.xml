@@ -17,7 +17,6 @@
     <view type="cards" name="product-cards"/>
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = false and self.productTypeSelect = 'storable' AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_fromProduction" expr="eval:true"/>
   </action-view>
 

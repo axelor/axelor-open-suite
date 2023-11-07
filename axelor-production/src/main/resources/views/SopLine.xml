@@ -57,6 +57,8 @@
       <panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
         target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
+        <field name="forecastDate" title="Forecast date" type="date" required="true"
+          onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" readonly="true"/>
         <field name="qty" onChange="action-sop-line-record-compute-total-price"/>
         <field name="$unitPrice" title="Unit price" readonly="true" type="decimal"/>
@@ -74,6 +76,7 @@
       <field name="$difference" readonly="true" title="Difference" type="decimal"/>
       <field name="$currency" hidden="true" type="many-to-one"
         target="com.axelor.apps.base.db.Currency" colSpan="12"/>
+      <field name="$currency.symbol" hidden="true" colSpan="12"/>
       <button name="computeTotalForecastBtn" title="Compute total forecast"
         onClick="action-mrp-forecast-method-compute-total-forecast"/>
       <button name="confirmForecastsBtn" readonlyIf="$stockLocation==null"
@@ -171,9 +174,20 @@
 
   <action-validate name="action-mrp-forecast-validate-check-difference">
     <alert
-      message="There currently is a ${difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?"
+      message="There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&amp;OP forecast. Proceed?"
       if="difference != 0"/>
   </action-validate>
+
+  <action-validate name="action-mrp-forecast-validate-check-forecast-date">
+    <error message="Please enter valid forecast date"
+      if="forecastDate &amp;&amp; __parent__ &amp;&amp; (forecastDate.isBefore(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.fromDate) || forecastDate.isAfter(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.toDate))"
+      action="action-mrp-forecast-record-reset-forecast-date"/>
+  </action-validate>
+
+  <action-record name="action-mrp-forecast-record-reset-forecast-date"
+    model="com.axelor.apps.supplychain.db.MrpForecast">
+    <field name="forecastDate" expr="eval: null"/>
+  </action-record>
 
 </object-views>
 

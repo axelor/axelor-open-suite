@@ -36,7 +36,6 @@
         <field name="footerTextAlignment" colSpan="4"/>
         <field name="footerFontSize" colSpan="4"/>
         <field name="footerFontColor" colSpan="4"/>
-        <field name="isFooterUnderLine" colSpan="4"/>
       </panel>
       <panel-related name="printLineListPanel" field="printLineList"
         grid-view="print-line-grid" form-view="print-line-form" colSpan="12" orderBy="rank"/>

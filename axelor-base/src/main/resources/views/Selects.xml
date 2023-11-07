@@ -137,7 +137,6 @@
   </selection>
 
   <selection name="base.app.base.osm.routing.api.select">
-    <option value="1">YOUR navigation</option>
     <option value="2">OSRM</option>
   </selection>
 

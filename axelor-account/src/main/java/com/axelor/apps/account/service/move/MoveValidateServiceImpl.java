@@ -219,7 +219,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         Account account = moveLine.getAccount();
         if (account.getIsTaxAuthorizedOnMoveLine()
             && account.getIsTaxRequiredOnMoveLine()
-            && moveLine.getTaxLine() == null) {
+            && moveLine.getTaxLine() == null
+            && functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
               I18n.get(AccountExceptionMessage.MOVE_9),

@@ -162,6 +162,8 @@ public class ManufOrderWorkflowService {
         }
         manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
       }
+      manufOrder.setRealStartDateT(null);
+      manufOrder.setRealEndDateT(null);
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -567,7 +569,8 @@ public class ManufOrderWorkflowService {
     Unit startUnit =
         Beans.get(UnitRepository.class)
             .all()
-            .filter("self.name = 'Hour' AND self.unitTypeSelect = 3")
+            .filter("self.name = 'Hour' AND self.unitTypeSelect = :unitType")
+            .bind("unitType", UnitRepository.UNIT_TYPE_TIME)
             .fetchOne();
 
     for (ProdHumanResource humanResource : operationOrder.getProdHumanResourceList()) {

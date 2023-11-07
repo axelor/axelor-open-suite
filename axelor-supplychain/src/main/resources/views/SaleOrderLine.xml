@@ -10,9 +10,9 @@
         value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs"/>
       <attribute name="onLoad" value="action-sale-order-line-supplychain-group-onload"/>
     </extend>
-    <extend target="//panel[@name='statusPanel']">
+    <extend target="//panel[@name='hiddenPanel']">
       <insert position="inside">
-        <field name="$_xFillProductAvailableQty" hidden="true" type="boolean" readonly="true"/>
+        <field name="$_xFillProductAvailableQty" type="boolean" readonly="true"/>
       </insert>
     </extend>
   </form>
@@ -178,7 +178,7 @@
   <action-record name="action-record-sale-order-line-future-qty"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="$futureQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, __parent__.stockLocation.id, null)"/>
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQtyOfProductInStockLocations(product.id, java.util.Collections.singletonList(__parent__.stockLocation.id), null)"/>
   </action-record>
 
   <action-record name="action-record-sale-order-line-fill-request-qty"

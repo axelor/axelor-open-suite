@@ -238,9 +238,10 @@ public class PeriodServiceImpl implements PeriodService {
       Query resultQuery =
           JPA.em()
               .createQuery(
-                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company");
+                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company AND self.year.typeSelect = :typeSelect");
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
+      resultQuery.setParameter("typeSelect", period.getYear().getTypeSelect());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
         Period previousPeriod =
             periodRepo.find(

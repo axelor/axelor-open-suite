@@ -444,7 +444,6 @@
     <view-param name="search-filters" value="product-expense-filters"/>
     <view-param name="forceTitle" value="true"/>
     <domain>self.isModel = false AND self.expense = true AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="false"/>
     <context name="_payCompany"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
@@ -586,7 +585,6 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND
       self.expense = false AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="false"/>
     <context name="_productTypeSelect" expr="storable"/>
   </action-view>

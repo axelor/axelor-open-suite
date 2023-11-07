@@ -493,7 +493,7 @@ public final class BaseExceptionMessage {
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
-      "The previous period is not closed or temporarily closed." /*)*/;
+      "The previous period is not closed or temporarily closed while it should be." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
       "The previous period is not closed." /*)*/;
@@ -509,4 +509,7 @@ public final class BaseExceptionMessage {
   public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
 
   public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
+
+  public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
+      "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
 }

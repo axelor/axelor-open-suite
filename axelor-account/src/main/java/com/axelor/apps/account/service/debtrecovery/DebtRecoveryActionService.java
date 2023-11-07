@@ -118,8 +118,8 @@ public class DebtRecoveryActionService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_3),
           I18n.get(BaseExceptionMessage.EXCEPTION),
-          partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
+          partner.getName(),
           debtRecoveryMethodLine.getSequence());
 
     } else {
@@ -216,8 +216,8 @@ public class DebtRecoveryActionService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_3),
           I18n.get(BaseExceptionMessage.EXCEPTION),
-          partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
+          partner.getName(),
           debtRecoveryMethodLine.getSequence());
 
     } else {

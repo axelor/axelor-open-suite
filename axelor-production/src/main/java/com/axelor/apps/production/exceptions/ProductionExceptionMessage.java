@@ -284,4 +284,10 @@ public final class ProductionExceptionMessage {
   public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
       /*$$(*/
       "The quantity of the bill of material %s is equal to zero." /*)*/;
+
+  public static final String GENERATE_MANUF_ORDER_BOM_MISSING_UNIT =
+      /*$$(*/ "The unit of the bill of material %s is missing. Please correct it." /*)*/;
+
+  public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
+      /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
 }

@@ -205,7 +205,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     if (ObjectUtils.isEmpty(analyticMoveLineList)) {
       saleOrderLine.clearAnalyticMoveLineList();
     } else {
-      saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
+      analyticMoveLineList.forEach(saleOrderLine::addAnalyticMoveLineListItem);
     }
     return saleOrderLine;
   }

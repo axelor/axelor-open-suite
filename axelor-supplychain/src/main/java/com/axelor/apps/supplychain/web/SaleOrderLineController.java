@@ -24,10 +24,10 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
@@ -73,29 +73,23 @@ public class SaleOrderLineController {
 
   public void checkStocks(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    SaleOrder saleOrder =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class).getSaleOrder(request.getContext());
-    if (saleOrder.getStockLocation() == null) {
-      return;
-    }
     try {
-      if (saleOrderLine.getSaleSupplySelect() != SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK) {
+      SaleOrder saleOrder =
+          Beans.get(SaleOrderLineServiceSupplyChainImpl.class).getSaleOrder(request.getContext());
+      Product product = saleOrderLine.getProduct();
+      StockLocation stockLocation = saleOrder.getStockLocation();
+      Unit unit = saleOrderLine.getUnit();
+      if (product == null
+          || stockLocation == null
+          || unit == null
+          || saleOrderLine.getSaleSupplySelect()
+              != SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK) {
         return;
       }
-      // Use the unit to get the right quantity
-      Unit unit = null;
-      if (saleOrderLine.getProduct() != null) unit = saleOrderLine.getProduct().getUnit();
-      BigDecimal qty = saleOrderLine.getQty();
-      if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
-        qty =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    saleOrderLine.getUnit(), unit, qty, qty.scale(), saleOrderLine.getProduct());
-      }
       Beans.get(StockLocationLineService.class)
-          .checkIfEnoughStock(saleOrder.getStockLocation(), saleOrderLine.getProduct(), qty);
+          .checkIfEnoughStock(stockLocation, product, unit, saleOrderLine.getQty());
     } catch (Exception e) {
-      response.setAlert(e.getLocalizedMessage());
+      TraceBackService.trace(response, e);
     }
   }
 

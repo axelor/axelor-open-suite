@@ -1,3 +1,186 @@
+## [6.3.31] (2023-10-27)
+
+#### Fixed
+
+* Debt Recovery: fixed error message on debt recovery generation to display correctly trading name.
+* Manufacturing order: fixed an issue where outsourcing was not activated in operations while it was active on production process lines.
+* Payment voucher: removed paid line control at payment voucher confirmation.
+* Fixed asset: fixed popup error "Cannot get property 'fixedAssetType' on null object" displayed when clearing fixed asset category field.
+
+## [6.3.30] (2023-10-18)
+
+#### Fixed
+
+* Product: fixed stock indicators computation.
+* Project: fixed french translation for 'Create business project from this template'.
+* Sale order: fixed duplicated 'Advance Payment' panel.
+* Purchase request: fixed 'Group by product' option not working when generating a purchase order.
+* Sequence: fixed sequence duplication causing a NPE error.
+* Move: fixed an error when we create a move line with a partner without any accounting situation.
+* SOP/MPS: fixed a bug where a existing forecast was modified instead of creating a new one when the forecast was on a different date.
+
+## [6.3.29] (2023-10-06)
+
+#### Fixed
+
+* Move template: fixed description not being filled on moves generated from a percentage based template.
+* Sale order line: fixed error when emptying product if the 'check stock' feature was enabled for sale orders.
+* Sale order line: fixed an issue where updating quantity on a line did not updated the quantity of complementary products.
+* Stock move: filled correct default stock locations on creating a new stock move.
+* Stock move: fixed wrong french translation on stock move creation and cancelation.
+* User: encrypt password when importing user data-init.
+* Print template: iText dependency has been replaced by Boxable and PDFBox.
+* Cost calculation: fixed the import of cost price calculation.
+* HR: fixed an issue preventing people from creating a required new training.
+* Task: improved performance of the batch used to update project tasks.
+* Sale order: fixed an error occurring when generating analytic move line of complementary product.
+* Invoicing dashboard: fixed error on turnover per month charts.
+* Account move: fixed default currency not automatically filled on a new accounting move.
+* Move line: fixed wrong condition on partner based on partner balance usage account config.
+* Debt recovery: fixed missing letter template error message.
+* Project: fixed tracebacks not showing on project totals batch anomalies.
+* Bank reconciliation: fixed balance not considering move status.
+
+## [6.3.28] (2023-09-21)
+
+#### Fixed
+
+* Follower: fixed an error occuring when sending a message while adding a follower on any form.
+* Product: "Economic manufacturing quantity" is now correctly hidden on components.
+* Leave line: deleting every leave management now correctly computes remaining and acquired value.
+* Invoice: fixed french translation for 'Advance payment invoice'.
+* Manufacturing order: fixed 'No calculation' of production indicators on planned Manufacturing Order.
+* Advanced export: change PDF generation.
+* Stock location: fixed new average price computation in the case of a unit conversion.
+
+## [6.3.27] (2023-09-11)
+
+#### Fixed
+
+* Fixed asset: fixed never ending depreciation lines generation if there is a gap of more than one year.
+* Product: on product creation, fills the currency with the currency from the company of the logged user.
+* Invoice: fixed wrong translations on ventilate error.
+* Invoice line: set analytic accounting panel to readonly.
+* Sale/Purchase order and stock move: fixed wrong filters when selecting stock locations, the filters did not correctly followed the stock location configuration.
+* Stock move: fixed 'NullPointerException' error when emptying product on stock move line.
+* Manufacturing order: fixed an issue where some planning processes were not executed.
+* Move template: fixed copied move template being valid.
+* Journal: balance tag is now correctly computed.
+* Manufacturing order: when generating a multi level manufacturing order, correctly fills the partner.
+
+## [6.3.26] (2023-08-24)
+
+#### Fixed
+
+* Webapp: update Axelor Open Platform dependency to 5.4.22.
+* Move: fixed reverse process to fill bank reconciled amount only if 'Hide move lines in bank reconciliation' is ticked and if the account type is 'cash'
+
+To fix existing records, the following script must be executed:
+
+```sql
+UPDATE account_move_line moveLine
+SET bank_reconciled_amount = 0
+FROM account_account account
+JOIN account_account_type accountType
+ON account.account_type = accountType.id
+WHERE moveLine.account = account.id
+AND accountType.technical_type_select <> 'cash';
+```
+
+* Payment voucher: fixed remaining amount not being recomputed on reset.
+* Stock details: in stock details by product, fixed production indicators visibility.
+* Business project batch: fixed "id to load is required for loading" error when generating invoicing projects.
+* Period: fixed adjusting button not being displayed when adjusting the year.
+* Fixed asset: fixed wrong depreciation value for degressive method.
+* Employee: value of statusSelect with hire and leave date empty.
+* Bank reconciliation: merge same bank statement lines to fix wrong ongoing balance due to auto reconcile.
+* Invoice: fixed anomaly causing payment not being generated
+
+Correct anomaly causing payment not being generated on invoice when a new reconciliation is validated  
+and the invoice's move has been reconciled with a shift to another account (LCR excluding Doubtful process).
+
+* Sale order line: fixed a bug where project not emptied on copy.
+* Stock move printing: fixed an issue where lines with different prices were wrongly grouped.
+* Stock details: fixed "see stock details" button in product and sale order line form views.
+* Tax number: translated and added an helper for 'Include in DEB' configuration.
+* Leave request: fixed employee filter
+
+A HR manager can now create a leave request for every employee.
+Else, if an employee is not a manager, he can only create leave request for himself or for employees he is responsible of.
+
+* Manufacturing order: fixed a bug where sale order set was emptied on change of client partner and any change on saleOrderSet filled the partner.
+* Contact: the filter on mainPartner now allows to select a company partner only, not an individual.
+
+## [6.3.25] (2023-08-08)
+
+#### Fixed
+
+* PLANNING: Planning is now correctly filtered on employee and machine form
+* SaleOrderLine: Description is now copied only if the configuration allows it
+* PurchaseOrder and Invoice: Added widget boolean switch for interco field 
+* ManufOrder: Planning a cancelled MO now clears the real dates on operations orders and MO
+* Product/ProductFamily : Analytic distribution template is now on readonly if the config analytic type is not by product
+* Invoice: Fixed french translations
+* SOP/MPS: Fixed a bug where real datas were never increased
+* SOP/MPS: Fixed SOP/MPS Wrong message on forecast generation
+* Debt Recovery: Fixed error message on debt recovery batch to display correctly trading name
+* Period : Fixed an issue where a false warning was displayed preventing the user for re-opening a closed period
+* Invoice: Fixed a bug where subscription invoice was linked to unrelated advance payment invoice
+
+When creating an invoice auto complete advance payement invoice with no internal reference to an already existing sale order.
+
+* Product: When changing costTypeSelect to 'last purchase price', the cost price will now be correctly converted.
+* BUSINESS PROJECT BATCH: Fixed invoicing project batch
+
+## [6.3.24] (2023-07-20)
+
+#### Fixed
+
+* Manufacturing order: fixed JNPE error when merging manufacturing orders missing units.
+* Cost sheet: fixed wrong bill of materials used for cost calculation.
+* Stock move line: fixed display issues with the button used to generate tracking numbers in stock move lines.
+* Operation order: correctly filter work center field on work center group (when the feature is activated).
+* Stock move: fixed issue preventing the display of invoicing button.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves.
+* Product: fixed wrong filter on analytic on product accounting panel.
+* Sale order: improved performance when loading card views.
+* Interco: fixed generated sale order/purchase order missing a fiscal position.
+
+## [6.3.23] (2023-07-11)
+
+#### Fixed
+
+* Business project: Automatic project can be enabled only if project generation/selection for order is enabled
+
+The helper for the project generation/selection for order has been changed. To update it, a script must be executed:
+
+```sql
+DELETE FROM meta_help WHERE field_name = 'generateProjectOrder';
+```
+
+* App configuration: remove YOURS API from Routing Services
+
+If using the distance computation with web services in expenses, users should select the OSRM API in App base config.
+
+* Product/Account Management: hide financial account when it is inactive on product account management.
+* Forecast generator: fixed endless loading when no periodicity selected.
+* Stock move line: fixed a issue when emptying product from stock move line would create a new stock move line.
+* Prod process line: fixed an issue where capacity settings panel was hidden with work center group feature activated.
+* Inventory: fixed wrong gap value on inventory.
+* Accounting report: fixed impossibility to select a payment move line in DAS2 grid even if code N4DS is not empty.
+* Fixed asset: fixed move line amount 0 error on sale move generation.
+* Sale order template: fixed error when selecting a project.
+* Accounting batch: fixed error when we try to run credit transfer batch without bank details.
+* Sale order template: fixed error when selecting a project.
+* Move: on change of company, currency is now updated to company currency even when partner filled.
+* Contract: fixed an error occurring when invoicing a contract
+
+An error occurred when invoicing a contract if time prorated Invoice was enabled and then periodic invoicing was disabled.
+
+* Move: removed verification on tax in move with cut off functional origin.
+* Details stock location line: removed reserved quantity from the form view.
+* Sale order: fixed totals in sales order printouts.
+
 ## [6.3.22] (2023-06-22)
 
 #### Fixed
@@ -716,6 +899,15 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.31]: https://github.com/axelor/axelor-open-suite/compare/v6.3.30...v6.3.31
+[6.3.30]: https://github.com/axelor/axelor-open-suite/compare/v6.3.29...v6.3.30
+[6.3.29]: https://github.com/axelor/axelor-open-suite/compare/v6.3.28...v6.3.29
+[6.3.28]: https://github.com/axelor/axelor-open-suite/compare/v6.3.27...v6.3.28
+[6.3.27]: https://github.com/axelor/axelor-open-suite/compare/v6.3.26...v6.3.27
+[6.3.26]: https://github.com/axelor/axelor-open-suite/compare/v6.3.25...v6.3.26
+[6.3.25]: https://github.com/axelor/axelor-open-suite/compare/v6.3.24...v6.3.25
+[6.3.24]: https://github.com/axelor/axelor-open-suite/compare/v6.3.23...v6.3.24
+[6.3.23]: https://github.com/axelor/axelor-open-suite/compare/v6.3.22...v6.3.23
 [6.3.22]: https://github.com/axelor/axelor-open-suite/compare/v6.3.21...v6.3.22
 [6.3.21]: https://github.com/axelor/axelor-open-suite/compare/v6.3.20...v6.3.21
 [6.3.20]: https://github.com/axelor/axelor-open-suite/compare/v6.3.19...v6.3.20

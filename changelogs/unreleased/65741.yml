@@ -1,5 +1,0 @@
----
-title: "Contract: fix an error occurring when invoicing a contract"
-type: fix
-description: |
-  An error occurred when invoicing a contract if time prorated Invoice was enabled and then periodic invoicing was disabled.

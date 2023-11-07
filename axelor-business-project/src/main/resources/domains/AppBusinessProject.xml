@@ -28,7 +28,8 @@
     <boolean name="enableToInvoiceTimesheet" title="Enable to invoice timesheet"/>
     <boolean name="enableToInvoiceExpense" title="Enable to invoice expense"/>
 
-    <boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
+    <boolean name="generateProjectOrder" title="Generate/Select Project for Order"
+      help="This option allows you to link an order to a new or existing project."/>
     <boolean name="automaticProject" title="Automatic Project"/>
 
     <integer name="generatedElementTypeSelect" title="Generated element type" default="3"

@@ -37,4 +37,8 @@ public interface StockMoveServiceSupplychain {
   public void setDefaultInvoicedPartner(StockMove stockMove);
 
   void checkInvoiceStatus(StockMove stockMove) throws AxelorException;
+
+  public void setInvoicingStatusInvoicedDelayed(StockMove stockMove);
+
+  public void setInvoicingStatusInvoicedValidated(StockMove stockMove);
 }

@@ -63,6 +63,14 @@ public interface StockLocationLineService {
       boolean future)
       throws AxelorException;
 
+  public void maxStockRules(
+      Product product,
+      BigDecimal qty,
+      StockLocationLine stockLocationLine,
+      boolean current,
+      boolean future)
+      throws AxelorException;
+
   public void updateDetailLocation(
       StockLocation stockLocation,
       Product product,
@@ -79,14 +87,15 @@ public interface StockLocationLineService {
       throws AxelorException;
 
   /**
-   * Check if the stock location has more than qty units of the product
+   * Check if the stock location has enough qty of the product in the given unit.
    *
    * @param stockLocation
    * @param product
+   * @param unit
    * @param qty
    * @throws AxelorException if there is not enough qty in stock
    */
-  public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
+  void checkIfEnoughStock(StockLocation stockLocation, Product product, Unit unit, BigDecimal qty)
       throws AxelorException;
 
   public StockLocationLine updateLocation(

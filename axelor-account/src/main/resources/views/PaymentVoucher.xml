@@ -106,7 +106,7 @@
         <button name="loadSelectedLinesBtn" title="Load selected lines"
           onClick="action-method-payment-voucher-load-selected-lines,save" colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation" colSpan="6"/>
+          onClick="action-payment-voucher-method-reset-imputation" colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
         field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form"
@@ -310,12 +310,9 @@
 
   <action-group name="action-group-payment-voucher-reset-imputation"
     model="com.axelor.apps.account.db.PaymentVoucher">
-    <action name="action-payment-voucher-reset-imputation" if="payVoucherElementToPayList"/>
+    <action name="action-payment-voucher-method-reset-imputation"
+      if="payVoucherElementToPayList"/>
   </action-group>
-
-  <action-method name="action-payment-voucher-reset-imputation">
-    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
-  </action-method>
 
   <action-method name="action-payment-voucher-reload-element-to-pay-list"
     model="com.axelor.apps.account.db.PaymentVoucher">

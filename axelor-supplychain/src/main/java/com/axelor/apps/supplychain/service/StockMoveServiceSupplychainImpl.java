@@ -658,4 +658,20 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setInvoicingStatusInvoicedDelayed(StockMove stockMove) {
+    stockMove = stockMoveRepo.find(stockMove.getId());
+    stockMove.setInvoicingStatusSelect(StockMoveRepository.STATUS_DELAYED_INVOICE);
+    stockMoveRepo.save(stockMove);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setInvoicingStatusInvoicedValidated(StockMove stockMove) {
+    stockMove = stockMoveRepo.find(stockMove.getId());
+    stockMove.setInvoicingStatusSelect(StockMoveRepository.STATUS_VALIDATED_INVOICE);
+    stockMoveRepo.save(stockMove);
+  }
 }

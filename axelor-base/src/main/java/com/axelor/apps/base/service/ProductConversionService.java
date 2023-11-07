@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.Print;
-import com.axelor.apps.base.db.PrintTemplate;
+import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
-import java.io.IOException;
+import java.math.BigDecimal;
 
-public interface PrintTemplateService {
+public interface ProductConversionService {
 
-  public Print generatePrint(Long objectId, PrintTemplate printTemplate)
-      throws AxelorException, IOException, ClassNotFoundException;
+  BigDecimal convertFromPurchaseToStockUnitPrice(Product product, BigDecimal lastPurchasePrice)
+      throws AxelorException;
 }

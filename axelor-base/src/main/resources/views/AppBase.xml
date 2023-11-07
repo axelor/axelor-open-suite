@@ -103,7 +103,7 @@
           <spacer hidden="true" colSpan="6"/>
           <field name="osmRoutingServiceApiSelect" hideIf="mapApiSelect == 1"
             requiredIf="mapApiSelect == 2"
-            help="Use YOUR navigation (http://www.yournavigation.org/api/1.0/gosmore.php) or OSRM (https://router.project-osrm.org/route/v1/driving) Open source routing APIs to get routing information based upon a given start/end location."/>
+            help="Use OSRM (https://router.project-osrm.org/route/v1/driving) Open source routing APIs to get routing information based upon a given start/end location."/>
         </panel>
         <panel name="qasPanel" title="Addresses validation" colSpan="12">
           <field name="qasWsdlUrl"/>

@@ -152,7 +152,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 origin,
-                null);
+                moveTemplate.getDescription());
 
         int counter = 1;
 

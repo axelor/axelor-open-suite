@@ -22,12 +22,13 @@ import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.supplychain.listener.InvoicingStateCache;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
@@ -76,10 +77,14 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     Long saleOrderId = (Long) json.get("id");
-    SaleOrder saleOrder = find(saleOrderId);
-    json.put(
-        "$invoicingState",
-        Beans.get(SaleOrderInvoiceService.class).getSaleOrderInvoicingState(saleOrder));
+    InvoicingStateCache invoicingStateCache = Beans.get(InvoicingStateCache.class);
+    Integer invoicingState;
+    try {
+      invoicingState = invoicingStateCache.getInvoicingStateFromCache(saleOrderId);
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+    json.put("$invoicingState", invoicingState);
     return super.populate(json, context);
   }
 }
