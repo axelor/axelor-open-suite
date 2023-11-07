@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.dayplanning;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -88,6 +88,60 @@ public class DayPlanningServiceImpl implements DayPlanningService {
         weeklyPlanningService.findDayPlanning(
             dayPlanning.getWeeklyPlanning(), nextDay.toLocalDate()),
         nextDay,
+        nbDaysJump + 1);
+  }
+
+  @Override
+  public Optional<LocalDateTime> getAllowedEndDateTPeriodAt(
+      DayPlanning dayPlanning, LocalDateTime dateT) {
+    return getAllowedEndDateTPeriodAt(dayPlanning, dateT, 0);
+  }
+
+  protected Optional<LocalDateTime> getAllowedEndDateTPeriodAt(
+      DayPlanning dayPlanning, LocalDateTime dateT, int nbDaysJump) {
+
+    if (nbDaysJump == 8) {
+      return Optional.empty();
+    }
+
+    if (dayPlanning == null) {
+      return Optional.of(dateT);
+    }
+
+    LocalTime morningFromTime = dayPlanning.getMorningFrom();
+    LocalTime morningToTime = dayPlanning.getMorningTo();
+    LocalTime afternoonFromTime = dayPlanning.getAfternoonFrom();
+    LocalTime afternoonToTime = dayPlanning.getAfternoonTo();
+
+    LocalTime localTime = dateT.toLocalTime();
+
+    if (afternoonFromTime != null && afternoonToTime != null) {
+
+      if (localTime.compareTo(afternoonFromTime) >= 0 && localTime.compareTo(afternoonToTime) < 0) {
+        return Optional.of(dateT);
+      }
+
+      if (localTime.isAfter(afternoonToTime)) {
+        return Optional.of(getDateTAtLocalTime(dateT, afternoonToTime));
+      }
+    }
+
+    if (morningFromTime != null && morningToTime != null) {
+
+      if (localTime.compareTo(morningFromTime) >= 0 && localTime.compareTo(morningToTime) < 0) {
+        return Optional.of(dateT);
+      }
+
+      if (localTime.isAfter(morningToTime)) {
+        return Optional.of(getDateTAtLocalTime(dateT, morningToTime));
+      }
+    }
+
+    LocalDateTime previousDay = dateT.minusDays(1).with(LocalTime.MAX);
+    return getAllowedStartDateTPeriodAt(
+        weeklyPlanningService.findDayPlanning(
+            dayPlanning.getWeeklyPlanning(), previousDay.toLocalDate()),
+        previousDay,
         nbDaysJump + 1);
   }
 
@@ -168,7 +222,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
       cursorTime = endT;
       LocalTime maxTime = max(morningToTime, startT);
 
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
 
       cursorTime = maxTime;
 
@@ -179,7 +233,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
 
     cursorTime = morningFromTime;
     if (cursorTime.isAfter(startT)) {
-      duration += DurationTool.getSecondsDuration(Duration.between(startT, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(startT, cursorTime));
     }
 
     return duration;
@@ -197,7 +251,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
 
     if (cursorTime.isAfter(afternoonToTime)) {
       LocalTime maxTime = max(afternoonToTime, startT);
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
 
       cursorTime = maxTime;
     }
@@ -209,10 +263,10 @@ public class DayPlanningServiceImpl implements DayPlanningService {
     cursorTime = afternoonFromTime;
 
     if (cursorTime.isAfter(startT) && morningToTime == null) {
-      duration += DurationTool.getSecondsDuration(Duration.between(startT, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(startT, cursorTime));
     } else if (cursorTime.isAfter(startT) && endT.isAfter(morningToTime)) {
       LocalTime maxTime = max(morningToTime, startT);
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
     }
 
     return duration;

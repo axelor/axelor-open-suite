@@ -73,11 +73,11 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
+    onNew="action-account-group-onnew" onLoad="action-account-move-method-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
-        onClick="save,action-account-move-method-print-move"/>
+        onClick="save,action-method-print-birt"/>
       <button name="reverseBtn" title="Reverse" icon="fa-exchange"
 
         onClick="save,action-move-view-open-generate-reverse-wizard"
@@ -92,7 +92,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-group-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="2"/>
+            grid-view="company-grid" colSpan="2" onSelect="action-move-method-company-onselect"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
@@ -126,22 +126,22 @@
             onChange="action-account-move-method-partner-onchange"
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
-          <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
-            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
-            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
+          <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
+            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || subrogationPartner"
+            form-view="partner-form" grid-view="partner-grid"
+            if="__config__.app.getApp('base')?.activatePartnerRelations"
+            onSelect="action-move-method-subrogation-partner-onselect"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
+          <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
+            readonlyIf="$validatePeriod || statusSelect == 3" form-view="fiscal-position-form"
+            grid-view="fiscal-position-grid" onChange="action-move-method-fiscal-position-onchange"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-method-payment-mode-onchange"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
             onSelect="action-move-method-payment-mode-onselect"/>
-          <field name="partnerBankDetails"
-            showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
-            onChange="action-move-method-partner-bank-details-onchange"
-            onSelect="action-move-method-partner-bank-details-onselect"
-            form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
             readonlyIf="$validatePeriod || statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
@@ -149,7 +149,11 @@
           <field name="dueDate" title="Due date"
             help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."
             hidden="true" readonlyIf="!paymentCondition.isFree" type="date" colSpan="2"/>
-          <spacer/>
+          <field name="partnerBankDetails"
+            showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
+            onChange="action-move-method-partner-bank-details-onchange"
+            onSelect="action-move-method-partner-bank-details-onselect"
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="origin" readonlyIf="$validatePeriod" colSpan="4"
@@ -170,19 +174,13 @@
             showTitle="false" colSpan="6"/>
           <field name="$functionalOriginTag" showTitle="false" readonly="true" colSpan="6">
             <viewer depends="functionalOriginSelect">
-                        <![CDATA[
-                            <span class="text-left">
-                        <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 1" x-translate>Opening</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 2" x-translate>Closure</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 3" x-translate>Sale</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 4" x-translate>Purchase</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 5" x-translate>Payment</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 6" x-translate>Cut Off</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 7" x-translate>Fixed asset</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 8" x-translate>Doubtful customer</span>
-                              <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 9" x-translate>Irrecoverable</span>
-                            </span>
-                        ]]>
+		          <![CDATA[
+		          		<>
+          					<Badge bg="danger">
+          						{_t(['Opening','Closure','Sale','Purchase','Payment','Cut Off','Fixed asset','Doubtful customer','Irrecoverable'][move.functionalOriginSelect-1])}
+          					</Badge>
+          				</>
+		          ]]>
             </viewer>
           </field>
 
@@ -190,11 +188,11 @@
             if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
             <viewer>
               <![CDATA[
-	                        <h4 class="text-left">
-                                    <span class="label label-warning" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 1" x-translate>Awaiting PFP</span>
-                                    <span class="label label-success" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3)  && record.pfpValidateStatusSelect == 2" x-translate>PFP validated</span>
-                                    <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 3" x-translate>Litigation</span>
-	                        </h4>
+	                        <>
+	                        	{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 1 && <Badge bg="warning">{_t('Awaiting PFP')}</Badge>}
+	                        	{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 2 && <Badge bg="success">{_t('PFP validated')}</Badge>}
+	                        	{(statusSelect == 2 || statusSelect == 3) && pfpValidateStatusSelect == 3 && <Badge bg="danger">{_t('Litigation')}</Badge>}
+	                        </>
 	                    ]]>
             </viewer>
           </field>
@@ -203,11 +201,7 @@
             css="label-bold bold" colSpan="5"/>
           <field name="$adjustingMoveTag" showTitle="false" readonly="true" colSpan="8">
             <viewer depends="adjustingMove">
-                        <![CDATA[
-                            <span class="text-left">
-                                       <span class="label label-default" style="background-color: #337AB7; margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.adjustingMove" x-translate>Adjusting Move</span>
-                            </span>
-                        ]]>
+              <![CDATA[<>{adjustingMove && <Badge style={{ backgroundColor: "#337AB7" }}>{_t('Adjusting Move')}</Badge>}</>]]>
             </viewer>
 
           </field>
@@ -238,7 +232,7 @@
           <field name="reasonOfRefusalToPayStr" readonly="true"
             showIf="reasonOfRefusalToPay &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3"
             colSpan="12" css="red">
-            <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
+            <viewer><![CDATA[<>{reasonOfRefusalToPayStr}</>]]></viewer>
           </field>
           <field name="pfpValidateStatusSelect" hidden="true"/>
           <field name="reasonOfRefusalToPay" hidden="true"/>
@@ -284,43 +278,43 @@
           canRemove="false"/>
         <field name="$reconcileTags" showTitle="false" hidden="true" readonly="true"
           colSpan="12">
-          <viewer depends="moveLineList"><![CDATA[
-                          <h4 class="text-left">
-                                                 <span class="label label-info" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;"  x-translate>It is not possible to edit the amount of a reconciled and/or lettered accounting move line.</span>
-                          </h4>
-        ]]></viewer>
+          <viewer depends="moveLineList">
+            <![CDATA[<><Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('It is not possible to edit the amount of a reconciled and/or lettered accounting move line.')}</Badge></>]]>
+          </viewer>
         </field>
         <field name="$totalLines" title="Lines" readonly="true" colSpan="1" type="integer">
-          <viewer><![CDATA[
-                                <h3>{{$fmt('$totalLines')}}</h3>
-        ]]></viewer>
+          <viewer>
+          	<![CDATA[<><h3>{$fmt('$totalLines')}</h3></>]]>
+          </viewer>
         </field>
         <field name="$totalCurrency" title="Total Currency" readonly="true"
           showIf="currency.id != companyCurrency.id" colSpan="3" type="integer">
-          <viewer><![CDATA[
-          <h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
-        ]]></viewer>
+          <viewer>
+            <![CDATA[<><h3>{$fmt('$totalCurrency')} {$fmt('currencyCode')}</h3></>]]>
+          </viewer>
         </field>
         <field name="$totalDebit" title="Total debit" readonly="true" colSpan="3"
           type="decimal">
-          <viewer><![CDATA[
-                                <h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
-        ]]></viewer>
+          <viewer>
+            <![CDATA[<><h3>{$fmt('$totalDebit')} {$fmt('$companyCurrencyCodeIso')}</h3></>]]>
+          </viewer>
         </field>
         <field name="$totalCredit" title="Total credit" readonly="true" colSpan="3"
           type="decimal">
-          <viewer><![CDATA[
-                                <h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
-        ]]></viewer>
+          <viewer>
+            <![CDATA[<><h3>{$fmt('$totalCredit')} {$fmt('$companyCurrencyCodeIso')}</h3></>]]>
+          </viewer>
         </field>
         <field name="$difference" title="Difference" readonly="true" colSpan="2"
           type="decimal">
-          <viewer><![CDATA[
-                                <h3>
-                                        <span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
-                                        <span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
-                                </h3>
-        ]]></viewer>
+          <viewer>
+          		<![CDATA[
+          				<>
+                           	<h3>
+                                <Box as="span" style={{ color: !$difference ? "#D9534F" : "normal"}}>{$fmt('$difference')} {$fmt('$companyCurrencyCodeIso')}</Box>
+                            </h3>
+                        </>
+        	]]></viewer>
         </field>
       </panel>
       <panel name="detailsPanel" title="Details">
@@ -413,10 +407,12 @@
         <field name="massEntryStatusSelect" showTitle="false" readonly="true" colSpan="4">
           <viewer depends="massEntryStatusSelect">
             <![CDATA[
-                      <h4 class="text-right">
-	                      <span class="label label-success" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 1" x-translate>Ongoing</span>
-	                      <span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 2" x-translate>Closed</span>
-                      </h4>
+ 	                  <>
+	                      <Box d="flex" justifyContent="flex-end">
+	                          {massEntryStatusSelect == 1 && <Badge bg="success">{_t('Ongoing')}</Badge>}
+	                          {massEntryStatusSelect == 2 && <Badge bg="warning">{_t('Closed')}</Badge>}
+	                      </Box>
+	                  </>
                     ]]>
           </viewer>
         </field>
@@ -424,7 +420,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-method-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="3"/>
+            grid-view="company-grid" colSpan="3" onSelect="action-move-method-company-onselect"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
@@ -571,16 +567,12 @@
 
   <action-group name="action-move-group-date-onchange">
     <action name="action-account-move-method-date-onchange"/>
+    <action name="action-move-method-check-period-permission"/>
     <action name="action-move-method-check-period"/>
   </action-group>
 
   <action-group name="action-account-group-onnew">
     <action name="action-account-move-method-onnew"/>
-    <action name="action-move-method-check-period"/>
-  </action-group>
-
-  <action-group name="action-account-group-onLoad">
-    <action name="action-account-move-method-onLoad"/>
     <action name="action-move-method-check-period"/>
   </action-group>
 
@@ -613,10 +605,6 @@
 
   <action-method name="action-move-method-show-move-lines">
     <call class="com.axelor.apps.account.web.MoveController" method="showMoveLines"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-print-move">
-    <call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
   </action-method>
 
   <action-method name="action-move-method-set-status-simulate">
@@ -745,6 +733,11 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectTradingName"/>
   </action-method>
 
+  <action-method name="action-move-method-subrogation-partner-onselect">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onSelectSubrogationPartner"/>
+  </action-method>
+
   <action-method name="action-move-method-partner-bank-details-onchange">
     <call class="com.axelor.apps.account.web.MoveController"
       method="onChangePartnerBankDetails"/>
@@ -796,6 +789,14 @@
 
   <action-method name="action-move-method-check-period">
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriod"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-period-permission">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodPermission"/>
+  </action-method>
+
+  <action-method name="action-move-method-company-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectCompany"/>
   </action-method>
 
   <!-- ACTION VIEW -->

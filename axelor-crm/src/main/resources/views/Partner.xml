@@ -95,19 +95,19 @@
       </replace>
     </extend>
     <extend target="//field[@name='isSupplier']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//field[@name='isInternal']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//field[@name='isSubcontractor']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//field[@name='isCarrier']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//field[@name='isFactor']">
-      <attribute name="hideIf" value="_isCustomer || _isProspect || $readonly()"/>
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
     </extend>
     <extend target="//button[@name='$positiveBalanceBtn']">
       <attribute name="showIf" value="id &amp;&amp; !isProspect"/>
@@ -206,30 +206,39 @@
         </field>
       </replace>
     </extend>
-    <extend target="//panel[@name='marketingCampaignPanel']">
+    <extend target="//field[@name='isInternal']">
       <insert position="after">
-        <panel name="mainInformationPanel" title="General information" showIf="isCollaborator">
-          <panel-related name="collaboratorDomainListPanel"
-            field="collaboratorDomainList" form-view="collaborator-domain-form"
-            grid-view="collaborator-domain-grid"/>
-          <panel-related name="workAreaSetPanel" field="workAreaSet"
-            form-view="country-form" grid-view="country-grid" canNew="false" canEdit="false"/>
-          <field name="fidelity" form-view="fidelity-form" grid-view="fidelity-grid"/>
-          <field name="collaboratorSince"/>
+        <field name="isCorporatePartner" widget="InlineCheckbox"
+          if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='customerPanel']">
+      <insert position="after">
+        <panel name="corporatePanel" title="Corporate partner" showIf="isCorporatePartner">
+          <panel name="mainInformationPanel" title="General information"
+            showIf="isCorporatePartner" colSpan="6">
+            <field name="corporatePartnerDomainSet" widget="TagSelect"/>
+            <field name="workAreaSet" widget="TagSelect"/>
+            <panel-related name="fidelityListPanel" field="fidelityList"
+              form-view="fidelity-form" grid-view="fidelity-grid" colSpan="12"/>
+            <field name="corporatePartnerSince"/>
+          </panel>
+          <panel name="followUpPanel" title="Corporate partner monitoring"
+            showIf="isCorporatePartner" colSpan="6">
+            <field name="takenOpportunities"/>
+            <field name="wonOpportunities"/>
+          </panel>
         </panel>
       </insert>
     </extend>
-    <extend target="/">
+    <extend target="//panel[@name='deliveryPanel']">
       <insert position="after">
-        <panel name="activityPanel" sidebar="true" showIf="id &amp;&amp; isProspect"
-          hidden="true">
-          <panel-dashlet action="action-partner-view-prospect-activity-custom"
+        <panel name="activityPanel" title="Activity" showIf="id &amp;&amp; isProspect"
+          hidden="true" if="__config__.app.getApp('crm')?.crmProcessOnPartner">
+          <panel-dashlet action="action-partner-view-prospect-recent-activity-custom"
             title="Activity" height="550"/>
-        </panel>
-        <panel name="followUpPanel" title="Collaborator monitoring" showIf="isCollaborator"
-          sidebar="true" colSpan="12">
-          <field name="takenOpportunities"/>
-          <field name="wonOpportunities"/>
+          <panel-dashlet action="action-partner-view-prospect-past-activity-custom"
+            title="Activity" height="550"/>
         </panel>
       </insert>
     </extend>
@@ -296,10 +305,12 @@
         <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
         <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
           <viewer><![CDATA[
-			<h4>
-				<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotCall" x-translate>Rejection of calls</span>
-				<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotEmail" x-translate>Rejection of e-mails</span>
-			</h4>
+					<>
+						<Box d="flex" gap="4">
+							{isDoNotCall && <Badge bg="primary">{_t('Rejection of calls')}</Badge>}
+							{isDoNotEmail && <Badge bg="primary">{_t('Rejection of e-mails')}</Badge>}
+						</Box>
+					</>
           ]]></viewer>
         </field>
       </insert>
@@ -348,43 +359,40 @@
     <hilite color="info" if="leadScoringSelect == 4.00"/>
     <hilite color="success" if="leadScoringSelect == 5.00"/>
     <template> <![CDATA[
-          <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 25%; height: 25%; object-fit: contain;"/>
-          <div class="card-body">
-              <dl>
-                  <dt ng-show="record.name" x-translate>Enterprise Name</dt><dd ng-show="record.name">{{record.name}}</dd>
-                  <dt ng-show="sizeSelect" x-translate>Size</dt>
-                  <dd ng-if="record.sizeSelect == 1">
-                  	<p><span x-translate>1 to 20</span></p>
-                  </dd>
-                  <dd ng-if="record.sizeSelect == 2">
-                  	<p><span x-translate>20 to 100</span></p>
-                  </dd>
-                  <dd ng-if="record.sizeSelect == 3">
-                  	<p><span x-translate>100 to 500</span></p>
-                  </dd>
-                  <dd ng-if="record.sizeSelect == 4">
-                  	<p><span x-translate>500 to 1000</span></p>
-                  </dd>
-                  <dd ng-if="record.sizeSelect == 5">
-                  	<p><span x-translate> 1000 to 2000 </span></p>
-                  </dd>
-                  <dd ng-if="record.sizeSelect == 6">
-                  	<p><span x-translate>Over 2000</span></p>
-                  </dd>
-                  <dt x-translate>Lead Scoring</dt> <dd ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></dd>
-              </dl>
-          </div>
-          <div class="card-summary popover">
-	  <p style="margin:2px;">
-            	<span style="word-break:break-all;max-width:250px;" ng-bind-html="description"></span>
-            </p>
-         </div>
-         <br/>
+	         <>
+	         	{picture && <Image src={$image('picture', 'image')}></Image>}
+	         	<dl>
+	         		{name &&
+	         			<Box>
+	         				<dt>{_t('Enterprise Name')}</dt>
+	         				<dd>{name}</dd>
+	         			</Box>
+	         		}
+	         		{sizeSelect != 0 &&
+	         			<Box>
+	         				<dt>{_t('Size')}</dt>
+	         				{sizeSelect == 1 && <dd>{_t('1 to 20')}</dd>}
+	         				{sizeSelect == 2 && <dd>{_t('20 to 100')}</dd>}
+	         				{sizeSelect == 3 && <dd>{_t('100 to 500')}</dd>}
+	         				{sizeSelect == 4 && <dd>{_t('500 to 1000')}</dd>}
+	         				{sizeSelect == 5 && <dd>{_t('1000 to 2000')}</dd>}
+	         				{sizeSelect == 6 && <dd>{_t('Over 2000')}</dd>}
+	         			</Box>
+	         		}
+	         		<Box>
+	         			<dt>{_t('Lead Scoring')}</dt>
+	         			<dd>
+	         				{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning"/>)}
+	         				{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning"/>)}
+	         			</dd>
+	         		</Box>
+	         	</dl>
+	        	<Box className="card-summary popover">
+	       			<Box as="p" m={2}>
+	        			{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100, wordBreak: "break-all", maxWidth: 250 }}></Box>}
+	        		</Box>
+	        	</Box>
+	         </>
 ]]>
     </template>
   </kanban>
@@ -460,44 +468,41 @@
     <field name="isCarrier"/>
     <field name="leadScoringSelect"/>
     <template><![CDATA[
-			<div>
-				<div class="span12"><strong>{{fullName}}</strong></div>
-		 	</div>
-			<div>
-			  <div class="span4 card-image" style="width: 128px; height: 64px;">
-                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
-                <img ng-show="!picture && partnerTypeSelect != 2" src="img/company-default.jpg" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 1" src="img/partner-m-default.png" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 2" src="img/partner-w-default.png" />
-                <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
-			  </div>
-			  <div class="span8">
-			  	<address>
-			  	{{mainAddress.fullName}}
-			  	</address>
-			    <span>
-			    {{fixedPhone}}<br/>
-			    {{emailAddress.address}}<br/>
-			    {{partnerCategory.name}}<br/>
-			    <span ng-show="record.isProspect">
-			    	<span ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
-          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
-          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
-          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 3.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
-          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 4.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
-          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 5.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i></span>
-      			</span><br/>
-			    <h4 style="text-align: right;">
-					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
-					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
-					<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
-					<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-					<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
-					<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
-					<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-				</h4>
-			  </div>
-			</div>
+		<>
+			<Box>
+				<strong>{fullName}</strong>
+				<Box d="grid" gridTemplateColumns="33% 67%">
+					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+		     			{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
+		     			{!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
+					</Box>
+					<Box>
+						{mainAddress.fullName} <Box/>
+						{fixedPhone} <Box/>
+						{emailAddress.address} <Box/>
+						{partnerCategory.name} <Box/>
+						{isProspect &&
+							<Box>
+								{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning" fontSize="25px"/>)}
+								{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning" fontSize="25px"/>)}
+							</Box>
+						}
+					</Box>
+				</Box>
+				<Box d="flex" justifyContent="flex-end" gap="4" mt={4}>
+					{isProspect && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Prospect')}</Badge>}
+					{isEmployee && <Badge style={{ backgroundColor: "#5680FC" }}>{_t('Employee')}</Badge>}
+					{isCustomer && <Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Customer')}</Badge>}
+					{isSupplier && <Badge style={{ backgroundColor: "#7D54FC" }}>{_t('Supplier')}</Badge>}
+					{isSubcontractor && <Badge style={{ backgroundColor: "#000080" }}>{_t('Subcontractor')}</Badge>}
+					{isFactor && <Badge style={{ backgroundColor: "#54FC62" }}>{_t('Factor')}</Badge>}
+					{isCarrier && <Badge style={{ backgroundColor: "#FF0000" }}>{_t('Carrier')}</Badge>}
+				</Box>
+			</Box>
+		</>
 		]]>
     </template>
   </cards>
@@ -522,62 +527,6 @@
       <button name="cancelmBtn" title="No" onClick="close"/>
     </panel>
   </form>
-
-  <custom title="Activity" name="partner-form-activity-custom" css="crm-activity-dashlet">
-    <dataset type="rpc">com.axelor.apps.crm.web.PartnerCrmController:getPartnerActivityData</dataset>
-    <template>
-      <![CDATA[
-      <div class="crm-activity-card" ng-repeat="item in data">
-        <div>
-          <span class="crm-activity-date">{{item.date | date}}</span>
-          <span ng-show="item.type == 'event'">
-            <span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial; float:right;" ng-show="item.status == 1" x-translate>Planned</span>
-            <span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 2" x-translate>Realized</span>
-            <span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 3" x-translate>Canceled</span>
-          </span>
-         <span ng-show="item.type == 'opportunity'" style="float: right;">
-            <span class="label label-default" style="background-color: #0285D8;" ng-show="item.status != item.closedWonStatus && item.status != item.closedLostStatus" x-translate>{{item.status}}</span>
-            <span class="label label-success" ng-show="item.status == item.closedWonStatus" x-translate>{{item.status}}</span>
-            <span class="label label-important" ng-show="item.status == item.closedLostStatus" x-translate>{{item.status}}</span>
-          </span>
-        </div>
-        <div class="crm-activity-content">
-          <div>
-            <span ng-show="item.type == 'event' && item.activityName == 1" x-translate>Call</span>
-            <span ng-show="item.type == 'event' && item.activityName == 2" x-translate>Meeting</span>
-            <span ng-show="item.type == 'event' && item.activityName == 3" x-translate>Task</span>
-            <span ng-show="item.type == 'event' && item.activityName == 5" x-translate>Note</span>
-            <span ng-show="item.type == 'creation' || item.type == 'statusChange'" x-translate>{{item.activityName}}</span>
-            <span ng-show="item.type == 'opportunity'">
-              <strong><span x-translate>Score : </span></strong>
-                <span ng-show="item.activityName == 0"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 1"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 2"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 3"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 4"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 5"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></span>
-            </span>
-          </div>
-          <div class="crm-activity-icon">
-            <span ng-show="item.type == 'creation'"><i class="fa fa-plus" style=""></i></span>
-            <span ng-show="item.type == 'statusChange'"><i class="fa fa-exchange"></i></span>
-            <span ng-show="item.type == 'opportunity'"><i class="fa fa-handshake-o"></i></span>
-            <span ng-show="item.type == 'event'">
-              <i ng-show="item.activityName == 1" class="fa fa-phone"></i>
-              <i ng-show="item.activityName == 2" class="fa fa-pencil-square-o"></i>
-              <i ng-show="item.activityName == 3" class="fa fa-tasks"></i>
-              <i ng-show="item.activityName == 5" class="fa fa-sticky-note-o"></i>
-            </span>
-           </div>
-        </div>
-        <div ng-show="item.description != ''">
-          <hr/>
-          <span>{{item.description}}</span>
-        </div>
-      </div>
-      ]]>
-    </template>
-  </custom>
 
   <!-- CREATE CRM OBJECT FROM PARTNER -->
 
@@ -869,8 +818,4 @@
     <error message="Please fill default partner status in App CRM configuration."
       if="!__config__.app.getApp('crm')?.partnerDefaultStatus"/>
   </action-validate>
-
-  <action-view name="action-partner-view-prospect-activity-custom" title="Activity">
-    <view type="custom" name="partner-form-activity-custom"/>
-  </action-view>
 </object-views>

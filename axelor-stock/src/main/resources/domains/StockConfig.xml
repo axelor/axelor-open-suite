@@ -104,6 +104,14 @@
 
     <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
       min="0" nullable="true"/>
+    <many-to-one name="pickingStockMoveBirtTemplate" title="Picking stock move template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="conformityCertificateBirtTemplate"
+      title="Conformity certificate template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="inventoryBirtTemplate" title="Inventory template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="stockLocationBirtTemplate" title="Stock location template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
 
     <boolean name="isMassStockMoveManaged" title="Mass move enabled"/>
     <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
@@ -170,9 +178,12 @@
       <field name="displayPriceOnPrinting" on="UPDATE"/>
       <field name="displayOrderReferenceAndOrderDate" on="UPDATE"/>
       <field name="percentToleranceForWapChange" on="UPDATE"/>
-
       <field name="isMassStockMoveManaged" on="UPDATE"/>
       <field name="cartStockLocation" on="UPDATE"/>
+      <field name="pickingStockMoveBirtTemplate" on="UPDATE"/>
+      <field name="conformityCertificateBirtTemplate" on="UPDATE"/>
+      <field name="inventoryBirtTemplate" on="UPDATE"/>
+      <field name="stockLocationBirtTemplate" on="UPDATE"/>
     </track>
   </entity>
 

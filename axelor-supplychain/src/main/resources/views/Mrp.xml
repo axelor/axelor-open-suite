@@ -30,9 +30,7 @@
           name="undoManualChangesItem"/>
       </menu>
       <menu title="Reports" showTitle="true" icon="fa-files-o">
-        <item name="printWeeksItem" title="Weekly breakdown"
-          action="save,action-method-mrp-print-weeks" showIf="statusSelect == 2"/>
-        <item name="printListItem" title="List" action="save,action-method-mrp-print-list"
+        <item name="printWeeksOrListItem" title="Print" action="save,action-method-print-birt"
           showIf="statusSelect == 2"/>
       </menu>
     </menubar>
@@ -40,10 +38,12 @@
     <panel name="infoPanel">
       <field name="mrpSeq" showTitle="false" colSpan="12">
         <viewer depends="mrpSeq,mrpTypeSelect"><![CDATA[
-					<h3>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 1" x-translate>MRP</span>
-						{{record.mrpSeq}}
-					</h3>
+					<>
+						<h3>
+							{mrpSeq && mrpTypeSelect == 1 && <span> {_t('MRP')} </span>}
+							{mrpSeq}
+						</h3>
+					</>
 				]]></viewer>
       </field>
     </panel>
@@ -122,14 +122,6 @@
   <action-method name="action-method-mrp-generate-selected-proposal">
     <call class="com.axelor.apps.supplychain.web.MrpController"
       method="generateSelectedProposals"/>
-  </action-method>
-
-  <action-method name="action-method-mrp-print-weeks">
-    <call class="com.axelor.apps.supplychain.web.MrpController" method="printWeeks"/>
-  </action-method>
-
-  <action-method name="action-method-mrp-print-list">
-    <call class="com.axelor.apps.supplychain.web.MrpController" method="printList"/>
   </action-method>
 
   <action-view name="action-mrp-view-mrp-line" title="Results"

@@ -450,10 +450,9 @@ public class SaleOrderController {
     StockMove stockMove =
         stockMoveRepo
             .all()
-            .filter(
-                "self.saleOrder.id = ?2 AND self.statusSelect = ?3",
-                saleOrder.getId(),
-                StockMoveRepository.STATUS_PLANNED)
+            .filter("self.saleOrder.id = :saleOrderId AND self.statusSelect = :statusSelect")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
     if (stockMove != null) {
       response.setNotify(
@@ -703,5 +702,17 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setAdvancePayment(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(SaleOrderSupplychainService.class).setAdvancePayment(saleOrder);
+    response.setValues(saleOrder);
+  }
+
+  public void updateTimetableAmounts(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(SaleOrderSupplychainService.class).updateTimetableAmounts(saleOrder);
+    response.setValues(saleOrder);
   }
 }

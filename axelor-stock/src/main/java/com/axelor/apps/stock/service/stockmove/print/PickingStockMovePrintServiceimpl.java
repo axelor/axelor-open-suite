@@ -18,22 +18,25 @@
  */
 package com.axelor.apps.stock.service.stockmove.print;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -44,57 +47,69 @@ import java.util.Optional;
 
 public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintService {
 
-  @Inject private StockMoveService stockMoveService;
+  protected StockMoveService stockMoveService;
+  protected StockConfigService stockConfigService;
+  protected BirtTemplateService birtTemplateService;
 
-  @Override
-  public String printStockMoves(List<Long> ids, String userType) throws IOException {
-    List<File> printedStockMoves = new ArrayList<>();
-    ModelTool.apply(
-        StockMove.class,
-        ids,
-        new ThrowConsumer<StockMove, Exception>() {
-          @Override
-          public void accept(StockMove stockMove) throws Exception {
-            printedStockMoves.add(print(stockMove, ReportSettings.FORMAT_PDF));
-          }
-        });
-    stockMoveService.setPickingStockMovesEditDate(ids, userType);
-    String fileName = getStockMoveFilesName(true, ReportSettings.FORMAT_PDF);
-    return PdfTool.mergePdfToFileLink(printedStockMoves, fileName);
+  @Inject
+  public PickingStockMovePrintServiceimpl(
+      StockMoveService stockMoveService,
+      StockConfigService stockConfigService,
+      BirtTemplateService birtTemplateService) {
+    this.stockMoveService = stockMoveService;
+    this.stockConfigService = stockConfigService;
+    this.birtTemplateService = birtTemplateService;
   }
 
   @Override
-  public ReportSettings prepareReportSettings(StockMove stockMove, String format)
-      throws AxelorException {
-    if (stockMove.getPrintingSettings() == null) {
+  public String printStockMoves(List<Long> ids, String userType)
+      throws IOException, AxelorException {
+    List<File> printedStockMoves = new ArrayList<>();
+    int errorCount =
+        ModelHelper.apply(
+            StockMove.class,
+            ids,
+            new ThrowConsumer<StockMove, Exception>() {
+              @Override
+              public void accept(StockMove stockMove) throws Exception {
+                try {
+                  printedStockMoves.add(print(stockMove, ReportSettings.FORMAT_PDF));
+                } catch (Exception e) {
+                  TraceBackService.trace(e);
+                  throw e;
+                }
+              }
+            });
+    if (errorCount > 0) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(StockExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
-              stockMove.getStockMoveSeq()),
-          stockMove);
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
+    stockMoveService.setPickingStockMovesEditDate(ids, userType);
+    String fileName = getStockMoveFilesName(true, ReportSettings.FORMAT_PDF);
+    return PdfHelper.mergePdfToFileLink(printedStockMoves, fileName);
+  }
+
+  @Override
+  public File prepareReportSettings(StockMove stockMove, String format) throws AxelorException {
+    stockMoveService.checkPrintingSettings(stockMove);
+    BirtTemplate pickingStockMoveBirtTemplate =
+        stockConfigService.getStockConfig(stockMove.getCompany()).getPickingStockMoveBirtTemplate();
+    if (ObjectUtils.isEmpty(pickingStockMoveBirtTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    String locale = ReportSettings.getPrintingLocale(stockMove.getPartner());
     String title = getFileName(stockMove);
 
-    ReportSettings reportSetting =
-        ReportFactory.createReport(IReport.PICKING_STOCK_MOVE, title + " - ${date}");
-    return reportSetting
-        .addParam("StockMoveId", stockMove.getId())
-        .addParam(
-            "Timezone",
-            stockMove.getCompany() != null ? stockMove.getCompany().getTimezone() : null)
-        .addParam("Locale", locale)
-        .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())
-        .addFormat(format);
+    return birtTemplateService.generateBirtTemplateFile(
+        pickingStockMoveBirtTemplate, stockMove, title + " - ${date}");
   }
 
   @Override
   public File print(StockMove stockMove, String format) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(stockMove, format);
-    return reportSettings.generate().getFile();
+    return prepareReportSettings(stockMove, format);
   }
 
   @Override
@@ -102,7 +117,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
       throws AxelorException, IOException {
     stockMoveService.setPickingStockMoveEditDate(stockMove, userType);
     String fileName = getStockMoveFilesName(false, ReportSettings.FORMAT_PDF);
-    return PdfTool.getFileLinkFromPdfFile(print(stockMove, format), fileName);
+    return PdfHelper.getFileLinkFromPdfFile(print(stockMove, format), fileName);
   }
 
   /**

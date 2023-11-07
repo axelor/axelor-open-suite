@@ -9,107 +9,105 @@
     <field name="company"/>
     <field name="type"/>
     <field name="qiStatus"/>
+    <field name="gravityTypeSelect"/>
+    <field name="analysisMethod"/>
   </grid>
 
-  <form name="quality-improvement-form" title="Quality improvement" width="large"
-    model="com.axelor.apps.quality.db.QualityImprovement"
-    onNew="action-quality-improvement-record-on-new"
-    onLoad="action-quality-improvement-group-on-load">
+  <form name="quality-improvement-form" title="Quality improvement"
+    model="com.axelor.apps.quality.db.QualityImprovement" width="large"
+    onLoad="action-quality-improvement-group-on-load"
+    onNew="action-quality-improvement-record-on-new">
     <panel name="mainPanel">
-      <field name="sequence"/>
-      <field name="qiStatus" grid-view="qi-status-grid" form-view="qi-status-form"/>
-      <field name="company" grid-view="company-grid" form-view="company-form"/>
-      <field name="type"/>
-      <field name="qiDetection" grid-view="qi-detection-grid" form-view="qi-detection-form"
-        onSelect="action-quality-improvement-attrs-set-qi-detection-domain"/>
+      <field name="qiStatus" colSpan="12" showTitle="false" readonlyIf="!id"
+        widget="NavSelect"/>
+      <field name="sequence" colSpan="4"/>
+      <field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
+      <field name="type" colSpan="4"/>
+      <field name="qiDetection" colSpan="4"
+        onSelect="action-quality-improvement-attrs-set-qi-detection-domain"
+        form-view="qi-detection-form" grid-view="qi-detection-grid"/>
+      <field name="gravityTypeSelect" colSpan="4"/>
+      <field name="analysisMethod" colSpan="4"
+        readonlyIf="qiAnalysis.qiAnalysisCausesList != null"
+        onSelect="action-quality-improvement-attrs-set-analysis-method-domain"/>
     </panel>
-
     <panel-tabs name="mainPanelTab" showIf="id">
       <panel name="identificationPanel" title="Identification">
         <field name="qiIdentification" showTitle="false" colSpan="12" canSelect="false"
           canView="false" canRemove="false">
           <editor>
-            <panel name="nonIntPanel" showIf="$get('qi.qiDetection.origin') != 2" colSpan="12"
-              itemSpan="12">
-              <panel name="partnerPanel" itemSpan="12">
-                <panel name="customerContactPanel" showIf="$get('qi.qiDetection.origin') == 3">
-                  <field name="customerPartner"
-                    requiredIf="$get('qi.qiDetection.origin') == 3" domain="self.isCustomer = true"
-                    onChange="action-quality-improvement-group-customer-partner-on-change"/>
-                  <field name="contact" title="Customer contact"
-                    onSelect="action-quality-improvement-attrs-set-contact-domain"
-                    onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-                </panel>
-                <panel name="supplierContactPanel" showIf="$get('qi.qiDetection.origin') == 1">
-                  <field name="supplierPartner"
-                    requiredIf="$get('qi.qiDetection.origin') == 1" domain="self.isSupplier = true"
-                    onChange="action-quality-improvement-group-supplier-partner-on-change"/>
-                  <field name="contact" title="Supplier contact"
-                    onSelect="action-quality-improvement-attrs-set-contact-domain"
-                    onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-                </panel>
-              </panel>
-            </panel>
-
-            <panel name="intPanel" showIf="$get('qi.qiDetection.origin') == 2" colSpan="12">
-              <field name="detectedByInternal" requiredIf="$get('qi.qiDetection.origin') == 2"
-                onSelect="action-qi-identification-attrs-set-detected-by-internal-domain"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-            </panel>
-
-            <panel name="orderPanel" colSpan="12"
-              showIf="$get('qi.qiDetection.origin') != 2 &amp;&amp; (customerPartner || supplierPartner)">
+            <panel title="Partner" name="nonIntPanel" colSpan="12">
+              <field name="customerPartner"
+                onChange="action-quality-improvement-group-customer-partner-on-change"
+                domain="self.isCustomer = true" requiredIf="$get('qi.qiDetection.origin') == 3"/>
+              <field name="contact" title="Customer contact"
+                showIf="$get('qi.qiDetection.origin') == 3"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"
+                onSelect="action-quality-improvement-attrs-set-contact-domain"/>
               <field name="customerSaleOrder" showIf="$get('qi.qiDetection.origin') == 3"
-                domain="self.clientPartner = :customerPartner"
-                onChange="action-quality-improvement-group-customer-sale-order-on-change"/>
+                onChange="action-quality-improvement-group-customer-sale-order-on-change"
+                domain="self.clientPartner = :customerPartner"/>
               <field name="customerSaleOrderLine" showIf="$get('qi.qiDetection.origin') == 3"
-                domain="self.saleOrder = :customerSaleOrder"
-                onChange="action-quality-improvement-group-customer-sale-order-line-on-change"/>
+                onChange="action-quality-improvement-group-customer-sale-order-line-on-change"
+                domain="self.saleOrder = :customerSaleOrder"/>
+              <field name="stockMove" showIf="customerSaleOrder || supplierPurchaseOrder"
+                onChange="action-quality-improvement-group-stock-move-on-change"
+                onSelect="action-quality-improvement-attrs-set-stock-move-domain"/>
+              <field name="stockMoveLine" showIf="customerSaleOrder || supplierPurchaseOrder"
+                onChange="action-quality-improvement-group-stock-move-line-on-change"
+                onSelect="action-quality-improvement-attrs-set-stock-move-line-domain"/>
+              <field name="supplierPartner" showIf="$get('qi.qiDetection.origin') == 1"
+                onChange="action-quality-improvement-group-supplier-partner-on-change"
+                domain="self.isSupplier = true" requiredIf="$get('qi.qiDetection.origin') == 1"/>
+              <field name="contact" title="Supplier contact"
+                showIf="$get('qi.qiDetection.origin') == 1"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"
+                onSelect="action-quality-improvement-attrs-set-contact-domain"/>
               <field name="supplierPurchaseOrder" showIf="$get('qi.qiDetection.origin') == 1"
-                domain="self.supplierPartner = :supplierPartner"
-                onChange="action-quality-improvement-group-supplier-purchase-order-on-change"/>
+                onChange="action-quality-improvement-group-supplier-purchase-order-on-change"
+                domain="self.supplierPartner = :supplierPartner"/>
               <field name="supplierPurchaseOrderLine"
                 showIf="$get('qi.qiDetection.origin') == 1"
-                domain="self.purchaseOrder = :supplierPurchaseOrder"
-                onChange="action-quality-improvement-group-supplier-purchase-order-line-on-change"/>
-              <field name="stockMove" showIf="customerSaleOrder || supplierPurchaseOrder"
-                onSelect="action-quality-improvement-attrs-set-stock-move-domain"
-                onChange="action-quality-improvement-group-stock-move-on-change"/>
-              <field name="stockMoveLine" showIf="customerSaleOrder || supplierPurchaseOrder"
-                onSelect="action-quality-improvement-attrs-set-stock-move-line-domain"
-                onChange="action-quality-improvement-group-stock-move-line-on-change"/>
+                onChange="action-quality-improvement-group-supplier-purchase-order-line-on-change"
+                domain="self.purchaseOrder = :supplierPurchaseOrder"/>
             </panel>
-            <field name="documentReference" colSpan="12"
-              onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-
-            <panel name="manufOrderPanel" colSpan="12">
-              <field name="manufOrder"
+            <panel title="Interne" name="intPanel" colSpan="12">
+              <field name="detectedByInternal"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"
+                onSelect="action-qi-identification-attrs-set-detected-by-internal-domain"
+                requiredIf="$get('qi.qiDetection.origin') == 2"/>
+              <field name="documentReference"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="writtenBy"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="writtenOn"/>
+              <field name="manufOrder" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-group-manuf-order-on-change"/>
               <field name="operationOrder" showIf="manufOrder != null"
-                onSelect="action-quality-improvement-attrs-set-operation-order-domain"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"
+                onSelect="action-quality-improvement-attrs-set-operation-order-domain"/>
               <field name="toConsumeProdProduct" showIf="manufOrder != null"
-                onSelect="action-quality-improvement-attrs-set-to-consume-prod-product-domain"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"
+                onSelect="action-quality-improvement-attrs-set-to-consume-prod-product-domain"/>
               <field name="consumedProdProduct" showIf="manufOrder != null"
-                onSelect="action-quality-improvement-attrs-set-consume-prod-product-domain"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"
+                onSelect="action-quality-improvement-attrs-set-consume-prod-product-domain"/>
+              <field name="product" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="project"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="quantity" hideIf="$get('qi.type') == 2"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="nonConformingQuantity" hideIf="$get('qi.type') == 2"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="qualityControl" hideIf="$get('qi.type') == 2"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
             </panel>
-
-            <field name="product" colSpan="6"
-              onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-            <field name="quantity"
-              onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-            <field name="nonConformingQuantity"
-              onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-            <field name="qualityControl"
-              onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-            <field name="writtenBy"
-              onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-            <field name="writtenOn"/>
-
             <panel name="hiddenPanel" hidden="true">
               <field name="qi"/>
+              <field name="qi.type"/>
               <field name="qi.qiDetection"/>
               <field name="qi.qiDetection.origin"/>
               <field name="$dummyCustomerPartner" type="many-to-one"
@@ -134,36 +132,42 @@
           </editor>
         </field>
       </panel>
-
       <panel name="resolutionPanel" title="Resolution">
         <field name="qiResolution" showTitle="false" colSpan="12" canSelect="false"
           canView="false" canRemove="false">
           <editor>
-            <field name="qi.qiIdentification.nonConformingQuantity" readonly="true"/>
-            <panel name="defaultPanel" title="QI Resolution Defaults" colSpan="12">
+            <field name="qi.qiIdentification.nonConformingQuantity" readonly="true"
+              hideIf="$get('qi.type') == 2"/>
+            <panel name="defaultPanel" title="Observed defaults" colSpan="12">
               <field name="defaultWrittenBy" form-view="user-form" grid-view="user-grid"
                 onChange="action-quality-improvement-record-set-default-written-on"/>
               <field name="defaultWrittenOn"/>
               <field name="qiResolutionDefaultsList" showTitle="false" colSpan="12"
                 form-view="qi-resolution-default-form" grid-view="qi-resolution-default-grid"/>
             </panel>
-            <panel name="decisionPanel" title="QI Resolution Decisions" colSpan="12">
-              <field name="decisionsWrittenBy" form-view="user-form" grid-view="user-grid"
-                onChange="action-quality-improvement-record-set-decisions-written-on"/>
+            <panel name="decisionPanel" title="Decision making" hideIf="$get('qi.type') == 2"
+              colSpan="12">
+              <field name="decisionsWrittenBy"
+                onChange="action-quality-improvement-record-set-decisions-written-on"
+                form-view="user-form" grid-view="user-grid"/>
               <field name="decisionsWrittenOn"/>
               <field name="qiResolutionDecisionsList" showTitle="false" colSpan="12"
                 form-view="qi-resolution-decision-form" grid-view="qi-resolution-decision-grid"/>
             </panel>
+            <panel name="hiddenPanel" hidden="true">
+              <field name="qi"/>
+              <field name="qi.qiDetection"/>
+              <field name="qi.type"/>
+            </panel>
           </editor>
         </field>
       </panel>
-
       <panel name="analysisPanel" title="Analysis">
         <field name="qiAnalysis" showTitle="false" colSpan="12" canSelect="false"
           canView="false" canRemove="false">
           <editor>
             <panel name="planPanel" title="Plan" colSpan="12">
-              <field name="planOwner" form-view="user-form" grid-view="user-grid" colSpan="3"/>
+              <field name="planOwner" colSpan="3" form-view="user-form" grid-view="user-grid"/>
               <field name="advancement" colSpan="3" widget="progress"/>
               <field name="earliestDate" colSpan="3"/>
               <field name="latestDate" colSpan="3"/>
@@ -193,8 +197,13 @@
           </editor>
         </field>
       </panel>
+      <panel name="analysisCostPanel" title="Analysis costs">
+        <panel-dashlet name="costsListPanel" colSpan="6" height="350"
+          action="custom:quality.improvements.costs.lists.per.decision"/>
+        <panel-dashlet name="costsDistributionPanel" colSpan="6" height="350"
+          action="chart:chart.quality.improvements.costs.distributions.per.decision"/>
+      </panel>
     </panel-tabs>
-
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -260,8 +269,39 @@
 
   <action-attrs name="action-quality-improvement-attrs-set-qi-detection-domain">
     <attribute name="domain" for="qiDetection"
-      expr="eval: &quot; self.origin = ${qiDetection?.origin} &quot;" if="id != null"/>
+      expr="eval: &quot; self.origin = ${qiDetection?.origin} AND self.isProductOrigin = true &quot;"
+      if="id != null &amp;&amp; type == 1"/>
+    <attribute name="domain" for="qiDetection"
+      expr="eval: &quot; self.origin = ${qiDetection?.origin} AND self.isSystemOrigin = true &quot;"
+      if="id != null &amp;&amp; type == 2"/>
     <attribute name="domain" for="qiDetection" expr="eval: null" if="id == null"/>
+  </action-attrs>
+
+  <action-attrs name="action-quality-improvement-attrs-set-analysis-method-domain">
+    <attribute name="domain" for="analysisMethod"
+      expr="eval: &quot; self.isProduct = true AND self.isCritical = true &quot;"
+      if="type == 1 &amp;&amp; (gravityTypeSelect != null &amp;&amp; gravityTypeSelect == 1)"/>
+    <attribute name="domain" for="analysisMethod"
+      expr="eval: &quot; self.isProduct = true AND self.isMajor = true &quot;"
+      if="type == 1 &amp;&amp; (gravityTypeSelect != null &amp;&amp; gravityTypeSelect == 2)"/>
+    <attribute name="domain" for="analysisMethod"
+      expr="eval: &quot; self.isProduct = true AND self.isMinor = true &quot;"
+      if="type == 1 &amp;&amp; (gravityTypeSelect != null &amp;&amp; gravityTypeSelect == 3)"/>
+    <attribute name="domain" for="analysisMethod"
+      expr="eval: &quot; self.isSystem = true AND self.isCritical = true &quot;"
+      if="type == 2 &amp;&amp; (gravityTypeSelect != null &amp;&amp; gravityTypeSelect == 1)"/>
+    <attribute name="domain" for="analysisMethod"
+      expr="eval: &quot; self.isSystem = true AND self.isMajor = true &quot;"
+      if="type == 2 &amp;&amp; (gravityTypeSelect != null &amp;&amp; gravityTypeSelect == 2)"/>
+    <attribute name="domain" for="analysisMethod"
+      expr="eval: &quot; self.isSystem = true AND self.isMinor = true &quot;"
+      if="type == 2 &amp;&amp; (gravityTypeSelect != null &amp;&amp; gravityTypeSelect == 3)"/>
+    <attribute name="domain" for="analysisMethod"
+      expr="eval: &quot; self.isProduct = true &quot;"
+      if="type == 1 &amp;&amp; gravityTypeSelect == 0"/>
+    <attribute name="domain" for="analysisMethod"
+      expr="eval: &quot; self.isSystem = true &quot;"
+      if="type == 2 &amp;&amp; gravityTypeSelect == 0"/>
   </action-attrs>
 
   <action-attrs name="action-quality-improvement-attrs-set-contact-domain">
@@ -326,6 +366,7 @@
     <action name="action-quality-improvement-attrs-set-defaults" if="qiDetection"/>
     <action name="action-quality-improvement-attrs-set-dummy-field-values-onload"
       if="qiIdentification"/>
+    <action name="action-quality-improvement-refresh-analysis-costs-dashlets"/>
   </action-group>
 
   <action-group name="action-quality-improvement-group-customer-partner-on-change">
@@ -638,5 +679,10 @@
   <action-method name="action-quality-improvement-method-set-advancement">
     <call class="com.axelor.apps.quality.web.QIAnalysisController" method="setAdvancement"/>
   </action-method>
+
+  <action-attrs name="action-quality-improvement-refresh-analysis-costs-dashlets">
+    <attribute name="refresh" for="costsListPanel" expr="eval: true"/>
+    <attribute name="refresh" for="costsDistributionPanel" expr="eval: true"/>
+  </action-attrs>
 
 </object-views>

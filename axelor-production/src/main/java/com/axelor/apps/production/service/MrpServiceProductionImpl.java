@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -65,7 +66,7 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.message.service.MailMessageService;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -74,6 +75,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,7 +177,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED, mrp.getMrpTypeSelect());
 
     String statusSelect = manufOrderMrpLineType.getStatusSelect();
-    List<Integer> statusList = StringTool.getIntegerList(statusSelect);
+    List<Integer> statusList = StringHelper.getIntegerList(statusSelect);
 
     if (statusList.isEmpty()) {
       statusList.add(ManufOrderRepository.STATUS_FINISHED);
@@ -474,7 +476,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         return;
       }
 
-      for (BillOfMaterial billOfMaterial : defaultBillOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterial : defaultBillOfMaterial.getBillOfMaterialLineList()) {
 
         Product subProduct = billOfMaterial.getProduct();
 
@@ -642,15 +644,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     this.productMap.put(product.getId(), this.getMaxLevel(product, level));
 
     level = level + 1;
-    if (billOfMaterial.getBillOfMaterialSet() != null
-        && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+    if (!CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialLineList())) {
 
-      for (BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
-        Product subProduct = subBillOfMaterial.getProduct();
+        Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct)) {
-          this.assignProductLevel(subBillOfMaterial, level);
+        if (this.isMrpProduct(subProduct) && billOfMaterialLine.getBillOfMaterial() != null) {
+          this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
 
           Company company = mrp.getStockLocation().getCompany();
           BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);

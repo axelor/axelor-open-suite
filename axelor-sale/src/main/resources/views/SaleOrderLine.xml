@@ -4,12 +4,15 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
     <hilite strong="true" color="default" if="typeSelect != 0"/>
     <hilite color="danger" if="deliveryState == 1"/>
     <hilite color="warning" if="deliveryState == 2"/>
     <hilite color="success" if="deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
+    <button name="treeIconButton" showIf="hasTree" onClick="refresh" readonlyIf="true"
+      icon="fa-solid fa-list"
+      if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
@@ -45,6 +48,7 @@
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
+    <field name="hasTree" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -122,29 +126,27 @@
             <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
               showTitle="false">
               <viewer depends="$partnerLanguage">
-                <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
-              ]]>
+                <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
               </viewer>
             </field>
             <field name="$viewerTag" showTitle="false" showIf="product != null"
               readonly="true" colSpan="2">
               <viewer depends="product.isUnrenewed,product.isPrototype"><![CDATA[
-					 	<h4>
-	                        <span class="label label-important" ng-show="record.product.isUnrenewed" x-translate>Unrenewed</span>
-	                        <span class="label label-important" ng-show="record.product.isPrototype" x-translate>Prototype</span>
-	                    </h4>
+	                    <>
+	                    	 {product?.isUnrenewed && <Badge bg="danger">{_t('Unrenewed')}</Badge>}
+	                    	 {product?.isPrototype && <Badge bg="danger">{_t('Prototype')}</Badge>}
+	                    </>
 					]]>
               </viewer>
             </field>
             <field name="invoicingState" showTitle="false" showIf="id &amp;&amp; $readonly()"
               colSpan="2" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
               <viewer depends="invoicingState"><![CDATA[
-                        <h4>
-                            <span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
-                            <span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
-                            <span class="label label-important" ng-show="record.invoicingState == 1" x-translate>Not invoiced</span>
-                        </h4>
+                        <>
+                            {invoicingState == 1 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+                            {invoicingState == 2 && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+                            {invoicingState == 3 && <Badge bg="success">{_t('Invoiced')}</Badge>}
+                        </>
                     ]]>
               </viewer>
             </field>
@@ -152,31 +154,27 @@
               showIf="deliveryState > 0" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')">
               <viewer><![CDATA[
-	                    <h4>
-	                        <span class="label label-important" ng-show="record.deliveryState == 1" x-translate>Not delivered</span>
-	                        <span class="label label-warning" ng-show="record.deliveryState == 2" x-translate>Partially delivered</span>
-	                        <span class="label label-success" ng-show="record.deliveryState == 3" x-translate>Delivered</span>
-	                    </h4>
+	                    <>
+	                        {deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
+	                        {deliveryState == 2 && <Badge bg="warning">{_t('Partially delivered')}</Badge>}
+	                        {deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
+	                    </>
 					]]></viewer>
             </field>
             <field name="$availabiltyRequest" showIf="$availabiltyRequest" showTitle="false"
               type="boolean" colSpan="2" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')">
-              <viewer><![CDATA[
-						<h4>
-							<span class="label label-success" ng-show="record.$availabiltyRequest" x-translate>Availability request</span>
-						</h4>
-					]]></viewer>
+              <viewer>
+                <![CDATA[<>{$availabiltyRequest && <Badge bg="success">{_t('Availability request')}</Badge>}</>]]>
+              </viewer>
             </field>
 
             <field name="isQtyRequested" showTitle="false" colSpan="2"
               showIf="isQtyRequested &amp;&amp; product &amp;&amp; product.productTypeSelect != 'service'"
               if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-              <viewer><![CDATA[
-						<h4>
-							<span class="label label-success" ng-show="record.isQtyRequested" x-translate>Reservation requested</span>
-						</h4>
-					]]></viewer>
+              <viewer>
+                <![CDATA[<>{isQtyRequested && <Badge bg="success">{_t('Reservation requested')}</Badge>}</>]]>
+              </viewer>
             </field>
 
           </panel>
@@ -201,7 +199,8 @@
             validIf="$qtyValid != false"/>
           <field name="unit" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
-            requiredIf="typeSelect == 0" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+            onChange="action-group-sale-saleorderline-unit-onchange" requiredIf="typeSelect == 0"
+            canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
             onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
@@ -225,11 +224,8 @@
             <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
             <field name="$maxDiscount" colSpan="12" showTitle="false" showIf="$maxDiscount"
               readonly="true">
-              <viewer><![CDATA[
-								<h4>
-									<span class="label label-warning"><span x-translate>Max discount</span> {{record.$maxDiscount}}%</span>
-								</h4>
-							]]>
+              <viewer>
+                <![CDATA[<><Badge bg="warning">{_t('Max discount')} {$maxDiscount}%</Badge></>]]>
               </viewer>
             </field>
           </panel>
@@ -618,6 +614,11 @@
     <action name="action-sale-order-line-record-complementary-products-to-handle"/>
   </action-group>
 
+  <action-group name="action-group-sale-saleorderline-unit-onchange">
+    <action name="action-sale-order-line-method-check-stock"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
+  </action-group>
+
   <action-group name="action-group-sale-saleorderline-tax-line-onchange">
     <action name="action-sale-order-line-method-get-tax-equiv"/>
     <action name="action-sale-order-line-method-convert-tax"/>
@@ -846,7 +847,7 @@
   <action-attrs name="action-sale-order-line-attrs-hide-panel">
     <attribute name="hidden"
       for="stockMoveLineOfSOPanel,projectTaskListPanel,invoicingFollowUpPanel" expr="true"
-      if="__parent__.statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || __parent__.statusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"/>
+      if="__parent__?.statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || __parent__?.statusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">

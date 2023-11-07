@@ -22,25 +22,36 @@
     <hilite color="info" if="leadScoringSelect == 4.00"/>
     <hilite color="success" if="leadScoringSelect == 5.00"/>
     <template> <![CDATA[
-  <h4>{{record.simpleFullName}}</h4>
-          <img ng-if="user" ng-src="{{$image('user', 'image')}}">
-          <div class="card-body">
-              <dl>
-                  <dt ng-show="record.enterpriseName" x-translate>Enterprise Name</dt><dd ng-show="record.enterpriseName">{{record.enterpriseName}}</dd>
-                  <dt ng-show="record.nextScheduledEventDateT"><i class='fa fa-clock-o'></i> <span>{{nextScheduledEventDateT|date:'yyyy-MM-dd HH:mm:ss'}}</span></dt>
-                  <dt x-translate>Lead Scoring</dt> <dd ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></dd>
-              </dl>
-          </div>
-          <div class="card-summary popover">
-	  <p style="margin:2px;">
-            	<span style="word-break:break-all;max-width:250px;" ng-bind-html="description"></span>
-            </p>
-         </div>
+         <>
+         	<h4>{simpleFullName}</h4>
+         	{user && <Image src={$image('user', 'image')}></Image>}
+         	<Box mt={4}/>
+         	<dl>
+         		{enterpriseName &&
+         			<Box>
+         				<dt>{_t('Enterprise Name')}</dt>
+         				<dd>{enterpriseName}</dd>
+         			</Box>
+         		}
+         		{nextScheduledEventDateT &&
+         			<Box>
+         				<Icon icon="clock"/> {$moment(nextScheduledEventDateT).format('YYYY-MM-DD HH:mm:ss')}
+         			</Box>
+         		}
+         		<Box>
+         			<dt>{_t('Lead scoring')}</dt>
+         			<dd>
+         				{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning"/>)}
+         				{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning"/>)}
+         			</dd>
+         		</Box>
+         	</dl>
+	        <Box className="card-summary popover">
+	       		<Box as="p" m={2}>
+	        		{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100, wordBreak: "break-all", maxWidth: 250 }}></Box>}
+	        	</Box>
+	        </Box>
+         </>
 ]]>
     </template>
   </kanban>
@@ -50,7 +61,7 @@
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printItem" title="Print" action="action-crm-lead-method-print"/>
+        <item name="printItem" title="Print" action="action-method-print-birt-list"/>
       </menu>
       <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
         <item name="assignToMeItem" title="Assign to me"
@@ -86,7 +97,7 @@
 
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-crm-lead-method-print"/>
+        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -98,19 +109,17 @@
         <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
           <field name="$viewerTagsLeft" showTitle="false">
             <viewer depends="industrySector">
-				<![CDATA[
-					<h4>
-						<span class="label label-default" style="background-color: #0285D8;" ng-show="record.industrySector"> {{ record.industrySector.name }} </span>
-					<h4>
-				]]>
+				<![CDATA[<>{industrySector && <Badge bg="primary">{industrySector.name}</Badge>}</>]]>
             </viewer>
           </field>
           <field name="$viewerTagsRight" showTitle="false">
             <viewer depends="isConverted">
 				<![CDATA[
-					<h4 class="text-right">
-						<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isConverted" x-translate>Converted</span>
-					<h4>
+					<>
+						<Box d="flex" justifyContent="flex-end">
+							{isConverted && <Badge bg="info">{_t('Converted')}</Badge>}
+						</Box>
+					</>
 				]]>
             </viewer>
           </field>
@@ -134,7 +143,7 @@
           css="label-bold bold large">
           <viewer depends="firstName,name">
                         <![CDATA[
-                            {{record.firstName}} {{record.name}}
+                            <>{firstName} {name}</>
                         ]]>
           </viewer>
           <editor x-show-titles="false">
@@ -147,7 +156,9 @@
               onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
           </editor>
         </field>
-        <static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
+        <static name="duplicateLeadText" hidden="true" colSpan="12">
+          <![CDATA[<><Badge bg="warning">There is already a lead with this name.</Badge></>]]>
+        </static>
         <field name="fullName" showTitle="false" colSpan="12">
           <editor x-show-titles="false">
             <field name="enterpriseName" css="label-bold bold large" colSpan="12"
@@ -172,10 +183,12 @@
             showTitle="false">
             <viewer>
 							<![CDATA[
-								<h4>
-									<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotCall" x-translate>Rejection of calls</span>
-									<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotSendEmail" x-translate>Rejection of e-mails</span>
-								</h4>
+								<>
+									<Box d="flex" gap="4">
+										{isDoNotCall && <Badge bg="primary">{_t('Rejection of calls')}</Badge>}
+										{isDoNotSendEmail && <Badge bg="primary">{_t('Rejection of e-mails')}</Badge>}
+									</Box>
+								</>
 							]]>
             </viewer>
           </field>
@@ -200,9 +213,11 @@
             <viewer
               depends="primaryAddress,primaryPostalCode,primaryCity,primaryState,primaryCountry">
 							<![CDATA[
-								{{record.primaryAddress}}<br/>
-								{{record.primaryPostalCode}} {{record.primaryCity.name}}<br/>
-								{{record.primaryState.name}}<span ng-if="record.primaryState.name &amp;&amp; record.primaryCountry.name"> - </span>{{record.primaryCountry.name}}
+								<>
+									{primaryAddress} <Box/>
+									{primaryPostalCode} {primaryCity.name} <Box/>
+									{primaryState.name} {primaryState?.name && primaryCountry?.name && <span>-</span>} {primaryCountry.name}
+								</>
 							]]>
             </viewer>
           </field>
@@ -358,45 +373,6 @@
       onClick="action-send-by-email-with-template"/>
   </grid>
 
-  <custom title="Activity" name="lead-form-activity-custom" css="crm-activity-dashlet">
-    <dataset type="rpc">com.axelor.apps.crm.web.LeadController:getLeadActivityData</dataset>
-    <template>
-      <![CDATA[
-      <div class="crm-activity-card" ng-repeat="item in data">
-        <div>
-          <span class="crm-activity-date">{{item.date | date}}</span>
-          	<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial; float:right;" ng-show="item.status == 1" x-translate>Planned</span>
-            <span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 2" x-translate>Realized</span>
-            <span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 3" x-translate>Canceled</span>
-        </div>
-        <div class="crm-activity-content">
-          <div>
-            <span ng-show="item.type == 'event' && item.activityName == 1" x-translate>Call</span>
-            <span ng-show="item.type == 'event' && item.activityName == 2" x-translate>Meeting</span>
-            <span ng-show="item.type == 'event' && item.activityName == 3" x-translate>Task</span>
-            <span ng-show="item.type == 'event' && item.activityName == 5" x-translate>Note</span>
-            <span ng-show="item.type == 'creation' || item.type == 'statusChange'" x-translate>{{item.activityName}}</span>
-          </div>
-          <div class="crm-activity-icon">
-            <span  ng-show="item.type == 'creation'"><i class="fa fa-plus" style=""></i></span>
-            <span ng-show="item.type == 'statusChange'"><i class="fa fa-exchange"></i></span>
-            <span ng-show="item.type == 'event'">
-              <i ng-show="item.activityName == 1" class="fa fa-phone"></i>
-              <i ng-show="item.activityName == 2" class="fa fa-pencil-square-o"></i>
-              <i ng-show="item.activityName == 3" class="fa fa-tasks"></i>
-              <i ng-show="item.activityName == 5" class="fa fa-sticky-note-o"></i>
-            </span>
-           </div>
-        </div>
-        <div ng-show="item.description != ''">
-          <hr/>
-          <span>{{item.description}}</span>
-        </div>
-      </div>
-      ]]>
-    </template>
-  </custom>
-
   <action-condition name="action-lead-lost-reason-check">
     <check error="A lost reason must be selected" field="lostReason"
       if="lostReason == null || lostReason == 0"/>
@@ -451,10 +427,6 @@
 
   <action-method name="action-lead-event-add-attendee">
     <call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
-  </action-method>
-
-  <action-method name="action-crm-lead-method-print">
-    <call method="print" class="com.axelor.apps.crm.web.LeadController"/>
   </action-method>
 
   <action-method name="action-crm-lead-method-check-name">
@@ -618,10 +590,6 @@
     <view type="form" name="event-form"/>
     <domain>self.eventLead.id = :_leadId </domain>
     <context name="_leadId" expr="eval: __id__"/>
-  </action-view>
-
-  <action-view name="action-lead-view-lead-activity-custom" title="Activity">
-    <view type="custom" name="lead-form-activity-custom"/>
   </action-view>
 
   <action-method name="action-show-leads-on-map-page">

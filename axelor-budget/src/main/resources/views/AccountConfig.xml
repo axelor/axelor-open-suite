@@ -12,7 +12,7 @@
     <extend target="//field[@name='analyticJournal']">
       <insert position="after">
         <field name="enableBudgetKey" colSpan="6" if="__config__.app.isApp('budget')"/>
-        <field name="budgetDistributionRoleList" colSpan="6" widget="TagSelect"
+        <field name="budgetDistributionRoleSet" colSpan="6" widget="TagSelect"
           showIf="enableBudgetKey" if="__config__.app.isApp('budget')"/>
       </insert>
     </extend>

@@ -11,29 +11,14 @@
     <string name="name" title="Name" required="true"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
       required="true"/>
-    <integer name="branchSelect" title="Branch" selection="quality.qi.cause.branch.select"
-      required="true" default="1"/>
-    <boolean name="isProductCause" title="Product"/>
-    <boolean name="isSystemCause" title="System"/>
-
-    <extra-code><![CDATA[
-	    public static final int BRANCH_MATERIAL = 1;
-		public static final int BRANCH_MACHINE = 2;
-		public static final int BRANCH_METHODS = 3;
-		public static final int BRANCH_MAN_POWER = 4;
-		public static final int BRANCH_MANAGEMENT = 5;
-		public static final int BRANCH_MEDIUM = 6;
-		public static final int BRANCH_MEASURE = 7;
-		public static final int BRANCH_FINANCIAL_MEANS = 8;
-    ]]></extra-code>
+    <many-to-one name="branch" title="Branch"
+      ref="com.axelor.apps.quality.db.QIAnalysisMethodItem" required="true"/>
 
     <track>
       <field name="code"/>
       <field name="name"/>
       <field name="company"/>
-      <field name="branchSelect"/>
-      <field name="isProductCause"/>
-      <field name="isSystemCause"/>
+      <field name="branch"/>
     </track>
 
   </entity>

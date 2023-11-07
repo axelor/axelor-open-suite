@@ -20,8 +20,11 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -29,9 +32,9 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionExport;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -70,31 +73,44 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
 
   @Override
   public <T extends Model> String getPrintFileLink(
-      List<Integer> idList, Class<T> contextClass, BirtTemplate birtTemplate) throws IOException {
+      List<Integer> idList, Class<T> contextClass, BirtTemplate birtTemplate)
+      throws IOException, AxelorException {
     List<File> printedRecords = new ArrayList<>();
 
-    ModelTool.apply(
-        contextClass,
-        idList,
-        new ThrowConsumer<T, Exception>() {
-          @Override
-          public void accept(T item) throws Exception {
-            printedRecords.add(generateBirtTemplate(birtTemplate, item));
-          }
-        });
+    int errorCount =
+        ModelHelper.apply(
+            contextClass,
+            idList,
+            new ThrowConsumer<T, Exception>() {
+              @Override
+              public void accept(T item) throws Exception {
+                try {
+                  printedRecords.add(generateBirtTemplate(birtTemplate, item));
+                } catch (Exception e) {
+                  TraceBackService.trace(e);
+                  throw e;
+                }
+              }
+            });
+    if (errorCount > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
     String fileName = getOutputFileName(birtTemplate);
 
     String fileLink = "";
     if (ReportSettings.FORMAT_PDF.equals(birtTemplate.getFormat())) {
       fileLink =
-          PdfTool.mergePdfToFileLink(printedRecords, fileName + "." + birtTemplate.getFormat());
+          PdfHelper.mergePdfToFileLink(printedRecords, fileName + "." + birtTemplate.getFormat());
     } else {
       fileLink = getZipFileLink(fileName, printedRecords);
     }
     return fileLink;
   }
 
-  protected <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
+  @Override
+  public <T extends Model> File generateBirtTemplate(BirtTemplate birtTemplate, T model)
       throws AxelorException, IOException {
     String name = birtTemplate.getName();
     String format = birtTemplate.getFormat();

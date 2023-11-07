@@ -43,7 +43,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ModelTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 
@@ -209,7 +209,7 @@ public class ContractController {
   public void copyFromTemplate(ActionRequest request, ActionResponse response) {
     try {
       ContractTemplate template =
-          ModelTool.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
+          ModelHelper.toBean(ContractTemplate.class, request.getContext().get("contractTemplate"));
       template = Beans.get(ContractTemplateRepository.class).find(template.getId());
 
       Contract contract =
@@ -253,6 +253,23 @@ public class ContractController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void hideFields(ActionRequest request, ActionResponse response) {
+    Contract contract = request.getContext().asType(Contract.class);
+    response.setAttr(
+        "currentContractVersion.contractLineList.isToRevaluate",
+        "hidden",
+        !contract.getCurrentContractVersion().getIsPeriodicInvoicing()
+            || !contract.getIsToRevaluate());
+    response.setAttr(
+        "currentContractVersion.contractLineList.initialPricePerYear",
+        "hidden",
+        !contract.getCurrentContractVersion().getIsPeriodicInvoicing());
+    response.setAttr(
+        "currentContractVersion.contractLineList.yearlyPriceRevalued",
+        "hidden",
+        !contract.getCurrentContractVersion().getIsPeriodicInvoicing());
   }
 
   public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {

@@ -22,11 +22,12 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
@@ -44,23 +45,25 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
-      InvoiceToolService invoiceToolService,
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
       InvoicePaymentCreateService invoicePaymentCreateService,
       UserRepository userRepo,
-      BankOrderLineOriginRepository bankOrderLineOriginRepository) {
+      JournalService journalService,
+      BankOrderLineOriginRepository bankOrderLineOriginRepository,
+      PfpService pfpService) {
     super(
         invoiceTermRepo,
         invoiceRepo,
         appAccountService,
-        invoiceToolService,
         invoiceVisibilityService,
         accountConfigService,
         reconcileService,
         invoicePaymentCreateService,
-        userRepo);
+        journalService,
+        userRepo,
+        pfpService);
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
   }
 

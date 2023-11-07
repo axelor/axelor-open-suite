@@ -159,4 +159,14 @@
     <option value="700">Production batch</option>
   </selection>
 
+  <selection name="production.config.capacity.select">
+    <option value="1">Infinite</option>
+    <option value="2">Finite</option>
+  </selection>
+
+  <selection name="production.config.scheduling.select">
+    <option value="1">As soon as possible</option>
+    <option value="2">At the latest</option>
+  </selection>
+
 </object-views>

@@ -22,12 +22,23 @@
     title="Bank details" onLoad="action-group-account-bank-details-form-onload"
     model="com.axelor.apps.base.db.BankDetails" width="large">
     <panel name="ownerPanel" title="Owner">
-      <panel name="ownerInfoPanel" colSpan="9">
+      <panel name="ownerInfoPanel" colSpan="12">
+        <spacer colSpan="10"/>
+        <field name="$activeLabel" showIf="$readonly()" showTitle="false" colSpan="2">
+          <viewer depends="active">
+            <![CDATA[
+                <span class="label label-success" ng-show="record.active" x-translate>Active</span>
+                <span class="label label-important" ng-show="!record.active" x-translate>Inactive</span>
+            ]]>
+          </viewer>
+        </field>
         <field name="partner"
           onChange="action-set-owner-name,action-bank-details-attrs-specific-notes"
           domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"
           colSpan="10"/>
-        <field name="ownerName" colSpan="10"/>
+        <field name="active" widget="boolean-radio" colSpan="2" showTitle="false"
+          showIf="!$readonly()" x-true-text="Active" x-false-text="Inactive"/>
+        <field name="ownerName" colSpan="12"/>
         <field name="company" hidden="true"/>
       </panel>
     </panel>
@@ -42,15 +53,14 @@
         if="__config__.app.isApp('account')"/>
       <field name="code" x-bind="{{code|uppercase}}" hidden="true"/>
     </panel>
-    <panel name="activePanel" sidebar="true">
-      <field name="active" widget="boolean-switch"/>
-    </panel>
     <panel name="ibanPanel" title="IBAN / BBAN">
       <field name="bank.bankDetailsTypeSelect" readonly="true"/>
       <panel name="ibanPanel">
         <field name="iban" readonlyIf="bank==null"
           onChange="action-group-account-bankdetails-iban-onchange" colSpan="12"/>
-        <static name="invalidIbanText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Invalid IBAN</span>]]></static>
+        <static name="invalidIbanText" hidden="true" colSpan="12">
+	        <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
+        </static>
       </panel>
       <field name="bank" canNew="true" form-view="bank-form"
         onChange="action-group-bank-details-bank-onchange"/>
@@ -93,29 +103,37 @@
       if="__config__.app.isApp('bank-payment')"/>
     <field name="active"/>
     <template><![CDATA[
-			<div>
-				<div class="span12">
-					<span>
-						<strong>{{iban}}</strong> <br/>
-						<strong><span x-translate>BIC (Bank Identifier)</span></strong> : {{bank.code}}<br/>
-						<strong><span x-translate>Bank Name</span></strong> : {{bank.bankName}}<br/>
-					</span>
-				</div>
-			</div>
-			<div class="span12" style="margin-left: 0%;">
-				<br/>
-				<span class="label label-default" ng-show="record.company" style="background-color: #2185D0;">{{company.name}}</span>
-				<span class="label label-important" ng-show="!record.active" x-translate>Inactive</span>
-				<span class="btn info-button pull-right" style="width: 50%;" ng-show="record.balanceUpdatedDate">
-				<a style="text-decoration: none;" ui-action-click="action-bank-details-view-show-bank-statement-lines">
-					<i class="pull-left fa fa-balance-scale" style="margin-top: 3%; font-size:30px;"/>
-     				<p class="pull-left span3" style="font-size: 11px; margin-top: 3%; width: 60%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-					<strong>{{$fmt('balance')}}</strong>
-					<br/>
-					<span class="pull-left" style="color: #000000; font-size: 9px;"> {{ $fmt('balanceUpdatedDate') }} </span></p>
-				</a>
-				</span>
-			</div>
+		<>
+		<Box d="grid" gridTemplateColumns="auto auto">
+		   <Box>
+		      <strong>{iban}</strong> <Box/>
+		      <strong>{_t('BIC (Bank Identifier)')}</strong> : {bank.code} <Box/>
+		      <strong>{_t('Bank Name')}</strong> : {bank.bankName}
+		   </Box>
+		</Box>
+		<Box d="grid" gridTemplateColumns="45% 55%" mt={4}>
+			<Box>
+			    {company && <Badge style={{ backgroundColor: "#2185D0" }}>{company.name}</Badge>}
+			    {!active && <Badge m={1} bg="danger">{_t('Inactive')}</Badge>}
+			</Box>
+			<Box ms={4}>
+			{balanceUpdatedDate &&
+			(
+			     <Button variant="outline-dark" onClick={$action("action-bank-details-view-show-bank-statement-lines")} w={100}>
+				     <Box d="grid" gridTemplateColumns="40% 60%" textAlign="start">
+					     <Box justifyContent="flex-start" ms={1} fontSize={4}>
+	         				<Icon icon="balance"/>
+	        			</Box>
+	        			<Box>
+	        				<Box as="strong" fontSize={6}>{$fmt('balance')}</Box>
+	          				<Box style={{ fontSize: "smaller" }}>{$fmt('balanceUpdatedDate')}</Box>
+	        			</Box>
+	        		</Box>
+			     </Button>
+		     )}
+		     </Box>
+		</Box>
+		</>
 		]]>
     </template>
   </cards>
@@ -158,6 +176,8 @@
     <action name="action-set-default-partner"/>
     <action name="action-set-default-bank"/>
     <action name="action-bank-details-attrs-code"/>
+    <action name="action-bank-details-record-set-partner-and-currency"
+      if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
   </action-group>
 
   <action-group name="action-group-account-bank-details-form-onload">
@@ -185,6 +205,12 @@
     <field name="ownerName"
       if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'"
       expr="eval:__parent__ != null ? (__parent__.name != null ? __parent__.name : '') + ' ' + (__parent__.firstName != null ? __parent__.firstName : '') : ''"/>
+  </action-record>
+
+  <action-record name="action-bank-details-record-set-partner-and-currency"
+    model="com.axelor.apps.base.db.BankDetails">
+    <field name="partner" expr="eval:__parent__?.partner"/>
+    <field name="currency" expr="eval:__parent__?.currency"/>
   </action-record>
 
   <action-record name="action-bank-details-record-set-company"

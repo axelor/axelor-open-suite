@@ -64,6 +64,7 @@ import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
+import com.axelor.apps.hr.service.expense.ExpensePrintService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
@@ -73,6 +74,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -83,10 +85,11 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -313,6 +316,24 @@ public class ExpenseController {
     }
   }
 
+  public void printReportAndProofFiles(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
+
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    response.setView(
+        ActionView.define(I18n.get("Expense"))
+            .model(DMSFile.class.getName())
+            .add("form", "dms-file-form")
+            .context(
+                "_showRecord",
+                Beans.get(ExpensePrintService.class)
+                    .uploadExpenseReport(expense)
+                    .getId()
+                    .toString())
+            .map());
+  }
+
   /* Count Tags displayed on the menu items */
   @CallMethod
   public String expenseValidateMenuTag() {
@@ -403,6 +424,14 @@ public class ExpenseController {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
+    }
+  }
+
+  public void checkLineFile(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    if (Beans.get(ExpenseConfirmationService.class).checkAllLineHaveFile(expense)) {
+      response.setAlert(I18n.get(HumanResourceExceptionMessage.EXPENSE_JUSTIFICATION_FILE_MISSING));
     }
   }
 
@@ -575,7 +604,7 @@ public class ExpenseController {
         response.setAttr(
             "kilometricAllowParam",
             "domain",
-            "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+            "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
       }
 
       KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
@@ -629,7 +658,7 @@ public class ExpenseController {
       response.setAttr(
           "kilometricAllowParam",
           "domain",
-          "self.id IN (" + StringTool.getIdListString(kilometricAllowParamList) + ")");
+          "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -690,5 +719,13 @@ public class ExpenseController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void checkTotalAmount(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    response.setAttr(
+        "overAmountLimitText",
+        "hidden",
+        !Beans.get(ExpenseLineService.class).isThereOverAmountLimit(expense));
   }
 }

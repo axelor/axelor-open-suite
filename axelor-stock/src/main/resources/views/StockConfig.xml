@@ -130,6 +130,12 @@
       <field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
       <field name="displayPriceOnPrinting" widget="boolean-switch"/>
     </panel>
+    <panel name="printingsPanel" title="Printings" colSpan="12">
+      <field name="pickingStockMoveBirtTemplate"/>
+      <field name="conformityCertificateBirtTemplate"/>
+      <field name="inventoryBirtTemplate"/>
+      <field name="stockLocationBirtTemplate"/>
+    </panel>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

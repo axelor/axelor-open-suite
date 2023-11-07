@@ -23,7 +23,7 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -35,7 +35,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -59,7 +59,7 @@ public class PurchaseOrderLineController {
             ? purchaseOrderLine.getBudget().getAccountSet()
             : null;
     if (!CollectionUtils.isEmpty(accountsSet)) {
-      domain = domain.replace("(0)", "(" + StringTool.getIdListString(accountsSet) + ")");
+      domain = domain.replace("(0)", "(" + StringHelper.getIdListString(accountsSet) + ")");
     }
     response.setAttr("account", "domain", domain);
   }
@@ -120,20 +120,24 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      Account account =
-          Beans.get(AccountManagementAccountService.class)
-              .getProductAccount(
-                  purchaseOrderLine.getProduct(),
-                  purchaseOrder.getCompany(),
-                  purchaseOrder.getFiscalPosition(),
-                  true,
-                  purchaseOrderLine.getFixedAssets());
-      if (account.getCode().startsWith("2")
-          || account.getCode().startsWith("4")
-          || account.getCode().startsWith("6")) {
-        response.setValue("account", account);
-      }
 
+      if (purchaseOrderLine.getProduct() == null) {
+        response.setValue("account", null);
+      } else {
+        Account account =
+            Beans.get(AccountManagementAccountService.class)
+                .getProductAccount(
+                    purchaseOrderLine.getProduct(),
+                    purchaseOrder.getCompany(),
+                    purchaseOrder.getFiscalPosition(),
+                    true,
+                    purchaseOrderLine.getFixedAssets());
+        if (account.getCode().startsWith("2")
+            || account.getCode().startsWith("4")
+            || account.getCode().startsWith("6")) {
+          response.setValue("account", account);
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
     }
@@ -179,7 +183,7 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      BudgetLevel global = (BudgetLevel) request.getContext().get("$global");
+      GlobalBudget global = (GlobalBudget) request.getContext().get("$global");
       String query = "self.id = 0";
 
       if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
@@ -198,7 +202,7 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      BudgetLevel global = (BudgetLevel) request.getContext().get("$global");
+      GlobalBudget global = (GlobalBudget) request.getContext().get("$global");
       String query = "self.id = 0";
 
       if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
@@ -217,7 +221,7 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      BudgetLevel global = (BudgetLevel) request.getContext().get("$global");
+      GlobalBudget global = (GlobalBudget) request.getContext().get("$global");
       String query = "self.id = 0";
 
       if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
@@ -236,7 +240,7 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      BudgetLevel global = (BudgetLevel) request.getContext().get("$global");
+      GlobalBudget global = (GlobalBudget) request.getContext().get("$global");
       String query = "self.id = 0";
 
       if (purchaseOrder != null && purchaseOrder.getCompany() != null) {

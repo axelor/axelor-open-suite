@@ -49,7 +49,7 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.rpc.Response;
-import com.axelor.utils.EmailTool;
+import com.axelor.utils.helpers.EmailHelper;
 import com.google.api.services.people.v1.model.Name;
 import com.google.api.services.people.v1.model.Organization;
 import com.google.api.services.people.v1.model.Person;
@@ -262,7 +262,7 @@ public class SyncContactService {
             com.google.api.services.people.v1.model.EmailAddress.class,
             googlePerson.getEmailAddresses().get(0));
     if (Strings.isNullOrEmpty(googleEmail.getValue())
-        || !EmailTool.isValidEmailAddress(googleEmail.getValue())) {
+        || !EmailHelper.isValidEmailAddress(googleEmail.getValue())) {
       return;
     }
     if (partner.getEmailAddress() == null

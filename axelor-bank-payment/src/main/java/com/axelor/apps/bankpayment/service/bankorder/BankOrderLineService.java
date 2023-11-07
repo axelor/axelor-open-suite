@@ -42,7 +42,7 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -267,7 +267,7 @@ public class BankOrderLineService {
       if (bankOrderLine.getReceiverCompany() != null) {
 
         bankDetailsIds =
-            StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsList());
+            StringHelper.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsList());
 
         if (bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
           bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -279,7 +279,8 @@ public class BankOrderLineService {
 
     // case where the bank order is for a partner
     else if (bankOrderLine.getPartner() != null) {
-      bankDetailsIds = StringTool.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
+      bankDetailsIds =
+          StringHelper.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
     }
 
     if (bankDetailsIds.equals("")) {
@@ -301,7 +302,7 @@ public class BankOrderLineService {
     if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
       domain +=
           " AND self.id IN ("
-              + StringTool.getIdListString(ebicsPartner.getReceiverBankDetailsSet())
+              + StringHelper.getIdListString(ebicsPartner.getReceiverBankDetailsSet())
               + ")";
     }
 

@@ -105,14 +105,12 @@ public class ProductController {
     response.setReload(true);
   }
 
-  @SuppressWarnings("unchecked")
   public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     BirtTemplate productCatalogPGQLBirtTemplate =
         Beans.get(AppBaseService.class).getAppBase().getProductCatalogPGQLBirtTemplate();
-    if (ObjectUtils.isEmpty(productCatalogPGQLBirtTemplate)
-        || ObjectUtils.isEmpty(productCatalogPGQLBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(productCatalogPGQLBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

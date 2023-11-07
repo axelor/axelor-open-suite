@@ -29,7 +29,7 @@
   </input>
 
   <input file="stock_stockConfig.csv" separator=";"
-    type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId" update="true"/>
 
   <input file="stock_customsCodeNomenclature.csv" separator=";"
     type="com.axelor.apps.stock.db.CustomsCodeNomenclature">
@@ -133,5 +133,8 @@
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
   </input>
+
+  <input file="stock_stockCorrectionReason.csv" separator=";"
+    type="com.axelor.apps.stock.db.StockCorrectionReason" search="self.importId = :importId"/>
 
 </csv-inputs>

@@ -16,6 +16,10 @@
     <field name="forecastCosts"/>
     <field name="forecastMargin"/>
     <field name="forecastMarkup"/>
+    <field name="totalInvoiced"/>
+    <field name="invoicedThisMonth"/>
+    <field name="invoicedLastMonth"/>
+    <field name="totalPaid"/>
   </grid>
 
   <form title="Project history" name="project-history-line-form"
@@ -177,9 +181,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.turnover}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.turnover}}</h1>
         </div>
       ]]>
     </template>
@@ -190,9 +193,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.initialCosts}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.initialCosts}}</h1>
         </div>
       ]]>
     </template>
@@ -203,9 +205,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.initialMargin}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.initialMargin}}</h1>
         </div>
       ]]>
     </template>
@@ -230,9 +231,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realTurnover}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.realTurnover}}</h1>
         </div>
       ]]>
     </template>
@@ -243,9 +243,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realCosts}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.realCosts}}</h1>
         </div>
       ]]>
     </template>
@@ -256,9 +255,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realMargin}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.realMargin}}</h1>
         </div>
       ]]>
     </template>
@@ -284,9 +282,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastCosts}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.forecastCosts}}</h1>
         </div>
       ]]>
     </template>
@@ -297,9 +294,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastMargin}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.forecastMargin}}</h1>
         </div>
       ]]>
     </template>
@@ -324,9 +320,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.landingCosts}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.landingCosts}}</h1>
         </div>
       ]]>
     </template>
@@ -337,9 +332,8 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.landingMargin}}</h1>
+          <h1><b>{{first.currencySymbol}}</b> {{first.landingMargin}}</h1>
         </div>
       ]]>
     </template>

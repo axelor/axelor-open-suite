@@ -49,7 +49,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
@@ -261,8 +261,9 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   @Override
-  public Employee getConnectedEmployee() throws AxelorException {
-    User user = Optional.ofNullable(AuthUtils.getUser()).get();
+  public Employee getEmployee(User user) throws AxelorException {
+    Objects.requireNonNull(user);
+
     if (user.getEmployee() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -270,6 +271,12 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           user.getName());
     }
     return user.getEmployee();
+  }
+
+  @Override
+  public Employee getConnectedEmployee() throws AxelorException {
+
+    return getEmployee(AuthUtils.getUser());
   }
 
   @Override
@@ -281,8 +288,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       employeeAnnualReportBirtTemplate = hrConfig.getEmployeeAnnualReportBirtTemplate();
     }
 
-    if (ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate)
-        || ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(employeeAnnualReportBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
@@ -299,8 +305,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       employeePhoneBookBirtTemplate = hrConfig.getEmployeePhoneBookBirtTemplate();
     }
 
-    if (ObjectUtils.isEmpty(employeePhoneBookBirtTemplate)
-        || ObjectUtils.isEmpty(employeePhoneBookBirtTemplate.getTemplateMetaFile())) {
+    if (ObjectUtils.isEmpty(employeePhoneBookBirtTemplate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));

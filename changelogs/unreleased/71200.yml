@@ -1,0 +1,3 @@
+---
+title: "Move Line : Fix error when we create a move line in multi currency"
+type: fix

@@ -38,6 +38,7 @@
         if="__config__.app.getApp('base')?.getGenerateProductSequence()" readonly="true"/>
       <panel name="productTypologyPanel" title="Product typology" colSpan="12">
         <field name="productTypeSelect" required="true" readonly="true"/>
+        <field name="amountLimit"/>
         <field name="deductLunchVoucher" hideIf="!expense"/>
         <field name="blockExpenseTax"/>
         <field name="personalExpense"/>
@@ -196,26 +197,28 @@
     <field name="picture"/>
     <field name="fullName"/>
     <field name="unit"/>
-    <field name="salePrice" x-scale="2"/>
+    <field name="salePrice" x-scale="2" x-currency="saleCurrency.symbol"/>
     <field name="saleCurrency.symbol"/>
     <field name="productFamily"/>
     <field name="productCategory"/>
     <field name="internalDescription"/>
     <template><![CDATA[
-			<div class="span12"><strong>{{fullName}}</strong></div>
-			<div>
-			  <div class="span4 card-image" style="width: 128px; height: 64px;">
-				<img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;" />
-				<img ng-show="!picture" src="img/product-default.png" />
-			  </div>
-			  <div class="span8" style="width: 60%;">
-				<span>{{$fmt('salePrice') | currency: saleCurrency.symbol}}<br/>
-				{{unit.name}}<br/>
-				{{productFamily.name}}<br/>
-				{{productCategory.name}}</span>
-			  </div>
-			</div>
-			<div class="span12" ng-bind-html="internalDescription"></div>
+			<>
+				<strong>{$fmt('fullName')}</strong>
+				<Box d="grid" gridTemplateColumns="40% 60%">
+					<Box style={{ width: 128, height: 64 }}>
+						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
+						{!picture && <Image src="img/product-default.png"></Image>}
+					</Box>
+					<Box>
+						{$fmt('salePrice')} <Box/>
+						{unit.name} <Box/>
+						{productFamily.name} <Box/>
+						{productCategory.name}
+						</Box>
+					</Box>
+				<Box dangerouslySetInnerHTML={{__html : internalDescription}}></Box>
+			</>
 		]]>
     </template>
   </cards>

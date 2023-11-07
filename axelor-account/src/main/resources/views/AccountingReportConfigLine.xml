@@ -60,16 +60,16 @@
         <field name="ruleTypeSelect" showIf="reportTypeColumn == null"
           requiredIf="typeSelect != 4" validIf="[4,5].includes(typeSelect) || ruleTypeSelect > 0"
           readonlyIf="typeSelect == 3" selection-in="[1,2,3]"
-          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
+          onChange="action-accounting-report-config-line-group-rule-type-select-onchange"/>
         <field name="ruleTypeSelect"
           showIf="reportTypeColumn != null &amp;&amp; typeSelect != 4"
           requiredIf="![4,5].includes(typeSelect)" validIf="typeSelect >= 4 || ruleTypeSelect > 0"
           readonlyIf="typeSelect == 3"
-          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
+          onChange="action-accounting-report-config-line-group-rule-type-select-onchange"/>
         <field name="ruleTypeSelect"
           showIf="reportTypeColumn != null &amp;&amp; typeSelect == 4" requiredIf="typeSelect == 4"
           validIf="typeSelect != 4 || ruleTypeSelect > 0" selection-in="[2,3]"
-          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
+          onChange="action-accounting-report-config-line-group-rule-type-select-onchange"/>
       </panel>
       <panel name="infoPanel" colSpan="12" showIf="[1,2,4].includes(typeSelect)">
         <field name="label" requiredIf="[1,2,4].includes(typeSelect)"/>
@@ -86,6 +86,7 @@
         </panel>
         <field name="percentageBaseColumn"
           showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"
+          requiredIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"
           help="Percentages will be computed based on the given column values."/>
       </panel>
     </panel>
@@ -95,13 +96,17 @@
         <field name="$helpCode" title="Account code" readonly="true">
           <viewer depends="typeSelect,ruleTypeSelect">
             <![CDATA[
-						<p ng-show="record.typeSelect == 5 || record.ruleTypeSelect == 2">
-							<span x-translate>The account code field allows to add every account whose code will fulfill the given regular expression.</span><br>
-							<span x-translate>This regular expression must use SQL syntax. The most useful terms are :</span><br>
-							<span x-translate>_ to match any character (only one)</span><br>
-							<span x-translate>% to match any character (one or more)</span><br>
-							<span x-translate>, to separate multiple expressions with an "OR" logic</span><br>
-						</p>
+						<>
+						    {(typeSelect == 5 || ruleTypeSelect == 2) &&
+						    	<p>
+						    		<span>{_t('The account code field allows to add every account whose code will fulfill the given regular expression.')}</span> <Box/>
+						    		<span>{_t('This regular expression must use SQL syntax. The most useful terms are :')}</span> <Box/>
+						    		<span>{_t('_ to match any character (only one)')}</span> <Box/>
+						    		<span>{_t('% to match any character (one or more)')}</span> <Box/>
+						    		<span>{_t(', to separate multiple expressions with an "OR" logic')}</span>
+						    	</p>
+						    }
+						</>
 					]]>
           </viewer>
         </field>
@@ -131,12 +136,16 @@
         <field name="$helpRule" title="Rule" readonly="true">
           <viewer depends="ruleTypeSelect">
             <![CDATA[
-						<p ng-show="record.ruleTypeSelect == 3">
-							<span x-translate>This state allows to create a custom rule to be shown in the report.</span><br>
-							<span x-translate>Any Groovy expression can be written and the computed result will be displayed, but there must be only one line.</span><br>
-							<span x-translate>A previous result can be used with its code, but it can only be elements of the same type.</span><br>
-							<span x-translate>Priority will define which rule to use when computation encounters multiple ones.</span>
-						</p>
+						<>
+							{ruleTypeSelect == 3 &&
+								<p>
+									<span>{_t('This state allows to create a custom rule to be shown in the report.')}</span> <Box/>
+									<span>{_t('Any Groovy expression can be written and the computed result will be displayed, but there must be only one line.')}</span> <Box/>
+									<span>{_t('A previous result can be used with its code, but it can only be elements of the same type.')}</span> <Box/>
+									<span>{_t('Priority will define which rule to use when computation encounters multiple ones.')}</span> <Box/>
+								</p>
+							}
+						</>
 					]]>
           </viewer>
         </field>
@@ -180,6 +189,12 @@
 
   <action-group name="action-accounting-report-config-line-group-column-onnew">
     <action name="action-accounting-report-config-line-record-column-rule"/>
+    <action name="action-accounting-report-config-line-attrs-set-active-tab"/>
+  </action-group>
+
+  <action-group
+    name="action-accounting-report-config-line-group-rule-type-select-onchange">
+    <action name="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
     <action name="action-accounting-report-config-line-attrs-set-active-tab"/>
   </action-group>
 

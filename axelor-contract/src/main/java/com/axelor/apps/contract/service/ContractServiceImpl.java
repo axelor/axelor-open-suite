@@ -44,16 +44,17 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.RevaluationFormula;
-import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
@@ -82,13 +83,12 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected DurationService durationService;
 
   protected ContractLineRepository contractLineRepo;
-  protected ConsumptionLineRepository consumptionLineRepo;
   protected ContractRepository contractRepository;
   protected TaxService taxService;
-  protected RevaluationFormulaService revaluationFormulaService;
   protected ContractVersionRepository contractVersionRepository;
   protected InvoiceRepository invoiceRepository;
   protected InvoiceService invoiceService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public ContractServiceImpl(
@@ -97,25 +97,23 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractLineService contractLineService,
       DurationService durationService,
       ContractLineRepository contractLineRepo,
-      ConsumptionLineRepository consumptionLineRepo,
       ContractRepository contractRepository,
       TaxService taxService,
-      RevaluationFormulaService revaluationFormulaService,
       ContractVersionRepository contractVersionRepository,
       InvoiceRepository invoiceRepository,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      AnalyticLineModelService analyticLineModelService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
     this.durationService = durationService;
     this.contractLineRepo = contractLineRepo;
-    this.consumptionLineRepo = consumptionLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
-    this.revaluationFormulaService = revaluationFormulaService;
     this.contractVersionRepository = contractVersionRepository;
     this.invoiceRepository = invoiceRepository;
     this.invoiceService = invoiceService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -530,7 +528,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   protected boolean isProrata(Contract contract, ContractVersion version) {
     return isFullProrated(contract)
-        && !DateTool.isProrata(
+        && !LocalDateHelper.isProrata(
             contract.getInvoicePeriodStartDate(),
             contract.getInvoicePeriodEndDate(),
             version.getActivationDateTime().toLocalDate(),
@@ -643,6 +641,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         line.getFromDate() != null
                 && line.getContractVersion() != null
                 && line.getContractVersion().getContract() != null
+                && line.getContractVersion().getContract().getInvoicePeriodStartDate() != null
                 && line.getFromDate()
                     .isAfter(line.getContractVersion().getContract().getInvoicePeriodStartDate())
             ? line.getDescription()
@@ -708,8 +707,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceLine.setTaxLine(taxLine);
     invoiceLine.setAccount(replacedAccount);
 
-    if (line.getAnalyticDistributionTemplate() != null) {
-      invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
+    invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
+
+    if (CollectionUtils.isNotEmpty(line.getAnalyticMoveLineList())) {
+      analyticLineModelService.setInvoiceLineAnalyticInfo(
+          new AnalyticLineContractModel(line, null, null), invoiceLine);
       this.copyAnalyticMoveLines(line.getAnalyticMoveLineList(), invoiceLine);
     }
 
@@ -720,7 +722,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   public void copyAnalyticMoveLines(
       List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine) {
-    if (originalAnalyticMoveLineList == null) {
+    if (CollectionUtils.isEmpty(originalAnalyticMoveLineList)) {
       return;
     }
 

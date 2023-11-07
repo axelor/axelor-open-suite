@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.base.test;
 
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.CaseFormat;
 import java.io.File;
 import java.io.IOException;
@@ -98,7 +98,7 @@ public class PrepareCsv {
 
                 count++;
               }
-              CsvTool.csvWriter(
+              CsvHelper.csvWriter(
                   csvDir, csvFileName, ';', StringUtils.join(fieldList, ",").split(","), blankData);
               LOG.info("CSV file prepared: " + csvFileName);
             }
