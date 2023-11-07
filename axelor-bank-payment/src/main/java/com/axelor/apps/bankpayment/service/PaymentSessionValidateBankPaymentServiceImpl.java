@@ -314,10 +314,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
                               || it.getBankOrderDate().equals(invoiceTerm.getDueDate()))
                           && it.getPartner().equals(invoiceTerm.getMoveLine().getPartner())
                           && ((it.getReceiverBankDetails() == null
-                                  && invoiceTerm.getBankDetails() == null)
+                                  && this.getBankDetails(invoiceTerm) == null)
                               || (it.getReceiverBankDetails() != null
                                   && it.getReceiverBankDetails()
-                                      .equals(invoiceTerm.getBankDetails()))))
+                                      .equals(this.getBankDetails(invoiceTerm)))))
               .findFirst()
               .orElse(null);
     }
@@ -369,7 +369,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             bankOrder.getBankOrderFileFormat(),
             null,
             invoiceTerm.getMoveLine().getPartner(),
-            invoiceTerm.getBankDetails(),
+            this.getBankDetails(invoiceTerm),
             invoiceTerm.getAmountPaid().subtract(reconciledAmount),
             paymentSession.getCurrency(),
             bankOrderDate,

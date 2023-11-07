@@ -18,21 +18,19 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
@@ -46,6 +44,7 @@ public class AnalyticMoveLineGenerateRealServiceImpl
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected AppBaseService appBaseService;
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public AnalyticMoveLineGenerateRealServiceImpl(
@@ -55,7 +54,8 @@ public class AnalyticMoveLineGenerateRealServiceImpl
       AppAccountService appAccountService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AccountManagementAccountService accountManagementAccountService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AccountingSituationService accountingSituationService) {
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
@@ -63,6 +63,7 @@ public class AnalyticMoveLineGenerateRealServiceImpl
     this.accountManagementAccountService = accountManagementAccountService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.appBaseService = appBaseService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   @Override
@@ -87,33 +88,20 @@ public class AnalyticMoveLineGenerateRealServiceImpl
         && moveLine != null
         && moveLine.getAccount() != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
-      AppAccount appAccount = appAccountService.getAppAccount();
       TradingName tradingName = move.getTradingName();
-      if (appAccount != null
-          && appAccount.getManageAnalyticAccounting()
-          && accountConfig != null
-          && accountConfig.getManageAnalyticAccounting()) {
-        AnalyticDistributionTemplate analyticDistributionTemplate = null;
-        if (accountConfig.getAnalyticDistributionTypeSelect()
-                == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
-            && move.getPartner() != null) {
-          analyticDistributionTemplate = move.getPartner().getAnalyticDistributionTemplate();
-        } else if (accountConfig.getAnalyticDistributionTypeSelect()
-            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-          analyticDistributionTemplate = moveLine.getAccount().getAnalyticDistributionTemplate();
-        } else if (appBaseService.getAppBase().getEnableTradingNamesManagement()
-            && accountConfig.getAnalyticDistributionTypeSelect()
-                == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME
-            && tradingName != null
-            && tradingName.getAnalyticDistributionTemplate() != null) {
-          analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
-        }
 
-        if (analyticDistributionTemplate != null) {
-          moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-          moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
-        }
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          analyticMoveLineService.getAnalyticDistributionTemplate(
+              moveLine.getPartner(),
+              null,
+              move.getCompany(),
+              tradingName,
+              moveLine.getAccount(),
+              false);
+
+      if (analyticDistributionTemplate != null) {
+        moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+        moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
       }
     }
   }

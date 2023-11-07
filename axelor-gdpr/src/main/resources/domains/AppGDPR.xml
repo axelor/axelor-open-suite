@@ -6,7 +6,7 @@
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppGdpr" cacheable="true">
-    <one-to-one name="app" ref="com.axelor.studio.db.App"/>
+    <one-to-one name="app" ref="com.axelor.studio.db.App" unique="true"/>
     <integer name="maxRespondingDays" title="Maximum days to respond" default="30"
       help="Maximum number of days to respond to a request."/>
 

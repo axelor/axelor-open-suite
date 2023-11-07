@@ -351,7 +351,7 @@ AND
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
-AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -464,11 +464,6 @@ order by MoveLine.account_code]]></xml-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <text-property name="heading">display_simulated_move</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">ref</property>
                     <text-property name="displayName">ref</text-property>
                     <text-property name="heading">ref</text-property>
@@ -561,11 +556,6 @@ order by MoveLine.account_code]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -673,13 +663,6 @@ order by MoveLine.account_code]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">16</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
@@ -692,7 +675,7 @@ Company.width as logo_width,
 AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path,
 Period.name as period_name, Journal.name as journal_name, AccountingReport.global, AccountingReport.global_by_date,
-PaymentMode.name as payment_mode, Currency.code as currency, AccountingReport.display_simulated_move as display_simulated_move, AccountingReport.ref
+PaymentMode.name as payment_mode, Currency.code as currency, AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -1153,13 +1136,6 @@ this.height=row["logo_height"];]]></method>
                     <text-property name="displayName">currency</text-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="492">

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface FixedAssetLineService {
@@ -51,25 +52,25 @@ public interface FixedAssetLineService {
    * Return line with smallest depreciation date with statusSelect = status. The method will skip
    * nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
    *
-   * @param fixedAssetLineList
+   * @param fixedAsset
    * @param status
    * @param nbLineToSkip
    * @return {@link Optional} of {@link FixedAssetLine}
    */
   Optional<FixedAssetLine> findOldestFixedAssetLine(
-      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
+      FixedAsset fixedAsset, int status, int nbLineToSkip);
 
   /**
    * Return line with greatest depreciation date with statusSelect = status. The method will skip
    * nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
    *
-   * @param fixedAssetLineList
+   * @param fixedAsset
    * @param status
    * @param nbLineToSkip
    * @return {@link Optional} of {@link FixedAssetLine}
    */
   Optional<FixedAssetLine> findNewestFixedAssetLine(
-      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
+      FixedAsset fixedAsset, int status, int nbLineToSkip);
 
   /**
    * This method will remove every fixedAssetLine from database, then use {@link List#clear()}
@@ -77,6 +78,14 @@ public interface FixedAssetLineService {
    * @param fixedAssetLineList
    */
   void clear(List<FixedAssetLine> fixedAssetLineList);
+
+  /**
+   * This method will remove every linesToRemove from database and from fixedAssetLineList
+   *
+   * @param fixedAssetLineList
+   * @param linesToRemove
+   */
+  void clear(List<FixedAssetLine> fixedAssetLineList, List<FixedAssetLine> linesToRemove);
 
   /**
    * Call {@link FixedAssetLineRepository#remove(FixedAssetLine)} on line
@@ -95,6 +104,15 @@ public interface FixedAssetLineService {
   void filterListByStatus(List<FixedAssetLine> fixedAssetLineList, int status);
 
   /**
+   * Filter list with depreciationDate after date. Filtered lines will be remove from database by
+   * calling {@link FixedAssetLineRepository#remove(FixedAssetLine)}
+   *
+   * @param fixedAssetLineList
+   * @param date
+   */
+  void filterListByDate(List<FixedAssetLine> fixedAssetLineList, LocalDate date);
+
+  /**
    * Get Fixed asset of fixedAssetLine.
    *
    * @param fixedAssetLine
@@ -109,4 +127,6 @@ public interface FixedAssetLineService {
    * @param fixedAssetLine
    */
   void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  Map<Integer, List<FixedAssetLine>> getFixedAssetLineListByStatus(FixedAsset fixedAsset);
 }

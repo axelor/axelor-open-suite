@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QIProcess">
+
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="manager" title="QIProcess.manager" ref="com.axelor.auth.db.User"
+      required="true"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+      required="true"/>
+
+    <track>
+      <field name="code"/>
+      <field name="name"/>
+      <field name="manager"/>
+      <field name="company"/>
+    </track>
+
+  </entity>
+
+</domain-models>

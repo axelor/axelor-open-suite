@@ -8,6 +8,8 @@
   <entity name="PurchaseOrderLine">
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Project task"/>
     <boolean name="toInvoice" title="To invoice with project"/>
 
   </entity>

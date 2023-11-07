@@ -100,7 +100,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         move.getMoveLineList().stream()
             .filter(
                 it ->
-                    it.getAmountRemaining().compareTo(it.getDebit().max(it.getCredit())) == 0
+                    it.getAmountRemaining().abs().compareTo(it.getDebit().max(it.getCredit())) == 0
                         && it.getAccount().getUseForPartnerBalance()
                         && CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
             .map(MoveLine::getInvoiceTermList)

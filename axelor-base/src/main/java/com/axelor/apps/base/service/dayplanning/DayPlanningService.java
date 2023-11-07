@@ -45,6 +45,25 @@ public interface DayPlanningService {
       DayPlanning dayPlanning, LocalDateTime dateT);
 
   /**
+   * This method will return a allowed end dateTime for dateT in the dayPlanning
+   *
+   * <p>If dateT is in one the two periods of the day planning, then it will return itself. If dateT
+   * is before the two periods, it will look for the previous day. If dateT is after the two
+   * periods, it will return a endDateTime at the localTime of the ending of the period previous to
+   * it.
+   *
+   * <p>The method will return an empty optional if we can't find any period to start. (Happens if
+   * day planning exist but there is no period specified in it), also a null dayPlanning will be
+   * considered as an allowed day for any hour and a call with such value will result in a return of
+   * Optional of dateT
+   *
+   * @param dayPlanning
+   * @param dateT
+   * @return Optional.empty if we can't find any period, else an Optional of dateTime
+   */
+  Optional<LocalDateTime> getAllowedEndDateTPeriodAt(DayPlanning dayPlanning, LocalDateTime dateT);
+
+  /**
    * This method will compute the "void" (time where not there are no period) between startDateT and
    * endDateT
    *

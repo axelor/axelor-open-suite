@@ -46,8 +46,10 @@
         <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
         <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner"
           showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
-          onChange="action-contract-attrs-partner-payment-config" required="true"
-          form-view="partner-form"/>
+          onChange="action-contract-group-partner-onchange" required="true" form-view="partner-form"/>
+        <field name="invoicedPartner" showIf="targetTypeSelect == 1 &amp;&amp; partner"
+          canEdit="false" form-view="partner-form" readonlyIf="statusSelect >= 2" required="true"
+          colSpan="4" onSelect="action-contract-method-set-invoiced-partner-domain"/>
         <field if="__config__.app.getApp('contract')?.getIsInvoicingManagement()" colSpan="4"
           name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
         <field name="name" colSpan="12" css="highlight"
@@ -263,7 +265,8 @@
             colSpan="12">
             <field name="isAdditionaBenefitManagement"
               if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
-              widget="boolean-switch" colSpan="12"/>
+              widget="boolean-switch" colSpan="3"/>
+            <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="9"/>
             <field name="isConsumptionManagement"
               if="__config__.app.getApp('contract')?.isConsumptionManagement"
               onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
@@ -505,8 +508,7 @@
     model="com.axelor.apps.account.db.Invoice" title="Invoices">
     <view type="grid" name="invoice-lite-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.contract.id = :contractId</domain>
-    <context name="contractId" expr="eval: id"/>
+    <domain>:id MEMBER OF self.contractSet</domain>
   </action-view>
 
   <action-attrs name="action-contract-attrs-domains-template">
@@ -550,6 +552,15 @@
 
   <action-method name="action-contract-method-is-valid">
     <call class="com.axelor.apps.contract.web.ContractController" method="isValid"/>
+  </action-method>
+
+  <action-method name="action-contract-method-set-invoiced-partner-domain">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="setInvoicedPartnerDomain"/>
+  </action-method>
+
+  <action-method name="action-contract-method-fill-invoiced-partner-if-only-one">
+    <call class="com.axelor.apps.contract.web.ContractController" method="fillInvoicedPartner"/>
   </action-method>
 
   <action-validate name="action-contract-validate-on-going">
@@ -603,6 +614,11 @@
   <action-method name="action-contract-method-hide-fields-list">
     <call class="com.axelor.apps.contract.web.ContractController" method="hideFields"/>
   </action-method>
+
+  <action-group name="action-contract-group-partner-onchange">
+    <action name="action-contract-attrs-partner-payment-config"/>
+    <action name="action-contract-method-fill-invoiced-partner-if-only-one"/>
+  </action-group>
 
   <search-filters name="contract-filters"
     model="com.axelor.apps.contract.db.Contract" title="Contract filters">

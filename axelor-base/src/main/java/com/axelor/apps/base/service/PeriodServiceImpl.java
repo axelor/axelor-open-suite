@@ -47,6 +47,7 @@ public class PeriodServiceImpl implements PeriodService {
 
   protected PeriodRepository periodRepo;
   protected AdjustHistoryService adjustHistoryService;
+  protected int oldPeriodStatusSelect;
 
   @Inject
   public PeriodServiceImpl(PeriodRepository periodRepo, AdjustHistoryService adjustHistoryService) {
@@ -67,9 +68,7 @@ public class PeriodServiceImpl implements PeriodService {
       throws AxelorException {
 
     Period period = this.getPeriod(date, company, typeSelect);
-    if (period == null
-        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
+    if (period == null || this.isClosedPeriod(period)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.PERIOD_1),
@@ -104,9 +103,7 @@ public class PeriodServiceImpl implements PeriodService {
                 PeriodRepository.STATUS_OPENED)
             .fetchOne();
 
-    if (nextPeriod == null
-        || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
+    if (nextPeriod == null || this.isClosedPeriod(nextPeriod)) {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -118,8 +115,7 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   public void testOpenPeriod(Period period) throws AxelorException {
-    if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
+    if (this.isClosedPeriod(period)) {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -215,9 +211,7 @@ public class PeriodServiceImpl implements PeriodService {
    * @throws AxelorException if the period is closed
    */
   public void checkPeriod(Period period) throws AxelorException {
-    if (period != null
-        && (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-            || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS)) {
+    if (this.isClosedPeriod(period)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.PAY_PERIOD_CLOSED),
@@ -290,7 +284,6 @@ public class PeriodServiceImpl implements PeriodService {
   @Override
   @Transactional
   public void openPeriod(Period period) {
-
     if (period != null) {
       period.setStatusSelect(PeriodRepository.STATUS_OPENED);
     }
@@ -301,5 +294,21 @@ public class PeriodServiceImpl implements PeriodService {
   public void closureInProgress(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSURE_IN_PROGRESS);
     periodRepo.save(period);
+  }
+
+  @Override
+  public void closePeriod(Period period) {
+    this.oldPeriodStatusSelect = period.getStatusSelect();
+
+    this.closureInProgress(period);
+    this.close(period);
+  }
+
+  @Override
+  @Transactional
+  public void resetStatusSelect(Period period) {
+    if (period != null) {
+      period.setStatusSelect(this.oldPeriodStatusSelect);
+    }
   }
 }

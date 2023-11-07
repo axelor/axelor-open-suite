@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.translation.ITranslation;
@@ -73,6 +74,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected AccountConfigService accountConfigService;
   protected DateService dateService;
   protected PaymentSessionCancelService paymentSessionCancelService;
+  protected PfpService pfpService;
   protected int jpaLimit = 4;
 
   @Inject
@@ -83,7 +85,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       PaymentSessionValidateService paymentSessionValidateService,
       AccountConfigService accountConfigService,
       DateService dateService,
-      PaymentSessionCancelService paymentSessionCancelService) {
+      PaymentSessionCancelService paymentSessionCancelService,
+      PfpService pfpService) {
     this.paymentSessionRepository = paymentSessionRepository;
     this.invoiceTermRepository = invoiceTermRepository;
     this.invoiceTermService = invoiceTermService;
@@ -91,6 +94,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     this.accountConfigService = accountConfigService;
     this.dateService = dateService;
     this.paymentSessionCancelService = paymentSessionCancelService;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -293,13 +297,18 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND :partnerTypeSelect = :partnerTypeSupplier "
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier ) "
             + " OR ( :accountingMethodSelect in (2,3) AND self.moveLine.partner.isCustomer = TRUE AND self.moveLine.partner.isSupplier = TRUE AND self.moveLine.partner.isCompensation = TRUE "
-            + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier )))"
-            + " AND (self.pfpValidateStatusSelect IN (:pfpValidateStatusNoPfp,:pfpValidateStatusValidated,:pfpValidateStatusPartiallyValidated))";
+            + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier )))";
+
+    String pfpCondition =
+        pfpService.isManagePassedForPayment(company)
+            ? " AND (self.pfpValidateStatusSelect IN (:pfpValidateStatusNoPfp,:pfpValidateStatusValidated,:pfpValidateStatusPartiallyValidated))"
+            : "";
+
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
             + " AND self.amountRemaining > 0"
             + " AND self.paymentSession IS NULL";
-    return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
+    return generalCondition + termsMoveLineCondition + pfpCondition + paymentHistoryCondition;
   }
 
   public void filterInvoiceTerms(
