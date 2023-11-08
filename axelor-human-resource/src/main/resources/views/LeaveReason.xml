@@ -18,10 +18,12 @@
         showIf="$readonly() &amp;&amp; leaveReasonTypeSelect == 1" colSpan="9" depends="isActive">
         <viewer>
           <![CDATA[
-            <h4>
-                <span class="label label-important"  ng-show="!record.isActive" x-translate>Inactive</span>
-                <span class="label label-success"  ng-show="record.isActive" x-translate>Active</span>
-            </h4>
+            <>
+              <h4>
+                  {!isActive && <Badge as="span" bg="danger">{_t('Inactive')}</Badge>}
+                  {isActive && <Badge as="span" bg="success">{_t('Active')}</Badge>}
+              </h4>
+            </>
           ]]>
         </viewer>
       </field>
@@ -29,16 +31,17 @@
       <field name="name" colSpan="4"/>
       <field name="leaveReasonTypeSelect" colSpan="4"/>
       <field name="defaultDayNumberGain" colSpan="4"/>
-      <field name="manageAccumulation" widget="boolean-switch" colSpan="4"/>
       <field name="selectedByMgtOnly" widget="boolean-switch" colSpan="4"/>
+      <field name="planningSet" colSpan="6" canNew="false" widget="TagSelect"
+        placeholder="All"/>
       <field name="isActive" widget="boolean-switch" colSpan="4"/>
       <field name="instruction" colSpan="12" widget="html"/>
 
       <panel name="planningPanel" colSpan="12"
-        if="__config__.app.getApp('leave')?.getUseWeeklyPlanningCoefficientSelect() != 2">
+        if="__config__.app.getApp('leave')?.getUseWeeklyPlanningCoefficientSelect() == 2">
         <field name="useWeeklyPlanningCoef" widget="boolean-switch" colSpan="6"/>
-        <field name="planningSet" colSpan="6" canNew="false" widget="TagSelect"/>
       </panel>
+      <field name="manageAccumulation" widget="boolean-switch" colSpan="4" hidden="true"/>
     </panel>
 
     <panel name="exportsPanel"

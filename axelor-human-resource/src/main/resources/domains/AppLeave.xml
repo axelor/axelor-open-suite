@@ -13,12 +13,12 @@
       title="Allow negative values for employee leaves"/>
     <integer name="useWeeklyPlanningCoefficientSelect"
       title="Use weekly planning coefficient"
-      selection="hr.app.leave.use.weekly.planning.coefficient.select"/>
+      selection="hr.app.leave.use.weekly.planning.coefficient.select" default="1"/>
     <boolean name="isPayrollPreparationExportEnabled"
       title="Enable payroll preparation export"/>
-    <integer name="firstLeaveDayPeriod" title="Starting day for leave period" min="1"
-      max="31" default="1"/>
-    <integer name="firstLeaveMonthPeriod" title="Starting month for leave period" min="1"
+    <integer name="firstLeaveDayPeriod" title="First day of leave period" min="1" max="31"
+      default="1"/>
+    <integer name="firstLeaveMonthPeriod" title="First month of leave period" min="1"
       max="12" default="6"/>
 
     <extra-code>
