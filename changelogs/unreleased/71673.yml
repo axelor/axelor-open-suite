@@ -1,0 +1,3 @@
+---
+title: "[CRM] 'primaryPostalCode' should have the same 'readonly' parameters as 'primaryState'"
+type: fix

@@ -448,11 +448,13 @@
       expr="eval: primaryCity.department.region" for="primaryState"/>
     <attribute if="eval: primaryCity?.country" name="value"
       expr="eval: primaryCity.country" for="primaryCountry"/>
+    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
     <attribute name="readonly" expr="eval: primaryCity?.department?.region ? true: false"
       for="primaryState"/>
     <attribute name="readonly" expr="eval: primaryCity?.country ? true: false"
       for="primaryCountry"/>
-    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
+    <attribute name="readonly" expr="eval: primaryCity?.zip ? true: false"
+      for="primaryPostalCode"/>
   </action-attrs>
 
   <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead"
