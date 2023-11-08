@@ -40,6 +40,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,20 +82,20 @@ public class BatchAccountingCutOff extends BatchStrategy {
   protected void _processMovesByQuery(AccountingBatch accountingBatch) {
     Company company = accountingBatch.getCompany();
     LocalDate moveDate = accountingBatch.getMoveDate();
-    Journal researchJournal = accountingBatch.getResearchJournal();
+    Set<Journal> journalSet = accountingBatch.getJournalSet();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
 
     int offset = 0;
     List<Move> moveList;
     Query<Move> moveQuery =
-        cutOffService.getMoves(company, researchJournal, moveDate, accountingCutOffTypeSelect);
+        cutOffService.getMoves(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
     while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       company = accountingBatch.getCompany();
-      researchJournal = accountingBatch.getResearchJournal();
+      journalSet = accountingBatch.getJournalSet();
 
       for (Move move : moveList) {
         ++offset;

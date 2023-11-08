@@ -86,17 +86,6 @@ public class PaymentVoucherControlService {
           paymentVoucher.getRef());
     }
 
-    // Si on a des lignes à payer (dans le deuxième tableau)
-    if (!paymentVoucher.getHasAutoInput()
-        && (paymentVoucher.getPayVoucherElementToPayList() == null
-            || paymentVoucher.getPayVoucherElementToPayList().size() == 0)) {
-      throw new AxelorException(
-          paymentVoucher,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_CONTROL_2),
-          I18n.get(BaseExceptionMessage.EXCEPTION));
-    }
-
     if (journal == null || paymentModeAccount == null) {
       throw new AxelorException(
           paymentVoucher,

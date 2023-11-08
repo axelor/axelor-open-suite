@@ -80,7 +80,7 @@
             onSelect="action-budget-purchase-order-line-method-line-domain"
             form-view="budget-line-form" grid-view="budget-line-grid"/>
           <field name="$global" title="Global budget" type="many-to-one"
-            target="com.axelor.apps.budget.db.BudgetLevel" readonly="true" colSpan="12"
+            target="com.axelor.apps.budget.db.GlobalBudget" readonly="true" colSpan="12"
             hidden="true"/>
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
             showIf="product != null"
@@ -108,13 +108,13 @@
   </form>
 
   <action-group name="action-budget-group-purchase-purchase-orderline-product-onchange">
-    <action name="action-group-purchase-purchase-orderline-product-onchange"/>
+    <action name="supplychain-action-purchase-purchase-order-line-group-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onnew">
-    <action name="action-group-purchase-purchase-orderline-onnew"/>
+    <action name="supplychain-action-purchase-order-line-group-onnew"/>
     <action name="action-budget-purchase-orderline-record-set-global-budget"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
@@ -130,11 +130,11 @@
 
   <action-record name="action-budget-purchase-orderline-record-set-global-budget"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    <field name="$global" expr="eval: _parent?.budgetLevel" if="_parent"/>
+    <field name="$global" expr="eval: _parent?.globalBudget" if="_parent"/>
   </action-record>
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onload">
-    <action name="action-group-purchase-purchase-orderline-onload"/>
+    <action name="supplychain-action-purchase-order-line-group-onload"/>
     <action name="action-budget-purchase-order-line-record-set-budget-level"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
@@ -143,7 +143,7 @@
 
   <action-record name="action-budget-purchase-order-line-record-set-budget-level"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    <field name="$global" expr="eval: _parent?.budgetLevel"
+    <field name="$global" expr="eval: _parent?.globalBudget"
       if="__config__.app.isApp('budget') &amp;&amp; _parent"/>
     <field name="$group" expr="eval: budget?.budgetLevel?.parentBudgetLevel"
       if="__config__.app.isApp('budget') &amp;&amp; budget != null"/>
@@ -181,7 +181,7 @@
     id="budget-purchase-order-see-purchase-order-lines">
     <view type="grid" name="purchase-order-line-grid"/>
     <view type="form" name="purchase-order-line-all-form"/>
-    <domain>self.purchaseOrder.project = :_project OR self.purchaseOrder.statusSelect IN (:status)</domain>
+    <domain><![CDATA[self.purchaseOrder.project = :_project OR self.purchaseOrder.statusSelect IN (:status)]]></domain>
     <context name="_project" expr="eval: _project"/>
     <context name="status" expr="eval: _status"/>
   </action-view>

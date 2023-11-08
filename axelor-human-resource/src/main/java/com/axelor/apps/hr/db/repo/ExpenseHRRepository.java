@@ -26,7 +26,9 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
+import com.axelor.apps.hr.service.expense.ExpenseLimitService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -51,7 +53,8 @@ public class ExpenseHRRepository extends ExpenseRepository {
       if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
         Beans.get(ExpenseLineService.class).completeExpenseLines(expense);
       }
-
+      Beans.get(ExpenseProofFileService.class).convertProofFilesInPdf(expense);
+      Beans.get(ExpenseLimitService.class).checkExpenseLimit(expense);
       return expense;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -77,7 +80,6 @@ public class ExpenseHRRepository extends ExpenseRepository {
     expense.setValidationDateTime(null);
     expense.setPeriod(expenseFetchPeriodService.getPeriod(expense));
     expense.setExpenseSeq(null);
-    expense.setMove(null);
     expense.setMoveDate(null);
     expense.setVentilated(false);
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);

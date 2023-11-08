@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
@@ -45,12 +44,13 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.RevaluationFormula;
-import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -83,11 +83,12 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected DurationService durationService;
 
   protected ContractLineRepository contractLineRepo;
-  protected ConsumptionLineRepository consumptionLineRepo;
   protected ContractRepository contractRepository;
   protected TaxService taxService;
-  protected RevaluationFormulaService revaluationFormulaService;
   protected ContractVersionRepository contractVersionRepository;
+  protected InvoiceRepository invoiceRepository;
+  protected InvoiceService invoiceService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public ContractServiceImpl(
@@ -96,21 +97,23 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractLineService contractLineService,
       DurationService durationService,
       ContractLineRepository contractLineRepo,
-      ConsumptionLineRepository consumptionLineRepo,
       ContractRepository contractRepository,
       TaxService taxService,
-      RevaluationFormulaService revaluationFormulaService,
-      ContractVersionRepository contractVersionRepository) {
+      ContractVersionRepository contractVersionRepository,
+      InvoiceRepository invoiceRepository,
+      InvoiceService invoiceService,
+      AnalyticLineModelService analyticLineModelService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
     this.durationService = durationService;
     this.contractLineRepo = contractLineRepo;
-    this.consumptionLineRepo = consumptionLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
-    this.revaluationFormulaService = revaluationFormulaService;
     this.contractVersionRepository = contractVersionRepository;
+    this.invoiceRepository = invoiceRepository;
+    this.invoiceService = invoiceService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -398,16 +401,46 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     save(contract);
   }
 
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice invoicingContract(Contract contract) throws AxelorException {
     Invoice invoice = generateInvoice(contract);
-    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     invoiceRepository.save(invoice);
-    boolean isTimeProratedInvoice = contract.getCurrentContractVersion().getIsTimeProratedInvoice();
-    boolean isPeriodicInvoicing = contract.getCurrentContractVersion().getIsPeriodicInvoicing();
+    computeContractLines(contract, invoice);
+    // Increase invoice period date
+    increaseInvoiceDates(contract);
+    setRevaluationFormulaDescription(contract, invoice);
+    return computeAndSave(invoice);
+  }
 
-    // Compute all additional lines
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public Invoice invoicingContracts(List<Contract> contractList) throws AxelorException {
+    Invoice invoice = generateInvoice(contractList);
+    invoiceRepository.save(invoice);
+
+    for (Contract contract : contractList) {
+      computeContractLines(contract, invoice);
+      // Increase invoice period date
+      increaseInvoiceDates(contract);
+      setRevaluationFormulaDescription(contract, invoice);
+    }
+    return computeAndSave(invoice);
+  }
+
+  protected Invoice computeAndSave(Invoice invoice) throws AxelorException {
+    if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()) {
+      invoiceService.compute(invoice);
+    }
+    return invoiceRepository.save(invoice);
+  }
+
+  protected void computeContractLines(Contract contract, Invoice invoice) throws AxelorException {
+    computeAdditionalLines(contract, invoice);
+    computeClassicContractLines(contract, invoice);
+    computeConsumptionLines(contract, invoice);
+  }
+
+  protected void computeAdditionalLines(Contract contract, Invoice invoice) throws AxelorException {
     List<ContractLine> additionalLines =
         contract.getAdditionalBenefitContractLineList().stream()
             .filter(contractLine -> !contractLine.getIsInvoiced())
@@ -416,59 +449,13 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     for (ContractLine line : additionalLines) {
       InvoiceLine invLine = generate(invoice, line);
       invLine.setContractLine(line);
-
+      setContractLineInAnalyticMoveLine(line, invLine);
       contractLineRepo.save(line);
     }
+  }
 
-    // Compute all classic contract lines
-    for (ContractVersion version : getVersions(contract)) {
-      BigDecimal ratio = BigDecimal.ONE;
-      if (isPeriodicInvoicing && isTimeProratedInvoice) {
-        if (isFullProrated(contract)
-            && !DateTool.isProrata(
-                contract.getInvoicePeriodStartDate(),
-                contract.getInvoicePeriodEndDate(),
-                version.getActivationDateTime().toLocalDate(),
-                (version.getEndDateTime() != null)
-                    ? version.getEndDateTime().toLocalDate()
-                    : null)) {
-          continue;
-        }
-      }
-      List<ContractLine> lines =
-          version.getContractLineList().stream()
-              .filter(contractLine -> !contractLine.getIsConsumptionLine())
-              .collect(Collectors.toList());
-      LocalDate end =
-          version.getEndDateTime() == null
-                  || contract
-                      .getInvoicePeriodEndDate()
-                      .isBefore(version.getEndDateTime().toLocalDate())
-              ? contract.getInvoicePeriodEndDate()
-              : version.getEndDateTime().toLocalDate();
-
-      for (ContractLine line : lines) {
-        ContractLine tmp = contractLineRepo.copy(line, false);
-        if (isPeriodicInvoicing) {
-          LocalDate start = computeStartDate(contract, line, version);
-          tmp.setFromDate(start);
-          ratio =
-              durationService.computeRatio(
-                  start, end, contract.getCurrentContractVersion().getInvoicingDuration());
-        }
-
-        tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
-        tmp.setQty(
-            tmp.getQty()
-                .multiply(ratio)
-                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-        tmp = this.contractLineService.computeTotal(tmp);
-        InvoiceLine invLine = generate(invoice, tmp);
-        invLine.setContractLine(line);
-      }
-    }
-
-    // Compute all consumption lines
+  protected void computeConsumptionLines(Contract contract, Invoice invoice)
+      throws AxelorException {
     Multimap<ContractLine, ConsumptionLine> consLines = mergeConsumptionLines(contract);
     for (Entry<ContractLine, Collection<ConsumptionLine>> entries : consLines.asMap().entrySet()) {
       ContractLine line = entries.getKey();
@@ -480,18 +467,72 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       line.setQty(BigDecimal.ZERO);
       contractLineService.computeTotal(line);
     }
+  }
 
-    // Compute invoice
-    if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()) {
-      Beans.get(InvoiceServiceImpl.class).compute(invoice);
+  protected void computeClassicContractLines(Contract contract, Invoice invoice)
+      throws AxelorException {
+    boolean isTimeProratedInvoice = contract.getCurrentContractVersion().getIsTimeProratedInvoice();
+    boolean isPeriodicInvoicing = contract.getCurrentContractVersion().getIsPeriodicInvoicing();
+    for (ContractVersion version : getVersions(contract)) {
+      BigDecimal ratio = BigDecimal.ONE;
+      LocalDate end = computeEndDate(contract, version);
+      List<ContractLine> lines = getContractLines(version);
+
+      if (isPeriodicInvoicing && isTimeProratedInvoice) {
+        if (isProrata(contract, version)) {
+          continue;
+        }
+      }
+      for (ContractLine line : lines) {
+        ContractLine tmp = contractLineRepo.copy(line, false);
+        tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
+        if (isPeriodicInvoicing && isTimeProratedInvoice) {
+          LocalDate start = computeStartDate(contract, line, version);
+          tmp.setFromDate(start);
+          ratio =
+              durationService.computeRatio(
+                  start, end, contract.getCurrentContractVersion().getInvoicingDuration());
+        }
+        tmp.setQty(
+            tmp.getQty()
+                .multiply(ratio)
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
+        tmp = this.contractLineService.computeTotal(tmp);
+        InvoiceLine invLine = generate(invoice, tmp);
+        invLine.setContractLine(line);
+        setContractLineInAnalyticMoveLine(line, invLine);
+      }
     }
+  }
 
-    // Increase invoice period date
-    increaseInvoiceDates(contract);
+  protected void setContractLineInAnalyticMoveLine(ContractLine line, InvoiceLine invLine) {
+    if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
+        analyticMoveLine.setContractLine(line);
+      }
+    }
+  }
 
-    setRevaluationFormulaDescription(contract, invoice);
+  protected List<ContractLine> getContractLines(ContractVersion version) {
+    return version.getContractLineList().stream()
+        .filter(contractLine -> !contractLine.getIsConsumptionLine())
+        .collect(Collectors.toList());
+  }
 
-    return invoiceRepository.save(invoice);
+  protected LocalDate computeEndDate(Contract contract, ContractVersion version) {
+    return version.getEndDateTime() == null
+            || contract.getInvoicePeriodEndDate().isBefore(version.getEndDateTime().toLocalDate())
+        ? contract.getInvoicePeriodEndDate()
+        : version.getEndDateTime().toLocalDate();
+  }
+
+  protected boolean isProrata(Contract contract, ContractVersion version) {
+    return isFullProrated(contract)
+        && !DateTool.isProrata(
+            contract.getInvoicePeriodStartDate(),
+            contract.getInvoicePeriodEndDate(),
+            version.getActivationDateTime().toLocalDate(),
+            (version.getEndDateTime() != null) ? version.getEndDateTime().toLocalDate() : null);
   }
 
   protected void setRevaluationFormulaDescription(Contract contract, Invoice invoice) {
@@ -523,6 +564,23 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   public Invoice generateInvoice(Contract contract) throws AxelorException {
     InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
     Invoice invoice = invoiceGenerator.generate();
+    invoice.addContractSetItem(contract);
+
+    return invoice;
+  }
+
+  public Invoice generateInvoice(List<Contract> contractList) throws AxelorException {
+    Contract firstContract = contractList.get(0);
+    InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(firstContract);
+    Invoice invoice = invoiceGenerator.generate();
+    invoice.setInternalReference(firstContract.getContractId());
+    for (Contract contract : contractList) {
+      String contractId = contract.getContractId();
+      invoice.addContractSetItem(contract);
+      if (!invoice.getInternalReference().contains(contractId)) {
+        invoice.setInternalReference(invoice.getInternalReference() + ", " + contractId);
+      }
+    }
 
     return invoice;
   }
@@ -649,8 +707,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceLine.setTaxLine(taxLine);
     invoiceLine.setAccount(replacedAccount);
 
-    if (line.getAnalyticDistributionTemplate() != null) {
-      invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
+    invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
+
+    if (CollectionUtils.isNotEmpty(line.getAnalyticMoveLineList())) {
+      analyticLineModelService.setInvoiceLineAnalyticInfo(
+          new AnalyticLineContractModel(line, null, null), invoiceLine);
       this.copyAnalyticMoveLines(line.getAnalyticMoveLineList(), invoiceLine);
     }
 
@@ -661,7 +722,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   public void copyAnalyticMoveLines(
       List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine) {
-    if (originalAnalyticMoveLineList == null) {
+    if (CollectionUtils.isEmpty(originalAnalyticMoveLineList)) {
       return;
     }
 
@@ -753,6 +814,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
     contract.setIsConsumptionManagement(template.getIsConsumptionManagement());
     contract.setIsInvoicingManagement(template.getIsInvoicingManagement());
+    contract.setIsGroupedInvoicing(template.getIsGroupedInvoicing());
     contract.setName(template.getName());
     contract.setNote(template.getNote());
 

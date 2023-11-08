@@ -30,7 +30,6 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
-import com.axelor.apps.bankpayment.ebics.certificate.CertificateManager;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -42,6 +41,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.libs.ebics.exception.ReturnCode;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
@@ -57,7 +57,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.security.GeneralSecurityException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -71,7 +70,8 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 public class EbicsController {
 
   @Transactional
-  public void generateCertificate(ActionRequest request, ActionResponse response) {
+  public void generateCertificate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     EbicsUser ebicsUser =
         Beans.get(EbicsUserRepository.class)
@@ -83,14 +83,8 @@ public class EbicsController {
       return;
     }
 
-    CertificateManager cm = new CertificateManager(ebicsUser);
-    try {
-      cm.create();
-      ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
-      Beans.get(EbicsUserRepository.class).save(ebicsUser);
-    } catch (GeneralSecurityException | IOException | AxelorException e) {
-      e.printStackTrace();
-    }
+    Beans.get(EbicsCertificateService.class).generateCertificate(ebicsUser);
+
     response.setReload(true);
   }
 
@@ -110,7 +104,11 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendINIRequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendINIRequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
       response.setInfo(stripClass(e.getLocalizedMessage()));
@@ -126,7 +124,11 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendHIARequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendHIARequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
       response.setInfo(stripClass(e.getLocalizedMessage()));
@@ -142,9 +144,18 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      X509Certificate[] certificates =
+
+      Map<String, Object> hpbResponse =
           Beans.get(EbicsService.class).sendHPBRequest(ebicsUser, null);
+      X509Certificate[] certificates = (X509Certificate[]) hpbResponse.get("certificate");
       confirmCertificates(ebicsUser, certificates, response);
+
+      ReturnCode returnCode = (ReturnCode) hpbResponse.get("returnCode");
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
+
     } catch (Exception e) {
       e.printStackTrace();
       response.setInfo(stripClass(e.getLocalizedMessage()));
@@ -192,7 +203,11 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendSPRRequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendSPRRequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
       response.setInfo(stripClass(e.getLocalizedMessage()));
@@ -369,6 +384,7 @@ public class EbicsController {
     byte[] certs = ebicsCertificate.getCertificate();
 
     if (certs != null && certs.length > 0) {
+
       X509Certificate certificate =
           EbicsCertificateService.getCertificate(certs, ebicsCertificate.getTypeSelect());
       ebicsCertificate =

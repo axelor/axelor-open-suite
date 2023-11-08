@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Singleton
@@ -133,5 +134,14 @@ public class ExpenseConfirmationServiceImpl implements ExpenseConfirmationServic
     }
 
     return null;
+  }
+
+  @Override
+  public boolean checkAllLineHaveFile(Expense expense) {
+    List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
+    if (CollectionUtils.isEmpty(expenseLineList)) {
+      return false;
+    }
+    return expenseLineList.stream().anyMatch(line -> line.getJustificationMetaFile() == null);
   }
 }

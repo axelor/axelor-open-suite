@@ -25,7 +25,7 @@
     <menubar>
       <menu title="Reports" icon="fa-files-o" showTitle="true">
         <item title="Print"
-          action="save,action-abc-analysis-validate-abc-analysis-seq,action-abc-analysis-reports-wizard"/>
+          action="save,action-abc-analysis-validate-abc-analysis-seq,action-abc-analysis-validate-status,action-method-print-birt"/>
       </menu>
     </menubar>
     <panel name="statusPanel" hidden="true">
@@ -84,27 +84,6 @@
       action="action-abc-analysis-view-abc-analysis-line" colSpan="12" showIf="statusSelect == 3"
       canSearch="true" height="800" readonly="true"/>
   </form>
-
-  <form model="com.axelor.utils.db.Wizard" title="Select Report Format"
-    name="abc-analysis-reports-wizard-form">
-    <panel name="mainPanel">
-      <field name="$reportTypeSelect" title="Report Type"
-        selection="iadministration.export.type.select" colSpan="3"
-        selection-in="['pdf','xlsx','ods']"/>
-      <button name="printBtn" title="Print" onClick="action-abc-analysis-method-print-report"
-        readonlyIf="!$reportTypeSelect" colSpan="3"/>
-    </panel>
-  </form>
-
-  <action-view name="action-abc-analysis-reports-wizard" title="Select Report Format"
-    model="com.axelor.apps.base.db.ABCAnalysis">
-    <view type="form" name="abc-analysis-reports-wizard-form"/>
-    <view-param name="popup" value="true"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="false"/>
-    <context name="_abcAnalysisId" expr="eval: id"/>
-  </action-view>
 
   <action-record name="action-abc-analysis-record-default"
     model="com.axelor.apps.base.db.ABCAnalysis">
@@ -174,13 +153,14 @@
     <call class="com.axelor.apps.base.web.ABCAnalysisController" method="setSequence"/>
   </action-method>
 
-  <action-method name="action-abc-analysis-method-print-report">
-    <call class="com.axelor.apps.base.web.ABCAnalysisController" method="printReport"/>
-  </action-method>
-
   <action-validate name="action-abc-analysis-validate-abc-analysis-seq">
     <alert message="To display the classification number, please set up a sequence"
       if="!abcAnalysisSeq"/>
+  </action-validate>
+
+  <action-validate name="action-abc-analysis-validate-status">
+    <error message="The analysis must be completed before the report can be printed."
+      if="statusSelect != __repo__(ABCAnalysis).STATUS_FINISHED"/>
   </action-validate>
 
 </object-views>

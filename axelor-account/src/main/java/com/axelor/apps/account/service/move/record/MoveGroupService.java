@@ -111,5 +111,11 @@ public interface MoveGroupService {
 
   Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move);
 
+  Map<String, Map<String, Object>> getSubrogationPartnerOnSelectAttrsMap(Move move);
+
   Map<String, Map<String, Object>> getWizardDefaultAttrsMap(LocalDate moveDate);
+
+  Map<String, Map<String, Object>> getMassEntryAttrsMap(Move move) throws AxelorException;
+
+  Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move);
 }

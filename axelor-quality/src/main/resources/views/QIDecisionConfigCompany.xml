@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="qi-decision-config-company-grid" title="QI Decision config company"
+    model="com.axelor.apps.quality.db.QIDecisionConfigCompany">
+    <field name="company"/>
+    <field name="fixedAmount"/>
+    <field name="isEditable"/>
+  </grid>
+
+  <form name="qi-decision-config-company-form" title="QI Decision config company"
+    model="com.axelor.apps.quality.db.QIDecisionConfigCompany">
+    <panel name="mainPanel">
+      <field name="company" grid-view="company-grid" form-view="company-form"/>
+      <field name="fixedAmount"/>
+      <field name="isEditable"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+</object-views>

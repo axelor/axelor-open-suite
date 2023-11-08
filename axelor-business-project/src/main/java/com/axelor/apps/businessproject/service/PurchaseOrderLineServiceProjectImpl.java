@@ -19,23 +19,46 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
-public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplychainImpl
+public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplyChainImpl
     implements PurchaseOrderLineProjectService {
 
-  @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
+  protected PurchaseOrderLineRepository purchaseOrderLineRepo;
+
+  @Inject
+  public PurchaseOrderLineServiceProjectImpl(
+      AnalyticMoveLineService analyticMoveLineService,
+      UnitConversionService unitConversionService,
+      AppAccountService appAccountService,
+      AccountConfigService accountConfigService,
+      AnalyticLineModelService analyticLineModelService,
+      PurchaseOrderLineRepository purchaseOrderLineRepo) {
+    super(
+        analyticMoveLineService,
+        unitConversionService,
+        appAccountService,
+        accountConfigService,
+        analyticLineModelService);
+    this.purchaseOrderLineRepo = purchaseOrderLineRepo;
+  }
 
   @Override
   public PurchaseOrderLine createPurchaseOrderLine(
@@ -59,7 +82,11 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
     if (purchaseOrderLineIds != null) {
 
       List<PurchaseOrderLine> purchaseOrderLineList =
-          purchaseOrderLineRepo.all().filter("self.id in ?1", purchaseOrderLineIds).fetch();
+          purchaseOrderLineRepo
+              .all()
+              .filter("self.id in :purchaseOrderLineIds")
+              .bind("purchaseOrderLineIds", purchaseOrderLineIds)
+              .fetch();
 
       for (PurchaseOrderLine line : purchaseOrderLineList) {
         line.setProject(project);
@@ -68,16 +95,24 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
     }
   }
 
+  @Transactional
   @Override
-  public PurchaseOrderLine createAnalyticDistributionWithTemplate(
-      PurchaseOrderLine purchaseOrderLine) {
-    PurchaseOrderLine poLine = super.createAnalyticDistributionWithTemplate(purchaseOrderLine);
-    List<AnalyticMoveLine> analyticMoveLineList = poLine.getAnalyticMoveLineList();
+  public void setProjectTask(List<Long> purchaseOrderLineIds, ProjectTask projectTask) {
 
-    if (poLine.getProject() != null && analyticMoveLineList != null) {
-      analyticMoveLineList.forEach(analyticLine -> analyticLine.setProject(poLine.getProject()));
+    if (purchaseOrderLineIds != null) {
+
+      List<PurchaseOrderLine> purchaseOrderLineList =
+          purchaseOrderLineRepo
+              .all()
+              .filter("self.id in :purchaseOrderLineIds")
+              .bind("purchaseOrderLineIds", purchaseOrderLineIds)
+              .fetch();
+
+      for (PurchaseOrderLine line : purchaseOrderLineList) {
+        line.setProjectTask(projectTask);
+        purchaseOrderLineRepo.save(line);
+      }
     }
-    return poLine;
   }
 
   @Override

@@ -134,4 +134,59 @@
     <field name="fromDateT" expr="eval:__config__.date.withDayOfMonth(1).withMonth(1)"/>
   </action-record>
 
+  <chart name="chart.quality.improvements.costs.distributions.per.decision"
+    title="Distribution of costs per decision">
+    <dataset type="sql"><![CDATA[
+		SELECT self.decision AS decision,SUM(self.totalCost) AS total_cost FROM
+		(
+			SELECT _qi_decision.name AS decision,SUM(_qi_resolution_decision.total_cost) AS totalCost
+			FROM quality_qi_resolution_decision AS _qi_resolution_decision
+			LEFT JOIN quality_qi_decision _qi_decision ON _qi_decision.id = _qi_resolution_decision.qi_decision
+			LEFT JOIN quality_qi_resolution _qi_resolution ON _qi_resolution.id = _qi_resolution_decision.qi_resolution
+			LEFT JOIN quality_quality_improvement _quality_improvement ON _quality_improvement.qi_resolution = _qi_resolution.id
+			WHERE _quality_improvement.id = :id
+			GROUP BY _qi_decision.name
+			UNION ALL
+			SELECT _qi_decision.name AS decision,SUM(_qi_task.total_cost) AS totalCost
+			FROM ical_event AS _qi_task
+			LEFT JOIN quality_qi_decision _qi_decision ON _qi_decision.id = _qi_task.qi_decision
+			LEFT JOIN quality_qi_analysis _qi_analysis ON _qi_analysis.id = _qi_task.qi_analysis
+			LEFT JOIN quality_quality_improvement _quality_improvement ON _quality_improvement.qi_analysis = _qi_analysis.id
+			WHERE _quality_improvement.id = :id
+			GROUP BY _qi_decision.name
+		) AS self
+		GROUP BY self.decision
+	]]></dataset>
+    <category key="decision" type="text"/>
+    <series key="total_cost" type="pie"/>
+  </chart>
+
+  <custom name="quality.improvements.costs.lists.per.decision"
+    title="Costs list per decision" css="report-box">
+    <dataset type="sql"><![CDATA[
+		SELECT self.decision AS decision,SUM(self.fixedAmount) AS fixed_amount,SUM(self.directCost) AS direct_cost,SUM(self.totalCost) AS total_cost FROM
+		(
+			SELECT _qi_decision.name AS decision,SUM(_qi_resolution_decision.fixed_amount) AS fixedAmount,SUM(_qi_resolution_decision.direct_cost) AS directCost,SUM(_qi_resolution_decision.total_cost) AS totalCost
+			FROM quality_qi_resolution_decision AS _qi_resolution_decision
+			LEFT JOIN quality_qi_decision _qi_decision ON _qi_decision.id = _qi_resolution_decision.qi_decision
+			LEFT JOIN quality_qi_resolution _qi_resolution ON _qi_resolution.id = _qi_resolution_decision.qi_resolution
+			LEFT JOIN quality_quality_improvement _quality_improvement ON _quality_improvement.qi_resolution = _qi_resolution.id
+			WHERE _quality_improvement.id = :id
+			GROUP BY _qi_decision.name
+			UNION ALL
+			SELECT _qi_decision.name AS decision,SUM(_qi_task.fixed_amount) AS fixedAmount,SUM(_qi_task.direct_cost) AS directCost,SUM(_qi_task.total_cost) AS totalCost
+			FROM ical_event AS _qi_task
+			LEFT JOIN quality_qi_decision _qi_decision ON _qi_decision.id = _qi_task.qi_decision
+			LEFT JOIN quality_qi_analysis _qi_analysis ON _qi_analysis.id = _qi_task.qi_analysis
+			LEFT JOIN quality_quality_improvement _quality_improvement ON _quality_improvement.qi_analysis = _qi_analysis.id
+			WHERE _quality_improvement.id = :id
+			GROUP BY _qi_decision.name
+		) AS self
+		GROUP BY self.decision
+    ]]></dataset>
+    <template><![CDATA[
+  		<report-table data='data' columns='decision,fixed_amount,direct_cost,total_cost' sums='fixed_amount,direct_cost,total_cost'/>
+    ]]></template>
+  </custom>
+
 </object-views>
