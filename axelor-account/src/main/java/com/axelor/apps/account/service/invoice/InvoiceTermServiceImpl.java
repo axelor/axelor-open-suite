@@ -768,7 +768,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
       BigDecimal paidAmount =
           invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
+      BigDecimal companyPaidAmount =
+          invoiceTermPayment
+              .getCompanyPaidAmount()
+              .add(invoiceTermPayment.getFinancialDiscountAmount());
+
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
+      invoiceTerm.setCompanyAmountRemaining(
+          invoiceTerm.getCompanyAmountRemaining().add(companyPaidAmount));
+
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       if (invoiceTerm.getAmountRemaining().signum() > 0) {
         invoiceTerm.setIsPaid(false);
@@ -779,6 +787,22 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTermRepo.save(invoiceTerm);
       }
     }
+  }
+
+  protected BigDecimal computeCurrencyRateUsingAmounts(InvoiceTerm invoiceTerm) {
+    BigDecimal currencyRate = BigDecimal.ONE;
+    if (invoiceTerm.getAmount().signum() != 0) {
+      currencyRate =
+          invoiceTerm
+              .getCompanyAmount()
+              .divide(
+                  invoiceTerm.getAmount(),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+    } else if (invoiceTerm.getMoveLine() != null) {
+      currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
+    }
+    return currencyRate;
   }
 
   @Override
@@ -1339,7 +1363,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null) {
       InvoicePayment invoicePayment =
           invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-      invoicePayment.addReconcileListItem(reconcile);
+      invoicePayment.setReconcile(reconcile);
 
       List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
 
