@@ -420,7 +420,7 @@
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code = 'CARTM' AND self.dtype = 'Product']]></domain>
+            <![CDATA[self.productCategory.code = 'MOB' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>6</sequence>
           <onChange>action-configurator-update-indicators</onChange>
@@ -459,7 +459,7 @@
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code = 'DD' AND self.dtype = 'Product']]></domain>
+            <![CDATA[self.productCategory.code = 'HDD' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>7</sequence>
           <onChange>action-configurator-update-indicators</onChange>
@@ -537,7 +537,7 @@
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code = 'BOIT' AND self.dtype = 'Product']]></domain>
+            <![CDATA[self.productCategory.code = 'CASE' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>5</sequence>
           <onChange>action-configurator-update-indicators</onChange>
@@ -576,7 +576,7 @@
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code = 'ECR' AND self.dtype = 'Product']]></domain>
+            <![CDATA[self.productCategory.code = 'SCR' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>8</sequence>
           <onChange>action-configurator-update-indicators</onChange>
@@ -1165,7 +1165,7 @@ return cp*nbOrdi_1
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code='IMP' AND self.dtype = 'Product']]>
+            <![CDATA[self.productCategory.code='PRT' AND self.dtype = 'Product']]>
           </domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>4</sequence>
@@ -1519,7 +1519,7 @@ return cp*nbOrdi_1
         <configuratorProductFormula>
           <metaField>productCategory</metaField>
           <formula>
-            <![CDATA[__repo__(ProductCategory).all().filter("self.code = 'FORF'").fetchOne()]]>
+            <![CDATA[__repo__(ProductCategory).all().filter("self.code = 'PROB'").fetchOne()]]>
           </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>2</configuratorCreatorImportId>
