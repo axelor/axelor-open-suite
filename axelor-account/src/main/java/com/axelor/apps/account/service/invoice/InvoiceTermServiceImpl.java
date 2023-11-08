@@ -762,16 +762,28 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
+
       BigDecimal paidAmount =
           invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
+      BigDecimal companyPaidAmount =
+          invoiceTermPayment
+              .getCompanyPaidAmount()
+              .add(invoiceTermPayment.getFinancialDiscountAmount());
+
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
+      invoiceTerm.setCompanyAmountRemaining(
+          invoiceTerm.getCompanyAmountRemaining().add(companyPaidAmount));
+
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+
       if (invoiceTerm.getAmountRemaining().signum() > 0) {
         invoiceTerm.setIsPaid(false);
+
         Invoice invoice = invoiceTerm.getInvoice();
         if (invoice != null) {
           invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
         }
+
         invoiceTermRepo.save(invoiceTerm);
       }
     }
