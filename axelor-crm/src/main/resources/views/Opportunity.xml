@@ -457,6 +457,7 @@
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.opportunity.id = :_id</domain>
   </action-view>
 
