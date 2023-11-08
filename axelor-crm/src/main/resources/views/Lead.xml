@@ -465,11 +465,13 @@
       expr="eval: primaryCity.department.region" for="primaryState"/>
     <attribute if="eval: primaryCity?.country" name="value"
       expr="eval: primaryCity.country" for="primaryCountry"/>
+    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
     <attribute name="readonly" expr="eval: primaryCity?.department?.region ? true: false"
       for="primaryState"/>
     <attribute name="readonly" expr="eval: primaryCity?.country ? true: false"
       for="primaryCountry"/>
-    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
+    <attribute name="readonly" expr="eval: primaryCity?.zip ? true: false"
+      for="primaryPostalCode"/>
   </action-attrs>
 
   <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead"
@@ -579,6 +581,7 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.eventLead.id = :_leadId </domain>
     <context name="_leadId" expr="eval: __id__"/>
   </action-view>

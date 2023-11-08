@@ -220,7 +220,7 @@
         <field name="user" canNew="false" canView="false" canEdit="false"
           form-view="user-form" grid-view="user-grid"/>
         <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
-          grid-view="company-grid"/>
+          grid-view="company-grid" required="true"/>
         <field if="__config__.app.getApp('base')?.getTeamManagement()" name="team"
           canEdit="false" form-view="team-form" grid-view="team-grid"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
@@ -486,6 +486,7 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.opportunity.id = :_id</domain>
   </action-view>
 

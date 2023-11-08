@@ -611,6 +611,7 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.partner.id = :id</domain>
     <context name="id" expr="eval: id"/>
   </action-view>
