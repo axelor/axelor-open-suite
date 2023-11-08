@@ -499,12 +499,16 @@
     <field name="user" expr="eval: _lead.user"/>
     <field name="team" expr="eval: _lead.team"/>
     <field name="partner" expr="eval: _lead.partner"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Lead'"/>
+    <field name="relatedToSelectId" expr="eval: _eventLead.id"/>
   </action-record>
 
   <action-record name="action-event-record-event-from-opportunity"
     model="com.axelor.apps.crm.db.Event">
     <field name="lead" expr="eval: _opportunity.lead"/>
     <field name="partner" expr="eval: _opportunity.partner"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Opportunity'"/>
+    <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
     <field if="_opportunity.id != null" name="relatedToSelect"
       expr="eval:'com.axelor.apps.crm.db.Opportunity'"/>
     <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
@@ -535,6 +539,8 @@
     <field name="user" expr="eval: __repo__(User).find(_partner.user.id)"
       if="_partner.user != null"/>
     <field name="team" expr="eval: _partner.team"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.base.db.Partner'"/>
+    <field name="relatedToSelectId" expr="eval: _partner.id"/>
   </action-record>
 
   <action-record name="action-meeting-set-location-partner"
