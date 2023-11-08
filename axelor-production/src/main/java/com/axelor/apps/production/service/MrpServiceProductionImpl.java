@@ -74,7 +74,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -514,7 +516,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     long totalDuration = 0;
     if (defaultBillOfMaterial.getProdProcess() != null) {
       for (ProdProcessLine prodProcessLine :
-          defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
+          getProdProcessLineByMaxDuration(defaultBillOfMaterial)) {
         totalDuration +=
             prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty);
       }
@@ -525,6 +527,26 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
 
     return maturityDate.minusDays(TimeUnit.SECONDS.toDays(totalDuration));
+  }
+
+  // filter ProdProcessLine with longest duration for same priority
+  protected List<ProdProcessLine> getProdProcessLineByMaxDuration(
+      BillOfMaterial defaultBillOfMaterial) {
+    return defaultBillOfMaterial.getProdProcess().getProdProcessLineList().stream()
+        .collect(
+            Collectors.groupingBy(
+                ProdProcessLine::getPriority, Collectors.maxBy(this::compareDuration)))
+        .values()
+        .stream()
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
+  }
+
+  protected int compareDuration(ProdProcessLine processLine1, ProdProcessLine processLine2) {
+    return Long.compare(
+        Long.max(processLine1.getDurationPerCycle(), processLine1.getHumanDuration()),
+        Long.max(processLine2.getDurationPerCycle(), processLine2.getHumanDuration()));
   }
 
   /**
