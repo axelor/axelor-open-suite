@@ -864,7 +864,7 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="top-invoicing-supplrefunds" title="Suppl. Credit notes"
+  <menuitem name="top-invoicing-suppl-credit-note" title="Suppl. Credit notes"
     action="top.invoicing.supplrefunds" parent="top-invoicing" top="true"/>
 
   <action-view name="top.invoicing.supplrefunds" title="Suppl. Credit notes"
