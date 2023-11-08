@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1220,35 +1220,57 @@ where AccountingReport.id = ?
 		ELSE 0
 	END AS asset_disposal,
 	Asset.gross_value - disposal_value AS year_end_value,
+
+	-- ⚠️
+	-- In postgreSql we cannot directly use a computed column with its alias to compute another column at the same level
+	-- To avoid using subQueries &amp; keep the following result:
+	--                year_end_value2 = year_start_value + depreciation_charge
+	-- We chose to copy year_start_value &amp; depreciation_charge values into the other one
+	-- AS a consequence, please ensure to keep consistency between these fields:
+	-- → if either year_start_value or depreciation_charge changes, please apply same change in the computation of year_end_value2
+	-- ⚠️
 	COALESCE(SUM(
 		CASE 
 			WHEN 
-				AccountingReport.date_from IS NULL 
-				OR AssetLine.depreciation_date <= AccountingReport.date_from
+				AccountingReport.date_from IS NULL
+				OR AssetLine.depreciation_date < AccountingReport.date_from
    			THEN assetLine.depreciation 
    		END
-   	), 0) AS year_start_value,
-	SUM(
-		CASE 
+    ), 0)
+    + (CASE WHEN Asset.failover_date < date_from THEN Asset.already_depreciated_amount ELSE 0 END)
+    AS year_start_value,
+
+	COALESCE(SUM(
+		CASE
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
 				AND (date_to IS NULL OR depreciation_date <= date_to)
-   			THEN depreciation 
+   			THEN depreciation
    		END
-   	) AS depreciation_charge,
-    COALESCE(SUM(
-        CASE
-            WHEN
-                AccountingReport.date_from IS NULL
-                OR AssetLine.depreciation_date <= AccountingReport.date_from
-            THEN assetLine.depreciation
-        END
-    ), 0) + SUM(
-        CASE
-            WHEN (date_from IS NULL OR depreciation_date >= date_from)
-                AND (date_to IS NULL OR depreciation_date <= date_to)
-            THEN depreciation
-        END
-    ) AS year_end_value2,
+    ), 0)
+    + (CASE WHEN Asset.failover_date >= date_from AND Asset.failover_date <= date_to THEN Asset.already_depreciated_amount ELSE 0 END)
+    AS depreciation_charge,
+
+	-- year_end_value2 = year_start_value + depreciation_charge
+	COALESCE(SUM(
+		CASE
+			WHEN
+				AccountingReport.date_from IS NULL
+				OR AssetLine.depreciation_date < AccountingReport.date_from
+			THEN assetLine.depreciation
+   		END
+    ), 0)
+    + (CASE WHEN Asset.failover_date < date_from THEN Asset.already_depreciated_amount ELSE 0 END)
+	+
+	COALESCE(SUM(
+		CASE
+			WHEN (date_from IS NULL OR depreciation_date >= date_from)
+				AND (date_to IS NULL OR depreciation_date <= date_to)
+			THEN depreciation
+		END
+    ), 0)
+    + (CASE WHEN Asset.failover_date >= date_from AND Asset.failover_date <= date_to THEN Asset.already_depreciated_amount ELSE 0 END)
+    AS year_end_value2,
+
     MIN(assetLine.accounting_value)
     as accounting_value
 	
@@ -1284,6 +1306,7 @@ WHERE
    	AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
    	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
    	AND (AccountingReport.date_to IS NULL OR AssetLine.depreciation_date <= AccountingReport.date_to)
+	AND AssetLine.status_select = 2
    	
 GROUP BY Asset.id, Account.code, Account.name, AccountingReport.date_from, AccountingReport.date_to, 
 		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name 
