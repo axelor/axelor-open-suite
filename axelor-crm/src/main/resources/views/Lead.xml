@@ -514,6 +514,7 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.eventLead.id = :_leadId </domain>
     <context name="_leadId" expr="eval: __id__"/>
   </action-view>
