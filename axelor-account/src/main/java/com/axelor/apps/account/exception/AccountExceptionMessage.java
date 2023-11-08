@@ -1519,7 +1519,7 @@ public final class AccountExceptionMessage {
       "Please select a financial discount account for Tax: %s (company: %s)" /*)*/;
 
   public static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
-      "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
+      "The bank statement cannot be removed because of at least a bank reconciliation record attached. Please remove the following reference(s) : %s" /*)*/;
   public static final String
       BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
           "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;
