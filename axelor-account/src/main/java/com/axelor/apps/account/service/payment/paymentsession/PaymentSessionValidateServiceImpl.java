@@ -297,6 +297,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         && invoiceTermService.isNotAwaitingPayment(invoiceTerm);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
@@ -1022,6 +1023,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void createAndReconcileMoveLineFromPair(
       PaymentSession paymentSession,
       Move move,
@@ -1035,7 +1037,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     MoveLine moveLine = null;
 
     MoveLine pairMoveLine =
-        Optional.ofNullable(pair).map(Pair::getLeft).map(InvoiceTerm::getMoveLine).orElse(null);
+        Optional.ofNullable(pair)
+            .map(Pair::getLeft)
+            .map(InvoiceTerm::getId)
+            .map(invoiceTermRepo::find)
+            .map(InvoiceTerm::getMoveLine)
+            .orElse(null);
+
     if (pairMoveLine == null) {
       return;
     }
