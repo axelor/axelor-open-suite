@@ -789,22 +789,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  protected BigDecimal computeCurrencyRateUsingAmounts(InvoiceTerm invoiceTerm) {
-    BigDecimal currencyRate = BigDecimal.ONE;
-    if (invoiceTerm.getAmount().signum() != 0) {
-      currencyRate =
-          invoiceTerm
-              .getCompanyAmount()
-              .divide(
-                  invoiceTerm.getAmount(),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP);
-    } else if (invoiceTerm.getMoveLine() != null) {
-      currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
-    }
-    return currencyRate;
-  }
-
   @Override
   public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
     invoice.getInvoiceTermList().stream()
