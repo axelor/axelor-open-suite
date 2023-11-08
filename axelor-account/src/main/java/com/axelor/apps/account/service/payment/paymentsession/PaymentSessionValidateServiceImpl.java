@@ -1036,13 +1036,18 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     MoveLine moveLine = null;
 
-    MoveLine pairMoveLine =
+    InvoiceTerm pairInvoiceTerm =
         Optional.ofNullable(pair)
             .map(Pair::getLeft)
             .map(InvoiceTerm::getId)
             .map(invoiceTermRepo::find)
-            .map(InvoiceTerm::getMoveLine)
             .orElse(null);
+
+    if (pairInvoiceTerm == null) {
+      return;
+    }
+
+    MoveLine pairMoveLine = pairInvoiceTerm.getMoveLine();
 
     if (pairMoveLine == null) {
       return;
@@ -1102,7 +1107,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     invoiceTermService.updateInvoiceTermsAmounts(
         invoiceTerm, pair.getRight(), invoiceTermsReconcile, pairMove, paymentSession, false);
     invoiceTermService.updateInvoiceTermsAmounts(
-        pair.getLeft(),
+        pairInvoiceTerm,
         pair.getRight(),
         invoiceTermsReconcile,
         invoiceTerm.getMoveLine().getMove(),
