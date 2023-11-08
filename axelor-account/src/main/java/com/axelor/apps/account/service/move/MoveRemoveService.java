@@ -32,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -154,7 +155,9 @@ public class MoveRemoveService {
         archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
     for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
       String modelName = entry.getKey();
-      if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
+      List<String> modelsToIgnore =
+          Lists.newArrayList("Move", "Reconcile", "AnalyticMoveLine", "TaxPaymentMoveLine");
+      if (!modelsToIgnore.contains(modelName)) {
         errorMessage +=
             String.format(
                 I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
