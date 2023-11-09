@@ -311,11 +311,6 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
-  public String getTimeZone(Project project) {
-    return null;
-  }
-
-  @Override
   public ProjectStatus getDefaultProjectStatus() {
     return projectStatusRepository.all().order("sequence").fetchOne();
   }

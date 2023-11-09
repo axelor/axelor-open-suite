@@ -26,8 +26,10 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
@@ -42,12 +44,16 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
 
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
+  protected PfpService pfpService;
 
   @Inject
   public MoveLineMassEntryAttrsServiceImpl(
-      AppAccountService appAccountService, InvoiceTermService invoiceTermService) {
+      AppAccountService appAccountService,
+      InvoiceTermService invoiceTermService,
+      PfpService pfpService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
+    this.pfpService = pfpService;
   }
 
   protected void addAttr(
@@ -139,8 +145,9 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
 
   @Override
   public void addMovePfpValidatorUserRequired(
-      Account account, Journal journal, Map<String, Map<String, Object>> attrsMap) {
-    if (appAccountService.getAppAccount().getActivatePassedForPayment()
+      Account account, Journal journal, Company company, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    if (pfpService.isManagePassedForPayment(company)
         && account != null
         && account.getUseForPartnerBalance()
         && journal != null

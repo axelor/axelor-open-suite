@@ -11,7 +11,7 @@
     <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50" selection-in="[1,2,3]"/>
-    <field name="date" onChange="account-move-line-method-date-onchange">
+    <field name="date" onChange="action-move-line-mass-entry-group-on-change-date">
       <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
     </field>
     <field name="originDate"
@@ -166,6 +166,11 @@
   <action-group name="action-move-line-mass-entry-group-on-change-origin-date">
     <action name="action-move-line-mass-entry-method-origin-date-onchange"/>
     <action name="action-move-line-mass-entry-attrs-set-cut-off-dates"/>
+  </action-group>
+
+  <action-group name="action-move-line-mass-entry-group-on-change-date">
+    <action name="account-move-line-method-date-onchange"/>
+    <action name="action-move-line-mass-entry-record-set-is-edited"/>
   </action-group>
 
   <!-- Action record -->

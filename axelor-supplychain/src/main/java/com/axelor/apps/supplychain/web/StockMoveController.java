@@ -20,12 +20,12 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -97,7 +97,7 @@ public class StockMoveController {
 
   /**
    * Called from stock move form view, on delivered partner select. Call {@link
-   * PartnerSupplychainLinkService#computePartnerFilter}
+   * PartnerLinkService#computePartnerFilter}
    *
    * @param request
    * @param response
@@ -106,10 +106,9 @@ public class StockMoveController {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       String strFilter =
-          Beans.get(PartnerSupplychainLinkService.class)
+          Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  stockMove.getPartner(),
-                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  stockMove.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {

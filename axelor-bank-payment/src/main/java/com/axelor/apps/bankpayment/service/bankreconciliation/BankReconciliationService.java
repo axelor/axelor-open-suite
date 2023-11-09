@@ -41,7 +41,7 @@ public interface BankReconciliationService {
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException;
 
-  BankReconciliation computeBalances(BankReconciliation bankReconciliation);
+  BankReconciliation computeBalances(BankReconciliation bankReconciliation) throws AxelorException;
 
   void compute(BankReconciliation bankReconciliation);
 
@@ -79,8 +79,6 @@ public interface BankReconciliationService {
 
   BankReconciliation computeEndingBalance(BankReconciliation bankReconciliation);
 
-  String printNewBankReconciliation(BankReconciliation bankReconciliation) throws AxelorException;
-
   BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext);
 
   String createDomainForMoveLine(BankReconciliation bankReconciliation) throws AxelorException;
@@ -101,6 +99,8 @@ public interface BankReconciliationService {
   BigDecimal getSelectedMoveLineTotal(
       BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet);
 
+  void mergeSplitedReconciliationLines(BankReconciliation bankReconciliation);
+
   boolean getIsCorrectButtonHidden(BankReconciliation bankReconciliation) throws AxelorException;
 
   String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser)
@@ -108,7 +108,8 @@ public interface BankReconciliationService {
 
   void correct(BankReconciliation bankReconciliation, User user);
 
-  BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation);
+  BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation)
+      throws AxelorException;
 
   BigDecimal computeUnreconciledMoveLinesSelection(BankReconciliation bankReconciliation)
       throws AxelorException;

@@ -5,6 +5,10 @@
 
   <grid name="leave-request-grid" title="Leave Requests"
     model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
+    <toolbar>
+      <button onClick="action-leave-request-method-export-all" name="exportLRBtn"
+        title="Export all leave requests"/>
+    </toolbar>
     <hilite color="danger" if="statusSelect == 4"/>
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
@@ -82,6 +86,7 @@
         title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true"
         onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change,action-leave-request-methode-compute-duration"
         form-view="leave-reason-form" grid-view="leave-reason-grid"/>
+      <field name="isPayrollInput"/>
       <panel name="quantityPanel" showIf="leaveReason.manageAccumulation == true">
         <field name="$leavequantity" title="Available quantity (acquired)"
           showIf="statusSelect != 3" colSpan="12" readonly="true" type="decimal"/>
@@ -248,10 +253,8 @@
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="employee" expr="eval: true"
-      if="!__user__.employee?.hrManager &amp;&amp; !to_justify_leave_reason"/>
-    <attribute name="readonly" for="employee" expr="eval: statusSelect &gt; 2"
-      if="__user__.employee?.hrManager || to_justify_leave_reason"/>
+    <attribute name="readonly" for="employee"
+      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
   </action-attrs>
 
   <action-attrs name="action-leave-request-attrs-select">
@@ -365,6 +368,11 @@
 
   <action-attrs name="action-leave-request-attrs-set-employee-domain">
     <attribute for="employee" name="domain"
-      expr="eval: &quot; self.user.id = ${__user__.id} OR self.managerUser.id = ${__user__.id} &quot;"/>
+      expr="eval: &quot; self.user.id = ${__user__.id} OR self.managerUser.id = ${__user__.id} &quot;"
+      if="!__user__.employee?.hrManager"/>
   </action-attrs>
+
+  <action-method name="action-leave-request-method-export-all">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="exportLeaveRequest"/>
+  </action-method>
 </object-views>

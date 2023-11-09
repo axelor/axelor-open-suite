@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -487,7 +487,7 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND TaxPaymentMoveLine.vat_system_select = 2
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND TaxPaymentMoveLine.date_val >= AccountingReport.date_from
@@ -966,7 +966,7 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND TaxPaymentMoveLine.vat_system_select = 2
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND TaxPaymentMoveLine.date_val >= AccountingReport.date_from
@@ -1158,7 +1158,7 @@ order by Tax.code ASC]]></xml-property>
 MoveLine.date_val as moveLineDate,
 MoveLine.origin as moveLineOrigin,
 MoveLine.partner_full_name as partner,
-MoveLine.amount_remaining as amounttoReconcile,
+ABS(MoveLine.amount_remaining) as amounttoReconcile,
 MoveLine.amount_paid as reconciledAmount,
 Account.code as accountCode,
 Account.name as accountName
@@ -1186,7 +1186,7 @@ AND Account.reconcile_ok = true
 AND  Move.ignore_in_accounting_ok = false
 AND AccountTaxType.technical_type_select like 'tax'
 AND MoveLineTax.vat_system_select = 2
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 and MoveLine.amount_remaining != 0
 and MoveLine.date_val >= AccountingReport.date_from
 and MoveLine.date_val <= AccountingReport.date_to
@@ -1400,7 +1400,7 @@ left outer join public.account_accounting_report_partner_set as PartnerSet on (P
 where AccountingReport.id = ?
 AND PaymentMode.in_out_select = 1
 AND  Move.ignore_in_accounting_ok = false 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 and MoveLine.amount_remaining != 0
 and MoveLine.date_val >= AccountingReport.date_from
 and MoveLine.date_val <= AccountingReport.date_to

@@ -31,7 +31,6 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -62,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -79,10 +79,10 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
   protected AppAccountService appAccountService;
-  protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -91,19 +91,19 @@ public class MoveLineServiceImpl implements MoveLineService {
       PaymentService paymentService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
-      AccountingCutOffService cutOffService) {
+      AccountingCutOffService cutOffService,
+      MoveLineTaxService moveLineTaxService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
-    this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   @Override
@@ -167,6 +167,8 @@ public class MoveLineServiceImpl implements MoveLineService {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_NO_SELECTED));
     }
+
+    moveLineTaxService.checkEmptyTaxLines(moveLineList);
 
     if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
       return;
@@ -355,13 +357,13 @@ public class MoveLineServiceImpl implements MoveLineService {
   public void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException {
     Company company = accountingBatch.getCompany();
     LocalDate moveDate = accountingBatch.getMoveDate();
-    Journal researchJournal = accountingBatch.getResearchJournal();
+    Set<Journal> journalSet = accountingBatch.getJournalSet();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
 
     int offset = 0;
     List<MoveLine> moveLineList;
     Query<MoveLine> moveLineQuery =
-        cutOffService.getMoveLines(company, researchJournal, moveDate, accountingCutOffTypeSelect);
+        cutOffService.getMoveLines(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
     while (!(moveLineList = moveLineQuery.fetch(10, offset)).isEmpty()) {
 
@@ -401,14 +403,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
 
     return moveLine;
-  }
-
-  @Override
-  public boolean checkManageAnalytic(Move move) throws AxelorException {
-    return move != null
-        && move.getCompany() != null
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()
-        && accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting();
   }
 
   @Override

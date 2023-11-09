@@ -100,7 +100,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         move.getMoveLineList().stream()
             .filter(
                 it ->
-                    it.getAmountRemaining().compareTo(it.getDebit().max(it.getCredit())) == 0
+                    it.getAmountRemaining().abs().compareTo(it.getDebit().max(it.getCredit())) == 0
                         && it.getAccount().getUseForPartnerBalance()
                         && CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
             .map(MoveLine::getInvoiceTermList)
@@ -200,12 +200,18 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   protected InvoiceTerm getSingleInvoiceTerm(Move move) {
-    return move.getMoveLineList().stream()
-        .filter(it -> it.getAccount().getUseForPartnerBalance())
-        .map(MoveLine::getInvoiceTermList)
-        .flatMap(Collection::stream)
-        .findFirst()
-        .orElse(null);
+    List<InvoiceTerm> invoiceTermList =
+        move.getMoveLineList().stream()
+            .filter(it -> it.getAccount().getUseForPartnerBalance())
+            .map(MoveLine::getInvoiceTermList)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+
+    if (invoiceTermList.size() == 1) {
+      return invoiceTermList.get(0);
+    } else {
+      return null;
+    }
   }
 
   @Override

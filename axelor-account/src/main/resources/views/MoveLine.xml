@@ -132,10 +132,6 @@
   <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine"
     title="Move lines" canArchive="false" onNew="action-move-line-method-onnew">
     <field name="counter" hidden="true" width="50" readonly="true"/>
-    <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
-    <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
-    <field name="account.analyticDistributionAuthorized" hidden="true"/>
-    <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="date" width="100" onChange="account-move-line-method-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
@@ -144,7 +140,7 @@
       readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-method-account-onselect" width="150" canEdit="false"
-      readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
+      readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
       width="90"/>
@@ -158,7 +154,7 @@
     <field name="amountRemaining" hidden="true" width="80"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-      requiredIf="account.isTaxRequiredOnMoveLine"
+      requiredIf="(account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80"/>
     <field name="vatSystemSelect"
@@ -210,12 +206,18 @@
     <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
     <field name="move.statusSelect" hidden="true"/>
+    <field name="account.accountType" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
     <field name="move.company.accountConfig" hidden="true"/>
     <field name="move.company" hidden="true"/>
-    <field name="account.company.accountConfig.analyticDistributionTypeSelect"/>
+    <field name="move.functionalOriginSelect"/>
+    <field name="account.company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
+    <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
+    <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
+    <field name="account.analyticDistributionAuthorized" hidden="true"/>
+    <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
@@ -237,7 +239,7 @@
     <field name="credit" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
     <field name="taxLine"
-      requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
+      requiredIf="!account.isTaxAuthorizedOnMoveLine || ['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect)"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
     <field name="analyticDistributionTemplate"
@@ -404,7 +406,7 @@
         onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-method-account-onselect" canEdit="false"
-        onChange="action-move-line-method-account-onchange"/>
+        onChange="action-move-line-group-account-onchange"/>
       <field name="debit"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
@@ -514,15 +516,12 @@
       </panel>
       <panel name="othersPanel" title="Others"
         showIf="move.statusSelect == 2 || move.statusSelect == 3 || taxLine != null" readonly="true">
-        <field name="taxLine" canEdit="false"
-          showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
-          colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
-          domain="self.endDate > :date OR self.endDate IS NULL"
-          readonlyIf="!account.isTaxAuthorizedOnMoveLine"
+        <field name="taxLine" canEdit="false" colSpan="6" form-view="tax-line-form"
+          grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
+          readonlyIf="['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect) || !account.isTaxAuthorizedOnMoveLine"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="vatSystemSelect"
-          readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
-          showIf="account.accountType.technicalTypeSelect == 'tax'"/>
+          readonlyIf="account.accountType.technicalTypeSelect != 'tax' || ![1,5].includes(move.statusSelect)"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="reimbursementStatusSelect"
           showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0"
@@ -619,7 +618,7 @@
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-method-account-onselect" canEdit="false"
-        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
+        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-method-partner-onselect" canEdit="false"
         onChange="action-move-line-method-partner-onchange"
@@ -762,14 +761,12 @@
       </panel>
       <panel name="othersPanel" title="Others">
         <field name="taxLine" canEdit="false" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-          showIf="account.isTaxRequiredOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine"
           colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
           domain="self.endDate > :date OR self.endDate IS NULL"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="vatSystemSelect"
-          readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
-          showIf="account.accountType.technicalTypeSelect == 'tax'"
+          readonlyIf="![1,5].includes(move.statusSelect) || account.accountType.technicalTypeSelect != 'tax'"
           requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="reimbursementStatusSelect"
           showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0"
@@ -830,6 +827,12 @@
   <action-group name="action-move-line-group-analytic-move-line-onchange">
     <action name="action-move-line-method-analytic-move-line-onchange"/>
     <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+  </action-group>
+
+  <action-group name="action-move-line-group-account-onchange">
+    <action name="action-move-line-method-account-onchange"/>
+    <action name="save"
+      if="account?.useForPartnerBalance &amp;&amp; __parent__?.statusSelect != 4 &amp;&amp; __parent__?.statusSelect &gt;= 2"/>
   </action-group>
 
   <action-method name="action-move-line-method-onnew">
@@ -1074,6 +1077,37 @@
     </filter>
     <filter title="Simulated Move Lines">
       <domain>self.move.statusSelect = 5</domain>
+    </filter>
+    <filter title="Payment Entries">
+      <domain>self.move.functionalOriginSelect = 5</domain>
+    </filter>
+    <filter title="Depreciation Entries">
+      <domain>self.move.functionalOriginSelect = 7</domain>
+    </filter>
+    <filter title="Cut off Entries">
+      <domain>self.move.functionalOriginSelect = 6</domain>
+    </filter>
+    <filter title="Entries to reconcile">
+      <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
+        self.amountRemaining != 0 AND (self.reconcileGroup = null OR
+        self.reconcileGroup.statusSelect = 3) AND (self.move.statusSelect = 2 OR
+        self.move.statusSelect = 3)</domain>
+    </filter>
+    <filter title="Partially reconciled entries">
+      <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
+        self.amountRemaining != 0 AND self.reconcileGroup != null AND
+        (self.reconcileGroup.statusSelect = 1 OR self.reconcileGroup.statusSelect = 2) AND
+        (self.move.statusSelect = 2 OR self.move.statusSelect = 3)</domain>
+    </filter>
+    <filter title="Unreconcilied and partially reconciled entries">
+      <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
+        self.amountRemaining != 0 AND (self.move.statusSelect = 2 OR self.move.statusSelect = 3)</domain>
+    </filter>
+    <filter title="Fully reconcilied entries">
+      <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
+        self.amountRemaining = 0 AND (self.reconcileGroup != null AND
+        (self.reconcileGroup.statusSelect = 1 OR self.reconcileGroup.statusSelect = 2)) AND
+        (self.move.statusSelect = 2 OR self.move.statusSelect = 3)</domain>
     </filter>
   </search-filters>
 </object-views>

@@ -22,21 +22,21 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class EmployeeComputeDaysLeaveLunchVoucherService extends EmployeeComputeDaysLeaveService {
-  protected LeaveService leaveService;
+  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
 
   @Inject
   public EmployeeComputeDaysLeaveLunchVoucherService(
       EmployeeService employeeService,
       LeaveRequestRepository leaveRequestRepository,
-      LeaveService leaveService) {
+      LeaveRequestComputeDurationService leaveRequestComputeDurationService) {
     super(employeeService, leaveRequestRepository);
-    this.leaveService = leaveService;
+    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
   }
 
   /**
@@ -47,7 +47,7 @@ public class EmployeeComputeDaysLeaveLunchVoucherService extends EmployeeCompute
   @Override
   protected BigDecimal computeDuration(LeaveRequest leave, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
-    return leaveService.computeDuration(
+    return leaveRequestComputeDurationService.computeDuration(
         leave,
         leave.getFromDateT(),
         leave.getToDateT(),

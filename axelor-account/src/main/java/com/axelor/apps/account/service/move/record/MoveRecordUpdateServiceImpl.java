@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -31,7 +32,9 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
 
@@ -148,6 +151,25 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
         return appBaseService.getTodayDate(null).plusDays(1);
       default:
         return null;
+    }
+  }
+
+  @Override
+  public void resetDueDate(Move move) {
+    if (move.getPaymentCondition() == null || !moveInvoiceTermService.displayDueDate(move)) {
+      move.setDueDate(null);
+    }
+  }
+
+  @Override
+  public void updateSubrogationPartner(Move move) {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      move.getMoveLineList().stream()
+          .map(MoveLine::getInvoiceTermList)
+          .filter(CollectionUtils::isNotEmpty)
+          .flatMap(Collection::stream)
+          .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
+          .forEach(it -> it.setSubrogationPartner(move.getSubrogationPartner()));
     }
   }
 }

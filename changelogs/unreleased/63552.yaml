@@ -1,4 +1,0 @@
-title: INVOICING bad linked between advance payment invoice on a standard sale order
-type: fix
-description:
-  When creating an invoice auto complete advance payement invoice with no internal reference to an already existing sale order.

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -35,15 +36,18 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
   protected CurrencyService currencyService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineService moveLineService;
+  protected MoveToolService moveToolService;
 
   @Inject
   public MoveLineCurrencyServiceImpl(
       CurrencyService currencyService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      MoveToolService moveToolService) {
     this.currencyService = currencyService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineService = moveLineService;
+    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -74,7 +78,9 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
           currencyAmount.divide(
               currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
-      moveLine.setCurrencyAmount(currencyAmount);
+      moveLine.setCurrencyAmount(
+          moveToolService.computeCurrencyAmountSign(
+              currencyAmount, moveLine.getDebit().signum() > 0));
       moveLine.setCurrencyRate(currencyRate);
 
       moveLine.clearInvoiceTermList();
