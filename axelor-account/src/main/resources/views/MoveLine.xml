@@ -103,7 +103,7 @@
       readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-method-account-onselect" width="150" canEdit="false"
-      readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
+      readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
       width="90"/>
@@ -399,7 +399,7 @@
         onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-method-account-onselect" canEdit="false"
-        onChange="action-move-line-method-account-onchange"/>
+        onChange="action-move-line-group-account-onchange"/>
       <field name="debit"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
@@ -610,7 +610,7 @@
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-method-account-onselect" canEdit="false"
-        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
+        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-method-partner-onselect" canEdit="false"
         onChange="action-move-line-method-partner-onchange"
@@ -812,6 +812,12 @@
   <action-group name="action-move-line-group-analytic-move-line-onchange">
     <action name="action-move-line-method-analytic-move-line-onchange"/>
     <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+  </action-group>
+
+  <action-group name="action-move-line-group-account-onchange">
+    <action name="action-move-line-method-account-onchange"/>
+    <action name="save"
+      if="account?.useForPartnerBalance &amp;&amp; __parent__?.statusSelect != 4 &amp;&amp; __parent__?.statusSelect &gt;= 2"/>
   </action-group>
 
   <action-method name="action-move-line-method-onnew">
