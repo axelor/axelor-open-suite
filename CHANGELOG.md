@@ -1,3 +1,52 @@
+## [7.2.2] (2023-11-09)
+
+
+#### Fixed
+
+* App builder: update studio dependency to 1.3.4 to get the following fix:
+
+    - fixed NPE upon save of a custom model with a menu
+
+* Fixed an error during apps installation on a new database. GH-11451
+* Sale order: fixed "NullPointerException" error when selecting a project.
+* App Base: set company-specific product fields domain.
+* Sale order / Invoice: fixed an issue when invoicing a sale order with multi currency & multi invoice terms.
+* Accounting report: fixed display of field "detailed".
+* Accounting report: fixed an issue in Journal report (11) where debit and credit were not displayed in the recap by account table.
+* Accounting dashboard: removed blank panel in "accounting details with invoice terms" dashboard.
+* Custom accounting report: fixed legacy report option being displayed for all account report types.
+* Move line: fixed error at first move line creation related to counter initialization.
+* Move line: fixed error when we create a move line in multi currency.
+* Move: fixed an error when we update invoice terms in move line.
+* Move: fixed an error when we reconcile move lines without tax line.
+* Move: hide company without account config on company list when we change move company.
+* Move: added journal verification when we check duplicate origins.
+* Fixed asset: fixed an issue after selecting a category where set depreciations for economic and ifrs were not computed correctly.
+* Fixed asset: hide "isEqualToFiscalDepreciation" field when fiscal plan not selected.
+* CRM: opening an event from custom view in prospect, leads or opportunity is now editable.
+* HR Timesheet: fixed conversion problems while generating timesheet lines from project planning time.
+* Project: fixed wrong domain on opening project report.
+* Cost sheet: fixed issue in the order of calculation on bill of materials.
+* Configurator BOM: Fixed a concurrent error when generating a bill of materials from the same configurator.
+* Employee: to fix bank details error, moved the field to main employment contract panel.
+* FEC Import: prevent potential errors when using demo data config file
+* Contract: fixed "NullPointerException" error when emptying the product on a contract line.
+* Manufacturing order: company is now required in the form view.
+* Bank reconciliation: selectable move lines are now based on the currency amount.
+* Production: fixed 'at the latest scheduling' planification to support multi level planning.
+* Sale order (Quotation): fixed "End of validity date" computation on copy.
+* Debt recovery: fixed balance due in debt recovery accounting batch.
+* Birt template: fixed wrong type for parameters of ClientSituation report.
+* Stock: fixed stock dashboard.
+* MRP: fixed MRP manufacturing orders generation and planning.
+* Lead: prevent the user from editing the postal code when a city is filled to avoid inconsistencies.
+* Invoice term: fixed amount computation with multi currency.
+* Contract: prorata is now correctly disabled when the config is off.
+* CRM Event: when an event is created from CRM, correctly prefill "related to".
+* Opportunity: company is now required in the form view.
+* Sale: hide 'Timetable templates' entry menu on config.
+* Maintenance: reset the status when duplicating a maintenance request.
+
 ## [7.2.1] (2023-10-27)
 
 #### Fixed
@@ -270,5 +319,6 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.2]: https://github.com/axelor/axelor-open-suite/compare/v7.2.1...v7.2.2
 [7.2.1]: https://github.com/axelor/axelor-open-suite/compare/v7.2.0...v7.2.1
 [7.2.0]: https://github.com/axelor/axelor-open-suite/compare/v7.1.7...v7.2.0

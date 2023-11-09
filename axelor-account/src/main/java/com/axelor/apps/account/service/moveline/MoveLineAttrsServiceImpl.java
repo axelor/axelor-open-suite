@@ -49,6 +49,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected AnalyticLineService analyticLineService;
   protected PeriodServiceAccount periodServiceAccount;
   protected JournalService journalService;
+  protected MoveLineTaxService moveLineTaxService;
   protected MoveLineService moveLineService;
 
   @Inject
@@ -58,12 +59,14 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       AnalyticLineService analyticLineService,
       PeriodServiceAccount periodServiceAccount,
       JournalService journalService,
+      MoveLineTaxService moveLineTaxService,
       MoveLineService moveLineService) {
     this.accountConfigService = accountConfigService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
     this.periodServiceAccount = periodServiceAccount;
     this.journalService = journalService;
+    this.moveLineTaxService = moveLineTaxService;
     this.moveLineService = moveLineService;
   }
 
@@ -271,6 +274,18 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         "invoiceTermList.subrogationPartner",
         "hidden",
         !journalService.isSubrogationOk(move.getJournal()),
+        attrsMap);
+  }
+
+  @Override
+  public void addTaxLineRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "taxLine",
+        "required",
+        moveLineTaxService.isMoveLineTaxAccountRequired(moveLine, move.getFunctionalOriginSelect())
+            || (moveLine.getAccount() != null
+                && moveLine.getAccount().getIsTaxRequiredOnMoveLine()),
         attrsMap);
   }
 
