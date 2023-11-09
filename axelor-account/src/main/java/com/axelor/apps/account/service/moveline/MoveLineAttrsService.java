@@ -58,4 +58,6 @@ public interface MoveLineAttrsService {
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addAnalyticDistributionTemplateDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addTaxLineRequired(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }

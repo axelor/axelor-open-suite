@@ -49,6 +49,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineAttrsServiceImpl(
@@ -56,12 +57,13 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService,
-      PeriodServiceAccount periodServiceAccount) {
+      MoveLineTaxService moveLineTaxService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   protected void addAttr(
@@ -293,5 +295,17 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
             "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
 
     this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addTaxLineRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "taxLine",
+        "required",
+        moveLineTaxService.isMoveLineTaxAccountRequired(moveLine, move.getFunctionalOriginSelect())
+            || (moveLine.getAccount() != null
+                && moveLine.getAccount().getIsTaxRequiredOnMoveLine()),
+        attrsMap);
   }
 }

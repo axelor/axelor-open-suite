@@ -325,6 +325,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
       "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
 
+  public static final String MOVE_LINE_TAX_LINE_MISSING = /*$$(*/
+      "Tax line must be filled when an account of type tax is selected in order to be able to properly reconcile the payments (with the split of taxes included) : Please verify the move line(s) : %s." /*)*/;
+
   /* Invoice payment controller */
   public static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;
