@@ -118,6 +118,9 @@
       </panel>
     </panel-tabs>
 
+    <panel-related field="mobileDashboardList" grid-view="mobile-dashboard-grid"
+      form-view="mobile-dashboard-form"/>
+
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>

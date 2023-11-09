@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <menuitem name="admin-root-mobile-dashboard" title="Mobile Chart"
+    parent="admin-root-maintenance" order="1500" action="action.admin.root.view.mobile.chart"/>
+
+  <action-view name="action.admin.root.view.mobile.chart" title="Mobile Chart"
+    model="com.axelor.apps.mobilesettings.db.MobileChart">
+    <view type="grid" name="mobile-chart-grid"/>
+    <view type="form" name="mobile-chart-form"/>
+  </action-view>
+
+</object-views>

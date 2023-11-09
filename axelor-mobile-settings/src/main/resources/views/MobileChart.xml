@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="mobile-chart-grid" title="Mobile dashboard"
+    model="com.axelor.apps.mobilesettings.db.MobileChart">
+    <field name="name"/>
+  </grid>
+
+  <form name="mobile-chart-form" title="Mobile chart"
+    model="com.axelor.apps.mobilesettings.db.MobileChart" width="large">
+    <panel name="mainPanel">
+      <field name="name" colSpan="8"/>
+      <field name="query" colSpan="12" height="10"/>
+      <button name="runBtn" title="Run" onClick="action-mobile-dashboard-method-run-query"
+        colSpan="3"/>
+      <spacer colSpan="9"/>
+      <field name="response" colSpan="12" height="10"/>
+    </panel>
+  </form>
+
+  <action-method name="action-mobile-dashboard-method-run-query">
+    <call class="com.axelor.apps.mobilesettings.web.MobileChartController"
+      method="getJsonResponse"/>
+  </action-method>
+
+</object-views>

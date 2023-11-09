@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
+
+  <entity name="MobileChart">
+    <string name="name" title="Name" namecolumn="true"/>
+    <string name="query" title="Query" large="true"
+      help="A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value."/>
+    <string name="response" title="Response" large="true"/>
+  </entity>
+
+</domain-models>

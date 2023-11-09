@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
+
+  <entity name="MobileDashboardLine">
+    <string name="name" title="Name"/>
+    <many-to-one name="mobileChart1" title="Chart 1"
+      ref="com.axelor.apps.mobilesettings.db.MobileChart"/>
+    <many-to-one name="mobileChart2" title="Chart 2"
+      ref="com.axelor.apps.mobilesettings.db.MobileChart"/>
+    <many-to-one name="mobileChart3" title="Chart 3"
+      ref="com.axelor.apps.mobilesettings.db.MobileChart"/>
+    <many-to-one name="mobileChart4" title="Chart 4"
+      ref="com.axelor.apps.mobilesettings.db.MobileChart"/>
+  </entity>
+
+</domain-models>
