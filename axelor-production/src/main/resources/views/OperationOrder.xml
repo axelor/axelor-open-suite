@@ -118,11 +118,7 @@
       <field name="prodProcessLine" hidden="true"/>
       <field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">
         <viewer>
-				<![CDATA[
-					<h4>
-						<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prodProcessLine.optional" x-translate>Optional</span>
-					</h4>
-				]]>
+		  <![CDATA[<>{prodProcessLine.optional && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Optional')}</Badge>}</>]]>
         </viewer>
       </field>
       <field name="manufOrder.statusSelect" hidden="true"/>

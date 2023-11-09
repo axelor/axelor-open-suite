@@ -60,8 +60,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.Context;
-import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -324,14 +322,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     BigDecimal currentTotal =
-        invoiceTermList.stream()
+        Optional.ofNullable(invoiceTermList).stream()
+            .flatMap(Collection::stream)
             .map(InvoiceTerm::getAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
     if (currentTotal.add(invoiceTerm.getAmount()).compareTo(total) == 0) {
       BigDecimal currentCompanyTotal =
-          invoiceTermList.stream()
+          Optional.ofNullable(invoiceTermList).stream()
+              .flatMap(Collection::stream)
               .filter(it -> !it.equals(invoiceTerm))
               .map(InvoiceTerm::getCompanyAmount)
               .reduce(BigDecimal::add)
@@ -1462,23 +1462,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .orElse(BigDecimal.ZERO);
 
     return amountToPay.compareTo(amount) >= 0;
-  }
-
-  @Override
-  public BigDecimal computeParentTotal(Context context) {
-    BigDecimal total = BigDecimal.ZERO;
-    if (context.getParent() != null) {
-      Invoice invoice = ContextHelper.getContextParent(context, Invoice.class, 1);
-      if (invoice != null) {
-        total = invoice.getInTaxTotal();
-      } else {
-        MoveLine moveLine = ContextHelper.getContextParent(context, MoveLine.class, 1);
-        if (moveLine != null) {
-          total = moveLine.getDebit().max(moveLine.getCredit());
-        }
-      }
-    }
-    return total;
   }
 
   @Override
