@@ -1,3 +1,39 @@
+## [7.0.14] (2023-11-09)
+
+#### Fixed
+
+* App builder: update studio dependency to 1.0.5 to get the following fix:
+
+    - fixed NPE upon save of a custom model with a menu
+
+* App Base: set company-specific product fields domain.
+* Accounting report: fixed an issue in Journal report (11) where debit and credit were not displayed in the recap by account table.
+* Accounting dashboard: removed blank panel in "accounting details with invoice terms" dashboard.
+* Move line: fixed error when we create a move line in multi currency.
+* Move line: fixed error at first move line creation related to counter initialization.
+* Move: fixed an error when we update invoice terms in move line.
+* Move: fixed an error when we reconcile move lines without tax line.
+* Move: added journal verification when we check duplicate origins.
+* Fixed asset: fixed an issue after selecting a category where set depreciations for economic and ifrs were not computed correctly.
+* Fixed asset: hide "isEqualToFiscalDepreciation" field when fiscal plan not selected.
+* CRM: opening an event from custom view in prospect, leads or opportunity is now editable.
+* Custom accounting report: fixed legacy report option being displayed for all account report types.
+* Cost sheet: fixed issue in the order of calculation on bill of materials.
+* Configurator BOM: Fixed a concurrent error when generating a bill of materials from the same configurator.
+* Employee: to fix bank details error, moved the field to main employment contract panel.
+* FEC Import: prevent potential errors when using demo data config file.
+* Contract: fixed "NullPointerException" error when emptying the product on a contract line.
+* Manufacturing order: company is now required in the form view.
+* Sale order (Quotation): fixed "End of validity date" computation on copy.
+* Debt recovery: fixed balance due in debt recovery accounting batch.
+* Analytic: fixed display of analytic panel when it is not managed by account in sale order and purchase order.
+* Lead: prevent the user from editing the postal code when a city is filled to avoid inconsistencies.
+* CRM Event: when an event is created from CRM, correctly prefill "related to".
+* Move: added journal verification when we check duplicate origins.
+* Opportunity: company is now required in the form view.
+* Sale: hide 'Timetable templates' entry menu on config.
+* Maintenance: reset the status when duplicating a maintenance request.
+
 ## [7.0.13] (2023-10-27)
 
 #### Fixed
@@ -630,6 +666,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.14]: https://github.com/axelor/axelor-open-suite/compare/v7.0.13...v7.0.14
 [7.0.13]: https://github.com/axelor/axelor-open-suite/compare/v7.0.12...v7.0.13
 [7.0.12]: https://github.com/axelor/axelor-open-suite/compare/v7.0.11...v7.0.12
 [7.0.11]: https://github.com/axelor/axelor-open-suite/compare/v7.0.10...v7.0.11
