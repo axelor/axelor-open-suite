@@ -45,7 +45,10 @@ public class SaleOrderLineController {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
       SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
-      if (saleOrder != null) {
+
+      if (saleOrderLine.getProduct() == null) {
+        response.setValue("account", null);
+      } else if (saleOrder != null) {
         Account account =
             Beans.get(AccountManagementAccountService.class)
                 .getProductAccount(
@@ -148,7 +151,14 @@ public class SaleOrderLineController {
 
   public void checkBudget(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      SaleOrder saleOrder;
+      if (request.getContext().getParent() == null) {
+        saleOrder =
+            Beans.get(SaleOrderRepository.class)
+                .find(Long.valueOf((Integer) request.getContext().get("_parentId")));
+      } else {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      }
       if (saleOrder != null && saleOrder.getCompany() != null) {
 
         response.setAttr(

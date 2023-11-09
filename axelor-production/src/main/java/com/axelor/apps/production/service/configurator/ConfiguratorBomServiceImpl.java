@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.i18n.I18n;
@@ -47,17 +48,20 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
   protected ConfiguratorService configuratorService;
   protected BillOfMaterialRepository billOfMaterialRepository;
   protected ConfiguratorProdProcessService confProdProcessService;
+  protected BillOfMaterialLineService billOfMaterialLineService;
 
   @Inject
   public ConfiguratorBomServiceImpl(
       ConfiguratorBOMRepository configuratorBOMRepo,
       ConfiguratorService configuratorService,
       BillOfMaterialRepository billOfMaterialRepository,
-      ConfiguratorProdProcessService confProdProcessService) {
+      ConfiguratorProdProcessService confProdProcessService,
+      BillOfMaterialLineService billOfMaterialLineService) {
     this.configuratorBOMRepo = configuratorBOMRepo;
     this.configuratorService = configuratorService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.confProdProcessService = confProdProcessService;
+    this.billOfMaterialLineService = billOfMaterialLineService;
   }
 
   @Override
@@ -167,13 +171,14 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
         generateBillOfMaterial(confBomChild, attributes, level, generatedProduct)
-            .ifPresent(billOfMaterial::addBillOfMaterialSetItem);
+            .ifPresent(
+                bom ->
+                    bom.addBillOfMaterialLineListItem(
+                        billOfMaterialLineService.createFromBillOfMaterial(bom)));
       }
     }
 
     billOfMaterial = billOfMaterialRepository.save(billOfMaterial);
-    configuratorBOM.setBillOfMaterialId(billOfMaterial.getId());
-    configuratorBOMRepo.save(configuratorBOM);
     return Optional.of(billOfMaterial);
   }
 

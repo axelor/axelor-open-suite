@@ -105,4 +105,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_REPORT_NO_ID_FOUND = /*$$(*/
       "Could not find the project id." /*)*/;
+
+  public static final String PROJECT_TASK_REPORT_NO_ID_FOUND = /*$$(*/
+      "Could not find the project task id." /*)*/;
 }

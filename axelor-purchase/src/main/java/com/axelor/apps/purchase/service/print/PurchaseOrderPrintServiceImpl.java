@@ -18,21 +18,23 @@
  */
 package com.axelor.apps.purchase.service.print;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
-import com.axelor.apps.purchase.report.IReport;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppBase;
 import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.file.PdfTool;
@@ -48,12 +50,22 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
 
   protected AppPurchaseService appPurchaseService;
   protected AppBaseService appBaseService;
+  protected PurchaseOrderService purchaseOrderService;
+  protected BirtTemplateService birtTemplateService;
+  protected PurchaseConfigService purchaseConfigService;
 
   @Inject
   public PurchaseOrderPrintServiceImpl(
-      AppPurchaseService appPurchaseService, AppBaseService appBaseService) {
+      AppPurchaseService appPurchaseService,
+      AppBaseService appBaseService,
+      PurchaseOrderService purchaseOrderService,
+      BirtTemplateService birtTemplateService,
+      PurchaseConfigService purchaseConfigService) {
     this.appPurchaseService = appPurchaseService;
     this.appBaseService = appBaseService;
+    this.purchaseOrderService = purchaseOrderService;
+    this.birtTemplateService = birtTemplateService;
+    this.purchaseConfigService = purchaseConfigService;
   }
 
   @Override
@@ -64,19 +76,29 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
   }
 
   @Override
-  public String printPurchaseOrders(List<Long> ids) throws IOException {
+  public String printPurchaseOrders(List<Long> ids) throws IOException, AxelorException {
     List<File> printedPurchaseOrders = new ArrayList<>();
-    ModelTool.apply(
-        PurchaseOrder.class,
-        ids,
-        new ThrowConsumer<PurchaseOrder, Exception>() {
+    int errorCount =
+        ModelTool.apply(
+            PurchaseOrder.class,
+            ids,
+            new ThrowConsumer<PurchaseOrder, Exception>() {
 
-          @Override
-          public void accept(PurchaseOrder purchaseOrder) throws Exception {
-            printedPurchaseOrders.add(print(purchaseOrder, ReportSettings.FORMAT_PDF));
-          }
-        });
-
+              @Override
+              public void accept(PurchaseOrder purchaseOrder) throws Exception {
+                try {
+                  printedPurchaseOrders.add(print(purchaseOrder, ReportSettings.FORMAT_PDF));
+                } catch (Exception e) {
+                  TraceBackService.trace(e);
+                  throw e;
+                }
+              }
+            });
+    if (errorCount > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
     Integer status = Beans.get(PurchaseOrderRepository.class).find(ids.get(0)).getStatusSelect();
     String fileName = getPurchaseOrderFilesName(status);
     return PdfTool.mergePdfToFileLink(printedPurchaseOrders, fileName);
@@ -89,39 +111,18 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
 
   public ReportSettings prepareReportSettings(PurchaseOrder purchaseOrder, String formatPdf)
       throws AxelorException {
-    if (purchaseOrder.getPrintingSettings() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MISSING_PRINTING_SETTINGS),
-              purchaseOrder.getPurchaseOrderSeq()),
-          purchaseOrder);
-    }
-    String locale = ReportSettings.getPrintingLocale(purchaseOrder.getSupplierPartner());
+    purchaseOrderService.checkPrintingSettings(purchaseOrder);
+    BirtTemplate poBirtTemplate =
+        purchaseConfigService.getPurchaseOrderBirtTemplate(purchaseOrder.getCompany());
     String title = getFileName(purchaseOrder);
-    AppBase appBase = appBaseService.getAppBase();
-    ReportSettings reportSetting =
-        ReportFactory.createReport(IReport.PURCHASE_ORDER, title + " - ${date}");
 
-    return reportSetting
-        .addParam("PurchaseOrderId", purchaseOrder.getId())
-        .addParam(
-            "Timezone",
-            purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
-        .addParam("Locale", locale)
-        .addParam(
-            "GroupProducts",
-            appBase.getIsRegroupProductsOnPrintings()
-                && purchaseOrder.getGroupProductsOnPrintings())
-        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
-        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
-        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
-        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
-        .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
-        .addParam(
-            "AddressPositionSelect", purchaseOrder.getPrintingSettings().getAddressPositionSelect())
-        .addFormat(formatPdf);
+    return birtTemplateService.generate(
+        poBirtTemplate,
+        purchaseOrder,
+        null,
+        title + " - ${date}",
+        poBirtTemplate.getAttach(),
+        formatPdf);
   }
 
   protected String getPurchaseOrderFilesName(Integer status) {

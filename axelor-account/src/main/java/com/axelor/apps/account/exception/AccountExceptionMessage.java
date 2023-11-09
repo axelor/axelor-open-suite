@@ -46,6 +46,10 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Disposal quantity can not be equal to 0" /*)*/;
   public static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
+  public static final String IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND =
+      /*$$(*/ "No implementation of FixedAssetLineComputationService found" /*)*/;
+  public static final String IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND =
+      /*$$(*/ "No implementation of FixedAssetLineService found" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
@@ -196,7 +200,6 @@ public final class AccountExceptionMessage {
       "%s : You must configure shit to irrecoverable sequence for the company %s" /*)*/;
   public static final String IRRECOVERABLE_5 = /*$$(*/ "Treatment finished" /*)*/;
   public static final String IRRECOVERABLE_6 = /*$$(*/ "Anomalies generated" /*)*/;
-  public static final String IRRECOVERABLE_7 = /*$$(*/ "You must select a printing type" /*)*/;
 
   /** Journal service */
   public static final String JOURNAL_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -324,6 +327,9 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
       "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
+
+  public static final String MOVE_LINE_TAX_LINE_MISSING = /*$$(*/
+      "Tax line must be filled when an account of type tax is selected in order to be able to properly reconcile the payments (with the split of taxes included) : Please verify the move line(s) : %s." /*)*/;
 
   /* Invoice payment controller */
   public static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
@@ -1014,6 +1020,9 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_VOUCHER_NOT_GENERATE_ALL = /*$$(*/
       "Some due elements could not be loaded there was no amount left to pay." /*)*/;
 
+  public static final String PAYMENT_VOUCHER_PFP_NOT_VALIDATED = /*$$(*/
+      "Some imported invoice terms are not PFP validated." /*)*/;
+
   /** Payment schedule line service */
   public static final String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
       "Missing direct debit payment mode in the company's account configuration" /*)*/;
@@ -1125,13 +1134,13 @@ public final class AccountExceptionMessage {
    * Partner
    */
   public static final String PARTNER_BANK_DETAILS_MISSING = /*$$(*/
-      "Bank details are missing for partner %s." /*)*/;
+      "Default bank details are missing for partner %s." /*)*/;
 
   /*
    * Company
    */
   public static final String COMPANY_BANK_DETAILS_MISSING = /*$$(*/
-      "Bank details are missing for company %s." /*)*/;
+      "Default bank details are missing for company %s." /*)*/;
 
   /*
    * Invoice printing
@@ -1206,7 +1215,7 @@ public final class AccountExceptionMessage {
       "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 
   public static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
-      "Invalid Analytic moveLines, some axes percentage values are different than 100%." /*)*/;
+      "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;
 
   /*Close annual account batch */
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
@@ -1600,16 +1609,19 @@ public final class AccountExceptionMessage {
       "Report type %s doesn't have any line." /*)*/;
 
   public static final String REPORT_TYPE_DIFFERENT_RESULT_SELECT = /*$$(*/
-      "Report type %s has intersecting column %s and line %s with different computation method." /*)*/;
+      "Computation methods are different." /*)*/;
 
   public static final String REPORT_TYPE_NO_RESULT_SELECT = /*$$(*/
-      "Report type %s has intersecting column %s and line %s with no defined computation method." /*)*/;
+      "No computation method is defined." /*)*/;
 
   public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
       "Report type %s has group columns of different types." /*)*/;
 
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
-      "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
+      "Computation method is the same as the group but there is none." /*)*/;
+
+  public static final String REPORT_TYPE_TOTAL_LINE_NOT_EXISTS = /*$$(*/
+      "The given percentage total line does not exist." /*)*/;
 
   public static final String COMPENSATION_ON_SESSION_BY_INVOICE_TERM = /*$$(*/
       "Compensation is not allowed on payment session accounted by invoice term, please unselect them" /*)*/;
@@ -1659,4 +1671,30 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_CONDITION_LINKED_OBJECTS = /*$$(*/
       "Changes will be applied on next records." /*)*/;
+
+  public static final String NO_DEPRECIATION_ACCOUNT_FOUND_IN_FIXED_ASSET_CATEGORY = /*$$(*/
+      "No depreciation account found in fixed asset category %s." /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to debt recoveries:<br> %s" /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to payments voucher:<br> %s" /*)*/;
+
+  public static final String INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
+      "Last executed action involved deletion of the invoice term %s while it is still linked to invoice payment(s) related to invoices: <br> %s" /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_DEBT_RECOVERIES = /*$$(*/
+      "The move lines are still linked to debt recoveries:<br> %s <br> You can't modify them." /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_PAYMENT_VOUCHER = /*$$(*/
+      "The move lines are still linked to payments voucher:<br> %s <br> You can't modify them." /*)*/;
+
+  public static final String MONO_INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT = /*$$(*/
+      "The move lines are still linked to invoice payment(s) related to invoices: <br> %s <br> You can't modify them." /*)*/;
+
+  public static final String ACCOUNT_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
+      "Fiscal year and periods have been generated successfully." /*)*/;
+  public static final String ACCOUNT_CHART_AND_FISCAL_YEAR_PERIOD_GENERATION_SUCCESS = /*$$(*/
+      "The chart of account has been loaded and fiscal year/periods have been correctly generated." /*)*/;
 }

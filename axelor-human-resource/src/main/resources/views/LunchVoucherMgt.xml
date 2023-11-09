@@ -20,7 +20,7 @@
     onSave="action-lunch-voucher-group-form-onsave">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" showIf="statusSelect &gt;= 2"
-        onClick="action-lunch-voucher-method-print"/>
+        onClick="action-method-print-birt"/>
       <button name="exportBtn" title="Export CSV" icon="fa-file-text-o"
         showIf="statusSelect == 3 &amp;&amp; csvFile == null"
         onClick="action-lunch-voucher-method-export"/>
@@ -154,10 +154,6 @@
   <action-method name="action-lunch-voucher-method-validate">
     <call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController"
       method="validate"/>
-  </action-method>
-
-  <action-method name="action-lunch-voucher-method-print">
-    <call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="print"/>
   </action-method>
 
   <action-method name="action-lunch-voucher-method-update-stock">

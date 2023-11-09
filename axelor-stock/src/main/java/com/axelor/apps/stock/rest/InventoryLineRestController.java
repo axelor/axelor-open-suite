@@ -93,9 +93,7 @@ public class InventoryLineRestController {
                 requestBody.getRack(),
                 requestBody.getRealQty());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Inventory line successfully created.",
-        new InventoryLineResponse(inventoryLine));
+    return ResponseConstructor.buildCreateResponse(
+        inventoryLine, new InventoryLineResponse(inventoryLine));
   }
 }

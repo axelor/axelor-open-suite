@@ -7,7 +7,7 @@
 
   <entity name="AppBusinessProject" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <many-to-one name="productInvoicingProject" ref="com.axelor.apps.base.db.Product"
       title="Default Invoicing Product for Projects"/>
@@ -55,6 +55,9 @@
     <many-to-one name="hoursUnit" ref="com.axelor.apps.base.db.Unit" title="Hours unit"/>
     <decimal name="defaultHoursADay" title="Default hours in a day" min="0"/>
 
+    <many-to-one name="invoicingProjectAnnexBirtTemplate"
+      title="Invoicing project annex template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+
     <track>
       <field name="productInvoicingProject" on="UPDATE"/>
 
@@ -77,6 +80,7 @@
       <field name="preTaskStatusSet" on="UPDATE"/>
       <field name="postTaskStatusSet" on="UPDATE"/>
       <field name="excludeTaskInvoicing" on="UPDATE"/>
+      <field name="invoicingProjectAnnexBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

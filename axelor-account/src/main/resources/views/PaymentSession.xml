@@ -71,10 +71,10 @@
 	                       </h4>
 	        ]]></viewer>
         </field>
-        <button name="sessionTotalAmountFormula" title="Session total amount" icon="fa-money"
+        <button name="sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
           showIf="sessionTotalAmountFormula &gt; 0 || $hasUnselectedInvoiceTerm"
-          x-currency="company.currency.symbol" readonly="false"/>
+          x-currency="company.currency.symbol" x-field="sessionTotalAmountFormula"/>
       </panel>
       <panel name="btnPanel" colSpan="4" itemSpan="12">
         <button name="validateBtn" title="Validate" css="btn-success"
@@ -130,7 +130,8 @@
       <field name="assignedToUser"/>
       <field name="journal" readonlyIf="!company"
         onSelect="action-payment-session-method-set-journal-domain"/>
-      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"
+        readonly="true"/>
       <field name="partnerSet" widget="TagSelect" canNew="false" canEdit="false"
         onSelect="action-payment-session-attrs-set-partner-domain" form-view="partner-form"
         readonlyIf="!company || !partnerTypeSelect"/>

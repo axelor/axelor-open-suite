@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -33,10 +34,12 @@ import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -52,8 +55,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AppSupplychainService appSupplychainService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
-  protected SaleConfigService saleConfigService;
-  protected SaleOrderCheckAnalyticService saleOrderCheckAnalyticService;
+  protected AnalyticToolSupplychainService analyticToolSupplychainService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -70,7 +72,9 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
-      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
+      AnalyticToolSupplychainService analyticToolSupplychainService,
+      BirtTemplateService birtTemplateService,
+      SaleOrderService saleOrderService) {
     super(
         sequenceService,
         partnerRepo,
@@ -78,14 +82,16 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
         appSaleService,
         appCrmService,
         userService,
-        saleOrderLineService);
+        saleOrderLineService,
+        birtTemplateService,
+        saleOrderService,
+        saleConfigService);
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
-    this.saleConfigService = saleConfigService;
-    this.saleOrderCheckAnalyticService = saleOrderCheckAnalyticService;
+    this.analyticToolSupplychainService = analyticToolSupplychainService;
   }
 
   @Override
@@ -97,11 +103,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       return;
     }
 
-    if (saleConfigService
-        .getSaleConfig(saleOrder.getCompany())
-        .getIsAnalyticDistributionRequired()) {
-      saleOrderCheckAnalyticService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
-    }
+    analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
 
     if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
       throw new AxelorException(

@@ -19,10 +19,13 @@
 package com.axelor.apps.sale.service.config;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleConfig;
 
 public interface SaleConfigService {
 
-  public SaleConfig getSaleConfig(Company company) throws AxelorException;
+  SaleConfig getSaleConfig(Company company) throws AxelorException;
+
+  BirtTemplate getSaleOrderBirtTemplate(Company company) throws AxelorException;
 }

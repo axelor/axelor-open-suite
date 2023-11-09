@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ResearchParameterConfig" lang="java">
+  <entity name="ResearchParameterConfig">
 
     <string name="model" title="Model" selection="research.model.selection" unique="true"/>
     <many-to-one ref="com.axelor.meta.db.MetaModel" name="metaModel" title="Meta model"/>

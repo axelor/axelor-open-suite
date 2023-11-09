@@ -136,10 +136,8 @@ public class StockMoveRestController {
                 requestBody.fetchCompany(),
                 StockInternalMoveStockMoveLinePostRequestMapper.map(requestBody.getLineList()));
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Resource successfully created",
-        new StockInternalMoveResponse(stockmove));
+    return ResponseConstructor.buildCreateResponse(
+        stockmove, new StockInternalMoveResponse(stockmove));
   }
 
   /**
