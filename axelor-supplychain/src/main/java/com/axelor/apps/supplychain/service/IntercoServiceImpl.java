@@ -277,7 +277,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     // analyticalDistribution
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
-    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel, true);
 
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     return purchaseOrderLine;
@@ -322,7 +322,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     // analyticDistribution
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
-    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel, true);
 
     if (saleOrderLine.getAnalyticMoveLineList() != null) {
       for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {

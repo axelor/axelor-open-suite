@@ -71,7 +71,7 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
     purchaseOrderLine = super.fill(purchaseOrderLine, purchaseOrder);
 
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
-    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel, true);
 
     return purchaseOrderLine;
   }
@@ -114,7 +114,7 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
         !(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL));
 
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
-    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel, true);
 
     return purchaseOrderLine;
   }

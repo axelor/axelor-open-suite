@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -84,5 +85,12 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
       AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList) {
     return analyticAccount != null
         && !isAxisAccountSumValidated(analyticMoveLineList, analyticAccount.getAnalyticAxis());
+  }
+
+  @Override
+  public boolean isManageAnalytic(Company company, Account account) throws AxelorException {
+    return this.isManageAnalytic(company)
+        && account != null
+        && account.getAnalyticDistributionAuthorized();
   }
 }

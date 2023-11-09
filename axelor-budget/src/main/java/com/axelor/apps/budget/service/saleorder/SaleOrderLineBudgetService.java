@@ -45,4 +45,7 @@ public interface SaleOrderLineBudgetService {
   String getSectionBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 
   String getLineBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isBudget);
+
+  SaleOrderLine fillAndCompute(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 }

@@ -135,7 +135,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel, true);
     }
   }
 
@@ -357,7 +357,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(soLine, null);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel, true);
 
       if (ObjectUtils.notEmpty(soLine.getAnalyticMoveLineList())) {
         soLine

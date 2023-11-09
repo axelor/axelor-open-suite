@@ -99,4 +99,7 @@ public interface PurchaseOrderLineBudgetService {
       PurchaseOrder purchaseOrder,
       GlobalBudget global,
       boolean isBudget);
+
+  PurchaseOrderLine fillAndCompute(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
+      throws AxelorException;
 }

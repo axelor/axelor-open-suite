@@ -69,7 +69,7 @@
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"/>
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
-            onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+            onChange="action-budget-purchase-order-line-group-account-onchange"/>
           <field name="groupBudget" title="Group" colSpan="4" showIf="account"
             onSelect="action-budget-purchase-order-line-method-group-domain"
             form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
@@ -119,6 +119,11 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-budget-purchase-order-line-group-account-onchange">
+    <action name="action-budget-purchase-order-line-method-account-onchange"/>
+    <action name="action-purchase-order-line-group-manage-analytic"/>
   </action-group>
 
   <action-attrs
@@ -220,6 +225,18 @@
   <action-method name="action-budget-purchase-order-line-set-account-domain">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
       method="setAccountDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-purchase-order-line-method-set-analytic-distribution-panel-hidden"
+    id="action-budget-purchase-order-line-method-set-analytic-distribution-panel-hidden">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="setAnalyticDistributionPanelHidden"/>
+  </action-method>
+
+  <action-method name="action-budget-purchase-order-line-method-account-onchange">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="accountOnChange"/>
   </action-method>
 
 </object-views>

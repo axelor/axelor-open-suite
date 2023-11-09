@@ -24,18 +24,23 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.budget.model.AnalyticLineBudgetModel;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBudgetRepository;
+import com.axelor.utils.ContextTool;
 import com.axelor.utils.StringTool;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -249,6 +254,45 @@ public class SaleOrderLineController {
       response.setAttr("budget", "domain", query);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+
+      if (saleOrder == null || saleOrder.getCompany() == null) {
+        return;
+      }
+
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      AnalyticLineBudgetModel analyticLineBudgetModel =
+          new AnalyticLineBudgetModel(saleOrderLine, saleOrder);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      Beans.get(AnalyticAttrsSupplychainService.class)
+          .addAnalyticDistributionPanelHiddenAttrs(analyticLineBudgetModel, attrsMap);
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void accountOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+
+      if (saleOrder == null || saleOrder.getCompany() == null) {
+        return;
+      }
+
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine =
+          Beans.get(SaleOrderLineBudgetService.class).fillAndCompute(saleOrderLine, saleOrder);
+
+      response.setValues(saleOrderLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -29,12 +29,14 @@ import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
+import com.axelor.apps.budget.model.AnalyticLineBudgetModel;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -53,6 +55,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   protected BudgetDistributionService budgetDistributionService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected AppBudgetService appBudgetService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public PurchaseOrderLineBudgetServiceImpl(
@@ -60,12 +63,14 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       BudgetRepository budgetRepository,
       BudgetDistributionService budgetDistributionService,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      AnalyticLineModelService analyticLineModelService) {
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.appBudgetService = appBudgetService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -450,5 +455,16 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
                   purchaseOrder.getCompany().getId()));
     }
     return query;
+  }
+
+  @Override
+  public PurchaseOrderLine fillAndCompute(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
+    AnalyticLineBudgetModel analyticLineBudgetModel =
+        new AnalyticLineBudgetModel(purchaseOrderLine, purchaseOrder);
+
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineBudgetModel, false);
+
+    return purchaseOrderLine;
   }
 }

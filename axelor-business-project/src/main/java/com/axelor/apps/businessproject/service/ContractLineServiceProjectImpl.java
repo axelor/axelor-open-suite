@@ -65,7 +65,7 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
     if (appAccountService.isApp("business-project")) {
       AnalyticLineModel analyticLineModel =
           new AnalyticLineProjectModel(contractLine, null, contract);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel, true);
     }
   }
 }

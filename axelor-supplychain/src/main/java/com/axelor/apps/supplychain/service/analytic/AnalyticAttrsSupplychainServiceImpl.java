@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.analytic;
 
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
@@ -28,10 +29,13 @@ import java.util.Map;
 public class AnalyticAttrsSupplychainServiceImpl implements AnalyticAttrsSupplychainService {
 
   protected AnalyticLineModelService analyticLineModelService;
+  protected AnalyticToolService analyticToolService;
 
   @Inject
-  public AnalyticAttrsSupplychainServiceImpl(AnalyticLineModelService analyticLineModelService) {
+  public AnalyticAttrsSupplychainServiceImpl(
+      AnalyticLineModelService analyticLineModelService, AnalyticToolService analyticToolService) {
     this.analyticLineModelService = analyticLineModelService;
+    this.analyticToolService = analyticToolService;
   }
 
   protected void addAttr(
@@ -47,11 +51,16 @@ public class AnalyticAttrsSupplychainServiceImpl implements AnalyticAttrsSupplyc
   public void addAnalyticDistributionPanelHiddenAttrs(
       AnalyticLineModel analyticLineModel, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
-    boolean displayPanel =
-        !(analyticLineModelService.productAccountManageAnalytic(analyticLineModel)
+    boolean accountManageAnalytic =
+        analyticLineModel.getAccount() == null
+            ? analyticLineModelService.productAccountManageAnalytic(analyticLineModel)
+            : analyticToolService.isManageAnalytic(
+                analyticLineModel.getCompany(), analyticLineModel.getAccount());
+    boolean hidePanel =
+        !(accountManageAnalytic
             || analyticLineModelService.analyticDistributionTemplateRequired(
                 analyticLineModel.getIsPurchase(), analyticLineModel.getCompany()));
 
-    this.addAttr("analyticDistributionPanel", "hidden", displayPanel, attrsMap);
+    this.addAttr("analyticDistributionPanel", "hidden", hidePanel, attrsMap);
   }
 }

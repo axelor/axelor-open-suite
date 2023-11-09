@@ -28,8 +28,8 @@ public interface AnalyticLineModelService {
   boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel, Company company)
       throws AxelorException;
 
-  AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
-      throws AxelorException;
+  AnalyticLineModel getAndComputeAnalyticDistribution(
+      AnalyticLineModel analyticLineModel, boolean checkProduct) throws AxelorException;
 
   boolean isFreeAnalyticDistribution(AnalyticLineModel analyticLineModel) throws AxelorException;
 

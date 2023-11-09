@@ -61,7 +61,7 @@
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
           <panel name="accountPanel" colSpan="12">
             <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"
-              onChange="action-sale-order-line-method-set-analytic-distribution-panel-hidden"/>
+              onChange="action-budget-sale-order-line-group-account-onchange"/>
           </panel>
           <panel-related if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="budgetDistributionListPanel" colSpan="12" field="budgetDistributionList"
@@ -90,6 +90,11 @@
     <action name="supplychain-action-sale-order-line-group-product-onchange"/>
     <action name="action-method-budget-sale-orderline-set-product-account"
       if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-budget-sale-order-line-group-account-onchange">
+    <action name="action-budget-sale-order-line-method-account-onchange"/>
+    <action name="action-sale-order-line-group-manage-analytic"/>
   </action-group>
 
   <action-method name="action-budget-sale-order-line-method-group-domain">
@@ -146,6 +151,18 @@
   <action-method name="action-budget-sale-order-line-set-account-domain">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccountDomain"
       if="__config__.app.isApp('budget')"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-set-analytic-distribution-panel-hidden"
+    id="action-budget-sale-order-line-method-set-analytic-distribution-panel-hidden">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="setAnalyticDistributionPanelHidden"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-account-onchange">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="accountOnChange"/>
   </action-method>
 
 </object-views>

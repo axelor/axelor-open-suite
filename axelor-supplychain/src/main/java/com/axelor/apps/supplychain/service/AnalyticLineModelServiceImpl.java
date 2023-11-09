@@ -123,8 +123,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     return analyticMoveLine;
   }
 
-  public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
-      throws AxelorException {
+  public AnalyticLineModel getAndComputeAnalyticDistribution(
+      AnalyticLineModel analyticLineModel, boolean checkProduct) throws AxelorException {
     if (!productAccountManageAnalytic(analyticLineModel)
         || isFreeAnalyticDistribution(analyticLineModel)) {
       return analyticLineModel;
@@ -133,7 +133,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
             analyticLineModel.getPartner(),
-            analyticLineModel.getProduct(),
+            checkProduct ? analyticLineModel.getProduct() : null,
             analyticLineModel.getCompany(),
             analyticLineModel.getTradingName(),
             analyticLineModel.getAccount(),
@@ -162,17 +162,16 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
       throws AxelorException {
     Product product = analyticLineModel.getProduct();
-    return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
-        && product != null
+    return product != null
         && product.getProductFamily() != null
-        && accountManagementAccountService
-            .getProductAccount(
+        && analyticToolService.isManageAnalytic(
+            analyticLineModel.getCompany(),
+            accountManagementAccountService.getProductAccount(
                 product,
                 analyticLineModel.getCompany(),
                 analyticLineModel.getFiscalPosition(),
                 analyticLineModel.getIsPurchase(),
-                false)
-            .getAnalyticDistributionAuthorized();
+                false));
   }
 
   @Override

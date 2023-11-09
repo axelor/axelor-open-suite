@@ -251,7 +251,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     if (appAccountService.isApp("supplychain")) {
       AnalyticLineModel analyticLineModel =
           new AnalyticLineContractModel(contractLine, null, contract);
-      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel, true);
     }
   }
 }
