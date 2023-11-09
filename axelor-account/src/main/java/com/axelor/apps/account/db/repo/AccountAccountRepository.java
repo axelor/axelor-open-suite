@@ -81,7 +81,7 @@ public class AccountAccountRepository extends AccountRepository {
 
   @Override
   public void remove(Account account) {
-    if (account.getIsRegulatoryAccount()) {
+    if (Boolean.TRUE.equals(account.getIsRegulatoryAccount())) {
       Exception e =
           new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
