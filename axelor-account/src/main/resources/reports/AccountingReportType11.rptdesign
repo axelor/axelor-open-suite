@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -394,7 +394,7 @@ Move.company = AccountingReport.company  AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND 
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) 
 AND Move.ignore_in_accounting_ok = false 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -842,25 +842,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <row id="3786">
                         <property name="height">0.4479166666666667in</property>
                         <cell id="3787">
-                            <text id="4612">
-                                <property name="fontSize">8pt</property>
-                                <property name="color">black</property>
-                                <property name="textAlign">left</property>
+                            <image id="4637">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value + row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="3788">
                             <property name="fontSize">9pt</property>
@@ -2562,7 +2555,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <list-property name="filter">
                                     <structure>
                                         <property name="operator">ne</property>
-                                        <expression name="expr" type="javascript">row["Debit"]</expression>
+                                        <expression name="expr" type="javascript">row["SumDebitPerAccount"]</expression>
                                         <simple-property-list name="value1">
                                             <value>0</value>
                                         </simple-property-list>
@@ -2704,7 +2697,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <list-property name="filter">
                                     <structure>
                                         <property name="operator">ne</property>
-                                        <expression name="expr" type="javascript">row["Credit"]</expression>
+                                        <expression name="expr" type="javascript">row["SumCreditPerAccount"]</expression>
                                         <simple-property-list name="value1">
                                             <value>0</value>
                                         </simple-property-list>

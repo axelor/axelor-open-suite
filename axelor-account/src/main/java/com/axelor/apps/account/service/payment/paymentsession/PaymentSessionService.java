@@ -32,8 +32,6 @@ public interface PaymentSessionService {
 
   public void setJournal(PaymentSession paymentSession);
 
-  public void computeTotalPaymentSession(PaymentSession paymentSession);
-
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession);
 
   List<BankDetails> getBankDetails(PaymentSession paymentSession);
@@ -45,6 +43,8 @@ public interface PaymentSessionService {
   public void selectAll(PaymentSession paymentSession) throws AxelorException;
 
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
+
+  void removeNegativeLines(PaymentSession paymentSession) throws AxelorException;
 
   public boolean hasInvoiceTerm(PaymentSession paymentSession);
 

@@ -84,4 +84,8 @@
     <attribute name="value" for="isEnabledForAllProducts" expr="eval: true"/>
   </action-attrs>
 
+  <action-method name="action-production-process-print">
+    <call class="com.axelor.apps.maintenance.web.ProdProcessController" method="print"/>
+  </action-method>
+
 </object-views>

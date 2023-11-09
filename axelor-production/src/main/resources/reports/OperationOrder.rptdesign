@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -291,24 +291,6 @@
                     <text-property name="displayName">duration_per_cycle</text-property>
                     <text-property name="heading">duration_per_cycle</text-property>
                 </structure>
-                <structure>
-                    <property name="columnName">starting_duration</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">starting_duration</text-property>
-                    <text-property name="heading">starting_duration</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">setup_duration</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">setup_duration</text-property>
-                    <text-property name="heading">setup_duration</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">ending_duration</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">ending_duration</text-property>
-                    <text-property name="heading">ending_duration</text-property>
-                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters"/>
@@ -427,21 +409,6 @@
                     <structure>
                         <property name="position">23</property>
                         <property name="name">duration_per_cycle</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">24</property>
-                        <property name="name">starting_duration</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">25</property>
-                        <property name="name">setup_duration</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">26</property>
-                        <property name="name">ending_duration</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -611,27 +578,6 @@ this.queryText = this.queryText.replace('@INJECTID', params["OperationOrderId"])
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
-                <structure>
-                    <property name="position">24</property>
-                    <property name="name">starting_duration</property>
-                    <property name="nativeName">starting_duration</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">25</property>
-                    <property name="name">setup_duration</property>
-                    <property name="nativeName">setup_duration</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">26</property>
-                    <property name="name">ending_duration</property>
-                    <property name="nativeName">ending_duration</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
 		OperationOrder.id as operation_order_id,OperationOrder.operation_name as operation_name,ManufOrder.id, MetaFile.file_path as logo_path, ManufOrder.manuf_order_seq,
@@ -640,10 +586,7 @@ this.queryText = this.queryText.replace('@INJECTID', params["OperationOrderId"])
 		OperationOrder.planned_end_datet, OperationOrder.real_start_datet, OperationOrder.real_end_datet,OperationOrder.bar_code as operation_barcode, BarCodeFile.file_path as operation_barcode_picture,
 		Machine.serial_number as machine_serial_num, Machine.name as machine_name,
 		ProdProcessLine.description, OperationOrder.status_select,
-		TO_CHAR((WorkCenter.duration_per_cycle || ' seconds')::interval, 'HH24:MI:SS') as duration_per_cycle,
-		TO_CHAR((Machine.starting_duration || ' seconds')::interval, 'HH24:MI:SS') as starting_duration,
-		TO_CHAR((Machine.setup_duration || ' seconds')::interval, 'HH24:MI:SS') as setup_duration,
-		TO_CHAR((Machine.ending_duration || ' seconds')::interval, 'HH24:MI:SS') as ending_duration
+		TO_CHAR((WorkCenter.duration_per_cycle || ' seconds')::interval, 'HH24:MI:SS') as duration_per_cycle
 FROM 
 	production_operation_order AS OperationOrder
 LEFT JOIN 
@@ -674,23 +617,6 @@ WHERE OperationOrder.id IN (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -1144,7 +1070,7 @@ LEFT JOIN
     </page-setup>
     <body>
         <table id="4224">
-            <property name="width">28.336875cm</property>
+            <property name="width">19.579166666666666cm</property>
             <property name="dataSet">OperationOrderDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1241,24 +1167,6 @@ LEFT JOIN
                     <property name="name">duration_per_cycle</property>
                     <text-property name="displayName">duration_per_cycle</text-property>
                     <expression name="expression" type="javascript">dataSetRow["duration_per_cycle"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">starting_duration</property>
-                    <text-property name="displayName">starting_duration</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["starting_duration"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">setup_duration</property>
-                    <text-property name="displayName">setup_duration</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["setup_duration"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">ending_duration</property>
-                    <text-property name="displayName">ending_duration</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["ending_duration"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -2100,104 +2008,14 @@ this.height=row["logo_height"];]]></method>
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
-                                    <text id="4297">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">center</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.startTime'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["starting_duration"]</VALUE-OF>]]></text-property>
-                                    </text>
                                 </cell>
                                 <cell id="4399">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
-                                    <text id="4298">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">3pt</property>
-                                        <property name="textAlign">center</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.delayBtwCycle'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["setup_duration"]</VALUE-OF>]]></text-property>
-                                    </text>
                                 </cell>
                                 <cell id="4294">
                                     <property name="backgroundColor">#FFFFFF</property>
-                                    <text id="4299">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">13pt</property>
-                                        <property name="textAlign">right</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.stopTime'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["ending_duration"]</VALUE-OF>]]></text-property>
-                                    </text>
                                 </cell>
                             </row>
                             <row id="4374">
@@ -2896,33 +2714,5 @@ this.height=row["logo_height"];]]></method>
                 </row>
             </detail>
         </table>
-        <text id="4496">
-            <property name="display">inline</property>
-            <property name="dataSet">TranslateDS</property>
-            <list-property name="paramBindings">
-                <structure>
-                    <property name="paramName">param_1</property>
-                    <simple-property-list name="expression">
-                        <value type="javascript">'value:'+row["paymentConditionName"]</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">message_key</property>
-                    <text-property name="displayName">message_key</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">translation</property>
-                    <text-property name="displayName">translation</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-            </list-property>
-            <property name="contentType">html</property>
-            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["paymentConditionName"]}</VALUE-OF>]]></text-property>
-        </text>
     </body>
 </report>

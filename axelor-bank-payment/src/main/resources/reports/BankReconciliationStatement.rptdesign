@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -736,7 +736,7 @@ MoveLine.account_code as accountCode,
 Journal.code as journalCode,
 MoveLine.debit as debit, 
 MoveLine.credit as credit, 
-(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validated_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
+(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
 Account.id as accountId
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
@@ -757,7 +757,7 @@ AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select not in (1,4)
 AND AccountType.technical_type_select like 'cash'
-AND BankReconciliation.validated_date_time is not null
+AND BankReconciliation.validate_date_time is not null
 AND Move.ignore_in_accounting_ok in (false,null)
 group by MoveLine.id,
 MoveLine.name,
@@ -768,7 +768,7 @@ MoveLine.debit,
 MoveLine.credit,
 concatJournal,
 accountId
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validated_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
 
 order by accountCode,journalCode,move_line_name
 
@@ -983,7 +983,7 @@ BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validated_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
+(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
 BankDetails.id as bankDetailsId
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
@@ -998,7 +998,7 @@ and AccountingReport.currency = BankStatementLine.currency
 AND BankStatementLine.operation_date <= AccountingReport.date_val
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
-AND BankReconciliation.validated_date_time is not null
+AND BankReconciliation.validate_date_time is not null
 AND BankStatementLine.amount_remain_to_reconcile > 0
 AND BankStatementLine.line_type_select = 2
 group by BankStatementLine.id,
@@ -1010,7 +1010,7 @@ BankStatementLine.debit,
 BankStatementLine.credit,
 BankDetails.full_name,
 BankDetails.id
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validated_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
 order by date
 
 ]]></xml-property>
@@ -1487,7 +1487,7 @@ UNION
 select coalesce(SUM(coalesce(UnreconcileAmountTable.unreconcileAmount,0)),0) as totalUnreconcileAmount
 from(
 SELECT (MoveLine.debit - MoveLine.credit) 
-- SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validated_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as unreconcileAmount
+- SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as unreconcileAmount
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
@@ -1508,11 +1508,11 @@ AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select not in (1,4)
 AND AccountType.technical_type_select like 'cash'
-AND BankReconciliation.validated_date_time is not null
+AND BankReconciliation.validate_date_time is not null
 AND Move.ignore_in_accounting_ok in (false,null)
 group by MoveLine.debit,
 MoveLine.credit
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validated_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)) as UnreconcileAmountTable) as UnreconcileAmountTableSup)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND DATE(BankReconciliation.validate_date_time) <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)) as UnreconcileAmountTable) as UnreconcileAmountTableSup)
 as UnreconcileAmountTableSupSup
 ]]></xml-property>
         </oda-data-set>
@@ -1564,14 +1564,16 @@ as UnreconcileAmountTableSupSup
                         <structure>
                             <property name="name">logo_height</property>
                             <text-property name="displayName">logo_height</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                            <property name="dataType">integer</property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                            <property name="dataType">integer</property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
                         </structure>
                     </list-property>
                     <column id="6199">
@@ -1614,44 +1616,13 @@ as UnreconcileAmountTableSupSup
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
-                            <text id="4245">
-                                <property name="fontSize">8pt</property>
-                                <property name="dataSet">AccountingReportDS</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_height</property>
-                                        <text-property name="displayName">logo_height</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                                        <property name="dataType">integer</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_width</property>
-                                        <text-property name="displayName">logo_width</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                                        <property name="dataType">integer</property>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                            <image id="6890">
+                                <expression name="altText">""</expression>
+                                <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="6213">
                             <property name="verticalAlign">middle</property>

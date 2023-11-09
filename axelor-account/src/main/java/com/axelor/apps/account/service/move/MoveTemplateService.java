@@ -74,6 +74,7 @@ public class MoveTemplateService {
   protected BankDetailsService bankDetailsService;
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
 
   protected List<String> exceptionsList;
 
@@ -89,7 +90,8 @@ public class MoveTemplateService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       BankDetailsService bankDetailsService,
       MoveTemplateRepository moveTemplateRepo,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -102,6 +104,8 @@ public class MoveTemplateService {
     this.bankDetailsService = bankDetailsService;
     this.moveTemplateRepo = moveTemplateRepo;
     this.moveLineTaxService = moveLineTaxService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+
     this.exceptionsList = Lists.newArrayList();
   }
 
@@ -202,7 +206,7 @@ public class MoveTemplateService {
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 origin,
-                null,
+                moveTemplate.getDescription(),
                 companyBankDetails);
 
         int counter = 1;
@@ -268,6 +272,8 @@ public class MoveTemplateService {
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);
             }
+
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
 
             counter++;
           }
@@ -380,6 +386,7 @@ public class MoveTemplateService {
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
 
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {

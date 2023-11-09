@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -82,9 +82,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -504,8 +501,8 @@ AND ((((AccountType.technical_type_select not like 'tax'
 			or  (Move.functional_origin_select = 4 
 				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
 						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1))))))
-	or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 ))
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+	or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 )) 
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -551,6 +548,12 @@ order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
                     <text-property name="heading">ReportDateEdition</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
@@ -558,6 +561,7 @@ order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">ref</text-property>
                     <text-property name="heading">ref</text-property>
                 </structure>
@@ -604,11 +608,16 @@ order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">currency</property>
+                        <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -653,26 +662,39 @@ order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name,AccountingReport.date_from,AccountingReport.date_to,
-AcYear.name as year_name, AccountingReport.publication_date_time as "ReportDateEdition",
+            <xml-property name="queryText"><![CDATA[select 
+Company.name as company_name,
+AccountingReport.date_from,
+AccountingReport.date_to,
+AcYear.name as year_name, 
+AccountingReport.publication_date_time as "ReportDateEdition",
+MetaFile.file_path AS logo_path,
 Currency.code as currency, AccountingReport.ref
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
 left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)
+LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 where AccountingReport.id = ? 
 ]]></xml-property>
         </oda-data-set>
@@ -894,7 +916,7 @@ where
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move)) 
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND MoveLine.tax_line is not null
 AND ((((AccountType.technical_type_select not like 'tax'
 		and ((Move.functional_origin_select = 3 

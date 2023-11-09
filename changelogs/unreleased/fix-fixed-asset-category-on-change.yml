@@ -1,0 +1,3 @@
+---
+title: "FIXEDASSETCATEGORY / FIXEDASSET : onChange when selecting a category should set depreciations for economic and ifrs as equivalent to fiscal if fiscal plan present"
+type: fix

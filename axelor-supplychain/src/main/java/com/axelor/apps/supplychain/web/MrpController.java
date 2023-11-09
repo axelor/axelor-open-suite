@@ -18,19 +18,16 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
+import com.axelor.apps.supplychain.service.MrpProposalService;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -84,7 +81,7 @@ public class MrpController {
       Mrp mrp = request.getContext().asType(Mrp.class);
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
-      Beans.get(MrpService.class)
+      Beans.get(MrpProposalService.class)
           .generateAllProposals(
               Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier != null && isProposalsPerSupplier);
@@ -101,7 +98,7 @@ public class MrpController {
       Mrp mrp = request.getContext().asType(Mrp.class);
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
-      Beans.get(MrpService.class)
+      Beans.get(MrpProposalService.class)
           .generateSelectedProposals(
               Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier != null && isProposalsPerSupplier);
@@ -110,71 +107,6 @@ public class MrpController {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
-    }
-  }
-
-  /**
-   * Prints the weekly breakdown MRP birt report and shows it to the user.
-   *
-   * @param request
-   * @param response
-   */
-  public void printWeeks(ActionRequest request, ActionResponse response) {
-    Mrp mrp = request.getContext().asType(Mrp.class);
-    mrp = Beans.get(MrpRepository.class).find(mrp.getId());
-    String name = I18n.get("MRP") + "-" + mrp.getId();
-
-    try {
-      String fileLink =
-          ReportFactory.createReport(IReport.MRP_WEEKS, name)
-              .addParam("mrpId", mrp.getId())
-              .addParam("Timezone", getTimezone(mrp))
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "endDate",
-                  Beans.get(MrpService.class).findMrpEndDate(mrp).atStartOfDay().toString())
-              .addFormat(ReportSettings.FORMAT_PDF)
-              .generate()
-              .getFileLink();
-
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  protected String getTimezone(Mrp mrp) {
-    if (mrp.getStockLocation() == null || mrp.getStockLocation().getCompany() == null) {
-      return null;
-    }
-    return mrp.getStockLocation().getCompany().getTimezone();
-  }
-
-  /**
-   * Prints the list MRP birt report and shows it to the user.
-   *
-   * @param request
-   * @param response
-   */
-  public void printList(ActionRequest request, ActionResponse response) {
-    Mrp mrp = request.getContext().asType(Mrp.class);
-    String name = I18n.get("MRP") + "-" + mrp.getId();
-
-    try {
-      String fileLink =
-          ReportFactory.createReport(IReport.MRP_LIST, name)
-              .addParam("mrpId", mrp.getId())
-              .addParam("Timezone", getTimezone(mrp))
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat(ReportSettings.FORMAT_PDF)
-              .generate()
-              .getFileLink();
-
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 

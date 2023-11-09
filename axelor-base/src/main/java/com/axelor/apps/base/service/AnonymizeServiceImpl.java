@@ -21,7 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.AdminExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaJsonField;
@@ -58,7 +58,7 @@ public class AnonymizeServiceImpl implements AnonymizeService {
     if (property.isJson()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.JSON_FIELD_CAN_NOT_BE_ANONYMIZED));
+          I18n.get(BaseExceptionMessage.JSON_FIELD_CAN_NOT_BE_ANONYMIZED));
     }
     if (property.getMaxSize() != null && (int) property.getMaxSize() > 0) {
       return anonymize(object, property.getType().toString(), (int) property.getMaxSize());

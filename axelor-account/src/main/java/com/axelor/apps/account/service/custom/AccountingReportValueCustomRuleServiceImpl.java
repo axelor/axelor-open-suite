@@ -159,6 +159,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
 
     BigDecimal result =
         this.getResultFromCustomRule(
+            accountingReport,
             column,
             line,
             groupColumn,
@@ -238,6 +239,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
   }
 
   protected BigDecimal getResultFromCustomRule(
+      AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       AccountingReportConfigLine groupColumn,
@@ -258,6 +260,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     try {
       return (BigDecimal) scriptHelper.eval(rule);
     } catch (Exception e) {
+      if (accountingReport.getTraceAnomalies()) {
+        this.traceException(e, accountingReport, groupColumn, column, line);
+      }
+
       this.addNullValue(
           column,
           groupColumn,

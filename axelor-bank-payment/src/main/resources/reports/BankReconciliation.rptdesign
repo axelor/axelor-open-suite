@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -948,6 +948,12 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">currency_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">currency_amount</text-property>
+                    <text-property name="heading">currency_amount</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
@@ -995,7 +1001,7 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
-                 <structure>
+                <structure>
                     <property name="name">param_5</property>
                     <property name="paramName">BankReconciliationToDate</property>
                     <property name="nativeName"></property>
@@ -1050,6 +1056,11 @@ bankReconciliationLine.credit ;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1115,6 +1126,13 @@ bankReconciliationLine.credit ;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
@@ -1130,6 +1148,7 @@ moveLine.description AS name ,
 bankReconciliationLine.type_select  AS type ,
 moveLine.debit AS debit ,
 moveLine.credit AS credit ,
+moveLine.currency_amount AS currency_amount,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
@@ -1141,7 +1160,7 @@ LEFT JOIN public.account_account_type AS accountType ON account.account_type = a
 WHERE bankReconciliation.id = ?
 AND accountType.technical_type_select = 'cash'
 AND (move.status_select = 2 OR move.status_select = 3)
-AND (company.currency = bankReconciliation.currency AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit)) OR (company.currency != bankReconciliation.currency AND moveLine.currency_amount > 0 AND moveLine.bank_reconciled_amount < moveLine.currency_amount))
+AND (company.currency = bankReconciliation.currency AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit)) OR (company.currency != bankReconciliation.currency AND abs(moveLine.currency_amount) > 0 AND moveLine.bank_reconciled_amount < abs(moveLine.currency_amount)))
 AND (bankReconciliation.include_other_bank_statements IS true
 OR ((moveLine.date_val >= ? OR moveLine.due_date >= ?)
 AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
@@ -1423,7 +1442,7 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
-                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
                             <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
@@ -1496,24 +1515,13 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
-                            <property name="verticalAlign">middle</property>
-                            <text id="6409">
-                                <property name="fontSize">8pt</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                            <image id="6890">
+                                <expression name="altText">""</expression>
+                                <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="6422">
                             <property name="verticalAlign">middle</property>
@@ -1726,6 +1734,26 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <expression name="expression" type="javascript">dataSetRow["corrected_user_full_name"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">logo_height</property>
+                            <text-property name="displayName">logo_height</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_width</property>
+                            <text-property name="displayName">logo_width</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">comments</property>
+                            <text-property name="displayName">comments</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <column id="6048">
                         <property name="suppressDuplicates">true</property>
@@ -1787,55 +1815,10 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <property name="textAlign">left</property>
                             <image id="6057">
                                 <property name="overflow">hidden</property>
-                                <property name="height">35px</property>
-                                <property name="width">154px</property>
                                 <expression name="altText">""</expression>
-                                <property name="dataSet">BankReconciliationDS</property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">company</property>
-                                        <text-property name="displayName">company</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["company"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">report_date</property>
-                                        <text-property name="displayName">report_date</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                        <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">currency</property>
-                                        <text-property name="displayName">currency</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">journal</property>
-                                        <text-property name="displayName">journal</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">cash_account</property>
-                                        <text-property name="displayName">cash_account</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">account</property>
-                                        <text-property name="displayName">account</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["account"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
                                 <structure name="toc"/>
+                                <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
                                 <property name="source">file</property>
                                 <property name="proportionalScale">true</property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
@@ -2460,14 +2443,26 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <structure>
                                 <property name="name">debit</property>
                                 <text-property name="displayName">debit</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">credit</property>
                                 <text-property name="displayName">credit</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">sum_debit</property>
@@ -2482,7 +2477,12 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["debit"]</expression>
+                                        <expression name="value" type="javascript">if(dataSetRow["debit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2494,7 +2494,12 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["credit"]</expression>
+                                        <expression name="value" type="javascript">if(dataSetRow["credit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2518,10 +2523,16 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["amount"]</expression>
+                                        <expression name="value" type="javascript">row["currency_amount"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">currency_amount</property>
+                                <text-property name="displayName">currency_amount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <column id="4751">
@@ -2984,7 +2995,7 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                                         <property name="fontFamily">sans-serif</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["currency_amount"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

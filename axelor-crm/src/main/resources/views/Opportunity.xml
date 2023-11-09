@@ -35,7 +35,7 @@
       onClick="action-method-opportunity-set-next-stage"
       hideIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"/>
     <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
-      onClick="action-group-crm-opportunity-closedwon-click"
+      onClick="action-method-opportunity-set-stage-closed-won"
       hideIf="$get('opportunityStatus.id') == $closedWonId"/>
     <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
       onClick="action-method-opportunity-set-stage-closed-lost"
@@ -65,7 +65,7 @@
       onClick="action-method-opportunity-set-next-stage"
       hideIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"/>
     <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
-      onClick="action-group-crm-opportunity-closedwon-click"
+      onClick="action-method-opportunity-set-stage-closed-won"
       hideIf="$get('opportunityStatus.id') == $closedWonId"/>
     <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
       onClick="action-method-opportunity-set-stage-closed-lost"
@@ -128,7 +128,7 @@
     <panel name="mainPanel"
       readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId">
       <field name="opportunityStatus" colSpan="12" widget="NavSelect" x-order="sequence"
-        showTitle="false" onChange="action-opportunity-group-status-onchange"/>
+        showTitle="false" onChange="action-opportunity-group-status-onchange" readonlyIf="!id"/>
       <field name="opportunitySeq" showTitle="false" colSpan="2">
         <viewer depends="opportunitySeq"><![CDATA[
                  	<h3>
@@ -139,7 +139,8 @@
           <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
         </editor>
       </field>
-      <field name="name" showTitle="false" colSpan="8" readonly="true">
+      <field name="name" showTitle="false" placeholder="Name" colSpan="8"
+        css="label-bold bold large">
         <viewer depends="name">
                     <![CDATA[
 						<span style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
@@ -172,8 +173,25 @@
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           colSpan="12" widget="html"/>
       </panel>
-      <panel name="recurrentPanel" title="Recurrent"
-        if="__config__.app.getApp('crm')?.isManageRecurrent" colSpan="12"
+      <panel name="eventPanel" title="Events">
+        <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
+          onClick="save,action-opportunity-view-meeting-event" colSpan="3"/>
+        <button name="callBtn" title="Create a call" link="" icon="fa-phone"
+          onClick="save,action-opportunity-view-call-event" colSpan="3"/>
+        <button name="taskBtn" title="Create a task" link="" icon="fa-tasks"
+          onClick="save,action-opportunity-view-task-event" colSpan="3"/>
+        <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
+          onClick="save,action-opportunity-view-note-event" colSpan="3"/>
+        <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
+          icon="fa-tasks" onClick="action-opportunity-view-all-events" readonlyIf="id == null"/>
+        <field name="lastEventDateT" readonly="true" colSpan="3"/>
+        <field name="nextScheduledEventDateT" readonly="true" colSpan="3"/>
+        <panel-dashlet name="eventPanelDashlet"
+          action="action-opportunity-view-events" title="Events" height="550" colSpan="12"/>
+      </panel>
+
+      <panel name="recurrentPanel" title="Recurrent" colSpan="12"
+        if="__config__.app.getApp('crm')?.isManageRecurrent"
         readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId">
         <field name="recurrentAmount"/>
         <field name="expectedDurationOfRecurringRevenue"/>
@@ -198,7 +216,7 @@
         <field name="user" canNew="false" canView="false" canEdit="false"
           form-view="user-form" grid-view="user-grid"/>
         <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
-          grid-view="company-grid"/>
+          grid-view="company-grid" required="true"/>
         <field if="__config__.app.getApp('base')?.getTeamManagement()" name="team"
           canEdit="false" form-view="team-form" grid-view="team-grid"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
@@ -220,13 +238,11 @@
         <field name="partner" canEdit="false" requiredIf="contact == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = false AND :company member of self.companySet"
-          form-view="partner-form" grid-view="partner-grid"
-          onChange="action-opportunity-record-set-name"/>
+          form-view="partner-form" grid-view="partner-grid"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = true AND :company member of self.companySet"
-          form-view="partner-contact-form" grid-view="partner-contact-grid"
-          onChange="action-opportunity-record-set-name"/>
+          form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       </panel>
       <panel name="postitPanel" title="Memo" canCollapse="true">
         <field name="memo" showTitle="false" colSpan="12"/>
@@ -244,7 +260,7 @@
 
   <kanban columnBy="opportunityStatus" sequenceBy="orderByState" limit="10"
     name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
-    onMove="action-opportunity-method-cancel-saleorders">
+    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove">
     <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="description"/>
@@ -291,11 +307,54 @@
   </kanban>
 
   <form name="opportunity-form-lost-popup" model="com.axelor.apps.crm.db.Opportunity"
-    title="Lost reason" width="large" onSave="action-opportunity-method-cancel-saleorders">
+    title="Lost reason" width="large" onSave="action-opportunity-group-lost-popup-onsave">
     <panel name="mainPanel">
       <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
       <field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
       <field name="lostReason.freeText" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="opportunity-form-win-popup" model="com.axelor.apps.crm.db.Opportunity"
+    title="Opportunity" onLoad="action-opportunity-popup-attrs-set-values">
+    <panel name="mainPanel">
+      <label title="Select partner type to create:" colSpan="12"/>
+      <panel name="partnerTypePanel" itemSpan="3" colSpan="12">
+        <field name="$isCustomer" type="boolean" title="Customer"/>
+        <field name="$isProspect" type="boolean" title="Prospect"/>
+        <field name="$isSupplier" type="boolean" title="Supplier"/>
+        <field name="$isEmployee" type="boolean" title="Employee"/>
+        <field name="$isContact" type="boolean" title="Contact"/>
+        <field name="$isInternal" type="boolean" title="Internal partner"/>
+        <field name="$isPartner" type="boolean" title="crm.Partner"/>
+      </panel>
+      <button name="okBtn" title="Ok"
+        onClick="action-opportunity-method-winning-process,close" colSpan="3" colOffset="3"/>
+      <button name="cancelBtn" title="Cancel" onClick="close" colSpan="3"/>
+    </panel>
+  </form>
+
+  <form name="other-opportunity-found-popup" model="com.axelor.apps.crm.db.Opportunity"
+    title="Opportunity">
+    <panel name="mainPanel">
+      <label
+        title="These opportunities have been found for the same prospect, would you like to close it (closed losed) ?"
+        colSpan="12"/>
+      <panel-dashlet name="otherOpportunitiesPanel" colSpan="12"
+        action="action-opportunity-view-other-opportunities" height="350"/>
+      <button name="yesBtn" title="Yes"
+        onClick="action-opportunity-view-other-opportunity-lost-popup,close" colSpan="3"
+        colOffset="3"/>
+      <button name="noBtn" title="No" onClick="close" colSpan="3"/>
+    </panel>
+  </form>
+
+  <form name="opportunity-other-form-lost-popup" model="com.axelor.apps.crm.db.Opportunity"
+    title="Lost reason" width="large">
+    <panel name="mainPanel" colSpan="12" itemSpan="12">
+      <panel-include view="opportunity-form-lost-popup"/>
+      <button name="okBtn" title="OK" onClick="action-opportunity-method-lost-process,close"
+        colSpan="2" colOffset="5"/>
     </panel>
   </form>
 
@@ -358,23 +417,67 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-opportunity-view-meeting-event"
+    title="Meeting Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+    <context name="_meeting" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-call-event"
+    title="Call Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+    <context name="_call" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-task-event"
+    title="Task Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+    <context name="_task" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-note-event"
+    title="Note Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+    <context name="_note" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-events" title="Events"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="cards" name="event-cards"/>
+    <view type="grid" name="list-event-grid"/>
+    <view type="form" name="event-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <domain>self.opportunity.id = :_id</domain>
+  </action-view>
+
+  <action-view name="action-opportunity-view-all-events" title="Events"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="grid" name="list-event-grid"/>
+    <view type="form" name="event-form"/>
+    <domain>self.opportunity.id = :_id</domain>
+  </action-view>
+
   <action-group name="action-opportunity-group-new">
+    <action name="action-opportunity-validate-default-status"/>
     <action name="action-opportunity-record-new"/>
     <action name="action-opportunity-record-currency"/>
     <action name="action-opportunity-record-default" if="_partner == null"/>
     <action name="action-opportunity-record-from-partner" if="_partner != null"/>
-    <action name="action-opportunity-record-set-name" if="_partner != null"/>
     <action name="action-opportunity-attrs-set-attrs-on-load"/>
-  </action-group>
-
-  <action-group name="action-group-crm-opportunity-nextstage-click">
-    <action name="action-opportunity-set-next-stage"/>
-    <action name="save"/>
-  </action-group>
-
-  <action-group name="action-group-crm-opportunity-closedwon-click">
-    <action name="action-method-opportunity-set-stage-closed-won"/>
-    <action name="save"/>
+    <action name="action-opportunity-method-set-fields-from-partner"
+      if="_isGeneratedFromPartner"/>
   </action-group>
 
   <action-view name="action-opportunity-view-schedule-event"
@@ -383,13 +486,6 @@
     <view type="grid" name="event-grid"/>
     <context name="_opportunity" expr="eval: __this__"/>
   </action-view>
-
-  <action-record name="action-opportunity-record-set-name"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="name" expr="eval: partner.fullName" if="partner != null"/>
-    <field name="name" expr="eval: contact.fullName"
-      if="contact != null &amp;&amp; partner == null"/>
-  </action-record>
 
   <action-record name="action-opportunity-record-new"
     model="com.axelor.apps.crm.db.Opportunity">
@@ -402,9 +498,10 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <field name="expectedDurationOfRecurringRevenue"
       expr="eval: __config__.app.getApp('crm').defaultRecurringDuration"
-      if="__config__.app.getApp('crm').isManageRecurrent &amp;&amp; __config__.app.getApp('crm').defaultRecurringDuration != null"/>
+      if="__config__.app.getApp('crm').isManageRecurrent &amp;&amp; __config__.app.getApp('crm').defaultRecurringDuration
+      != null"/>
     <field name="opportunityStatus"
-      expr="eval: __repo__(OpportunityStatus).getDefaultStatus()"/>
+      expr="eval: __config__.app.getApp('crm')?.opportunityDefaultStatus"/>
   </action-record>
 
   <action-record name="action-opportunity-record-currency"
@@ -475,26 +572,8 @@
       if="opportunityStatus.id != __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
   </action-record>
 
-  <action-record name="action-opportunity-set-next-stage"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="opportunityStatus"
-      expr="eval: __repo__(OpportunityStatus).findByNextSequence(__this__.opportunityStatus.sequence)"/>
-  </action-record>
-
   <action-method name="action-show-opportunities-on-map-page">
     <call method="showOpportunitiesOnMap" class="com.axelor.apps.crm.web.OpportunityController"/>
-  </action-method>
-
-  <action-method name="action-method-opportunity-set-stage-closed-won">
-    <call method="setStageClosedWon" class="com.axelor.apps.crm.web.OpportunityController"/>
-  </action-method>
-
-  <action-method name="action-method-opportunity-set-stage-closed-lost">
-    <call method="setStageClosedLost" class="com.axelor.apps.crm.web.OpportunityController"/>
-  </action-method>
-
-  <action-method name="action-method-opportunity-set-next-stage">
-    <call method="setNextStage" class="com.axelor.apps.crm.web.OpportunityController"/>
   </action-method>
 
   <action-method name="action-method-opportunity-fill-end-date">
@@ -507,12 +586,96 @@
     <view type="form" name="opportunity-form"/>
   </action-view>
 
+  <!-- GRID STATUS CHANGE -->
+
+  <action-method name="action-method-opportunity-set-stage-closed-lost">
+    <call method="setStageClosedLost" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-method-opportunity-set-next-stage">
+    <call method="setNextStage" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-method-opportunity-set-stage-closed-won">
+    <call method="setStageClosedWon" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-opportunity-method-set-fields-from-partner">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="setFieldsForOpportunityGenerationFromPartner"/>
+  </action-method>
+
   <action-group name="action-opportunity-group-status-onchange">
-    <action name="save"/>
+    <action name="action-opportunity-view-opportunity-win-popup"
+      if="opportunityStatus.id == __config__.app.getApp('crm')?.closedWinOpportunityStatus?.id &amp;&amp; partner?.isProspect"/>
     <action name="action-opportunity-view-opportunity-lost-popup-view"
       if="opportunityStatus.id == __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
-    <action name="action-opportunity-record-clear-lost-reason"/>
-    <action name="save"/>
+    <action name="action-opportunity-record-clear-lost-reason"
+      if="opportunityStatus.id != __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id &amp;&amp; lostReason != null"/>
   </action-group>
+
+  <action-record name="action-opportunity-record-set-closed-lost-status"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="opportunityStatus"
+      expr="eval: __config__.app.getApp('crm')?.closedLostOpportunityStatus"/>
+  </action-record>
+
+  <action-group name="action-opportunity-group-lost-popup-onsave">
+    <action name="action-opportunity-record-set-closed-lost-status"/>
+    <action name="action-opportunity-method-cancel-saleorders"/>
+  </action-group>
+
+  <action-validate name="action-opportunity-validate-default-status">
+    <error message="Please fill default opportunity status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.opportunityDefaultStatus"/>
+  </action-validate>
+
+  <action-view name="action-opportunity-view-opportunity-win-popup"
+    model="com.axelor.apps.crm.db.Opportunity" title="Opportunity">
+    <view type="form" name="opportunity-form-win-popup"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-other-opportunity-lost-popup"
+    model="com.axelor.apps.crm.db.Opportunity" title="Lost reason">
+    <view type="form" name="opportunity-other-form-lost-popup"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_otherOpportunities" expr="eval: _otherOpportunities"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-other-opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" title="Other opportunities">
+    <view type="grid" name="opportunity-grid"/>
+    <view type="form" name="opportunity-form"/>
+    <domain>self.id IN (:_otherOpportunities)</domain>
+  </action-view>
+
+  <action-attrs name="action-opportunity-popup-attrs-set-values">
+    <attribute name="value" for="$isCustomer" expr="eval: true"/>
+    <attribute name="value"
+      for="$isProspect,$isSupplier,$isEmployee,$isContact,$isInternal,$isPartner" expr="eval: false"/>
+  </action-attrs>
+
+  <action-method name="action-opportunity-method-winning-process">
+    <call method="winningProcess" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-opportunity-method-lost-process">
+    <call method="lostProcess" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-opportunity-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.OpportunityController"
+      method="kanbanOpportunityOnMove"/>
+  </action-method>
 
 </object-views>

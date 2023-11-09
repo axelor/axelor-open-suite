@@ -26,23 +26,34 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.service.EmployeeComputeDaysLeaveLunchVoucherService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
 public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
 
   protected EmployeeComputeDaysLeaveLunchVoucherService employeeComputeDaysLeaveLunchVoucherService;
+  protected ExpenseLineRepository expenseLineRepository;
+  protected LunchVoucherMgtLineRepository lunchVoucherMgtLineRepository;
 
   @Inject
   public LunchVoucherMgtLineServiceImpl(
-      EmployeeComputeDaysLeaveLunchVoucherService employeeComputeDaysLeaveLunchVoucherService) {
+      EmployeeComputeDaysLeaveLunchVoucherService employeeComputeDaysLeaveLunchVoucherService,
+      ExpenseLineRepository expenseLineRepository,
+      LunchVoucherMgtLineRepository lunchVoucherMgtLineRepository) {
     this.employeeComputeDaysLeaveLunchVoucherService = employeeComputeDaysLeaveLunchVoucherService;
+    this.expenseLineRepository = expenseLineRepository;
+    this.lunchVoucherMgtLineRepository = lunchVoucherMgtLineRepository;
   }
 
   /*
@@ -66,6 +77,8 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
       Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine) {
     Integer lineStatus = LunchVoucherMgtLineRepository.STATUS_CALCULATED;
     try {
+      lunchVoucherMgtLine.setRestaurant(computeRestaurant(employee));
+      lunchVoucherMgtLine.setInvitation(computeInvitation(employee));
       lunchVoucherMgtLine.setInAdvanceNbr(computeEmployeeLunchVoucherAdvance(employee));
       lunchVoucherMgtLine.setDaysWorkedNbr(
           employeeComputeDaysLeaveLunchVoucherService
@@ -117,12 +130,79 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
 
   @Override
   public void compute(LunchVoucherMgtLine lunchVoucherMgtLine) throws AxelorException {
-    Integer lunchVoucherNumber =
+    int lunchVoucherNumber =
         lunchVoucherMgtLine.getDaysWorkedNbr()
             - (lunchVoucherMgtLine.getCanteenEntries()
+                + lunchVoucherMgtLine.getRestaurant()
                 + lunchVoucherMgtLine.getDaysOverseas()
                 + lunchVoucherMgtLine.getInAdvanceNbr()
                 + lunchVoucherMgtLine.getInvitation());
     lunchVoucherMgtLine.setLunchVoucherNumber(Integer.max(lunchVoucherNumber, 0));
+    computeFormatRepartition(lunchVoucherMgtLine, lunchVoucherNumber);
+  }
+
+  protected void computeFormatRepartition(
+      LunchVoucherMgtLine lunchVoucherMgtLine, int lunchVoucherNumber) {
+    Employee employee = lunchVoucherMgtLine.getEmployee();
+
+    switch (employee.getLunchVoucherFormatSelect()) {
+      default:
+      case EmployeeRepository.LUNCH_VOUCHER_MGT_FORMAT_PAPER:
+        lunchVoucherMgtLine.setPaperFormatNumber(lunchVoucherNumber);
+        lunchVoucherMgtLine.setCardFormatNumber(0);
+        break;
+      case EmployeeRepository.LUNCH_VOUCHER_MGT_FORMAT_CARD:
+        lunchVoucherMgtLine.setCardFormatNumber(lunchVoucherNumber);
+        lunchVoucherMgtLine.setPaperFormatNumber(0);
+        break;
+      case EmployeeRepository.LUNCH_VOUCHER_MGT_FORMAT_BOTH:
+        computeFormatRepartitionForBoth(lunchVoucherMgtLine, lunchVoucherNumber, employee);
+        break;
+    }
+  }
+
+  protected void computeFormatRepartitionForBoth(
+      LunchVoucherMgtLine lunchVoucherMgtLine, Integer lunchVoucherNumber, Employee employee) {
+    BigDecimal distribution = BigDecimal.valueOf(employee.getLunchVoucherDistribution());
+    int paperNumber =
+        BigDecimal.valueOf(lunchVoucherNumber)
+            .multiply(distribution)
+            .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_UP)
+            .intValue();
+    int cardNumber = lunchVoucherNumber - paperNumber;
+
+    lunchVoucherMgtLine.setPaperFormatNumber(paperNumber);
+    lunchVoucherMgtLine.setCardFormatNumber(cardNumber);
+  }
+
+  @Override
+  public int computeRestaurant(Employee employee) {
+    return (int)
+        expenseLineRepository
+            .all()
+            .filter(
+                "self.expenseProduct.deductLunchVoucher = true AND self.expense.employee = :employee AND self.expense.statusSelect = :statusSelect AND self.expense.ventilated = false")
+            .bind("employee", employee)
+            .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
+            .count();
+  }
+
+  @Override
+  public int computeInvitation(Employee employee) {
+    return (int)
+        expenseLineRepository
+            .all()
+            .filter(
+                "self.expenseProduct.deductLunchVoucher = true AND :employee MEMBER OF self.invitedCollaboratorSet AND self.expense.statusSelect = :statusSelect AND self.expense.ventilated = false")
+            .bind("employee", employee)
+            .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
+            .count();
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setStatusToCalculate(LunchVoucherMgtLine lunchVoucherMgtLine) {
+    lunchVoucherMgtLine.setStatusSelect(LunchVoucherMgtLineRepository.STATUS_TO_CALCULATE);
+    lunchVoucherMgtLineRepository.save(lunchVoucherMgtLine);
   }
 }

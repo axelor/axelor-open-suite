@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -70,7 +71,17 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
             this.getColumnCode(
                 column.getPercentageBaseColumn(), parentTitle, groupColumn, configAnalyticAccount));
 
-    if (valuesMap == null) {
+    if (valuesMap == null || column.getCode().equals(column.getPercentageBaseColumn())) {
+      if (accountingReport.getTraceAnomalies()
+          && StringUtils.notEmpty(column.getPercentageBaseColumn())) {
+        this.traceException(
+            AccountExceptionMessage.CUSTOM_REPORT_WRONG_PERCENTAGE_BASE_COLUMN,
+            accountingReport,
+            groupColumn,
+            column,
+            line);
+      }
+
       this.addNullValue(
           column,
           groupColumn,
@@ -174,7 +185,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       BigDecimal result,
       int analyticCounter)
       throws AxelorException {
-    if (baseValue == null) {
+    if (baseValue == null
+        || (totalValue == null && StringUtils.notEmpty(line.getPercentageTotalLine()))) {
       this.addNullValue(
           column,
           groupColumn,
@@ -183,6 +195,15 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
           configAnalyticAccount,
           parentTitle,
           lineCode);
+
+      if (accountingReport.getTraceAnomalies()) {
+        this.traceException(
+            AccountExceptionMessage.REPORT_TYPE_TOTAL_LINE_NOT_EXISTS,
+            accountingReport,
+            groupColumn,
+            column,
+            line);
+      }
 
       return;
     } else if (totalValue != null && totalValue.getResult().signum() != 0) {

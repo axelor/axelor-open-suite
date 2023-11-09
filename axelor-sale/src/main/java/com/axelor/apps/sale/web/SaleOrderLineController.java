@@ -55,13 +55,9 @@ import java.util.Optional;
 public class SaleOrderLineController {
 
   public void compute(ActionRequest request, ActionResponse response) {
-
     Context context = request.getContext();
-
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
-
     try {
       compute(response, saleOrder, saleOrderLine);
     } catch (Exception e) {
@@ -449,7 +445,10 @@ public class SaleOrderLineController {
             && !description.isEmpty()
             && productName != null
             && !productName.isEmpty()) {
-          response.setValue("description", description);
+          if (Boolean.TRUE.equals(
+              Beans.get(AppSaleService.class).getAppSale().getIsEnabledProductDescriptionCopy())) {
+            response.setValue("description", description);
+          }
           response.setValue("productName", productName);
         }
       }

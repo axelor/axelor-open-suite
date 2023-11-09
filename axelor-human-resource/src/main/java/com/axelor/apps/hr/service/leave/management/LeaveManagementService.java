@@ -29,20 +29,28 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class LeaveManagementService {
 
   @Inject protected AppBaseService appBaseService;
 
   public LeaveLine computeQuantityAvailable(LeaveLine leaveLine) {
-    List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
+
     leaveLine.setTotalQuantity(BigDecimal.ZERO);
-    if (leaveManagementList != null && !leaveManagementList.isEmpty()) {
-      for (LeaveManagement leaveManagement : leaveManagementList) {
-        leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(leaveManagement.getValue()));
-      }
-      leaveLine.setQuantity(leaveLine.getTotalQuantity().subtract(leaveLine.getDaysValidated()));
+    leaveLine.setQuantity(BigDecimal.ZERO);
+
+    List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
+    if (CollectionUtils.isEmpty(leaveManagementList)) {
+      return leaveLine;
     }
+
+    leaveLine.setTotalQuantity(
+        leaveManagementList.stream()
+            .map(LeaveManagement::getValue)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO));
+    leaveLine.setQuantity(leaveLine.getTotalQuantity().subtract(leaveLine.getDaysValidated()));
     return leaveLine;
   }
 
@@ -59,7 +67,6 @@ public class LeaveManagementService {
     LeaveManagement leaveManagement = new LeaveManagement();
 
     leaveManagement.setLeaveLine(leaveLine);
-    leaveManagement.setUser(user);
     leaveManagement.setComments(comments);
     if (date == null) {
       leaveManagement.setDate(

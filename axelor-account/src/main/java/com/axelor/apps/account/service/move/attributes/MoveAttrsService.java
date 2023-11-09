@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move.attributes;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.auth.db.User;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -30,9 +31,6 @@ public interface MoveAttrsService {
   void addFunctionalOriginSelectDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
-
-  void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException;
 
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
@@ -55,4 +53,21 @@ public interface MoveAttrsService {
       boolean value, Map<String, Map<String, Object>> attrsMap);
 
   void addHeaderChangeValue(boolean value, Map<String, Map<String, Object>> attrsMap);
+
+  void getPfpAttrs(Move move, User user, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
+
+  void addMassEntryHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addMassEntryPaymentConditionRequired(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addMassEntryBtnHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addMainPanelTabHiddenValue(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addSubrogationPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 }

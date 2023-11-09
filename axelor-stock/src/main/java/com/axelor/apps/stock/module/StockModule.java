@@ -82,8 +82,6 @@ import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationServiceImpl;
-import com.axelor.apps.stock.service.WapHistoryService;
-import com.axelor.apps.stock.service.WapHistoryServiceImpl;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.WeightedAveragePriceServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -92,8 +90,6 @@ import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintS
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintServiceimpl;
-import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
-import com.axelor.apps.stock.service.stockmove.print.StockMovePrintServiceImpl;
 
 public class StockModule extends AxelorModule {
 
@@ -119,7 +115,6 @@ public class StockModule extends AxelorModule {
     bind(StockMoveLineRepository.class).to(StockMoveLineStockRepository.class);
     PartnerAddressRepository.modelPartnerFieldMap.put(StockMove.class.getName(), "partner");
     bind(TrackingNumberRepository.class).to(TrackingNumberManagementRepository.class);
-    bind(StockMovePrintService.class).to(StockMovePrintServiceImpl.class);
     bind(StockMoveToolService.class).to(StockMoveToolServiceImpl.class);
     bind(PickingStockMovePrintService.class).to(PickingStockMovePrintServiceimpl.class);
     bind(ConformityCertificatePrintService.class).to(ConformityCertificatePrintServiceImpl.class);
@@ -131,7 +126,6 @@ public class StockModule extends AxelorModule {
     bind(InventoryProductService.class).to(InventoryProductServiceImpl.class);
     bind(TrackingNumberConfigurationService.class).to(TrackingNumberConfigurationServiceImpl.class);
     bind(ProductVariantServiceImpl.class).to(ProductVariantServiceStockImpl.class);
-    bind(WapHistoryService.class).to(WapHistoryServiceImpl.class);
     bind(StockProductRestService.class).to(StockProductRestServiceImpl.class);
     bind(InventoryUpdateService.class).to(InventoryUpdateServiceImpl.class);
     bind(StockHistoryLineRepository.class).to(StockHistoryLineManagementRepository.class);

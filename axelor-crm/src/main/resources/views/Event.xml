@@ -219,7 +219,11 @@
       hideIf="typeSelect == 5">
       <field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one"
         target="com.axelor.message.db.EmailAddress" canNew="true"
-        onChange="action-event-method-add-email-guest"/>
+        onChange="action-event-method-add-email-guest">
+        <editor x-show-titles="false" x-viewer="true">
+          <field name="address" widget="email" colSpan="12" placeholder="whatever@example.com"/>
+        </editor>
+      </field>
       <field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
         <editor layout="table" x-show-titles="false">
           <field name="name" readonly="true"/>
@@ -385,7 +389,6 @@
     <action name="action-event-view-modifications-recurrence"
       if="recurrenceConfiguration &amp;&amp; id > 0"/>
     <action name="action-event-attrs-show-past-event-text"/>
-    <action name="action-event-method-fill-event-related-dates"/>
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
@@ -538,6 +541,8 @@
     <field name="user" expr="eval: _eventLead.user"/>
     <field name="team" expr="eval: _eventLead.team"/>
     <field name="partner" expr="eval: _eventLead.partner"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Lead'"/>
+    <field name="relatedToSelectId" expr="eval: _eventLead.id"/>
     <field name="typeSelect" expr="eval: 1" if="_call"/>
     <field name="typeSelect" expr="eval: 2" if="_meeting"/>
     <field name="typeSelect" expr="eval: 3" if="_task"/>
@@ -546,11 +551,15 @@
 
   <action-record name="action-event-record-event-from-opportunity"
     model="com.axelor.apps.crm.db.Event">
-    <field name="eventLead" expr="eval: _opportunity.eventLead"/>
+    <field name="opportunity" expr="eval: _opportunity"/>
+    <field name="team" expr="eval: _opportunity.team"/>
     <field name="partner" expr="eval: _opportunity.partner"/>
-    <field if="_opportunity.id != null" name="relatedToSelect"
-      expr="eval:'com.axelor.apps.crm.db.Opportunity'"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Opportunity'"/>
     <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_EVENT" if="_call"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_MEETING" if="_meeting"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_TASK" if="_task"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_NOTE" if="_note"/>
   </action-record>
 
 
@@ -578,6 +587,8 @@
     <field name="user" expr="eval: __repo__(User).find(_partner.user.id)"
       if="_partner.user != null"/>
     <field name="team" expr="eval: _partner.team"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.base.db.Partner'"/>
+    <field name="relatedToSelectId" expr="eval: _partner.id"/>
     <field name="typeSelect" expr="eval: 1" if="_call"/>
     <field name="typeSelect" expr="eval: 2" if="_meeting"/>
     <field name="typeSelect" expr="eval: 3" if="_task"/>
@@ -628,11 +639,6 @@
   </action-record>
 
   <!-- ACTION METHOD -->
-
-  <action-method name="action-event-method-fill-event-related-dates"
-    model="com.axelor.apps.crm.db.Event">
-    <call class="com.axelor.apps.crm.web.EventController" method="fillEventDates"/>
-  </action-method>
 
   <action-method name="action-event-method-compute-from-start-date-time">
     <call class="com.axelor.apps.crm.web.EventController" method="computeFromStartDateTime"/>

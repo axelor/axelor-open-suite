@@ -99,7 +99,8 @@
   </input>
 
   <input file="stock_stockMoveLine.csv" separator=";"
-    type="com.axelor.apps.stock.db.StockMoveLine" search="self.importId = :importId">
+    type="com.axelor.apps.stock.db.StockMoveLine" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportStockMoveLine:importStockMoveLine">
     <bind to="stockMove" search="self.importId = :stockMove_importId"/>
     <bind to="product" search="self.importId = :product_importId"/>
     <bind to="unit" search="self.importId = :unit_importId"/>
@@ -132,5 +133,8 @@
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
   </input>
+
+  <input file="stock_stockCorrectionReason.csv" separator=";"
+    type="com.axelor.apps.stock.db.StockCorrectionReason" search="self.importId = :importId"/>
 
 </csv-inputs>

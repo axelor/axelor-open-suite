@@ -39,4 +39,8 @@ public interface MoveRecordUpdateService {
       throws AxelorException;
 
   LocalDate getDateOfReversion(LocalDate moveDate, int dateOfReversionSelect);
+
+  void resetDueDate(Move move);
+
+  void updateSubrogationPartner(Move move);
 }

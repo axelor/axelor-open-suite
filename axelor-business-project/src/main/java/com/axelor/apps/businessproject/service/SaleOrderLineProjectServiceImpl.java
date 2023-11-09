@@ -36,6 +36,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -64,7 +65,8 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
       TaxService taxService,
       SaleOrderMarginService saleOrderMarginService,
       InvoiceLineRepository invoiceLineRepository,
-      SaleInvoicingStateService saleInvoicingStateService) {
+      SaleInvoicingStateService saleInvoicingStateService,
+      AnalyticLineModelService analyticLineModelService) {
     super(
         currencyService,
         priceListService,
@@ -82,7 +84,8 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
         taxService,
         saleOrderMarginService,
         invoiceLineRepository,
-        saleInvoicingStateService);
+        saleInvoicingStateService,
+        analyticLineModelService);
   }
 
   @Transactional
@@ -99,18 +102,6 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
         saleOrderLineRepo.save(line);
       }
     }
-  }
-
-  @Override
-  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) {
-
-    SaleOrderLine soLine = super.createAnalyticDistributionWithTemplate(saleOrderLine);
-    List<AnalyticMoveLine> analyticMoveLineList = soLine.getAnalyticMoveLineList();
-
-    if (soLine.getProject() != null && analyticMoveLineList != null) {
-      analyticMoveLineList.forEach(analyticLine -> analyticLine.setProject(soLine.getProject()));
-    }
-    return soLine;
   }
 
   @Override

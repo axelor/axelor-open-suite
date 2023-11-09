@@ -20,14 +20,11 @@ package com.axelor.apps.account.service.app;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppAccount;
-import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.AppInvoice;
 
 public interface AppAccountService extends AppBaseService {
 
   public AppAccount getAppAccount();
-
-  public AppBudget getAppBudget();
 
   public AppInvoice getAppInvoice();
 

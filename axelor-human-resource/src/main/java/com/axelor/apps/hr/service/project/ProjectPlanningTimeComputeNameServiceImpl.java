@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
 import com.google.inject.Inject;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class ProjectPlanningTimeComputeNameServiceImpl
 
   @Override
   public String computeProjectPlanningTimeFullname(
-      Employee employee, Project project, LocalDate date) {
+      Employee employee, Project project, LocalDateTime startDateTime) {
     String fullName = "";
 
     try {
@@ -50,7 +50,7 @@ public class ProjectPlanningTimeComputeNameServiceImpl
         fullName += "-" + project.getCode();
       }
 
-      String dateStr = date.format(dateService.getDateFormat());
+      String dateStr = startDateTime.format(dateService.getDateFormat());
       if (!fullName.isEmpty()) {
         fullName += "-" + dateStr;
       } else {

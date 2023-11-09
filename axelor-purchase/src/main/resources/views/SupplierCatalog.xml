@@ -43,6 +43,11 @@
         onChange="action-supplier-catalog-attrs-set-price"/>
       <field name="price" hideIf="isTakingProductPurchasePrice"
         validIf="isTakingProductPurchasePrice || price > 0"/>
+      <field name="isTakeProductMultipleQty"
+        if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()"/>
+      <field name="productMultipleQtyList"
+        if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()"
+        hideIf="isTakeProductMultipleQty"/>
     </panel>
     <panel name="descriptionPanel" title="Description" colSpan="12">
       <field name="description" showTitle="false" colSpan="12"/>
@@ -69,6 +74,11 @@
         onChange="action-supplier-catalog-attrs-set-price"/>
       <field name="price" hideIf="isTakingProductPurchasePrice"
         validIf="isTakingProductPurchasePrice || price > 0"/>
+      <field name="isTakeProductMultipleQty"
+        if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()"/>
+      <field name="productMultipleQtyList"
+        if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()"
+        hideIf="isTakeProductMultipleQty"/>
       <field name="supplierPartner" hidden="true"/>
     </panel>
     <panel name="descriptionPanel" title="Description" colSpan="12">

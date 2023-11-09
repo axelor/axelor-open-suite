@@ -36,6 +36,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -43,6 +44,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -111,7 +113,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
           move,
           move.getDate(),
           BigDecimal.valueOf(100),
-          moveLine.getCurrencyAmount(),
+          moveLine.getCurrencyAmount().abs(),
           1,
           false);
 
@@ -127,7 +129,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
     boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
     BigDecimal total =
-        invoiceTermService.getTotalInvoiceTermsAmount(moveLine, holdbackAccount, containsHoldback);
+        invoiceTermService
+            .getTotalInvoiceTermsAmount(moveLine, holdbackAccount, containsHoldback)
+            .abs();
     MoveLine holdbackMoveLine = null;
 
     for (PaymentConditionLine paymentConditionLine :
@@ -152,6 +156,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     }
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      adjustLastInvoiceTerm(
+          moveLine.getInvoiceTermList(),
+          moveLine.getCurrencyAmount().abs(),
+          moveLine.getDebit().max(moveLine.getCredit()));
       moveLine.getInvoiceTermList().forEach(it -> this.recomputePercentages(it, total));
       this.handleFinancialDiscount(moveLine);
     }
@@ -305,7 +313,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
-            ? total
+            ? total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
             : total
                 .multiply(percentage)
                 .divide(
@@ -313,12 +321,27 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                     RoundingMode.HALF_UP);
 
+    if (isHoldback) {
+      amount =
+          amount.divide(
+              moveLine.getCurrencyRate(),
+              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              RoundingMode.HALF_UP);
+    }
+
+    User pfpUser = null;
+    if (invoiceTermService.getPfpValidatorUserCondition(move.getInvoice(), moveLine)) {
+      Partner partner = move.getInvoice() != null ? move.getPartner() : moveLine.getPartner();
+
+      pfpUser = invoiceTermService.getPfpValidatorUser(partner, move.getCompany());
+    }
+
     return invoiceTermService.createInvoiceTerm(
         null,
         move,
         moveLine,
         move.getPartnerBankDetails(),
-        null,
+        pfpUser,
         move.getPaymentMode(),
         dueDate,
         null,
@@ -344,7 +367,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       moveLine.setDebit(moveLine.getDebit().add(amount));
     }
 
-    moveLine.setAmountRemaining(moveLine.getAmountRemaining().add(amount));
+    BigDecimal signum = BigDecimal.valueOf(moveLine.getAmountRemaining().signum());
+    moveLine.setAmountRemaining(moveLine.getAmountRemaining().abs().add(amount).multiply(signum));
   }
 
   protected Account getHoldbackAccount(MoveLine moveLine, Move move) throws AxelorException {
@@ -394,5 +418,42 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   public void setDueDateFromInvoiceTerms(MoveLine moveLine) {
     moveLine.setDueDate(
         invoiceTermService.getDueDate(moveLine.getInvoiceTermList(), moveLine.getDueDate()));
+  }
+
+  protected void adjustLastInvoiceTerm(
+      List<InvoiceTerm> invoiceTermList, BigDecimal totalAmount, BigDecimal companyTotalAmount) {
+    BigDecimal sumOfInvoiceTerm =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (totalAmount.compareTo(sumOfInvoiceTerm) != 0) {
+      InvoiceTerm lastElement = invoiceTermList.get(invoiceTermList.size() - 1);
+
+      BigDecimal difference = totalAmount.subtract(sumOfInvoiceTerm);
+      BigDecimal amount = lastElement.getAmount().add(difference);
+      BigDecimal amountRemaining = lastElement.getAmountRemaining().add(difference);
+
+      lastElement.setAmount(amount);
+      lastElement.setAmountRemaining(amountRemaining);
+    }
+
+    BigDecimal companySumOfInvoiceTerm =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getCompanyAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (companyTotalAmount.compareTo(companySumOfInvoiceTerm) != 0) {
+      InvoiceTerm lastElement = invoiceTermList.get(invoiceTermList.size() - 1);
+
+      BigDecimal difference = companyTotalAmount.subtract(companySumOfInvoiceTerm);
+      BigDecimal companyAmount = lastElement.getCompanyAmount().add(difference);
+      BigDecimal companyAmountRemaining = lastElement.getCompanyAmountRemaining().add(difference);
+
+      lastElement.setCompanyAmount(companyAmount);
+      lastElement.setCompanyAmountRemaining(companyAmountRemaining);
+    }
   }
 }

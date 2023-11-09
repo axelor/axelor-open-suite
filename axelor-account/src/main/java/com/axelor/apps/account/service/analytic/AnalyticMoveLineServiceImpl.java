@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
@@ -32,13 +35,17 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -50,6 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -62,6 +70,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   protected AccountConfigRepository accountConfigRepository;
   protected AccountRepository accountRepository;
   protected AppBaseService appBaseService;
+  protected AccountingSituationService accountingSituationService;
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
 
@@ -73,7 +82,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       AccountConfigService accountConfigService,
       AccountConfigRepository accountConfigRepository,
       AccountRepository accountRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AccountingSituationService accountingSituationService) {
 
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.appAccountService = appAccountService;
@@ -82,6 +92,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     this.accountConfigRepository = accountConfigRepository;
     this.accountRepository = accountRepository;
     this.appBaseService = appBaseService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   public AnalyticMoveLineRepository getAnalyticMoveLineRepository() {
@@ -118,19 +129,43 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company, boolean isPurchase)
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Account account,
+      boolean isPurchase)
       throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
+    if (accountConfig.getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
-        && partner != null
-        && company != null) {
-      return partner.getAnalyticDistributionTemplate();
-    } else if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
-            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
-        && company != null) {
-      return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
-          product, company, isPurchase);
+        && partner != null) {
+      AccountingSituation accountingSituation =
+          accountingSituationService.getAccountingSituation(partner, company);
+      return accountingSituation != null
+          ? accountingSituation.getAnalyticDistributionTemplate()
+          : null;
+
+    } else if (accountConfig.getAnalyticDistributionTypeSelect()
+        == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+      if (product != null) {
+        return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
+            product, company, isPurchase);
+      } else if (account != null) {
+        return account.getAnalyticDistributionAuthorized()
+            ? account.getAnalyticDistributionTemplate()
+            : null;
+      }
+
+    } else if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && accountConfig.getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME
+        && tradingName != null) {
+      return tradingName.getAnalyticDistributionTemplate();
     }
     return null;
   }
@@ -231,13 +266,32 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       throws AxelorException {
     AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
 
-    analyticMoveLine.setDate(invoice.getOriginDate());
+    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+    analyticMoveLine.setDate(this.getAnalyticMoveLineDate(invoice));
     if (invoiceLine.getAccount() != null) {
       analyticMoveLine.setAccount(invoiceLine.getAccount());
       analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());
     }
-    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+
     return analyticMoveLine;
+  }
+
+  protected LocalDate getAnalyticMoveLineDate(Invoice invoice) {
+    if (invoice.getOriginDate() != null) {
+      return invoice.getOriginDate();
+    } else if (invoice.getDueDate() != null) {
+      return invoice.getDueDate();
+    } else if (invoice.getInvoiceDate() != null) {
+      return invoice.getInvoiceDate();
+    } else {
+      Company company = invoice.getCompany();
+
+      if (company == null) {
+        company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+      }
+
+      return appBaseService.getTodayDate(company);
+    }
   }
 
   public AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
@@ -327,15 +381,22 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company) {
+  public String getAnalyticAxisDomain(Company company) throws AxelorException {
+    if (company == null) {
+      return "self.id IN (0)";
+    }
     StringBuilder domain = new StringBuilder();
-    domain.append("(self.company is null OR self.company.id = " + company.getId() + ")");
+    domain
+        .append("(self.company is null OR self.company.id = ")
+        .append(company.getId())
+        .append(")");
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     List<AnalyticAxis> analyticAxisList =
-        accountConfigRepository.findByCompany(company).getAnalyticAxisByCompanyList().stream()
+        accountConfig.getAnalyticAxisByCompanyList().stream()
             .map(AnalyticAxisByCompany::getAnalyticAxis)
             .collect(Collectors.toList());
     String idList = StringTool.getIdListString(analyticAxisList);
-    domain.append(" AND self.id IN (" + idList + ")");
+    domain.append(" AND self.id IN (").append(idList).append(")");
     return domain.toString();
   }
 }

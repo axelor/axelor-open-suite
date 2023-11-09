@@ -35,11 +35,13 @@ public interface ManufOrderWorkflowService {
 
   void start(ManufOrder manufOrder) throws AxelorException;
 
-  void pause(ManufOrder manufOrder);
+  void pause(ManufOrder manufOrder) throws AxelorException;
 
   void resume(ManufOrder manufOrder);
 
   boolean finish(ManufOrder manufOrder) throws AxelorException;
+
+  void finishManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   boolean partialFinish(ManufOrder manufOrder) throws AxelorException;
 
@@ -60,4 +62,21 @@ public interface ManufOrderWorkflowService {
       throws AxelorException;
 
   void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  void updatePlannedDates(ManufOrder manufOrder);
+
+  void setOperationOrderMaxPriority(ManufOrder manufOrder);
+
+  String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;
+
+  boolean sendPartialFinishMail(ManufOrder manufOrder);
+
+  boolean sendFinishedMail(ManufOrder manufOrder);
 }

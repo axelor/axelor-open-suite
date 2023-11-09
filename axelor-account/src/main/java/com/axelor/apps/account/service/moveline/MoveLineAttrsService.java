@@ -18,14 +18,14 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import java.util.Map;
 
 public interface MoveLineAttrsService {
-  void addAnalyticAxisAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException;
 
   void addDescriptionRequired(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
@@ -53,9 +53,16 @@ public interface MoveLineAttrsService {
 
   void addPartnerReadonly(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addAccountDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+  void addAccountDomain(
+      Journal journal, Company company, Map<String, Map<String, Object>> attrsMap);
 
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addAnalyticDistributionTemplateDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addSubrogationPartnerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addTaxLineRequired(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }

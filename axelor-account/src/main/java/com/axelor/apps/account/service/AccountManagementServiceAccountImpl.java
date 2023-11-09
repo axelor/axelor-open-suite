@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -43,6 +44,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +56,17 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AccountConfigService accountConfigService;
+  protected AccountRepository accountRepository;
 
   @Inject
   public AccountManagementServiceAccountImpl(
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AccountRepository accountRepository) {
     super(fiscalPositionService, taxService);
     this.accountConfigService = accountConfigService;
+    this.accountRepository = accountRepository;
   }
 
   /**
@@ -427,5 +434,28 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       return account;
     }
     return null;
+  }
+
+  public boolean areAllAccountsOfType(List<Account> accountList, String type) {
+    return accountList.stream()
+        .allMatch(account -> account.getAccountType().getTechnicalTypeSelect().equals(type));
+  }
+
+  public List<Account> getAccountsBetween(Account accountFrom, Account accountTo) {
+    Map<String, Object> params = new HashMap<>();
+
+    String domain = "self.statusSelect = :statusActive AND self.reconcileOk IS true";
+    params.put("statusActive", AccountRepository.STATUS_ACTIVE);
+
+    if (accountFrom != null) {
+      domain += " AND self.code >= :accountFromCode";
+      params.put("accountFromCode", accountFrom.getCode());
+    }
+    if (accountTo != null) {
+      domain += " AND self.code <= :accountToCode";
+      params.put("accountToCode", accountTo.getCode());
+    }
+
+    return accountRepository.all().filter(domain).bind(params).fetch();
   }
 }

@@ -18,6 +18,8 @@
     <decimal name="pdfFooterHeight" title="Company Footer Height(in cm)"/>
     <integer name="addressPositionSelect" title="Address position"
       selection="printing.setting.address.position"/>
+    <decimal name="tableFontSize" title="Table font size" min="1" default="8"
+      help="Used on sale order, purchase order and invoice."/>
   </entity>
 
 </domain-models>

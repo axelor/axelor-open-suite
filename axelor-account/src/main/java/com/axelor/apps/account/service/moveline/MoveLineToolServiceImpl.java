@@ -26,7 +26,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -43,6 +45,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.Query;
 
@@ -54,15 +57,18 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected TaxService taxService;
   protected CurrencyService currencyService;
   protected MoveLineRepository moveLineRepository;
+  protected MoveToolService moveToolService;
 
   @Inject
   public MoveLineToolServiceImpl(
       TaxService taxService,
       CurrencyService currencyService,
-      MoveLineRepository moveLineRepository) {
+      MoveLineRepository moveLineRepository,
+      MoveToolService moveToolService) {
     this.taxService = taxService;
     this.currencyService = currencyService;
     this.moveLineRepository = moveLineRepository;
+    this.moveToolService = moveToolService;
   }
 
   /**
@@ -107,7 +113,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0) {
         moveLines.add(moveLine);
       }
     }
@@ -126,7 +132,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
         return moveLine;
       }
     }
@@ -175,7 +181,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
         return moveLine;
       }
     }
@@ -195,7 +201,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0) {
         moveLines.add(moveLine);
       }
     }
@@ -299,11 +305,13 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   @Override
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
+    boolean isDebit = moveLine.getDebit().compareTo(moveLine.getCredit()) > 0;
     if (move.getMoveLineList().size() == 0 || moveLine.getCurrencyRate().signum() == 0) {
       try {
         moveLine.setCurrencyRate(
             currencyService
-                .getCurrencyConversionRate(move.getCurrency(), move.getCompanyCurrency())
+                .getCurrencyConversionRate(
+                    move.getCurrency(), move.getCompanyCurrency(), move.getDate())
                 .setScale(CURRENCY_RATE_SCALE, RoundingMode.HALF_UP));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);
@@ -312,8 +320,9 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
     BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
-    moveLine.setCurrencyAmount(
-        unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP));
+    BigDecimal currencyAmount =
+        unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP);
+    moveLine.setCurrencyAmount(moveToolService.computeCurrencyAmountSign(currencyAmount, isDebit));
     return moveLine;
   }
 
@@ -322,7 +331,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     return moveLine == null
         || moveLine.getAccount() == null
         || !moveLine.getAccount().getManageCutOffPeriod()
-        || (moveLine.getCutOffStartDate() != null && moveLine.getCutOffEndDate() != null);
+        || this.isCutOffActive(moveLine);
   }
 
   @Override
@@ -352,7 +361,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
             moveLine,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(AccountExceptionMessage.DATE_NOT_IN_PERIOD_MOVE),
-            moveLine.getCurrencyAmount(),
+            moveLine.getCurrencyAmount().abs(),
             move.getCurrency().getSymbol(),
             moveLine.getAccount().getCode());
       } else {
@@ -382,5 +391,18 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       update.setParameter("startDate", LocalDate.parse(startDate));
     }
     update.executeUpdate();
+  }
+
+  @Override
+  public boolean isCutOffActive(MoveLine moveLine) {
+    List<Integer> functionalOriginList =
+        Arrays.asList(
+            MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+            MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE,
+            MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF);
+
+    return moveLine.getCutOffStartDate() != null
+        && moveLine.getCutOffEndDate() != null
+        && !functionalOriginList.contains(moveLine.getMove().getFunctionalOriginSelect());
   }
 }

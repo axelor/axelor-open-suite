@@ -143,7 +143,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Override
   public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-
     Optional<Pricing> pricing = getRootPricing(saleOrderLine, saleOrder);
     if (pricing.isPresent() && saleOrderLine.getProduct() != null) {
       PricingComputer pricingComputer =
@@ -170,12 +169,24 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     // It is supposed that only one pricing match those criteria (because of the configuration)
     // Having more than one pricing matched may result on a unexpected result
-    return pricingService.getRandomPricing(
-        saleOrder.getCompany(),
-        saleOrderLine.getProduct(),
-        saleOrderLine.getProduct() != null ? saleOrderLine.getProduct().getProductCategory() : null,
-        SaleOrderLine.class.getSimpleName(),
-        null);
+    if (appSaleService.getAppSale().getIsPricingComputingOrder()) {
+      return pricingService.getRandomPricing(
+          saleOrder.getCompany(),
+          saleOrderLine.getProduct(),
+          saleOrderLine.getProduct() != null
+              ? saleOrderLine.getProduct().getProductCategory()
+              : null,
+          SaleOrderLine.class.getSimpleName(),
+          null);
+    } else {
+      return pricingService.getRootPricingForNextPricings(
+          saleOrder.getCompany(),
+          saleOrderLine.getProduct(),
+          saleOrderLine.getProduct() != null
+              ? saleOrderLine.getProduct().getProductCategory()
+              : null,
+          SaleOrderLine.class.getSimpleName());
+    }
   }
 
   @Override

@@ -82,10 +82,10 @@ public final class ProductionExceptionMessage {
   public static final String PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING = /*$$(*/
       "Your production virtual stock location is not an outsourcing location." /*)*/;
 
-  /** Manuf Order Controller */
-  public static final String MANUF_ORDER_1 = /*$$(*/
-      "Please select the Manufacturing order(s) to print." /*)*/;
+  public static final String UNRECOGNIZED_CAPACITY_FOR_COMPANY_PRODUCTION_CONFIG = /*$$(*/
+      "Unrecognized capacity for company %s production configuration" /*)*/;
 
+  /** Manuf Order Controller */
   public static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
       "Please select more than one manufacturing order." /*)*/;
 
@@ -100,10 +100,6 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_ERROR_MANAGE_WORKSHOP_FALSE = /*$$(*/
       "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles." /*)*/;
-
-  /** Operation Order Controller */
-  public static final String OPERATION_ORDER_1 = /*$$(*/
-      "Please select the Operation order(s) to print." /*)*/;
 
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
@@ -127,6 +123,21 @@ public final class ProductionExceptionMessage {
 
   public static final String MAX_DEPTH_REACHED = /*$$(*/
       "Max depth reached when copying BOM." /*)*/;
+
+  public static final String BILL_OF_MATERIAL_NULL_STATUS = /*$$(*/
+      "BOM currently has no status" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_ALREADY_DRAFT_STATUS = /*$$(*/
+      "BOM is already on draft status" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_VALIDATED_WRONG_STATUS = /*$$(*/
+      "Cannot validate BOM that is not draft" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_APPLICABLE_WRONG_STATUS = /*$$(*/
+      "Cannot make BOM applicable that is not validated" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_OBSOLETE_WRONG_STATUS = /*$$(*/
+      "Cannot make BOM obsolete that is not applicable" /*)*/;
 
   /** Configurator Controller */
   public static final String BILL_OF_MATERIAL_GENERATED = /*$$(*/
@@ -285,4 +296,48 @@ public final class ProductionExceptionMessage {
   public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
       /*$$(*/
       "The quantity of the bill of material %s is equal to zero." /*)*/;
+
+  public static final String OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES =
+      /*$$(*/
+      "No period has been found in the weekly planning for the operation order %s" /*)*/;
+
+  public static final String OPERATION_ORDER_ALREADY_FINISHED =
+      /*$$(*/
+      "The operation order is already finished and cannot be moved." /*)*/;
+
+  public static final String GENERATE_MANUF_ORDER_BOM_MISSING_UNIT =
+      /*$$(*/ "The unit of the bill of material %s is missing. Please correct it." /*)*/;
+
+  public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
+      /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_HOURS_UNIT = /*$$(*/
+      "Outsourcing purchase order cannot be generated. Please fill hours unit in your base configuration." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_END_UNIT = /*$$(*/
+      "Impossible to generate outsourcing purchase order. Please fill unit on your product." /*)*/;
+
+  public static final String
+      YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE =
+          /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the estimated shipping date to be able to plan your manufacturing orders." /*)*/;
+
+  public static final String
+      YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_PLANNED_END_DATE =
+          /*$$(*/ "Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders." /*)*/;
+
+  public static final String PLAN_IS_BEFORE_TODAY_DATE =
+      /*$$(*/ "The manufacturing order planned for %s can not be planned before today's date. Please adjust it." /*)*/;
+
+  public static final String INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION =
+      /*$$(*/ "Invalid scheduling and capacity configuration." /*)*/;
+
+  public static final String
+      LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
+          "The last operation order planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
+
+  public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
+      "There is no applicable bill of materials for %s" /*)*/;
+
+  public static final String NO_COMPANY_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM." /*)*/;
 }

@@ -41,7 +41,7 @@ public interface MoveLineComputeAnalyticService {
 
   void generateAnalyticMoveLines(MoveLine moveLine);
 
-  MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException;
+  MoveLine selectDefaultDistributionTemplate(MoveLine moveLine, Move move) throws AxelorException;
 
   MoveLine analyzeMoveLine(MoveLine moveLine, Company company) throws AxelorException;
 
@@ -50,6 +50,4 @@ public interface MoveLineComputeAnalyticService {
   MoveLine clearAnalyticAccounting(MoveLine moveLine);
 
   MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine);
-
-  boolean checkManageAnalytic(Company company) throws AxelorException;
 }
