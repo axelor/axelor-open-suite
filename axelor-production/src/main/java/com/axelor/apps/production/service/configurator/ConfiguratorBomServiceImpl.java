@@ -170,11 +170,12 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
-        generateBillOfMaterial(confBomChild, attributes, level, generatedProduct)
-            .ifPresent(
-                bom ->
-                    bom.addBillOfMaterialLineListItem(
-                        billOfMaterialLineService.createFromBillOfMaterial(bom)));
+        Optional<BillOfMaterial> bomOp =
+            generateBillOfMaterial(confBomChild, attributes, level, generatedProduct);
+        if (bomOp.isPresent()) {
+          billOfMaterial.addBillOfMaterialLineListItem(
+              billOfMaterialLineService.createFromBillOfMaterial(bomOp.get()));
+        }
       }
     }
 
