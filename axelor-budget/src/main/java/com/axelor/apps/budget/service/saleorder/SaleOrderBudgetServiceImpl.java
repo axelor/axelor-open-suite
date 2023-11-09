@@ -134,7 +134,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(SaleOrder saleOrder) {
+  public String computeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
     List<String> alertMessageTokenList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {

@@ -38,7 +38,7 @@ public interface PurchaseOrderLineBudgetService {
    * @return String
    */
   public String computeBudgetDistribution(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   /**
    * If multi budget, compute budget distribution line's budget name to fill budget name string
