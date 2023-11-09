@@ -1,3 +1,25 @@
+## [6.3.32] (2023-11-09)
+
+#### Fixed
+
+* Accounting report: fixed an issue in Journal report (11) where debit and credit were not displayed in the recap by account table.
+* FEC Import: now fill correctly the header partner
+
+    * Multi-partner : no partner in header
+    * Mono-partner : fill partner in header
+
+* Configurator BOM: fixed a concurrent error when generating line from the same configurator.
+* Employee: to fix bank details error, moved the field to main employment contract panel.
+* Fixed asset: hide "isEqualToFiscalDepreciation" field when fiscal plan not selected.
+* FEC Import: prevent potential errors when using demo data config file.
+* Contract: fixed "NullPointerException" error when emptying the product on a contract line.
+* Manufacturing order: company is now required in the form view.
+* Sale order (Quotation): fixed "End of validity date" computation on copy.
+* Lead: prevent the user from editing the postal code when a city is filled to avoid inconsistencies.
+* CRM Event: when an event is created from CRM, correctly prefill "related to".
+* Sale: Hide 'Timetable templates' entry menu on config.
+* Maintenance: reset the status when duplicating a maintenance request.
+
 ## [6.3.31] (2023-10-27)
 
 #### Fixed
@@ -899,6 +921,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.32]: https://github.com/axelor/axelor-open-suite/compare/v6.3.31...v6.3.32
 [6.3.31]: https://github.com/axelor/axelor-open-suite/compare/v6.3.30...v6.3.31
 [6.3.30]: https://github.com/axelor/axelor-open-suite/compare/v6.3.29...v6.3.30
 [6.3.29]: https://github.com/axelor/axelor-open-suite/compare/v6.3.28...v6.3.29
