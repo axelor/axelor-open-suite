@@ -32,7 +32,8 @@ public interface SaleOrderLineBudgetService {
 
   String searchAndFillBudgetStr(SaleOrderLine saleOrderLine, boolean multiBudget);
 
-  String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
+  String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 
   String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 
