@@ -40,7 +40,7 @@ public class AccountAccountRepository extends AccountRepository {
         return super.save(account);
       }
 
-      if (account.getReconcileOk()) {
+      if (Boolean.TRUE.equals(account.getReconcileOk())) {
         Set<Account> accountList = account.getCompatibleAccountSet();
 
         if (accountList != null) {
