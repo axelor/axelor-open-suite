@@ -47,6 +47,8 @@
     <many-to-one name="recurrenceConfiguration"
       ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
 
+    <finder-method name="findByPartner" using="partner" all="true"/>
+
     <extra-code>
       	<![CDATA[
       		// TYPE SELECT

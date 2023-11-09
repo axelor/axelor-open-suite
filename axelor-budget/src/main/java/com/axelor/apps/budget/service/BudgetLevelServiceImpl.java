@@ -34,14 +34,11 @@ import com.axelor.apps.budget.db.repo.AdvancedImportBudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -121,17 +118,11 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setRealizedWithPo(realizedWithPo);
     budgetLevel.setTotalAmountAvailable(
         (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
-                    .compareTo(BigDecimal.ZERO)
-                > 0
-            ? totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo)
-            : BigDecimal.ZERO);
+            .max(BigDecimal.ZERO));
     budgetLevel.setTotalFirmGap(totalFirmGap);
     budgetLevel.setSimulatedAmount(simulatedAmount);
     budgetLevel.setAvailableAmountWithSimulated(
-        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).compareTo(BigDecimal.ZERO)
-                > 0
-            ? (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount))
-            : BigDecimal.ZERO);
+        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
   }
 
   @Override
@@ -145,7 +136,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     BigDecimal totalAmountPaid = BigDecimal.ZERO;
     BigDecimal totalFirmGap = BigDecimal.ZERO;
     BigDecimal simulatedAmount = BigDecimal.ZERO;
-    if (budgetList != null) {
+    if (!ObjectUtils.isEmpty(budgetList)) {
       for (Budget budget : budgetList) {
         totalAmountExpected = totalAmountExpected.add(budget.getTotalAmountExpected());
         totalAmountCommitted = totalAmountCommitted.add(budget.getTotalAmountCommitted());
@@ -165,70 +156,11 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setRealizedWithPo(realizedWithPo);
     budgetLevel.setTotalAmountAvailable(
         (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
-                    .compareTo(BigDecimal.ZERO)
-                > 0
-            ? totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo)
-            : BigDecimal.ZERO);
+            .max(BigDecimal.ZERO));
     budgetLevel.setTotalFirmGap(totalFirmGap);
     budgetLevel.setSimulatedAmount(simulatedAmount);
     budgetLevel.setAvailableAmountWithSimulated(
-        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).compareTo(BigDecimal.ZERO)
-                > 0
-            ? (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount))
-            : BigDecimal.ZERO);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
-  public BudgetLevel createGlobalBudgets(BudgetLevel budgetLevel) {
-
-    List<BudgetLevel> groupBudgetLevelList = budgetLevel.getBudgetLevelList();
-
-    BudgetLevel optGlobalBudgetLevel = budgetLevelManagementRepository.copy(budgetLevel, false);
-    optGlobalBudgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
-    optGlobalBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
-    optGlobalBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-    if (AuthUtils.getUser() != null) {
-      if (optGlobalBudgetLevel.getCompanyDepartment() == null) {
-        optGlobalBudgetLevel.setCompanyDepartment(AuthUtils.getUser().getCompanyDepartment());
-      }
-      optGlobalBudgetLevel.setBudgetManager(AuthUtils.getUser());
-    }
-
-    for (BudgetLevel groupBudgetLevel : groupBudgetLevelList) {
-      List<BudgetLevel> sectionBudgetLevelList = groupBudgetLevel.getBudgetLevelList();
-
-      BudgetLevel optGroupBudgetLevel =
-          budgetLevelManagementRepository.copy(groupBudgetLevel, false);
-      optGroupBudgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
-      optGroupBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
-      optGroupBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-
-      for (BudgetLevel sectionBudgetLevel : sectionBudgetLevelList) {
-        List<Budget> budgetList = sectionBudgetLevel.getBudgetList();
-
-        BudgetLevel optSectionBudgetLevel =
-            budgetLevelManagementRepository.copy(sectionBudgetLevel, false);
-        optSectionBudgetLevel.setStatusSelect(
-            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
-        optSectionBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
-        optSectionBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-
-        for (Budget budget : budgetList) {
-          Budget optBudget = budgetRepository.copy(budget, true);
-          optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-          optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-          optBudget.clearAccountModelSet();
-          optBudget.setBudgetModel(budget);
-          optSectionBudgetLevel.addBudgetListItem(optBudget);
-        }
-        optGroupBudgetLevel.addBudgetLevelListItem(optSectionBudgetLevel);
-      }
-      optGlobalBudgetLevel.addBudgetLevelListItem(optGroupBudgetLevel);
-    }
-    budgetLevelManagementRepository.save(optGlobalBudgetLevel);
-
-    return optGlobalBudgetLevel;
+        (budgetLevel.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
   }
 
   @Override
@@ -285,8 +217,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
         budgetRepository
             .all()
             .filter(
-                "self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = ?",
-                globalBudgetLevel.getId())
+                "self.budgetLevel.parentBudgetLevel.globalBudget.id = ?", globalBudgetLevel.getId())
             .fetch();
 
     for (Budget budget : budgetList) {
@@ -307,18 +238,14 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     globalBudgetLevel.setArchived(true);
 
     if (!CollectionUtils.isEmpty(globalBudgetLevel.getBudgetLevelList())) {
-      for (BudgetLevel group : globalBudgetLevel.getBudgetLevelList()) {
-        group.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
-        group.setArchived(true);
-        if (!CollectionUtils.isEmpty(group.getBudgetLevelList())) {
-          for (BudgetLevel section : group.getBudgetLevelList()) {
-            section.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
-            section.setArchived(true);
-            if (!CollectionUtils.isEmpty(section.getBudgetList())) {
-              for (Budget budget : section.getBudgetList()) {
-                budget.setArchived(true);
-              }
-            }
+      for (BudgetLevel section : globalBudgetLevel.getBudgetLevelList()) {
+        section.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_ARCHIVED);
+        section.setArchived(true);
+
+        if (!CollectionUtils.isEmpty(section.getBudgetList())) {
+          for (Budget budget : section.getBudgetList()) {
+            budget.setArchived(true);
+            budgetRepository.save(budget);
           }
         }
       }
@@ -331,7 +258,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       List<BudgetLevel> groupBudgetLevelList, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
     if (CollectionUtils.isNotEmpty(groupBudgetLevelList)) {
-      BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
       for (BudgetLevel groupBudgetLevel : groupBudgetLevelList) {
         if (groupBudgetLevel.getId() != null) {
           updateBudgetLevelDates(groupBudgetLevel, fromDate, toDate);
@@ -347,7 +273,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       throws AxelorException {
 
     if (CollectionUtils.isNotEmpty(sectionBudgetLevelList)) {
-      BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
       for (BudgetLevel sectionBudgetLevel : sectionBudgetLevelList) {
         if (sectionBudgetLevel.getId() != null) {
           updateBudgetLevelDates(sectionBudgetLevel, fromDate, toDate);
@@ -373,8 +298,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void updateBudgetLevelDates(BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException {
+  public void updateBudgetLevelDates(
+      BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate) {
     budgetLevel = budgetLevelManagementRepository.find(budgetLevel.getId());
     budgetLevel.setFromDate(fromDate);
     budgetLevel.setToDate(toDate);
@@ -404,8 +329,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
         boolean checkBudgetKey = false;
         if (budgetLevel.getParentBudgetLevel() != null
-            && budgetLevel.getParentBudgetLevel().getParentBudgetLevel() != null) {
-          Company company = budgetLevel.getParentBudgetLevel().getParentBudgetLevel().getCompany();
+            && budgetLevel.getParentBudgetLevel().getGlobalBudget() != null) {
+          Company company = budgetLevel.getParentBudgetLevel().getGlobalBudget().getCompany();
           checkBudgetKey = budgetService.checkBudgetKeyInConfig(company);
         }
         for (Budget budget : budgetLevel.getBudgetList()) {
@@ -459,23 +384,23 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     if (budget != null
         && budget.getBudgetLevel() != null
         && budget.getBudgetLevel().getParentBudgetLevel() != null
-        && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel() != null
+        && budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget() != null
         && budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getParentBudgetLevel()
+                .getGlobalBudget()
                 .getCheckAvailableSelect()
             != null
         && budget
                 .getBudgetLevel()
                 .getParentBudgetLevel()
-                .getParentBudgetLevel()
+                .getGlobalBudget()
                 .getCheckAvailableSelect()
             != 0) {
       return budget
           .getBudgetLevel()
           .getParentBudgetLevel()
-          .getParentBudgetLevel()
+          .getGlobalBudget()
           .getCheckAvailableSelect();
     } else {
       return appBudgetService.getAppBudget().getCheckAvailableBudget()
@@ -487,6 +412,9 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   @Override
   @Transactional
   public void computeChildrenKey(BudgetLevel section) throws AxelorException {
+    if (section.getId() == null) {
+      return;
+    }
     if (!CollectionUtils.isEmpty(section.getBudgetList())) {
       for (Budget budget : section.getBudgetList()) {
         budgetService.createBudgetKey(budget);
@@ -530,7 +458,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
   public void computeBudgetLevelTotals(Budget budget) {
 
     BudgetLevel sectionBudgetLevel = budget.getBudgetLevel();
@@ -538,44 +465,22 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     if (sectionBudgetLevel != null) {
 
       computeBudgetTotals(sectionBudgetLevel);
-      budgetLevelRepository.save(sectionBudgetLevel);
 
       BudgetLevel groupBudgetLevel = sectionBudgetLevel.getParentBudgetLevel();
       if (groupBudgetLevel != null) {
         computeTotals(groupBudgetLevel);
-        budgetLevelRepository.save(groupBudgetLevel);
-
-        BudgetLevel globalBudgetLevel = groupBudgetLevel.getParentBudgetLevel();
-        if (globalBudgetLevel != null) {
-          computeTotals(globalBudgetLevel);
-          budgetLevelRepository.save(groupBudgetLevel);
-        }
       }
     }
   }
 
   @Override
-  public void resetBudgetLevel(BudgetLevel budgetLevel) {
-
-    budgetLevel.setCode(budgetLevel.getCode() + " (" + I18n.get("copy") + ")");
-
-    budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
-
-    budgetLevel.setArchived(false);
-
-    budgetLevel.setTotalAmountCommitted(BigDecimal.ZERO);
-    budgetLevel.setTotalAmountAvailable(budgetLevel.getTotalAmountExpected());
-    budgetLevel.setAvailableAmountWithSimulated(budgetLevel.getTotalAmountExpected());
-    budgetLevel.setRealizedWithNoPo(BigDecimal.ZERO);
-    budgetLevel.setRealizedWithPo(BigDecimal.ZERO);
-    budgetLevel.setSimulatedAmount(BigDecimal.ZERO);
-    budgetLevel.setTotalFirmGap(BigDecimal.ZERO);
-    budgetLevel.setTotalAmountPaid(BigDecimal.ZERO);
-
+  public void recomputeBudgetLevelTotals(BudgetLevel budgetLevel) {
     if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
-      budgetLevel.getBudgetLevelList().forEach(child -> resetBudgetLevel(child));
-    } else if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
-      budgetLevel.getBudgetList().forEach(child -> budgetService.resetBudget(child));
+      for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
+        recomputeBudgetLevelTotals(child);
+      }
     }
+
+    computeBudgetTotals(budgetLevel);
   }
 }

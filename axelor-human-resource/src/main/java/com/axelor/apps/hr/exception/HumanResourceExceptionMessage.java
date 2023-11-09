@@ -80,6 +80,11 @@ public final class HumanResourceExceptionMessage {
       "Please, enter the number of daily work hours per employee %s" /*)*/;
   public static final String TIMESHEET_DAILY_WORK_HOURS = /*$$(*/
       "Please, configure the number of daily work hours." /*)*/;
+
+  public static final String TIMESHEET_TIME_LOGGING_PREFERENCE = /*$$(*/
+      "Please, configure the time logging unit preference." /*)*/;
+  public static final String PROJECT_PLANNING_WRONG_TIME_UNIT = /*$$(*/
+      "Project planning time unit not matching with time units in base configuration." /*)*/;
   public static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
   public static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
   public static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/
@@ -109,6 +114,8 @@ public final class HumanResourceExceptionMessage {
       "A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one." /*)*/;
   public static final String LEAVE_REQUEST_NO_COMPANY = /*$$(*/
       "Please set a company up on leave request" /*)*/;
+  public static final String LEAVE_REQUEST_NO_LINE_PRESENT = /*$$(*/
+      "You need lines to fill your export." /*)*/;
 
   public static final String EMPLOYEE_PLANNING = /*$$(*/
       "Please, add a planning for employee : %s" /*)*/;
@@ -245,4 +252,66 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_CAN_NOT_DELETE_VENTILATED = /*$$(*/
       "Ventilated expense can not be deleted. %s can not be deleted." /*)*/;
+
+  public static final String EXPENSE_LINE_DATE_ERROR = /*$$(*/ "Date can't be in the future" /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_EXPENSE_PRODUCT = /*$$(*/
+      "Please provide an expense product." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_KILOMETRIC_ALLOWANCE_PARAM = /*$$(*/
+      "Please provide a kilometric allowance parameter." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_KILOMETRIC_TYPE = /*$$(*/
+      "Please provide a kilometric type." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_CITIES = /*$$(*/
+      "Please provide starting and arriving cities." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_COMPANY = /*$$(*/
+      "Please provide a company." /*)*/;
+
+  public static final String MEDICAL_VISIT_PLAN_WRONG_STATUS = /*$$(*/
+      "Can only plan draft medical visit." /*)*/;
+
+  public static final String MEDICAL_VISIT_REALIZE_WRONG_STATUS = /*$$(*/
+      "Can only realize planned medical visit." /*)*/;
+
+  public static final String MEDICAL_VISIT_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel planned or realized medical visit." /*)*/;
+
+  public static final String EXPENSE_BIRT_TEMPLATE_MISSING = /*$$(*/
+      "Please configure a birt template for expense report." /*)*/;
+
+  public static final String EXPENSE_ADD_LINE_WRONG_STATUS = /*$$(*/
+      "Can only add expense line to drafted expense." /*)*/;
+
+  public static final String EXPENSE_LINE_VALIDATE_TOTAL_AMOUNT = /*$$(*/
+      "The expense line amount exceeds the authorized limit of %s. Please correct the amount or request the intervention of an HR manager." /*)*/;
+
+  public static final String EXPENSE_LINE_CURRENCY_NOT_EQUAL = /*$$(*/
+      "Not all expenses are in the same currency. You can only create or add lines to an expense report when they have the same currency." /*)*/;
+
+  public static final String EXPENSE_LINE_JUSTIFICATION_FILE_NOT_CORRECT_FORMAT = /*$$(*/
+      "The file is not a PDF nor an image. Please keep the original document." /*)*/;
+
+  public static final String EXPENSE_JUSTIFICATION_FILE_MISSING = /*$$(*/
+      "Some lines do not have a justification file. Do you want to proceed ?" /*)*/;
+
+  public static final String EXPENSE_LIMIT_EXCEEDED = /*$$(*/
+      "The expense limit has been exceeded for the period %s to %s" /*)*/;
+
+  public static final String EXPENSE_LINE_NO_PROJECT = /*$$(*/
+      "This expense cannot be created because no project has been filled in and it has been noted as to be billed." /*)*/;
+
+  public static final String TIMESHEET_LINES_EXCEED_DAILY_LIMIT = /*$$(*/
+      "You can't exceed the daily limit of %s hours on the %s." /*)*/;
+
+  public static final String EXPENSE_LINE_EXPENSE_TYPE_NOT_ALLOWED = /*$$(*/
+      "Only HR manager can choose this expense type." /*)*/;
+
+  public static final String EXPENSE_AMOUNT_LIMIT_ERROR = /*$$(*/
+      "At least one line of this expense exceeds the authorised amount for its type of expense." /*)*/;
+
+  public static final String EXPENSE_LINE_DISTANCE_ERROR = /*$$(*/
+      "This is a kilometric expense line. Distance must be greater than 0." /*)*/;
 }

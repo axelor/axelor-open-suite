@@ -4,28 +4,23 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sop-line-grid" title="Sales and Operations Planning Line"
-    model="com.axelor.apps.production.db.SopLine">
-    <hilite if="status == 1" color="primary"/>
-    <field name="status" hidden="true"/>
-    <field name="year"/>
-    <field name="period"/>
-    <field name="sopSalesForecast"/>
-    <field name="sopRealSales"/>
-    <field name="sopSalesGap"/>
-    <field name="sopManufForecast"/>
-    <field name="sopRealManuf"/>
-    <field name="sopManufGap"/>
-    <field name="sopStockForecast"/>
-    <field name="sopRealStock"/>
-    <field name="sopStockGap"/>
+    model="com.axelor.apps.production.db.SopLine" editable="true">
+    <field name="year" required="true" domain="self.typeSelect = 3"/>
+    <field name="period" required="true" domain="self.year = :year"
+      onChange="action-sop-line-record-set-currency"/>
+    <field name="sopSalesForecast" onChange="action-sop-line-record-compute-sop-sales-gap"/>
+    <field name="sopRealSales" onChange="action-sop-line-record-compute-sop-sales-gap"/>
+    <field name="sopSalesGap" readonly="true"/>
+    <field name="sopRealManuf" onChange="action-sop-line-record-compute-sop-manuf-gap"/>
+    <field name="sopRealStock" onChange="action-sop-line-record-compute-sop-stock-gap"/>
+    <field name="currency" hidden="true"/>
+    <button name="generateMpsForecastsBtn" icon="fa-gear" title="Generate MPS forecasts"
+      onClick="action-sop-line-view-open-wizard"/>
   </grid>
 
   <form name="sop-line-form" title="Sales and Operations Planning Line"
-    model="com.axelor.apps.production.db.SopLine" onNew="action-sop-line-record-set-status">
+    model="com.axelor.apps.production.db.SopLine">
     <panel name="mainPanel">
-      <field name="status" showTitle="false" colSpan="8" widget="NavSelect"/>
-      <button name="confirmBtn" title="Confirm" showIf="status == 1" colSpan="4"
-        onClick="action-sop-line-record-set-status"/>
       <field name="year" required="true" domain="self.typeSelect = 3" canEdit="false"/>
       <field name="period" required="true" domain="self.year = :year"
         onChange="action-sop-line-record-set-currency" canEdit="false"/>
@@ -36,16 +31,10 @@
       <field name="sopRealSales" onChange="action-sop-line-record-compute-sop-sales-gap"
         colSpan="4"/>
       <field name="sopSalesGap" readonly="true" colSpan="4"/>
-      <field name="sopManufForecast" onChange="action-sop-line-record-compute-sop-manuf-gap"
-        colSpan="4"/>
       <field name="sopRealManuf" onChange="action-sop-line-record-compute-sop-manuf-gap"
-        colSpan="4"/>
-      <field name="sopManufGap" readonly="true" colSpan="4"/>
-      <field name="sopStockForecast" onChange="action-sop-line-record-compute-sop-stock-gap"
         colSpan="4"/>
       <field name="sopRealStock" onChange="action-sop-line-record-compute-sop-stock-gap"
         colSpan="4"/>
-      <field name="sopStockGap" readonly="true" colSpan="4"/>
       <button name="generateMpsForecastsBtn" title="Generate MPS forecasts"
         onClick="action-sop-line-view-open-wizard"/>
     </panel>
@@ -57,6 +46,8 @@
       <panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
         target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
+        <field name="forecastDate" title="Forecast date" type="date" required="true"
+          onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" readonly="true"/>
         <field name="qty" onChange="action-sop-line-record-compute-total-price"/>
         <field name="$unitPrice" title="Unit price" readonly="true" type="decimal"/>
@@ -106,23 +97,10 @@
 
   <action-record name="action-sop-line-record-compute-sop-sales-gap"
     model="com.axelor.apps.production.db.SopLine">
-    <field name="sopSalesGap" expr="eval: (sopRealSales - sopSalesForecast)/sopSalesForecast"
+    <field name="sopSalesGap"
+      expr="eval: ((sopRealSales - sopSalesForecast)/sopSalesForecast)*100"
       if="sopSalesForecast &amp;&amp; sopRealSales"/>
     <field name="sopSalesGap" expr="eval: null" if="!sopSalesForecast || !sopRealSales"/>
-  </action-record>
-
-  <action-record name="action-sop-line-record-compute-sop-manuf-gap"
-    model="com.axelor.apps.production.db.SopLine">
-    <field name="sopManufGap" expr="eval: (sopRealManuf - sopManufForecast)/sopManufForecast"
-      if="sopManufForecast &amp;&amp; sopRealManuf"/>
-    <field name="sopManufGap" expr="eval: null" if="!sopManufForecast || !sopRealManuf"/>
-  </action-record>
-
-  <action-record name="action-sop-line-record-compute-sop-stock-gap"
-    model="com.axelor.apps.production.db.SopLine">
-    <field name="sopStockGap" expr="eval: (sopRealStock - sopStockForecast)/sopStockForecast"
-      if="sopStockForecast &amp;&amp; sopRealStock"/>
-    <field name="sopStockGap" expr="eval: null" if="!sopStockForecast || !sopRealStock"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-total-price"
@@ -143,12 +121,6 @@
   <action-record name="action-sop-line-record-set-currency"
     model="com.axelor.apps.production.db.SopLine">
     <field name="currency" expr="eval: period?.year?.company?.currency"/>
-  </action-record>
-
-  <action-record name="action-sop-line-record-set-status"
-    model="com.axelor.apps.production.db.SopLine">
-    <field name="status" expr="eval: 1" if="!id"/>
-    <field name="status" expr="eval: 2" if="status == 1"/>
   </action-record>
 
   <action-method name="action-mrp-forecast-method-generate-mrp-forecasts">
@@ -175,6 +147,17 @@
       message="There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&amp;OP forecast. Proceed?"
       if="difference != 0"/>
   </action-validate>
+
+  <action-validate name="action-mrp-forecast-validate-check-forecast-date">
+    <error message="Please enter valid forecast date"
+      if="forecastDate &amp;&amp; __parent__ &amp;&amp; (forecastDate.isBefore(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.fromDate) || forecastDate.isAfter(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.toDate))"
+      action="action-mrp-forecast-record-reset-forecast-date"/>
+  </action-validate>
+
+  <action-record name="action-mrp-forecast-record-reset-forecast-date"
+    model="com.axelor.apps.supplychain.db.MrpForecast">
+    <field name="forecastDate" expr="eval: null"/>
+  </action-record>
 
 </object-views>
 

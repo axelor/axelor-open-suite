@@ -1,0 +1,175 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.hr.rest;
+
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.rest.dto.ExpensePostRequest;
+import com.axelor.apps.hr.rest.dto.ExpensePutRequest;
+import com.axelor.apps.hr.rest.dto.ExpenseRefusalPutRequest;
+import com.axelor.apps.hr.rest.dto.ExpenseResponse;
+import com.axelor.apps.hr.service.expense.ExpenseCheckResponseService;
+import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
+import com.axelor.apps.hr.service.expense.ExpenseCreateService;
+import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.apps.hr.service.expense.ExpenseValidateService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestValidator;
+import com.axelor.utils.api.ResponseConstructor;
+import com.axelor.utils.api.SecurityCheck;
+import com.axelor.web.ITranslation;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.servers.Server;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+@OpenAPIDefinition(servers = {@Server(url = "../")})
+@Path("/aos/expense")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public class ExpenseRestController {
+  @Operation(
+      summary = "Create an expense",
+      tags = {"Expense"})
+  @Path("/")
+  @POST
+  @HttpExceptionHandler
+  public Response createExpense(ExpensePostRequest requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+
+    Expense expense =
+        Beans.get(ExpenseCreateService.class)
+            .createExpense(
+                requestBody.fetchCompany(),
+                requestBody.fetchEmployee(),
+                requestBody.fetchCurrency(),
+                requestBody.fetchBankDetails(),
+                requestBody.fetchPeriod(),
+                requestBody.getCompanyCbSelect(),
+                requestBody.fetchExpenseLines());
+
+    return ResponseConstructor.buildCreateResponse(expense, new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Add expense lines to an expense",
+      tags = {"Expense"})
+  @Path("/add-line/{expenseId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response addLinesToExpense(
+      @PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
+    Beans.get(ExpenseToolService.class)
+        .addExpenseLinesToExpenseAndCompute(expense, requestBody.fetchExpenseLines());
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Send an expense",
+      tags = {"Expense"})
+  @Path("/send/{expenseId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response sendExpense(@PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
+    Beans.get(ExpenseConfirmationService.class).confirm(expense);
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Validate an expense",
+      tags = {"Expense"})
+  @Path("/validate/{expenseId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response validateExpense(
+      @PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
+    Beans.get(ExpenseValidateService.class).validate(expense);
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Refuse an expense",
+      tags = {"Expense"})
+  @Path("/refuse/{expenseId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response refuseExpense(
+      @PathParam("expenseId") Long expenseId, ExpenseRefusalPutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
+    Beans.get(ExpenseRefusalService.class)
+        .refuseWithReason(expense, requestBody.getGroundForRefusal());
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Check expense",
+      tags = {"Expense"})
+  @Path("/check/{expenseId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkExpense(@PathParam("expenseId") Long expenseId) throws AxelorException {
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.CHECK_RESPONSE_RESPONSE),
+        Beans.get(ExpenseCheckResponseService.class).createResponse(expense));
+  }
+}

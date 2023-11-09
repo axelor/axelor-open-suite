@@ -43,8 +43,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
- * used. Please use {@link FixedAssetLineEconomicComputationServiceImpl} or {@link
- * FixedAssetLineFiscalComputationServiceImpl}.
+ * used. Please use {@link FixedAssetLineEconomicComputationServiceImpl}, {@link
+ * FixedAssetLineFiscalComputationServiceImpl} or {@link FixedAssetLineIfrsComputationServiceImpl}.
  */
 public abstract class AbstractFixedAssetLineComputationServiceImpl
     implements FixedAssetLineComputationService {
@@ -86,7 +86,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected abstract int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset);
 
   @Inject
-  public AbstractFixedAssetLineComputationServiceImpl(
+  protected AbstractFixedAssetLineComputationServiceImpl(
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       AppBaseService appBaseService) {
     this.fixedAssetFailOverControlService = fixedAssetFailOverControlService;
@@ -293,22 +293,28 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       LocalDate nextDate) {
     BigDecimal prorataTemporis;
 
-    BigDecimal nbDaysBetweenAcqAndFirstDepDate =
-        nbDaysBetween(
-            fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
-            acquisitionDate,
-            depreciationDate);
+    boolean isUSProrataTemporis = fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis();
+
+    BigDecimal nbDaysBetweenAcqAndFirstDepDate;
+    if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
+        fixedAsset.getComputationMethodSelect())) {
+      nextDate = null;
+      nbDaysBetweenAcqAndFirstDepDate =
+          nbDaysBetween(
+              isUSProrataTemporis,
+              acquisitionDate.withDayOfMonth(1),
+              depreciationDate.withDayOfMonth(30));
+    } else {
+      nbDaysBetweenAcqAndFirstDepDate =
+          nbDaysBetween(isUSProrataTemporis, acquisitionDate, depreciationDate);
+    }
 
     BigDecimal maxNbDaysOfPeriod =
         BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
             .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod;
     if (nextDate != null) {
-      nbDaysOfPeriod =
-          nbDaysBetween(
-              fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
-              acquisitionDate,
-              nextDate);
+      nbDaysOfPeriod = nbDaysBetween(isUSProrataTemporis, acquisitionDate, nextDate);
       if (nbDaysOfPeriod.compareTo(maxNbDaysOfPeriod) > 0) {
         nbDaysOfPeriod = maxNbDaysOfPeriod;
       }
@@ -495,7 +501,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (isProrataTemporis(fixedAsset)
         && numberOfDepreciationDone(fixedAsset)
             .equals(getNumberOfDepreciation(fixedAsset).setScale(0, RoundingMode.DOWN))) {
-      depreciationDate = computeLastProrataDepreciationDate(fixedAsset);
+      depreciationDate = computeLastProrataDepreciationDate(fixedAsset, previousFixedAssetLine);
     } else {
       depreciationDate =
           DateTool.plusMonths(
@@ -545,7 +551,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     return previousFixedAssetLine.getDepreciationBase();
   }
 
-  protected LocalDate computeLastProrataDepreciationDate(FixedAsset fixedAsset) {
+  protected LocalDate computeLastProrataDepreciationDate(
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
 
     LocalDate firstServiceDate =
         fixedAsset.getFirstServiceDate() == null
@@ -555,6 +562,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
         getComputationMethodSelect(fixedAsset))) {
       d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));
+    } else {
+      d =
+          DateTool.plusMonths(
+              previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
     }
     return d;
   }
