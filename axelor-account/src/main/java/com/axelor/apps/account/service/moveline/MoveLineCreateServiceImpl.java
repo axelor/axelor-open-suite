@@ -37,8 +37,8 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
-import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
@@ -93,7 +93,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected TaxService taxService;
   protected AppBaseService appBaseService;
   protected AnalyticLineService analyticLineService;
-  protected ScaleServiceAccount scaleServiceAccount;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -113,7 +113,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       TaxService taxService,
       AppBaseService appBaseService,
       AnalyticLineService analyticLineService,
-      ScaleServiceAccount scaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -130,7 +130,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.taxService = taxService;
     this.appBaseService = appBaseService;
     this.analyticLineService = analyticLineService;
-    this.scaleServiceAccount = scaleServiceAccount;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -231,7 +231,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     if (amountInSpecificMoveCurrency != null) {
       amountInSpecificMoveCurrency =
-          scaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.abs());
+          currencyScaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.abs());
     }
 
     log.debug(
@@ -263,9 +263,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (isDebit) {
-      debit = scaleServiceAccount.getCompanyScaledValue(move, amountInCompanyCurrency);
+      debit = currencyScaleServiceAccount.getCompanyScaledValue(move, amountInCompanyCurrency);
     } else {
-      credit = scaleServiceAccount.getCompanyScaledValue(move, amountInCompanyCurrency);
+      credit = currencyScaleServiceAccount.getCompanyScaledValue(move, amountInCompanyCurrency);
     }
 
     if (currencyRate == null) {
@@ -284,7 +284,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     if (!isDebit) {
       amountInSpecificMoveCurrency =
-          scaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.negate());
+          currencyScaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.negate());
     }
 
     MoveLine moveLine =
@@ -741,8 +741,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         }
       }
 
-      moveLine.setDebit(scaleServiceAccount.getScaledValue(move, moveLine.getDebit()));
-      moveLine.setCredit(scaleServiceAccount.getScaledValue(move, moveLine.getCredit()));
+      moveLine.setDebit(currencyScaleServiceAccount.getScaledValue(move, moveLine.getDebit()));
+      moveLine.setCredit(currencyScaleServiceAccount.getScaledValue(move, moveLine.getCredit()));
 
       moveLines.add(moveLine);
     }
@@ -871,7 +871,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_RECEIVABLE);
     }
 
-    int scale = scaleServiceAccount.getCompanyScale(move);
+    int scale = currencyScaleServiceAccount.getCompanyScale(move);
     BigDecimal newMoveLineDebit =
         debit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
     BigDecimal newMoveLineCredit =

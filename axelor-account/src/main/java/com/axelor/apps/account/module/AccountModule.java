@@ -707,6 +707,6 @@ public class AccountModule extends AxelorModule {
 
     bind(YearAccountService.class).to(YearAccountServiceImpl.class);
 
-    bind(ScaleServiceAccount.class).to(ScaleServiceAccountImpl.class);
+    bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
   }
 }

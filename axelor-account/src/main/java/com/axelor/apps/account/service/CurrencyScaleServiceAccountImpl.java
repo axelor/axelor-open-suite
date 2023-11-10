@@ -6,10 +6,11 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.ScaleServiceImpl;
+import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
 import java.math.BigDecimal;
 
-public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleServiceAccount {
+public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
+    implements CurrencyScaleServiceAccount {
 
   @Override
   public BigDecimal getScaledValue(Move move, BigDecimal amount) {

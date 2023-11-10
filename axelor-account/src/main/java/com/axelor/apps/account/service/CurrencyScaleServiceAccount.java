@@ -8,7 +8,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import java.math.BigDecimal;
 
-public interface ScaleServiceAccount {
+public interface CurrencyScaleServiceAccount {
 
   BigDecimal getScaledValue(Move move, BigDecimal amount);
 

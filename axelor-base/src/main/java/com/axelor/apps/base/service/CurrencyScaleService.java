@@ -2,7 +2,7 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 
-public interface ScaleService {
+public interface CurrencyScaleService {
 
   BigDecimal getScaledValue(BigDecimal value);
 
