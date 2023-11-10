@@ -903,7 +903,7 @@
       <domain>self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND
         self.accountingOk = false</domain>
     </filter>
-    <filter title="Moves from invoices/refunds">
+    <filter title="Moves from invoices/credit notes">
       <domain>self.invoice IS NOT NULL</domain>
     </filter>
     <filter title="Moves from payment">
