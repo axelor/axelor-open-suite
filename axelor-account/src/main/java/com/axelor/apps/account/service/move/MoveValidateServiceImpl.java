@@ -905,7 +905,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         .multiply(moveLine.getTaxLine().getValue())
         .divide(
             BigDecimal.valueOf(100),
-            scaleServiceAccount.getScale(moveLine, true),
+            scaleServiceAccount.getCompanyScale(moveLine),
             RoundingMode.HALF_UP);
   }
 

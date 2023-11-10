@@ -356,7 +356,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
 
     return scaleServiceAccount.getScaledValue(
-        moveLine, prorata.multiply(moveLine.getCurrencyAmount()), false);
+        moveLine, prorata.multiply(moveLine.getCurrencyAmount()));
   }
 
   @Override
@@ -403,7 +403,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
         moveLine.setCutOffProrataAmount(
             scaleServiceAccount.getScaledValue(
-                moveLine, prorata.multiply(moveLine.getCurrencyAmount()), false));
+                moveLine, prorata.multiply(moveLine.getCurrencyAmount())));
         moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
         moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
       }
@@ -443,7 +443,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
-          scaleServiceAccount.getScaledValue(
+          scaleServiceAccount.getCompanyScaledValue(
               moveLine,
               amount.multiply(
                   financialDiscount
@@ -451,8 +451,7 @@ public class MoveLineServiceImpl implements MoveLineService {
                       .divide(
                           BigDecimal.valueOf(100),
                           AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
-                          RoundingMode.HALF_UP)),
-              true));
+                          RoundingMode.HALF_UP))));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
     } else {

@@ -10,21 +10,39 @@ import java.math.BigDecimal;
 
 public interface ScaleServiceAccount {
 
-  BigDecimal getScaledValue(Move move, BigDecimal amount, boolean isCompanyAmount);
+  BigDecimal getScaledValue(Move move, BigDecimal amount);
 
-  BigDecimal getScaledValue(MoveLine moveLine, BigDecimal amount, boolean isCompanyAmount);
+  BigDecimal getCompanyScaledValue(Move move, BigDecimal amount);
 
-  BigDecimal getScaledValue(InvoiceTerm invoiceTerm, BigDecimal amount, boolean isCompanyAmount);
+  BigDecimal getScaledValue(MoveLine moveLine, BigDecimal amount);
 
-  BigDecimal getScaledValue(Invoice invoice, BigDecimal amount, boolean isCompanyAmount);
+  BigDecimal getCompanyScaledValue(MoveLine moveLine, BigDecimal amount);
 
-  int getScale(Move move, boolean isCompanyAmount);
+  BigDecimal getScaledValue(InvoiceTerm invoiceTerm, BigDecimal amount);
 
-  int getScale(MoveLine moveLine, boolean isCompanyAmount);
+  BigDecimal getCompanyScaledValue(InvoiceTerm invoiceTerm, BigDecimal amount);
 
-  int getScale(Invoice invoice, boolean isCompanyAmount);
+  BigDecimal getScaledValue(Invoice invoice, BigDecimal amount);
 
-  int getScale(InvoiceTerm invoiceTerm, boolean isCompanyAmount);
+  BigDecimal getCompanyScaledValue(Invoice invoice, BigDecimal amount);
 
-  int getScale(Company company, Currency currency, boolean isCompanyAmount);
+  int getScale(Move move);
+
+  int getCompanyScale(Move move);
+
+  int getScale(MoveLine moveLine);
+
+  int getCompanyScale(MoveLine moveLine);
+
+  int getScale(Invoice invoice);
+
+  int getCompanyScale(Invoice invoice);
+
+  int getScale(InvoiceTerm invoiceTerm);
+
+  int getCompanyScale(InvoiceTerm invoiceTerm);
+
+  int getScale(Currency currency);
+
+  int getCompanyScale(Company company);
 }

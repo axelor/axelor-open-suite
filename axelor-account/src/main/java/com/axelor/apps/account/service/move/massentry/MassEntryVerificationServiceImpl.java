@@ -259,7 +259,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     boolean errorAdded = false;
 
     for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      if (BigDecimal.ZERO.equals(moveLine.getCurrencyRate())) {
+      if (moveLine.getCurrencyRate().signum() == 0) {
         this.setFieldsErrorListMessage(moveLine, "currencyRate");
         if (!errorAdded) {
           errorAdded = true;

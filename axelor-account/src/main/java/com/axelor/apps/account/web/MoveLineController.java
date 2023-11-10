@@ -184,7 +184,7 @@ public class MoveLineController {
 
         if (!differentCompanies) {
           ScaleServiceAccount scaleServiceAccount = Beans.get(ScaleServiceAccount.class);
-          int scale = scaleServiceAccount.getScale(company, null, true);
+          int scale = scaleServiceAccount.getCompanyScale(company);
 
           totalCredit = totalCredit.setScale(scale, RoundingMode.HALF_UP);
           totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);

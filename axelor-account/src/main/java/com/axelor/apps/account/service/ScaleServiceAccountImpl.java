@@ -12,59 +12,97 @@ import java.math.BigDecimal;
 public class ScaleServiceAccountImpl extends ScaleServiceImpl implements ScaleServiceAccount {
 
   @Override
-  public BigDecimal getScaledValue(Move move, BigDecimal amount, boolean isCompanyAmount) {
-    return this.getScaledValue(
-        amount, this.getScale(move.getCompany(), move.getCurrency(), isCompanyAmount));
+  public BigDecimal getScaledValue(Move move, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(move.getCurrency()));
   }
 
   @Override
-  public BigDecimal getScaledValue(MoveLine moveLine, BigDecimal amount, boolean isCompanyAmount) {
+  public BigDecimal getCompanyScaledValue(Move move, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(move.getCompany()));
+  }
+
+  @Override
+  public BigDecimal getScaledValue(MoveLine moveLine, BigDecimal amount) {
     return moveLine.getMove() != null
-        ? this.getScaledValue(moveLine.getMove(), amount, isCompanyAmount)
+        ? this.getScaledValue(moveLine.getMove(), amount)
         : this.getScaledValue(amount);
   }
 
   @Override
-  public BigDecimal getScaledValue(
-      InvoiceTerm invoiceTerm, BigDecimal amount, boolean isCompanyAmount) {
-    return this.getScaledValue(
-        amount,
-        this.getScale(invoiceTerm.getCompany(), invoiceTerm.getCurrency(), isCompanyAmount));
-  }
-
-  @Override
-  public BigDecimal getScaledValue(Invoice invoice, BigDecimal amount, boolean isCompanyAmount) {
-    return this.getScaledValue(
-        amount, this.getScale(invoice.getCompany(), invoice.getCurrency(), isCompanyAmount));
-  }
-
-  @Override
-  public int getScale(Move move, boolean isCompanyAmount) {
-    return this.getScale(move.getCompany(), move.getCurrency(), isCompanyAmount);
-  }
-
-  @Override
-  public int getScale(MoveLine moveLine, boolean isCompanyAmount) {
+  public BigDecimal getCompanyScaledValue(MoveLine moveLine, BigDecimal amount) {
     return moveLine.getMove() != null
-        ? this.getScale(moveLine.getMove(), isCompanyAmount)
-        : this.getScale();
+        ? this.getCompanyScaledValue(moveLine.getMove(), amount)
+        : this.getScaledValue(amount);
   }
 
   @Override
-  public int getScale(Invoice invoice, boolean isCompanyAmount) {
-    return this.getScale(invoice.getCompany(), invoice.getCurrency(), isCompanyAmount);
+  public BigDecimal getScaledValue(InvoiceTerm invoiceTerm, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(invoiceTerm.getCurrency()));
   }
 
   @Override
-  public int getScale(InvoiceTerm invoiceTerm, boolean isCompanyAmount) {
-    return this.getScale(invoiceTerm.getCompany(), invoiceTerm.getCurrency(), isCompanyAmount);
+  public BigDecimal getCompanyScaledValue(InvoiceTerm invoiceTerm, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(invoiceTerm.getCompany()));
   }
 
   @Override
-  public int getScale(Company company, Currency currency, boolean isCompanyAmount) {
-    return isCompanyAmount
-        ? this.getCompanyCurrencyScale(company)
-        : this.getCurrencyScale(currency);
+  public BigDecimal getScaledValue(Invoice invoice, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(invoice.getCurrency()));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(Invoice invoice, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(invoice.getCompany()));
+  }
+
+  @Override
+  public int getScale(Move move) {
+    return this.getScale(move.getCurrency());
+  }
+
+  @Override
+  public int getCompanyScale(Move move) {
+    return this.getCompanyScale(move.getCompany());
+  }
+
+  @Override
+  public int getScale(MoveLine moveLine) {
+    return moveLine.getMove() != null ? this.getScale(moveLine.getMove()) : this.getScale();
+  }
+
+  @Override
+  public int getCompanyScale(MoveLine moveLine) {
+    return moveLine.getMove() != null ? this.getCompanyScale(moveLine.getMove()) : this.getScale();
+  }
+
+  @Override
+  public int getScale(Invoice invoice) {
+    return this.getScale(invoice.getCurrency());
+  }
+
+  @Override
+  public int getCompanyScale(Invoice invoice) {
+    return this.getCompanyScale(invoice.getCompany());
+  }
+
+  @Override
+  public int getScale(InvoiceTerm invoiceTerm) {
+    return this.getScale(invoiceTerm.getCurrency());
+  }
+
+  @Override
+  public int getCompanyScale(InvoiceTerm invoiceTerm) {
+    return this.getCompanyScale(invoiceTerm.getCompany());
+  }
+
+  @Override
+  public int getScale(Currency currency) {
+    return this.getCurrencyScale(currency);
+  }
+
+  @Override
+  public int getCompanyScale(Company company) {
+    return this.getCompanyCurrencyScale(company);
   }
 
   protected int getCompanyCurrencyScale(Company company) {

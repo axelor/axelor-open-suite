@@ -229,9 +229,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         total
             .multiply(paymentConditionLine.getPaymentPercentage())
             .divide(
-                BigDecimal.valueOf(100),
-                scaleServiceAccount.getScale(move, false),
-                RoundingMode.HALF_UP);
+                BigDecimal.valueOf(100), scaleServiceAccount.getScale(move), RoundingMode.HALF_UP);
 
     if (holdbackMoveLine == null) {
       if (!canCreateHolbackMoveLine) {
@@ -317,20 +315,18 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     BigDecimal amount =
         isHoldback && total.compareTo(moveLine.getAmountRemaining()) == 0
-            ? scaleServiceAccount.getScaledValue(move, total, false)
+            ? scaleServiceAccount.getScaledValue(move, total)
             : total
                 .multiply(percentage)
                 .divide(
                     BigDecimal.valueOf(100),
-                    scaleServiceAccount.getScale(move, false),
+                    scaleServiceAccount.getScale(move),
                     RoundingMode.HALF_UP);
 
     if (isHoldback) {
       amount =
           amount.divide(
-              moveLine.getCurrencyRate(),
-              scaleServiceAccount.getScale(move, false),
-              RoundingMode.HALF_UP);
+              moveLine.getCurrencyRate(), scaleServiceAccount.getScale(move), RoundingMode.HALF_UP);
     }
 
     User pfpUser = null;

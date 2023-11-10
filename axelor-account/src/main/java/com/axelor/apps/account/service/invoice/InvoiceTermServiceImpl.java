@@ -155,8 +155,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
 
-    return scaleServiceAccount.getScaledValue(
-        invoice, sum.multiply(BigDecimal.valueOf(100)), false);
+    return scaleServiceAccount.getScaledValue(invoice, sum.multiply(BigDecimal.valueOf(100)));
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -305,8 +304,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
 
       companyAmountRemaining =
-          scaleServiceAccount.getScaledValue(invoiceTerm, companyAmount.multiply(ratioPaid), true);
-      companyAmount = scaleServiceAccount.getScaledValue(invoiceTerm, companyAmount, true);
+          scaleServiceAccount.getCompanyScaledValue(invoiceTerm, companyAmount.multiply(ratioPaid));
+      companyAmount = scaleServiceAccount.getCompanyScaledValue(invoiceTerm, companyAmount);
     }
 
     invoiceTerm.setCompanyAmount(companyAmount);
@@ -381,11 +380,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setFinancialDiscountAmount(
-          scaleServiceAccount.getScaledValue(
-              invoiceTerm, financialDiscountAmount.multiply(percentage), true));
+          scaleServiceAccount.getCompanyScaledValue(
+              invoiceTerm, financialDiscountAmount.multiply(percentage)));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
-          scaleServiceAccount.getScaledValue(
-              invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage), true));
+          scaleServiceAccount.getCompanyScaledValue(
+              invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage)));
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
 
       invoiceTerm.setFinancialDiscountDeadlineDate(
@@ -408,7 +407,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .multiply(invoiceTerm.getRemainingAmountAfterFinDiscount())
               .divide(
                   invoiceTerm.getAmount(),
-                  scaleServiceAccount.getScale(invoiceTerm, true),
+                  scaleServiceAccount.getCompanyScale(invoiceTerm),
                   RoundingMode.HALF_UP));
     }
   }
@@ -508,7 +507,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTermPercentage)
             .divide(
                 BigDecimal.valueOf(100),
-                scaleServiceAccount.getScale(moveLine, false),
+                scaleServiceAccount.getScale(moveLine),
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
@@ -898,7 +897,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
             .divide(
                 BigDecimal.valueOf(10000),
-                scaleServiceAccount.getScale(invoiceTerm, true),
+                scaleServiceAccount.getCompanyScale(invoiceTerm),
                 RoundingMode.HALF_UP);
       } else {
         Tax financialDiscountTax =
@@ -920,7 +919,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                             AppBaseService.COMPUTATION_SCALING,
                             RoundingMode.HALF_UP))
                     .multiply(BigDecimal.valueOf(100)),
-                scaleServiceAccount.getScale(invoiceTerm, true),
+                scaleServiceAccount.getCompanyScale(invoiceTerm),
                 RoundingMode.HALF_UP);
       }
     } else {
@@ -1020,9 +1019,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           .getPercentage()
           .multiply(total)
           .divide(
-              new BigDecimal(100),
-              scaleServiceAccount.getScale(invoiceTerm, false),
-              RoundingMode.HALF_UP);
+              new BigDecimal(100), scaleServiceAccount.getScale(invoiceTerm), RoundingMode.HALF_UP);
     }
   }
 

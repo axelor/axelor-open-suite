@@ -79,7 +79,7 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
       BigDecimal currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
       currencyAmount =
           currencyAmount.divide(
-              currencyRate, scaleServiceAccount.getScale(move, false), RoundingMode.HALF_UP);
+              currencyRate, scaleServiceAccount.getScale(move), RoundingMode.HALF_UP);
 
       moveLine.setCurrencyAmount(
           moveToolService.computeCurrencyAmountSign(

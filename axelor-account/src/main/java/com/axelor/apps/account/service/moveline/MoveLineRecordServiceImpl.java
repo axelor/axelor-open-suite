@@ -81,9 +81,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       boolean isCredit = moveLine.getCredit().signum() > 0;
       BigDecimal currencyAmount =
           total.divide(
-              moveLine.getCurrencyRate(),
-              scaleServiceAccount.getScale(move, false),
-              RoundingMode.HALF_UP);
+              moveLine.getCurrencyRate(), scaleServiceAccount.getScale(move), RoundingMode.HALF_UP);
       if (isCredit) {
         currencyAmount = currencyAmount.negate();
       }
