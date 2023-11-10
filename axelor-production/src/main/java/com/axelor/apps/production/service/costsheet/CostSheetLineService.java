@@ -42,10 +42,11 @@ public interface CostSheetLineService {
       int typeSelectIcon,
       Unit unit,
       WorkCenter workCenter,
-      CostSheetLine parentCostSheetLine);
+      CostSheetLine parentCostSheetLine)
+      throws AxelorException;
 
   public CostSheetLine createProducedProductCostSheetLine(
-      Product product, Unit unit, BigDecimal consumptionQty);
+      Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException;
 
   public CostSheetLine createResidualProductCostSheetLine(
       Product product, Unit unit, BigDecimal consumptionQty, Company company)
@@ -81,7 +82,8 @@ public interface CostSheetLineService {
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
       BigDecimal costPrice,
-      Unit unit);
+      Unit unit)
+      throws AxelorException;
 
   public CostSheetLine createWorkCenterMachineCostSheetLine(
       WorkCenter workCenter,
@@ -90,5 +92,6 @@ public interface CostSheetLineService {
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
       BigDecimal costPrice,
-      Unit unit);
+      Unit unit)
+      throws AxelorException;
 }
