@@ -115,6 +115,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             .map(MoveLine::getCurrencyRate)
             .findAny()
             .orElse(BigDecimal.ONE));
+
     moveLineToolService.setDecimals(moveLine, move);
 
     return moveLine;

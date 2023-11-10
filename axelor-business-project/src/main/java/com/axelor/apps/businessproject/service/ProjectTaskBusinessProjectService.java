@@ -29,7 +29,7 @@ import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppBusinessProject;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

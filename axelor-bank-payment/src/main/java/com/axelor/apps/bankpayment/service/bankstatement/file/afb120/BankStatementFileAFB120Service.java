@@ -23,8 +23,10 @@ import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.account.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileService;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineAFB120Service;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -36,7 +38,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.FileTool;
+import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -70,9 +72,11 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("ddMMyy");
 
   @Inject
-  public BankStatementFileAFB120Service(BankStatementService bankStatementService) {
+  public BankStatementFileAFB120Service(
+      BankStatementRepository bankStatementRepository,
+      BankStatementImportService bankStatementService) {
 
-    super(bankStatementService);
+    super(bankStatementRepository, bankStatementService);
 
     this.cfonbToolService = Beans.get(CfonbToolService.class);
     this.currencyRepository = Beans.get(CurrencyRepository.class);
@@ -204,7 +208,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
 
     List<Map<String, Object>> structuredContent = Lists.newArrayList();
 
-    List<String> fileContent = FileTool.reader(file.getPath());
+    List<String> fileContent = FileHelper.reader(file.getPath());
 
     for (String lineContent : fileContent) {
       log.info("Read line : {}", lineContent);

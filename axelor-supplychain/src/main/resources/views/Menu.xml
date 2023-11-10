@@ -176,8 +176,20 @@
       true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2)</domain>
   </action-view>
 
+  <menuitem name="sc-root-sale-timetable" title="Timetables" parent="sc-root-sale"
+    action="sc.root.sale.timetable" order="700"
+    if="__config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
+
+  <action-view name="sc.root.sale.timetable" title="Timetables"
+    model="com.axelor.apps.supplychain.db.Timetable">
+    <view type="grid" name="timetable-grid"/>
+    <view type="form" name="timetable-form"/>
+    <view-param name="orderBy" value="estimatedDate"/>
+  </action-view>
+
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"
-    parent="sc-root-sale-conf" action="sale.conf.timetable.template" order="100"/>
+    parent="sc-root-sale-conf" action="sale.conf.timetable.template" order="100"
+    if="__config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
 
   <action-view name="sale.conf.timetable.template" title="Timetable templates"
     model="com.axelor.apps.supplychain.db.TimetableTemplate">

@@ -44,8 +44,8 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.date.DateTool;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -74,15 +74,16 @@ public class EventController {
     if (event.getStartDateTime() != null) {
       if (event.getDuration() != null && event.getDuration() != 0) {
         response.setValue(
-            "endDateTime", DateTool.plusSeconds(event.getStartDateTime(), event.getDuration()));
+            "endDateTime",
+            LocalDateHelper.plusSeconds(event.getStartDateTime(), event.getDuration()));
       } else if (event.getEndDateTime() != null
           && event.getEndDateTime().isAfter(event.getStartDateTime())) {
         Duration duration =
-            DurationTool.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-        response.setValue("duration", DurationTool.getSecondsDuration(duration));
+            DurationHelper.computeDuration(event.getStartDateTime(), event.getEndDateTime());
+        response.setValue("duration", DurationHelper.getSecondsDuration(duration));
       } else {
         Duration duration = Duration.ofHours(1);
-        response.setValue("duration", DurationTool.getSecondsDuration(duration));
+        response.setValue("duration", DurationHelper.getSecondsDuration(duration));
         response.setValue("endDateTime", event.getStartDateTime().plus(duration));
       }
     }
@@ -98,11 +99,12 @@ public class EventController {
       if (event.getStartDateTime() != null
           && event.getStartDateTime().isBefore(event.getEndDateTime())) {
         Duration duration =
-            DurationTool.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-        response.setValue("duration", DurationTool.getSecondsDuration(duration));
+            DurationHelper.computeDuration(event.getStartDateTime(), event.getEndDateTime());
+        response.setValue("duration", DurationHelper.getSecondsDuration(duration));
       } else if (event.getDuration() != null) {
         response.setValue(
-            "startDateTime", DateTool.minusSeconds(event.getEndDateTime(), event.getDuration()));
+            "startDateTime",
+            LocalDateHelper.minusSeconds(event.getEndDateTime(), event.getDuration()));
       }
     }
   }
@@ -116,10 +118,12 @@ public class EventController {
     if (event.getDuration() != null) {
       if (event.getStartDateTime() != null) {
         response.setValue(
-            "endDateTime", DateTool.plusSeconds(event.getStartDateTime(), event.getDuration()));
+            "endDateTime",
+            LocalDateHelper.plusSeconds(event.getStartDateTime(), event.getDuration()));
       } else if (event.getEndDateTime() != null) {
         response.setValue(
-            "startDateTime", DateTool.minusSeconds(event.getEndDateTime(), event.getDuration()));
+            "startDateTime",
+            LocalDateHelper.minusSeconds(event.getEndDateTime(), event.getDuration()));
       }
     }
   }
@@ -132,8 +136,8 @@ public class EventController {
 
     if (event.getStartDateTime() != null && event.getEndDateTime() != null) {
       Duration duration =
-          DurationTool.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-      response.setValue("duration", DurationTool.getSecondsDuration(duration));
+          DurationHelper.computeDuration(event.getStartDateTime(), event.getEndDateTime());
+      response.setValue("duration", DurationHelper.getSecondsDuration(duration));
     }
   }
 

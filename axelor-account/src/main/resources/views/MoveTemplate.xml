@@ -41,36 +41,31 @@
         onChange="action-move-template-group-line-list-onchange"/>
       <field name="$totalLines" title="Total lines" type="integer" colSpan="3" readonly="true">
         <viewer>
-						<![CDATA[
-							<h3>{{$fmt('$totalLines')}}</h3>
-						]]>
+		  <![CDATA[<><h3>{$fmt('$totalLines')}</h3></>]]>
         </viewer>
       </field>
       <field name="$totalDebit" title="Total debit" type="decimal"
         x-scale="company.currency.numberOfDecimals" colSpan="3" readonly="true">
         <viewer>
-						<![CDATA[
-							<h3>{{$fmt('$totalDebit')}}</h3>
-						]]>
+		  <![CDATA[<><h3>{$fmt('$totalDebit')}</h3></>]]>
         </viewer>
       </field>
       <field name="$totalCredit" title="Total credit" type="decimal"
         x-scale="company.currency.numberOfDecimals" colSpan="3" readonly="true">
         <viewer>
-						<![CDATA[
-							<h3>{{$fmt('$totalCredit')}}</h3>
-						]]>
+	      <![CDATA[<><h3>{$fmt('$totalCredit')}</h3></>]]>
         </viewer>
       </field>
       <field name="$difference" title="Difference" type="decimal"
         x-scale="company.currency.numberOfDecimals" colSpan="3" readonly="true">
         <viewer>
-						<![CDATA[
-							<h3>
-								<span ng-show="record.$difference == 0">{{$fmt('$difference')}}</span>
-								<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')}}</span>
-							</h3>
-						]]>
+				<![CDATA[
+          				<>
+                           	<h3>
+                                <Box as="span" style={{ color: !$difference ? "#D9534F" : "normal" }}>{$fmt('$difference')}</Box>
+                            </h3>
+                        </>
+				]]>
         </viewer>
       </field>
       <field name="company.currency.numberOfDecimals" hidden="true"/>

@@ -251,6 +251,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
           purchaseOrderLine.getBudgetDistributionList().stream()
               .forEach(
                   budgetDistribution -> {
+                    budgetDistribution.setImputationDate(purchaseOrder.getOrderDate());
                     Budget budget = budgetDistribution.getBudget();
                     budgetService.updateLines(budget);
                     budgetService.computeTotalAmountCommitted(budget);

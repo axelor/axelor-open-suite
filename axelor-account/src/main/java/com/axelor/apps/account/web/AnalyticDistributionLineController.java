@@ -37,7 +37,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -116,7 +116,7 @@ public class AnalyticDistributionLineController {
       company = analyticDistributionTemplate.getCompany();
     } else {
       company =
-          ContextTool.getFieldFromContextParent(request.getContext(), "company", Company.class);
+          ContextHelper.getFieldFromContextParent(request.getContext(), "company", Company.class);
     }
     if (company != null) {
       response.setAttr(

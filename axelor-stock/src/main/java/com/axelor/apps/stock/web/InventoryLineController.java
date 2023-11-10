@@ -28,7 +28,7 @@ import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -83,7 +83,7 @@ public class InventoryLineController {
         response.setAttr(
             "stockLocation",
             "domain",
-            "self.id IN(" + StringTool.getIdListString(stockLocationSet) + ")");
+            "self.id IN(" + StringHelper.getIdListString(stockLocationSet) + ")");
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

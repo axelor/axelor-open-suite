@@ -1,0 +1,1620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <list-property name="userProperties">
+        <structure>
+            <property name="name">Data Cube.BudgetScenarioLine.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.BudgetScenarioLine.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.Year.NewTabularHierarchy1.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.Year.NewTabularHierarchy1.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.BudgetScenarioLine.width</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.BudgetScenarioLine.height</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+    </list-property>
+    <property name="Data Cube.BudgetScenarioLine.x">204</property>
+    <property name="Data Cube.BudgetScenarioLine.y">85</property>
+    <property name="Data Cube.Year.NewTabularHierarchy1.x">3</property>
+    <property name="Data Cube.Year.NewTabularHierarchy1.y">122</property>
+    <property name="Data Cube.BudgetScenarioLine.width">150</property>
+    <property name="Data Cube.BudgetScenarioLine.height">200</property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">6392</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">6392</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">6392</property>
+        </structure>
+        <structure>
+            <property name="name">odaURL</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["DBName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaUser</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+    </list-property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <property name="locale">fr_FR</property>
+    <parameters>
+        <scalar-parameter name="DBName" id="3033">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="3034">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="3035">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Locale" id="4050">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="3818">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="BudgetScenarioId" id="4052">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="YearNamesList" id="6546">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="javascript">""</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="4">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="BudgetScenario" id="4051">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">company_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">company_name</text-property>
+                    <text-property name="heading">company_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency</text-property>
+                    <text-property name="heading">currency</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">name</text-property>
+                    <text-property name="heading">name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">year_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">year_id</text-property>
+                    <text-property name="heading">year_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">year_name</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">year_name</text-property>
+                    <text-property name="heading">year_name</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">BudgetScenarioId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">company_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">logo_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">year_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">year_name</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <method name="onFetch"><![CDATA[if(row["year_id"])
+vars["YearCount"] += 1
+
+if (row["year_id"] != null) {
+      
+    var yearName = row["year_name"];
+    var yearNamesList = params["YearNamesList"];
+    if (yearNamesList == null || yearNamesList == "") {
+        yearNamesList = yearName;
+    } else {
+        yearNamesList += "," + yearName;
+    }
+    params["YearNamesList"].value = yearNamesList;
+}]]></method>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">company_name</property>
+                    <property name="nativeName">company_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">name</property>
+                    <property name="nativeName">name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">year_id</property>
+                    <property name="nativeName">year_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">year_name</property>
+                    <property name="nativeName">year_name</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select 
+Company.name as company_name,
+Company.height as logo_height,
+Company.width as logo_width,  
+MetaFile.file_path as logo_path,
+Currency.code as currency,
+BudgetScenario.name as name,
+BSYear.id as year_id,
+EXTRACT(YEAR FROM BSYear.from_date)::int as year_name
+
+from budget_budget_scenario as BudgetScenario
+left outer join base_company as Company on (BudgetScenario.company = Company.id)
+left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
+left outer join base_currency as Currency on (Company.currency = Currency.id)
+left outer join budget_budget_scenario_year_set as YearSet on (YearSet.budget_budget_scenario = BudgetScenario.id)
+left outer join base_year as BSYear on (YearSet.year_set = BSYear.id)
+where BudgetScenario.id = ? 
+order by year_name;]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">message_key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <text-property name="heading">message_key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, COALESCE(nullif(LangTranslate.message_value,''),LangTranslate.message_key) as "translation" 
+from meta_translation as LangTranslate 
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="BudgetScenarioLine" id="6392">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">year1value</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">year1value</text-property>
+                    <text-property name="heading">year1value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">year2value</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">year2value</text-property>
+                    <text-property name="heading">year2value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">year3value</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">year3value</text-property>
+                    <text-property name="heading">year3value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">year4value</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">year4value</text-property>
+                    <text-property name="heading">year4value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">year5value</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">year5value</text-property>
+                    <text-property name="heading">year5value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">year6value</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">year6value</text-property>
+                    <text-property name="heading">year6value</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">variable_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">variable_code</text-property>
+                    <text-property name="heading">variable_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">variable_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">variable_name</text-property>
+                    <text-property name="heading">variable_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">category</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">category</text-property>
+                    <text-property name="heading">category</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">BudgetScenarioId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">year1value</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">year2value</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">year3value</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">year4value</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">year5value</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">year6value</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">variable_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">variable_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">category</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">year1value</property>
+                    <property name="nativeName">year1value</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">year2value</property>
+                    <property name="nativeName">year2value</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">year3value</property>
+                    <property name="nativeName">year3value</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">year4value</property>
+                    <property name="nativeName">year4value</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">year5value</property>
+                    <property name="nativeName">year5value</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">year6value</property>
+                    <property name="nativeName">year6value</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">variable_code</property>
+                    <property name="nativeName">variable_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">variable_name</property>
+                    <property name="nativeName">variable_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">category</property>
+                    <property name="nativeName">category</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select 
+BudgetScenarioLine.year1value,
+BudgetScenarioLine.year2value,
+BudgetScenarioLine.year3value,
+BudgetScenarioLine.year4value,
+BudgetScenarioLine.year5value,
+BudgetScenarioLine.year6value,
+BSVariable.code as variable_code,
+BSVariable.name as variable_name,
+SelectItem.title as category
+
+from budget_budget_scenario_line as BudgetScenarioLine
+left outer join budget_budget_scenario as BudgetScenario on (BudgetScenarioLine.budget_scenario = BudgetScenario.id)
+left outer join budget_budget_scenario_variable as BSVariable on (BudgetScenarioLine.budget_scenario_variable = BSVariable.id)
+
+left outer join meta_select as Selection on Selection.name = 'budget.scenario.category.select'
+join meta_select_item as SelectItem on (SelectItem.value = cast( BSVariable.category AS text ) and SelectItem.select_id = Selection.id)
+
+where BudgetScenario.id = ?]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="orientation">landscape</property>
+            <property name="headerHeight">0.2in</property>
+            <page-footer>
+                <grid id="4631">
+                    <property name="fontFamily">sans-serif</property>
+                    <property name="width">11.03125in</property>
+                    <column id="4732">
+                        <property name="width">1.6041666666666667in</property>
+                    </column>
+                    <column id="4632">
+                        <property name="width">17.753541666666667cm</property>
+                    </column>
+                    <column id="4633">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">4.048125cm</property>
+                    </column>
+                    <column id="5925">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">10%</property>
+                    </column>
+                    <row id="4635">
+                        <property name="fontSize">9pt</property>
+                        <cell id="4731">
+                            <property name="verticalAlign">middle</property>
+                            <image id="6353">
+                                <property name="dataSet">BudgetScenario</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_height</property>
+                                        <text-property name="displayName">logo_height</text-property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_width</property>
+                                        <text-property name="displayName">logo_width</text-property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
+                        </cell>
+                        <cell id="4636">
+                            <property name="textAlign">center</property>
+                            <property name="verticalAlign">middle</property>
+                        </cell>
+                        <cell id="4637">
+                            <property name="verticalAlign">middle</property>
+                        </cell>
+                        <cell id="5924">
+                            <property name="verticalAlign">middle</property>
+                            <grid id="3104">
+                                <property name="textAlign">right</property>
+                                <property name="height">0.3in</property>
+                                <column id="3105"/>
+                                <column id="3106"/>
+                                <column id="3107"/>
+                                <row id="3108">
+                                    <property name="height">0.3333333333333333in</property>
+                                    <cell id="3109">
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingLeft">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
+                                        <property name="paddingRight">0pt</property>
+                                        <property name="verticalAlign">middle</property>
+                                        <auto-text id="3110">
+                                            <property name="fontSize">9pt</property>
+                                            <property name="type">page-number</property>
+                                        </auto-text>
+                                    </cell>
+                                    <cell id="3111">
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingLeft">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
+                                        <property name="paddingRight">0pt</property>
+                                        <property name="verticalAlign">middle</property>
+                                        <text id="3112">
+                                            <property name="fontSize">9pt</property>
+                                            <property name="textAlign">center</property>
+                                            <property name="contentType">plain</property>
+                                            <text-property name="content"><![CDATA[/]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="3113">
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingLeft">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
+                                        <property name="paddingRight">0pt</property>
+                                        <property name="verticalAlign">middle</property>
+                                        <auto-text id="3114">
+                                            <property name="fontSize">9pt</property>
+                                            <property name="textAlign">left</property>
+                                            <property name="type">total-page</property>
+                                        </auto-text>
+                                    </cell>
+                                </row>
+                            </grid>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="6334">
+            <property name="marginBottom">1cm</property>
+            <property name="dataSet">BudgetScenario</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">company_name</property>
+                    <text-property name="displayName">company_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">currency</property>
+                    <text-property name="displayName">currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">name</property>
+                    <text-property name="displayName">name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="6335"/>
+            <column id="6336"/>
+            <row id="6337">
+                <cell id="6338">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="6346">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="marginBottom">1cm</property>
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BudgetScenario.title'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="6340">
+                <cell id="6341">
+                    <text id="3926">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">10pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BudgetScenario.name'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
+                    <text id="554">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["name"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="6342">
+                    <text id="6349">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">10pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BudgetScenario.date'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
+                    <text id="6350">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="6343">
+                <cell id="6344">
+                    <text id="6347">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">10pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BudgetScenario.company'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
+                    <text id="6348">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["company_name"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="6345">
+                    <text id="6351">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">10pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BudgetScenario.currency'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
+                    <text id="6352">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">10pt</property>
+                        <property name="display">inline</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
+        <table id="6439">
+            <property name="fontFamily">sans-serif</property>
+            <property name="dataSet">BudgetScenarioLine</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">year1value</property>
+                    <text-property name="displayName">year1value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["year1value"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">year2value</property>
+                    <text-property name="displayName">year2value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["year2value"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">year3value</property>
+                    <text-property name="displayName">year3value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["year3value"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">year4value</property>
+                    <text-property name="displayName">year4value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["year4value"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">year5value</property>
+                    <text-property name="displayName">year5value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["year5value"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">year6value</property>
+                    <text-property name="displayName">year6value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["year6value"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">variable_code</property>
+                    <text-property name="displayName">variable_code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["variable_code"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">variable_name</property>
+                    <text-property name="displayName">variable_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["variable_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">category</property>
+                    <text-property name="displayName">category</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["category"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Aggregation</property>
+                    <text-property name="displayName">Year1Sum</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>Category</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["year1value"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Year2Sum</property>
+                    <text-property name="displayName">Year2Sum</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>Category</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["year2value"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Year3Sum</property>
+                    <text-property name="displayName">Year3Sum</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>Category</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["year3value"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Year4Sum</property>
+                    <text-property name="displayName">Year4Sum</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>Category</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["year4value"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Year5Sum</property>
+                    <text-property name="displayName">Year5Sum</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>Category</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["year5value"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Year6Sum</property>
+                    <text-property name="displayName">Year6Sum</text-property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>Category</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["year6value"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="6452"/>
+            <column id="6453">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">vars["YearCount"] &lt; 1</expression>
+                    </structure>
+                </list-property>
+            </column>
+            <column id="6462">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">vars["YearCount"] &lt; 2</expression>
+                    </structure>
+                </list-property>
+            </column>
+            <column id="6458">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">vars["YearCount"] &lt; 3</expression>
+                    </structure>
+                </list-property>
+            </column>
+            <column id="6466">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">vars["YearCount"] &lt; 4</expression>
+                    </structure>
+                </list-property>
+            </column>
+            <column id="6470">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">vars["YearCount"] &lt; 5</expression>
+                    </structure>
+                </list-property>
+            </column>
+            <column id="6454">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">vars["YearCount"] &lt; 6</expression>
+                    </structure>
+                </list-property>
+            </column>
+            <header>
+                <row id="6440">
+                    <property name="fontWeight">bold</property>
+                    <cell id="6441">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="6552">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">10pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="display">block</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'BudgetScenario.expenseAndRevenueItems'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="6442">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="6545">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>params["YearNamesList"].value.split(",")[0]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="6459">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="6548">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>params["YearNamesList"].value.split(",")[1]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="6455">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="6547">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>params["YearNamesList"].value.split(",")[2]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="6463">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="6549">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>params["YearNamesList"].value.split(",")[3]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="6467">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="6550">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>params["YearNamesList"].value.split(",")[4]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="6443">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="6551">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>params["YearNamesList"].value.split(",")[5]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                </row>
+            </header>
+            <group id="6471">
+                <property name="groupName">Category</property>
+                <expression name="keyExpr" type="javascript">row["category"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["category"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <header>
+                    <row id="6472">
+                        <property name="fontWeight">bold</property>
+                        <cell id="6473">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <text id="6561">
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">row["category"]</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="6474">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <data id="6553">
+                                <structure name="numberFormat">
+                                    <property name="category">Currency</property>
+                                    <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">Aggregation</property>
+                            </data>
+                        </cell>
+                        <cell id="6475">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <data id="6556">
+                                <structure name="numberFormat">
+                                    <property name="category">Currency</property>
+                                    <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">Year2Sum</property>
+                            </data>
+                        </cell>
+                        <cell id="6476">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <data id="6557">
+                                <structure name="numberFormat">
+                                    <property name="category">Currency</property>
+                                    <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">Year3Sum</property>
+                            </data>
+                        </cell>
+                        <cell id="6477">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <data id="6558">
+                                <structure name="numberFormat">
+                                    <property name="category">Currency</property>
+                                    <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">Year4Sum</property>
+                            </data>
+                        </cell>
+                        <cell id="6478">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <data id="6559">
+                                <structure name="numberFormat">
+                                    <property name="category">Currency</property>
+                                    <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">Year5Sum</property>
+                            </data>
+                        </cell>
+                        <cell id="6479">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <data id="6560">
+                                <structure name="numberFormat">
+                                    <property name="category">Currency</property>
+                                    <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">Year6Sum</property>
+                            </data>
+                        </cell>
+                    </row>
+                </header>
+            </group>
+            <detail>
+                <row id="6444">
+                    <cell id="6445">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="6490">
+                            <property name="resultSetColumn">variable_name</property>
+                        </data>
+                    </cell>
+                    <cell id="6446">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="6492">
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">year1value</property>
+                        </data>
+                    </cell>
+                    <cell id="6460">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="6494">
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">year2value</property>
+                        </data>
+                    </cell>
+                    <cell id="6456">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="6496">
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">year3value</property>
+                        </data>
+                    </cell>
+                    <cell id="6464">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="6498">
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">year4value</property>
+                        </data>
+                    </cell>
+                    <cell id="6468">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="6500">
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">year5value</property>
+                        </data>
+                    </cell>
+                    <cell id="6447">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <data id="6502">
+                            <structure name="numberFormat">
+                                <property name="category">Currency</property>
+                                <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">year6value</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+        </table>
+    </body>
+    <property name="pageVariables">
+        <variable-element name="YearCount">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
+</report>

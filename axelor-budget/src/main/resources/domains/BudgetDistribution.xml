@@ -14,7 +14,7 @@
       title="Global Budget"/>
 
     <decimal name="amount" title="Amount" precision="20" scale="2"/>
-    <date name="dateCreated" title="Date"/>
+    <date name="imputationDate" title="Date"/>
     <decimal name="assignedAmount" title="Assigned amount"/>
     <decimal name="budgetAmountAvailable"/>
 

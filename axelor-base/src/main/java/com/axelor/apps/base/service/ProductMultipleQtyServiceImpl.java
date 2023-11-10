@@ -21,7 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -87,13 +87,13 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
       response.setValue("$qtyValid", true);
     } else {
       String spanClass =
-          allowToForce ? ContextTool.SPAN_CLASS_WARNING : ContextTool.SPAN_CLASS_IMPORTANT;
+          allowToForce ? ContextHelper.SPAN_CLASS_WARNING : ContextHelper.SPAN_CLASS_IMPORTANT;
 
       String message =
           String.format(
               I18n.get("Quantity should be a multiple of %s"),
               this.toStringMultipleQty(productMultipleQties));
-      String title = ContextTool.formatLabel(message, spanClass, 75);
+      String title = ContextHelper.formatLabel(message, spanClass, 75);
 
       response.setAttr("multipleQtyNotRespectedLabel", "title", title);
       response.setAttr("multipleQtyNotRespectedLabel", "hidden", false);

@@ -47,7 +47,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
@@ -515,7 +515,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     new File(filePath).mkdirs();
 
     log.debug("Full path to export : {}{}", filePath, fileName);
-    CsvTool.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
+    CsvHelper.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
     Path path = Paths.get(filePath, fileName);
     try (InputStream is = new FileInputStream(path.toFile())) {
       return Beans.get(MetaFiles.class).attach(is, fileName, accountingReport).getMetaFile();

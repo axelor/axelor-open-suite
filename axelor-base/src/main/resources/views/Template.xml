@@ -21,9 +21,11 @@
     <panel name="mainPanel" colSpan="12">
       <field name="name" showTitle="false" colSpan="12">
         <viewer depends="name"><![CDATA[
-					<h3>
-						<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-					</h3>
+					<>
+						<h3>
+							<span>{name}</span>
+						</h3>
+					</>
 				]]></viewer>
         <editor>
           <field name="name" showTitle="true"/>
@@ -92,30 +94,41 @@
         showIf="templateEngineSelect == 1">
         <field name="$stringHelpViewer" showTitle="false" readonly="true" colSpan="12">
           <viewer><![CDATA[
-<h3 id="access-to-model-fields"><span x-translate>Access to model fields</span></h3>
-<p><span x-translate>We can access direct/o2o/m2o fields of template model by specifying field path surrounded by</span> <code>$$</code><br>
-<span x-translate>Examples</span>:
-<ul>
-<li> <span x-translate>To access product's full name</span>: <code>$Product.fullName$</code>
-<li> <span x-translate>To access product's ProductCategory</span>: <code>$Product.productCategory.name$</code>
-</ul></p>
-<p><span x-translate>We can access o2m/m2m fields of template model with this syntax</span>: <code>$Model.fieldName:{it|$it.fieldPath$}$</code><br>
-<span x-translate>Examples</span>:
-<ul>
-<li> <span x-translate>To access company name of productCompanyList</span>: <code>$Product.productCompanyList:{it|$it.company.name$}$</code>
-<li> <span x-translate>To access trading name of tradingNameSellerSet of product</span>: <code>$Product.tradingNameSellerSet:{it|$it.name$}$</code>
-</ul></p>
-<h4 id="selection"><span x-translate>Selection</span></h4>
-<p><span x-translate>We can access selection fields as follows</span>:<br>
-<span x-translate>Examples</span>:
-<ul>
-<li> <span x-translate>To display title of costTypeSelect of product</span>: <code>$Product.costTypeSelect$</code>  <span x-translate>or</span>  <code>$Product.costTypeSelect.title$</code>
-<li> <span x-translate>To display value of productTypeSelect of product</span>: <code>$Product.productTypeSelect.value$</code>
-</ul></p>
-<h4 id="custom-fields"><span x-translate>Custom fields</span></h4>
-<p><span x-translate>We can access custom fields same as normal fields</span>:<br>
-<span x-translate>Examples</span>:  <span x-translate>To display value of custom field of product</span>: <code>$Product.customFieldName$</code></p>
-]]>
+			<>
+				<h3><span>{_t('Access to model fields')}</span></h3>
+				<p>
+					<span>{_t('We can access direct/o2o/m2o fields of template model by specifying field path surrounded by')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$$</Box><Box/>
+					<span>{_t('Examples')}</span>:
+					<ul>
+						<li> <span>{_t('To access product\'s full name')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
+						<li> <span>{_t('To access product\'s ProductCategory')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
+					</ul>
+				</p>
+				<p>
+					<span>{_t('We can access o2m/m2m fields of template model with this syntax')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Model.fieldName:&#123;it|$it.fieldPath$&#125;$</Box><Box/>
+					<span>{_t('Examples')}</span>:
+					<ul>
+						<li> <span>{_t('To access company name of productCompanyList')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCompanyList:&#123;it|$it.company.name$&#125;$</Box> </li>
+						<li> <span>{_t('To access trading name of tradingNameSellerSet of product')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.tradingNameSellerSet:&#123;it|$it.name$&#125;$</Box> </li>
+					</ul>
+				</p>
+				<h4><span>{_t('Selection')}</span></h4>
+				<p>
+					<span>{_t('We can access selection fields as follows')}</span>:<Box/>
+					<span>{_t('Examples')}</span>:
+					<ul>
+						<li> <span>{_t('To display title of costTypeSelect of product')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.costTypeSelect$</Box>  <span>{_t('or')}</span>  <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.costTypeSelect.title$</Box> </li>
+						<li> <span>{_t('To display value of productTypeSelect of product')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productTypeSelect.value$</Box> </li>
+					</ul>
+				</p>
+				<h4><span>{_t('Custom fields')}</span></h4>
+				<p>
+					<span>{_t('We can access custom fields same as normal fields')}</span>:<Box/>
+					<span>{_t('Examples')}</span>:
+					<span>{_t('To display value of custom field of product')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.customFieldName$</Box>
+				</p>
+			</>
+			]]>
           </viewer>
         </field>
       </panel>
@@ -123,30 +136,46 @@
         showIf="templateEngineSelect == 2">
         <field name="$groovyHelpViewer" showTitle="false" readonly="true" colSpan="12">
           <viewer><![CDATA[
-<h3 id="the-script-must-be-written-in-groovy"><a href="http://docs.groovy-lang.org/latest/html/documentation/" target="_blank">Groovy</a></h3>
-<h4 id="string"><span x-translate>String</span></h4>
-<p><code>+</code> <span x-translate>is used for concatenation</span>:</p>
-<pre><code>v = &quot;def&quot;
-&quot;abc&quot; + v // returns &quot;abcdef&quot;</code></pre>
-<p><span x-translate>String interpolation can also be used</span>:</p>
-<pre><code>v = &quot;def&quot;
-&quot;abc${v}&quot; // also returns &quot;abcdef&quot;</code></pre>
-<h4 id="decimal"><span x-translate>Decimal</span></h4>
-<p><span x-translate>Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.</span></p>
-<h4 id="current-user" x-translate>Current User</h4>
-<p><code>__user__</code> <span x-translate>gives access to connected user.</span> <br>
-<span x-translate>Example: accessing the name of the user</span>: <code>__user__.name</code>.</p>
-<h4 id="date">Date</h4>
-<p><code>__date__</code> <span x-translate>gives access to today date and</span> <code>__datetime__</code> <span x-translate>to current date time.</span></p>
-<h4 id="query-to-database" x-translate>Query to database</h4>
-<p><code>__repo__</code> <span x-translate>gives access to a repository with the same syntax as the repositories in java</span>.<br>
-<span x-translate>Examples</span>:
-<ul>
-<li> <span x-translate>searching for Product with id = 1:</span> <code>__repo__(Product).find(1)</code>
-<li> <span x-translate>searching for ProductFamily with the code ‘SERV’</span>: <code>__repo__(ProductFamily).all().filter("self.code = 'SERV'").fetchOne()</code>
-<li> <span x-translate>searching Partners that are suppliers and with a name starting with “A”</span>: <code>__repo__(Partner).all().filter("self.isSupplier IS TRUE AND self.name LIKE 'A%'").fetchOne()</code>
-</ul>
-</p>]]>
+			<>
+				<h3><Box as="a" href={"http://docs.groovy-lang.org/latest/html/documentation/"} target="_blank">Groovy</Box></h3>
+				<h4>{_t('String')}</h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>+</Box> <span>{_t('is used for concatenation')}</span>:
+				</p>
+				<Box border borderColor="dark-subtle" color="black" borderWidth={1} as="pre" bg="secondary-subtle" p={2}>
+					{`v = "def" \n"abc" + v //returns "abcdef"`}
+				</Box>
+				<p>
+					<span>{_t('String interpolation can also be used')}</span>:
+				</p>
+				<Box border borderColor="dark-subtle" color="black" borderWidth={1} as="pre" bg="secondary-subtle" p={2}>
+					{`v = "def" \n"abc\${v}" // also returns "abcdef"`}
+				</Box>
+				<h4>{_t('Decimal')}</h4>
+				<p>
+					<span>{_t('Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.')}</span>
+				</p>
+				<h4>{_t('Current User')}</h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__user__</Box> <span>{_t('gives access to connected user.')}</span><Box/>
+					<span>{_t('Example: accessing the name of the user')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__user__.name</Box>.
+				</p>
+				<h4>{_t('Date')}</h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__date__</Box> <span>{_t('gives access to today date and')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__datetime__</Box> <span>{_t('to current date time.')}</span>
+				</p>
+				<h4><span>{_t('Query to database')}</span></h4>
+				<p>
+					<Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__repo__</Box> <span>{_t('gives access to a repository with the same syntax as the repositories in java')}</span>.<Box/>
+					<span>{_t('Examples')}</span>:
+					<ul>
+						<li>{_t('searching for Product with id = 1:')} <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__repo__(Product).find(1)</Box> </li>
+						<li>{_t('searching for ProductFamily with the code ‘SERV’')}: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__repo__(ProductFamily).all().filter("self.code = 'SERV'").fetchOne()</Box> </li>
+						<li>{_t('searching Partners that are suppliers and with a name starting with “A”')}: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>__repo__(Partner).all().filter("self.isSupplier IS TRUE AND self.name LIKE 'A%'").fetchOne()</Box> </li>
+					</ul>
+				</p>
+			</>
+			]]>
           </viewer>
         </field>
       </panel>

@@ -71,18 +71,20 @@
         colSpan="4">
         <viewer depends="$defaultBillOfMaterial">
                     <![CDATA[
-                        <h4 class="text-right">
-                            <span class="label label-default" style="background-color: #009900; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$defaultBillOfMaterial.id == record.id" x-translate>Default Bill of materials</span>
-                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$defaultBillOfMaterial.id != record.id" x-translate>Alternative Bill of materials</span>
-                        </h4>
+	                    <>
+	                    	<Box d="flex" justifyContent="flex-end">
+	                    		{$defaultBillOfMaterial.id == id && <Badge style={{ backgroundColor: "#009900" }}>{_t('Default Bill of materials')}</Badge>}
+	                    		{$defaultBillOfMaterial.id != id && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Alternative Bill of materials')}</Badge>}
+	                    	</Box>
+	                    </>
                 ]]></viewer>
       </field>
       <field name="fullName" showTitle="false" colSpan="12">
         <viewer depends="name">
 					<![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.fullName}}</span>
-						</h3>
+						<>
+							<h3><span>{fullName}</span></h3>
+						</>
 					]]>
         </viewer>
         <editor>
@@ -115,9 +117,13 @@
           colSpan="9" showIf="$numberOfComponents > 0">
           <viewer depends="$numberOfComponents">
                         <![CDATA[
-                            <h4 class="text-right">
-                                <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of components</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{$fmt('$numberOfComponents')}}</span>
-                            </h4>
+							<>
+		                    	<Box d="flex" justifyContent="flex-end">
+		                    		<Badge style={{ backgroundColor: "#2185D0" }}>
+		                    			{_t('Number of components')} <Badge style={{ backgroundColor: "#23C6C8", fontSize: "12px" }}>{$fmt('$numberOfComponents')}</Badge>
+		                    		</Badge>
+		                    	</Box>
+							</>
 					    ]]>
           </viewer>
         </field>
@@ -199,14 +205,14 @@
     <action name="action-bill-of-material-default-record"/>
     <action name="action-bill-of-material-attrs-price-and-qty-digits"/>
     <action name="action-bill-of-material-record-count-number-of-components"/>
-    <action name="action-bill-of-material-attrs-component-panel-set-canselect"/>
+    <action name="action-bill-of-material-attrs-component-panel-set-canselect-and-product"/>
   </action-group>
 
   <action-group name="action-bill-of-material-group-on-load">
     <action name="action-bill-of-material-attrs-price-and-qty-digits"/>
     <action name="action-bill-of-material-record-count-number-of-components"/>
     <action name="action-bill-of-material-record-set-dummy-field"/>
-    <action name="action-bill-of-material-attrs-component-panel-set-canselect"/>
+    <action name="action-bill-of-material-attrs-component-panel-set-canselect-and-product"/>
   </action-group>
 
   <action-record name="action-bill-of-material-record-set-dummy-field"
@@ -228,6 +234,12 @@
     <field name="product" expr="eval:_product"/>
     <field name="name" expr="eval:_product?.name"/>
     <field name="unit" expr="eval: _product?.unit"/>
+    <field name="product" expr="eval:__parent__?.product"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null"/>
+    <field name="name" expr="eval:__parent__?.product?.name"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null &amp;&amp; __parent__.product.name != null"/>
+    <field name="unit" expr="eval: __parent__?.product?.unit"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null &amp;&amp; __parent__.product.unit != null"/>
   </action-record>
 
   <action-record name="action-bill-of-material-record-product"
@@ -311,9 +323,12 @@
     <attribute name="hidden" for="addComponentsEnMasseBtn" expr="eval: $rawMaterials"/>
   </action-attrs>
 
-  <action-attrs name="action-bill-of-material-attrs-component-panel-set-canselect">
+  <action-attrs
+    name="action-bill-of-material-attrs-component-panel-set-canselect-and-product">
     <attribute name="value" for="$canSelect"
       expr="eval:!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+    <attribute name="readonly" for="product" expr="eval: __parent__.product != null"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine'"/>
   </action-attrs>
 
 

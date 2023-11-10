@@ -35,7 +35,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -282,6 +282,12 @@ public class SequenceService {
         nextSequence = findNextLetterSequence(nextNum, lettersType);
         break;
 
+      case ALPHANUMERIC:
+        padStr = PADDING_DIGIT;
+        nextSequence = findNextAlphanumericSequence(nextNum, sequence.getPattern());
+
+        break;
+
       default:
         throw new AxelorException(
             sequenceVersion,
@@ -291,6 +297,44 @@ public class SequenceService {
     }
 
     return StringUtils.leftPad(nextSequence, sequence.getPadding(), padStr);
+  }
+
+  protected String findNextAlphanumericSequence(Long nextNum, String pattern) {
+    int patternLength = pattern.length();
+    String sequence = "";
+    int add = 0;
+    for (int i = patternLength - 1; i >= 0; i--) {
+      if (add == 1) {
+        nextNum++;
+        add = 0;
+      }
+      int value;
+      switch (pattern.charAt(i)) {
+        case 'N':
+          value = (int) (nextNum % 10);
+          nextNum = nextNum - value;
+          nextNum = nextNum / 10;
+          sequence = value + sequence;
+          break;
+
+        case 'L':
+          if (i == patternLength - 1) {
+            nextNum = nextNum - 1;
+          }
+          value = (int) (nextNum % 26);
+          nextNum = nextNum - value;
+          nextNum = nextNum / 26;
+          char temp = (char) ('A' + value);
+          if (temp > 'Z') {
+            add = 1;
+            temp = 'A';
+          }
+          sequence = temp + sequence;
+          break;
+      }
+    }
+
+    return sequence;
   }
 
   /**
@@ -427,7 +471,7 @@ public class SequenceService {
     String draftPrefix = getDraftPrefix();
     return String.format(
         "%s%s",
-        draftPrefix, StringTool.fillStringLeft(String.valueOf(model.getId()), '0', padding));
+        draftPrefix, StringHelper.fillStringLeft(String.valueOf(model.getId()), '0', padding));
   }
 
   /**
@@ -493,5 +537,13 @@ public class SequenceService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           BaseExceptionMessage.SEQUENCE_PREFIX,
           draftPrefix);
+  }
+
+  public void verifyPattern(Sequence sequence) throws AxelorException {
+    if (sequence.getPattern() != null && sequence.getPadding() != sequence.getPattern().length()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.SEQUENCE_PATTERN_LENGTH_NOT_VALID));
+    }
   }
 }

@@ -64,13 +64,13 @@
           <field name="fullName" colSpan="4" hidden="true"/>
         </panel>
 
-        <panel name="versionPanel" itemSpan="4" colSpan="12" hideIf="statusSelect == 0">
-          <field name="activeVersion" readonly="true"/>
-          <panel name="versionButtonsPanel" hideIf="statusSelect == 3">
+        <panel name="versionPanel" colSpan="12" hideIf="statusSelect == 0">
+          <field name="activeVersion" readonly="true" colSpan="3"/>
+          <panel name="versionButtonsPanel" hideIf="statusSelect == 3" colSpan="9">
             <button name="new-budget-version" title="Create New version"
-              onClick="action-view-global-budget-budget-version-new"/>
+              onClick="action-view-global-budget-budget-version-new" colSpan="5"/>
             <button name="change-budget-version" title="Change budget version"
-              onClick="action-view-global-budget-budget-version-change"/>
+              onClick="action-view-global-budget-budget-version-change" colSpan="4"/>
           </panel>
         </panel>
 
@@ -79,7 +79,7 @@
       <panel name="globalBudgetLevelButtonPanel" colSpan="3" stacked="true">
         <button name="draftBtn" title="draftBtn"
           showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
-          colSpan="12" onClick="action-global-budget-method-draft-children, save"/>
+          colSpan="12" onClick="save, action-global-budget-group-draft-children"/>
         <button name="validateStructureBtn" title="Validate structure"
           showIf="statusSelect == 0 &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
           colSpan="12" onClick="action-global-budget-group-validate-structure"/>
@@ -92,10 +92,6 @@
           <button name="showGlobalOrderLineBtn" hidden="true"
             onClick="action-global-budget-group-view-global-order-line" colSpan="12"
             title="Global budget committed lines"
-            showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
-          <button name="seeBudgetDistributionLines" hidden="true" colSpan="12"
-            onClick="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-            title="Display distribution lines"
             showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
           <button name="seeRealizedWithNoPo"
             onClick="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
@@ -241,17 +237,6 @@
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
 
-  <action-view
-    name="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-    title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-line-grid"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId]]></domain>
-    <context name="_globalBudgetId" expr="eval: id"/>
-  </action-view>
-
   <action-group name="action-global-budget-group-view-global-order-line">
     <action name="action-global-budget-view-global-purchase-order-line"
       if="__this__?.budgetTypeSelect != 2"/>
@@ -287,6 +272,7 @@
 
   <action-group name="action-global-budget-group-validate-structure">
     <action name="action-global-budget-method-check-budget-dates"/>
+    <action name="save"/>
     <action name="action-global-budget-method-validate-structure"/>
     <action name="save"/>
     <action name="action-method-budget-default-version-new"/>
@@ -311,6 +297,16 @@
   <action-method name="action-global-budget-method-archived-btn-onClick">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="archiveChildren"/>
   </action-method>
+
+  <action-group name="action-global-budget-group-draft-children">
+    <action name="action-global-budget-validate-alert-draft-children"/>
+    <action name="action-global-budget-method-draft-children"/>
+  </action-group>
+
+  <action-validate name="action-global-budget-validate-alert-draft-children">
+    <alert
+      message="Warning, you will delete all versions linked to this budget, do you want to continue ?"/>
+  </action-validate>
 
   <action-method name="action-global-budget-method-draft-children">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="draftChildren"/>

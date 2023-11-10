@@ -28,7 +28,7 @@ import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.FileInputStream;
@@ -143,7 +143,7 @@ public class ReportSettings {
             .replace("${date}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
             .replace("${time}", LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
 
-    this.outputName = StringTool.getFilename(this.outputName);
+    this.outputName = StringHelper.getFilename(this.outputName);
   }
 
   protected void computeFileName() {

@@ -118,9 +118,11 @@
         <field name="$fullName" showTitle="false" readonly="true" colSpan="12">
           <viewer>
 						<![CDATA[
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventLead == null">{{record.contactPartner.fullName}}</span>
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.contactPartner == null &amp;&amp; record.eventLead == null">{{record.partner.fullName}}</span>
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventLead != null">{{record.eventLead.fullName}}</span>
+							<>
+								<Box as="span" d="flex" justifyContent="flex-end" fontSize={4} fontWeight="bold">
+									{eventLead?.fullName || contactPartner?.fullName || partner?.fullName}
+								</Box>
+							</>
 						]]>
           </viewer>
         </field>
@@ -128,36 +130,44 @@
       <field name="typeSelect" domain="self.value IN ('1','2','3','5')" showTitle="false"
         colSpan="3" onChange="action-event-type-select-onchange-group">
         <viewer depends="typeSelect"><![CDATA[
-	          		<span class="label label-warning" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Call</span>
-	          		<span class="label label-default" style="background-color: #58427C; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
-	          		<span class="label label-default" style="background-color: #DA3287; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Task</span>
-	          		<span class="label label-default" style="background-color: #FF7E00; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 5" x-translate>Note</span>
+	          		<>
+	          			{typeSelect == 1 && <Badge bg="warning">{_t('Call')}</Badge>}
+	          			{typeSelect == 2 && <Badge style={{ backgroundColor: "#58427C" }}>{_t('Meeting')}</Badge>}
+	          			{typeSelect == 3 && <Badge style={{ backgroundColor: "#DA3287" }}>{_t('Task')}</Badge>}
+	          			{typeSelect == 5 && <Badge style={{ backgroundColor: "#FF7E00" }}>{_t('Note')}</Badge>}
+	          		</>
 	       		 ]]>
         </viewer>
       </field>
 
       <field name="callTypeSelect" showIf="typeSelect == 1" colSpan="3" showTitle="false">
         <viewer depends="statusSelect"><![CDATA[
-	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.callTypeSelect == 1" x-translate>Inbound</span>
-	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.callTypeSelect == 2" x-translate>Outbound</span>
+	       		 	<>
+	          			{callTypeSelect == 1 && <Badge bg="primary">{_t('Inbound')}</Badge>}
+	          			{callTypeSelect == 2 && <Badge bg="primary">{_t('Outbound')}</Badge>}
+	          		</>
 	       		 ]]>
         </viewer>
       </field>
       <field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]"
         showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 3">
         <viewer depends="statusSelect"><![CDATA[
-	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
-	          		<span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
-	          		<span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
+	       		 	<>
+	          			{statusSelect == 1 && <Badge bg="primary">{_t('Planned')}</Badge>}
+	          			{statusSelect == 2 && <Badge bg="success">{_t('Realized')}</Badge>}
+	          			{statusSelect == 3 && <Badge bg="danger">{_t('Canceled')}</Badge>}
+	          		</>
 	       		 ]]>
         </viewer>
       </field>
       <field name="subject" showTitle="false" colSpan="12">
         <viewer depends="subject">
 				<![CDATA[
-					<h3>
-						<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.subject}}</span>
-					</h3>
+					<>
+						<h3>
+							<span>{subject}</span>
+						</h3>
+					</>
 				]]>
         </viewer>
         <editor>
@@ -184,7 +194,8 @@
       <field name="duration" widget="duration" colSpan="2"
         onChange="action-event-method-compute-from-duration" x-big="true" hidden="true"/>
       <static name="pastEventText" hidden="true" colSpan="12">
-					<![CDATA[<span class='label label-warning'>The selected date is in the past.</span>]]></static>
+		<![CDATA[<><Badge bg="warning">The selected date is in the past.</Badge></>]]>
+      </static>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -279,34 +290,33 @@
     <field name="description"/>
     <field name="startDateTime"/>
     <template><![CDATA[
-		<div>
-		  <div class="span12">
-			  <div>
-                  <div style="float: left; margin-right:100px;">
-                    <span class="label label-default" style="background-color: #58427C;" ng-show="record.typeSelect == 2" x-translate>Meeting</span>
-                    <span class="label label-default" style="background-color: #DA3287;" ng-show="record.typeSelect == 3" x-translate>Task</span>
-                    <span class="label label-default" style="background-color: #FF7E00;" ng-show="record.typeSelect == 5" x-translate>Note</span>
+	  <>
+	  	<Box>
+	  		<Box d="grid" gridTemplateColumns="auto auto auto">
+		  		<Box d="flex" gap="4" alignItems="center">
+		          	{typeSelect == 1 && <Badge bg="warning">{_t('Call')}</Badge>}
+		          	{typeSelect == 2 && <Badge style={{ backgroundColor: "#58427C" }}>{_t('Meeting')}</Badge>}
+		          	{typeSelect == 3 && <Badge style={{ backgroundColor: "#DA3287" }}>{_t('Task')}</Badge>}
+		          	{typeSelect == 5 && <Badge style={{ backgroundColor: "#FF7E00" }}>{_t('Note')}</Badge>}
 
-                    <span class="label label-warning" ng-show="record.typeSelect == 1" x-translate>Call</span>
-
-                    <span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1 &amp;&amp; record.typeSelect != 5" x-translate>Planned</span>
-                    <span class="label label-success" ng-show="record.statusSelect == 2" x-translate>Realized</span>
-                    <span class="label label-important" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
-                </div>
-                  <div style="float: left;">
-                    <strong>{{subject}}</strong><br/>
-                    {{$fmt('startDateTime')}}
-                </div>
-                <div style="float: right;margin-right:20px;">
-                    <button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent" x-translate>Done</button>
-                    <button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent" x-translate>Cancel</button>
-                </div>
-	        </div>
-			<br/></br/>
-			<div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
-			<div ng-show="!description" ng-bind-html="description"></div>
-	      </div>
-	  <div>
+					{statusSelect == 1 && <Badge bg="primary">{_t('Planned')}</Badge>}
+		          	{statusSelect == 2 && <Badge bg="success">{_t('Realized')}</Badge>}
+		          	{statusSelect == 3 && <Badge bg="danger">{_t('Canceled')}</Badge>}
+		        </Box>
+		        <Box>
+		        	<strong>{subject}</strong> <Box/>
+		        	{$fmt('startDateTime')}
+		        </Box>
+		        <Box d="flex" justifyContent="flex-end" gap="4" me={3} alignItems="center">
+		        	{statusSelect != 2 && typeSelect != 5 && <Button size="sm" variant="success" onClick={$action("com.axelor.apps.crm.web.EventController:realizeEvent")}>{_t('Done')}</Button>}
+		        	{statusSelect != 3 && typeSelect != 5 && <Button size="sm" variant="danger" onClick={$action("com.axelor.apps.crm.web.EventController:cancelEvent")}>{_t('Cancel')}</Button>}
+		        </Box>
+		    </Box>
+	        <Box mt={2}>
+	        	{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100 }}></Box>}
+	        </Box>
+	  	</Box>
+	  </>
 	 ]]></template>
   </cards>
 
@@ -541,6 +551,8 @@
     <field name="user" expr="eval: _eventLead.user"/>
     <field name="team" expr="eval: _eventLead.team"/>
     <field name="partner" expr="eval: _eventLead.partner"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Lead'"/>
+    <field name="relatedToSelectId" expr="eval: _eventLead.id"/>
     <field name="typeSelect" expr="eval: 1" if="_call"/>
     <field name="typeSelect" expr="eval: 2" if="_meeting"/>
     <field name="typeSelect" expr="eval: 3" if="_task"/>
@@ -552,6 +564,8 @@
     <field name="opportunity" expr="eval: _opportunity"/>
     <field name="team" expr="eval: _opportunity.team"/>
     <field name="partner" expr="eval: _opportunity.partner"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Opportunity'"/>
+    <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_EVENT" if="_call"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_MEETING" if="_meeting"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_TASK" if="_task"/>
@@ -583,6 +597,8 @@
     <field name="user" expr="eval: __repo__(User).find(_partner.user.id)"
       if="_partner.user != null"/>
     <field name="team" expr="eval: _partner.team"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.base.db.Partner'"/>
+    <field name="relatedToSelectId" expr="eval: _partner.id"/>
     <field name="typeSelect" expr="eval: 1" if="_call"/>
     <field name="typeSelect" expr="eval: 2" if="_meeting"/>
     <field name="typeSelect" expr="eval: 3" if="_task"/>

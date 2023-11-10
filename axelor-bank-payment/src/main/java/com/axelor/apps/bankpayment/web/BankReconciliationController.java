@@ -28,10 +28,11 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.ITranslation;
+import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
@@ -381,7 +382,7 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation =
           Beans.get(BankReconciliationRepository.class)
               .find(request.getContext().asType(BankReconciliation.class).getId());
-      Beans.get(BankStatementService.class)
+      Beans.get(BankStatementValidateService.class)
           .setIsFullyReconciled(bankReconciliation.getBankStatement());
       response.setReload(true);
     } catch (Exception e) {
@@ -400,7 +401,12 @@ public class BankReconciliationController {
                   com.axelor.apps.bankpayment.translation.ITranslation
                       .BANK_RECONCILIATION_UNRECONCILED_MOVE_LINE_LIST_PANEL_TITLE));
       actionViewBuilder.model(MoveLine.class.getName());
-      actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
+      if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
+        actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid-currency-amount");
+      } else {
+        actionViewBuilder.add("grid", "move-line-bank-reconciliation-grid");
+      }
+
       actionViewBuilder.add("form", "move-line-form");
       actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
       if (bankReconciliation.getCompany() == null) {

@@ -47,6 +47,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,16 +182,21 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, saleOrderLine, qtyToInvoice);
 
     for (InvoiceLine invoiceLine : invoiceLines) {
-      if (saleOrderLine != null) {
+      if (saleOrderLine != null && saleOrderLine.getQty().signum() > 0) {
         invoiceLine.setBudget(saleOrderLine.getBudget());
-        this.copyBudgetDistributionList(saleOrderLine.getBudgetDistributionList(), invoiceLine);
+        this.copyBudgetDistributionList(
+            saleOrderLine.getBudgetDistributionList(),
+            invoiceLine,
+            qtyToInvoice.divide(saleOrderLine.getQty(), RoundingMode.HALF_UP));
       }
     }
     return invoiceLines;
   }
 
   public void copyBudgetDistributionList(
-      List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine) {
+      List<BudgetDistribution> originalBudgetDistributionList,
+      InvoiceLine invoiceLine,
+      BigDecimal prorata) {
 
     if (CollectionUtils.isEmpty(originalBudgetDistributionList)) {
       return;
@@ -199,7 +205,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(budgetDistributionIt.getBudget());
-      budgetDistribution.setAmount(budgetDistributionIt.getAmount());
+      budgetDistribution.setAmount(
+          budgetDistributionIt.getAmount().multiply(prorata).setScale(2, RoundingMode.HALF_UP));
       budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
@@ -217,6 +224,11 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           saleOrderLine.getBudgetDistributionList().stream()
               .forEach(
                   budgetDistribution -> {
+                    LocalDate computeDate =
+                        saleOrder.getOrderDate() != null
+                            ? saleOrder.getOrderDate()
+                            : saleOrder.getCreationDate();
+                    budgetDistribution.setImputationDate(computeDate);
                     Budget budget = budgetDistribution.getBudget();
                     budgetService.updateLines(budget);
                     budgetService.computeTotalAmountCommitted(budget);

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.service.administration;
 
 import static org.junit.Assert.assertEquals;
@@ -9,6 +27,7 @@ import com.axelor.apps.base.db.SequenceLettersTypeSelect;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,5 +85,12 @@ class TestSequenceService {
     String actual =
         sequenceService.findNextLetterSequence(input, SequenceLettersTypeSelect.LOWERCASE);
     assertEquals(expected, actual);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"1,NLL,0AA", "67599,LLNN,ZZ99", "1,LNLN,A0A1", "6526,NLNL,0Z0Z", "496,NLNL,0B9B"})
+  void findNextAlphanumericSequence_df(Long nextNum, String pattern, String expected) {
+    String actual = sequenceService.findNextAlphanumericSequence(nextNum, pattern);
+    Assertions.assertEquals(expected, actual);
   }
 }

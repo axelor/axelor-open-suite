@@ -31,7 +31,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.MetaSelectTool;
+import com.axelor.utils.helpers.MetaSelectHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
@@ -55,7 +55,7 @@ public abstract class AbstractBatch {
   public static final int FETCH_LIMIT = 10;
 
   @Inject protected AppBaseService appBaseService;
-  @Inject protected MetaSelectTool metaSelectTool;
+  @Inject protected MetaSelectHelper metaSelectHelper;
 
   protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -170,7 +170,7 @@ public abstract class AbstractBatch {
     if (actionSelectGetter != null) {
       int actionSelect = (int) actionSelectGetter.invoke(model);
       String actionSelection = modelMapper.getProperty("actionSelect").getSelection();
-      String actionTitle = metaSelectTool.getSelectTitle(actionSelection, actionSelect);
+      String actionTitle = metaSelectHelper.getSelectTitle(actionSelection, actionSelect);
 
       if (!StringUtils.isEmpty(actionTitle)) {
         actionNamePartList.add(actionTitle);

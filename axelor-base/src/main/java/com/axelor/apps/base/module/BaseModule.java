@@ -209,6 +209,8 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
+import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
@@ -384,6 +386,7 @@ public class BaseModule extends AxelorModule {
     bind(PrintHtmlGenerationService.class).to(PrintHtmlGenerationServiceImpl.class);
     bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
     bind(TaxEquivService.class).to(TaxEquivServiceImpl.class);
+    bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
     bind(ScaleService.class).to(ScaleServiceImpl.class);
   }
 }

@@ -40,6 +40,7 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
@@ -48,8 +49,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringTool;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.StringHelper;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -69,6 +70,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -163,7 +165,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       I18n.get("Cost_to_apply")
     };
 
-    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
+    CsvHelper.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
       DMSFile dmsFile = Beans.get(MetaFiles.class).attach(is, file.getName(), unitCostCalculation);
@@ -275,6 +277,13 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     BillOfMaterial billOfMaterial = billOfMaterialService.getBOM(product, company);
 
+    if (billOfMaterial == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.NO_APPLICABLE_BILL_OF_MATERIALS),
+          product.getFullName());
+    }
+
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
 
@@ -296,7 +305,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
 
     List<Integer> productSubTypeSelects =
-        StringTool.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
+        StringHelper.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
 
     if (!unitCostCalculation.getProductCategorySet().isEmpty()) {
 
@@ -340,12 +349,45 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           I18n.get(ProductionExceptionMessage.UNIT_COST_CALCULATION_NO_PRODUCT));
     }
 
-    Set<Product> productSortedSet =
-        productSet.stream()
-            .sorted(Comparator.comparing(Product::getProductSubTypeSelect).reversed())
-            .collect(Collectors.toSet());
+    Company company = this.getSingleCompany(unitCostCalculation);
 
-    return productSortedSet;
+    Map<Product, Integer> productLevelMap = new HashMap<>();
+    for (Product product : productSet) {
+      productLevelMap.put(
+          product, calculateHierarchyDepth(product, company, unitCostCalculation, new HashSet<>()));
+    }
+
+    return productSet.stream()
+        .sorted(
+            Comparator.comparing(Product::getProductSubTypeSelect)
+                .reversed()
+                .thenComparing(productLevelMap::get))
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
+  public int calculateHierarchyDepth(
+      Product product,
+      Company company,
+      UnitCostCalculation unitCostCalculation,
+      Set<Product> visited)
+      throws AxelorException {
+    if (visited.contains(product)) {
+      return 0;
+    }
+    visited.add(product);
+
+    BillOfMaterial bom = billOfMaterialService.getBOM(product, company);
+    if (bom == null || ObjectUtils.isEmpty(bom.getBillOfMaterialLineList())) {
+      return 0;
+    }
+
+    int maxDepth = 0;
+    for (BillOfMaterialLine line : bom.getBillOfMaterialLineList()) {
+      Product subProduct = line.getProduct();
+      int subDepth = calculateHierarchyDepth(subProduct, company, unitCostCalculation, visited);
+      maxDepth = Math.max(maxDepth, subDepth);
+    }
+    return maxDepth + 1;
   }
 
   /**
@@ -444,14 +486,12 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected void assignProductLevel(BillOfMaterial billOfMaterial, int level, Company company)
       throws AxelorException {
 
-    if (CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialLineList()) || level > 100) {
+    Product product = billOfMaterial.getProduct();
 
-      Product subProduct = billOfMaterial.getProduct();
+    log.debug("Add of the sub product : {} for the level : {} ", product.getFullName(), level);
+    this.productMap.put(product.getId(), this.getMaxLevel(product, level));
 
-      log.debug("Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
-      this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
-
-    } else {
+    if (CollectionUtils.isNotEmpty(billOfMaterial.getBillOfMaterialLineList())) {
 
       level = level + 1;
 
@@ -538,7 +578,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           && !unitCostCalculation.getProductCategorySet().isEmpty()) {
         domain +=
             " AND self.productCategory IN ("
-                + StringTool.getIdListString(unitCostCalculation.getProductCategorySet())
+                + StringHelper.getIdListString(unitCostCalculation.getProductCategorySet())
                 + ")";
       }
 
@@ -546,7 +586,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           && !unitCostCalculation.getProductFamilySet().isEmpty()) {
         domain +=
             " AND self.productFamily IN ("
-                + StringTool.getIdListString(unitCostCalculation.getProductFamilySet())
+                + StringHelper.getIdListString(unitCostCalculation.getProductFamilySet())
                 + ")";
       }
 
@@ -559,7 +599,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
               + unitCostCalculation.getProductSubTypeSelect()
               + ") AND (self.defaultBillOfMaterial.company IN ("
-              + StringTool.getIdListString(unitCostCalculation.getCompanySet())
+              + StringHelper.getIdListString(unitCostCalculation.getCompanySet())
               + ") OR self.id in ("
               + bomsProductsList
               + ")"

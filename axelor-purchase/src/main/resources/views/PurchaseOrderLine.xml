@@ -122,21 +122,19 @@
         <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
           showTitle="false">
           <viewer depends="$partnerLanguage">
-            <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
-              ]]>
+            <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
           </viewer>
         </field>
         <label name="differentSupplierLabel" hidden="true" colSpan="12"/>
         <field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0"
           if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
           <viewer><![CDATA[
-	                    <h4>
-	                        <span class="label label-important" ng-show="record.receiptState == 1" x-translate>Not received</span>
-	                        <span class="label label-warning" ng-show="record.receiptState == 2" x-translate>Partially received</span>
-	                        <span class="label label-success" ng-show="record.receiptState == 3" x-translate>Received</span>
-	                    </h4>
-					]]></viewer>
+			          <>
+			             {receiptState == 1 && <Badge bg="danger">{_t('Not received')}</Badge>}
+			             {receiptState == 2 && <Badge bg="warning">{_t('Partially received')}</Badge>}
+			             {receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
+			          </>
+	          ]]></viewer>
         </field>
         <spacer name="receiptStateSpacer" if="__config__.app.isApp('supplychain')"/>
         <field name="product" canEdit="false"
@@ -235,12 +233,9 @@
           colSpan="3" if-module="axelor-business-project"/>
         <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()"
           colSpan="3" showTitle="false">
-          <viewer><![CDATA[
-					<h4>
-                        <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
-                    	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                    </h4>
-				]]></viewer>
+          <viewer>
+            <![CDATA[<>Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
+          </viewer>
         </field>
         <field name="projectTask" title="Project Task" domain="self.project = :project"
           form-view="project-task-form" grid-view="project-task-grid" canEdit="false"/>
