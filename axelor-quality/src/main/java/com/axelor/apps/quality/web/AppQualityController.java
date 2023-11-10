@@ -16,14 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.quality.service.app;
+package com.axelor.apps.quality.web;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppQuality;
+import com.axelor.apps.quality.service.app.AppQualityService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-public interface AppQualityService extends AppBaseService {
+@Singleton
+public class AppQualityController {
 
-  AppQuality getAppQuality();
-
-  void generateQualityConfigurations();
+  public void generateQualityConfigurations(ActionRequest request, ActionResponse response) {
+    Beans.get(AppQualityService.class).generateQualityConfigurations();
+    response.setReload(true);
+  }
 }
