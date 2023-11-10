@@ -135,8 +135,11 @@
     <view type="form" name="quality-control-point-type-form"/>
   </action-view>
 
-  <menuitem name="qi-detection" parent="quality-configurations" title="Detections"
-    action="qi.detection" order="500"/>
+  <menuitem name="quality-improvement-configurations" parent="quality-configurations"
+    title="Quality improvement" order="500"/>
+
+  <menuitem name="qi-detection" parent="quality-improvement-configurations"
+    title="Detections" action="qi.detection" order="100"/>
 
   <action-view name="qi.detection" title="Detections"
     model="com.axelor.apps.quality.db.QIDetection">
@@ -144,8 +147,8 @@
     <view type="form" name="qi-detection-form"/>
   </action-view>
 
-  <menuitem name="qi.status" parent="quality-configurations" title="Statuses"
-    action="qi.status" order="600"/>
+  <menuitem name="qi.status" parent="quality-improvement-configurations" title="Statuses"
+    action="qi.status" order="200"/>
 
   <action-view name="qi.status" title="Statuses"
     model="com.axelor.apps.quality.db.QIStatus">
@@ -153,8 +156,8 @@
     <view type="form" name="qi-status-form"/>
   </action-view>
 
-  <menuitem name="qi.default" parent="quality-configurations" title="Defaults"
-    action="qi.default" order="700"/>
+  <menuitem name="qi.default" parent="quality-improvement-configurations" title="Defaults"
+    action="qi.default" order="300"/>
 
   <action-view name="qi.default" title="Defaults"
     model="com.axelor.apps.quality.db.QIDefault">
@@ -162,8 +165,8 @@
     <view type="form" name="qi-default-form"/>
   </action-view>
 
-  <menuitem name="qi.decision" parent="quality-configurations" title="Decisions"
-    action="qi.decision" order="800"/>
+  <menuitem name="qi.decision" parent="quality-improvement-configurations"
+    title="Decisions" action="qi.decision" order="400"/>
 
   <action-view name="qi.decision" title="Decisions"
     model="com.axelor.apps.quality.db.QIDecision">
@@ -171,8 +174,8 @@
     <view type="form" name="qi-decision-form"/>
   </action-view>
 
-  <menuitem name="qi.analysis.method" parent="quality-configurations"
-    title="Analysis methods" action="qi.analysis.method" order="1200"/>
+  <menuitem name="qi.analysis.method" parent="quality-improvement-configurations"
+    title="Analysis methods" action="qi.analysis.method" order="800"/>
 
   <action-view name="qi.analysis.method" title="Analysis methods"
     model="com.axelor.apps.quality.db.QIAnalysisMethod">
@@ -180,24 +183,24 @@
     <view type="form" name="qi-analysis-method-form"/>
   </action-view>
 
-  <menuitem name="qi.analysis.method.item" parent="quality-configurations"
-    title="Analysis method lines" action="qi.analysis.method.item" order="1300"/>
+  <menuitem name="qi.analysis.method.item" parent="quality-improvement-configurations"
+    title="Analysis method lines" action="qi.analysis.method.item" order="900"/>
 
   <action-view name="qi.analysis.method.item" title="Analysis method lines"
     model="com.axelor.apps.quality.db.QIAnalysisMethodItem">
     <view type="grid" name="qi-analysis-method-item-grid"/>
     <view type="form" name="qi-analysis-method-item-form"/>
   </action-view>
-  <menuitem name="qi.cause" parent="quality-configurations" title="Causes"
-    action="qi.cause" order="900"/>
+  <menuitem name="qi.cause" parent="quality-improvement-configurations" title="Causes"
+    action="qi.cause" order="500"/>
 
   <action-view name="qi.cause" title="Causes" model="com.axelor.apps.quality.db.QICause">
     <view type="grid" name="qi-cause-grid"/>
     <view type="form" name="qi-cause-form"/>
   </action-view>
 
-  <menuitem name="qi.process" parent="quality-configurations" title="Processes"
-    action="qi.process" order="1000"/>
+  <menuitem name="qi.process" parent="quality-improvement-configurations" title="Processes"
+    action="qi.process" order="600"/>
 
   <action-view name="qi.process" title="Processes"
     model="com.axelor.apps.quality.db.QIProcess">
@@ -205,8 +208,8 @@
     <view type="form" name="qi-process-form"/>
   </action-view>
 
-  <menuitem name="qi.action" parent="quality-configurations" title="Actions"
-    action="qi.action" order="1100"/>
+  <menuitem name="qi.action" parent="quality-improvement-configurations" title="Actions"
+    action="qi.action" order="700"/>
 
   <action-view name="qi.action" title="Actions"
     model="com.axelor.apps.quality.db.QIAction">
