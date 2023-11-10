@@ -217,7 +217,6 @@
 "Termination demand date","Date de demande de résiliation",,
 "The company %s doesn't have any configured sequence for contracts","La séquence pour les contrats est manquante pour la société %s ",,
 "The next contract field is not set on the current contract version.","Le champ contrat suivant n'est pas défini sur cette version du contrat.",,
-"The product can't be empty.","Le produit ne peut pas être nul.",,
 "There is an error in the formula.","Il y a une erreur dans la formule.",,
 "There is no contract associated with this version.","Il n’existe aucun contrat associé à cette version.",,
 "This period is used to compute the next revaluation date.","Cette période est utilisée pour calculer la prochaine date de revalorisation.",,

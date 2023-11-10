@@ -337,4 +337,7 @@ public final class ProductionExceptionMessage {
 
   public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
       "There is no applicable bill of materials for %s" /*)*/;
+
+  public static final String NO_COMPANY_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM." /*)*/;
 }

@@ -19,7 +19,7 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineService;
 import com.google.inject.Inject;
 
 public class BankStatementManagementRepository extends BankStatementRepository {

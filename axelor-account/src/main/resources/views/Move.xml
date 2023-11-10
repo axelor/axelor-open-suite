@@ -260,7 +260,7 @@
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
-          onClick="action-move-method-generate-counterpart"/>
+          onClick="action-move-group-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate tax lines" showIf="[1,2,5].includes(statusSelect)"
           onClick="action-move-method-generate-tax-lines"/>
@@ -548,6 +548,11 @@
   <action-group name="action-move-group-pfp-validate">
     <action name="save"/>
     <action name="action-method-account-move-validate-pfp"/>
+  </action-group>
+
+  <action-group name="action-move-group-generate-counterpart">
+    <action name="action-move-method-generate-counterpart"/>
+    <action name="save" if="statusSelect != 4 &amp;&amp; statusSelect &gt;= 2"/>
   </action-group>
 
   <!-- ACTION GROUP WITH ALERT -->
