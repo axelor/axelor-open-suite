@@ -20,7 +20,7 @@
             <!-- en devise societe -->
             <viewer depends="companyExTaxTotal,$currencySymbol">
               <![CDATA[
-                              <dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
+                              <dd>{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}</dd>
                           ]]>
             </viewer>
           </field>

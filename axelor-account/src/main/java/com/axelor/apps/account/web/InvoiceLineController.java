@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -254,13 +255,15 @@ public class InvoiceLineController {
 
       response.setValue(
           "inTaxPrice",
-          Beans.get(TaxService.class)
-              .convertUnitPrice(
-                  false,
-                  taxLine,
-                  exTaxPrice,
-                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
-      // TODO ajouter un scale
+          Beans.get(CurrencyScaleServiceAccount.class)
+              .getScaledValue(
+                  invoiceLine,
+                  Beans.get(TaxService.class)
+                      .convertUnitPrice(
+                          false,
+                          taxLine,
+                          exTaxPrice,
+                          Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice())));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
