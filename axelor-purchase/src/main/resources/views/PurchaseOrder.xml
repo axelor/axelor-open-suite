@@ -12,7 +12,7 @@
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
-          action="action-sale-order-view-open-merge-form"/>
+          action="action-purchase-order-view-open-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>
@@ -424,7 +424,7 @@
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
-          action="action-sale-order-view-open-merge-form"/>
+          action="action-purchase-order-view-open-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>
@@ -825,7 +825,7 @@
     <context name="status" expr="eval: _status"/>
   </action-view>
 
-  <action-view name="action-sale-order-view-open-merge-form"
+  <action-view name="action-purchase-order-view-open-merge-form"
     title="Merge purchase orders" model="com.axelor.utils.db.Wizard">
     <view type="form" name="purchase-order-merge-form"/>
   </action-view>

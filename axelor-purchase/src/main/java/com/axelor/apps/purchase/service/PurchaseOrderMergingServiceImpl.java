@@ -333,41 +333,35 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     CommonFields commonFields = getCommonFields(result);
     Checks checks = getChecks(result);
     if ((commonFields.getCommonCurrency() == null ^ purchaseOrder.getCurrency() == null)
-        || (commonFields.getCommonCurrency() != purchaseOrder.getCurrency()
-            && !commonFields.getCommonCurrency().equals(purchaseOrder.getCurrency()))) {
+        || !Objects.equals(commonFields.getCommonCurrency(), purchaseOrder.getCurrency())) {
       commonFields.setCommonCurrency(null);
       checks.setExistCurrencyDiff(true);
     }
     if ((commonFields.getCommonSupplierPartner() == null
             ^ purchaseOrder.getSupplierPartner() == null)
-        || (commonFields.getCommonSupplierPartner() != purchaseOrder.getSupplierPartner()
-            && !commonFields
-                .getCommonSupplierPartner()
-                .equals(purchaseOrder.getSupplierPartner()))) {
+        || !Objects.equals(
+            commonFields.getCommonSupplierPartner(), purchaseOrder.getSupplierPartner())) {
       commonFields.setCommonSupplierPartner(null);
       checks.setExistSupplierPartnerDiff(true);
     }
     if ((commonFields.getCommonCompany() == null ^ purchaseOrder.getCompany() == null)
-        || (commonFields.getCommonCompany() != purchaseOrder.getCompany()
-            && !commonFields.getCommonCompany().equals(purchaseOrder.getCompany()))) {
+        || !Objects.equals(commonFields.getCommonCompany(), purchaseOrder.getCompany())) {
       commonFields.setCommonCompany(null);
       checks.setExistCompanyDiff(true);
     }
     if ((commonFields.getCommonContactPartner() == null ^ purchaseOrder.getContactPartner() == null)
-        || (commonFields.getCommonContactPartner() != purchaseOrder.getContactPartner()
-            && !commonFields.getCommonContactPartner().equals(purchaseOrder.getContactPartner()))) {
+        || !Objects.equals(
+            commonFields.getCommonContactPartner(), purchaseOrder.getContactPartner())) {
       commonFields.setCommonContactPartner(null);
       checks.setExistContactPartnerDiff(true);
     }
     if ((commonFields.getCommonPriceList() == null ^ purchaseOrder.getPriceList() == null)
-        || (commonFields.getCommonPriceList() != purchaseOrder.getPriceList()
-            && !commonFields.getCommonPriceList().equals(purchaseOrder.getPriceList()))) {
+        || !Objects.equals(commonFields.getCommonPriceList(), purchaseOrder.getPriceList())) {
       commonFields.setCommonPriceList(null);
       checks.setExistPriceListDiff(true);
     }
     if ((commonFields.getCommonTradingName() == null ^ purchaseOrder.getTradingName() == null)
-        || (commonFields.getCommonTradingName() != purchaseOrder.getTradingName()
-            && !commonFields.getCommonTradingName().equals(purchaseOrder.getTradingName()))) {
+        || !Objects.equals(commonFields.getCommonTradingName(), purchaseOrder.getTradingName())) {
       commonFields.setCommonTradingName(null);
       commonFields.setAllTradingNamesAreNull(false);
       checks.setExistTradingNameDiff(true);

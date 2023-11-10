@@ -38,7 +38,7 @@ public final class PurchaseExceptionMessage {
 
   /** Merge purchase order */
   public static final String PURCHASE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
-      "List of sale orders to merge is empty" /*)*/;
+      "List of purchase orders to merge is empty" /*)*/;
 
   public static final String PURCHASE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/
       "The currency is required and must be the same for all purchase orders" /*)*/;
