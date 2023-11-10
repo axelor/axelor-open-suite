@@ -212,7 +212,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
+  public GlobalBudget changeBudgetVersion(
+      GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException {
     List<Budget> budgets = globalBudget.getBudgetList();
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
@@ -233,13 +234,16 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
         budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
         budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
         budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
-        budget.setPeriodDurationSelect(0);
-        budget.clearBudgetLineList();
-        List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
-        if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
-          BudgetLine budgetLine = budgetLineList.get(0);
-          recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
+        if (needRecomputeBudgetLine) {
+          budget.setPeriodDurationSelect(0);
+          budget.clearBudgetLineList();
+          List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
+          if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
+            BudgetLine budgetLine = budgetLineList.get(0);
+            recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
+          }
         }
+
         budgetRepository.save(budget);
       }
     }

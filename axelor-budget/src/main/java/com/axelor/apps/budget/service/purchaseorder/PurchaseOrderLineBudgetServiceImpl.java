@@ -32,6 +32,7 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -53,6 +54,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   protected BudgetDistributionService budgetDistributionService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected AppBudgetService appBudgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public PurchaseOrderLineBudgetServiceImpl(
@@ -60,12 +62,14 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       BudgetRepository budgetRepository,
       BudgetDistributionService budgetDistributionService,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService) {
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.appBudgetService = appBudgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -123,7 +127,11 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(purchaseOrderLine.getBudget());
       budgetDistribution.setBudgetAmountAvailable(
-          budgetDistribution.getBudget().getAvailableAmount());
+          budgetToolsService.getAvailableAmountOnBudget(
+              purchaseOrderLine.getBudget(),
+              purchaseOrderLine.getPurchaseOrder() != null
+                  ? purchaseOrderLine.getPurchaseOrder().getOrderDate()
+                  : null));
       budgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
       budgetDistributionList.add(budgetDistribution);
       purchaseOrderLine.setBudgetDistributionList(budgetDistributionList);

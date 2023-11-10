@@ -34,10 +34,11 @@ public interface BudgetDistributionService {
   /**
    * Create a budget distribution object with parameters and save
    *
-   * @param budget, amount
+   * @param budget, amount, date
    * @return BudgetDistribution
    */
-  public BudgetDistribution createDistributionFromBudget(Budget budget, BigDecimal bigDecimal);
+  public BudgetDistribution createDistributionFromBudget(
+      Budget budget, BigDecimal bigDecimal, LocalDate date);
 
   /**
    * Check amount with budget available amount watching config for budget and return an error
