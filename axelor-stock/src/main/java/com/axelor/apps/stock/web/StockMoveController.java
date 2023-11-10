@@ -33,6 +33,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveCheckWapService;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -74,8 +75,9 @@ public class StockMoveController {
       // we have to inject TraceBackService to use non static methods
       TraceBackService traceBackService = Beans.get(TraceBackService.class);
       long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
-      Beans.get(StockMoveService.class)
-          .plan(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
+      StockMove sm = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Beans.get(StockMoveLineService.class).splitStockMoveLineByTrackingNumber(sm);
+      Beans.get(StockMoveService.class).plan(sm);
       response.setReload(true);
       if (traceBackService.countMessageTraceBack(stockMove) > tracebackCount) {
         traceBackService
