@@ -15,8 +15,8 @@
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
-    <decimal name="debit" title="Debit"/>
-    <decimal name="credit" title="Credit"/>
+    <decimal name="debit" title="Debit" precision="20" scale="3"/>
+    <decimal name="credit" title="Credit" precision="20" scale="3"/>
     <decimal name="percentage" title="Percentage" precision="20" scale="2" min="0" max="100"/>
     <boolean name="hasPartnerToDebit" title="Partner to debit"/>
     <boolean name="hasPartnerToCredit" title="Partner to credit"/>

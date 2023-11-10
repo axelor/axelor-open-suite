@@ -24,9 +24,10 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="move.company" form-view="company-form" grid-view="company-grid" width="120"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="debit" aggregate="sum" width="100"/>
-    <field name="credit" aggregate="sum" width="100"/>
-    <field name="amountRemaining" aggregate="sum" width="100"/>
+    <field name="debit" aggregate="sum" width="100" x-scale="companyCurrencyDecimals"/>
+    <field name="credit" aggregate="sum" width="100" x-scale="companyCurrencyDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="100"
+      x-scale="companyCurrencyDecimals"/>
     <field name="taxLine" domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
     <field name="analyticDistributionTemplate"
@@ -43,6 +44,7 @@
     <field name="analyticMoveLineList" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
+    <field name="companyCurrencyDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-account-grid" title="Move lines"
@@ -52,9 +54,9 @@
     <field name="move.period"/>
     <field name="move.journal"/>
     <field name="partner"/>
-    <field name="debit"/>
-    <field name="credit"/>
-    <field name="amountRemaining"/>
+    <field name="debit" x-scale="companyCurrencyDecimals"/>
+    <field name="credit" x-scale="companyCurrencyDecimals"/>
+    <field name="amountRemaining" x-scale="companyCurrencyDecimals"/>
     <field name="taxLine" onChange="account-move-line-update-tax-equiv"/>
     <field name="move.statusSelect"/>
     <field name="description"/>
@@ -63,6 +65,7 @@
       onClick="action-move-line-view-open-move"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
+    <field name="companyCurrencyDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-account-reconcile-group-grid" title="Move lines"
@@ -78,9 +81,9 @@
     <field name="move.period"/>
     <field name="move.journal"/>
     <field name="partner"/>
-    <field name="debit"/>
-    <field name="credit"/>
-    <field name="amountRemaining"/>
+    <field name="debit" x-scale="companyCurrencyDecimals"/>
+    <field name="credit" x-scale="companyCurrencyDecimals"/>
+    <field name="amountRemaining" x-scale="companyCurrencyDecimals"/>
     <field name="taxLine" onChange="account-move-line-update-tax-equiv"/>
     <field name="move.statusSelect"/>
     <field name="reconcileGroup"/>
@@ -90,6 +93,7 @@
       onClick="action-move-line-view-open-move"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
+    <field name="companyCurrencyDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-account-batch-auto-move-lettering-grid" title="Move lines reconciled"
@@ -143,15 +147,15 @@
       readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
-      width="90"/>
+      width="90" x-scale="currencyDecimals"/>
     <field name="currencyRate"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
       width="90"/>
     <field name="debit" onChange="action-move-line-method-debit-onchange" width="90"
-      readonlyIf="amountPaid &gt; 0"/>
+      readonlyIf="amountPaid &gt; 0" x-scale="companyCurrencyDecimals"/>
     <field name="credit" onChange="action-move-line-method-credit-onchange" width="90"
-      readonlyIf="amountPaid &gt; 0"/>
-    <field name="amountRemaining" hidden="true" width="80"/>
+      readonlyIf="amountPaid &gt; 0" x-scale="companyCurrencyDecimals"/>
+    <field name="amountRemaining" hidden="true" width="80" x-scale="companyCurrencyDecimals"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="(account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
@@ -218,6 +222,8 @@
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
     <field name="account.analyticDistributionAuthorized" hidden="true"/>
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+    <field name="currencyDecimals" hidden="true"/>
+    <field name="companyCurrencyDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
@@ -235,9 +241,9 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="move.company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="debit" aggregate="sum"/>
-    <field name="credit" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="debit" aggregate="sum" x-scale="companyCurrencyDecimals"/>
+    <field name="credit" aggregate="sum" x-scale="companyCurrencyDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="taxLine"
       requiredIf="!account.isTaxAuthorizedOnMoveLine || ['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect)"
       domain="self.endDate > :date OR self.endDate IS NULL"
@@ -255,6 +261,7 @@
     <field name="analyticMoveLineList" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
+    <field name="companyCurrencyDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines"
@@ -412,18 +419,21 @@
         grid-view="account-grid" onSelect="action-move-line-method-account-onselect" canEdit="false"
         onChange="action-move-line-group-account-onchange"/>
       <field name="debit"
-        readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
-        css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
+        readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
+        css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"
+        x-scale="companyCurrencyDecimals"/>
       <field name="credit"
-        readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
-        css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
+        readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
+        css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"
+        x-scale="companyCurrencyDecimals"/>
       <field name="amountRemaining" colSpan="3"
-        showIf="move.statusSelect == 3 || move.statusSelect == 4"/>
+        showIf="move.statusSelect == 3 || move.statusSelect == 4" x-scale="companyCurrencyDecimals"/>
       <field name="amountPaid" colSpan="3"
-        hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
+        hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"
+        x-scale="companyCurrencyDecimals"/>
       <field name="origin" colSpan="12"/>
       <field name="description" colSpan="12"/>
-      <field name="taxAmount" hidden="true"/>
+      <field name="taxAmount" hidden="true" x-scale="companyCurrencyDecimals"/>
       <field name="account.reconcileOk" hidden="true"/>
       <field name="account.serviceType" form-view="service-type-form"
         grid-view="service-type-grid"/>
@@ -431,6 +441,7 @@
         grid-view="das2-activity-grid"/>
       <field name="account.manageCutOffPeriod" hidden="true"/>
       <field name="account.useForPartnerBalance" hidden="true"/>
+      <field name="companyCurrencyDecimals" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="invoiceTermPanel" title="Term(s)"
@@ -625,7 +636,7 @@
         requiredIf="account.useForPartnerBalance"/>
       <field name="currencyAmount"
         onChange="action-move-line-method-currency-amount-rate-onchange"
-        readonlyIf="!isOtherCurrency" colSpan="3"/>
+        readonlyIf="!isOtherCurrency" colSpan="3" x-scale="currencyDecimals"/>
       <field name="currencyRate"
         onChange="action-move-line-method-currency-amount-rate-onchange"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
@@ -633,25 +644,29 @@
       <field name="debit"
         onChange="action-move-line-method-debit-credit-invoice-term-onchange"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
-        css="label-bold bold" colSpan="3"/>
+        css="label-bold bold" colSpan="3" x-scale="companyCurrencyDecimals"/>
       <field name="credit"
         onChange="action-move-line-method-debit-credit-invoice-term-onchange"
         readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
-        css="label-bold bold" colSpan="3"/>
+        css="label-bold bold" colSpan="3" x-scale="companyCurrencyDecimals"/>
       <field name="amountRemaining" colSpan="3"
-        hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4 || move.statusSelect == 5"/>
+        hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4 || move.statusSelect == 5"
+        x-scale="companyCurrencyDecimals"/>
       <field name="amountPaid" colSpan="3"
-        hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
+        hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"
+        x-scale="companyCurrencyDecimals"/>
       <field name="origin" colSpan="6" onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account.serviceType" form-view="service-type-form"
         grid-view="service-type-grid" colSpan="3"/>
       <field name="move.partner.das2Activity" form-view="das2-activity-form"
         grid-view="das2-activity-grid" colSpan="3"/>
-      <field name="taxAmount" hidden="true"/>
+      <field name="taxAmount" hidden="true" x-scale="companyCurrencyDecimals"/>
       <field name="move.statusSelect" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
       <field name="account.manageCutOffPeriod" hidden="true"/>
       <field name="account.useForPartnerBalance" hidden="true"/>
+      <field name="currencyDecimals" hidden="true"/>
+      <field name="companyCurrencyDecimals" hidden="true"/>
     </panel>
     <panel name="detailsPanel">
       <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"

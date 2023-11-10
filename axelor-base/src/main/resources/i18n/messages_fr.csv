@@ -1358,6 +1358,7 @@
 "Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.","Note : Le champ Code postal/Ville est rempli automatiquement quand la ville est sélectionnée. Vous pouvez le modifier à tout moment dès lors que le couple Code Postal/Ville est manquant ou pour une correction éventuelle.",,
 "November","Novembre",,
 "Number of days since last update","Nombre de jours depuis la dernière mise à jour",,
+"Number of decimals","Nombre de décimales",,
 "Number of records to fetch from database on one query run. It will fetch upto 'Maximum export limit'.","Nombre d’entrées à extraire de la base de données par exécution de la requête. Cela pourra extraire jusqu’à ‘Limite maximale d’export’ entrées.",,
 "Number of tasks generated at most at once","Nombre de tâches générées au plus à la fois",,
 "Numeric code (ISO)","Code ISO",,
