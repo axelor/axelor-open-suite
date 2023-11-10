@@ -871,7 +871,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       Unit pieceUnit,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
-      LocalDate previousCostSheetDate) {
+      LocalDate previousCostSheetDate)
+      throws AxelorException {
     int costType = workCenter.getCostTypeSelect();
 
     if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {

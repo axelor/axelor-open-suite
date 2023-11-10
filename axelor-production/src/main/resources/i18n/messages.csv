@@ -753,6 +753,7 @@
 "The production process and the bill of material must be applicable",,,
 "The quantity of the bill of material %s is equal to zero.",,,
 "The result formula of '%s' in configurator prod process '%s' could not be converted in a Stock location, please verify the formula.",,,
+"The system found a loop in your bill of materials, please correct concerned data",,,
 "The template to send message for manufacturing order is missing.",,,
 "The unit of the bill of material %s is missing. Please correct it.",,,
 "There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&OP forecast. Proceed?",,,
