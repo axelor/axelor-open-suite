@@ -94,9 +94,12 @@
     <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
   </action-view>
 
+  <menuitem name="manufacturing-root-calendars" parent="manufacturing-root"
+    title="Calendars" order="1450" icon="fa-calendar"/>
+
   <menuitem name="manufacturing-root-operation-order-planned-calendar"
-    parent="manufacturing-root" title="Planned operations"
-    action="manufacturing.root.operation.order.planned.calendar" order="700"/>
+    parent="manufacturing-root-calendars" title="Planned operations"
+    action="manufacturing.root.operation.order.planned.calendar" order="100"/>
 
   <action-view name="manufacturing.root.operation.order.planned.calendar"
     title="Planned operations" model="com.axelor.apps.production.db.OperationOrder">
@@ -108,8 +111,8 @@
   </action-view>
 
   <menuitem name="manufacturing-root-operation-order-real-calendar"
-    parent="manufacturing-root" title="Real operations"
-    action="manufacturing.root.operation.order.real.calendar" order="800"/>
+    parent="manufacturing-root-calendars" title="Real operations"
+    action="manufacturing.root.operation.order.real.calendar" order="200"/>
 
   <action-view name="manufacturing.root.operation.order.real.calendar"
     title="Real operations" model="com.axelor.apps.production.db.OperationOrder">
