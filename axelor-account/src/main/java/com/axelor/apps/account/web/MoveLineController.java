@@ -26,8 +26,8 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.IrrecoverableService;
-import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
@@ -183,8 +183,9 @@ public class MoveLineController {
         finalBalance = totalDebit.subtract(totalCredit);
 
         if (!differentCompanies) {
-          ScaleServiceAccount scaleServiceAccount = Beans.get(ScaleServiceAccount.class);
-          int scale = scaleServiceAccount.getScale(company, null, true);
+          CurrencyScaleServiceAccount currencyScaleServiceAccount =
+              Beans.get(CurrencyScaleServiceAccount.class);
+          int scale = currencyScaleServiceAccount.getCompanyScale(company);
 
           totalCredit = totalCredit.setScale(scale, RoundingMode.HALF_UP);
           totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);

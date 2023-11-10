@@ -30,7 +30,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.ScaleServiceAccount;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -421,7 +421,8 @@ public abstract class InvoiceGenerator {
    * @throws AxelorException
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
-    ScaleServiceAccount scaleServiceAccount = Beans.get(ScaleServiceAccount.class);
+    CurrencyScaleServiceAccount currencyScaleServiceAccount =
+        Beans.get(CurrencyScaleServiceAccount.class);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
@@ -441,41 +442,37 @@ public abstract class InvoiceGenerator {
 
       // In the invoice currency
       invoice.setExTaxTotal(
-          scaleServiceAccount.getScaledValue(
-              invoice, invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()), false));
+          currencyScaleServiceAccount.getScaledValue(
+              invoice, invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal())));
 
       // In the company accounting currency
       invoice.setCompanyExTaxTotal(
-          scaleServiceAccount.getScaledValue(
-              invoice,
-              invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()),
-              true));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoice, invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal())));
     }
 
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
       // In the invoice currency
       invoice.setTaxTotal(
-          scaleServiceAccount.getScaledValue(
-              invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()), false));
+          currencyScaleServiceAccount.getScaledValue(
+              invoice, invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal())));
 
       // In the company accounting currency
       invoice.setCompanyTaxTotal(
-          scaleServiceAccount.getScaledValue(
-              invoice,
-              invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()),
-              true));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoice, invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal())));
     }
 
     // In the invoice currency
     invoice.setInTaxTotal(
-        scaleServiceAccount.getScaledValue(
-            invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal()), false));
+        currencyScaleServiceAccount.getScaledValue(
+            invoice, invoice.getExTaxTotal().add(invoice.getTaxTotal())));
 
     // In the company accounting currency
     invoice.setCompanyInTaxTotal(
-        scaleServiceAccount.getScaledValue(
-            invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()), true));
+        currencyScaleServiceAccount.getCompanyScaledValue(
+            invoice, invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal())));
     invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 
     invoice.setAmountRemaining(invoice.getInTaxTotal());

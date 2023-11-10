@@ -39,8 +39,8 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccount;
-import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -105,7 +105,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveControlService moveControlService;
   protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
-  protected ScaleServiceAccount scaleServiceAccount;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -127,7 +127,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
-      ScaleServiceAccount scaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -146,7 +146,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveControlService = moveControlService;
     this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
-    this.scaleServiceAccount = scaleServiceAccount;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -905,7 +905,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         .multiply(moveLine.getTaxLine().getValue())
         .divide(
             BigDecimal.valueOf(100),
-            scaleServiceAccount.getScale(moveLine, true),
+            currencyScaleServiceAccount.getCompanyScale(moveLine),
             RoundingMode.HALF_UP);
   }
 

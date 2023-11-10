@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.ScaleServiceAccount;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -42,7 +42,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected FiscalPositionService fiscalPositionService;
   protected CurrencyService currencyService;
-  protected ScaleServiceAccount scaleServiceAccount;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineRecordServiceImpl(
@@ -50,12 +50,12 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       FiscalPositionService fiscalPositionService,
       CurrencyService currencyService,
-      ScaleServiceAccount scaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
     this.currencyService = currencyService;
-    this.scaleServiceAccount = scaleServiceAccount;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -82,7 +82,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       BigDecimal currencyAmount =
           total.divide(
               moveLine.getCurrencyRate(),
-              scaleServiceAccount.getScale(move, false),
+              currencyScaleServiceAccount.getScale(move),
               RoundingMode.HALF_UP);
       if (isCredit) {
         currencyAmount = currencyAmount.negate();

@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.service.ScaleServiceAccount;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
@@ -37,7 +37,7 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineService moveLineService;
   protected MoveToolService moveToolService;
-  protected ScaleServiceAccount scaleServiceAccount;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineCurrencyServiceImpl(
@@ -45,12 +45,12 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveLineService moveLineService,
       MoveToolService moveToolService,
-      ScaleServiceAccount scaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.currencyService = currencyService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineService = moveLineService;
     this.moveToolService = moveToolService;
-    this.scaleServiceAccount = scaleServiceAccount;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -79,7 +79,7 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
       BigDecimal currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
       currencyAmount =
           currencyAmount.divide(
-              currencyRate, scaleServiceAccount.getScale(move, false), RoundingMode.HALF_UP);
+              currencyRate, currencyScaleServiceAccount.getScale(move), RoundingMode.HALF_UP);
 
       moveLine.setCurrencyAmount(
           moveToolService.computeCurrencyAmountSign(

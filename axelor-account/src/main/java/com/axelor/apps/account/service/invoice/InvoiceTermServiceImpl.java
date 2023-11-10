@@ -41,11 +41,11 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.ScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -94,7 +94,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected JournalService journalService;
   protected UserRepository userRepo;
   protected PfpService pfpService;
-  protected ScaleServiceAccount scaleServiceAccount;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -108,7 +108,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       JournalService journalService,
       UserRepository userRepo,
       PfpService pfpService,
-      ScaleServiceAccount scaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -119,7 +119,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.userRepo = userRepo;
     this.journalService = journalService;
     this.pfpService = pfpService;
-    this.scaleServiceAccount = scaleServiceAccount;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -155,8 +155,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
 
-    return scaleServiceAccount.getScaledValue(
-        invoice, sum.multiply(BigDecimal.valueOf(100)), false);
+    return currencyScaleServiceAccount.getScaledValue(
+        invoice, sum.multiply(BigDecimal.valueOf(100)));
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -305,8 +305,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
 
       companyAmountRemaining =
-          scaleServiceAccount.getScaledValue(invoiceTerm, companyAmount.multiply(ratioPaid), true);
-      companyAmount = scaleServiceAccount.getScaledValue(invoiceTerm, companyAmount, true);
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoiceTerm, companyAmount.multiply(ratioPaid));
+      companyAmount = currencyScaleServiceAccount.getCompanyScaledValue(invoiceTerm, companyAmount);
     }
 
     invoiceTerm.setCompanyAmount(companyAmount);
@@ -381,11 +382,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setFinancialDiscountAmount(
-          scaleServiceAccount.getScaledValue(
-              invoiceTerm, financialDiscountAmount.multiply(percentage), true));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoiceTerm, financialDiscountAmount.multiply(percentage)));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
-          scaleServiceAccount.getScaledValue(
-              invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage), true));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage)));
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
 
       invoiceTerm.setFinancialDiscountDeadlineDate(
@@ -408,7 +409,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .multiply(invoiceTerm.getRemainingAmountAfterFinDiscount())
               .divide(
                   invoiceTerm.getAmount(),
-                  scaleServiceAccount.getScale(invoiceTerm, true),
+                  currencyScaleServiceAccount.getCompanyScale(invoiceTerm),
                   RoundingMode.HALF_UP));
     }
   }
@@ -508,7 +509,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTermPercentage)
             .divide(
                 BigDecimal.valueOf(100),
-                scaleServiceAccount.getScale(moveLine, false),
+                currencyScaleServiceAccount.getScale(moveLine),
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
@@ -898,7 +899,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
             .divide(
                 BigDecimal.valueOf(10000),
-                scaleServiceAccount.getScale(invoiceTerm, true),
+                currencyScaleServiceAccount.getCompanyScale(invoiceTerm),
                 RoundingMode.HALF_UP);
       } else {
         Tax financialDiscountTax =
@@ -920,7 +921,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                             AppBaseService.COMPUTATION_SCALING,
                             RoundingMode.HALF_UP))
                     .multiply(BigDecimal.valueOf(100)),
-                scaleServiceAccount.getScale(invoiceTerm, true),
+                currencyScaleServiceAccount.getCompanyScale(invoiceTerm),
                 RoundingMode.HALF_UP);
       }
     } else {
@@ -1014,15 +1015,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
 
-      return scaleServiceAccount.getScaledValue(
-          invoiceTerm, total.subtract(totalWithoutCurrent), false);
+      return currencyScaleServiceAccount.getScaledValue(
+          invoiceTerm, total.subtract(totalWithoutCurrent));
     } else {
       return invoiceTerm
           .getPercentage()
           .multiply(total)
           .divide(
               new BigDecimal(100),
-              scaleServiceAccount.getScale(invoiceTerm, false),
+              currencyScaleServiceAccount.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     }
   }

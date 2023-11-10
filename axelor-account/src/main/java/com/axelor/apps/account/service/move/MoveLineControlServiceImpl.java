@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.ScaleServiceAccount;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -56,18 +56,18 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
-  protected ScaleServiceAccount scaleServiceAccount;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineControlServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineService moveLineService,
       InvoiceTermService invoiceTermService,
-      ScaleServiceAccount scaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
-    this.scaleServiceAccount = scaleServiceAccount;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -161,17 +161,16 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (isCompanyAmount) {
       total =
           invoiceAttached == null
-              ? moveLine.getDebit().max(moveLine.getCredit())
-              : invoiceAttached.getCompanyInTaxTotal();
+              ? currencyScaleServiceAccount.getCompanyScaledValue(
+                  moveLine, moveLine.getDebit().max(moveLine.getCredit()))
+              : currencyScaleServiceAccount.getCompanyScaledValue(
+                  invoiceAttached, invoiceAttached.getCompanyInTaxTotal());
     } else {
       total =
-          invoiceAttached == null ? moveLine.getCurrencyAmount() : invoiceAttached.getInTaxTotal();
-    }
-
-    if (invoiceAttached == null) {
-      total = scaleServiceAccount.getScaledValue(moveLine, total, isCompanyAmount);
-    } else {
-      total = scaleServiceAccount.getScaledValue(invoiceAttached, total, isCompanyAmount);
+          invoiceAttached == null
+              ? currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getCurrencyAmount())
+              : currencyScaleServiceAccount.getScaledValue(
+                  invoiceAttached, invoiceAttached.getInTaxTotal());
     }
 
     BigDecimal invoiceTermTotal =

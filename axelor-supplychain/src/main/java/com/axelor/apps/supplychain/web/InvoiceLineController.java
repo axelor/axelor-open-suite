@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.service.ScaleServiceAccount;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.AxelorException;
@@ -48,7 +48,7 @@ public class InvoiceLineController {
     BigDecimal companyInTaxTotal = BigDecimal.ZERO;
     BigDecimal priceDiscounted = BigDecimal.ZERO;
     BigDecimal taxRate = BigDecimal.ZERO;
-    int currencyScale = Beans.get(ScaleServiceAccount.class).getScale(invoice, false);
+    int currencyScale = Beans.get(CurrencyScaleServiceAccount.class).getScale(invoice);
 
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);

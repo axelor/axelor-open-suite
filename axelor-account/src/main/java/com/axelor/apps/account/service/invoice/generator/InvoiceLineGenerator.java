@@ -27,7 +27,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.ScaleServiceAccount;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -68,7 +68,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected InvoiceLineService invoiceLineService;
   protected AccountManagementAccountService accountManagementService;
   protected ProductCompanyService productCompanyService;
-  protected ScaleServiceAccount scaleServiceAccount;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   protected Invoice invoice;
   protected Product product;
@@ -104,7 +104,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.invoiceLineService = Beans.get(InvoiceLineService.class);
     this.accountManagementService = Beans.get(AccountManagementAccountService.class);
     this.productCompanyService = Beans.get(ProductCompanyService.class);
-    this.scaleServiceAccount = Beans.get(ScaleServiceAccount.class);
+    this.currencyScaleServiceAccount = Beans.get(CurrencyScaleServiceAccount.class);
   }
 
   protected InvoiceLineGenerator(
@@ -128,8 +128,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
     this.currencyService = new CurrencyService(this.appBaseService, this.today);
-    this.currencyScale = this.scaleServiceAccount.getScale(invoice, false);
-    this.companyCurrencyScale = this.scaleServiceAccount.getScale(invoice, true);
+    this.currencyScale = this.currencyScaleServiceAccount.getScale(invoice);
+    this.companyCurrencyScale = this.currencyScaleServiceAccount.getCompanyScale(invoice);
   }
 
   protected InvoiceLineGenerator(

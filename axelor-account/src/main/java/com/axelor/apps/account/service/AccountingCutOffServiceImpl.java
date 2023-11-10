@@ -88,7 +88,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected CurrencyService currencyService;
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLineRepository moveLineRepository;
-  protected ScaleServiceAccount scaleServiceAccount;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
   protected int counter = 0;
 
   @Inject
@@ -113,7 +113,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
       MoveLineRepository moveLineRepository,
-      ScaleServiceAccount scaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
     this.moveLineToolService = moveLineToolService;
@@ -134,7 +134,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.currencyService = currencyService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLineRepository = moveLineRepository;
-    this.scaleServiceAccount = scaleServiceAccount;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -596,7 +596,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         InvoiceLineManagement.computeAmount(
             productMoveLine.getCurrencyAmount(),
             taxLine.getValue().divide(new BigDecimal(100)),
-            scaleServiceAccount.getScale(move, false));
+            currencyScaleServiceAccount.getScale(move));
     boolean isDebit = productMoveLine.getDebit().signum() > 0;
 
     currencyTaxAmount = moveToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);

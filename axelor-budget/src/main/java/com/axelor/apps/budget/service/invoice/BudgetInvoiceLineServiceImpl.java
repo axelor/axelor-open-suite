@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.ScaleServiceAccount;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
@@ -78,7 +78,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      ScaleServiceAccount scaleServiceAccount,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
       BudgetService budgetService,
       BudgetRepository budgetRepository,
       BudgetDistributionService budgetDistributionService) {
@@ -96,7 +96,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
         taxService,
         internationalService,
         invoiceLineAttrsService,
-        scaleServiceAccount);
+        currencyScaleServiceAccount);
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
