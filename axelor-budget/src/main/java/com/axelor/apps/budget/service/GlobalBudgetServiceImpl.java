@@ -235,7 +235,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
         budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
         budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
         if (needRecomputeBudgetLine) {
-          budget.setPeriodDurationSelect(0);
+          budget.setPeriodDurationSelect(BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME);
           budget.clearBudgetLineList();
           List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
           if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {

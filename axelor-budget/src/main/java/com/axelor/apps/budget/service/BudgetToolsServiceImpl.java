@@ -30,6 +30,7 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
@@ -144,7 +145,8 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     GlobalBudget globalBudget = getGlobalBudgetUsingBudget(budget);
     if (globalBudget != null
         && globalBudget.getCheckAvailableSelect() != null
-        && globalBudget.getCheckAvailableSelect() != 0) {
+        && globalBudget.getCheckAvailableSelect()
+            != GlobalBudgetRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_DEFAULT_VALUE) {
       return globalBudget.getCheckAvailableSelect();
     } else {
       return appBudgetService.getAppBudget().getCheckAvailableBudget()
