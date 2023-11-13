@@ -892,7 +892,7 @@
 700;"CL7";"Ventes de produits fabriqués, prestations de services, marchandises";"FRA_PCG15";"true";0;;;;;;;0;"false";"NDAS";"false";1
 701;700;"Ventes de produits finis";"FRA_PCG9";"true";1;;;;"true";"true";"N_C";1;"false";"NDAS";"true";1
 701100;701;"Produits finis (ou groupe) A";"FRA_PCG9";"false";1;;;;"true";"true";"N_C";1;"false";"NDAS";"true";1
-701200;701000;"Produits finis (ou groupe) B";"FRA_PCG9";"false";1;;;;"true";"true";"N_C";1;"false";"NDAS";"true";1
+701200;701;"Produits finis (ou groupe) B";"FRA_PCG9";"false";1;;;;"true";"true";"N_C";1;"false";"NDAS";"true";1
 702000;700;"Ventes de produits intermédiaires";"FRA_PCG9";"true";1;;;;"true";"true";"N_C";1;"false";"NDAS";"true";1
 703000;700;"Ventes de produits résiduels";"FRA_PCG9";"true";1;;;;"true";"true";"N_C";1;"false";"NDAS";"true";1
 704000;700;"Travaux";"FRA_PCG9";"true";1;;;;"true";"true";"N_C";1;"false";"NDAS";"true";1

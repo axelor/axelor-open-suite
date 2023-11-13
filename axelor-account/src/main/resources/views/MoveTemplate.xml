@@ -34,7 +34,7 @@
       <field name="automaticallyValidate"/>
       <field name="description" widget="text" colSpan="12"/>
     </panel>
-    <panel showIf="moveTemplateType.typeSelect == 2">
+    <panel showIf="moveTemplateType.typeSelect == 2 &amp;&amp; journal &amp;&amp; company">
       <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList"
         colSpan="12" form-view="move-template-line-in-amount-form"
         grid-view="move-template-line-in-amount-grid"
@@ -70,8 +70,8 @@
     <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList"
       colSpan="12" form-view="move-template-line-in-percentage-form"
       grid-view="move-template-line-in-percentage-grid"
-      onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 1"
-      hidden="true"/>
+      onChange="action-move-template-method-set-is-valid"
+      showIf="moveTemplateType.typeSelect == 1 &amp;&amp; journal &amp;&amp; company" hidden="true"/>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <field name="isValid" readonlyIf="!isValid"
         onChange="action-move-template-method-set-is-valid" colSpan="12"/>
