@@ -26,10 +26,7 @@
         <spacer colSpan="10"/>
         <field name="$activeLabel" showIf="$readonly()" showTitle="false" colSpan="2">
           <viewer depends="active">
-            <![CDATA[
-                <span class="label label-success" ng-show="record.active" x-translate>Active</span>
-                <span class="label label-important" ng-show="!record.active" x-translate>Inactive</span>
-            ]]>
+            <![CDATA[<><Badge bg={active ? "success" : "danger"}>{active ? _t('Active') : _t('Inactive')}</Badge></>]]>
           </viewer>
         </field>
         <field name="partner"

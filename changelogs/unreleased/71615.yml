@@ -1,0 +1,3 @@
+---
+title: "Invoice / Reconcile : Fix issue preventing from paying an invoice with a canceled payment"
+type: fix

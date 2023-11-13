@@ -19,6 +19,8 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -29,6 +31,9 @@ import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -71,5 +76,22 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
           || move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
     }
     return false;
+  }
+
+  @Override
+  public List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException {
+    if (company == null) {
+      return new ArrayList<>();
+    }
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    if (accountConfig == null
+        || CollectionUtils.isEmpty(accountConfig.getAnalyticAxisByCompanyList())) {
+      return new ArrayList<>();
+    }
+
+    return accountConfig.getAnalyticAxisByCompanyList().stream()
+        .filter(AnalyticAxisByCompany::getIncludeInBudgetKey)
+        .map(AnalyticAxisByCompany::getAnalyticAxis)
+        .collect(Collectors.toList());
   }
 }
