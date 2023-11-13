@@ -256,13 +256,6 @@
       expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>
   </action-record>
 
-  <action-record name="action-move-template-wizard-line-set-move-template"
-    model="com.axelor.utils.db.Wizard">
-    <field name="date" expr="eval:__config__.date" if="date == null"/>
-    <field name="moveTemplate"
-      expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>
-  </action-record>
-
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-move-template-wizard-attrs-company-onchange">
