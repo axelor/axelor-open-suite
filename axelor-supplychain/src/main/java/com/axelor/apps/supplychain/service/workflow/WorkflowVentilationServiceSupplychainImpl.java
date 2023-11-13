@@ -61,29 +61,29 @@ import org.slf4j.LoggerFactory;
 
 public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilationServiceImpl {
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private SaleOrderInvoiceService saleOrderInvoiceService;
+  protected SaleOrderInvoiceService saleOrderInvoiceService;
 
-  private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 
-  private SaleOrderRepository saleOrderRepository;
+  protected SaleOrderRepository saleOrderRepository;
 
-  private PurchaseOrderRepository purchaseOrderRepository;
+  protected PurchaseOrderRepository purchaseOrderRepository;
 
-  private AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
-  private AppSupplychainService appSupplychainService;
+  protected AppSupplychainService appSupplychainService;
 
-  private StockMoveInvoiceService stockMoveInvoiceService;
+  protected StockMoveInvoiceService stockMoveInvoiceService;
 
-  private UnitConversionService unitConversionService;
+  protected UnitConversionService unitConversionService;
 
-  private AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
 
-  private SupplyChainConfigService supplyChainConfigService;
+  protected SupplyChainConfigService supplyChainConfigService;
 
-  private StockMoveLineRepository stockMoveLineRepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public WorkflowVentilationServiceSupplychainImpl(
