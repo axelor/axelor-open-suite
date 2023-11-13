@@ -883,7 +883,6 @@ InvoiceSet.length > 0))"
     </panel-tabs>
 
     <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
-      <field name="amountRemaining" hidden="true"/>
       <field name="hasPendingPayments" hidden="true"/>
       <button name="validateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-on-validate"/>
@@ -959,6 +958,10 @@ InvoiceSet.length > 0))"
         </viewer>
       </field>
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
+      <field name="amount" x-scale="currency.numberOfDecimals" hidden="true"/>
+      <field name="financialDiscountTotalAmount" x-scale="currency.numberOfDecimals"
+        hidden="true"/>
+      <field name="financialDiscountAmount" x-scale="currency.numberOfDecimals" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
           depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
@@ -1011,7 +1014,7 @@ InvoiceSet.length > 0))"
         <editor></editor>
       </field>
       <field name="amountRemaining" showTitle="false" colSpan="12"
-        x-scale="currency.numberOfDecimals" showIf="statusSelect == 2 || statusSelect == 3">
+        showIf="statusSelect == 2 || statusSelect == 3" x-scale="currency.numberOfDecimals">
         <viewer depends="amountRemaining,currency.symbol"><![CDATA[
 		         <>
 		         	<dl>
