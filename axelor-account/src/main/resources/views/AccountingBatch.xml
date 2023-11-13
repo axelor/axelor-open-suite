@@ -39,8 +39,8 @@
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" hidden="true"
         canEdit="false"/>
       <field name="archived" title="Archived"/>
-      <field name="paymentMode.typeSelect"/>
-      <field name="paymentMode.inOutSelect"/>
+      <field name="paymentMode.typeSelect" hidden="true"/>
+      <field name="paymentMode.inOutSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="reimbursementPagePanel" title="Reimbursement configuration"
