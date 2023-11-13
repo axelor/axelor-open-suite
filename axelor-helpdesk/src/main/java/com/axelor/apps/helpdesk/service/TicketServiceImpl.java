@@ -223,9 +223,13 @@ public class TicketServiceImpl implements TicketService {
       LocalDateTime currentDate = LocalDateTime.now();
       LocalDateTime deadlineDateT = ticket.getDeadlineDateT();
 
-      ticket.setIsSlaCompleted(
-          ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStageSelect()
-              && (currentDate.isBefore(deadlineDateT) || currentDate.isEqual(deadlineDateT)));
+      if (ticket.getTicketStatus() != null
+          && ticket.getSlaPolicy().getReachStageTicketStatus() != null) {
+        ticket.setIsSlaCompleted(
+            ticket.getTicketStatus().getPriority()
+                    >= ticket.getSlaPolicy().getReachStageTicketStatus().getPriority()
+                && (currentDate.isBefore(deadlineDateT) || currentDate.isEqual(deadlineDateT)));
+      }
     }
   }
 
@@ -279,5 +283,28 @@ public class TicketServiceImpl implements TicketService {
     }
 
     return ticket.getStartDateT();
+  }
+
+  @Override
+  public boolean isNewTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null
+        && !ticket.getTicketStatus().getIsResolvedStatus()
+        && !ticket.getTicketStatus().getIsClosedStatus()
+        && !ticket.getTicketStatus().getIsOngoingStatus();
+  }
+
+  @Override
+  public boolean isInProgressTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null && ticket.getTicketStatus().getIsOngoingStatus();
+  }
+
+  @Override
+  public boolean isResolvedTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null && ticket.getTicketStatus().getIsResolvedStatus();
+  }
+
+  @Override
+  public boolean isClosedTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null && ticket.getTicketStatus().getIsClosedStatus();
   }
 }

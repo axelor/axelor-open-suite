@@ -13,4 +13,7 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+  <input file="helpdesk_ticketStatus.csv" separator=";"
+    type="com.axelor.apps.helpdesk.db.TicketStatus" search="self.importId = :importId"/>
+
 </csv-inputs>

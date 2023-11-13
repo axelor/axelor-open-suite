@@ -46,7 +46,7 @@ public class TicketManagementRepository extends TicketRepository {
   @Override
   public Ticket copy(Ticket entity, boolean deep) {
     Ticket copy = super.copy(entity, deep);
-    copy.setStatusSelect(null);
+    copy.setTicketStatus(null);
     copy.setProgressSelect(null);
     copy.setStartDateT(appBaseService.getTodayDateTime().toLocalDateTime());
     copy.setTicketSeq(null);

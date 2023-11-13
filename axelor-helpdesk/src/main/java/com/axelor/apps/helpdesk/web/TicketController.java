@@ -27,6 +27,7 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.apps.helpdesk.exceptions.HelpdeskExceptionMessage;
 import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.helpdesk.service.TicketWorkflowService;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -245,6 +246,54 @@ public class TicketController {
       ticket.setTimerState(false);
       ticketRepo.save(ticket);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setStartStatus(ActionRequest request, ActionResponse response) {
+    try {
+      TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+      Ticket ticket = request.getContext().asType(Ticket.class);
+
+      Beans.get(TicketWorkflowService.class).startTicket(ticket);
+      response.setValue("ticketStatus", ticket.getTicketStatus());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setResolvedStatus(ActionRequest request, ActionResponse response) {
+    try {
+      TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+      Ticket ticket = request.getContext().asType(Ticket.class);
+
+      Beans.get(TicketWorkflowService.class).resolveTicket(ticket);
+      response.setValue("ticketStatus", ticket.getTicketStatus());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setClosedStatus(ActionRequest request, ActionResponse response) {
+    try {
+      TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+      Ticket ticket = request.getContext().asType(Ticket.class);
+
+      Beans.get(TicketWorkflowService.class).closeTicket(ticket);
+      response.setValue("ticketStatus", ticket.getTicketStatus());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDefaultStatus(ActionRequest request, ActionResponse response) {
+    try {
+      TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+      Ticket ticket = request.getContext().asType(Ticket.class);
+
+      Beans.get(TicketWorkflowService.class).openTicket(ticket);
+      response.setValue("ticketStatus", ticket.getTicketStatus());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,0 +1,5 @@
+"importId";"name";"priority";"isClosedStatus";"isResolvedStatus";"isOngoingStatus"
+"1";"New";"1";"false";"false";"false"
+"2";"In progress";"2";"false";"false";"true"
+"3";"Resolved";"3";"false";"true";"false"
+"4";"Closed";"4";"true";"false";"false"
