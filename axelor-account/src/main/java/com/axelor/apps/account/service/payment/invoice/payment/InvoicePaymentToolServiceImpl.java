@@ -107,6 +107,17 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   protected BigDecimal getAmountInInvoiceCompanyCurrency(BigDecimal amount, Invoice invoice)
       throws AxelorException {
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      BigDecimal currencyAmount =
+          invoiceTermList.stream()
+              .map(InvoiceTerm::getCompanyAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (currencyAmount.signum() >= 0 || (currencyAmount.signum() == 0 && amount.signum() == 0)) {
+        return currencyAmount;
+      }
+    }
 
     return currencyService.getAmountCurrencyConvertedAtDate(
         invoice.getCurrency(),
