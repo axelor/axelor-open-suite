@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
@@ -73,7 +74,8 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
       UnitConversionService unitConversionService,
       WeeklyPlanningService weeklyPlanningService,
       LeaveRequestComputeDurationService leaveRequestComputeDurationService,
-      EmployeeService employeeService) {
+      EmployeeService employeeService,
+      AppBaseService appBaseService) {
     super(
         priceListService,
         appHumanResourceService,
@@ -96,7 +98,8 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
         unitConversionService,
         weeklyPlanningService,
         leaveRequestComputeDurationService,
-        employeeService);
+        employeeService,
+        appBaseService);
   }
 
   @Override

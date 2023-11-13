@@ -39,4 +39,11 @@ public class MaintenanceRequestRepo extends MaintenanceRequestRepository {
 
     return super.save(entity);
   }
+
+  @Override
+  public MaintenanceRequest copy(MaintenanceRequest entity, boolean deep) {
+    MaintenanceRequest copy = super.copy(entity, deep);
+    copy.setStatusSelect(STATUS_PLANNED);
+    return copy;
+  }
 }

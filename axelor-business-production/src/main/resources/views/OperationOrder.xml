@@ -16,7 +16,7 @@
 
   <action-attrs name="action-operation-order-attrs-employee-domain-filter">
     <attribute name="domain" for="employeeSet"
-      expr="eval: &quot; self.mainEmploymentContract.payCompany.id = ${manufOrder?.company?.id} &quot;"/>
+      expr="eval: (workCenter?.hrSkillSet != null &amp;&amp; !workCenter?.hrSkillSet.empty) ? &quot; ${__user__.activeCompany.id} = ${manufOrder?.company?.id} AND self.trainingSkillList.skill.id IN (${workCenter?.hrSkillSet?.collect{it.id}.join(',')})&quot; : &quot; ${__user__.activeCompany.id} = ${manufOrder?.company?.id}&quot;"/>
   </action-attrs>
 
   <action-group name="action-operation-order-group-finish"

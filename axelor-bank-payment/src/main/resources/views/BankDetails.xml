@@ -49,9 +49,8 @@
       <insert position="after">
         <panel name="balancePanel" hidden="true"
           showIf="company &amp;&amp; balanceUpdatedDate" colSpan="3">
-          <button name="$balanceBtn" title="Balance" icon="fa-balance-scale"
-            widget="info-button" onClick="action-bank-details-view-show-bank-statement-lines"
-            colSpan="12"/>
+          <button name="$balanceBtn" title="Balance" icon="balance" widget="info-button"
+            onClick="action-bank-details-view-show-bank-statement-lines" colSpan="12"/>
         </panel>
       </insert>
     </extend>

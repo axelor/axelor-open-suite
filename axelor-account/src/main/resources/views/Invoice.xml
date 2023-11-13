@@ -412,9 +412,9 @@
 	                        <>
 	                        	<Box d="flex" justifyContent="flex-end" gap="4" flexWrap="wrap">
 	                        		{operationTypeSelect == 1 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier purchase')}</Badge>}
-	                        		{operationTypeSelect == 2 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier refund')}</Badge>}
+	                        		{operationTypeSelect == 2 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier credit note')}</Badge>}
 	                        		{operationTypeSelect == 3 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer sale')}</Badge>}
-	                        		{operationTypeSelect == 4 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer refund')}</Badge>}
+	                        		{operationTypeSelect == 4 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer credit note')}</Badge>}
 
 	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Standard invoice')}</Badge>}
 	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Advance payment invoice')}</Badge>}
@@ -681,9 +681,9 @@
           <field name="subrogationRelease" readonly="true" showIf="subrogationRelease"/>
           <field name="subrogationReleaseMove" readonly="true" showIf="subrogationReleaseMove"/>
         </panel>
-        <panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"
-          colSpan="12" showTitle="false">
-          <button name="createRefundBtn" title="Generate refund" colSpan="3"
+        <panel name="refundPanel" title="Credit note"
+          showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
+          <button name="createRefundBtn" title="Generate credit note" colSpan="3"
             showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 2"
             onClick="save,action-invoice-method-create-refund,save"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
@@ -1137,9 +1137,9 @@ InvoiceSet.length > 0))"
 					<![CDATA[
 	                   <>
 	                       {operationTypeSelect == 1 && <Badge bg="danger">{_t('Supplier purchase')}</Badge>}
-	                       {operationTypeSelect == 2 && <Badge bg="danger">{_t('Supplier refund')}</Badge>}
+	                       {operationTypeSelect == 2 && <Badge bg="danger">{_t('Supplier credit note')}</Badge>}
 	                       {operationTypeSelect == 3 && <Badge bg="danger">{_t('Customer sale')}</Badge>}
-	                       {operationTypeSelect == 4 && <Badge bg="danger">{_t('Customer refund')}</Badge>}
+	                       {operationTypeSelect == 4 && <Badge bg="danger">{_t('Customer credit note')}</Badge>}
 	                   </>
 					]]>
           </viewer>
@@ -1554,8 +1554,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-change-create-refund-title"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
-    <action name="action-invoice-record-set-pfp-status"
-      if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect == 0"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"/>
@@ -2678,7 +2676,7 @@ InvoiceSet.length > 0))"
   </search-filters>
 
   <search-filters name="supplier-refunds-filters"
-    model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+    model="com.axelor.apps.account.db.Invoice" title="Supplier credit notes filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
