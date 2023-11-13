@@ -334,4 +334,10 @@ public final class ProductionExceptionMessage {
   public static final String
       LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
           "The last operation order planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
+
+  public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
+      "There is no applicable bill of materials for %s" /*)*/;
+
+  public static final String NO_COMPANY_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM." /*)*/;
 }

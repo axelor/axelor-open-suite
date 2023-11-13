@@ -215,21 +215,33 @@
   <tree id="business-project-project-task-tree" name="project-project-task-tree" title="Task">
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
+    <column name="initial" type="decimal"/>
+    <column name="forecast" type="decimal"/>
+    <column name="real" type="decimal"/>
+    <column name="landing" type="decimal"/>
     <column name="assignedTo" type="reference"/>
-    <column name="openTaskBtn" type="button"/>
+    <column name="createSubtaskBtn" type="button"/>
     <column name="generatePurchaseOrderBtn" type="button"/>
     <column name="deleteTaskBtn" type="button"/>
+    <column name="openTaskBtn" type="button"/>
     <node model="com.axelor.apps.project.db.ProjectTask"
       onClick="action-project-task-view-task" domain="self.project.id = :_id" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
+      <field name="initialMarkup" as="initial"/>
+      <field name="forecastMarkup" as="forecast"/>
+      <field name="realMarkup" as="real"/>
+      <field name="landingMarkup" as="landing"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="createSubtaskBtn" icon="fa-plus"
+        onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
         onClick="save, action-project-task-method-generate-purchase-order"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
         onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+      <button name="openTaskBtn" icon="fa-external-link"
+        onClick="action-project-task-open-task"/>
     </node>
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask"
       onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
@@ -237,11 +249,14 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="createSubtaskBtn" icon="fa-plus"
+        onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
         onClick="save, action-project-task-method-generate-purchase-order"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
         onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+      <button name="openTaskBtn" icon="fa-external-link"
+        onClick="action-project-task-open-task"/>
     </node>
   </tree>
 

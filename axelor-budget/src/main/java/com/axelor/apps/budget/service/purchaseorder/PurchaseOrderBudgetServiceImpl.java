@@ -197,7 +197,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(PurchaseOrder purchaseOrder) {
+  public String computeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException {
     List<String> alertMessageTokenList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {

@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
@@ -37,6 +38,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -96,9 +98,9 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     BigDecimal nbCycles = durationNbCyclesPair.getRight();
 
     BigDecimal machineDurationPerCycle =
-        new BigDecimal(workCenterService.getMachineDurationFromWorkCenter(workCenter));
+        new BigDecimal(Optional.ofNullable(prodProcessLine.getDurationPerCycle()).orElse(0l));
     BigDecimal humanDurationPerCycle =
-        new BigDecimal(workCenterService.getHumanDurationFromWorkCenter(workCenter));
+        new BigDecimal(Optional.ofNullable(prodProcessLine.getHumanDuration()).orElse(0l));
     BigDecimal maxDurationPerCycle =
         getMaxDuration(Arrays.asList(machineDurationPerCycle, humanDurationPerCycle));
 
@@ -118,6 +120,16 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     }
 
     return plannedDuration;
+  }
+
+  @Override
+  public long computeEntireDuration(ProdProcess prodProcess, BigDecimal qty)
+      throws AxelorException {
+    long totalDuration = 0;
+    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+      totalDuration += this.computeEntireCycleDuration(null, prodProcessLine, qty);
+    }
+    return totalDuration;
   }
 
   protected Pair<Long, BigDecimal> getDurationNbCyclesPair(

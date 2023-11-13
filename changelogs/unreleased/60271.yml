@@ -1,5 +1,0 @@
----
-title: "Enable configuration of draft sequence prefix"
-type: feature
-description: |
-  Configure the sequence prefix using the 'Draft prefix' field in the app base.

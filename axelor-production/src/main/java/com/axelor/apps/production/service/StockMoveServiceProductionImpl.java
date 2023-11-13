@@ -19,8 +19,8 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -58,14 +58,14 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       AppStockService appStockService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService,
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
+      PfpService pfpService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -79,14 +79,14 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         appStockService,
         appSupplyChainService,
         appAccountService,
-        accountConfigService,
         purchaseOrderRepo,
         saleOrderRepo,
         unitConversionService,
         reservedQtyService,
         partnerSupplychainService,
         fixedAssetRepository,
-        stockMoveLineServiceSupplychain);
+        stockMoveLineServiceSupplychain,
+        pfpService);
   }
 
   @Override
