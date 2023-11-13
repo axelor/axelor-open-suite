@@ -9,6 +9,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 
 public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMergingServiceImpl {
 
@@ -80,9 +81,13 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
 
   @Override
   protected void fillCommonFields(
-      PurchaseOrder firstPurchaseOrder, PurchaseOrderMergingResult result) {
-    super.fillCommonFields(firstPurchaseOrder, result);
-    getCommonFields(result).setCommonStockLocation(firstPurchaseOrder.getStockLocation());
+      List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result) {
+    super.fillCommonFields(purchaseOrdersToMerge, result);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getStockLocation)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(getCommonFields(result)::setCommonStockLocation);
   }
 
   @Override
@@ -91,9 +96,10 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
     super.updateDiffsCommonFields(purchaseOrder, result);
     CommonFieldsSupplyChainImpl commonFields = getCommonFields(result);
     ChecksSupplyChainImpl checks = getChecks(result);
-    if ((commonFields.getCommonStockLocation() == null ^ purchaseOrder.getStockLocation() == null)
-        || (commonFields.getCommonStockLocation() != purchaseOrder.getStockLocation()
-            && !commonFields.getCommonStockLocation().equals(purchaseOrder.getStockLocation()))) {
+    if (commonFields.getCommonStockLocation() != null
+        && !getCommonFields(result)
+            .getCommonStockLocation()
+            .equals(purchaseOrder.getStockLocation())) {
       commonFields.setCommonStockLocation(null);
       checks.setExistStockLocationDiff(true);
     }

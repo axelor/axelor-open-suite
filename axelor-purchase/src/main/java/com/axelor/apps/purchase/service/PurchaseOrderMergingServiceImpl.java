@@ -272,14 +272,11 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
           I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_LIST_EMPTY));
     }
 
-    PurchaseOrder firstPurchaseOrder = purchaseOrdersToMerge.get(0);
-    fillCommonFields(firstPurchaseOrder, result);
-    purchaseOrdersToMerge.stream()
-        .skip(1)
-        .forEach(
-            purchaseOrder -> {
-              updateDiffsCommonFields(purchaseOrder, result);
-            });
+    fillCommonFields(purchaseOrdersToMerge, result);
+    purchaseOrdersToMerge.forEach(
+        purchaseOrder -> {
+          updateDiffsCommonFields(purchaseOrder, result);
+        });
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
@@ -332,36 +329,37 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
       PurchaseOrder purchaseOrder, PurchaseOrderMergingResult result) {
     CommonFields commonFields = getCommonFields(result);
     Checks checks = getChecks(result);
-    if ((commonFields.getCommonCurrency() == null ^ purchaseOrder.getCurrency() == null)
-        || !Objects.equals(commonFields.getCommonCurrency(), purchaseOrder.getCurrency())) {
+    if (commonFields.getCommonCurrency() != null
+        && !getCommonFields(result).getCommonCurrency().equals(purchaseOrder.getCurrency())) {
       commonFields.setCommonCurrency(null);
       checks.setExistCurrencyDiff(true);
     }
-    if ((commonFields.getCommonSupplierPartner() == null
-            ^ purchaseOrder.getSupplierPartner() == null)
-        || !Objects.equals(
-            commonFields.getCommonSupplierPartner(), purchaseOrder.getSupplierPartner())) {
+    if (commonFields.getCommonSupplierPartner() != null
+        && !getCommonFields(result)
+            .getCommonSupplierPartner()
+            .equals(purchaseOrder.getSupplierPartner())) {
       commonFields.setCommonSupplierPartner(null);
       checks.setExistSupplierPartnerDiff(true);
     }
-    if ((commonFields.getCommonCompany() == null ^ purchaseOrder.getCompany() == null)
-        || !Objects.equals(commonFields.getCommonCompany(), purchaseOrder.getCompany())) {
+    if (commonFields.getCommonCompany() != null
+        && !getCommonFields(result).getCommonCompany().equals(purchaseOrder.getCompany())) {
       commonFields.setCommonCompany(null);
       checks.setExistCompanyDiff(true);
     }
-    if ((commonFields.getCommonContactPartner() == null ^ purchaseOrder.getContactPartner() == null)
-        || !Objects.equals(
-            commonFields.getCommonContactPartner(), purchaseOrder.getContactPartner())) {
+    if (commonFields.getCommonContactPartner() != null
+        && !getCommonFields(result)
+            .getCommonContactPartner()
+            .equals(purchaseOrder.getContactPartner())) {
       commonFields.setCommonContactPartner(null);
       checks.setExistContactPartnerDiff(true);
     }
-    if ((commonFields.getCommonPriceList() == null ^ purchaseOrder.getPriceList() == null)
-        || !Objects.equals(commonFields.getCommonPriceList(), purchaseOrder.getPriceList())) {
+    if (commonFields.getCommonPriceList() != null
+        && !getCommonFields(result).getCommonPriceList().equals(purchaseOrder.getPriceList())) {
       commonFields.setCommonPriceList(null);
       checks.setExistPriceListDiff(true);
     }
-    if ((commonFields.getCommonTradingName() == null ^ purchaseOrder.getTradingName() == null)
-        || !Objects.equals(commonFields.getCommonTradingName(), purchaseOrder.getTradingName())) {
+    if (commonFields.getCommonTradingName() != null
+        && !getCommonFields(result).getCommonTradingName().equals(purchaseOrder.getTradingName())) {
       commonFields.setCommonTradingName(null);
       commonFields.setAllTradingNamesAreNull(false);
       checks.setExistTradingNameDiff(true);
@@ -369,14 +367,38 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
   }
 
   protected void fillCommonFields(
-      PurchaseOrder firstPurchaseOrder, PurchaseOrderMergingResult result) {
+      List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result) {
     CommonFields commonFields = getCommonFields(result);
-    commonFields.setCommonCompany(firstPurchaseOrder.getCompany());
-    commonFields.setCommonCurrency(firstPurchaseOrder.getCurrency());
-    commonFields.setCommonContactPartner(firstPurchaseOrder.getContactPartner());
-    commonFields.setCommonPriceList(firstPurchaseOrder.getPriceList());
-    commonFields.setCommonSupplierPartner(firstPurchaseOrder.getSupplierPartner());
-    commonFields.setCommonTradingName(firstPurchaseOrder.getTradingName());
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getCompany)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonCompany);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getCurrency)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonCurrency);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getContactPartner)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonContactPartner);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getPriceList)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonPriceList);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getSupplierPartner)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonSupplierPartner);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getTradingName)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonTradingName);
     commonFields.setAllTradingNamesAreNull(commonFields.getCommonTradingName() == null);
   }
 }
