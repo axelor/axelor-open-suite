@@ -768,15 +768,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
       BigDecimal paidAmount =
           invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
-      BigDecimal companyPaidAmount =
-          invoiceTermPayment
-              .getCompanyPaidAmount()
-              .add(invoiceTermPayment.getFinancialDiscountAmount());
-
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
-      invoiceTerm.setCompanyAmountRemaining(
-          invoiceTerm.getCompanyAmountRemaining().add(companyPaidAmount));
-
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
       if (invoiceTerm.getAmountRemaining().signum() > 0) {
         invoiceTerm.setIsPaid(false);
@@ -1347,7 +1339,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null) {
       InvoicePayment invoicePayment =
           invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-      invoicePayment.setReconcile(reconcile);
+      invoicePayment.addReconcileListItem(reconcile);
 
       List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
 

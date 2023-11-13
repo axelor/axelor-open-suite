@@ -506,16 +506,11 @@ public class ReconcileServiceImpl implements ReconcileService {
         && otherMove.getFunctionalOriginSelect()
             != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
       if (otherMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE) {
-        List<InvoicePayment> invoicePaymentList =
-            invoicePaymentRepo.findByReconcile(reconcile).fetch();
-        Optional<InvoicePayment> optPayment = Optional.empty();
-        if (!ObjectUtils.isEmpty(invoicePaymentList)) {
-          optPayment =
-              invoicePaymentList.stream()
-                  .filter(invPayment -> invoice.equals(invPayment.getInvoice()))
-                  .findFirst();
-        }
-        invoicePayment = optPayment.orElse(this.getExistingInvoicePayment(invoice, otherMove));
+        invoicePayment =
+            Optional.of(reconcile)
+                .map(Reconcile::getInvoicePayment)
+                .filter(invPayment -> invoice.equals(invPayment.getInvoice()))
+                .orElse(this.getExistingInvoicePayment(invoice, otherMove));
       }
 
       if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
@@ -525,7 +520,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       if (invoicePayment == null) {
         invoicePayment =
             invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
-        invoicePayment.setReconcile(reconcile);
+        invoicePayment.addReconcileListItem(reconcile);
       }
     } else if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {
       amount = this.getTotal(moveLine, otherMoveLine, amount, false);
@@ -733,7 +728,10 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected InvoicePayment getExistingInvoicePayment(Invoice invoice, Move move) {
     return invoice.getInvoicePaymentList().stream()
         .filter(
-            it -> (it.getMove() != null && it.getMove().equals(move) && it.getReconcile() == null))
+            it ->
+                (it.getMove() != null
+                    && it.getMove().equals(move)
+                    && CollectionUtils.isEmpty(it.getReconcileList())))
         .findFirst()
         .orElse(null);
   }
@@ -794,10 +792,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
 
     if (reconcile != null) {
-      if (invoicePayment != null) {
-        invoicePayment.setReconcile(reconcile);
-      }
-
+      reconcile.setInvoicePayment(invoicePayment);
       this.confirmReconcile(reconcile, updateInvoicePayments, true);
       return reconcile;
     }
@@ -851,10 +846,9 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Update amount remaining on invoice or refund
     this.updatePartnerAccountingSituation(reconcile);
-    // this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
+    this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoiceTermsAmountRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
-    this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
     if (invoice != null
@@ -941,7 +935,8 @@ public class ReconcileServiceImpl implements ReconcileService {
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {
 
     log.debug("updateInvoicePaymentsCanceled : reconcile : {}", reconcile);
-    for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
+    for (InvoicePayment invoicePayment :
+        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
       invoicePaymentCancelService.updateCancelStatus(invoicePayment);
     }
   }
@@ -950,7 +945,8 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     log.debug("updateInvoiceTermsAmountRemaining : reconcile : {}", reconcile);
 
-    List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByReconcile(reconcile).fetch();
+    List<InvoicePayment> invoicePaymentList =
+        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch();
 
     if (!invoicePaymentList.isEmpty()) {
       for (InvoicePayment invoicePayment : invoicePaymentList) {

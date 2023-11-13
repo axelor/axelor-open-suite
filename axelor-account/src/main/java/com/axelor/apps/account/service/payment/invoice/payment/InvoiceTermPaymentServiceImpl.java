@@ -234,8 +234,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
   protected void toggleFinancialDiscount(InvoicePayment invoicePayment, InvoiceTerm invoiceTerm) {
     boolean isLinkedToPayment = true;
-    if (invoicePayment.getReconcile() != null) {
-      Reconcile reconcile = invoicePayment.getReconcile();
+    if (!CollectionUtils.isEmpty(invoicePayment.getReconcileList())
+        && invoicePayment.getReconcileList().size() == 1) {
+      Reconcile reconcile = invoicePayment.getReconcileList().get(0);
       isLinkedToPayment =
           reconcile.getDebitMoveLine().getMove().getFunctionalOriginSelect()
                   == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT

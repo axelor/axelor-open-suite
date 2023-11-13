@@ -30,6 +30,8 @@
     <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false"/>
 
     <many-to-one name="reconcileGroup" ref="com.axelor.apps.account.db.ReconcileGroup"/>
+    <many-to-one name="invoicePayment" ref="InvoicePayment" title="Invoice payment"
+      readonly="true"/>
 
     <one-to-many ref="PaymentMoveLineDistribution"
       name="paymentMoveLineDistributionList" title="Payment move lines distribution"/>
