@@ -516,14 +516,16 @@
         </panel>
       </panel>
       <panel name="currency" title="Currency">
-        <field name="currency" title="Currency and exchange rate">
+        <field name="currencyAmount" x-scale="currencyDecimals"
+          title="Currency and exchange rate">
           <viewer>
-			<![CDATA[<><span>{currencyRate}</span> x <span>{currencyAmount}</span> <span>{move.currencyCode}</span></>]]>
+			<![CDATA[<><span>{currencyRate}</span> x <span>{$fmt('currencyAmount')}</span> <span>{move.currencyCode}</span></>]]>
           </viewer>
           <editor colSpan="12" layout="table" x-show-titles="false">
             <field name="currencyRate" readonly="true"/>
-            <field name="currencyAmount" readonly="true"/>
+            <field name="currencyAmount" readonly="true" x-scale="currencyDecimals"/>
             <field name="move.currencyCode" readonly="true"/>
+            <field name="currencyDecimals" hidden="true"/>
           </editor>
         </field>
       </panel>
@@ -759,16 +761,19 @@
         </panel>
       </panel>
       <panel name="currency" title="Currency">
-        <field name="currency" title="Currency and exchange rate">
+        <field name="currencyAmount" x-scale="currencyDecimals"
+          title="Currency and exchange rate">
           <viewer>
-			<![CDATA[<><span>{currencyRate}</span> x <span>{currencyAmount}</span> <span>{move.currencyCode}</span></>]]>
+			<![CDATA[<><span>{currencyRate}</span> x <span>{$fmt('currencyAmount')}</span> <span>{move.currencyCode}</span></>]]>
           </viewer>
           <editor colSpan="12" layout="table" x-show-titles="false">
             <field name="currencyRate"
               onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
             <field name="currencyAmount"
-              onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
+              onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"
+              x-scale="currencyDecimals"/>
             <field name="move.currencyCode" readonly="true"/>
+            <field name="currencyDecimals" hidden="true"/>
           </editor>
         </field>
       </panel>
