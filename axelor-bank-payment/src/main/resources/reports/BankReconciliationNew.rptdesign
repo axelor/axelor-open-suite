@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -292,8 +292,8 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
-from meta_translation as LangTranslate 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation"
+from meta_translation as LangTranslate
 where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -738,7 +738,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
+            <xml-property name="queryText"><![CDATA[SELECT
 company.name AS company,
 company.height as logo_height,
 company.width as logo_width,
@@ -748,12 +748,12 @@ bankReconciliation.from_date AS from_date,
 bankReconciliation.to_date AS to_date,
 bankReconciliation.starting_balance AS starting_balance,
 bankReconciliation.moves_reconciled_line_balance AS moves_reconciled_line_balance,
-currency.code AS currency ,  
-journal.name AS journal , 
-PrintingSettings.pdf_header as "header", 
+currency.code AS currency ,
+journal.name AS journal ,
+PrintingSettings.pdf_header as "header",
 PrintingSettings.pdf_footer as "footer",
 PrintingSettings.logo_position_select as "logoPosition",
-concat( account.code  ,' - ' , account.name) AS cash_account , 
+concat( account.code  ,' - ' , account.name) AS cash_account ,
 metaFile.file_path AS logo_path ,
 bankDetails.full_name AS account,
 bankDetails.iban AS iban,
@@ -1195,34 +1195,34 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
+            <xml-property name="queryText"><![CDATA[SELECT
 DISTINCT ON(bankReconciliationLine.id) bankReconciliationLine.id ,
-bankStatement.name AS code , 
-bankReconciliation.to_date AS to_date , 
+bankStatement.name AS code ,
+bankReconciliation.to_date AS to_date ,
 bankReconciliationLine.reference AS reference ,
-bankReconciliationLine.name AS name , 
-bankReconciliationLine.type_select  AS type , 
-bankReconciliationLine.debit AS debit , 
+bankReconciliationLine.name AS name ,
+bankReconciliationLine.type_select  AS type ,
+bankReconciliationLine.debit AS debit ,
 bankReconciliationLine.credit AS credit ,
 bankReconciliationLine.is_posted AS is_posted ,
 bankReconciliationLine.posted_nbr AS posted_nbr ,
 bankStatementLine.operation_date AS operation_date ,
-bankStatementLine.value_date AS value_date , 
-bankStatementLine.description AS bank_statement_line_description , 
-(bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount , 
+bankStatementLine.value_date AS value_date ,
+bankStatementLine.description AS bank_statement_line_description ,
+(bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount ,
 (SUM(bankStatementLine.credit) - SUM(bankStatementLine.debit)) AS account_balance
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 AS bankStatementLine ON bankStatementLine.id = bankReconciliationLine.bank_statement_line
 LEFT JOIN public.bankpayment_bank_statement AS bankStatement ON bankReconciliation.bank_statement = bankStatement.id
 WHERE bankReconciliation.id = ?
-GROUP BY bankStatement.name , 
-bankReconciliation.to_date , 
+GROUP BY bankStatement.name ,
+bankReconciliation.to_date ,
 bankReconciliationLine.id ,
-bankReconciliationLine.reference , 
-bankReconciliationLine.name , 
-bankReconciliationLine.type_select , 
-bankReconciliationLine.debit , 
+bankReconciliationLine.reference ,
+bankReconciliationLine.name ,
+bankReconciliationLine.type_select ,
+bankReconciliationLine.debit ,
 bankReconciliationLine.credit ,
 bankStatementLine.operation_date ,
 bankStatementLine.value_date,
@@ -1310,6 +1310,12 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <text-property name="heading">credit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">currency_amount</text-property>
+                    <text-property name="heading">currency_amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
@@ -1439,6 +1445,11 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                     </structure>
                     <structure>
                         <property name="position">14</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1539,26 +1550,34 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                 </structure>
                 <structure>
                     <property name="position">14</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
-bankReconciliation.account_balance AS account_balance , 
+            <xml-property name="queryText"><![CDATA[SELECT
+bankReconciliation.account_balance AS account_balance ,
 moveLine.description AS code ,
 moveLine.origin_date AS origin_date ,
 moveLine.date_val AS move_date ,
 moveLine.posted_nbr AS posted_nbr ,
 moveLine.amount_remaining AS amount_remaining ,
-bankReconciliation.to_date AS to_date , 
-bankReconciliationLine.reference AS reference , 
-bankReconciliationLine.name AS name , 
+bankReconciliation.to_date AS to_date ,
+bankReconciliationLine.reference AS reference ,
+bankReconciliationLine.name AS name ,
 bankReconciliationLine.type_select  AS type ,
-bankReconciliationLine.is_posted  AS is_posted , 
-moveLine.debit AS debit , 
+bankReconciliationLine.is_posted  AS is_posted ,
+moveLine.debit AS debit ,
 moveLine.credit AS credit ,
+moveLine.currency_amount AS currency_amount,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
@@ -4322,14 +4341,26 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                         <structure>
                                             <property name="name">debit</property>
                                             <text-property name="displayName">debit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">credit</property>
                                             <text-property name="displayName">credit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">sum_debit</property>
@@ -4445,6 +4476,18 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">is_posted_1</property>
+                                            <text-property name="displayName">is_posted</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["is_posted"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">currency_amount</property>
+                                            <text-property name="displayName">currency_amount</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                            <property name="dataType">decimal</property>
                                         </structure>
                                     </list-property>
                                     <column id="7544">
@@ -7455,14 +7498,26 @@ else {0};</expression>
                                         <structure>
                                             <property name="name">debit</property>
                                             <text-property name="displayName">debit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">credit</property>
                                             <text-property name="displayName">credit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">sum_debit</property>
@@ -7572,6 +7627,24 @@ else {0};</expression>
                                             <expression name="expression" type="javascript">row._outer["moves_reconciled_line_balance"]&lt;0?Math.abs(row._outer["moves_reconciled_line_balance"]):0</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">amount_remaining</property>
+                                            <text-property name="displayName">amount_remaining</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">is_posted_1</property>
+                                            <text-property name="displayName">is_posted</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["is_posted"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">currency_amount</property>
+                                            <text-property name="displayName">currency_amount</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                            <property name="dataType">decimal</property>
                                         </structure>
                                     </list-property>
                                     <column id="7069">

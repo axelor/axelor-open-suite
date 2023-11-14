@@ -1,6 +1,9 @@
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
@@ -8,6 +11,7 @@ import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
@@ -18,11 +22,13 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -38,6 +44,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -521,5 +529,44 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       partner = moveTemplate.getMoveTemplateLineList().get(0).getPartner();
     }
     return partner;
+  }
+
+  @Override
+  public String getAccountDomain(Journal journal, Company company) {
+    String validAccountTypes = "0";
+    String validAccounts = "0";
+
+    if (journal != null) {
+      validAccountTypes =
+          journal.getValidAccountTypeSet().stream()
+              .map(AccountType::getId)
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
+
+      if (StringUtils.isEmpty(validAccountTypes)) {
+        validAccountTypes = "0";
+      }
+
+      validAccounts =
+          journal.getValidAccountSet().stream()
+              .map(Account::getId)
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
+
+      if (StringUtils.isEmpty(validAccounts)) {
+        validAccounts = "0";
+      }
+    }
+
+    String domain =
+        String.format(
+            "self.statusSelect = %s AND (self.accountType.id IN (%s) OR self.id IN (%s))",
+            AccountRepository.STATUS_ACTIVE, validAccountTypes, validAccounts);
+
+    if (company != null) {
+      domain = domain.concat(String.format(" AND self.company.id = %d", company.getId()));
+    }
+
+    return domain;
   }
 }

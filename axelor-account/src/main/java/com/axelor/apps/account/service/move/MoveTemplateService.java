@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -40,4 +42,6 @@ public interface MoveTemplateService {
   boolean checkValidity(MoveTemplate moveTemplate);
 
   Map<String, Object> computeTotals(MoveTemplate moveTemplate);
+
+  String getAccountDomain(Journal journal, Company company);
 }

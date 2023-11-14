@@ -1,3 +1,30 @@
+## [6.5.21] (2023-11-09)
+
+#### Fixed
+
+* App Base: set company-specific product fields domain.
+* Accounting report: fixed an issue in Journal report (11) where debit and credit were not displayed in the recap by account table.
+* Fixed asset: fixed an issue after selecting a category where set depreciations for economic and ifrs were not computed correctly.
+* CRM: opening an event from custom view in prospect, leads or opportunity is now editable.
+* Custom accounting report: fixed legacy report option being displayed for all account report types.
+* Accounting dashboard: removed blank panel in "accounting details with invoice terms" dashboard.
+* Cost sheet: fixed issue in the order of calculation on bill of materials.
+* Configurator BOM: Fixed a concurrent error when generating a bill of materials from the same configurator.
+* Employee: to fix bank details error, moved the field to main employment contract panel.
+* Fixed asset: hide "isEqualToFiscalDepreciation" field when fiscal plan not selected.
+* FEC Import: prevent potential errors when using demo data config file.
+* Contract: fixed "NullPointerException" error when emptying the product on a contract line.
+* Manufacturing order: company is now required in the form view.
+* Sale order (Quotation): fixed "End of validity date" computation on copy.
+* Debt recovery: fixed balance due in debt recovery accounting batch.
+* Analytic: fixed display of analytic panel when it is not managed by account in sale order and purchase order.
+* Lead: prevent the user from editing the postal code when a city is filled to avoid inconsistencies.
+* CRM Event: when an event is created from CRM, correctly prefill "related to".
+* Move: added journal verification when we check duplicate origins.
+* Opportunity: company is now required in the form view.
+* Sale: hide 'Timetable templates' entry menu on config.
+* Maintenance: reset the status when duplicating a maintenance request.
+
 ## [6.5.20] (2023-10-27)
 
 #### Fixed
@@ -910,6 +937,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.21]: https://github.com/axelor/axelor-open-suite/compare/v6.5.20...v6.5.21
 [6.5.20]: https://github.com/axelor/axelor-open-suite/compare/v6.5.19...v6.5.20
 [6.5.19]: https://github.com/axelor/axelor-open-suite/compare/v6.5.18...v6.5.19
 [6.5.18]: https://github.com/axelor/axelor-open-suite/compare/v6.5.17...v6.5.18

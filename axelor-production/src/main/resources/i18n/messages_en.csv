@@ -741,6 +741,7 @@
 "The formula script to fill the qty returns null value. Please correct on prod product configurator id : %s.",,,
 "The formula script to fill the unit returns null value. Please correct on prod product configurator id : %s.",,,
 "The formula script to fill the work center returns null value. Please correct on prod process line configurator id : %s.",,,
+"The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM.",,,
 "The manufacturing order was canceled.",,,
 "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and same workshop stock location and with all bill of materials compatibles.",,,
 "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles.",,,
