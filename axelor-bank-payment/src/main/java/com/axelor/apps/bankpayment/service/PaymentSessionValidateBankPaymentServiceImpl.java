@@ -505,6 +505,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void createAndReconcileMoveLineFromPair(
       PaymentSession paymentSession,
       Move move,

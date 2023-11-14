@@ -267,11 +267,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+            offset++;
+
             this.processInvoiceTerm(
                 paymentSession,
                 invoiceTerm,
@@ -297,6 +298,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         && invoiceTermService.isNotAwaitingPayment(invoiceTerm);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
@@ -1007,6 +1009,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void createAndReconcileMoveLineFromPair(
       PaymentSession paymentSession,
       Move move,
@@ -1019,8 +1022,19 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     MoveLine moveLine = null;
 
-    MoveLine pairMoveLine =
-        Optional.ofNullable(pair).map(Pair::getLeft).map(InvoiceTerm::getMoveLine).orElse(null);
+    InvoiceTerm pairInvoiceTerm =
+        Optional.ofNullable(pair)
+            .map(Pair::getLeft)
+            .map(InvoiceTerm::getId)
+            .map(invoiceTermRepo::find)
+            .orElse(null);
+
+    if (pairInvoiceTerm == null) {
+      return;
+    }
+
+    MoveLine pairMoveLine = pairInvoiceTerm.getMoveLine();
+
     if (pairMoveLine == null) {
       return;
     }
@@ -1079,7 +1093,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     invoiceTermService.updateInvoiceTermsAmounts(
         invoiceTerm, pair.getRight(), invoiceTermsReconcile, pairMove, paymentSession, false);
     invoiceTermService.updateInvoiceTermsAmounts(
-        pair.getLeft(),
+        pairInvoiceTerm,
         pair.getRight(),
         invoiceTermsReconcile,
         invoiceTerm.getMoveLine().getMove(),
@@ -1099,7 +1113,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       InvoiceTerm invoiceTerm = moveLine.getInvoiceTermList().get(0);
 
-      BigDecimal newAmount = moveLine.getCurrencyAmount();
+      BigDecimal newAmount = moveLine.getCurrencyAmount().abs();
       BigDecimal amountPaid = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
 
       invoiceTerm.setAmountRemaining(newAmount.subtract(amountPaid));
