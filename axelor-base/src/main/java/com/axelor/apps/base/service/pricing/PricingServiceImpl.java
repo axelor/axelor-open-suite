@@ -41,6 +41,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,16 +155,18 @@ public class PricingServiceImpl implements PricingService {
   protected List<Pricing> appendFormulaFilter(List<Pricing> pricings, Model model) {
     Context scriptContext = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
-    try {
-      pricings =
-          pricings.stream()
-              .filter(p -> (Boolean) scriptHelper.eval(p.getFormula()))
-              .collect(Collectors.toList());
-    } catch (Exception e) {
-      TraceBackService.trace(e);
+    List<Pricing> filteredPricings = new ArrayList<>();
+    for (Pricing pricing : pricings) {
+      try {
+        if ((Boolean) scriptHelper.eval(pricing.getFormula())) {
+          filteredPricings.add(pricing);
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
     }
 
-    return pricings;
+    return filteredPricings;
   }
 
   @Override
