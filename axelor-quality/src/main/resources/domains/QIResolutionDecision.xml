@@ -19,6 +19,8 @@
       selection="quality.qi.resolution.decision.responsible.select" default="1"/>
     <many-to-one name="responsiblePartner" title="Responsible name"
       ref="com.axelor.apps.base.db.Partner" required="true"/>
+    <many-to-many ref="com.axelor.apps.quality.db.QiDecisionDistribution"
+      name="qiDecisionDistributionSet" title="Distributions"/>
     <string name="documentReference" title="Document reference"/>
     <decimal name="fixedAmount" title="Fixed amount"/>
     <decimal name="directCost" title="Direct cost"/>

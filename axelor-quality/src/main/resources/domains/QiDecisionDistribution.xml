@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QiDecisionDistribution">
+
+    <many-to-one name="qiResolution" title="Resolution"
+      ref="com.axelor.apps.quality.db.QIResolution" required="true" readonly="true"/>
+    <many-to-many ref="com.axelor.apps.quality.db.QIResolutionDecision"
+      name="qiResolutionDecisionSet" title="Decisions"/>
+    <string name="sequence" title="Sequence" readonly="true"/>
+    <many-to-one ref="com.axelor.apps.quality.db.QIDecision" name="qiDecision"
+      title="Decision" readonly="true"/>
+    <integer name="recipient" title="Recipient"
+      selection="quality.qi.resolution.decision.responsible.select" required="true"/>
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="recipientPartner"
+      title="Recipient name" required="true"/>
+    <string name="description" title="Description" large="true"/>
+    <string name="documentReference" title="Document reference"/>
+    <boolean name="answerRequired" title="Answer required" readonly="true"/>
+    <string name="answerComment" title="Answer comment" large="true"/>
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="answeredBy"
+      title="Answered by"/>
+    <datetime name="answeredOn" title="Answered on"/>
+    <many-to-one ref="com.axelor.dms.db.DMSFile" name="generatedFile"
+      title="Generated file"/>
+    <many-to-one ref="com.axelor.dms.db.DMSFile" name="distributionSent" title="Sent"
+      readonly="true"/>
+
+  </entity>
+
+</domain-models>
