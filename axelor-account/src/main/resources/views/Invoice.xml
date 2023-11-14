@@ -1318,6 +1318,7 @@ InvoiceSet.length > 0))"
         </viewer>
       </field>
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
+      <field name="amount" x-scale="currency.numberOfDecimals" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
           depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
