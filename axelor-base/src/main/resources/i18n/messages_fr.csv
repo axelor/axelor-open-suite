@@ -2056,7 +2056,7 @@
 "The webservice URL to retrieve exchange rate is not configured. Please select the method to retrieve exchange rates in the App Base configuration > Tab Interfaces > Panel Webservices","L'adresse URL du service web pour récupérer les taux de change n'est pas configurée. Veuillez sélectionner la méthode pour récupérer les taux de change dans la configuration de l'App Base > Onglet Interfaces > Panneau Services Web",,
 "The worth and quantity value of each class must be greater than 0.","La valeur et la quantité de chaque classe doivent être supérieures à 0.",,
 "There is a type error on parameters of the method '%s'.","Un type est incorrect dans les paramètres de la méthode '%s'.",,
-"There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'.","Il y a déjà un barème ayant le barème sélectionné comme barème précédent, pour la produit/catégorie '%s', la société '%s' et le modèle '%s'.",,
+"There is already a pricing that has the selected pricing as previous pricing, for the formula '%s', company '%s' and model '%s'.","Il y a déjà un barème ayant le barème sélectionné comme barème précédent, pour la formule '%s', la société '%s' et le modèle '%s'.",,
 "There is an archived partner with this name.","Il y a un tiers archivé avec ce nom.",,
 "There is no configured sequence for product","Aucune séquence configurée pour les produits",,
 "There is no configured sequence for the category","Aucune séquence configurée pour la catégorie de produits",,
