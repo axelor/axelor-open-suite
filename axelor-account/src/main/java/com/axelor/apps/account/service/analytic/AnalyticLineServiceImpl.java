@@ -238,7 +238,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     return false;
   }
 
-  private boolean checkAnalyticAxisPercentage(
+  protected boolean checkAnalyticAxisPercentage(
       AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
     return getAnalyticMoveLines(analyticLine, analyticAxis).size() == 1
         && getAnalyticMoveLineOnAxis(analyticLine, analyticAxis).count() == 1;
