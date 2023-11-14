@@ -222,7 +222,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   public boolean checkAnalyticLinesByAxis(AnalyticLine analyticLine, int position, Company company)
       throws AxelorException {
     if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
-      this.resetAxisAnalyticAccount(analyticLine);
       return false;
     }
 
