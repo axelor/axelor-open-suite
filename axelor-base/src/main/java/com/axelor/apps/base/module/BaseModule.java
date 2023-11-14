@@ -187,6 +187,8 @@ import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.base.service.pdf.PdfServiceImpl;
 import com.axelor.apps.base.service.pdf.PdfSignatureService;
 import com.axelor.apps.base.service.pdf.PdfSignatureServiceImpl;
+import com.axelor.apps.base.service.pricing.PricingGroupService;
+import com.axelor.apps.base.service.pricing.PricingGroupServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.pricing.PricingServiceImpl;
 import com.axelor.apps.base.service.print.PrintHtmlGenerationService;
@@ -349,6 +351,7 @@ public class BaseModule extends AxelorModule {
         .to(ProductCategoryDomainCreatorServiceImpl.class);
     bind(FileSourceConnectorService.class).to(FileSourceConnectorServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
+    bind(PricingGroupService.class).to(PricingGroupServiceImpl.class);
     bind(PricedOrderDomainService.class).to(PricedOrderDomainServiceImpl.class);
     bind(InternationalService.class).to(InternationalServiceImpl.class);
     bind(SequenceVersionGeneratorService.class).to(SequenceVersionGeneratorServiceImpl.class);
