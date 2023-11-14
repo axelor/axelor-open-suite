@@ -770,6 +770,7 @@
 "Emails",,,
 "Employee","Salarié",,
 "Enable multi-company management","Activer la gestion multi sociétés",,
+"Enable tax numbers","Activer les numéros de TVA",,
 "Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)","Activer la possibilité de regrouper les lignes par produits dans les générations de documents d'impression (devis de vente, commandes d'achat, mouvements de stocks, factures)",,
 "Enable trading names management","Activer la gestion des enseignes commerciales",,
 "End Date","Date de fin",,
