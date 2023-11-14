@@ -453,12 +453,17 @@
       <panel name="contentPanel" title="Content">
 
         <panel-related name="detailLinesPanel" title="Details Lines"
-          readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
-          form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence"
+          readonlyIf="clientPartner ==
+          null" colSpan="12" height="30"
+          field="saleOrderLineList" form-view="sale-order-line-form"
+          grid-view="sale-order-line-grid" orderBy="sequence"
           onChange="action-sale-order-method-on-line-change"
-          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          canMove="true" if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited)
+          || statusSelect == 4)"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3
+          &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canMove="true"
+          if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
 
         <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
           height="30" widget="MasterDetail" form-view="sale-order-line-form"
@@ -469,7 +474,17 @@
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           title="Details Lines" orderBy="sequence"
           onChange="action-sale-order-method-on-line-change" onClick="action-orderSaleLine-tree"
-          canMove="true" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+          canMove="true" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
+
+        <panel-related name="editableDetailLinesPanel" title="Details Lines"
+          readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
+          form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
+          orderBy="sequence"
+          onChange="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited)
+          || statusSelect == 4)"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canMove="true" if="__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
@@ -1468,6 +1483,7 @@
     <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
+    <action name="action-sale-order-attrs-set-line-field-scale"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -2283,6 +2299,11 @@
           || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
   </action-attrs>
 
-
+  <action-attrs name="action-sale-order-attrs-set-line-field-scale">
+    <attribute for="saleOrderLineList.qty" name="scale"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute for="saleOrderLineList.price" name="scale"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
 
 </object-views>

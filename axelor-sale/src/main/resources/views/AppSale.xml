@@ -27,6 +27,7 @@
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
+      <field name="isEditableGridEnabled" widget="boolean-switch"/>
       <panel name="pricingScalePanel" colSpan="12">
         <field name="enablePricingScale" widget="boolean-switch"/>
         <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
