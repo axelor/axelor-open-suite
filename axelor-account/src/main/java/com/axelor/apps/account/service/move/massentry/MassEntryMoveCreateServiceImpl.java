@@ -153,6 +153,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         newMove.getMoveLineList().add(newMoveLine);
 
         newMoveLine.setTaxLine(moveLine.getTaxLine());
+        newMoveLine.setSourceTaxLine(moveLine.getSourceTaxLine());
 
         moveLineComputeAnalyticService.generateAnalyticMoveLines(newMoveLine);
         moveLineMassEntryRecordService.setAnalytics(newMoveLine, moveLine);
@@ -261,6 +262,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         }
         massEntryLine.setFieldsErrorList(null);
         MoveLineMassEntry copy = moveLineMassEntryRepository.copy(massEntryLine, false);
+        copy.setSourceTaxLine(massEntryLine.getSourceTaxLine());
         moveLineToolService.setDecimals(copy, move);
         moveLineMassEntryRecordService.fillAnalyticMoveLineList(massEntryLine, copy);
 
