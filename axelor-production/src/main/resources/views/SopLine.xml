@@ -151,7 +151,7 @@
 
   <action-validate name="action-mrp-forecast-validate-check-forecast-date">
     <error message="Please enter valid forecast date"
-      if="forecastDate &amp;&amp; __parent__ &amp;&amp; (forecastDate.isBefore(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.fromDate) || forecastDate.isAfter(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.toDate))"
+      if="forecastDate &amp;&amp; __parent__ &amp;&amp; __parent__?._model == 'com.axelor.utils.db.Wizard' &amp;&amp; (forecastDate.isBefore(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.fromDate) || forecastDate.isAfter(__repo__(Period).find(__parent__?._sopLine?.period?.id)?.toDate))"
       action="action-mrp-forecast-record-reset-forecast-date"/>
   </action-validate>
 
