@@ -204,6 +204,7 @@
 "Enable business configurator",,,
 "Enable calculation of the entire quotation using pricing",,,
 "Enable customer catalog management",,,
+"Enable editable grid",,,
 "Enable pricing scale",,,
 "Enable product description copy",,,
 "End date",,,
