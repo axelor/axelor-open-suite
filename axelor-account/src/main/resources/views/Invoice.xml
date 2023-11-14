@@ -958,13 +958,9 @@ InvoiceSet.length > 0))"
         </viewer>
       </field>
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
-      <field name="amount" x-scale="currency.numberOfDecimals" hidden="true"/>
-      <field name="financialDiscountTotalAmount" x-scale="currency.numberOfDecimals"
-        hidden="true"/>
-      <field name="financialDiscountAmount" x-scale="currency.numberOfDecimals" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+          depends="typeSelect,statusSelect,id,paymentDate,amount,totalAmountWithFinancialDiscount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
 				<>
 					<Box d="flex" flexDirection="column">
@@ -983,7 +979,7 @@ InvoiceSet.length > 0))"
 									{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
 								</dt>
-								{typeSelect == 8 ? <dd>{currency.symbol} {$fmt('amount')}</dd> : <dd>-{currency.symbol} {$fmt('amount')}</dd>}
+								{typeSelect == 8 ? <dd>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</dd> : <dd>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</dd>}
 							</Box>
 						</Box>
 
@@ -1002,8 +998,8 @@ InvoiceSet.length > 0))"
 										{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 										<span>{$fmt('paymentDate')}</span>
 									</dt>
-									{financialDiscountTaxAmount > 0 && <dd>-{currency.symbol} {$fmt('financialDiscountTotalAmount')}</dd>}
-									{financialDiscountTaxAmount == 0 && <dd>-{currency.symbol} {$fmt('financialDiscountAmount')}</dd>}
+									{financialDiscountTaxAmount > 0 && <dd>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</dd>}
+									{financialDiscountTaxAmount == 0 && <dd>-{currency.symbol} {parseFloat(financialDiscountAmount).toFixed(currency.numberOfDecimals)}</dd>}
 								</Box>
 							</Box>
 						}
@@ -1318,10 +1314,9 @@ InvoiceSet.length > 0))"
         </viewer>
       </field>
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
-      <field name="amount" x-scale="currency.numberOfDecimals" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
 					<>
 						<Box as="dl" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
@@ -1339,7 +1334,7 @@ InvoiceSet.length > 0))"
 									{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
 								</dt>
-								{typeSelect == 8 ? <dd>{currency.symbol} {$fmt('amount')}</dd> : <dd>-{currency.symbol} {$fmt('amount')}</dd>}
+								{typeSelect == 8 ? <dd>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</dd> : <dd>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</dd>}
 							</Box>
 						</Box>
 					</>

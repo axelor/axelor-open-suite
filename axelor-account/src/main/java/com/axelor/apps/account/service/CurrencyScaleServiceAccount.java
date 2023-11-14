@@ -2,6 +2,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -31,6 +32,10 @@ public interface CurrencyScaleServiceAccount {
 
   BigDecimal getCompanyScaledValue(InvoiceLine invoiceLine, BigDecimal amount);
 
+  BigDecimal getScaledValue(InvoicePayment invoicePayment, BigDecimal amount);
+
+  BigDecimal getCompanyScaledValue(InvoicePayment invoicePayment, BigDecimal amount);
+
   int getScale(Move move);
 
   int getCompanyScale(Move move);
@@ -50,6 +55,10 @@ public interface CurrencyScaleServiceAccount {
   int getScale(InvoiceTerm invoiceTerm);
 
   int getCompanyScale(InvoiceTerm invoiceTerm);
+
+  int getScale(InvoicePayment invoicePayment);
+
+  int getCompanyScale(InvoicePayment invoicePayment);
 
   int getScale(Currency currency);
 

@@ -2,6 +2,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -72,6 +73,20 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getScaledValue(InvoicePayment invoicePayment, BigDecimal amount) {
+    return invoicePayment.getInvoice() != null
+        ? this.getScaledValue(invoicePayment.getInvoice(), amount)
+        : this.getScaledValue(amount);
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(InvoicePayment invoicePayment, BigDecimal amount) {
+    return invoicePayment.getInvoice() != null
+        ? this.getCompanyScaledValue(invoicePayment.getInvoice(), amount)
+        : this.getScaledValue(invoicePayment.getMove(), amount);
+  }
+
+  @Override
   public int getScale(Move move) {
     return this.getScale(move.getCurrency());
   }
@@ -123,6 +138,18 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   @Override
   public int getCompanyScale(InvoiceTerm invoiceTerm) {
     return this.getCompanyScale(invoiceTerm.getCompany());
+  }
+
+  @Override
+  public int getScale(InvoicePayment invoicePayment) {
+    return this.getScale(invoicePayment.getCurrency());
+  }
+
+  @Override
+  public int getCompanyScale(InvoicePayment invoicePayment) {
+    return invoicePayment.getInvoice() != null
+        ? this.getCompanyScale(invoicePayment.getInvoice())
+        : this.getCompanyScale(invoicePayment.getMove());
   }
 
   @Override

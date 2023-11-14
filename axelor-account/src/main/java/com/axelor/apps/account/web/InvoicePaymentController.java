@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
@@ -259,6 +260,9 @@ public class InvoicePaymentController {
                 .computeFromInvoiceTermPayments(invoicePayment);
             amount = amount.add(invoicePayment.getFinancialDiscountTotalAmount());
           }
+
+          amount =
+              Beans.get(CurrencyScaleServiceAccount.class).getScaledValue(invoicePayment, amount);
 
           invoicePayment.clearInvoiceTermPaymentList();
           Beans.get(InvoiceTermPaymentService.class)
