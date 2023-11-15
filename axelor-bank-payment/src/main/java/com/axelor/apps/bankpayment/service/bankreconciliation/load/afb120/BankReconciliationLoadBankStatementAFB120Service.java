@@ -22,10 +22,13 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadBankStatementAbstractService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -34,23 +37,36 @@ import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadService {
+public class BankReconciliationLoadBankStatementAFB120Service
+    extends BankReconciliationLoadBankStatementAbstractService {
 
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
+  protected BankStatementLineFilterService bankStatementLineFilterService;
+  protected BankReconciliationLineService bankReconciliationLineService;
 
   @Inject
-  public BankReconciliationLoadAFB120Service(
-      BankReconciliationLineService bankReconciliationLineService,
-      BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
-
-    super(bankReconciliationLineService);
-
+  public BankReconciliationLoadBankStatementAFB120Service(
+      BankReconciliationRepository bankReconciliationRepository,
+      BankReconciliationService bankReconciliationService,
+      BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
+      BankStatementLineFilterService bankStatementLineFilterService,
+      BankReconciliationLineService bankReconciliationLineService) {
+    super(bankReconciliationRepository, bankReconciliationService);
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
+    this.bankStatementLineFilterService = bankStatementLineFilterService;
+    this.bankReconciliationLineService = bankReconciliationLineService;
   }
 
   @Transactional
   public void loadBankStatement(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
+
+    setBalance(bankReconciliation, includeBankStatement);
+
+    this.loadBankStatementLines(bankReconciliation, includeBankStatement);
+  }
+
+  protected void setBalance(BankReconciliation bankReconciliation, boolean includeBankStatement) {
     BankStatementLine initialBalanceBankStatementLine =
         getInitialBalanceBankStatementLine(bankReconciliation, includeBankStatement);
     BankStatementLine finalBalanceBankStatementLine =
@@ -68,12 +84,10 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
               .getCredit()
               .subtract(finalBalanceBankStatementLine.getDebit()));
     }
-
-    this.loadBankStatementLines(bankReconciliation, includeBankStatement);
   }
 
   @Transactional
-  public void loadBankStatementLines(
+  protected void loadBankStatementLines(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     List<BankStatementLineAFB120> bankStatementLineList =
@@ -89,32 +103,13 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
     }
   }
 
-  /**
-   * Write the filter for the bank statement line query, depending on boolean parameters. Add a
-   * filter on lineTypeSelect compared to version from super.
-   *
-   * @param includeOtherBankStatements whether we include other bank statement.
-   * @param includeBankStatement whether we include the bank statement given in parameter. this
-   *     parameter cannot be false if includeOtherBankstatements is false.
-   * @return the filter.
-   */
-  protected String getBankStatementLinesFilter(
-      boolean includeOtherBankStatements,
-      boolean includeBankStatement,
-      boolean isLineTypeMovement) {
-
-    return super.getBankStatementLinesFilter(
-            includeOtherBankStatements, includeBankStatement, isLineTypeMovement)
-        + " and self.lineTypeSelect = :lineTypeSelect";
-  }
-
   protected List<BankStatementLineAFB120> getBankStatementLinesAFB120(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
     String queryFilter =
-        getBankStatementLinesFilter(
-            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, true);
+        bankStatementLineFilterService.getBankStatementLinesAFB120FilterWithAmountToReconcile(
+            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement);
     Query<BankStatementLineAFB120> bankStatementLinesQuery =
         JPA.all(BankStatementLineAFB120.class)
             .bind("bankDetails", bankReconciliation.getBankDetails())
@@ -140,8 +135,8 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
 
     return JPA.all(BankStatementLineAFB120.class)
         .filter(
-            getBankStatementLinesFilter(
-                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, false))
+            bankStatementLineFilterService.getBankStatementLinesAFB120Filter(
+                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
         .bind("bankDetails", bankReconciliation.getBankDetails())
         .bind("currency", bankReconciliation.getCurrency())
         .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
@@ -160,8 +155,8 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
 
     return JPA.all(BankStatementLineAFB120.class)
         .filter(
-            getBankStatementLinesFilter(
-                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, false))
+            bankStatementLineFilterService.getBankStatementLinesAFB120Filter(
+                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
         .bind("bankDetails", bankReconciliation.getBankDetails())
         .bind("currency", bankReconciliation.getCurrency())
         .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
