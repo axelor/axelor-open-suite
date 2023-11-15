@@ -77,6 +77,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -87,7 +88,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
-      MoveLineControlService moveLineControlService) {
+      MoveLineControlService moveLineControlService,
+      MoveLineTaxService moveLineTaxService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -96,6 +98,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   @Override
@@ -159,6 +162,8 @@ public class MoveLineServiceImpl implements MoveLineService {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_NO_SELECTED));
     }
+
+    moveLineTaxService.checkEmptyTaxLines(moveLineList);
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
         getPopulatedReconcilableMoveLineMap(moveLineList);

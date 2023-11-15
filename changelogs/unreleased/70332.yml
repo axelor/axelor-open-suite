@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix set description on move when we validate an invoice"
+type: fix

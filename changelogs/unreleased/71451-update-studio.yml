@@ -1,5 +1,0 @@
----
-title: "App builder: update studio dependency to 1.0.5 to get the following fix:"
-type: fix
-description: |
-  "- fixed NPE upon save of a custom model with a menu"

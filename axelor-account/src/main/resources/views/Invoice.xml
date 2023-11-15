@@ -1838,7 +1838,7 @@ InvoiceSet.length > 0))"
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     <field name="currency" expr="eval: partner?.currency"
-      if="eval: invoiceLineList?.isEmpty()"/>
+      if="eval: invoiceLineList?.isEmpty() &amp;&amp; partner"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
