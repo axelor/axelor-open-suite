@@ -45,5 +45,8 @@ public interface AnalyticLineService {
 
   AnalyticLine printAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
 
+  boolean checkAnalyticLinesByAxis(AnalyticLine analyticLine, int position, Company company)
+      throws AxelorException;
+
   List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis);
 }
