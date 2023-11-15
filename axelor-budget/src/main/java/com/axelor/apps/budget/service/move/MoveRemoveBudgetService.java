@@ -77,7 +77,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
   @Transactional(rollbackOn = {Exception.class})
   public void deleteMove(Move move) {
     budgetService.updateBudgetLinesFromMove(move, true);
-    moveRepo.remove(move);
+    super.deleteMove(move);
   }
 
   /**

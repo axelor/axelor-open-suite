@@ -483,7 +483,6 @@
 			configBom += "${cb.useCondition}"
 		}
 		configBom += """</useCondition>
-		<billOfMaterialId>${cb.billOfMaterialId}</billOfMaterialId>
 	</configurator-bom>"""
 			cb.configuratorBomList?.each( { childCb ->
 				configBom = retrieveConfiguratorBomWithChildren2( index+1, childCb )

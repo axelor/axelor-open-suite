@@ -17,9 +17,6 @@
     type="com.axelor.apps.bankpayment.db.BankStatementQuery" search="self.importId = :importId">
   </input>
 
-  <input file="bankpayment_bankPaymentConfig.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankPaymentConfig" search="self.importId = :importId"/>
-
   <input file="base_birtTemplateConfigLine.csv"
     type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
     search="self.importId = :importId">
