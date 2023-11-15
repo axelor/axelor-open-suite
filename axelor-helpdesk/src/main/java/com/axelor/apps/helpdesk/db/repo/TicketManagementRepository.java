@@ -28,6 +28,8 @@ import com.google.inject.Inject;
 public class TicketManagementRepository extends TicketRepository {
 
   @Inject private TicketService ticketService;
+
+  @Inject private TicketStatusRepository ticketStatusRepository;
   @Inject private AppBaseService appBaseService;
 
   @Override
@@ -46,7 +48,7 @@ public class TicketManagementRepository extends TicketRepository {
   @Override
   public Ticket copy(Ticket entity, boolean deep) {
     Ticket copy = super.copy(entity, deep);
-    copy.setTicketStatus(null);
+    copy.setTicketStatus(ticketStatusRepository.findDefaultStatus());
     copy.setProgressSelect(null);
     copy.setStartDateT(appBaseService.getTodayDateTime().toLocalDateTime());
     copy.setTicketSeq(null);

@@ -16,7 +16,6 @@
     <view type="form" name="ticket-form"/>
     <view type="calendar" name="ticket-calendar"/>
     <view-param name="search-filters" value="ticket-filters"/>
-    <domain>self.statusSelect in (0,1)</domain>
     <context name="_user" expr="eval: __user__"/>
   </action-view>
 
