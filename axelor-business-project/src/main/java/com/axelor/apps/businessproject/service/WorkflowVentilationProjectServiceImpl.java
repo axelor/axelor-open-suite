@@ -55,9 +55,9 @@ import com.google.inject.persist.Transactional;
 public class WorkflowVentilationProjectServiceImpl
     extends WorkflowVentilationServiceSupplychainImpl {
 
-  private InvoicingProjectRepository invoicingProjectRepo;
+  protected InvoicingProjectRepository invoicingProjectRepo;
 
-  private TimesheetLineRepository timesheetLineRepo;
+  protected TimesheetLineRepository timesheetLineRepo;
 
   @Inject
   public WorkflowVentilationProjectServiceImpl(
