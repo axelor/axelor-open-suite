@@ -39,16 +39,8 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
     Objects.requireNonNull(fixedAsset);
     FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
     if (isFailOver(fixedAsset) && fixedAssetCategory != null) {
-      if (fixedAsset.getAlreadyDepreciatedAmount() != null
-          && fixedAsset.getAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue()) > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(
-                AccountExceptionMessage
-                    .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
-      }
-      if (fixedAsset.getFiscalAlreadyDepreciatedAmount() != null
-          && fixedAsset.getFiscalAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
+      if (fixedAsset.getImportAlreadyDepreciatedAmount() != null
+          && fixedAsset.getImportAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
               > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -56,8 +48,21 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
                 AccountExceptionMessage
                     .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
       }
-      if (fixedAsset.getIfrsAlreadyDepreciatedAmount() != null
-          && fixedAsset.getIfrsAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
+      if (fixedAsset.getImportFiscalAlreadyDepreciatedAmount() != null
+          && fixedAsset
+                  .getImportFiscalAlreadyDepreciatedAmount()
+                  .compareTo(fixedAsset.getGrossValue())
+              > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                AccountExceptionMessage
+                    .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
+      }
+      if (fixedAsset.getImportIfrsAlreadyDepreciatedAmount() != null
+          && fixedAsset
+                  .getImportIfrsAlreadyDepreciatedAmount()
+                  .compareTo(fixedAsset.getGrossValue())
               > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -71,6 +76,6 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
   @Override
   public boolean isFailOver(FixedAsset fixedAsset) {
     return fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT
-        && fixedAsset.getFailoverDate() != null;
+        && fixedAsset.getImportDepreciationDate() != null;
   }
 }
