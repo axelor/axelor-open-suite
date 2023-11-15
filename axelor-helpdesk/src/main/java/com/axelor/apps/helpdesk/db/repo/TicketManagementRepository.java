@@ -41,11 +41,12 @@ public class TicketManagementRepository extends TicketRepository {
     TicketService ticketService = Beans.get(TicketService.class);
     try {
       ticketService.computeSeq(ticket);
+      ticketService.computeSLAAndDeadLine(ticket);
+      ticketService.checkSLAcompleted(ticket);
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
     }
-    ticketService.computeSLA(ticket);
-    ticketService.checkSLAcompleted(ticket);
+
     return super.save(ticket);
   }
 

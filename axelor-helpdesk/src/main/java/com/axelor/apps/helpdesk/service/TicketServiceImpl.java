@@ -93,73 +93,41 @@ public class TicketServiceImpl implements TicketService {
    * is defined in SLA.
    */
   @Override
-  public void computeSLA(Ticket ticket) {
+  public Sla computeSLA(Ticket ticket) {
 
     AppHelpdesk helpdesk = appHelpdeskRepo.all().fetchOne();
-
+    Sla sla = null;
     if (helpdesk.getIsSla()) {
 
-      Sla sla =
+      sla =
           slaRepo
               .all()
               .filter(
-                  "self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = ?3",
+                  "self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = ?3 OR "
+                      + "(self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = null OR "
+                      + "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = ?3) OR "
+                      + "(self.team = ?1 AND self.prioritySelect = null AND self.ticketType = ?3)) OR "
+                      + "(self.team = ?1 AND self.prioritySelect = null AND self.ticketType = null OR "
+                      + "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = null) OR "
+                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = ?3)) OR "
+                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = null)",
                   ticket.getAssignedToUser() == null
                       ? null
                       : ticket.getAssignedToUser().getActiveTeam(),
                   ticket.getPrioritySelect(),
                   ticket.getTicketType())
               .fetchOne();
+    }
+    ticket.setSlaPolicy(sla);
+    return sla;
+  }
 
-      if (sla == null) {
-        sla =
-            slaRepo
-                .all()
-                .filter(
-                    "self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = null OR "
-                        + "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = ?3) OR "
-                        + "(self.team = ?1 AND self.prioritySelect = null AND self.ticketType = ?3)",
-                    ticket.getAssignedToUser() == null
-                        ? null
-                        : ticket.getAssignedToUser().getActiveTeam(),
-                    ticket.getPrioritySelect(),
-                    ticket.getTicketType())
-                .fetchOne();
-      }
-      if (sla == null) {
-        sla =
-            slaRepo
-                .all()
-                .filter(
-                    "self.team = ?1 AND self.prioritySelect = null AND self.ticketType = null OR "
-                        + "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = null) OR "
-                        + "(self.team = null AND self.prioritySelect = null AND self.ticketType = ?3)",
-                    ticket.getAssignedToUser() == null
-                        ? null
-                        : ticket.getAssignedToUser().getActiveTeam(),
-                    ticket.getPrioritySelect(),
-                    ticket.getTicketType())
-                .fetchOne();
-      }
-      if (sla == null) {
-        sla =
-            slaRepo
-                .all()
-                .filter(
-                    "self.team = null AND self.prioritySelect = null AND self.ticketType = null")
-                .fetchOne();
-      }
-      if (sla != null) {
-        ticket.setSlaPolicy(sla);
-        try {
-          this.computeDuration(ticket, sla);
-        } catch (AxelorException e) {
-          e.printStackTrace();
-        }
-      } else {
+  @Override
+  public void computeSLAAndDeadLine(Ticket ticket) throws AxelorException {
+    Sla sla = computeSLA(ticket);
 
-        ticket.setSlaPolicy(null);
-      }
+    if (sla != null) {
+      this.computeDeadLine(ticket, sla);
     }
   }
 
@@ -170,7 +138,7 @@ public class TicketServiceImpl implements TicketService {
    * @param sla
    * @throws AxelorException
    */
-  protected void computeDuration(Ticket ticket, Sla sla) throws AxelorException {
+  protected void computeDeadLine(Ticket ticket, Sla sla) throws AxelorException {
 
     if (sla.getIsWorkingDays()
         && ticket.getAssignedToUser() != null
