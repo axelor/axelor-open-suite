@@ -44,7 +44,13 @@ public class SaleOrderLineController {
   public void setProductAccount(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      SaleOrder saleOrder;
+
+      if (SaleOrder.class.equals(request.getContext().getParent().getContextClass())) {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      } else {
+        saleOrder = saleOrderLine.getSaleOrder();
+      }
 
       if (saleOrderLine.getProduct() == null) {
         response.setValue("account", null);
