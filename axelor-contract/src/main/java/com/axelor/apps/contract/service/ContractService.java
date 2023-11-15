@@ -168,4 +168,6 @@ public interface ContractService {
   Contract getNextContract(Contract contract) throws AxelorException;
 
   void setInitialPriceOnContractLines(Contract contract);
+
+  boolean controlDate(Contract contract);
 }

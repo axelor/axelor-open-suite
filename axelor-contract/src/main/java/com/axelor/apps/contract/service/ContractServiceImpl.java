@@ -893,4 +893,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     contractRepository.save(contract);
   }
+
+  @Override
+  public boolean controlDate(Contract contract) {
+    if (contract.getInvoicePeriodStartDate() == null || contract.getInvoicePeriodEndDate() == null)
+      return false;
+    return contract.getInvoicePeriodStartDate().isAfter(contract.getInvoicePeriodEndDate());
+  }
 }

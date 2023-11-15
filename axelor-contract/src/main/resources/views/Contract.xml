@@ -20,7 +20,8 @@
 
   <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
     width="large" readonlyIf="statusSelect == 3" onNew="action-contract-group-on-new"
-    onLoad="action-contract-group-on-load" onSave="action-contract-method-is-valid">
+    onLoad="action-contract-group-on-load"
+    onSave="action-contract-method-is-valid,action-contract-method-date-check">
     <toolbar>
       <button name="printContractBtn" title="Print" hidden="true" icon="fa-print"
         onClick="notImplementedYet"/>
@@ -186,10 +187,12 @@
         showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
         <field name="invoicePeriodStartDate"
           showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"
-          requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"/>
+          requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"
+          onChange="action-contract-method-date-check"/>
         <field name="invoicePeriodEndDate" showIf="currentContractVersion.isPeriodicInvoicing"
           colSpan="4"
-          requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"/>
+          requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"
+          onChange="action-contract-method-date-check"/>
         <field name="invoicingDate" colSpan="4"/>
         <button name="invoicingBtn" title="Invoicing"
           showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
@@ -619,6 +622,11 @@
     <action name="action-contract-attrs-partner-payment-config"/>
     <action name="action-contract-method-fill-invoiced-partner-if-only-one"/>
   </action-group>
+
+
+  <action-method name="action-contract-method-date-check">
+    <call class="com.axelor.apps.contract.web.ContractController" method="checkDate"/>
+  </action-method>
 
   <search-filters name="contract-filters"
     model="com.axelor.apps.contract.db.Contract" title="Contract filters">
