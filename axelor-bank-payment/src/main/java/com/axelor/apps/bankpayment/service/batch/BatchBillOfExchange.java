@@ -21,12 +21,14 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -42,6 +44,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -53,12 +56,15 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +84,7 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected MoveLineService moveLineService;
   protected MoveValidateService moveValidateService;
   protected AccountingBatchRepository accountingBatchRepository;
+  protected InvoiceTermRepository invoiceTermRepo;
 
   @Inject
   public BatchBillOfExchange(
@@ -92,7 +99,8 @@ public class BatchBillOfExchange extends AbstractBatch {
       ReconcileService reconcileService,
       MoveLineService moveLineService,
       MoveValidateService moveValidateService,
-      AccountingBatchRepository accountingBatchRepository) {
+      AccountingBatchRepository accountingBatchRepository,
+      InvoiceTermRepository invoiceTermRepo) {
     super();
     this.invoiceRepository = invoiceRepository;
     this.appAccountService = appAccountService;
@@ -106,6 +114,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     this.moveLineService = moveLineService;
     this.moveValidateService = moveValidateService;
     this.accountingBatchRepository = accountingBatchRepository;
+    this.invoiceTermRepo = invoiceTermRepo;
   }
 
   @Override
@@ -169,10 +178,14 @@ public class BatchBillOfExchange extends AbstractBatch {
     }
     AccountConfig accountConfig =
         accountConfigService.getAccountConfig(accountingBatch.getCompany());
-    Move move = createLCRAccountMove(invoice, accountConfig, accountingBatch);
-    moveValidateService.accounting(move);
-    reconcilesMoves(move, invoice.getMove(), invoice);
-    updateInvoice(invoice, move, accountConfig);
+    Move placementMove = createLCRAccountMove(invoice, accountConfig, accountingBatch);
+    moveValidateService.accounting(placementMove);
+    List<InvoiceTerm> newInvoiceTermList = new ArrayList<>();
+    List<InvoiceTerm> invoiceTermListToRemove = new ArrayList<>();
+    copyInvoiceTerms(invoice, placementMove, newInvoiceTermList, invoiceTermListToRemove);
+    reconcilesMoves(placementMove, invoice.getMove(), invoice);
+    updateInvoice(invoice, placementMove, accountConfig);
+    replaceInvoiceTerms(invoice, newInvoiceTermList, invoiceTermListToRemove);
   }
 
   /**
@@ -215,6 +228,8 @@ public class BatchBillOfExchange extends AbstractBatch {
         reconcileService.createReconcile(
             debitMoveLine, creditMoveLine, creditMoveLine.getCredit(), false);
     reconcileService.confirmReconcile(reconcile, false, false);
+
+    updateInvoiceTerms(creditMoveLine, debitMoveLine);
   }
 
   /**
@@ -262,6 +277,7 @@ public class BatchBillOfExchange extends AbstractBatch {
             null,
             invoice.getCompanyBankDetails());
     if (move != null) {
+      move.setPaymentCondition(invoice.getPaymentCondition());
 
       LocalDate todayDate = this.appBaseService.getTodayDate(invoice.getCompany());
       MoveLine creditMoveLine =
@@ -369,5 +385,69 @@ public class BatchBillOfExchange extends AbstractBatch {
 
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
+  }
+
+  protected void copyInvoiceTerms(
+      Invoice invoice,
+      Move move,
+      List<InvoiceTerm> newInvoiceTermList,
+      List<InvoiceTerm> invoiceTermListToRemove) {
+    if (ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return;
+    }
+
+    MoveLine newDebitMoveLine =
+        move.getMoveLineList().stream()
+            .filter(dml -> dml.getDebit().signum() != 0)
+            .findFirst()
+            .orElse(null);
+    if (!ObjectUtils.isEmpty(newDebitMoveLine.getInvoiceTermList())) {
+      newInvoiceTermList.addAll(newDebitMoveLine.getInvoiceTermList());
+    }
+
+    List<InvoiceTerm> invoiceTermList =
+        invoice.getInvoiceTermList().stream()
+            .filter(it -> !it.getIsPaid() && it.getAmountRemaining().signum() > 0)
+            .collect(Collectors.toList());
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      invoiceTermListToRemove.addAll(invoiceTermList);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void replaceInvoiceTerms(
+      Invoice invoice,
+      List<InvoiceTerm> newInvoiceTermList,
+      List<InvoiceTerm> invoiceTermListToRemove) {
+    if (ObjectUtils.isEmpty(newInvoiceTermList) || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
+      return;
+    }
+    invoice.clearInvoiceTermList();
+    for (InvoiceTerm invoiceTerm : newInvoiceTermList) {
+      invoice.addInvoiceTermListItem(invoiceTerm);
+    }
+
+    for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
+      invoice.removeInvoiceTermListItem(invoiceTerm);
+      invoiceTerm.setInvoice(null);
+    }
+  }
+
+  protected void updateInvoiceTerms(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+    updateAmounts(creditMoveLine.getInvoiceTermList());
+    updateAmounts(debitMoveLine.getInvoiceTermList());
+  }
+
+  protected void updateAmounts(List<InvoiceTerm> invoiceTermList) {
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        MoveLine moveLine = invoiceTerm.getMoveLine();
+        moveLine.setAmountRemaining(
+            moveLine.getAmountRemaining().subtract(invoiceTerm.getAmountRemaining()));
+        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+        invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
+        invoiceTerm.setIsPaid(true);
+      }
+    }
   }
 }
