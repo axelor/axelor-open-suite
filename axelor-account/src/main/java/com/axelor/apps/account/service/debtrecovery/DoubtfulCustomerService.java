@@ -414,10 +414,10 @@ public class DoubtfulCustomerService {
                 + "AND self.account <> :doubtfulCustomerAccount ");
 
     if (isReject) {
-      query.append("self.move.functionalOriginSelect = :functionalOriginSale");
-    } else {
       query.append(
           "self.invoiceReject IS NOT NULL AND self.invoiceReject.operationTypeSelect = :operationTypeSale");
+    } else {
+      query.append("self.move.functionalOriginSelect = :functionalOriginSale");
     }
 
     return moveLineRepo
