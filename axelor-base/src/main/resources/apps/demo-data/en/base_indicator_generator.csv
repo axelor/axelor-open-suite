@@ -1,5 +1,5 @@
 "name","requestLanguage","request","result"
-"Number of purchase orders",1,"SELECT COUNT(*) FROM PurchaseOrder",9
+"Number of purchase orders",1,"SELECT COUNT(*) as result FROM PurchaseOrder",9
 "Number of delivery orders",1,"SELECT COUNT(*) FROM StockMove WHERE typeSelect = 2",7
 "Number of goods receipts",1,"SELECT COUNT(*) FROM StockMove WHERE typeSelect = 3",5
 "Number of customer invoices",1,"SELECT COUNT(*) FROM Invoice WHERE operationTypeSelect = 3",7
