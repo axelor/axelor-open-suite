@@ -25,7 +25,13 @@
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true"/>
+            readonly="true" x-currency="$currencySymbol">
+            <viewer depends="budgetDistributionSumAmount">
+              <![CDATA[
+				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+              ]]>
+            </viewer>
+          </field>
           <field name="budget"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
