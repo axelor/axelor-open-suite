@@ -1269,8 +1269,8 @@ InvoiceSet.length > 0))"
 
     <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6">
       <field name="currency.symbol" hidden="true"/>
-      <field name="exTaxTotal" x-currency="currency.symbol"/>
-      <field name="taxTotal" x-currency="currency.symbol"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
         <viewer depends="exTaxTotal,taxTotal,inTaxTotal">
         	<![CDATA[
