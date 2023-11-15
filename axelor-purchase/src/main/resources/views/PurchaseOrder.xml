@@ -325,6 +325,7 @@
     </panel>
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
+      <field name="currency.symbol" hidden="true"/>
       <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
       <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
       <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
@@ -435,8 +436,8 @@
     <field name="externalReference"/>
     <field name="supplierPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-currency="currency.symbol"/>
+    <field name="inTaxTotal" x-currency="currency.symbol"/>
     <field name="currency.symbol"/>
     <field name="statusSelect"/>
     <field name="receiptState"/>
@@ -474,8 +475,8 @@
 	                	{receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
 		            </Box>
 		            <Box>
-			            <strong>{_t('WT')} : {currency.symbol}{$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {currency.symbol}{$fmt('inTaxTotal')}</strong>
+			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
 		            </Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
@@ -500,8 +501,8 @@
     <field name="externalReference"/>
     <field name="supplierPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-currency="currency.symbol"/>
+    <field name="inTaxTotal" x-currency="currency.symbol"/>
     <field name="currency.symbol"/>
     <field name="statusSelect"/>
     <field name="receiptState"/>
@@ -539,8 +540,8 @@
 	                	{receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
 		            </Box>
 		            <Box>
-			            <strong>{_t('WT')} : {currency.symbol}{$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {currency.symbol}{$fmt('inTaxTotal')}</strong>
+			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
 		            </Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
