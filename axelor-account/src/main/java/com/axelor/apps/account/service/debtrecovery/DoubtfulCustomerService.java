@@ -40,7 +40,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -49,7 +48,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -402,146 +400,34 @@ public class DoubtfulCustomerService {
     return invoice;
   }
 
-  /**
-   * Fonction permettant de récupérer les écritures de facture à transférer sur le compte client
-   * douteux
-   *
-   * @param rule Le règle à appliquer :
-   *     <ul>
-   *       <li>0 = Créance de + 6 mois
-   *       <li>1 = Créance de + 3 mois
-   *     </ul>
-   *
-   * @param doubtfulCustomerAccount Le compte client douteux
-   * @param company La société
-   * @return Les écritures de facture à transférer sur le compte client douteux
-   */
-  public List<Move> getMove(int rule, Account doubtfulCustomerAccount, Company company) {
+  public List<MoveLine> getMoveLines(
+      Company company, Account doubtfulCustomerAccount, int debtMonthNumber, boolean isReject) {
+    LocalDate date = appBaseService.getTodayDate(company).minusMonths(debtMonthNumber);
 
-    LocalDate date = null;
+    StringBuilder query =
+        new StringBuilder(
+            "self.move.company = :company "
+                + "AND self.account.useForPartnerBalance IS TRUE "
+                + "AND self.amountRemaining > 0.00 "
+                + "AND self.debit > 0.00 "
+                + "AND self.dueDate < :date "
+                + "AND self.account <> :doubtfulCustomerAccount ");
 
-    switch (rule) {
-
-        // Créance de + 6 mois
-      case 0:
-        date =
-            appBaseService
-                .getTodayDate(company)
-                .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
-        break;
-
-        // Créance de + 3 mois
-      case 1:
-        date =
-            appBaseService
-                .getTodayDate(company)
-                .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
-        break;
-
-      default:
-        break;
+    if (isReject) {
+      query.append("self.move.functionalOriginSelect = :functionalOriginSale");
+    } else {
+      query.append(
+          "self.invoiceReject IS NOT NULL AND self.invoiceReject.operationTypeSelect = :operationTypeSale");
     }
 
-    log.debug("Debt date taken into account : {} ", date);
-
-    String request =
-        "SELECT DISTINCT m "
-            + "FROM MoveLine ml "
-            + "JOIN ml.move m "
-            + "JOIN ml.invoiceTermList invoiceTermList "
-            + " WHERE m.company.id = "
-            + company.getId()
-            + " AND ml.account.useForPartnerBalance = true "
-            + " AND m.functionalOriginSelect = "
-            + MoveRepository.FUNCTIONAL_ORIGIN_SALE
-            + " AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 "
-            + " AND ml.account.id != "
-            + doubtfulCustomerAccount.getId()
-            + " AND invoiceTermList.amountRemaining > 0.00 "
-            + " AND invoiceTermList.dueDate < '"
-            + date.toString()
-            + "'";
-
-    log.debug("Query : {} ", request);
-
-    Query query = JPA.em().createQuery(request);
-
-    @SuppressWarnings("unchecked")
-    List<Move> moveList = query.getResultList();
-
-    return moveList;
-  }
-
-  /**
-   * Fonction permettant de récupérer les lignes d'écriture de rejet de facture à transférer sur le
-   * compte client douteux
-   *
-   * @param rule Le règle à appliquer :
-   *     <ul>
-   *       <li>0 = Créance de + 6 mois
-   *       <li>1 = Créance de + 3 mois
-   *     </ul>
-   *
-   * @param doubtfulCustomerAccount Le compte client douteux
-   * @param company La société
-   * @return Les lignes d'écriture de rejet de facture à transférer sur le comtpe client douteux
-   */
-  public List<? extends MoveLine> getRejectMoveLine(
-      int rule, Account doubtfulCustomerAccount, Company company) {
-
-    LocalDate date = null;
-    List<? extends MoveLine> moveLineList = null;
-
-    switch (rule) {
-
-        // Créance de + 6 mois
-      case 0:
-        date =
-            appBaseService
-                .getTodayDate(company)
-                .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
-        moveLineList =
-            moveLineRepo
-                .all()
-                .filter(
-                    "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
-                        + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
-                        + "AND self.account != ?3 "
-                        + "AND self.invoiceReject.operationTypeSelect = ?4",
-                    company,
-                    date,
-                    doubtfulCustomerAccount,
-                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-                .fetch();
-        break;
-
-        // Créance de + 3 mois
-      case 1:
-        date =
-            appBaseService
-                .getTodayDate(company)
-                .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
-        moveLineList =
-            moveLineRepo
-                .all()
-                .filter(
-                    "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
-                        + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
-                        + "AND self.account != ?3 "
-                        + "AND self.invoiceReject.operationTypeSelect = ?4",
-                    company,
-                    date,
-                    doubtfulCustomerAccount,
-                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-                .fetch();
-        break;
-
-      default:
-        break;
-    }
-
-    log.debug("Debt date taken into account : {} ", date);
-
-    return moveLineList;
+    return moveLineRepo
+        .all()
+        .filter(query.toString())
+        .bind("company", company)
+        .bind("date", date)
+        .bind("doubtfulCustomerAccount", doubtfulCustomerAccount)
+        .bind("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        .fetch();
   }
 }

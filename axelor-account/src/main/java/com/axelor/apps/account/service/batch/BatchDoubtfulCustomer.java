@@ -89,7 +89,6 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
     checkPoint();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   protected void process() {
 
@@ -99,22 +98,30 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
       AccountConfig accountConfig = company.getAccountConfig();
 
       Account doubtfulCustomerAccount = accountConfig.getDoubtfulCustomerAccount();
+      int sixMonthDebtMonthNumber = accountConfig.getSixMonthDebtMonthNumber();
+      int threeMonthDebtMonthNumber = accountConfig.getThreeMonthDebtMontsNumber();
       String sixMonthDebtPassReason = accountConfig.getSixMonthDebtPassReason();
       String threeMonthDebtPassReason = accountConfig.getThreeMonthDebtPassReason();
 
       // FACTURES
-      List<Move> moveList = doubtfulCustomerService.getMove(0, doubtfulCustomerAccount, company);
-      log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveList.size());
-      this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, sixMonthDebtPassReason);
+      List<MoveLine> moveLineList =
+          doubtfulCustomerService.getMoveLines(
+              company, doubtfulCustomerAccount, sixMonthDebtMonthNumber, false);
+      log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveLineList.size());
+      this.createDoubtFulCustomerMove(
+          moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
 
-      moveList = doubtfulCustomerService.getMove(1, doubtfulCustomerAccount, company);
-      log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveList.size());
-      this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, threeMonthDebtPassReason);
+      moveLineList =
+          doubtfulCustomerService.getMoveLines(
+              company, doubtfulCustomerAccount, threeMonthDebtMonthNumber, false);
+      log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveLineList.size());
+      this.createDoubtFulCustomerMove(
+          moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 
       // FACTURES REJETES
-      List<MoveLine> moveLineList =
-          (List<MoveLine>)
-              doubtfulCustomerService.getRejectMoveLine(0, doubtfulCustomerAccount, company);
+      moveLineList =
+          doubtfulCustomerService.getMoveLines(
+              company, doubtfulCustomerAccount, sixMonthDebtMonthNumber, true);
       log.debug(
           "Number of rejected move lines (Debt more than 6 months) in 411 : {}",
           moveLineList.size());
@@ -122,8 +129,8 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
           moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
 
       moveLineList =
-          (List<MoveLine>)
-              doubtfulCustomerService.getRejectMoveLine(1, doubtfulCustomerAccount, company);
+          doubtfulCustomerService.getMoveLines(
+              company, doubtfulCustomerAccount, threeMonthDebtMonthNumber, true);
       log.debug(
           "Number of rejected move lines (Debt more than 3 months) in 411 : {}",
           moveLineList.size());
@@ -147,15 +154,15 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
    * Procédure permettant de créer les écritures de passage en client douteux pour chaque écriture
    * de facture
    *
-   * @param moveList Une liste d'écritures de facture
+   * @param moveLineList Une liste d'écritures de facture
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
    * @throws AxelorException
    */
   public void createDoubtFulCustomerMove(
-      List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
-    for (int i = 0; i < moveList.size(); i++) {
-      Move move = moveList.get(i);
+      List<MoveLine> moveLineList, Account doubtfulCustomerAccount, String debtPassReason) {
+    for (int i = 0; i < moveLineList.size(); i++) {
+      Move move = moveLineList.get(i).getMove();
 
       try {
         doubtfulCustomerService.createDoubtFulCustomerMove(
