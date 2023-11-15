@@ -26,7 +26,7 @@ public interface SaleOrderBudgetService {
 
   void generateBudgetDistribution(SaleOrder saleOrder);
 
-  String computeBudgetDistribution(SaleOrder saleOrder);
+  String computeBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
 
   void validateSaleAmountWithBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
 
