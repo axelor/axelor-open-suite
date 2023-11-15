@@ -325,34 +325,38 @@
     </panel>
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
-      <field name="inTaxTotal" showTitle="false" colSpan="12">
-        <viewer depends="exTaxTotal,currency.symbol,taxTotal,amountInvoiced,advanceTotal">
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
+      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+        <viewer depends="exTaxTotal,taxTotal,amountInvoiced,advanceTotal">
                     <![CDATA[
 	                  <>
 	                     <dl>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
+	                     		<dd>{$fmt('exTaxTotal')}</dd>
 	                     	</Box>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
+	                     		<dd>{$fmt('taxTotal')}</dd>
 	                     	</Box>
 	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
 	                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
+	                     		<dd>{$fmt('inTaxTotal')}</dd>
 	                     	</Box>
 	                     	{statusSelect >= 3 &&
 	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
-	                     			<dd>{currency.symbol} {$fmt('amountInvoiced')}</dd>
+	                     			<dd>{$fmt('amountInvoiced')}</dd>
 	                     		</Box>
 	                     	}
 	                     	{statusSelect >= 2 &&
 	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
-	                     			<dd>{currency.symbol} {$fmt('advanceTotal')}</dd>
+	                     			<dd>{$fmt('advanceTotal')}</dd>
 	                     		</Box>
 	                     	}
 	                     </dl>
