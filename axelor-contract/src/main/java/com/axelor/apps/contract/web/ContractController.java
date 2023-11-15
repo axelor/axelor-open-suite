@@ -304,7 +304,8 @@ public class ContractController {
     try {
       if (Beans.get(ContractService.class).controlDate(contract))
         response.setError(
-          I18n.get(  "End of next invoicing period should be after Start of next invoicing period."));
+            I18n.get(
+                "End of next invoicing period should be after Start of next invoicing period."));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
