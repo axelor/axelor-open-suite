@@ -1027,7 +1027,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
 
-      return total.subtract(totalWithoutCurrent);
+      return currencyScaleServiceAccount.getScaledValue(
+          invoiceTerm, total.subtract(totalWithoutCurrent));
     } else {
       return invoiceTerm
           .getPercentage()

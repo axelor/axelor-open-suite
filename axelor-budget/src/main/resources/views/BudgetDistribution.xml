@@ -339,6 +339,9 @@
     <attribute name="value" for="$currencySymbol"
       expr="eval:__parent__?.company?.currency?.symbol"
       if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+    <attribute name="value" for="$companyCurrencyScale"
+      expr="eval:__parent__?.company?.currency?.numberOfDecimals"
+      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
   </action-attrs>
 
   <action-method name="action-method-budget-budget-distribution-set-amount-available">

@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceAttrsService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.AxelorException;
@@ -74,6 +75,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1280,5 +1282,24 @@ public class InvoiceController {
     Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
 
     response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void setInvoiceLinesScale(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        return;
+      }
+
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      InvoiceAttrsService invoiceAttrsService = Beans.get(InvoiceAttrsService.class);
+
+      invoiceAttrsService.setInvoiceLineScale(invoice, attrsMap);
+      invoiceAttrsService.setInvoiceLineTaxScale(invoice, attrsMap);
+
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
