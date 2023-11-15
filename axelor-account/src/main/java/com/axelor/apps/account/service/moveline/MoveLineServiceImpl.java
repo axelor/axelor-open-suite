@@ -31,6 +31,8 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
+import com.axelor.apps.account.service.batch.BatchDoubtfulCustomer;
+import com.axelor.apps.account.service.batch.PreviewBatch;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -83,6 +85,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
   protected MoveLineTaxService moveLineTaxService;
+  protected AccountingBatchRepository accountingBatchRepo;
 
   @Inject
   public MoveLineServiceImpl(
@@ -94,7 +97,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
       AccountingCutOffService cutOffService,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      AccountingBatchRepository accountingBatchRepo) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -104,6 +108,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
     this.moveLineTaxService = moveLineTaxService;
+    this.accountingBatchRepo = accountingBatchRepo;
   }
 
   @Override
@@ -468,13 +473,24 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
   }
 
-  public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
-    BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
+  @Override
+  public Batch validatePreviewBatch(List<Long> recordIdList, Long batchId, int actionSelect)
+      throws AxelorException {
+    PreviewBatch batch;
 
-    batchAccountingCutOff.recordIdList = recordIdList;
-    batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
+    if (actionSelect == AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF) {
+      batch = Beans.get(BatchAccountingCutOff.class);
+    } else if (actionSelect == AccountingBatchRepository.ACTION_DOUBTFUL_CUSTOMER) {
+      batch = Beans.get(BatchDoubtfulCustomer.class);
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, AccountExceptionMessage.BATCH_NO_PREVIEW);
+    }
 
-    return batchAccountingCutOff.getBatch();
+    batch.setRecordIdList(recordIdList);
+    batch.run(accountingBatchRepo.find(batchId));
+
+    return batch.getBatch();
   }
 
   public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {

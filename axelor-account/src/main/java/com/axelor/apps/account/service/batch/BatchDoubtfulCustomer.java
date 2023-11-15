@@ -20,9 +20,11 @@ package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
@@ -39,7 +41,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchDoubtfulCustomer extends BatchStrategy {
+public class BatchDoubtfulCustomer extends PreviewBatch {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -53,9 +55,10 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
   public BatchDoubtfulCustomer(
       DoubtfulCustomerService doubtfulCustomerService,
       BatchAccountCustomer batchAccountCustomer,
+      MoveLineRepository moveLineRepo,
       AccountRepository accountRepo) {
 
-    super(doubtfulCustomerService, batchAccountCustomer);
+    super(doubtfulCustomerService, batchAccountCustomer, moveLineRepo);
 
     this.accountRepo = accountRepo;
 
@@ -132,11 +135,19 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
     }
   }
 
+  @Override
+  protected void _processMovesByQuery(AccountingBatch accountingBatch) {}
+
+  @Override
+  protected void _processMovesByIds(AccountingBatch accountingBatch) {}
+
+  protected void _processMoves(List<Move> moveList) {}
+
   /**
    * Procédure permettant de créer les écritures de passage en client douteux pour chaque écriture
    * de facture
    *
-   * @param moveLineList Une liste d'écritures de facture
+   * @param moveList Une liste d'écritures de facture
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
    * @throws AxelorException

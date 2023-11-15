@@ -249,7 +249,7 @@
         onClick="save,action-accounting-batch-method-action-debt-recovery" colSpan="12"/>
       <button name="doubtfulCustomerBatchBtn" title="Doubtful Customer Batch"
         showIf="actionSelect == 16"
-        onClick="save,action-accounting-batch-method-action-doubtful-customer" colSpan="12"/>
+        onClick="save,action-accounting-batch-group-action-doubtful-customer" colSpan="12"/>
       <button name="accountCustomerBatchBtn" title="Start" showIf="actionSelect == 17"
         onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
       <button name="moveLineExportBatchBtn" title="Start" showIf="actionSelect == 18"
@@ -278,7 +278,7 @@
       <button name="accountingCutOffBatchBtn" title="Run accounting cut-off"
         showIf="actionSelect == 26" onClick="action-accounting-batch-group-accounting-cut-off"/>
       <field name="previewRecordsToProcess" colSpan="12" widget="boolean-switch"
-        showIf="actionSelect == 26"/>
+        showIf="[16,26].includes(actionSelect)"/>
       <button name="autoMoveLetteringBatchBtn" title="Run auto move lettering"
         showIf="actionSelect == 27" onClick="action-accounting-batch-group-auto-move-lettering"/>
       <button name="showMoveLinesInProposalBtn"
@@ -353,6 +353,13 @@
     <action name="action-accounting-batch-validate-reconcile-dates"/>
     <action name="save"/>
     <action name="action-accounting-batch-method-auto-move-lettering"/>
+  </action-group>
+
+  <action-group name="action-accounting-batch-group-action-doubtful-customer">
+    <action name="action-accounting-batch-view-action-doubtful-customer"
+      if="previewRecordsToProcess"/>
+    <action name="action-accounting-batch-method-action-doubtful-customer"
+      if="!previewRecordsToProcess"/>
   </action-group>
 
   <!-- ACTION RECORD -->
@@ -622,6 +629,16 @@
     <context name="_company" expr="eval: company.id"/>
     <context name="_cutOffPreview" expr="eval: true"/>
     <context name="_batchId" expr="eval: id"/>
+    <context name="_actionSelect" expr="eval: actionSelect"/>
+  </action-view>
+
+  <action-view name="action-accounting-batch-view-action-doubtful-customer"
+    title="Move lines concerned by doubtful customer" model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-doubtful-customer-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain></domain>
+    <context name="_batchId" expr="eval: id"/>
+    <context name="_actionSelect" expr="eval: actionSelect"/>
   </action-view>
 
   <action-validate name="action-accounting-batch-validate-twice-in-a-month">

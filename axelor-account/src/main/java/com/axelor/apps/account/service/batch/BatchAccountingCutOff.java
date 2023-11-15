@@ -45,24 +45,21 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchAccountingCutOff extends BatchStrategy {
+public class BatchAccountingCutOff extends PreviewBatch {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AccountingCutOffService cutOffService;
-  protected MoveLineRepository moveLineRepository;
   protected AccountingBatchRepository accountingBatchRepository;
-  public List<Long> recordIdList;
 
   @Inject
   public BatchAccountingCutOff(
       AccountingCutOffService cutOffService,
       MoveLineRepository moveLineRepository,
       AccountingBatchRepository accountingBatchRepository) {
-    super();
-    this.cutOffService = cutOffService;
-    this.moveLineRepository = moveLineRepository;
+    super(moveLineRepository);
     this.accountingBatchRepository = accountingBatchRepository;
+    this.cutOffService = cutOffService;
   }
 
   @Override
@@ -71,14 +68,12 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
     LocalDate moveDate = accountingBatch.getMoveDate();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-    updateBatch(moveDate, accountingCutOffTypeSelect);
-    if (this.recordIdList == null) {
-      this._processMovesByQuery(accountingBatch);
-    } else {
-      this._processMovesByIds(accountingBatch);
-    }
+    this.updateBatch(moveDate, accountingCutOffTypeSelect);
+
+    super.process();
   }
 
+  @Override
   protected void _processMovesByQuery(AccountingBatch accountingBatch) {
     Company company = accountingBatch.getCompany();
     LocalDate moveDate = accountingBatch.getMoveDate();
@@ -113,7 +108,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
   protected void _processMovesByIds(AccountingBatch accountingBatch) {
     List<Move> moveList =
         recordIdList.stream()
-            .map(it -> moveLineRepository.find(it))
+            .map(it -> moveLineRepo.find(it))
             .filter(Objects::nonNull)
             .map(MoveLine::getMove)
             .distinct()

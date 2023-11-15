@@ -585,7 +585,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BatchAccountingCutOffSupplyChain batchAccountingCutOff =
         Beans.get(BatchAccountingCutOffSupplyChain.class);
 
-    batchAccountingCutOff.recordIdList = recordIdList;
+    batchAccountingCutOff.setRecordIdList(recordIdList);
     batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
 
     return batchAccountingCutOff.getBatch();
