@@ -46,7 +46,13 @@
 	      ]]></viewer>
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-            name="budgetDistributionSumAmount" readonly="true" colSpan="6"/>
+            name="budgetDistributionSumAmount" readonly="true" colSpan="6">
+            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
+              <![CDATA[
+							<dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
+						]]>
+            </viewer>
+          </field>
           <field name="groupBudget" title="Group" colSpan="4"
             onSelect="action-budget-sale-order-line-method-group-domain"
             form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
@@ -78,11 +84,15 @@
     <action name="supplychain-action-sale-order-line-group-onnew"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-distribution-attrs-currency-symbol"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-sale-order-line-group-onload">
     <action name="supplychain-action-sale-order-line-group-onload"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-distribution-attrs-currency-symbol"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 

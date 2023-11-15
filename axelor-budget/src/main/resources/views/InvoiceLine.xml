@@ -25,7 +25,13 @@
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true"/>
+            readonly="true">
+            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
+              <![CDATA[
+                              <dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
+                          ]]>
+            </viewer>
+          </field>
           <field name="budget"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
@@ -63,7 +69,8 @@
 
   <action-group name="action-group-budget-invoice-line-onload">
     <action name="action-group-account-invoice-line-onload"/>
-    <action name="action-budget-distribution-attrs-budget-amount-available"
+    <action
+      name="action-budget-distribution-group-budget-amount-available-and-currency-symbol"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
@@ -71,7 +78,8 @@
 
   <action-group name="action-group-budget-invoice-line-onnew">
     <action name="action-account-invoice-line-onnew-group"/>
-    <action name="action-budget-distribution-attrs-budget-amount-available"
+    <action
+      name="action-budget-distribution-group-budget-amount-available-and-currency-symbol"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
