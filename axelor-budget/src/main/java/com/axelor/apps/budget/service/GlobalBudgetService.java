@@ -34,6 +34,7 @@ public interface GlobalBudgetService {
   GlobalBudget generateGlobalBudgetWithTemplate(GlobalBudgetTemplate globalBudgetTemplate)
       throws AxelorException;
 
-  GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
+  GlobalBudget changeBudgetVersion(
+      GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException;
 }
