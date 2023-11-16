@@ -25,7 +25,7 @@ public class MobileChartServiceImpl implements MobileChartService {
     for (Object objectValues : resultList) {
       mobileChartValueResponseList.add(
           new MobileChartValueResponse(
-              ((Object[]) objectValues)[0].toString(), ((Object[]) objectValues)[1].toString()));
+              ((Object[]) objectValues)[0].toString(), (Long) ((Object[]) objectValues)[1]));
     }
     return mobileChartValueResponseList;
   }
