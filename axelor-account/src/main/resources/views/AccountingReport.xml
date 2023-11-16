@@ -211,8 +211,7 @@
             hideIf="[5,10,12,15,16,17,21,22,23,24,1001,1010,2000,3000].indexOf(reportType.typeSelect) != -1"/>
           <field name="displayOpeningAccountingMoves" widget="inline-checkbox"
             hideIf="[5,10,12,15,16,17,21,22,23,24,2000,3000].indexOf(reportType.typeSelect) != -1"/>
-          <separator
-            showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
+          <separator showIf="reportType.typeSelect == 7 || reportType.typeSelect == 1"/>
           <field name="displayOnlyNotCompletelyLetteredMoveLines"
             hideIf="reportType.typeSelect != 7 &amp;&amp; reportType.typeSelect != 1"
             widget="inline-checkbox"/>
